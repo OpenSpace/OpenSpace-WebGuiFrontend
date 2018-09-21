@@ -19,9 +19,11 @@ class NumericInput extends Component {
     };
 
     this.onChange = this.onChange.bind(this);
+    this.onTextBlur = this.onTextBlur.bind(this);
     this.onHover = this.onHover.bind(this);
     this.onLeave = this.onLeave.bind(this);
-    this.toggleInput = this.toggleInput.bind(this);
+    this.enableTextInput = this.enableTextInput.bind(this);
+    this.disableTextInput = this.disableTextInput.bind(this);
   }
 
   componentWillReceiveProps({ value }) {
@@ -45,6 +47,11 @@ class NumericInput extends Component {
     this.props.onChange(event);
   }
 
+  onTextBlur(event) {
+    this.onChange(event);
+    this.disableTextInput();
+  }
+
   onHover(event) {
     if (this.props.disabled) {
       return;
@@ -65,10 +72,15 @@ class NumericInput extends Component {
     return this.props.inputOnly || this.state.showTextInput;
   }
 
-  toggleInput() {
-    if (this.props.disableInput) return;
+  enableTextInput(event) {
+    if (this.props.disableInput) {
+      return;
+    }
+    this.setState({ showTextInput: true, hoverHint: null });
+  }
 
-    this.setState({ showTextInput: !this.state.showTextInput, hoverHint: null });
+  disableTextInput() {
+    this.setState({ showTextInput: false, hoverHint: null});
   }
 
   render() {
@@ -77,30 +89,32 @@ class NumericInput extends Component {
     if (this.showTextInput) {
       return (
         <Input
-          {...excludeKeys(this.props, 'disableInput inputOnly noHoverHint noTooltip')}
+          {...excludeKeys(this.props, 'onChange disableInput inputOnly noHoverHint noTooltip')}
           type="number"
           value={value}
-          onChange={this.onChange}
-          onBlur={this.toggleInput}
+          onBlur={this.onTextBlur}
+          onEnter={this.onTextBlur}
           autoFocus
         />
       );
     }
 
-    const { placeholder, className, label, wide, min, max } = this.props;
-    const doNotInclude = 'wide onChange value className type ' +
-                         'disableInput inputOnly label noHoverHint noTooltip';
+    const { placeholder, className, label, wide, reverse, min, max, noValue } = this.props;
+    const doNotInclude = 'wide reverse onChange value className type ' +
+                         'disableInput inputOnly label noHoverHint noTooltip noValue';
     const inheritedProps = excludeKeys(this.props, doNotInclude);
+    const hoverHintOffset = reverse ? 1 - hoverHint : hoverHint;
 
     return (
       <div
-        className={`${styles.inputGroup} ${wide ? styles.wide : ''}`}
-        onDoubleClick={this.toggleInput}
+        className={`${styles.inputGroup} ${wide ? styles.wide : ''} ${reverse ? styles.reverse : ''}`}
+        onDoubleClick={this.enableTextInput}
+        onContextMenu={this.enableTextInput}
         onMouseMove={this.onHover}
         onMouseLeave={this.onLeave}
       >
         { !this.props.noHoverHint && hoverHint !== null && (
-          <div className={styles.hoverHint} style={{ width: `${100 * hoverHint}%` }} />
+          <div className={styles.hoverHint} style={{ width: `${100 * hoverHintOffset}%` }} />
         )}
         { !this.props.noTooltip && hoverHint !== null && (
           <Tooltip style={{ left: `${100 * hoverHint}%` }}>
@@ -113,14 +127,14 @@ class NumericInput extends Component {
           type="range"
           value={value}
           className={`${className} ${styles.range}`}
-          style={{ '--min': min, '--max': max, '--value': value }}
+          style={{ '--min': min, '--max': max, '--value': value, direction: reverse ? "rtl" : "ltr" }}
           onChange={this.onChange}
         />
         <label htmlFor={id} className={`${styles.rangeLabel}`}>
           { label || placeholder }
         </label>
-        <span className={styles.value} onClick={this.toggleInput} role="button" tabIndex={0}>
-          {value}
+        <span className={styles.value}>
+          {noValue ? "" : value}
         </span>
       </div>
     );
@@ -135,8 +149,10 @@ NumericInput.propTypes = {
   label: PropTypes.node,
   max: PropTypes.number,
   min: PropTypes.number,
+  reverse: PropTypes.bool,
   noHoverHint: PropTypes.bool,
   noTooltip: PropTypes.bool,
+  noValue: PropTypes.bool,
   onChange: PropTypes.func,
   placeholder: PropTypes.string.isRequired,
   step: PropTypes.number,
@@ -152,8 +168,10 @@ NumericInput.defaultProps = {
   label: null,
   max: 100,
   min: 0,
+  reverse: false,
   noHoverHint: false,
   noTooltip: false,
+  noValue: false,
   onChange: () => {},
   step: 1,
   value: 0,

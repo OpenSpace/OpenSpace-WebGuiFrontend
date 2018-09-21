@@ -7,13 +7,16 @@ import Button from '../common/Input/Button/Button';
 import Calendar from '../common/Calendar/Calendar';
 import Picker from './Picker';
 import Time from '../common/Input/Time/Time';
+import ToggleContent from '../common/ToggleContent/ToggleContent';
 
 import {
   TogglePauseScript,
   InterpolateTogglePauseScript,
-  CurrenTimeKey,
+  CurrentTimeKey,
+  DeltaTime,
   ValuePlaceholder,
   SetDeltaTimeScript,
+  InterpolateDeltaTimeScript,
   InterpolateDeltaTime
 } from '../../api/keys';
 
@@ -45,7 +48,9 @@ class TimePicker extends Component {
     if (shift) {
       script = SetDeltaTimeScript.replace(ValuePlaceholder, 1);
     } else {
-      script = InterpolateDeltaTimeScript.replace(ValuePlaceholder, 1);
+      script = InterpolateDeltaTimeScript
+        .replace(ValuePlaceholder, 1)
+        .replace(ValuePlaceholder, 1); // interpolation time
     }
     DataManager.runScript(script);
   }
@@ -55,12 +60,15 @@ class TimePicker extends Component {
 
     this.state = {
       time: new Date(),
+      isPaused: false,
       hasTime: false,
       showPopover: false,
-      subscriptionId: -1,
+      timeSubscriptionId: -1,
+      deltaTimeSubscriptionId: -1,
     };
 
-    this.subscriptionCallback = this.subscriptionCallback.bind(this);
+    this.timeSubscriptionCallback = this.timeSubscriptionCallback.bind(this);
+    this.deltaTimeSubscriptionCallback = this.deltaTimeSubscriptionCallback.bind(this);
     this.togglePopover = this.togglePopover.bind(this);
     this.now = this.now.bind(this);
     this.setDate = this.setDate.bind(this);
@@ -68,16 +76,30 @@ class TimePicker extends Component {
 
   componentDidMount() {
     // subscribe to data
-    this.state.subscriptionId = DataManager
-      .subscribe(CurrenTimeKey, this.subscriptionCallback, TopicTypes.time);
+    this.state.timeSubscriptionId = DataManager
+      .subscribe(CurrentTimeKey, this.timeSubscriptionCallback, TopicTypes.time);
+
+    this.state.deltaTimeSubscriptionId = DataManager
+      .subscribe(DeltaTime, this.deltaTimeSubscriptionCallback, TopicTypes.time);
   }
 
   componentWillUnmount() {
-    DataManager.unsubscribe(CurrenTimeKey, subscriptionId);
+    DataManager.unsubscribe(CurrentTimeKey, this.state.timeSubscriptionId);
+    DataManager.unsubscribe(DeltaTime, this.state.deltaTimeSubscriptionId);
   }
 
   get time() {
     return this.state.time.toUTCString();
+  }
+
+  get date() {
+    const t = this.time;
+    return t.split(" ", 3).join(" ");
+  }
+
+  get calendar() {
+    const { time } = this.state;
+    return <Calendar selected={time} activeMonth={time} onChange={this.setDate} todayButton />;
   }
 
   get popover() {
@@ -89,7 +111,7 @@ class TimePicker extends Component {
         closeCallback={this.togglePopover}
         detachable
       >
-        <Calendar selected={time} activeMonth={time} onChange={this.setDate} todayButton />
+        <ToggleContent title={this.date}>{this.calendar}</ToggleContent>
         <hr className={Popover.styles.delimiter} />
         <div className={Popover.styles.title}>Select local time</div>
         <div className={Popover.styles.content}>
@@ -105,7 +127,7 @@ class TimePicker extends Component {
 
         <div className={`${Popover.styles.row} ${Popover.styles.content}`}>
           <Button block smalltext onClick={TimePicker.togglePause}>
-            Pause
+            {this.state.isPaused ? "Play" : "Pause"}
           </Button>
           <Button block smalltext onClick={TimePicker.realtime}>
             Realtime
@@ -136,12 +158,21 @@ class TimePicker extends Component {
   }
 
   /**
-   * Callback for subscription
+   * Callback for time subscription
    * @param message [object] - message object sent from Subscription
    */
-  subscriptionCallback(message) {
+  timeSubscriptionCallback(message) {
     const time = new Date(DateStringWithTimeZone(message.time));
     this.setState({ time, hasTime: true });
+  }
+
+  /**
+   * Callback for delta time subscription
+   * @param message [object] - message object sent from Subscription
+   */
+  deltaTimeSubscriptionCallback(message) {
+    const isPaused = message.isPaused;
+    this.setState({ isPaused });
   }
 
   render() {

@@ -14,11 +14,23 @@
   display: block;
 }
 
+.reverse .rangeLabel {
+  position: absolute;
+  text-align: right;
+  right: $padding-horizontal;
+}
+
 // display value
 .value {
   position: absolute;
   bottom: $padding-bottom;
   left: $padding-horizontal;
+  pointer-events: none;
+}
+
+.reverse .value {
+  left: auto;
+  right: $padding-horizontal;
 }
 
 .wide,
@@ -34,6 +46,11 @@
   pointer-events: none;
   position: absolute;
   top: 0;
+}
+
+.reverse .hoverHint {
+  left: auto;
+  right: 0;
 }
 
 // state changes
@@ -88,4 +105,11 @@
     height: 100%;
     min-width: 2px;
   }
+}
+
+.reverse .range::-webkit-slider-runnable-track {
+  transition: $background-transition;
+  background: linear-gradient(to left, $ui-background-hover var(--bg-width), transparent var(--bg-width));
+  height: 100%;
+  min-width: 2px;
 }

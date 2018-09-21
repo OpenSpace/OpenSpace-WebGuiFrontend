@@ -18,6 +18,7 @@ class Input extends Component {
     };
 
     this.onChange = this.onChange.bind(this);
+    this.onKeyUp = this.onKeyUp.bind(this);
     this.clear = this.clear.bind(this);
     this.setInputRef = this.setInputRef.bind(this);
   }
@@ -38,6 +39,12 @@ class Input extends Component {
 
     // send to the onChange (if any)!
     this.props.onChange(event);
+  }
+
+  onKeyUp(event) {
+    if (event.key === 'Enter') {
+      this.props.onEnter(event);
+    }
   }
 
   /**
@@ -69,7 +76,7 @@ class Input extends Component {
    * @returns {*}
    */
   get inheritProps() {
-    const doNotInclude = 'wide onChange loading value clearable';
+    const doNotInclude = 'onEnter wide onChange loading value clearable';
     return excludeKeys(this.props, doNotInclude);
   }
 
@@ -86,6 +93,7 @@ class Input extends Component {
                       ${wide ? styles.wide : ''}`}
           id={id}
           onChange={this.onChange}
+          onKeyUp={this.onKeyUp}
           value={value}
           ref={this.setInputRef}
         />
@@ -111,6 +119,7 @@ Input.idCounter = Input.idCounter || 1;
 
 Input.propTypes = {
   onChange: PropTypes.func,
+  onEnter: PropTypes.func,
   className: PropTypes.string,
   clearable: PropTypes.bool,
   label: PropTypes.node,
@@ -122,6 +131,7 @@ Input.propTypes = {
 
 Input.defaultProps = {
   onChange: () => {},
+  onEnter: () => {},
   className: '',
   clearable: false,
   label: null,

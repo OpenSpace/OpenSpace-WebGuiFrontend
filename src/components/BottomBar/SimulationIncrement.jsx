@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { throttle } from 'lodash/function';
 import DataManager, { TopicTypes } from '../../api/DataManager';
-import { DeltaTime, ValuePlaceholder, SetDeltaTimeScript } from '../../api/keys';
+import { DeltaTime, ValuePlaceholder, SetDeltaTimeScript, InterpolateDeltaTimeScript } from '../../api/keys';
 import NumericInput from '../common/Input/NumericInput/NumericInput';
 import Row from '../common/Row/Row';
 import Select from '../common/Input/Select/Select';
@@ -11,8 +11,11 @@ import ScaleInput from '../common/Input/ScaleInput/ScaleInput';
 const UpdateDelayMs = 1000;
 // Throttle the delta time updating, so that we don't accidentally flood
 // the simulation with updates.
-const UpdateDeltaTimeNow = (value) => {
-  const script = SetDeltaTimeScript.replace(ValuePlaceholder, value);
+const UpdateDeltaTimeNow = (value, interpolationTime) => {
+  interpolationTime = interpolationTime || 0;
+  const script = InterpolateDeltaTimeScript
+    .replace(ValuePlaceholder, value)
+    .replace(ValuePlaceholder, interpolationTime);
   DataManager.runScript(script);
 };
 const UpdateDeltaTime = throttle(UpdateDeltaTimeNow, UpdateDelayMs);
@@ -42,12 +45,12 @@ const StepPrecisions = {
   [Steps.years]: -14,
 };
 const Limits = {
-  [Steps.seconds]: { min: -20000, max: 20000, step: 1 },
-  [Steps.minutes]: { min: -20000, max: 20000, step: 0.001 },
-  [Steps.hours]: { min: -1000, max: 1000, step: 0.0001 },
-  [Steps.days]: { min: -10, max: 10, step: 0.000001 },
-  [Steps.months]: { min: -10, max: 10, step: 0.00000001 },
-  [Steps.years]: { min: -1, max: 1, step: 0.0000000001 },
+  [Steps.seconds]: { min: 0, max: 300, step: 1 },
+  [Steps.minutes]: { min: 0, max: 300, step: 0.001 },
+  [Steps.hours]: { min: 0, max: 300, step: 0.0001 },
+  [Steps.days]: { min: 0, max: 10, step: 0.000001 },
+  [Steps.months]: { min: 0, max: 10, step: 0.00000001 },
+  [Steps.years]: { min: 0, max: 1, step: 0.0000000001 },
 };
 Object.freeze(Steps);
 Object.freeze(StepSizes);
@@ -64,17 +67,18 @@ class SimulationIncrement extends Component {
     };
 
     this.deltaTimeUpdated = this.deltaTimeUpdated.bind(this);
-    this.setDeltaTime = this.setDeltaTime.bind(this);
+    this.setPositiveDeltaTime = this.setPositiveDeltaTime.bind(this);
+    this.setNegativeDeltaTime = this.setNegativeDeltaTime.bind(this);
     this.setStepSize = this.setStepSize.bind(this);
     this.setQuickAdjust = this.setQuickAdjust.bind(this);
   }
 
   componentDidMount() {
-    DataManager.subscribe(DeltaTime, this.deltaTimeUpdated, TopicTypes.time);
+    this.deltaTimeSubscriptionId = DataManager.subscribe(DeltaTime, this.deltaTimeUpdated, TopicTypes.time);
   }
 
   componentWillUnmount() {
-    DataManager.unsubscribe(DeltaTime, this.deltaTimeUpdated);
+    DataManager.unsubscribe(DeltaTime, this.deltaTimeSubscriptionId);
   }
 
   get stepSize() {
@@ -87,15 +91,25 @@ class SimulationIncrement extends Component {
     return Limits[stepSize];
   }
 
-  setDeltaTime(event) {
-    const { value } = event.currentTarget;
+  setDeltaTime(value) {
+    const interpolationTime = 1;
     const deltaTime = parseFloat(value) * this.stepSize;
     if (isNaN(deltaTime)) {
       return;
     }
     // optimistic ui change
     this.setState({ deltaTime });
-    UpdateDeltaTime(deltaTime);
+    UpdateDeltaTimeNow(deltaTime, interpolationTime);
+  }
+
+  setPositiveDeltaTime(event) {
+    const dt = event.currentTarget.value;
+    this.setDeltaTime(dt);
+  }
+
+  setNegativeDeltaTime(event) {
+    const dt = -event.currentTarget.value;
+    this.setDeltaTime(dt);
   }
 
   setStepSize({ value }) {
@@ -105,19 +119,20 @@ class SimulationIncrement extends Component {
   }
 
   setQuickAdjust(value) {
+    const interpolationTime = 1;
     if (value !== 0) {
       this.beforeAdjust = this.beforeAdjust || this.state.deltaTime;
-      const quickAdjust = (value ** 5);
-      UpdateDeltaTimeNow(this.beforeAdjust * quickAdjust);
+      const quickAdjust = this.beforeAdjust + (value ** 5);
+      UpdateDeltaTimeNow(quickAdjust, interpolationTime);
     } else {
       UpdateDeltaTime.cancel();
-      UpdateDeltaTimeNow(this.beforeAdjust || 1);
+      UpdateDeltaTimeNow(this.beforeAdjust || 0, interpolationTime);
       this.beforeAdjust = null;
     }
   }
 
-  deltaTimeUpdated({deltaTime}) {
-    this.setState({deltaTime});
+  deltaTimeUpdated({targetDeltaTime}) {
+    this.setState({deltaTime: targetDeltaTime});
   }
 
   render() {
@@ -130,18 +145,30 @@ class SimulationIncrement extends Component {
     return (
       <div>
         <Row>
-          <NumericInput
-            {...this.limits}
-            onChange={this.setDeltaTime}
-            placeholder={`${stepSize} / second`}
-            value={adjustedDelta}
-          />
-          <Select
+        <Select
             direction="up"
             label="Display unit"
             onChange={this.setStepSize}
             options={options}
             value={stepSize}
+          />
+        </Row>
+        <div style={{ height: '10px' }} />
+        <Row>
+          <NumericInput
+            {...this.limits}
+            onChange={this.setNegativeDeltaTime}
+            placeholder={`Negative ${stepSize} / second`}
+            value={-adjustedDelta}
+            reverse
+            noValue={adjustedDelta >= 0}
+          />
+          <NumericInput
+            {...this.limits}
+            onChange={this.setPositiveDeltaTime}
+            placeholder={`${stepSize} / second`}
+            value={adjustedDelta}
+            noValue={adjustedDelta < 0}
           />
         </Row>
         <div style={{ height: '10px' }} />

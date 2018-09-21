@@ -25,11 +25,11 @@ export const ToggleNativeGuiScript = 'local b = openspace.getPropertyValue("Modu
                                      'openspace.setPropertyValueSingle("Modules.ImGUI.Main.IsHidden", b);';
 
 // key for getting current simulation time
-export const CurrenTimeKey = 'currentTime';
+export const CurrentTimeKey = 'currentTime';
 // key for getting the delta time
 export const DeltaTime = 'deltaTime';
 // value placeholder in scripts with parameter
 export const ValuePlaceholder = '___value___';
 // script for setting deltatime
 export const SetDeltaTimeScript = `openspace.time.setDeltaTime(${ValuePlaceholder})`;
-export const InterpolateDeltaTimeScript = `openspace.time.interpolateDeltaTime(${ValuePlaceholder})`;
+export const InterpolateDeltaTimeScript = `openspace.time.interpolateDeltaTime(${ValuePlaceholder}, ${ValuePlaceholder})`;
