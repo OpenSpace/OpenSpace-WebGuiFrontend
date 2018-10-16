@@ -43,9 +43,11 @@ $small-padding: ($vertical-padding / 2) ($base-padding / 2);
   border: 0;
 
   &:not(:disabled) {
-    &:focus,
     &:hover {
       background: $ui-background-hover;
+    }
+
+    &:focus {
       outline: 0;
     }
   }

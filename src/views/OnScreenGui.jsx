@@ -23,7 +23,7 @@ class OnScreenGui extends Component {
   render() {
     return (
       <div className={styles.app}>
-        <Router basename="/onscreen/">
+        <Router>
           <Route
             path="/about"
             render={() => (

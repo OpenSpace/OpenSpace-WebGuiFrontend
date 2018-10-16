@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import DataManager, { TopicTypes } from '../../api/DataManager';
+import Icon from '../common/Icon/Icon';
 import LoadingString from '../common/LoadingString/LoadingString';
 import Popover from '../common/Popover/Popover';
 import SmallLabel from '../common/SmallLabel/SmallLabel';
@@ -8,6 +9,7 @@ import Calendar from '../common/Calendar/Calendar';
 import Picker from './Picker';
 import Time from '../common/Input/Time/Time';
 import ToggleContent from '../common/ToggleContent/ToggleContent';
+import ScaleInput from '../common/Input/ScaleInput/ScaleInput';
 
 import {
   TogglePauseScript,
@@ -15,8 +17,10 @@ import {
   CurrentTimeKey,
   DeltaTime,
   ValuePlaceholder,
+  InterpolateTimeScript,
   SetDeltaTimeScript,
   InterpolateDeltaTimeScript,
+  InterpolateTimeRelativeScript,
   InterpolateDeltaTime
 } from '../../api/keys';
 
@@ -60,18 +64,27 @@ class TimePicker extends Component {
 
     this.state = {
       time: new Date(),
+      pendingTime: new Date(),
       isPaused: false,
+      targetDeltaTime: 0,
       hasTime: false,
       showPopover: false,
+      showCalendar: false,
+      useLock: false,
       timeSubscriptionId: -1,
-      deltaTimeSubscriptionId: -1,
+      deltaTimeSubscriptionId: -1
     };
 
     this.timeSubscriptionCallback = this.timeSubscriptionCallback.bind(this);
     this.deltaTimeSubscriptionCallback = this.deltaTimeSubscriptionCallback.bind(this);
     this.togglePopover = this.togglePopover.bind(this);
+    this.toggleCalendar = this.toggleCalendar.bind(this);
+    this.toggleLock = this.toggleLock.bind(this);
     this.now = this.now.bind(this);
-    this.setDate = this.setDate.bind(this);
+    this.changeDate = this.changeDate.bind(this);
+    this.setToPendingTime = this.setToPendingTime.bind(this);
+    this.interpolateToPendingTime = this.interpolateToPendingTime.bind(this);
+    this.resetPendingTime = this.resetPendingTime.bind(this);
   }
 
   componentDidMount() {
@@ -92,18 +105,78 @@ class TimePicker extends Component {
     return this.state.time.toUTCString();
   }
 
+  get speed() {
+    let increment = Math.abs(this.state.targetDeltaTime);
+    const sign = Math.sign(this.state.targetDeltaTime) === -1 ? '-' : '';
+    let unit = "second";
+
+    if (increment === 1) {
+      return "Realtime";
+    }
+
+    (() => {
+      if (increment < 60 * 2) {
+        return;
+      }
+      increment /= 60;
+      unit = "minute";
+
+      if (increment < 60 * 2) {
+        return;
+      }
+      increment /= 60;
+      unit = "hour";
+
+      if (increment < 24 * 2) {
+        return;
+      }
+      increment /= 24;
+      unit = "day";
+
+      if (increment < 365/12 * 2) {
+        return
+      }
+      increment /= 265/12;
+      unit = "month";
+
+      if (increment < 12) {
+        return;
+      }
+      increment /= 12;
+      unit = "year";
+    })();
+
+    increment = Math.round(increment);
+    const pluralSuffix = (increment !== 1) ? 's' : '';
+
+    return sign + increment + " " + unit + pluralSuffix + " / second" + (this.state.isPaused ? " (Paused)" : "");
+  }
+
   get date() {
     const t = this.time;
-    return t.split(" ", 3).join(" ");
+    return t.split(" ", 4).join(" ");
   }
 
   get calendar() {
-    const { time } = this.state;
-    return <Calendar selected={time} activeMonth={time} onChange={this.setDate} todayButton />;
+    const { time, showCalendar } = this.state;
+    return showCalendar && <div>
+      <hr className={Popover.styles.delimiter} />
+      <Calendar selected={time} activeMonth={time} onChange={this.changeDate} todayButton />
+      <hr className={Popover.styles.delimiter} />
+      </div>;
+  }
+
+  get lockOptions() {
+    const { useLock } = this.state;
+    return useLock && <div className={`${Popover.styles.row} ${Popover.styles.content}`}>
+      <Button onClick={this.interpolateToPendingTime} block smalltext >Interpolate</Button>
+      <Button onClick={this.setToPendingTime} block smalltext >Set</Button>
+      <Button onClick={this.resetPendingTime} block smalltext >Cancel</Button>
+    </div>
   }
 
   get popover() {
-    const { time } = this.state;
+    const { time, pendingTime } = this.state;
     return (
       <Popover
         className={Picker.Popover}
@@ -111,13 +184,22 @@ class TimePicker extends Component {
         closeCallback={this.togglePopover}
         detachable
       >
-        <ToggleContent title={this.date}>{this.calendar}</ToggleContent>
-        <hr className={Popover.styles.delimiter} />
-        <div className={Popover.styles.title}>Select local time</div>
-        <div className={Popover.styles.content}>
-          <Time time={time} onChange={this.setDate} />
+        <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
+          <div style={{marginTop: 20}}>
+            <Button onClick={this.toggleLock} title="Toggle lock" small transparent={!this.state.useLock}>
+            <Icon icon={this.state.useLock ? 'lock' : 'lock_open'} />
+            </Button>
+          </div>
+          <Time time={pendingTime} onChange={this.changeDate} />
+          <div style={{marginTop: 20}}>
+            <Button onClick={this.toggleCalendar} title="Toggle calendar" small transparent={!this.state.showCalendar}>
+            <Icon icon="view_day" />
+            </Button>
+          </div>
         </div>
-        <hr className={Popover.styles.delimiter} />
+
+        {this.calendar}
+        {this.lockOptions}
 
         <div className={Popover.styles.title}>Simulation speed</div>
         <div className={Popover.styles.content}>
@@ -127,7 +209,7 @@ class TimePicker extends Component {
 
         <div className={`${Popover.styles.row} ${Popover.styles.content}`}>
           <Button block smalltext onClick={TimePicker.togglePause}>
-            {this.state.isPaused ? "Play" : "Pause"}
+            {this.state.isPaused ? <Icon icon="play_arrow" /> : <Icon icon="pause" />}
           </Button>
           <Button block smalltext onClick={TimePicker.realtime}>
             Realtime
@@ -140,8 +222,29 @@ class TimePicker extends Component {
     );
   }
 
+  setToPendingTime() {
+    this.setDate(this.state.pendingTime);
+    this.setState({
+      useLock: false
+    });
+  }
+
+  interpolateToPendingTime() {
+    this.interpolateDate(this.state.pendingTime);
+    this.setState({
+      useLock: false
+    });
+  }
+
+  resetPendingTime() {
+    this.setState({
+      pendingTime: new Date(this.state.time),
+      useLock: false
+    });
+  }
+
   setDate(time) {
-    this.setState({ time });
+    this.setState({ time: new Date(time) });
     // Spice, that is handling the time parsing in OpenSpace does not support
     // ISO 8601-style time zones (the Z). It does, however, always assume that UTC
     // is given.
@@ -149,8 +252,72 @@ class TimePicker extends Component {
     DataManager.setValue('__time', fixedTimeString);
   }
 
+  setDateRelative(delta) {
+    const newTime = new Date(this.state.time);
+    newTime.setSeconds(newTime.getSeconds() + delta);
+
+    this.setState({ time: newTime });
+    // Spice, that is handling the time parsing in OpenSpace does not support
+    // ISO 8601-style time zones (the Z). It does, however, always assume that UTC
+    // is given.
+
+    const fixedTimeString = newTime.toJSON().replace('Z', '');
+    DataManager.setValue('__time', fixedTimeString);
+  }
+
+  interpolateDate(time) {
+    const interpolationTime = 1.0;
+    const fixedTimeString = time.toJSON().replace('Z', '');
+
+    const script = InterpolateTimeScript
+      .replace(ValuePlaceholder, '"' + fixedTimeString + '"')
+      .replace(ValuePlaceholder, interpolationTime);
+
+    DataManager.runScript(script);
+  }
+
+  interpolateDateRelative(delta) {
+    const interpolationTime = 1.0;
+
+    const script = InterpolateTimeRelativeScript
+      .replace(ValuePlaceholder, delta)
+      .replace(ValuePlaceholder, interpolationTime);
+
+    DataManager.runScript(script);
+  }
+
+  changeDate(event) {
+    const {time, interpolate, delta, relative} = event;
+    if (this.state.useLock) {
+      this.setState({ pendingTime: new Date(time)});
+    } else if (interpolate) {
+      if (relative) {
+        this.interpolateDateRelative(delta);
+      } else {
+        this.interpolateDate(time);
+      }
+    } else {
+      if (relative) {
+        this.setDateRelative(delta);
+      } else {
+        this.setDate(time);
+      }
+    }
+  }
+
   togglePopover() {
     this.setState({ showPopover: !this.state.showPopover });
+  }
+
+  toggleLock() {
+    this.setState({
+      useLock: !this.state.useLock,
+      pendingTime: new Date(this.state.time)
+    });
+  }
+
+  toggleCalendar() {
+    this.setState({ showCalendar: !this.state.showCalendar });
   }
 
   now() {
@@ -163,7 +330,11 @@ class TimePicker extends Component {
    */
   timeSubscriptionCallback(message) {
     const time = new Date(DateStringWithTimeZone(message.time));
-    this.setState({ time, hasTime: true });
+    const newState = { time, hasTime: true };
+    if (!this.state.useLock) {
+      newState.pendingTime = new Date(time);
+    }
+    this.setState(newState);
   }
 
   /**
@@ -171,8 +342,8 @@ class TimePicker extends Component {
    * @param message [object] - message object sent from Subscription
    */
   deltaTimeSubscriptionCallback(message) {
-    const isPaused = message.isPaused;
-    this.setState({ isPaused });
+    const { isPaused, targetDeltaTime } = message;
+    this.setState({ isPaused, targetDeltaTime });
   }
 
   render() {
@@ -186,7 +357,7 @@ class TimePicker extends Component {
                 { this.time }
               </LoadingString>
             </span>
-            <SmallLabel>Date</SmallLabel>
+            <SmallLabel>{ this.state.hasTime ? this.speed : ""}</SmallLabel>
           </div>
         </Picker>
 

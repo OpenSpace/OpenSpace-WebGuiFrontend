@@ -37,6 +37,14 @@ $padding: $padding-horizontal $padding-vertical;
   text-transform: uppercase;
 }
 
+.toggleTitle {
+  font-weight: 600;
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  vertical-align: top;
+}
+
 .popover p, .content {
   padding: 0 $padding-horizontal;
 }

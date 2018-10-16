@@ -32,4 +32,6 @@ export const DeltaTime = 'deltaTime';
 export const ValuePlaceholder = '___value___';
 // script for setting deltatime
 export const SetDeltaTimeScript = `openspace.time.setDeltaTime(${ValuePlaceholder})`;
+export const InterpolateTimeScript = `openspace.time.interpolateTime(${ValuePlaceholder}, ${ValuePlaceholder})`;
+export const InterpolateTimeRelativeScript = `openspace.time.interpolateTimeRelative(${ValuePlaceholder}, ${ValuePlaceholder})`;
 export const InterpolateDeltaTimeScript = `openspace.time.interpolateDeltaTime(${ValuePlaceholder}, ${ValuePlaceholder})`;

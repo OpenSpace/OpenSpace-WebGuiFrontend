@@ -122,7 +122,7 @@ class SimulationIncrement extends Component {
     const interpolationTime = 1;
     if (value !== 0) {
       this.beforeAdjust = this.beforeAdjust || this.state.deltaTime;
-      const quickAdjust = this.beforeAdjust + (value ** 5);
+      const quickAdjust = this.beforeAdjust + this.stepSize * (value ** 5);
       UpdateDeltaTimeNow(quickAdjust, interpolationTime);
     } else {
       UpdateDeltaTime.cancel();
