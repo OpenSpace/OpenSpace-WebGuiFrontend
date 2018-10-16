@@ -96,7 +96,11 @@ class Calendar extends Component {
   onSelect(day: Date): Function {
     return (e) => {
       const shift = e.getModifierState("Shift");
-      this.props.onChange(day, !shift);
+      this.props.onChange({
+        time: day,
+        interpolate: !shift,
+        relative: false
+      });
     };
   }
 
