@@ -118,7 +118,7 @@ class NumericInput extends Component {
         )}
         { !this.props.noTooltip && hoverHint !== null && (
           <Tooltip style={{ left: `${100 * hoverHint}%` }}>
-            { round10(min + hoverHint * (max - min), Math.log10(this.props.step)) }
+            { round10(min + hoverHintOffset * (max - min), Math.log10(this.props.step)) }
           </Tooltip>
         )}
         <input
