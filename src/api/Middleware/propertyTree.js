@@ -21,13 +21,9 @@ const startSubscription = (URI, store) => {
   subscriptionIds[URI] = DataManager.subscribe(URI, handleUpdatedValues(store));
 };
 
-const populatePropertyTree = (Value, dispatch) => {
-  dispatch(initializePropertyTree(Value));
-};
-
 const getPropertyTree = (dispatch) => {
   DataManager.getValue(rootOwnerKey, (Value) => {
-    populatePropertyTree(Value, dispatch);
+    dispatch(initializePropertyTree(Value));
   });
 };
 

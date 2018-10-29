@@ -22,7 +22,8 @@ class FilterList extends Component {
   }
 
   get filtered() {
-    const { favorites, data, matcher } = this.props;
+    const { favorites, data, matcher, filterSubObjects} = this.props;
+
     let { search } = this.state;
     if (search === '') {
       return favorites || data;
@@ -38,7 +39,33 @@ class FilterList extends Component {
         .map(test => test.toLowerCase());
       return valuesAsStrings.some(test => matcher(test, search));
     };
-    return data.filter(matcherFunc);
+
+
+    const findSceneGraphNodes = (data, found = []) => {
+      var sceneGraphNodes = [];
+      Object.keys(data).forEach((key) => {
+
+        if(key === "isSceneGraphNode") {
+          found.push(data);
+          return found;
+        }
+      
+        if(typeof data[key] === 'object'){
+          findSceneGraphNodes(data[key], found);
+        }
+      });
+    
+      return found;
+    };
+
+  
+    if (filterSubObjects) {
+      var sceneGraphNodes = findSceneGraphNodes(data);   
+      return sceneGraphNodes.filter(matcherFunc);
+    } else {
+      return data.filter(matcherFunc);      
+    }
+
   }
 
   render() {
