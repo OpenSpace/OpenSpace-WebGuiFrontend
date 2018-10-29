@@ -10,6 +10,7 @@ import Overlay from '../components/common/Overlay/Overlay';
 import About from './About/About';
 import Stack from '../components/common/Stack/Stack';
 import { startConnection } from '../api/Actions';
+import DataManager from './../api/DataManager';
 
 class OnScreenGui extends Component {
   constructor(props) {
@@ -18,6 +19,8 @@ class OnScreenGui extends Component {
 
   componentDidMount() {
     this.props.StartConnection();
+    DataManager.setValue("Dashboard.IsEnabled", "0");
+    DataManager.setValue("RenderEngine.ShowLog", "0");
   }
 
   render() {
