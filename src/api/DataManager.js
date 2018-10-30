@@ -10,6 +10,7 @@ const TOPIC_TYPES = {
   subscribe: 'subscribe',
   time: 'time',
   trigger: 'trigger',
+  shortcuts: 'shortcuts',
   version: 'version'
 };
 
@@ -173,6 +174,28 @@ class DataManager {
       receivingCallback(data);
     };
     this.send(message, callback);
+  }
+
+  subscribeToShortcuts(callback: Function) {
+    const message = this.wrapMessage({
+      type: TOPIC_TYPES.shortcuts,
+      payload: {
+        event: SUBSCRIPTION_EVENTS.start
+      }
+    });
+    this.send(message, callback);
+    return message.topic;
+  }
+
+  unsubscribeToShortcuts(topic) {
+    const message = this.wrapMessage({
+      type: TOPIC_TYPES.shortcuts,
+      payload: {
+        event: SUBSCRIPTION_EVENTS.stop
+      }
+    });
+    this.send(message);
+    this.connection.clearTopic(message.topic);
   }
 
   /**

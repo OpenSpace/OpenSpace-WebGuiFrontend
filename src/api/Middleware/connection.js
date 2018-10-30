@@ -1,4 +1,11 @@
-import { onOpenConnection, changeConnectionWait, onCloseConnection, getVersion } from '../Actions';
+import {
+  onOpenConnection,
+  changeConnectionWait,
+  onCloseConnection,
+  getVersion,
+  subscribeToShortcuts
+} from '../Actions';
+
 import { actionTypes } from '../Actions/actionTypes';
 
 /**
@@ -22,6 +29,7 @@ const connectionStatusCallback = (store, event, origin) => {
       // everything is all right!
       store.dispatch(onOpenConnection());
       store.dispatch(getVersion());
+      store.dispatch(subscribeToShortcuts());
       break;
     case 'onClose':
       store.dispatch(onCloseConnection());

@@ -77,3 +77,18 @@ export const initializeVersion = data => ({
   type: actionTypes.initializeVersion,
   payload: data
 });
+
+export const subscribeToShortcuts = () => ({
+  type: actionTypes.subscribeToShortcuts,
+  payload: {},
+});
+
+export const unsubscribeToShortcuts = () => ({
+  type: actionTypes.unsubscribeToShortcuts,
+  payload: {},
+});
+
+export const initializeShortcuts = data => ({
+  type: actionTypes.initializeShortcuts,
+  payload: data
+});

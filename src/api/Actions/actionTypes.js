@@ -21,6 +21,11 @@ export const actionTypes = {
   getVersion: 'VERSION_GET',
   initializeVersion: 'VERSION_INITIALIZE',
 
+  // action types for shortcuts
+  subscribeToShortcuts: 'SHORTCUTS_SUBSCRIBE',
+  unsubscribeToShortcuts: 'SHORTCUTS_UNSUBSCRIBE',
+  initializeShortcuts: 'SHORTCUTS_INITIALIZE',
+
   // action types for transfer function editor
   addTransferFunction: 'TRANSFERFUNCTION_ADD_TRANSFER_FUNCTION',
   addEnvelope: 'TRANSFERFUNCTION_ADD_ENVELOPE',
