@@ -14,6 +14,7 @@ import { isCompatible,
          formatVersion,
          RequiredSocketApiVersion,
          RequiredOpenSpaceVersion } from '../api/Version';
+import DataManager from './../api/DataManager';
 
 class OnScreenGui extends Component {
   constructor(props) {
@@ -23,6 +24,8 @@ class OnScreenGui extends Component {
 
   componentDidMount() {
     this.props.StartConnection();
+    DataManager.setValue("Dashboard.IsEnabled", "0");
+    DataManager.setValue("RenderEngine.ShowLog", "0");
   }
 
   checkVersion() {
