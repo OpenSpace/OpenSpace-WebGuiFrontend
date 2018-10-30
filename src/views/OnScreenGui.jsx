@@ -10,17 +10,50 @@ import Overlay from '../components/common/Overlay/Overlay';
 import About from './About/About';
 import Stack from '../components/common/Stack/Stack';
 import { startConnection } from '../api/Actions';
+import { isCompatible,
+         formatVersion,
+         RequiredSocketApiVersion,
+         RequiredOpenSpaceVersion } from '../api/Version';
 
 class OnScreenGui extends Component {
   constructor(props) {
     super(props);
+    this.checkedVersion = false;
   }
 
   componentDidMount() {
     this.props.StartConnection();
   }
 
+  checkVersion() {
+    if (!this.checkedVersion && this.props.version.isInitialized) {
+      const versionData = this.props.version.data;
+      if (!isCompatible(
+        versionData.openSpaceVersion, RequiredOpenSpaceVersion))
+      {
+        console.warn(
+          'Possible incompatibility: \nRequired OpenSpace version: ' +
+          formatVersion(RequiredOpenSpaceVersion) +
+          '. Currently controlling OpenSpace version ' +
+          formatVersion(versionData.openSpaceVersion) + '.'
+        );
+      }
+      if (!isCompatible(
+        versionData.socketApiVersion, RequiredSocketApiVersion))
+      {
+        console.warn(
+          "Possible incompatibility: \nRequired Socket API version: " +
+          formatVersion(RequiredSocketApiVersion) +
+          ". Currently operating over API version " +
+          formatVersion(versionData.socketApiVersion) + '.'
+        );
+      }
+      this.checkedVersion = true;
+    }
+  }
+
   render() {
+    this.checkVersion();
     return (
       <div className={styles.app}>
         <Router>
@@ -59,6 +92,7 @@ class OnScreenGui extends Component {
 
 const mapStateToProps = state => ({
   connectionLost: state.connection.connectionLost,
+  version: state.version
 });
 
 const mapDispatchToProps = dispatch => ({

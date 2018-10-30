@@ -67,3 +67,13 @@ export const changeConnectionWait = value => ({
     value,
   },
 });
+
+export const getVersion = () => ({
+  type: actionTypes.getVersion,
+  payload: {},
+});
+
+export const initializeVersion = data => ({
+  type: actionTypes.initializeVersion,
+  payload: data
+});

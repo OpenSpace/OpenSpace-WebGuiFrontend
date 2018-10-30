@@ -17,6 +17,10 @@ export const actionTypes = {
   onCloseConnection: 'CONNECTION_ON_CLOSE',
   changeConnectionWait: 'CONNECTION_CHANGE_WAIT',
 
+  // action types for version
+  getVersion: 'VERSION_GET',
+  initializeVersion: 'VERSION_INITIALIZE',
+
   // action types for transfer function editor
   addTransferFunction: 'TRANSFERFUNCTION_ADD_TRANSFER_FUNCTION',
   addEnvelope: 'TRANSFERFUNCTION_ADD_ENVELOPE',

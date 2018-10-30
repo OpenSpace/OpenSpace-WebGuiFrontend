@@ -4,10 +4,23 @@ import styles from './About.scss';
 import logo from './logo.png';
 import { SCMInfoKey, VersionInfoKey } from '../../api/keys';
 import PropertyString from '../../components/common/PropertyString/PropertyString';
+import { connect } from 'react-redux';
+import { formatVersion } from '../../api/Version';
+import LoadingString from '../../components/common/LoadingString/LoadingString';
 
-console.log(VersionInfoKey, 'version')
+const openSpaceVersion = (props) =>
+  <p>OpenSpace version: {props.hasVersion ?
+      formatVersion(props.version.openSpaceVersion) :
+      <LoadingString loading={true}/>}
+  </p>
 
-const About = () => (
+const socketApiVersion = (props) =>
+  <p>Socket API version: {props.hasVersion ?
+      formatVersion(props.version.socketApiVersion) :
+      <LoadingString loading={true}/>}
+  </p>
+
+let About = (props) => (
   <Row className={styles.about}>
     <section>
       <img src={logo} alt="OpenSpace Logo" className={styles.img} />
@@ -25,10 +38,8 @@ const About = () => (
         the entire known universe and portray our
         ongoing efforts to investigate the cosmos.
       </p>
-      <p>
-        <PropertyString propertyKey={VersionInfoKey} /><br />
-        <PropertyString propertyKey={SCMInfoKey} />
-      </p>
+      {openSpaceVersion(props)}
+      {socketApiVersion(props)}
       <p>
         &copy; 2014 - { (new Date()).getUTCFullYear() }
         &nbsp;
@@ -39,5 +50,14 @@ const About = () => (
     </section>
   </Row>
 );
+
+const mapStateToProps = state => ({
+  hasVersion: state.version.isInitialized,
+  version: state.version.data
+});
+
+About = connect(
+  mapStateToProps,
+)(About);
 
 export default About;

@@ -10,6 +10,7 @@ const TOPIC_TYPES = {
   subscribe: 'subscribe',
   time: 'time',
   trigger: 'trigger',
+  version: 'version'
 };
 
 const SUBSCRIPTION_EVENTS = {
@@ -160,6 +161,18 @@ class DataManager {
       topic,
     });
     this.send(message);
+  }
+
+  getVersion(receivingCallback: Function) {
+    const message = this.wrapMessage({
+      type: TOPIC_TYPES.version,
+      payload: {}
+    });
+    const callback = (data) => {
+      this.connection.clearTopic(message.topic);
+      receivingCallback(data);
+    };
+    this.send(message, callback);
   }
 
   /**

@@ -90,7 +90,6 @@ class ScenePane extends Component {
     addGuiPathsToPropertyTree(nodes);
 
     nodes = guiPathTree[0].subowners;
-    console.log(nodes);
     var filterSubObjects = true;
     return (
       <Pane title="Scene" closeCallback={this.props.closeCallback}>
