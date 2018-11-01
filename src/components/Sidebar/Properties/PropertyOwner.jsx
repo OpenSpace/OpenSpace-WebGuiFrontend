@@ -13,7 +13,7 @@ import Button from '../../common/Input/Button/Button';
 import DataManager from '../../../api/DataManager';
 import { OriginKey } from '../../../api/keys';
 import Icon from '../../common/Icon/Icon';
-
+import Shortcut from './../Shortcut';
 
 const types = {
   BoolProperty,
@@ -87,22 +87,36 @@ const getTitle = (identifier, properties) => {
   return title;
 };
 
-const PropertyOwner = ({ identifier, properties, subowners, isSceneGraphNode }) => (
+const getSubOwnerMarkup = (subowner) => {
+  if (subowner.identifier) {
+    if ( (subowner.subowners && subowner.subowners.length > 0) || (subowner.properties && subowner.properties.length > 0) )  {
+      return <PropertyOwner {...subowner} key={subowner.identifier} />    
+    } else {
+      return "";
+    }
+  } else {
+    return <Shortcut {...subowner} key={subowner.identifier} />
+  }
+};
+
+
+const PropertyOwner = ({ identifier, properties, subowners, isSceneGraphNode }) => (  
   <ToggleContent headerChildren={getFocusButton(isSceneGraphNode, identifier, subowners)} title={getTitle(identifier,properties)}>
     { subowners.map(subowner => (
-      <PropertyOwner {...subowner} key={subowner.identifier} />
+      getSubOwnerMarkup(subowner)
     )) }
+    
     { properties.map((prop) => {
       const { Description } = prop;
 
       if ( Description.MetaData &&  (Description.MetaData.Visibility == "Hidden") ) {
         return;
       }
-      
+        
       const Type = types[Description.Type] || types.defaultProperty;
-      return (
-        <Type key={Description.Identifier} {...prop} subscribe />
-      );
+        return (
+          <Type key={Description.Identifier} {...prop} subscribe />
+        );
     }) }
   </ToggleContent>
 );

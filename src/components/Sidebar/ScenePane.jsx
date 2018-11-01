@@ -5,6 +5,9 @@ import Pane from './Pane';
 import FilterList from '../common/FilterList/FilterList';
 import LoadingBlocks from '../common/LoadingBlock/LoadingBlocks';
 import PropertyOwner from './Properties/PropertyOwner';
+import Shortcut from './Shortcut';
+import styles from './ScenePane.scss';
+import ScenePaneListItem from './ScenePaneListItem';
 
 class ScenePane extends Component {
 
@@ -12,8 +15,11 @@ class ScenePane extends Component {
   constructor(props) {
     super(props);
   }
+
   render() {
-    var { nodes } = this.props;
+
+    var { nodes, shortcuts } = this.props;
+
     const guiPathTree = [{subowners:[], identifier:"everything",properties:[]}];
 
     const insertNode = (node, pathTree, index) => {
@@ -88,18 +94,20 @@ class ScenePane extends Component {
     };
 
     addGuiPathsToPropertyTree(nodes);
-
     nodes = guiPathTree[0].subowners;
+    var shortCutsAsTreeEntry = {subowners:shortcuts, identifier: "Shortcuts", properties:[]};
+    nodes.push(shortCutsAsTreeEntry);
+
     var filterSubObjects = true;
+
     return (
       <Pane title="Scene" closeCallback={this.props.closeCallback}>
         { (nodes.length === 0) && (
           <LoadingBlocks className={Pane.styles.loading} />
         )}
 
-
         { nodes.length > 0 && (
-          <FilterList data={nodes} viewComponent={PropertyOwner} searchAutoFocus filterSubObjects />
+          <FilterList data={nodes} viewComponent={ScenePaneListItem} searchAutoFocus filterSubObjects />
         )}
       </Pane>
     );
@@ -114,7 +122,6 @@ ScenePane.defaultProps = {
   closeCallback: null,
 };
 
-
 const mapStateToProps = (state) => {
   const sceneType = 'Scene';
   const subowners = state.propertyTree.subowners || [];
@@ -128,7 +135,8 @@ const mapStateToProps = (state) => {
   });
 
   return {
-    nodes,
+    nodes: nodes,
+    shortcuts: state.shortcuts.data.shortcuts
   };
 };
 

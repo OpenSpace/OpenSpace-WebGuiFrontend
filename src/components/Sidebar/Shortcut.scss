@@ -1,0 +1,43 @@
+@import "../../styles/all";
+
+
+.active {
+  height: 100%;
+}
+
+.shortcutContainer {
+	width:100%;
+	height: 45px;
+	padding-top:10px;
+  pointer-events: auto;
+}
+
+.executeButton {
+	right:25px;
+  position: absolute;
+  cursor: pointer;
+  padding-bottom: 10px;
+  height: 30px;
+}
+
+.executeButton i {
+    cursor: pointer;
+}
+
+
+li {
+  background: $ui-background-active;
+}
+
+.shortcutContainer:hover {
+    background-color: $ui-background-hover;
+}
+
+
+.icon {
+  font-size: 18px;
+}
+
+.content {
+  padding-left: $sidebar-padding;
+}

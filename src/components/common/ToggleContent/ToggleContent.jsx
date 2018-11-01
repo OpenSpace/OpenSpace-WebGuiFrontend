@@ -35,7 +35,7 @@ class ToggleContent extends Component {
     const { children, headerChildren, title, shyHeaderChildren } = this.props;
     const { toggled } = this.state;
 
-    return children.length !== 0 ? (
+    return ( (children.length !== 0) && ((children[0].length != 0) || (children[1].length != 0)) ) ? (
       <div className={styles.toggleContent}
            onMouseEnter={this.mouseEntered}
            onMouseLeave={this.mouseLeft}>
