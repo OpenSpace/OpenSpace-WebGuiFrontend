@@ -35,7 +35,7 @@ class NumericInput extends Component {
    * @param event InputEvent
    */
   onChange(event) {
-    const { value } = event.currentTarget;
+    const value = Number.parseFloat(event.currentTarget.value);
     const { max, min } = this.props;
 
     if (value > max || value < min) return;
@@ -89,7 +89,7 @@ class NumericInput extends Component {
     if (this.showTextInput) {
       return (
         <Input
-          {...excludeKeys(this.props, 'onChange disableInput inputOnly noHoverHint noTooltip')}
+          {...excludeKeys(this.props, 'reverse onChange disableInput inputOnly noHoverHint noTooltip')}
           type="number"
           value={value}
           onBlur={this.onTextBlur}

@@ -17,7 +17,7 @@ class FocusEntry extends Component {
     if (this.props.onClick) {
       this.props.onClick(identifier);
     } else {
-      DataManager.setValue(ORIGIN_KEY, jsonToLuaString(identifier));
+      DataManager.setValue(ORIGIN_KEY, identifier);
     }
   }
 

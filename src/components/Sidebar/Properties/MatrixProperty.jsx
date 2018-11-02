@@ -11,10 +11,6 @@ class MatrixProperty extends Property {
     this.onChange = this.onChange.bind(this);
   }
 
-  static jsonToLua(json) {
-    return json.replace('[', '').replace(']', '');
-  }
-
   componentDidMount() {
     this.props.StartListening(this.props.Description.Identifier);
   }
@@ -25,11 +21,10 @@ class MatrixProperty extends Property {
 
   onChange(index) {
     return (event) => {
-      const stateValue = JSON.parse(`[${this.props.Value}]`);
+      const stateValue = this.props.Value;
       const { value } = event.currentTarget;
       stateValue[index] = parseFloat(value);
-
-      this.props.ChangeValue(JSON.stringify(stateValue));
+      this.props.ChangeValue(stateValue);
     };
   }
 
@@ -40,10 +35,7 @@ class MatrixProperty extends Property {
       { Description.Name } { this.descriptionPopup }
     </span>);
 
-    // Convert the flat array into a 2D N*N array representing the matrix. Add '[' and ']' to
-    // compensate for formatting from the server.
-    const values = JSON.parse(`[${Value}]`)
-      .map((value, index) => ({
+    const values = Value.map((value, index) => ({
         key: `${Description.Name}-${index}`,
         value: parseFloat(value),
         index,

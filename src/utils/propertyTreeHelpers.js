@@ -48,11 +48,8 @@ export const traverseTreeWithURI = (node, URI) => {
   return tmpValue;
 };
 
-// Conversion from json type array to lua
-export const jsonToLuaTable = json => json.replace('[', '').replace(']', '');
 
 export const jsonToLuaString = json => `"${json}"`;
-
 
 export const traverseTreeForTag = (node, tag) => {
   let data;

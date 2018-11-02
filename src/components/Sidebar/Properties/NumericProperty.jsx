@@ -20,7 +20,7 @@ class NumericProperty extends Property {
 
   onChange(event) {
     const { value } = event.currentTarget;
-    this.props.ChangeValue(value);
+    this.props.ChangeValue(parseFloat(value));
   }
 
   get descriptionPopup() {

@@ -10,7 +10,7 @@ class OptionProperty extends Property {
   }
 
   onChange({ value }) {
-    this.props.ChangeValue(value);
+    this.props.ChangeValue(parseInt(value));
   }
 
   componentDidMount() {

@@ -10,8 +10,7 @@ class BoolProperty extends Property {
   }
 
   onChange(value) {
-    // convert to Lua compatible value
-    this.props.ChangeValue(value ? '1' : '0');
+    this.props.ChangeValue(value);
   }
 
   componentDidMount() {

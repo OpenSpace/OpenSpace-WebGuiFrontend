@@ -60,7 +60,7 @@ Property.propTypes = {
     description: PropTypes.string,
   }).isRequired,
   subscribe: PropTypes.bool,
-  Value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  Value: PropTypes.any.isRequired
 };
 
 Property.defaultProps = {

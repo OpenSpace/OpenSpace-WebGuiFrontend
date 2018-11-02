@@ -24,8 +24,8 @@ class OnScreenGui extends Component {
 
   componentDidMount() {
     this.props.StartConnection();
-    DataManager.setValue("Dashboard.IsEnabled", "0");
-    DataManager.setValue("RenderEngine.ShowLog", "0");
+    DataManager.setValue("Dashboard.IsEnabled", false);
+    DataManager.setValue("RenderEngine.ShowLog", false);
   }
 
   checkVersion() {

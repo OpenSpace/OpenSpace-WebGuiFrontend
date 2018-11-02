@@ -6,10 +6,6 @@ import styles from './Property.scss';
 import { connectProperty } from './connectProperty';
 
 class VectorProperty extends Property {
-  static jsonToLua(json) {
-    return json.replace('[', '').replace(']', '');
-  }
-
   componentDidMount() {
     this.props.StartListening(this.props.Description.Identifier)
   }
@@ -20,11 +16,11 @@ class VectorProperty extends Property {
 
   onChange(index) {
     return (event) => {
-      const stateValue = JSON.parse(this.props.Value);
+      const stateValue = this.props.Value;
       const { value } = event.currentTarget;
 
       stateValue[index] = parseFloat(value);
-      this.props.ChangeValue( JSON.stringify(stateValue));
+      this.props.ChangeValue(stateValue);
     };
   }
 
@@ -36,7 +32,7 @@ class VectorProperty extends Property {
     </span>);
 
     // eslint-disable-next-line react/no-array-index-key
-    const values = JSON.parse(this.props.Value)
+    const values = this.props.Value
       .map((value, index) => ({ key: `${Description.Name}-${index}`, value }));
 
     return (

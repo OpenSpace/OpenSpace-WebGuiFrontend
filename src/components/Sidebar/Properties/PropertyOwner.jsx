@@ -74,7 +74,7 @@ const gotoThis = (e) => {
 
 const focusOnThis = (e) => {
   e.stopPropagation();
-  DataManager.setValue(OriginKey, '"' + e.currentTarget.getAttribute("identifier") + '"');
+  DataManager.setValue(OriginKey, e.currentTarget.getAttribute("identifier"));
 }
 
 const getTitle = (identifier, properties) => {
