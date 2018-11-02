@@ -47,8 +47,9 @@ class Time extends Component {
   }
 
   onClick(what, change) {
-    const getterFunc = `get${what}`;
-    const setterFunc = `set${what}`;
+    const getterFunc = `getUTC${what}`;
+    const setterFunc = `setUTC${what}`;
+
     return (e) => {
       const newTime = new Date(this.props.time);
       newTime[setterFunc](newTime[getterFunc]() + change);
@@ -66,7 +67,7 @@ class Time extends Component {
   }
 
   onInput(what) {
-    const setterFunc = `set${what}`;
+    const setterFunc = `setUTC${what}`;
     const interpretFunc = Interpretors[what] || Number.parseFloat;
 
     return (event) => {
@@ -92,14 +93,14 @@ class Time extends Component {
   get fullYear() {
     const { time } = this.props;
     const month = this.shouldInclude(Elements.Month);
-    return this.wrap(`${Time.zeroPad(time.getFullYear())}`, 'FullYear', month && ':');
+    return this.wrap(`${Time.zeroPad(time.getUTCFullYear())}`, 'FullYear', month && ':');
   }
 
   get month() {
     const { time } = this.props;
     const date = this.shouldInclude(Elements.Date);
 
-    let month = Months[time.getMonth()];
+    let month = Months[time.getUTCMonth()];
     if (!month) {
       month = Months[0];
     }
@@ -111,30 +112,30 @@ class Time extends Component {
   get date() {
     const { time } = this.props;
     const hours = this.shouldInclude(Elements.Hours);
-    return this.wrap(`${Time.zeroPad(time.getDate())}`, 'Date', hours && ':');
+    return this.wrap(`${Time.zeroPad(time.getUTCDate())}`, 'Date', hours && ':');
   }
 
   get hours() {
     const { time } = this.props;
     const minutes = this.shouldInclude(Elements.Minutes);
-    return this.wrap(`${Time.zeroPad(time.getHours())}`, 'Hours', minutes && ':');
+    return this.wrap(`${Time.zeroPad(time.getUTCHours())}`, 'Hours', minutes && ':');
   }
 
   get minutes() {
     const { time } = this.props;
     const seconds = this.shouldInclude(Elements.Seconds);
-    return this.wrap(`${Time.zeroPad(time.getMinutes())}`, 'Minutes', seconds && ':');
+    return this.wrap(`${Time.zeroPad(time.getUTCMinutes())}`, 'Minutes', seconds && ':');
   }
 
   get seconds() {
     const { time } = this.props;
     const milliseconds = this.shouldInclude(Elements.Milliseconds);
-    return this.wrap(`${Time.zeroPad(time.getSeconds())}`, 'Seconds', milliseconds && '.');
+    return this.wrap(`${Time.zeroPad(time.getUTCSeconds())}`, 'Seconds', milliseconds && '.');
   }
 
   get milliseconds() {
     const { time } = this.props;
-    return this.wrap(time.getMilliseconds(), 'Milliseconds');
+    return this.wrap(time.getUTCMilliseconds(), 'Milliseconds');
   }
 
   get hasCallback() {
