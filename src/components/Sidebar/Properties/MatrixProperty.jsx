@@ -52,6 +52,7 @@ class MatrixProperty extends Property {
           <Row key={`row-${index}`}>
             { group.map(comp => (
               <NumericInput
+                inputOnly
                 key={comp.key}
                 value={comp.value}
                 label={comp.index === 0 ? firstLabel : ' '}
