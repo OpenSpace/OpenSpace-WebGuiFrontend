@@ -25,7 +25,7 @@ class BoolProperty extends Property {
     const { Description, Value } = this.props;
     return (
       <Checkbox
-        checked={Value === 'true'}
+        checked={Value}
         label={(<span>{Description.Name} {this.descriptionPopup}</span>)}
         onChange={this.onChange}
         disabled={this.disabled}
