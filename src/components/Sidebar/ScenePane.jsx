@@ -9,105 +9,89 @@ import Shortcut from './Shortcut';
 import styles from './ScenePane.scss';
 import ScenePaneListItem from './ScenePaneListItem';
 
+
+const createNode = identifier => ({
+  identifier,
+  subowners: [],
+  properties: []
+});
+
+const insertNode = (node, path, tree) => {
+  if (path.length === 0) {
+    tree.subowners.push(node);
+    return;
+  }
+
+  const pathComponent = path.shift();
+
+  let child = tree.subowners.find((subowner) => {
+    return subowner.identifier == pathComponent;
+  });
+
+  if (!child) {
+    child = createNode(pathComponent);
+    tree.subowners.push(child);
+  }
+  insertNode(node, path, child);
+};
+
+const addPropertyOwnerToTree = (nodes, tree) => {
+  nodes.forEach(node => {
+    const nodeHidden = node.properties.find(property => {
+      return property.id === "GuiHidden";
+    });
+
+    const guiPath = node.properties.find(property => {
+      return property.id === "GuiPath";
+    });
+
+    if (guiPath && guiPath.Value && !nodeHidden) {
+      const path = guiPath.Value.split('/');
+      path.shift();
+      node.isSceneGraphNode = true;
+      insertNode(node, path, tree);
+    }
+  });
+};
+
+const addShortcutsToTree = (shortcuts, tree) => {
+  shortcuts.forEach(shortcut => {
+    if (shortcut.guiPath !== undefined) {
+      const path = shortcut.guiPath.split('/');
+      path.shift();
+      shortcut.isSceneGraphNode = false;
+      insertNode(shortcut, path, tree);
+    }
+  });
+}
+
 class ScenePane extends Component {
-
-
   constructor(props) {
     super(props);
   }
 
   render() {
+    const { nodes, shortcuts } = this.props;
 
-    var { nodes, shortcuts } = this.props;
+    const guiPathTree = createNode('Everything')
+    addPropertyOwnerToTree(nodes, guiPathTree);
 
-    const guiPathTree = [{subowners:[], identifier:"everything",properties:[]}];
+    const shortcutsAsTreeEntry = createNode('Shortcuts');
+    addShortcutsToTree(shortcuts, shortcutsAsTreeEntry);
 
-    const insertNode = (node, pathTree, index) => {
-
-      var pathLevel = guiPathTree[0];
-      var gotoIndex = 0;
-
-      if (index == 0) {
-        var exists = false;
-
-        for (var i = 0; i < pathLevel.subowners.length; ++i) {
-          if (pathLevel.subowners[i].identifier == pathTree[index]) {
-            pathLevel = pathLevel.subowners[i];
-            exists = true;
-          }
-        }
-
-        if (!exists) {
-            pathLevel.subowners.push({identifier: pathTree[index], subowners: [], properties: []});
-            pathLevel = pathLevel.subowners[pathLevel.subowners.length-1];
-        }
-      } else {
-        while(gotoIndex <= index) {
-          var exists = -1;
-          for (var i = 0; i < pathLevel.subowners.length; ++i) {
-            if (pathLevel.subowners[i].identifier == pathTree[gotoIndex]) {
-              exists = i;
-              i = pathLevel.length;
-            }
-          }
-
-          if (exists == -1) {
-            pathLevel.subowners.push({identifier:pathTree[gotoIndex], subowners: [], properties: []});            
-            pathLevel = pathLevel.subowners[pathLevel.subowners.length-1];
-          } else {
-             pathLevel = pathLevel.subowners[exists];
-          }
-          gotoIndex++;
-        }
-      }
-      
-      if ( (pathTree.length - 1) == index) {
-        pathLevel.subowners.push(node);
-      } else {
-        insertNode(node, pathTree, index + 1);
-      }
-    };
-
-    const addGuiPathsToPropertyTree = (nodes) => {
-
-      for(var i = 0; i < nodes.length; ++i) {
-        for(var j = 0; j < nodes[i].properties.length; ++j) {
-          
-          var nodeHidden = false;
-          for(var k = 0; k < nodes[i].properties.length; ++k) {
-             var prop = nodes[i].properties[k];
-             if (prop.id == "GuiHidden") {
-                nodeHidden = true;
-             }
-          }
-
-          var prop = nodes[i].properties[j];
-          if ( prop.id == "GuiPath" && (!nodeHidden) ) {
-            var path = prop.Value;
-            var pathTree = path.split('/');
-            pathTree.shift();
-            nodes[i].isSceneGraphNode = true
-            insertNode(nodes[i], pathTree, 0);
-          }
-        }
-      }
-    };
-
-    addGuiPathsToPropertyTree(nodes);
-    nodes = guiPathTree[0].subowners;
-    var shortCutsAsTreeEntry = {subowners:shortcuts, identifier: "Shortcuts", properties:[]};
-    nodes.push(shortCutsAsTreeEntry);
+    const list = guiPathTree.subowners;
+    list.push(shortcutsAsTreeEntry);
 
     var filterSubObjects = true;
 
     return (
       <Pane title="Scene" closeCallback={this.props.closeCallback}>
-        { (nodes.length === 0) && (
+        { (list.length === 0) && (
           <LoadingBlocks className={Pane.styles.loading} />
         )}
 
-        { nodes.length > 0 && (
-          <FilterList data={nodes} viewComponent={ScenePaneListItem} searchAutoFocus filterSubObjects />
+        { list.length > 0 && (
+          <FilterList data={list} viewComponent={ScenePaneListItem} searchAutoFocus filterSubObjects />
         )}
       </Pane>
     );
@@ -136,7 +120,7 @@ const mapStateToProps = (state) => {
 
   return {
     nodes: nodes,
-    shortcuts: state.shortcuts.data.shortcuts
+    shortcuts: state.shortcuts.data.shortcuts || []
   };
 };
 

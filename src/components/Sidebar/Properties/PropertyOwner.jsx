@@ -95,7 +95,7 @@ const getSubOwnerMarkup = (subowner) => {
       return "";
     }
   } else {
-    return <Shortcut {...subowner} key={subowner.identifier} />
+    return <Shortcut {...subowner} key={subowner.name} />
   }
 };
 
