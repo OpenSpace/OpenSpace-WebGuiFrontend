@@ -59,6 +59,7 @@ const addShortcutsToTree = (shortcuts, tree) => {
     if (shortcut.guiPath !== undefined) {
       const path = shortcut.guiPath.split('/');
       path.shift();
+      shortcut.identifier = shortcut.name;
       shortcut.isSceneGraphNode = false;
       insertNode(shortcut, path, tree);
     }
