@@ -88,7 +88,7 @@ const getTitle = (identifier, properties) => {
 };
 
 const getSubOwnerMarkup = (subowner) => {
-  if (subowner.identifier) {
+  if (!subowner.script) {
     if ( (subowner.subowners && subowner.subowners.length > 0) || (subowner.properties && subowner.properties.length > 0) )  {
       return <PropertyOwner {...subowner} key={subowner.identifier} />    
     } else {
