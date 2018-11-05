@@ -1,7 +1,9 @@
 @import "../../../styles/all";
 
 .TabMenu {
+  bottom: 0;
   display: flex;
   background: $ui-background;
   height: $sidebar-tab-height;
+  min-width: 200px;
 }

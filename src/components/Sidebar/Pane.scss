@@ -11,12 +11,7 @@ $border-width: 1px;
   border-bottom: $border-width solid $ui-divider;
   flex-basis: 1px;
   flex-grow: 1;
-  height: 100%
-}
-
-.iconCaretRight {
-  position: absolute;
-  bottom: 16px;
+  height: calc(100% - 60px);
 }
 
 .Pane > header {
@@ -34,7 +29,8 @@ $border-width: 1px;
 }
 
 .content {
-  height: unquote("calc(100% - #{$header-height + $border-width})");
+
+  height: calc(100% - 35px);
 
   :global(.scroll-content) {
     &::-webkit-scrollbar {

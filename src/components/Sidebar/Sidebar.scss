@@ -1,3 +1,5 @@
+@import '../../styles/all';
+
 .Sidebar {
   display: flex;
   flex-direction: column;
@@ -10,4 +12,17 @@
 
 .icon {
   font-size: 18px;
+}
+
+.rightHandle {
+  background: transparent;
+  borderRadius: 2px;
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  margin-left: 5px;
+
+  &:hover, &:active{
+    background: $ui-background-solid;
+  }
 }
