@@ -26,6 +26,10 @@
       + .selectlabel {
         color: $green;
       }
+
+      > :global(.Select-control) {
+        background-color: $ui-background-solid;
+      }
     }
   }
 
@@ -55,9 +59,9 @@
 .select :global {
   .Select-control {
     background: transparent;
-    border: 0;
+    border: 0 !important;
     border-radius: 0;
-    box-shadow: none;
+    box-shadow: none !important;
     margin: 0;
     padding: 0;
   }
@@ -99,8 +103,7 @@
 }
 
 :global {
-  .is-focused:not(.is-open) > .Select-control {
-    border: 0;
-    box-shadow: none;
+  .Select-input {
+    background: transparent !important;
   }
 }
