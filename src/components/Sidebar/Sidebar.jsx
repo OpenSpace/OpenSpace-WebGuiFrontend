@@ -59,7 +59,13 @@ class Sidebar extends React.Component {
     const size = {height: this.state.view ? '100%' : 60, width: this.state.width};
 
     return (
-      <Resizable size={size} minWidth={200} handleComponent={{right: RightHandle}} onResizeStop={this.onResizeStop}>
+      <Resizable
+        size={size}
+        minWidth={200}
+        maxWidth={window.innerWidth - 50}
+        handleComponent={{right: RightHandle}}
+        onResizeStop={this.onResizeStop}
+      >
         <section className={`${styles.Sidebar} ${view ? styles.active : ''}`}>
           { SelectedView && (<SelectedView closeCallback={this.selectView} />)}
           <TabMenu>
