@@ -6,7 +6,7 @@ import Resizable from 're-resizable';
 import styles from './Pane.scss';
 
 //TODO should work with 100%......
-const SizeObj = {height: '96%'};
+const SizeObj = {height: '90%'};
 
 const HandleArrow = () => (
   <svg viewBox="0 0 32 32" 
