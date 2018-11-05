@@ -11,7 +11,12 @@ $border-width: 1px;
   border-bottom: $border-width solid $ui-divider;
   flex-basis: 1px;
   flex-grow: 1;
-  height: unquote("calc(100% - #{$sidebar-tab-height + $border-width})");
+  height: 100%
+}
+
+.iconCaretRight {
+  position: absolute;
+  bottom: 16px;
 }
 
 .Pane > header {
