@@ -28,9 +28,7 @@ let About = (props) => (
     <section>
       <h1>OpenSpace</h1>
       <p>
-        <a href="http://openspaceproject.com" target="_blank" rel="noopener noreferrer">
           openspaceproject.com
-        </a>
       </p>
       <p>
         OpenSpace is open source interactive data
@@ -42,10 +40,7 @@ let About = (props) => (
       {socketApiVersion(props)}
       <p>
         &copy; 2014 - { (new Date()).getUTCFullYear() }
-        &nbsp;
-        <a href="http://openspaceproject.com/?page_id=24" target="_blank" rel="noopener noreferrer">
-          OpenSpace Development Team
-        </a>
+        &nbsp; OpenSpace Development Team
       </p>
     </section>
   </Row>

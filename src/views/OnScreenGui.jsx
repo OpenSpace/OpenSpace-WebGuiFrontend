@@ -62,7 +62,7 @@ class OnScreenGui extends Component {
             render={() => (
               <Overlay>
                 <Stack style={{ maxWidth: '500px' }}>
-                  <Link style={{ 'align-self': 'flex-end', color: 'white' }} to="/">
+                  <Link style={{ alignSelf: 'flex-end', color: 'white' }} to="/">
                     Close
                   </Link>
                   <About />

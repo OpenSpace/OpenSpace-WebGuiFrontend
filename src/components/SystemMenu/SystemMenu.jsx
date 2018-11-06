@@ -53,36 +53,6 @@ class SystemMenu extends Component {
                 Quit OpenSpace <span className={styles.shortcut}>ESC</span>
               </button>
 
-              <hr className={Popover.styles.delimiter} />
-
-              <a
-                href="https://github.com/OpenSpace/OpenSpace/wiki/General-Getting-Started-Guide-Using-OpenSpace"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Icon icon="help" className={styles.linkIcon} />
-                Help
-              </a>
-              <a
-                href="https://github.com/OpenSpace/OpenSpace/issues/new"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Icon icon="bug_report" className={styles.linkIcon} />
-                Report a problem
-              </a>
-              <a
-                href="http://openspaceproject.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Icon icon="public" className={styles.linkIcon} />
-                openspaceproject.com
-              </a>
-              <Link to="about">
-                <Icon icon="info" className={styles.linkIcon} />
-                About
-              </Link>
             </nav>
           </Popover>
         )}
@@ -94,5 +64,14 @@ class SystemMenu extends Component {
     );
   }
 }
+
+/*
+TODO: Add link to About. Currently not working inside Cef Gui.
+<hr className={Popover.styles.delimiter} />
+<Link to="about">
+  <Icon icon="info" className={styles.linkIcon} />
+  About
+</Link>
+*/
 
 export default SystemMenu;
