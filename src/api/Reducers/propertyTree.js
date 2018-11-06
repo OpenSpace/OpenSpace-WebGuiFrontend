@@ -138,6 +138,7 @@ export const propertyOwner = (state = {}, action) => { // state refers to a sing
     case actionTypes.insertNode:
       return {
         identifier: action.payload.node.identifier,
+        guiName: action.payload.node.guiName,
         properties: properties(undefined, action),
         subowners: action.payload.node.subowners.map((subowner) => {
           return propertyOwner(undefined, updateActionNode(action, subowner));

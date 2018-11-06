@@ -77,8 +77,8 @@ const focusOnThis = (e) => {
   DataManager.setValue(OriginKey, e.currentTarget.getAttribute("identifier"));
 }
 
-const getTitle = (identifier, properties) => {
-  var title = identifier;
+const getTitle = (identifier, guiName, properties) => {
+  var title = guiName || identifier;
   for (var i = 0; i < properties.length; i++) {
     if (properties[i].id  == "GuiName") {
         title = properties[i].Value;
@@ -100,8 +100,11 @@ const getSubOwnerMarkup = (subowner) => {
 };
 
 
-const PropertyOwner = ({ identifier, properties, subowners, isSceneGraphNode }) => (  
-  <ToggleContent headerChildren={getFocusButton(isSceneGraphNode, identifier, subowners)} title={getTitle(identifier,properties)}>
+const PropertyOwner = ({ identifier, guiName, properties, subowners, isSceneGraphNode }) => (
+  <ToggleContent
+    headerChildren={getFocusButton(isSceneGraphNode, identifier, subowners)}
+    title={getTitle(identifier, guiName, properties)}
+  >
     { subowners.map(subowner => (
       getSubOwnerMarkup(subowner)
     )) }
