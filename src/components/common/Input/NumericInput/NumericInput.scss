@@ -12,6 +12,11 @@
 .rangeLabel {
   @extend .label;
   display: block;
+  pointer-events: none;
+
+  > span > span {
+    pointer-events: all;
+  }
 }
 
 .reverse .rangeLabel {

@@ -43,15 +43,13 @@ class FilterList extends Component {
 
     const findSceneGraphNodes = (data, found = []) => {
       var sceneGraphNodes = [];
-      Object.keys(data).forEach((key) => {
+      if (data.isSceneGraphNode) {
+        found.push(data);
+      }
 
-        if(key === "isSceneGraphNode") {
-          found.push(data);
-          return found;
-        }
-      
-        if(typeof data[key] === 'object'){
-          findSceneGraphNodes(data[key], found);
+      Object.values(data).forEach((value) => {
+        if(typeof value === 'object') {
+          findSceneGraphNodes(value, found);
         }
       });
     

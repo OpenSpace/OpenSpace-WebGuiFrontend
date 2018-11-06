@@ -33,13 +33,13 @@ const types = {
 
 const getFocusButton = (isSceneGraphNode, identifier, subowners) => {
   if (isSceneGraphNode) {
-    const focusButton =   <div className={styles.shycontainer}>
-      <Button className={styles.shybutton} identifier={identifier} onClick={focusOnThis} >
+    const focusButton = <div className={styles.buttonContainer}>
+      <Button className={styles.shybutton} identifier={identifier} transparent onClick={focusOnThis} >
         <Icon icon="gps_fixed" />
       </Button>
     </div>
 
-    const bothButtons =   <div className={styles.shycontainer}>
+    const bothButtons = <div className={styles.buttonContainer}>
       <Button className={styles.globeButton} identifier={identifier} onClick={gotoThis} >
         <Icon icon="language" />
       </Button>
@@ -48,12 +48,6 @@ const getFocusButton = (isSceneGraphNode, identifier, subowners) => {
       </Button>
     </div>
 
-    var isGlobe = false;
-    for (var i = 0; i < subowners.length; i++) {
-      if (subowners[i].identifier == "RenderableGlobe") {
-        isGlobe = true;
-      }
-    }
     //todo replace with isGlobe once we have a goto geo function that includes geo radius
     if (false) {
       return bothButtons;
@@ -87,10 +81,12 @@ const getTitle = (identifier, guiName, properties) => {
   return title;
 };
 
+const shouldAutoExpand = (subowner) => subowner.identifier === 'Renderable';
+
 const getSubOwnerMarkup = (subowner) => {
   if (!subowner.script) {
     if ( (subowner.subowners && subowner.subowners.length > 0) || (subowner.properties && subowner.properties.length > 0) )  {
-      return <PropertyOwner {...subowner} key={subowner.identifier} />    
+      return <PropertyOwner {...subowner} key={subowner.identifier} expand={shouldAutoExpand(subowner)}/>
     } else {
       return "";
     }
@@ -100,10 +96,11 @@ const getSubOwnerMarkup = (subowner) => {
 };
 
 
-const PropertyOwner = ({ identifier, guiName, properties, subowners, isSceneGraphNode }) => (
+const PropertyOwner = ({ identifier, guiName, properties, subowners, isSceneGraphNode, expand }) => (
   <ToggleContent
     headerChildren={getFocusButton(isSceneGraphNode, identifier, subowners)}
     title={getTitle(identifier, guiName, properties)}
+    show={expand}
   >
     { subowners.map(subowner => (
       getSubOwnerMarkup(subowner)
@@ -125,6 +122,7 @@ const PropertyOwner = ({ identifier, guiName, properties, subowners, isSceneGrap
 );
 
 PropertyOwner.propTypes = {
+  isSceneGraphNode: PropTypes.bool.isRequired,
   identifier: PropTypes.string.isRequired,
   properties: PropTypes.arrayOf(PropTypes.object),
   subowners: PropTypes.arrayOf(PropTypes.shape({
@@ -135,6 +133,7 @@ PropertyOwner.propTypes = {
 };
 
 PropertyOwner.defaultProps = {
+  isSceneGraphNode: false,
   properties: [],
   subowners: [],
 };

@@ -6,16 +6,14 @@ import styles from './ToggleHeader.scss';
 
 const ToggleHeader = ({ title, toggled, onClick, onIcon, offIcon, children}) => (
   <header className={styles.toggle} onClick={onClick} role="button" tabIndex={0}>
-    <span className="title">
+    <div className={styles.headerChildren}>{children}</div>
+    <Icon
+      icon={toggled ? onIcon : offIcon}
+      className={styles.icon}
+    />
+    <span className={styles.title}>
       { title }
     </span>
-    <div>
-      <div style={{display: 'inline', overflow: 'hidden'}}>{children}</div>
-      <Icon
-        icon={toggled ? onIcon : offIcon}
-        className={styles.icon}
-      />
-    </div>
   </header>
 );
 

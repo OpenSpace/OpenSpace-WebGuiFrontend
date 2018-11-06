@@ -32,7 +32,7 @@ class ToggleContent extends Component {
   }
 
   render() {
-    const { children, headerChildren, title, shyHeaderChildren } = this.props;
+    const { children, headerChildren, title } = this.props;
     const { toggled } = this.state;
 
     return ( (children.length !== 0) && ((children[0].length != 0) || (children[1].length != 0)) ) ? (
@@ -42,8 +42,7 @@ class ToggleContent extends Component {
         <ToggleHeader
           title={title}
           onClick={this.toggleExpanded}
-
-          children={(!shyHeaderChildren || this.state.hovered) && headerChildren}
+          children={headerChildren}
           toggled={toggled}
         />
         <div className={styles.content}>
@@ -57,15 +56,13 @@ class ToggleContent extends Component {
 ToggleContent.propTypes = {
   children: PropTypes.node,
   headerChildren: PropTypes.node,
-  shyHeaderChildren: PropTypes.bool,
   show: PropTypes.bool,
   title: PropTypes.string.isRequired,
 };
 
 ToggleContent.defaultProps = {
   children: '',
-  show: false,
-  shy: false,
+  show: false
 };
 
 export default ToggleContent;
