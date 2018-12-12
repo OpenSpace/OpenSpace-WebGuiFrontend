@@ -1,5 +1,7 @@
 /* globals WebSocket */
 
+import Environment from './Environment';
+
 const TOPIC_KEY = 'topic';
 
 class Connection {
@@ -136,7 +138,7 @@ class Connection {
   }
 
   static get DEFAULT_URL() {
-    return 'ws://localhost:8001';
+    return 'ws://' + Environment.wsAddress + ':' + Environment.wsPort;
   }
 
   addStatusCallback(cb) {
