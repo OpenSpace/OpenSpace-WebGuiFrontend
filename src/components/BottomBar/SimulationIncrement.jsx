@@ -7,6 +7,7 @@ import Row from '../common/Row/Row';
 import Select from '../common/Input/Select/Select';
 import { round10 } from '../../utils/rounding';
 import ScaleInput from '../common/Input/ScaleInput/ScaleInput';
+import {UpdateDeltaTimeNow} from "../../utils/timeHelpers";
 
 const UpdateDelayMs = 1000;
 // Throttle the delta time updating, so that we don't accidentally flood
@@ -45,12 +46,12 @@ const StepPrecisions = {
   [Steps.years]: -14,
 };
 const Limits = {
-  [Steps.seconds]: { min: 0, max: 300, step: 1 },
-  [Steps.minutes]: { min: 0, max: 300, step: 0.001 },
-  [Steps.hours]: { min: 0, max: 300, step: 0.0001 },
-  [Steps.days]: { min: 0, max: 10, step: 0.000001 },
-  [Steps.months]: { min: 0, max: 10, step: 0.00000001 },
-  [Steps.years]: { min: 0, max: 1, step: 0.0000000001 },
+  [Steps.seconds]: { min: -20000, max: 20000, step: 1 },
+  [Steps.minutes]: { min: -20000, max: 20000, step: 0.001 },
+  [Steps.hours]: { min: -1000, max: 1000, step: 0.0001 },
+  [Steps.days]: { min: -10, max: 10, step: 0.000001 },
+  [Steps.months]: { min: -10, max: 10, step: 0.00000001 },
+  [Steps.years]: { min: -1, max: 1, step: 0.0000000001 },
 };
 Object.freeze(Steps);
 Object.freeze(StepSizes);
@@ -66,6 +67,8 @@ class SimulationIncrement extends Component {
       quickAdjust: 1,
     };
 
+    this.deltaTimeCallback = this.deltaTimeCallback.bind(this);
+    this.setDeltaTime = this.setDeltaTime.bind(this);
     this.deltaTimeUpdated = this.deltaTimeUpdated.bind(this);
     this.setPositiveDeltaTime = this.setPositiveDeltaTime.bind(this);
     this.setNegativeDeltaTime = this.setNegativeDeltaTime.bind(this);

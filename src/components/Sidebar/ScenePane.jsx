@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Pane from './Pane';
 import FilterList from '../common/FilterList/FilterList';
+import SceneGraphNode from './SceneGraphNode';
 import LoadingBlocks from '../common/LoadingBlock/LoadingBlocks';
 import PropertyOwner from './Properties/PropertyOwner';
 import Shortcut from './Shortcut';

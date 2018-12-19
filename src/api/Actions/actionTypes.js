@@ -17,6 +17,11 @@ export const actionTypes = {
   onCloseConnection: 'CONNECTION_ON_CLOSE',
   changeConnectionWait: 'CONNECTION_CHANGE_WAIT',
 
+  // action types for fetching data from json files
+  fetchData: 'FETCH_DATA',
+  fetchDataDone: 'FETCH_DATA_DONE',
+  fetchDataFailed: 'FETCH_DATA_FAILED',
+
   // action types for version
   getVersion: 'VERSION_GET',
   initializeVersion: 'VERSION_INITIALIZE',
@@ -37,4 +42,10 @@ export const actionTypes = {
   toggleActiveEnvelope: 'TRANSFERFUNCTION_TOGGLE_ACTIVE_ENVELOPE',
   toggleActivePoint: 'TRANSFERFUNCTION_TOGGLE_ACTIVE_POINT',
   setClickablePoint: 'TRANSFERFUNCTION_TOGGLE_CLICKABLE_POINT',
+
+  // actions types for story tree
+  addStoryTree: 'STORY_TREE_ADD',
+  addStoryInfo: 'STORY_TREE_ADD_INFO',
+  resetStoryInfo: 'STORY_TREE_RESET_INFO',
+  resetStoryTree: 'STORY_TREE_RESET',
 };

@@ -1,6 +1,7 @@
 import { applyMiddleware } from 'redux';
 import { updateBackend } from './propertyTree';
 import { connection } from './connection';
+import { fetchData } from './fetchData';
 import { shortcuts } from './shortcuts';
 import { version } from './version';
 // import logger from './logger';
@@ -10,7 +11,8 @@ const middleware = applyMiddleware(
   updateBackend,
   connection,
   shortcuts,
-  version
+  version,
+  fetchData,
 );
 
 export default middleware;

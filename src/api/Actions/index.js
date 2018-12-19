@@ -68,6 +68,55 @@ export const changeConnectionWait = value => ({
   },
 });
 
+export const fetchData = id => ({
+  type: actionTypes.fetchData,
+  payload: {
+    id,
+  },
+});
+
+export const fetchDataDone = (data, id) => ({
+  type: actionTypes.fetchDataDone,
+  payload: {
+    data,
+    id,
+  },
+});
+
+export const fetchDataFailed = id => ({
+  type: actionTypes.fetchDataFailed,
+  payload: {
+    id,
+  },
+});
+
+export const addStoryTree = story => ({
+  type: actionTypes.addStoryTree,
+  payload: {
+    story,
+  },
+});
+
+export const resetStoryTree = reset => ({
+  type: actionTypes.resetStoryTree,
+  payload: {
+    reset,
+  },
+});
+
+export const addStoryInfo = info => ({
+  type: actionTypes.addStoryInfo,
+  payload: {
+    info,
+  },
+});
+
+export const resetStoryInfo = () => ({
+  type: actionTypes.resetStoryInfo,
+  payload: {
+  },
+});
+
 export const getVersion = () => ({
   type: actionTypes.getVersion,
   payload: {},

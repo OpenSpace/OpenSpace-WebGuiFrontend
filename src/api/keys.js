@@ -32,6 +32,40 @@ export const DeltaTime = 'deltaTime';
 export const ValuePlaceholder = '___value___';
 // script for setting deltatime
 export const SetDeltaTimeScript = `openspace.time.setDeltaTime(${ValuePlaceholder})`;
+// key for setting/getting the solarSystemOverview property
+export const ApplyOverviewKey = 'NavigationHandler.OrbitalNavigator.ApplyOverview';
+// key  for apply fly to trigger property
+export const ApplyFlyToKey = 'NavigationHandler.OrbitalNavigator.ApplyFlyTo';
+// key for json file with info for icons
+export const infoIconKey = 'info_icons';
+// key for endpoint for json files
+export const dataEndpointKey = 'https://openspace.github.io/sci/mastertheses/2018/info/solarsystem/';
+// script for setting goToGeo
+export const SetGoToGeoScript = `openspace.globebrowsing.goToGeo(${ValuePlaceholder})`;
+// script for setting time
+export const SetTimeScript = `openspace.time.setTime(${ValuePlaceholder})`;
+// key for getting story identifier property
+export const StoryIdentifierKey = 'Modules.WebGui.StoryHandler.StoryIdentifier';
+// key for apply remove tag trigger property
+export const ApplyRemoveTagKey = 'Modules.WebGui.StoryHandler.ApplyRemoveTag';
+// key for apply add tag trigger property
+export const ApplyAddTagKey = 'Modules.WebGui.StoryHandler.ApplyAddTag';
+// key for focus nodes list property
+export const FocusNodesListKey = 'Modules.WebGui.StoryHandler.FocusNodesList';
+// key for default story
+export const defaultStory = 'story_default';
+// key for overview limit
+export const OverlimitKey = 'Modules.WebGui.StoryHandler.OverviewLimit';
+// key for zoom in limit
+export const ZoomInLimitKey = 'Modules.WebGui.StoryHandler.ZoomInLimit';
+// key for scale property
+export const ScaleKey = `Scene.${ValuePlaceholder}.Scale.Scale`;
+// keys for timePlayerController
+export const FastRewind = 'fast_rewind';
+export const Rewind = 'rewind';
+export const Play = 'play';
+export const Forward = 'forward';
+export const FastForward = 'fast_forward';
 export const InterpolateTimeScript = `openspace.time.interpolateTime(${ValuePlaceholder}, ${ValuePlaceholder})`;
 export const InterpolateTimeRelativeScript = `openspace.time.interpolateTimeRelative(${ValuePlaceholder}, ${ValuePlaceholder})`;
 export const InterpolateDeltaTimeScript = `openspace.time.interpolateDeltaTime(${ValuePlaceholder}, ${ValuePlaceholder})`;

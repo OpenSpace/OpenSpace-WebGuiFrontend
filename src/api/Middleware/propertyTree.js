@@ -29,6 +29,15 @@ const getPropertyTree = (dispatch) => {
 
 const sendDataToBackEnd = (node) => {
   switch (node.Description.Type) {
+    case 'Vec2Property':
+    case 'Vec3Property':
+    case 'Vec4Property':
+    case 'MatrixProperty':
+    case 'DMat4Property': {
+      const convertedValue = helperFunctions.jsonToLuaTable(node.Value);
+      DataManager.setValue(node.Description.Identifier, convertedValue);
+      break;
+    }
     case 'TransferFunctionProperty': {
       const convertedEnvelopes = helperFunctions.convertEnvelopes(node.Value);
       DataManager.setValue(node.Description.Identifier, convertedEnvelopes);
@@ -36,6 +45,11 @@ const sendDataToBackEnd = (node) => {
     }
     case 'TriggerProperty': {
       DataManager.trigger(node.Description.Identifier);
+      break;
+    }
+    case 'StringProperty': {
+      const convertedString = helperFunctions.jsonToLuaString(node.Value);
+      DataManager.setValue(node.Description.Identifier, convertedString);
       break;
     }
     default: {

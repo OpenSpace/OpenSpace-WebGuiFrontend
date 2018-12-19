@@ -26,6 +26,7 @@ import {
 
 import SimulationIncrement from './SimulationIncrement';
 import styles from './TimePicker.scss';
+import * as timeHelpers from '../../utils/timeHelpers';
 
 /**
  * Make sure the date string contains a time zone

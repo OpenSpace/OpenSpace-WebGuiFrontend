@@ -1,6 +1,8 @@
 import { combineReducers } from 'redux';
 import { propertyOwner as propertyTree } from './propertyTree';
 import { connection } from './connection';
+import { fetchData} from './fetchData';
+import { storyTree } from './storyTree';
 import { shortcuts } from './shortcuts';
 import { version } from './version';
 
@@ -8,6 +10,8 @@ import { version } from './version';
 const openspaceApp = combineReducers({
   propertyTree,
   connection,
+  fetchData,
+  storyTree,
   shortcuts,
   version,
 });

@@ -56,7 +56,7 @@ class OnScreenGui extends Component {
     this.checkVersion();
     return (
       <div className={styles.app}>
-        <Router>
+        <Router basename="/onscreen/">
           <Route
             path="/about"
             render={() => (

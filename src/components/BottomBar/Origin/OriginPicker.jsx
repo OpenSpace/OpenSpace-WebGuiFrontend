@@ -19,14 +19,14 @@ const icons = {
 };
 
 // tag that each focusable node must have
-const REQUIRED_TAG = 'GUI.Interesting';
+const REQUIRED_TAG = 'planet_solarSystem';
 
 class OriginPicker extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      origin: 'Earth',
+      origin: 'Mercury',
       hasOrigin: false,
       sceneGraphNodes: [],
       showPopover: false,
@@ -51,7 +51,7 @@ class OriginPicker extends Component {
         <img src={icon} className={styles.iconImage} alt={this.state.origin} />
       );
     }
-    return (<Icon icon="gps_fixed" className={styles.Icon} />);
+    return (<Icon icon="language" className={styles.Icon} />);
   }
 
   get origin() {
