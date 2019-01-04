@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { CurrenTimeKey, DeltaTime } from '../../../../api/keys';
+import { CurrentTimeKey, DeltaTime } from '../../../../api/keys';
 import DataManager, { TopicTypes } from '../../../../api/DataManager';
 import styles from './../style/TimeController.scss';
 import Button from '../../../common/Input/Button/Button';
@@ -34,7 +34,7 @@ class TimeController extends Component {
     this.mounted = true;
     // subscribe to data
     this.state.subscriptionIdCurrent = DataManager
-      .subscribe(CurrenTimeKey, this.currentTimeCallback, TopicTypes.time);
+      .subscribe(CurrentTimeKey, this.currentTimeCallback, TopicTypes.time);
     this.state.subscriptionIdDelta = DataManager
       .subscribe(DeltaTime, this.deltaTimeCallback, TopicTypes.time);
   }
@@ -42,7 +42,7 @@ class TimeController extends Component {
   componentWillUnmount() {
     // TODO timetopic have no unsubscribe function, therefore this.mounted is used as a workaround.
     this.mounted = false;
-    // DataManager.unsubscribe(CurrenTimeKey, this.state.subscriptionIdCurrent);
+    // DataManager.unsubscribe(CurrentTimeKey, this.state.subscriptionIdCurrent);
     // DataManager.unsubscribe(DeltaTime, this.state.subscriptionIdDelta);
     // this.setState({ subscriptionIdCurrent: -1, subscriptionIdDelta: -1 });
   }

@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
-import { withRouter } from 'react-router-dom';
+import { withRouter, HashRouter as Router, Route, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import '../styles/base.scss';
-
+import Sidebar from '../components/Sidebar/Sidebar';
+import BottomBar from '../components/BottomBar/BottomBar';
 import Error from '../components/common/Error/Error';
 import Overlay from '../components/common/Overlay/Overlay';
+import About from './About/About';
+import Stack from '../components/common/Stack/Stack';
+
 import {
   changePropertyValue, startConnection, fetchData, addStoryTree, startListening,
   addStoryInfo, resetStoryInfo,
@@ -23,13 +27,17 @@ import { UpdateDeltaTimeNow } from '../utils/timeHelpers';
 import { toggleShading, toggleHighResolution, toggleHidePlanet, toggleGalaxies, toggleZoomOut,
   resetBoolProperty, setStoryStart, hideDevInfoOnScreen, showDistanceOnScreen } from '../utils/storyHelpers';
 import DeveloperMenu from '../components/TouchBar/UtilitiesMenu/presentational/DeveloperMenu';
+import { isCompatible,
+         formatVersion,
+         RequiredSocketApiVersion,
+         RequiredOpenSpaceVersion } from '../api/Version';
 
 const KEYCODE_D = 68;
 
 class OnTouchGui extends Component {
   constructor(props) {
     super(props);
-
+    this.checkedVersion = false;
     this.state = {
       developerMode: false,
     };
@@ -49,6 +57,33 @@ class OnTouchGui extends Component {
 
     hideDevInfoOnScreen(true);
     showDistanceOnScreen(false);
+  }
+
+  checkVersion() {
+    if (!this.checkedVersion && this.props.version.isInitialized) {
+      const versionData = this.props.version.data;
+      if (!isCompatible(
+        versionData.openSpaceVersion, RequiredOpenSpaceVersion))
+      {
+        console.warn(
+          'Possible incompatibility: \nRequired OpenSpace version: ' +
+          formatVersion(RequiredOpenSpaceVersion) +
+          '. Currently controlling OpenSpace version ' +
+          formatVersion(versionData.openSpaceVersion) + '.'
+        );
+      }
+      if (!isCompatible(
+        versionData.socketApiVersion, RequiredSocketApiVersion))
+      {
+        console.warn(
+          "Possible incompatibility: \nRequired Socket API version: " +
+          formatVersion(RequiredSocketApiVersion) +
+          ". Currently operating over API version " +
+          formatVersion(versionData.socketApiVersion) + '.'
+        );
+      }
+      this.checkedVersion = true;
+    }
   }
 
   componentDidUpdate() {
@@ -184,6 +219,23 @@ class OnTouchGui extends Component {
   render() {
     return (
       <div className={styles.app}>
+
+        <Router basename="/ontouch/">
+          <Route
+            path="/about"
+            render={() => (
+              <Overlay>
+                <Stack style={{ maxWidth: '500px' }}>
+                  <Link style={{ alignSelf: 'flex-end', color: 'white' }} to="/">
+                    Close
+                  </Link>
+                  <About />
+                </Stack>
+              </Overlay>
+            )}
+          />
+        </Router>
+
         { this.props.connectionLost && (
           <Overlay>
             <Error>
@@ -201,6 +253,12 @@ class OnTouchGui extends Component {
           this.props.storyIdentifierNode.Value !== defaultStory)
           ? <TouchBar /> : <Slider changeStory={this.setStory} />
         }
+        <section className={styles.Grid__Left}>
+          <Sidebar />
+        </section>
+        <section className={styles.Grid__Right}>
+          <BottomBar />
+        </section>
       </div>
     );
   }
@@ -271,6 +329,8 @@ const mapDispatchToProps = dispatch => ({
     dispatch(startListening(URI));
   },
 });
+
+
 
 OnTouchGui = withRouter(connect(
   mapStateToProps,
