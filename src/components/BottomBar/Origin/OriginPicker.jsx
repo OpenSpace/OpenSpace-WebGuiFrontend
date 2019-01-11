@@ -6,10 +6,13 @@ import Icon from '../../common/Icon/Icon';
 import LoadingString from '../../common/LoadingString/LoadingString';
 import Picker from '../Picker';
 import Popover from '../../common/Popover/Popover';
+import Checkbox from '../../common/Input/Checkbox/Checkbox';
 import FilterList from '../../common/FilterList/FilterList';
 import DataManager from '../../../api/DataManager';
-import { OriginKey } from '../../../api/keys';
+import { NavigationAnchorKey, NavigationAimKey, NavigationResetCameraDirectionKey } from '../../../api/keys';
 import FocusEntry from './FocusEntry';
+
+import { setReAim } from '../../../api/Actions';
 
 import Earth from './images/earth.png';
 import styles from './OriginPicker.scss';
@@ -37,11 +40,11 @@ class OriginPicker extends Component {
   }
 
   componentDidMount() {
-    DataManager.subscribe(OriginKey, this.updateOrigin);
+    DataManager.subscribe(NavigationAnchorKey, this.updateOrigin);
   }
 
   componentWillUnmount() {
-    DataManager.unsubscribe(OriginKey, this.updateOrigin);
+    DataManager.unsubscribe(NavigationAnchorKey, this.updateOrigin);
   }
 
   get icon() {
@@ -68,8 +71,26 @@ class OriginPicker extends Component {
   }
 
   render() {
+
     const { hasOrigin, showPopover } = this.state;
     const { nodes, favorites } = this.props;
+
+    const ReAimName = "Re-aim on focus change";
+
+    const reAim = this.props.reAim;
+    const onSelect = (identifier) => {
+      DataManager.setValue(NavigationAnchorKey, identifier);
+      DataManager.setValue(NavigationAimKey, identifier);
+      if (reAim) {
+        DataManager.trigger(NavigationResetCameraDirectionKey);
+      }
+    };
+
+    const setReAim = (enabled) => {
+      console.log('fn call');
+      this.props.setReAim(enabled);
+    };
+
     return (
       <div className={Picker.Wrapper}>
         <Picker onClick={this.togglePopover} className={(showPopover ? Picker.Active : '')}>
@@ -85,12 +106,20 @@ class OriginPicker extends Component {
         </Picker>
         { showPopover && (
           <Popover closeCallback={this.togglePopover} title="Select focus" className={Picker.Popover}>
+            <div>
+              <Checkbox
+                checked={reAim}
+                label={(<span>{ReAimName}</span>)}
+                onChange={setReAim}
+              />
+            </div>
             <FilterList
               data={nodes}
               favorites={favorites}
               className={styles.list}
               searchText="Search the universe..."
               viewComponent={FocusEntry}
+              onSelect={onSelect}
               active={this.origin}
               searchAutoFocus
             />
@@ -115,14 +144,27 @@ const mapStateToProps = (state) => {
     favorites = nodes.filter(node => node.tag.some(tag => tag.includes(REQUIRED_TAG)))
       .map(node => Object.assign(node, { key: node.identifier }));
   }
+
+  const reAim = state.local.focus.reAim;
+
   return {
     nodes,
-    favorites
+    favorites,
+    reAim
   };
 };
 
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setReAim: enabled => {
+      dispatch(setReAim(enabled))
+    }
+  }
+}
+
 OriginPicker = connect(
   mapStateToProps,
+  mapDispatchToProps
 )(OriginPicker);
 
 export default OriginPicker;

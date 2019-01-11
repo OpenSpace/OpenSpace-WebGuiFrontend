@@ -11,7 +11,7 @@ import MatrixProperty from './MatrixProperty';
 import styles from './../SceneGraphNode.scss';
 import Button from '../../common/Input/Button/Button';
 import DataManager from '../../../api/DataManager';
-import { OriginKey } from '../../../api/keys';
+import { NavigationAnchorKey, NavigationAimKey } from '../../../api/keys';
 import Icon from '../../common/Icon/Icon';
 import Shortcut from './../Shortcut';
 
@@ -61,7 +61,8 @@ const getFocusButton = (isSceneGraphNode, identifier, subowners) => {
 
 const gotoThis = (e) => {
   e.stopPropagation();
-  DataManager.setValue(OriginKey, '"' + e.currentTarget.getAttribute("identifier") + '"');
+  DataManager.setValue(NavigationAnchorKey, '"' + e.currentTarget.getAttribute("identifier") + '"');
+  DataManager.setValue(NavigationAimKey, '"' + e.currentTarget.getAttribute("identifier") + '"');
   const GotoGeoScript = 'openspace.globebrowsing.goToGeo(0, 0, 20000000)';
   DataManager.runScript(GotoGeoScript);
 }
