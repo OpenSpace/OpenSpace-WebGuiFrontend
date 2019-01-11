@@ -6,7 +6,8 @@ import styles from './../style/UtilitiesButtons.scss';
 
 const HomeButton = props => (
   <div
-    className={`${styles.UtilitiesButton} ${this.isActive && styles.active}`}
+    /*className={`${styles.UtilitiesButton} ${this.isActive && styles.active}`}*/
+    className={`${styles.UtilitiesButton} ${styles.active}`}
     onClick={props.handleClick}
     role="button"
     tabIndex="0"

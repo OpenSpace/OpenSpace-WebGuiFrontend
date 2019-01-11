@@ -90,12 +90,21 @@ class OnTouchGui extends Component {
     const { storyIdentifierNode, story } = this.props;
 
     if (storyIdentifierNode.length !== 0) {
+      if (storyIdentifierNode.Value.charAt(0) === '"') {
+        storyIdentifierNode.Value = storyIdentifierNode.Value.substring(1, storyIdentifierNode.length - 1);
+      }
+      if (storyIdentifierNode.Value.charAt(storyIdentifierNode.length - 1) === '"') {
+        storyIdentifierNode.Value = storyIdentifierNode.Value.substring(0, storyIdentifierNode.length - 1);
+      }
       if (storyIdentifierNode.listeners === 0) {
         this.props.StartListening(StoryIdentifierKey);
         this.props.StartListening(FocusNodesListKey);
       }
       if (storyIdentifierNode.Value !== story.storyidentifier) {
-        this.addStoryTree(storyIdentifierNode.Value);
+//        if (storyIdentifierNode.Value.length !== 0 || story.storyidentifier.length !== 0) {
+//        this.addStoryTree(storyIdentifierNode.Value);
+        this.addStoryTree(story.storyidentifier);
+//        }
       }
     }
     if (this.props.reset) {
