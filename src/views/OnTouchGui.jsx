@@ -118,6 +118,7 @@ class OnTouchGui extends Component {
   }
 
   setStory(selectedStory) {
+
     const {
       storyIdentifierNode, applyRemoveTag, focusNodesList, applyAddTag, focusNode, overViewNode,
     } = this.props;
@@ -229,7 +230,7 @@ class OnTouchGui extends Component {
     return (
       <div className={styles.app}>
 
-        <Router basename="/ontouch/">
+        {/*<Router basename="/ontouch/">
           <Route
             path="/about"
             render={() => (
@@ -243,7 +244,7 @@ class OnTouchGui extends Component {
               </Overlay>
             )}
           />
-        </Router>
+        </Router>*/}
 
         { this.props.connectionLost && (
           <Overlay>
@@ -262,12 +263,7 @@ class OnTouchGui extends Component {
           this.props.storyIdentifierNode.Value !== defaultStory)
           ? <TouchBar /> : <Slider changeStory={this.setStory} />
         }
-        <section className={styles.Grid__Left}>
-          <Sidebar />
-        </section>
-        <section className={styles.Grid__Right}>
-          <BottomBar />
-        </section>
+       
       </div>
     );
   }

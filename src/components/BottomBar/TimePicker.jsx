@@ -307,6 +307,7 @@ class TimePicker extends Component {
   }
 
   togglePopover() {
+    debugger;
     this.setState({ showPopover: !this.state.showPopover });
   }
 
@@ -335,7 +336,7 @@ class TimePicker extends Component {
     if (!this.state.useLock) {
       newState.pendingTime = new Date(time);
     }
-    this.setState(newState);
+    //this.setState(newState);
   }
 
   /**
@@ -344,7 +345,7 @@ class TimePicker extends Component {
    */
   deltaTimeSubscriptionCallback(message) {
     const { isPaused, targetDeltaTime } = message;
-    this.setState({ isPaused, targetDeltaTime });
+    //this.setState({ isPaused, targetDeltaTime });
   }
 
   render() {

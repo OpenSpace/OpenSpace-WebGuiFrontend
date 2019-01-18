@@ -62,11 +62,12 @@ class Markers extends Component {
     } = this.props;
 
     // Get current focus node, its screen space position and its screen space radius
-    const focusNodePos = jsonToLuaTable(currentFocusNode.properties.find(property => property.id === 'ScreenSpacePosition').Value).split(',');
+    const focusNodePos = jsonToLuaTable(currentFocusNode.properties.find(property => property.id === 'ScreenSpacePosition').Value);
+    //const focusNodePos = focusNodePosArray.split(',');
     const focusNodeRadius = Number(currentFocusNode.properties.find(property => property.id === 'ScreenSizeRadius').Value);
 
     return (focusNodes.map((node, i) => {
-      const screenSpacePos = jsonToLuaTable(screenSpaceProperties[i].Value).split(',');
+      const screenSpacePos = jsonToLuaTable(screenSpaceProperties[i].Value);
       if (screenVisibilityProperties[i].Value === 'true') {
         let outsideCircle = true;
         // Check if node is behind the focus node or not, show label if not behind focus node

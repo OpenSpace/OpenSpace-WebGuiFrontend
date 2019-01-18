@@ -78,7 +78,11 @@ const convertEnvelopes = (envelopes) => {
 };
 
 
-const jsonToLua = json => json.replace('[', '').replace(']', '');
+const jsonToLua = (json) => {
+  if (typeof json === 'string') {
+    json.replace('[', '').replace(']', '')
+  }
+};
 
 const traverseTree = (node, URI) => {
   const splittedURI = splitURI(URI);
