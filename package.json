@@ -8,7 +8,7 @@
     "lint": "eslint --ext .jsx --ext .js src",
     "lint-nice": "eslint --ext .jsx --ext .js src || exit 0;",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "copyfiles index.html dist && webpack-dev-server --progress --colors --port 4680",
+    "start": "copyfiles index.html environment.js dist && webpack-dev-server --progress --colors --port 4680",
     "prebuild": "npm install && rimraf dist",
     "build": "cross-env NODE_ENV=production webpack -p --config webpack.config.production.js",
     "postbuild": "copyfiles index.html dist",

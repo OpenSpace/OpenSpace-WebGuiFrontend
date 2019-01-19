@@ -4,15 +4,7 @@ import Icon from '../../common/Icon/Icon';
 import SmallLabel from '../../common/SmallLabel/SmallLabel';
 import styles from './FocusButton.scss';
 
-// Import all files from a given directory path
-function importAll(r) {
-  const images = {};
-  r.keys().map((item) => { images[item.replace('./', '')] = r(item); });
-  return images;
-}
-
-// Import all icon images from the given directory
-const icons = importAll(require.context('../../../../../../../sync/url/planet_icons/files', false, /\.(png|jpe?g|svg)$/));
+import { icons } from '../../../api/resources'
 
 class FocusButton extends Component {
   constructor(props) {
@@ -25,7 +17,7 @@ class FocusButton extends Component {
   }
 
   get icon() {
-    const icon = icons[`${this.props.identifier.toLowerCase()}.png`];
+    const icon = icons[this.props.identifier];
     if (icon) {
       return (
         <img src={icon} className={styles.iconImage} alt={this.props.identifier} />

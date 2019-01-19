@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import Icon from '../../../common/Icon/Icon';
 import SmallLabel from '../../../common/SmallLabel/SmallLabel';
-import Image from '../../../../../../../../sync/url/images/files/instructions.png';
 
+import { instructionImage } from '../../../../api/resources';
 import styles from './../style/UtilitiesButtons.scss';
 
 class HelpButton extends Component {
@@ -36,7 +36,7 @@ class HelpButton extends Component {
         tabIndex="0"
       >
         <Icon icon="help_outline" className={styles.Icon} />
-        { this.state.showImage && <img src={Image} className={styles.Instructions} alt={'instructions'} />}
+        { this.state.showImage && <img src={instructionImage} className={styles.Instructions} alt={'instructions'} />}
         <SmallLabel>Help</SmallLabel>
       </div>
     );

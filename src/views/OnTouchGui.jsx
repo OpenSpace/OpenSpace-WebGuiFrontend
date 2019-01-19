@@ -87,6 +87,8 @@ class OnTouchGui extends Component {
   }
 
   componentDidUpdate() {
+    if (!storyIdentifierNode) return;
+
     const { storyIdentifierNode, story } = this.props;
 
     if (storyIdentifierNode.length !== 0) {
@@ -194,11 +196,12 @@ class OnTouchGui extends Component {
 
   // Read in json-file for new story and add it to redux
   addStoryTree(selectedStory) {
-    const json = require(`../../../../../data/assets/stories/${selectedStory}.json`);
+    const json = require(`../stories/story_${selectedStory}.json`);
+
     this.props.AddStoryTree(json);
 
     if (json.infofile) {
-      const info = require(`../../../../../data/assets/stories/${json.infofile}.json`);
+      const info = require(`../stories/${json.infofile}.json`);
       this.props.AddStoryInfo(info);
     } else {
       this.props.ResetStoryInfo();

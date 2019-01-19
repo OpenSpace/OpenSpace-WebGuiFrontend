@@ -1,0 +1,20 @@
+{
+  "storyidentifier": "default",
+  "overviewlimit": "-1",
+  "inzoomlimit": "0",
+  "zoomout": "false",
+  "focusbuttons": " ",
+  "focusbuttonslist": [],
+  "timecontroller": "false",
+  "datecontroller":  "false",
+  "sightscontroller": "false",
+  "start": {
+    "planet": "Earth",
+    "time": "openspace.time.currentWallTime()",
+    "location": {
+      "latitude": "40.758701",
+      "longitude": "-111.876183",
+      "altitude": "20000000"
+    }
+  }
+}
