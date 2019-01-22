@@ -84,7 +84,7 @@ const getTitle = (identifier, guiName, properties) => {
 const shouldAutoExpand = (subowner) => subowner.identifier === 'Renderable';
 
 const hasVisibleProperties = (properties) => {
-  const visibleProps = properties.filter(prop => {return ( prop.MetaData &&  (prop.MetaData.Visibility != "Hidden")) });
+  const visibleProps = properties.filter(prop => {return ( prop.Description.MetaData &&  (prop.Description.MetaData.Visibility != "Hidden")) });
   return visibleProps.length > 0;
 }
 
