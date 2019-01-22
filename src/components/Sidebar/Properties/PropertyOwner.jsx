@@ -83,9 +83,15 @@ const getTitle = (identifier, guiName, properties) => {
 
 const shouldAutoExpand = (subowner) => subowner.identifier === 'Renderable';
 
+const hasVisibleProperties = (properties) => {
+  const visibleProps = properties.filter(prop => {return ( prop.MetaData &&  (prop.MetaData.Visibility != "Hidden")) });
+  return visibleProps.length > 0;
+}
+
 const getSubOwnerMarkup = (subowner) => {
   if (!subowner.script) {
-    if ( (subowner.subowners && subowner.subowners.length > 0) || (subowner.properties && subowner.properties.length > 0) )  {
+    if ( (subowner.subowners && subowner.subowners.length > 0) ||
+         (subowner.properties && hasVisibleProperties(subowner.properties) && subowner.properties.length > 0) )  {
       return <PropertyOwner {...subowner} key={subowner.identifier} expand={shouldAutoExpand(subowner)}/>
     } else {
       return "";
