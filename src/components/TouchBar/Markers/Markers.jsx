@@ -72,18 +72,33 @@ class Markers extends Component {
         let outsideCircle = true;
         // Check if node is behind the focus node or not, show label if not behind focus node
         if (node.identifier !== focusNodeName) {
-          outsideCircle = Markers
-            .outsideCircle(Number(focusNodePos[0]), Number(focusNodePos[1]),
-              focusNodeRadius, Number(screenSpacePos[0]), Number(screenSpacePos[1]));
+          //outsideCircle = Markers
+          //  .outsideCircle(Number(focusNodePos[0]), Number(focusNodePos[1]),
+          //    focusNodeRadius, Number(screenSpacePos[0]), Number(screenSpacePos[1]));
+          if (focusNodePos && screenSpacePos) {
+            outsideCircle = Markers.outsideCircle(Number(focusNodePos[0]),
+              Number(focusNodePos[1]), focusNodeRadius,
+              Number(screenSpacePos[0]), Number(screenSpacePos[1]));
+          } else {
+            outsideCircle = false;
+          }
         }
         // TODO Remove the magic numbers
         const distanceFromCam = (100000000000 / distFromCamToNodeProperties[i].Value);
         const showLabel = (distanceFromCam > 0.04 && outsideCircle);
 
-        const planetRadius = Number(screenSpaceRadius[i].Value);
+        //const planetRadius = Number(screenSpaceRadius[i].Value);
         let size = planetRadius * 0.1;
-        const showInfo = (!node.identifier.includes(story.hideinfoicons) && infoIcons.planets &&
-          planetRadius > 25 && outsideCircle);
+        if (screenSpaceRadius) {
+          const planetRadius = Number(screenSpaceRadius[i].Value);
+        } else {
+          const planetRadius = 0;
+        }
+
+        //const showInfo = (!node.identifier.includes(story.hideinfoicons) && infoIcons.planets &&
+        //  planetRadius > 25 && outsideCircle);
+        let hasHideInfoIcons = node.identifier.includes(story.hideinfoicons);
+        const showInfo = (hasHideInfoIcons && infoIcons.planets && planetRadius > 25 && outsideCircle);
 
         if (size >= 3) size = 3;
         if (size <= 1.5) size = 1.5;
@@ -145,7 +160,9 @@ const mapStateToProps = (state) => {
 
       focusNodes.forEach((node) => {
         screenSpaceProperties.push(traverseTreeWithURI(state.propertyTree, `Scene.${node.identifier}.ScreenSpacePosition`));
-        screenVisibilityProperties.push(traverseTreeWithURI(state.propertyTree, `Scene.${node.identifier}.ScreenVisibility`));
+        //screenVisibilityProperties.push(traverseTreeWithURI(state.propertyTree, `Scene.${node.identifier}.ScreenVisibility`));
+        let screenVis = traverseTreeWithURI(state.propertyTree, `Scene.${node.identifier}.ScreenVisibility`);
+        screenVisibilityProperties.push(screenVis);
         distFromCamToNodeProperties.push(traverseTreeWithURI(state.propertyTree, `Scene.${node.identifier}.DistanceFromCamToNode`));
         screenSpaceRadius.push(traverseTreeWithURI(state.propertyTree, `Scene.${node.identifier}.ScreenSizeRadius`));
       });

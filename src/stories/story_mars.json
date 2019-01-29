@@ -2,7 +2,7 @@
   "storyidentifier":"mars",
   "storytitle": "Interesting sights on Mars",
   "storyinfo": "Mars is the fourth planet from the Sun and the second-smallest planet in the Solar System after Mercury.",
-  "overviewlimit": "6.0e+7",
+  "overviewlimit": 6.0e+7,
   "focusbuttons": "\"Mars\"",
   "timecontroller": "true",
   "datecontroller" : "false",
@@ -22,7 +22,7 @@
       "location": {
         "latitude": "-2.05",
         "longitude": "-5.50",
-        "altitude": "5000"
+        "altitude": "100000"
       }
     },
     {
@@ -58,7 +58,7 @@
       "location": {
         "latitude": "-7.0",
         "longitude": "-85.8",
-        "altitude": "20000"
+        "altitude": "100000"
       }
     },
     {

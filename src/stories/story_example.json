@@ -1,6 +1,6 @@
 {
   "storyidentifier":"example",
-  "overviewlimit": "2.2e+13",
+  "overviewlimit": 2.2e+13,
   "focusbuttons": "\"Earth\", \"Mercury\", \"Venus\", \"Mars\", \"Jupiter\", \"Saturn\"",
   "timecontroller": "true",
   "datecontroller":  [

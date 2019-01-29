@@ -158,7 +158,7 @@ class OnTouchGui extends Component {
       // If the previous story scaled planets reset value
       if (this.props.story.scaleplanets) {
         this.props.scaleNodes.forEach((planet) => {
-          this.props.ChangePropertyValue(planet.Description, '1');
+          this.props.ChangePropertyValue(planet.Description, 1);
         });
       }
       // If the previous story toggled bool properties reset them to default value
@@ -233,7 +233,7 @@ class OnTouchGui extends Component {
     return (
       <div className={styles.app}>
 
-        {/*<Router basename="/ontouch/">
+        {<Router basename="/ontouch/">
           <Route
             path="/about"
             render={() => (
@@ -247,7 +247,7 @@ class OnTouchGui extends Component {
               </Overlay>
             )}
           />
-        </Router>*/}
+        </Router>}
 
         { this.props.connectionLost && (
           <Overlay>
@@ -294,7 +294,11 @@ const mapStateToProps = (state) => {
 
     if (story.scaleplanets) {
       story.scaleplanets.planets.forEach((node) => {
-        scaleNodes.push(traverseTreeWithURI(state.propertyTree, ScaleKey.replace(ValuePlaceholder, `${node}`)));
+        //scaleNodes.push(traverseTreeWithURI(state.propertyTree, ScaleKey.replace(ValuePlaceholder, `${node}`)));
+        let foundScaleNode = traverseTreeWithURI(state.propertyTree, ScaleKey.replace(ValuePlaceholder, `${node}`));
+        if (foundScaleNode) {
+          scaleNodes.push(foundScaleNode);
+        }
       });
     }
   }

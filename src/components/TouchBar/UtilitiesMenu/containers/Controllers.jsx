@@ -69,7 +69,7 @@ class Controllers extends Component {
       if (Number(scale) !== Number(this.props.scaleNodes[i].Value)) {
         this.props.ChangePropertyValue(this.props.scaleNodes[i].Description, scale);
       } else {
-        this.props.ChangePropertyValue(this.props.scaleNodes[i].Description, '1');
+        this.props.ChangePropertyValue(this.props.scaleNodes[i].Description, 1);
       }
     });
   }
@@ -126,7 +126,7 @@ const mapStateToProps = (state) => {
   const story = state.storyTree.story;
   const scaleNodes = [];
   const toggleBoolNodes = [];
-
+  
   if (Object.keys(state.propertyTree).length !== 0) {
     const rootNodes = state.propertyTree.subowners
       .filter(element => element.identifier === sceneType);
@@ -138,7 +138,11 @@ const mapStateToProps = (state) => {
 
     if (story.scaleplanets) {
       story.scaleplanets.planets.forEach((node) => {
-        scaleNodes.push(traverseTreeWithURI(state.propertyTree, ScaleKey.replace(ValuePlaceholder, `${node}`)));
+        //scaleNodes.push(traverseTreeWithURI(state.propertyTree, ScaleKey.replace(ValuePlaceholder, `${node}`)));
+        let foundScaleNode = traverseTreeWithURI(state.propertyTree, ScaleKey.replace(ValuePlaceholder, `${node}`));
+        if (foundScaleNode) {
+          scaleNodes.push(foundScaleNode);
+        }
       },
       );
     }
