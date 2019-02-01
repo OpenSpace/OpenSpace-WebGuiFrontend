@@ -40,10 +40,12 @@ class OnTouchGui extends Component {
     this.checkedVersion = false;
     this.state = {
       developerMode: false,
+      currentStory: defaultStory
     };
 
     this.changeStory = this.changeStory.bind(this);
     this.setStory = this.setStory.bind(this);
+    this.resetStory = this.resetStory.bind(this);
     this.checkStorySettings = this.checkStorySettings.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.toggleDeveloperMode = this.toggleDeveloperMode.bind(this);
@@ -111,7 +113,7 @@ class OnTouchGui extends Component {
     }
     if (this.props.reset) {
       UpdateDeltaTimeNow(1);
-      this.setStory(defaultStory);
+      this.setStory('');
     }
   }
 
@@ -120,6 +122,11 @@ class OnTouchGui extends Component {
   }
 
   setStory(selectedStory) {
+    if (selectedStory === '') {
+      this.setState({ currentStory: defaultStory });
+      return;
+    }
+    this.setState({ currentStory: selectedStory });
 
     const {
       storyIdentifierNode, applyRemoveTag, focusNodesList, applyAddTag, focusNode, overViewNode,
@@ -168,6 +175,10 @@ class OnTouchGui extends Component {
         });
       }
     }
+  }
+
+  resetStory () {
+    this.setStory('');
   }
 
   checkStorySettings(story, value) {
@@ -262,9 +273,8 @@ class OnTouchGui extends Component {
             storyIdentifier={this.props.storyIdentifierNode.Value}
           />}
         <p className={styles.storyTitle}> {this.props.story.storytitle} </p>
-        {(this.props.storyIdentifierNode.length !== 0 &&
-          this.props.storyIdentifierNode.Value !== defaultStory)
-          ? <TouchBar /> : <Slider changeStory={this.setStory} />
+        {(this.state.currentStory !== defaultStory)
+          ? <TouchBar resetStory={this.resetStory} /> : <Slider changeStory={this.setStory} />
         }
        
       </div>

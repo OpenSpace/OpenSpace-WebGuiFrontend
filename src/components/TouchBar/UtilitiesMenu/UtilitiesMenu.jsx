@@ -6,9 +6,9 @@ import Controllers from './containers/Controllers';
 
 import styles from './style/UtilitiesMenu.scss';
 
-const UtilitiesMenu = () => (
+const UtilitiesMenu = (props) => (
   <div className={styles.UtilitiesMenu}>
-    <HomeButtonContainer />
+    <HomeButtonContainer resetStory={props.resetStory}/>
     <HelpButton />
     <InfoButtonController />
     <Controllers />
