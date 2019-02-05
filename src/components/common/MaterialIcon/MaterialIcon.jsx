@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import styles from './Icon.scss';
+import styles from './MaterialIcon.scss';
 
 /**
  * Create a Material Design icon. https://material.io/icons/
@@ -9,7 +9,7 @@ import styles from './Icon.scss';
  * @returns {XML}
  * @constructor
  */
-const Icon = (props) => {
+const MaterialIcon = (props) => {
   const { icon, className } = props;
   const classNames = className.split(' ')
                             .map(s => styles[s] || s)
@@ -20,13 +20,13 @@ const Icon = (props) => {
   );
 };
 
-Icon.propTypes = {
+MaterialIcon.propTypes = {
   icon: PropTypes.string.isRequired,
   className: PropTypes.string,
 };
 
-Icon.defaultProps = {
+MaterialIcon.defaultProps = {
   className: '',
 };
 
-export default Icon;
+export default MaterialIcon;

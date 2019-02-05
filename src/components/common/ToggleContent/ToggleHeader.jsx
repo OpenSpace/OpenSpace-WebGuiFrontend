@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Icon from '../Icon/Icon';
+import MaterialIcon from '../MaterialIcon/MaterialIcon';
 
 import styles from './ToggleHeader.scss';
 
 const ToggleHeader = ({ title, toggled, onClick, onIcon, offIcon, children}) => (
   <header className={styles.toggle} onClick={onClick} role="button" tabIndex={0}>
     <div className={styles.headerChildren}>{children}</div>
-    <Icon
+    <MaterialIcon
       icon={toggled ? onIcon : offIcon}
       className={styles.icon}
     />

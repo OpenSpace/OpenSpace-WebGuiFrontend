@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Draggable from 'react-draggable';
 import styles from './Window.scss';
-import Icon from '../Icon/Icon';
+import MaterialIcon from '../MaterialIcon/MaterialIcon';
 import Button from '../Input/Button/Button';
 import { excludeKeys } from '../../../utils/helpers';
 
@@ -24,7 +24,7 @@ const Window = (props) => {
           </div>
           { closeCallback && (
             <Button onClick={closeCallback} transparent small>
-              <Icon icon="close" className="small" />
+              <MaterialIcon icon="close" className="small" />
             </Button>
           )}
         </header>

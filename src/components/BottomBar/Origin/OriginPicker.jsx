@@ -2,125 +2,220 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import SmallLabel from '../../common/SmallLabel/SmallLabel';
-import Icon from '../../common/Icon/Icon';
 import LoadingString from '../../common/LoadingString/LoadingString';
 import Picker from '../Picker';
 import Popover from '../../common/Popover/Popover';
+import Button from '../../common/Input/Button/Button';
 import Checkbox from '../../common/Input/Checkbox/Checkbox';
 import FilterList from '../../common/FilterList/FilterList';
 import DataManager from '../../../api/DataManager';
-import { NavigationAnchorKey, NavigationAimKey, NavigationResetCameraDirectionKey } from '../../../api/keys';
+import { NavigationAnchorKey, NavigationAimKey, RetargetAnchorKey, RetargetAimKey } from '../../../api/keys';
 import FocusEntry from './FocusEntry';
 
 import { setReAim } from '../../../api/Actions';
 
-import Earth from './images/earth.png';
 import styles from './OriginPicker.scss';
 
-const icons = {
-  Earth,
-};
+import SvgIcon from '../../common/SvgIcon/SvgIcon';
+import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
+import Anchor from 'svg-react-loader?name=Anchor!../../../icons/anchor.svg';
+import Aim from 'svg-react-loader?name=Aim!../../../icons/aim.svg';
+import Focus from 'svg-react-loader?name=Focus!../../../icons/focus.svg';
 
 // tag that each focusable node must have
 const REQUIRED_TAG = 'GUI.Interesting';
 
+const SelectionModes = {
+  Focus: 'Focus',
+  Anchor: 'Anchor',
+  Aim: 'Aim'
+};
+
 class OriginPicker extends Component {
   constructor(props) {
+
     super(props);
 
     this.state = {
-      origin: 'Earth',
-      hasOrigin: false,
+      anchor: 'Earth',
+      aim: 'Earth',
+      hasAnchor: false,
+      hasAim: false,
+      selectionMode: SelectionModes.Focus,
       sceneGraphNodes: [],
       showPopover: false,
     };
 
-    this.updateOrigin = this.updateOrigin.bind(this);
+    this.updateAnchor = this.updateAnchor.bind(this);
+    this.updateAim = this.updateAim.bind(this);
     this.togglePopover = this.togglePopover.bind(this);
+    this.setSelectionModeToFocus = this.setSelectionModeToFocus.bind(this);
+    this.setSelectionModeToAnchor = this.setSelectionModeToAnchor.bind(this);
+    this.setSelectionModeToAim = this.setSelectionModeToAim.bind(this);
+    this.onSelect = this.onSelect.bind(this);
   }
 
   componentDidMount() {
-    DataManager.subscribe(NavigationAnchorKey, this.updateOrigin);
+    DataManager.subscribe(NavigationAnchorKey, this.updateAnchor);
+    DataManager.subscribe(NavigationAimKey, this.updateAim);
   }
 
   componentWillUnmount() {
-    DataManager.unsubscribe(NavigationAnchorKey, this.updateOrigin);
+    DataManager.unsubscribe(NavigationAnchorKey, this.updateAnchor);
+    DataManager.unsubscribe(NavigationAimKey, this.updateAim);
   }
 
-  get icon() {
-    const icon = icons[this.state.origin];
-    if (icon) {
-      return (
-        <img src={icon} className={styles.iconImage} alt={this.state.origin} />
-      );
-    }
-    return (<Icon icon="gps_fixed" className={styles.Icon} />);
+  get anchor() {
+    return this.state.anchor;
   }
 
-  get origin() {
-    return this.state.origin;
+  get aim() {
+    return this.state.aim;
   }
 
-  updateOrigin(data) {
+  updateAnchor(data) {
     const { Value } = data;
-    this.setState({ origin: Value, hasOrigin: Value !== '' });
+    this.setState({ anchor: Value, hasAnchor: Value !== '' });
   }
 
+  updateAim(data) {
+    const { Value } = data;
+    this.setState({ aim: Value, hasAim: Value !== '' });
+  }
+
+  hasDistinctAim() {
+    return this.state.aim !== this.state.anchor;
+  }
+
+
+  setSelectionModeToFocus() {
+    this.setState({
+      selectionMode: SelectionModes.Focus
+    })
+  }
+
+  setSelectionModeToAnchor() {
+    this.setState({
+      selectionMode: SelectionModes.Anchor
+    })
+  }
+
+  setSelectionModeToAim() {
+    this.setState({
+      selectionMode: SelectionModes.Aim
+    })
+  }
+  
   togglePopover() {
     this.setState({ showPopover: !this.state.showPopover });
   }
 
-  render() {
+  get focusPicker() {
+    const { hasAnchor } = this.state;
+    return (
+      <div className={styles.Grid}>
+        <SvgIcon className={styles.Icon}><Focus/></SvgIcon>
+        <div className={Picker.Title}>
+          <span className={Picker.Name}>
+            <LoadingString loading={!hasAnchor}>
+              { this.anchor }
+            </LoadingString>
+          </span>
+          <SmallLabel>Focus</SmallLabel>
+        </div>
+      </div>);
+  }
 
-    const { hasOrigin, showPopover } = this.state;
+  get anchorAndAimPicker() {
+    const { hasAnchor, hasAim } = this.state;
+    return (
+      <div className={styles.Grid}>
+        <SvgIcon className={styles.Icon}><Anchor/></SvgIcon>
+        <div className={Picker.Title}>
+          <span className={Picker.Name}>
+            <LoadingString loading={!hasAnchor}>
+              { this.anchor }
+            </LoadingString>
+          </span>
+          <SmallLabel>Anchor</SmallLabel>
+        </div>
+        <SvgIcon className={styles.Icon}><Aim/></SvgIcon>
+        <div className={Picker.Title}>
+          <span className={Picker.Name}>
+            <LoadingString loading={!hasAnchor}>
+              { this.aim }
+            </LoadingString>
+          </span>
+          <SmallLabel>Aim</SmallLabel>
+        </div>
+      </div>
+      );
+  }
+
+  onSelect(identifier, evt) {
+    if (this.state.selectionMode !== SelectionModes.Aim) {
+      DataManager.setValue(NavigationAnchorKey, identifier);
+    }
+    if (this.state.selectionMode !== SelectionModes.Anchor) {
+      DataManager.setValue(NavigationAimKey, identifier);
+    }
+    if (!evt.shiftKey) {
+      if (this.state.selectionMode === SelectionModes.Aim) {
+        DataManager.trigger(RetargetAimKey);
+      } else {
+        DataManager.trigger(RetargetAnchorKey);
+      }
+    }
+    this.setState({
+      selectionMode: SelectionModes.Focus
+    })
+  };
+
+  render() {
+    const { showPopover, selectionMode } = this.state;
     const { nodes, favorites } = this.props;
 
-    const ReAimName = "Re-aim on focus change";
-
-    const reAim = this.props.reAim;
-    const onSelect = (identifier) => {
-      DataManager.setValue(NavigationAnchorKey, identifier);
-      DataManager.setValue(NavigationAimKey, identifier);
-      if (reAim) {
-        DataManager.trigger(NavigationResetCameraDirectionKey);
-      }
-    };
-
-    const setReAim = (enabled) => {
-      console.log('fn call');
-      this.props.setReAim(enabled);
-    };
+    const searchPlaceholder = {
+      Focus: "Search for new focus...",
+      Anchor: "Search for new anchor...",
+      Aim: "Search for new aim...",
+    }[selectionMode];
 
     return (
       <div className={Picker.Wrapper}>
         <Picker onClick={this.togglePopover} className={(showPopover ? Picker.Active : '')}>
-          { this.icon }
-          <div className={Picker.Title}>
-            <span className={Picker.Name}>
-              <LoadingString loading={!hasOrigin}>
-                { this.origin }
-              </LoadingString>
-            </span>
-            <SmallLabel>Focus</SmallLabel>
-          </div>
+          {this.hasDistinctAim() ? this.anchorAndAimPicker : this.focusPicker }
         </Picker>
         { showPopover && (
-          <Popover closeCallback={this.togglePopover} title="Select focus" className={Picker.Popover}>
+          <Popover closeCallback={this.togglePopover} title="Navigation" className={Picker.Popover}>
             <div>
-              <Checkbox
-                checked={reAim}
-                label={(<span>{ReAimName}</span>)}
-                onChange={setReAim}
-              />
+              <Button className={styles.NavigationButton}
+                      onClick={this.setSelectionModeToFocus}
+                      title="Select focus"
+                      transparent={this.state.selectionMode !== SelectionModes.Focus}>
+                <SvgIcon className={styles.ButtonIcon}><Focus/></SvgIcon>
+              </Button>
+              <Button className={styles.NavigationButton}
+                      onClick={this.setSelectionModeToAnchor}
+                      title="Select anchor"
+                      transparent={this.state.selectionMode !== SelectionModes.Anchor}>
+                <SvgIcon className={styles.ButtonIcon}><Anchor/></SvgIcon>
+              </Button>
+              <Button className={styles.NavigationButton}
+                      onClick={this.setSelectionModeToAim}
+                      title="Select aim"
+                      transparent={this.state.selectionMode !== SelectionModes.Aim}>
+                <SvgIcon className={styles.ButtonIcon}><Aim/></SvgIcon>
+              </Button>
             </div>
             <FilterList
               data={nodes}
               favorites={favorites}
               className={styles.list}
-              searchText="Search the universe..."
+              searchText={searchPlaceholder}
               viewComponent={FocusEntry}
-              onSelect={onSelect}
-              active={this.origin}
+              onSelect={this.onSelect}
+              active={this.anchor}
               searchAutoFocus
             />
           </Popover>
@@ -145,26 +240,14 @@ const mapStateToProps = (state) => {
       .map(node => Object.assign(node, { key: node.identifier }));
   }
 
-  const reAim = state.local.focus.reAim;
-
   return {
     nodes,
     favorites,
-    reAim
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    setReAim: enabled => {
-      dispatch(setReAim(enabled))
-    }
-  }
-}
-
 OriginPicker = connect(
-  mapStateToProps,
-  mapDispatchToProps
+  mapStateToProps
 )(OriginPicker);
 
 export default OriginPicker;

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import DataManager, { TopicTypes } from '../../api/DataManager';
-import Icon from '../common/Icon/Icon';
+import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import LoadingString from '../common/LoadingString/LoadingString';
 import Popover from '../common/Popover/Popover';
 import SmallLabel from '../common/SmallLabel/SmallLabel';
@@ -187,13 +187,13 @@ class TimePicker extends Component {
         <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
           <div style={{marginTop: 20}}>
             <Button onClick={this.toggleLock} title="Toggle lock" small transparent={!this.state.useLock}>
-            <Icon icon={this.state.useLock ? 'lock' : 'lock_open'} />
+              <MaterialIcon icon={this.state.useLock ? 'lock' : 'lock_open'} />
             </Button>
           </div>
           <Time time={pendingTime} onChange={this.changeDate} />
           <div style={{marginTop: 20}}>
             <Button onClick={this.toggleCalendar} title="Toggle calendar" small transparent={!this.state.showCalendar}>
-            <Icon icon="view_day" />
+              <MaterialIcon icon="view_day" />
             </Button>
           </div>
         </div>
@@ -209,7 +209,7 @@ class TimePicker extends Component {
 
         <div className={`${Popover.styles.row} ${Popover.styles.content}`}>
           <Button block smalltext onClick={TimePicker.togglePause}>
-            {this.state.isPaused ? <Icon icon="play_arrow" /> : <Icon icon="pause" />}
+            {this.state.isPaused ? <MaterialIcon icon="play_arrow" /> : <MaterialIcon icon="pause" />}
           </Button>
           <Button block smalltext onClick={TimePicker.realtime}>
             Realtime

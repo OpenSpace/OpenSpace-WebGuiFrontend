@@ -1,10 +1,19 @@
 @import "../../../styles/all";
 
-$icon-size: 48px;
+$icon-size: 32px;
+$small-icon-size: 16px;
 
 .Icon {
   font-size: $icon-size;
   margin-right: ($base-padding / 2);
+}
+
+.ButtonIcon {
+  font-size: $small-icon-size;
+}
+
+.NavigationButton {
+  padding: 10px;
 }
 
 .iconImage {
@@ -17,4 +26,8 @@ $icon-size: 48px;
   height: 100%;
   margin-top: 1px;
   max-height: 200px;
+}
+
+.Grid {
+    display: flex;
 }

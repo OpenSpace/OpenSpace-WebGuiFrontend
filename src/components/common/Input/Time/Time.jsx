@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Button from '../Button/Button';
 import InlineInput from '../InlineInput/InlineInput';
 import styles from './Time.scss';
-import Icon from '../../Icon/Icon';
+import MaterialIcon from '../../MaterialIcon/MaterialIcon';
 
 const Elements = {
   FullYear: 'fullYear',
@@ -162,7 +162,7 @@ class Time extends Component {
       return (
         <div key={what} className={styles.element}>
           <Button nopadding transparent onClick={this.onClick(what, 1)}>
-            <Icon icon="expand_less" />
+            <MaterialIcon icon="expand_less" />
           </Button>
           <span>
             <InlineInput
@@ -175,7 +175,7 @@ class Time extends Component {
             />
           </span>
           <Button nopadding transparent onClick={this.onClick(what, -1)}>
-            <Icon icon="expand_more" />
+            <MaterialIcon icon="expand_more" />
           </Button>
         </div>
       );

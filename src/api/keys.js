@@ -2,7 +2,8 @@
 
 export const NavigationAnchorKey = 'NavigationHandler.OrbitalNavigator.Anchor';
 export const NavigationAimKey = 'NavigationHandler.OrbitalNavigator.Aim';
-export const NavigationResetCameraDirectionKey = 'NavigationHandler.OrbitalNavigator.ResetCameraDirection';
+export const RetargetAnchorKey = 'NavigationHandler.OrbitalNavigator.RetargetAnchor';
+export const RetargetAimKey = 'NavigationHandler.OrbitalNavigator.RetargetAim';
 
 // key to get all scene graph nodes
 // export const SceneGraphKey = '__allNodes';

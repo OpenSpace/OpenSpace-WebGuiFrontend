@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Icon from '../Icon/Icon';
+import MaterialIcon from '../MaterialIcon/MaterialIcon';
 import Tooltip from '../Tooltip/Tooltip';
 
 class InfoBox extends Component {
@@ -38,7 +38,7 @@ class InfoBox extends Component {
         onMouseEnter={this.togglePopup}
         onMouseLeave={this.togglePopup}
       >
-        <Icon icon={icon} />
+        <MaterialIcon icon={icon} />
         { showPopup && (
           <Tooltip fixed placement="right" style={this.position}>
             { text }

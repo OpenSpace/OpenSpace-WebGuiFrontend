@@ -10,10 +10,10 @@ class FocusEntry extends Component {
     this.select = this.select.bind(this);
   }
 
-  select() {
+  select(evt) {
     const { identifier } = this.props;
     if (this.props.onSelect) {
-      this.props.onSelect(identifier);
+      this.props.onSelect(identifier, evt);
     }
   }
 
