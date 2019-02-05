@@ -176,9 +176,9 @@ class OriginPicker extends Component {
     const { nodes, favorites } = this.props;
 
     const searchPlaceholder = {
-      Focus: "Search for new focus...",
-      Anchor: "Search for new anchor...",
-      Aim: "Search for new aim...",
+      Focus: "Search for a new focus...",
+      Anchor: "Search for a new anchor...",
+      Aim: "Search for a new aim...",
     }[selectionMode];
 
     return (
