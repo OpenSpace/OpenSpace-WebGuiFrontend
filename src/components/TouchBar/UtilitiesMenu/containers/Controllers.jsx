@@ -77,7 +77,7 @@ class Controllers extends Component {
   onToggleBoolProperty(uri) {
     const propertyNode = this.props.toggleBoolNodes
       .find(property => property.Description.Identifier === uri);
-    const value = (propertyNode.Value === 'true') ? '0' : '1';
+    const value = (propertyNode.Value) ? false : true;
     this.props.ChangePropertyValue(propertyNode.Description, value);
   }
 

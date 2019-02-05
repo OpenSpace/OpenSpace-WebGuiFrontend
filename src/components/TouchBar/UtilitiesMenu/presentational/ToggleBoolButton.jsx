@@ -47,7 +47,7 @@ class ToggleBoolButton extends Component {
 ToggleBoolButton.propTypes = {
   properties: PropTypes.arrayOf(PropTypes.shape({})),
   nodes: PropTypes.arrayOf(PropTypes.shape({
-    Value: PropTypes.string,
+    Value: PropTypes.bool,
   })),
   onToggle: PropTypes.func,
 };

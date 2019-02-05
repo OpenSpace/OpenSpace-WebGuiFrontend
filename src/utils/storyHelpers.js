@@ -12,6 +12,12 @@ export const setStoryStart = (startPosition, startTime) => {
   DataManager.runScript(goToGeoScript);
 };
 
+// Function to trigger the application of 'Story.Interensting' tag to all nodes in the FocusNodesList.
+// This is done by triggering the callback for StoryHandler in the webgui module.
+export const applyStoryInterestingTagsToFocusNodes = () => {
+  DataManager.runScript(`openspace.setPropertyValueSingle('Modules.WebGui.StoryHandler.ApplyAddTag', nil);`);
+};
+
 // Function to toggle the shading on a planet, value = 'true' equals shading enabled
 export const toggleShading = (planet, value) => {
   DataManager.runScript(`openspace.setPropertyValueSingle("Scene.${planet}.Renderable.PerformShading", ${value})`);
@@ -33,7 +39,7 @@ export const toggleHidePlanet = (planet, value) => {
 
 // Function to toggle the visibility of galaxies, value = 'true' equals galaxies enabled
 export const toggleGalaxies = (value) => {
-  DataManager.runScript(`openspace.setPropertyValueSingle("Scene.SloanDigitalSkySurvey.renderable.Enabled", ${value})`);
+  DataManager.runScript(`openspace.setPropertyValueSingle("Scene.SloanDigitalSkySurvey.Renderable.Enabled", ${value})`);
 };
 
 // Function to zoom out once a story is picked, value = 'true' equals overview enabled,

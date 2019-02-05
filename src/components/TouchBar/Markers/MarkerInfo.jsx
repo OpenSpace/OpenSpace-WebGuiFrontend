@@ -9,8 +9,8 @@ const MarkerInfo = (props) => {
 
   const positionStyles = {
     MarkerInfo: {
-      left: `${position[0]}px`,
-      bottom: `calc(${position[1]}px + ${planetRadius}px)`,
+      left: `${Number(position[0])}px`,
+      bottom: `calc(${Number(position[1])}px + ${planetRadius}px)`,
     },
     Icon: {
       fontSize: `${size}em`,
@@ -39,7 +39,7 @@ const MarkerInfo = (props) => {
 };
 
 MarkerInfo.propTypes = {
-  position: PropTypes.arrayOf(PropTypes.string),
+  position: PropTypes.string,
   identifier: PropTypes.string.isRequired,
   size: PropTypes.number.isRequired,
   showInfo: PropTypes.bool,

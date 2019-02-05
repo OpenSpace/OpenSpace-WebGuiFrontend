@@ -67,8 +67,8 @@ class Markers extends Component {
     const focusNodeRadius = Number(currentFocusNode.properties.find(property => property.id === 'ScreenSizeRadius').Value);
 
     return (focusNodes.map((node, i) => {
-      const screenSpacePos = jsonToLuaTable(screenSpaceProperties[i].Value);
-      if (screenVisibilityProperties[i].Value === 'true') {
+      const screenSpacePos = screenSpaceProperties[i].Value;
+      if (screenVisibilityProperties[i].Value) {
         let outsideCircle = true;
         // Check if node is behind the focus node or not, show label if not behind focus node
         if (node.identifier !== focusNodeName) {
@@ -85,20 +85,20 @@ class Markers extends Component {
         }
         // TODO Remove the magic numbers
         const distanceFromCam = (100000000000 / distFromCamToNodeProperties[i].Value);
-        const showLabel = (distanceFromCam > 0.04 && outsideCircle);
 
+        let planetRadius = 0;
         //const planetRadius = Number(screenSpaceRadius[i].Value);
-        let size = planetRadius * 0.1;
         if (screenSpaceRadius) {
-          const planetRadius = Number(screenSpaceRadius[i].Value);
-        } else {
-          const planetRadius = 0;
+          planetRadius = Number(screenSpaceRadius[i].Value);
         }
+        let size = planetRadius * 0.1;
+
+        const showLabel = (distanceFromCam > 0.04 && outsideCircle && planetRadius > 8 );
 
         //const showInfo = (!node.identifier.includes(story.hideinfoicons) && infoIcons.planets &&
         //  planetRadius > 25 && outsideCircle);
         let hasHideInfoIcons = node.identifier.includes(story.hideinfoicons);
-        const showInfo = (hasHideInfoIcons && infoIcons.planets && planetRadius > 25 && outsideCircle);
+        const showInfo = (!hasHideInfoIcons && infoIcons.planets && planetRadius > 25 && outsideCircle);
 
         if (size >= 3) size = 3;
         if (size <= 1.5) size = 1.5;

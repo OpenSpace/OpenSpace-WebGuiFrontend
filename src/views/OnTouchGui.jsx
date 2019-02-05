@@ -25,7 +25,8 @@ import {
 import Slider from '../components/ImageSlider/Slider';
 import { UpdateDeltaTimeNow } from '../utils/timeHelpers';
 import { toggleShading, toggleHighResolution, toggleHidePlanet, toggleGalaxies, toggleZoomOut,
-  resetBoolProperty, setStoryStart, hideDevInfoOnScreen, showDistanceOnScreen } from '../utils/storyHelpers';
+  resetBoolProperty, setStoryStart, hideDevInfoOnScreen, showDistanceOnScreen, applyStoryInterestingTagsToFocusNodes
+} from '../utils/storyHelpers';
 import DeveloperMenu from '../components/TouchBar/UtilitiesMenu/presentational/DeveloperMenu';
 import { isCompatible,
          formatVersion,
@@ -152,6 +153,7 @@ class OnTouchGui extends Component {
       // Set all the story specific properties
       this.props.ChangePropertyValue(storyIdentifierNode.Description, selectedStory);
       this.props.ChangePropertyValue(focusNodesList.Description, json.focusbuttons);
+      applyStoryInterestingTagsToFocusNodes();
       this.props.ChangePropertyValue(applyAddTag.Description, '');
       this.props.ChangePropertyValue(focusNode.Description, json.start.planet);
       this.props.ChangePropertyValue(overViewNode.Description, json.overviewlimit);
