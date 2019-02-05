@@ -139,7 +139,7 @@ class OriginPicker extends Component {
           </span>
           <SmallLabel>Anchor</SmallLabel>
         </div>
-        <SvgIcon className={styles.Icon}><Aim/></SvgIcon>
+        <SvgIcon style={{marginLeft: 10}} className={styles.Icon}><Aim/></SvgIcon>
         <div className={Picker.Title}>
           <span className={Picker.Name}>
             <LoadingString loading={!hasAnchor}>
@@ -215,7 +215,7 @@ class OriginPicker extends Component {
               searchText={searchPlaceholder}
               viewComponent={FocusEntry}
               onSelect={this.onSelect}
-              active={this.anchor}
+              active={this.state.selectionMode === SelectionModes.Aim ? this.aim : this.anchor}
               searchAutoFocus
             />
           </Popover>
