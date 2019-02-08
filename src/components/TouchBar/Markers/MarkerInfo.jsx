@@ -38,8 +38,8 @@ const MarkerInfo = (props) => {
   );
 };
 
-MarkerInfo.propTypes = {
-  position: PropTypes.string,
+MarkerInfo.PropTypes = {
+  position: PropTypes.array,
   identifier: PropTypes.string.isRequired,
   size: PropTypes.number.isRequired,
   showInfo: PropTypes.bool,
