@@ -37,8 +37,8 @@ class OriginPicker extends Component {
     super(props);
 
     this.state = {
-      anchor: 'Earth',
-      aim: 'Earth',
+      anchor: '',
+      aim: '',
       hasAnchor: false,
       hasAim: false,
       selectionMode: SelectionModes.Focus,
@@ -84,7 +84,8 @@ class OriginPicker extends Component {
   }
 
   hasDistinctAim() {
-    return this.state.aim !== this.state.anchor;
+    return (this.state.aim !== '') &&
+           (this.state.aim !== this.state.anchor);
   }
 
 
@@ -166,9 +167,6 @@ class OriginPicker extends Component {
         DataManager.trigger(RetargetAnchorKey);
       }
     }
-    this.setState({
-      selectionMode: SelectionModes.Focus
-    })
   };
 
   render() {
