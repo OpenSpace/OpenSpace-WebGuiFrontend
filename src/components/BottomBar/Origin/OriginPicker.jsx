@@ -154,10 +154,12 @@ class OriginPicker extends Component {
   }
 
   onSelect(identifier, evt) {
-    if (this.state.selectionMode !== SelectionModes.Aim) {
+    if (this.state.selectionMode === SelectionModes.Focus) {
+      DataManager.setValue(NavigationAimKey, '');
       DataManager.setValue(NavigationAnchorKey, identifier);
-    }
-    if (this.state.selectionMode !== SelectionModes.Anchor) {
+    } else if (this.state.selectionMode === SelectionModes.Anchor) {
+      DataManager.setValue(NavigationAnchorKey, identifier);
+    } else if (this.state.selectionMode === SelectionModes.Aim) {
       DataManager.setValue(NavigationAimKey, identifier);
     }
     if (!evt.shiftKey) {
