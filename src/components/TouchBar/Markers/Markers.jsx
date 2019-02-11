@@ -8,6 +8,16 @@ import { fromStringToArray } from '../../../utils/storyHelpers';
 import { OriginKey, FocusNodesListKey } from '../../../api/keys';
 
 class Markers extends Component {
+  constructor(props) {
+    super(props);
+
+    //Sole reason for adding this state was to get react to call componentDidUpdate (for
+    // updates of focus node positions)
+    this.state = {
+      focusNodeM: '',
+    };
+  }
+
   // Check if the point [x,y] is outside the circle with the center [centerX,centerY] and radius r
   static outsideCircle(centerX, centerY, r, x, y) {
     const squareDist = ((x - centerX) ** 2) + ((y - centerY) ** 2);
@@ -63,8 +73,10 @@ class Markers extends Component {
 
     // Get current focus node, its screen space position and its screen space radius
     const focusNodePos = jsonToLuaTable(currentFocusNode.properties.find(property => property.id === 'ScreenSpacePosition').Value);
-    //const focusNodePos = focusNodePosArray.split(',');
     const focusNodeRadius = Number(currentFocusNode.properties.find(property => property.id === 'ScreenSizeRadius').Value);
+    if (this.state.focusNodeM !== focusNodePos) {
+      this.setState({ focusNodeM: focusNodePos });
+    }
 
     return (focusNodes.map((node, i) => {
       const screenSpacePos = screenSpaceProperties[i].Value;
@@ -72,9 +84,6 @@ class Markers extends Component {
         let outsideCircle = true;
         // Check if node is behind the focus node or not, show label if not behind focus node
         if (node.identifier !== focusNodeName) {
-          //outsideCircle = Markers
-          //  .outsideCircle(Number(focusNodePos[0]), Number(focusNodePos[1]),
-          //    focusNodeRadius, Number(screenSpacePos[0]), Number(screenSpacePos[1]));
           if (focusNodePos && screenSpacePos) {
             outsideCircle = Markers.outsideCircle(Number(focusNodePos[0]),
               Number(focusNodePos[1]), focusNodeRadius,
@@ -87,7 +96,6 @@ class Markers extends Component {
         const distanceFromCam = (100000000000 / distFromCamToNodeProperties[i].Value);
 
         let planetRadius = 0;
-        //const planetRadius = Number(screenSpaceRadius[i].Value);
         if (screenSpaceRadius) {
           planetRadius = Number(screenSpaceRadius[i].Value);
         }
@@ -95,8 +103,6 @@ class Markers extends Component {
 
         const showLabel = (distanceFromCam > 0.04 && outsideCircle && planetRadius > 8 );
 
-        //const showInfo = (!node.identifier.includes(story.hideinfoicons) && infoIcons.planets &&
-        //  planetRadius > 25 && outsideCircle);
         let hasHideInfoIcons = node.identifier.includes(story.hideinfoicons);
         const showInfo = (!hasHideInfoIcons && infoIcons.planets && planetRadius > 25 && outsideCircle);
 

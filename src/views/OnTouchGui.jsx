@@ -106,10 +106,9 @@ class OnTouchGui extends Component {
         this.props.StartListening(FocusNodesListKey);
       }
       if (storyIdentifierNode.Value !== story.storyidentifier) {
-//        if (storyIdentifierNode.Value.length !== 0 || story.storyidentifier.length !== 0) {
-//        this.addStoryTree(storyIdentifierNode.Value);
-        this.addStoryTree(story.storyidentifier);
-//        }
+        if (storyIdentifierNode.Value.length !== 0 || story.storyidentifier.length !== 0) {
+          this.addStoryTree(story.storyidentifier);
+        }
       }
     }
     if (this.props.reset) {
