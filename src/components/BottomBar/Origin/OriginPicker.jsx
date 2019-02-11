@@ -172,8 +172,28 @@ class OriginPicker extends Component {
   };
 
   render() {
-    const { showPopover, selectionMode } = this.state;
+    const { hasAnchor, showPopover, selectionMode } = this.state;
     const { nodes, favorites } = this.props;
+
+    const defaultList = favorites.slice();
+
+    // Make sure current anchor is in the default list
+    if (hasAnchor &&
+        !defaultList.find(node => node.identifier === this.state.anchor))
+    {
+      defaultList.push(
+        nodes.find(node => node.identifier === this.state.anchor)
+      );
+    }
+
+    // Make sure current aim is in the defualt list
+    if (this.hasDistinctAim() &&
+        !defaultList.find(node => node.identifier === this.state.aim))
+    {
+      defaultList.push(
+        nodes.find(node => node.identifier === this.state.aim)
+      );
+    }
 
     const searchPlaceholder = {
       Focus: "Search for a new focus...",
@@ -210,7 +230,7 @@ class OriginPicker extends Component {
             </div>
             <FilterList
               data={nodes}
-              favorites={favorites}
+              favorites={defaultList}
               className={styles.list}
               searchText={searchPlaceholder}
               viewComponent={FocusEntry}
