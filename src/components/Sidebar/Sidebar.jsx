@@ -61,6 +61,8 @@ class Sidebar extends React.Component {
     return (
       <Resizable
         size={size}
+        minHeight={size.height}
+        maxHeight={size.height}
         minWidth={200}
         maxWidth={window.innerWidth - 50}
         handleComponent={{right: RightHandle}}
