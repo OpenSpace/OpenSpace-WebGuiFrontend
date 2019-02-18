@@ -12,7 +12,7 @@ import DataManager from '../../../api/DataManager';
 import { NavigationAnchorKey, NavigationAimKey, RetargetAnchorKey, RetargetAimKey } from '../../../api/keys';
 import FocusEntry from './FocusEntry';
 
-import { setReAim } from '../../../api/Actions';
+import { setNavigationAction } from '../../../api/Actions';
 
 import styles from './OriginPicker.scss';
 
@@ -25,7 +25,7 @@ import Focus from 'svg-react-loader?name=Focus!../../../icons/focus.svg';
 // tag that each focusable node must have
 const REQUIRED_TAG = 'GUI.Interesting';
 
-const SelectionModes = {
+const NavigationActions = {
   Focus: 'Focus',
   Anchor: 'Anchor',
   Aim: 'Aim'
@@ -41,7 +41,6 @@ class OriginPicker extends Component {
       aim: '',
       hasAnchor: false,
       hasAim: false,
-      selectionMode: SelectionModes.Focus,
       sceneGraphNodes: [],
       showPopover: false,
     };
@@ -49,9 +48,6 @@ class OriginPicker extends Component {
     this.updateAnchor = this.updateAnchor.bind(this);
     this.updateAim = this.updateAim.bind(this);
     this.togglePopover = this.togglePopover.bind(this);
-    this.setSelectionModeToFocus = this.setSelectionModeToFocus.bind(this);
-    this.setSelectionModeToAnchor = this.setSelectionModeToAnchor.bind(this);
-    this.setSelectionModeToAim = this.setSelectionModeToAim.bind(this);
     this.onSelect = this.onSelect.bind(this);
   }
 
@@ -88,25 +84,6 @@ class OriginPicker extends Component {
            (this.state.aim !== this.state.anchor);
   }
 
-
-  setSelectionModeToFocus() {
-    this.setState({
-      selectionMode: SelectionModes.Focus
-    })
-  }
-
-  setSelectionModeToAnchor() {
-    this.setState({
-      selectionMode: SelectionModes.Anchor
-    })
-  }
-
-  setSelectionModeToAim() {
-    this.setState({
-      selectionMode: SelectionModes.Aim
-    })
-  }
-  
   togglePopover() {
     this.setState({ showPopover: !this.state.showPopover });
   }
@@ -154,16 +131,16 @@ class OriginPicker extends Component {
   }
 
   onSelect(identifier, evt) {
-    if (this.state.selectionMode === SelectionModes.Focus) {
+    if (this.props.navigationAction === NavigationActions.Focus) {
       DataManager.setValue(NavigationAimKey, '');
       DataManager.setValue(NavigationAnchorKey, identifier);
-    } else if (this.state.selectionMode === SelectionModes.Anchor) {
+    } else if (this.props.navigationAction === NavigationActions.Anchor) {
       DataManager.setValue(NavigationAnchorKey, identifier);
-    } else if (this.state.selectionMode === SelectionModes.Aim) {
+    } else if (this.props.navigationAction === NavigationActions.Aim) {
       DataManager.setValue(NavigationAimKey, identifier);
     }
     if (!evt.shiftKey) {
-      if (this.state.selectionMode === SelectionModes.Aim) {
+      if (this.props.navigationAction === NavigationActions.Aim) {
         DataManager.trigger(RetargetAimKey);
       } else {
         DataManager.trigger(RetargetAnchorKey);
@@ -172,8 +149,8 @@ class OriginPicker extends Component {
   };
 
   render() {
-    const { hasAnchor, showPopover, selectionMode } = this.state;
-    const { nodes, favorites } = this.props;
+    const { hasAnchor, showPopover } = this.state;
+    const { nodes, favorites, setNavigationAction, navigationAction } = this.props;
 
     const defaultList = favorites.slice();
 
@@ -199,7 +176,11 @@ class OriginPicker extends Component {
       Focus: "Search for a new focus...",
       Anchor: "Search for a new anchor...",
       Aim: "Search for a new aim...",
-    }[selectionMode];
+    }[navigationAction];
+
+    const setNavigationActionToFocus = () => { setNavigationAction(NavigationActions.Focus); };
+    const setNavigationActionToAnchor = () => { setNavigationAction(NavigationActions.Anchor); };
+    const setNavigationActionToAim = () => { setNavigationAction(NavigationActions.Aim); };
 
     return (
       <div className={Picker.Wrapper}>
@@ -210,21 +191,21 @@ class OriginPicker extends Component {
           <Popover closeCallback={this.togglePopover} title="Navigation" className={Picker.Popover}>
             <div>
               <Button className={styles.NavigationButton}
-                      onClick={this.setSelectionModeToFocus}
+                      onClick={setNavigationActionToFocus}
                       title="Select focus"
-                      transparent={this.state.selectionMode !== SelectionModes.Focus}>
+                      transparent={this.props.navigationAction !== NavigationActions.Focus}>
                 <SvgIcon className={styles.ButtonIcon}><Focus/></SvgIcon>
               </Button>
               <Button className={styles.NavigationButton}
-                      onClick={this.setSelectionModeToAnchor}
+                      onClick={setNavigationActionToAnchor}
                       title="Select anchor"
-                      transparent={this.state.selectionMode !== SelectionModes.Anchor}>
+                      transparent={this.props.navigationAction !== NavigationActions.Anchor}>
                 <SvgIcon className={styles.ButtonIcon}><Anchor/></SvgIcon>
               </Button>
               <Button className={styles.NavigationButton}
-                      onClick={this.setSelectionModeToAim}
+                      onClick={setNavigationActionToAim}
                       title="Select aim"
-                      transparent={this.state.selectionMode !== SelectionModes.Aim}>
+                      transparent={this.props.navigationAction !== NavigationActions.Aim}>
                 <SvgIcon className={styles.ButtonIcon}><Aim/></SvgIcon>
               </Button>
             </div>
@@ -235,7 +216,7 @@ class OriginPicker extends Component {
               searchText={searchPlaceholder}
               viewComponent={FocusEntry}
               onSelect={this.onSelect}
-              active={this.state.selectionMode === SelectionModes.Aim ? this.aim : this.anchor}
+              active={this.props.navigationAction === NavigationActions.Aim ? this.aim : this.anchor}
               searchAutoFocus
             />
           </Popover>
@@ -260,14 +241,26 @@ const mapStateToProps = (state) => {
       .map(node => Object.assign(node, { key: node.identifier }));
   }
 
+  const navigationAction = state.local.navigationAction;
+
   return {
     nodes,
     favorites,
+    navigationAction
   };
 };
 
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setNavigationAction: (action) => {
+      dispatch(setNavigationAction(action))
+    }
+  }
+}
+
 OriginPicker = connect(
-  mapStateToProps
+  mapStateToProps,
+  mapDispatchToProps
 )(OriginPicker);
 
 export default OriginPicker;

@@ -27,7 +27,7 @@ export const actionTypes = {
   initializeShortcuts: 'SHORTCUTS_INITIALIZE',
 
   // action types for local gui settings
-  setReAim: 'LOCAL_SET_RE_AIM',
+  setNavigationAction: 'LOCAL_SET_NAVIGATION_ACTION',
 
   // action types for transfer function editor
   addTransferFunction: 'TRANSFERFUNCTION_ADD_TRANSFER_FUNCTION',

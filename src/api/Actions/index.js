@@ -93,7 +93,7 @@ export const initializeShortcuts = data => ({
   payload: data
 });
 
-export const setReAim = data => ({
-  type: actionTypes.setReAim,
+export const setNavigationAction = data => ({
+  type: actionTypes.setNavigationAction,
   payload: data
 })

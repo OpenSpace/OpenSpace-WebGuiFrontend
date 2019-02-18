@@ -1,19 +1,13 @@
 import { actionTypes } from '../Actions/actionTypes';
 
-const defaultFocusState = {
-  reAim: false
-};
-
 const defaultState = {
-  focus: defaultFocusState
+  navigationAction: 'Focus'
 };
 
-const focus = (state = defaultState, action) => { // state refers to local
+const navigationAction = (state = defaultState, action) => { // state refers to local
   switch (action.type) {
-    case actionTypes.setReAim:
-      return {
-        reAim: action.payload,
-      }
+    case actionTypes.setNavigationAction:
+      return action.payload;
     default:
       return state;
   }
@@ -21,10 +15,10 @@ const focus = (state = defaultState, action) => { // state refers to local
 
 export const local = (state = defaultState, action) => { // state refers to local
   switch (action.type) {
-    case actionTypes.setReAim:
+    case actionTypes.setNavigationAction:
       return {
           ...state,
-          focus: focus(state, action)
+          navigationAction: navigationAction(state, action)
         };
     default:
       return state;
