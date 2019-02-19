@@ -92,3 +92,8 @@ export const initializeShortcuts = data => ({
   type: actionTypes.initializeShortcuts,
   payload: data
 });
+
+export const setNavigationAction = data => ({
+  type: actionTypes.setNavigationAction,
+  payload: data
+})

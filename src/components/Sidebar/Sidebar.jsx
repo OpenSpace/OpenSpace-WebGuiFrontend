@@ -3,7 +3,7 @@ import React from 'react';
 import TabMenu from './TabMenu/TabMenu';
 import SystemMenu from '../SystemMenu/SystemMenu';
 import TabMenuItem from './TabMenu/TabMenuItem';
-import Icon from '../common/Icon/Icon';
+import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import SmallLabel from '../common/SmallLabel/SmallLabel';
 import ScenePane from './ScenePane';
 import SettingsPane from './SettingsPane';
@@ -73,11 +73,11 @@ class Sidebar extends React.Component {
           <TabMenu>
             <SystemMenu />
             <TabMenuItem active={this.isActive('scene')} onClick={this.selectView('scene')}>
-              <Icon className={styles.icon} icon="layers" />
+              <MaterialIcon className={styles.icon} icon="layers" />
               <SmallLabel>Scene</SmallLabel>
             </TabMenuItem>
             <TabMenuItem active={this.isActive('settings')} onClick={this.selectView('settings')}>
-              <Icon className={styles.icon} icon="settings" />
+              <MaterialIcon className={styles.icon} icon="settings" />
               <SmallLabel>Settings</SmallLabel>
             </TabMenuItem>
           </TabMenu>

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ToggleHeader from './ToggleHeader';
-import Icon from '../Icon/Icon';
 
 import styles from './ToggleContent.scss';
 

@@ -4,20 +4,16 @@ import DataManager from '../../../api/DataManager';
 import styles from './FocusEntry.scss';
 import { jsonToLuaString } from '../../../utils/propertyTreeHelpers';
 
-const ORIGIN_KEY = 'NavigationHandler.Origin';
-
 class FocusEntry extends Component {
   constructor(props) {
     super(props);
     this.select = this.select.bind(this);
   }
 
-  select() {
+  select(evt) {
     const { identifier } = this.props;
-    if (this.props.onClick) {
-      this.props.onClick(identifier);
-    } else {
-      DataManager.setValue(ORIGIN_KEY, identifier);
+    if (this.props.onSelect) {
+      this.props.onSelect(identifier, evt);
     }
   }
 
@@ -39,12 +35,12 @@ class FocusEntry extends Component {
 
 FocusEntry.propTypes = {
   identifier: PropTypes.string.isRequired,
-  onClick: PropTypes.func,
+  onSelect: PropTypes.func,
   active: PropTypes.string,
 };
 
 FocusEntry.defaultProps = {
-  onClick: null,
+  onSelect: null,
   active: '',
 };
 

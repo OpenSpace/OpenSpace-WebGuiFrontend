@@ -1,7 +1,10 @@
 // eslint-disable import/prefer-default-export
 
-// key for setting/getting the Origin (focus) node
-export const OriginKey = 'NavigationHandler.Origin';
+export const NavigationAnchorKey = 'NavigationHandler.OrbitalNavigator.Anchor';
+export const NavigationAimKey = 'NavigationHandler.OrbitalNavigator.Aim';
+export const RetargetAnchorKey = 'NavigationHandler.OrbitalNavigator.RetargetAnchor';
+export const RetargetAimKey = 'NavigationHandler.OrbitalNavigator.RetargetAim';
+
 // key to get all scene graph nodes
 // export const SceneGraphKey = '__allNodes';
 // key to get all properties in openspace engine

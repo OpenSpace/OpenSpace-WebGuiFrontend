@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import Icon from '../common/Icon/Icon';
+import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 
 import styles from './Pane.scss';
 
@@ -18,7 +18,7 @@ class Pane extends Component {
 
           { closeCallback && (
             <button onClick={closeCallback(false)} className={styles.close}>
-              <Icon icon="close" className="small" />
+              <MaterialIcon icon="close" className="small" />
             </button>
           ) }
         </header>

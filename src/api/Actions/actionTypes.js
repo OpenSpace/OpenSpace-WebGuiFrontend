@@ -26,6 +26,9 @@ export const actionTypes = {
   unsubscribeToShortcuts: 'SHORTCUTS_UNSUBSCRIBE',
   initializeShortcuts: 'SHORTCUTS_INITIALIZE',
 
+  // action types for local gui settings
+  setNavigationAction: 'LOCAL_SET_NAVIGATION_ACTION',
+
   // action types for transfer function editor
   addTransferFunction: 'TRANSFERFUNCTION_ADD_TRANSFER_FUNCTION',
   addEnvelope: 'TRANSFERFUNCTION_ADD_ENVELOPE',

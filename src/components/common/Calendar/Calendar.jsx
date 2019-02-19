@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { rotate } from '../../../utils/helpers';
-import Icon from '../Icon/Icon';
+import MaterialIcon from '../MaterialIcon/MaterialIcon';
 import Button from '../Input/Button/Button';
 
 import styles from './Calendar.scss';
@@ -195,12 +195,12 @@ class Calendar extends Component {
       <section>
         <header className={styles.header}>
           <Button transparent small onClick={this.changeMonth(-1)}>
-            <Icon icon="chevron_left" />
+            <MaterialIcon icon="chevron_left" />
           </Button>
           <div>
             { this.props.todayButton && (
               <Button onClick={this.setCurrentMonth} title="Today" small transparent>
-                <Icon icon="today" />
+                <MaterialIcon icon="today" />
               </Button>
             )} {
               this.monthString()
@@ -212,7 +212,7 @@ class Calendar extends Component {
             />
           </div>
           <Button transparent small onClick={this.changeMonth(1)}>
-            <Icon icon="chevron_right" />
+            <MaterialIcon icon="chevron_right" />
           </Button>
         </header>
 

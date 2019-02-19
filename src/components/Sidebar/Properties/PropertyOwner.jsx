@@ -11,8 +11,10 @@ import MatrixProperty from './MatrixProperty';
 import styles from './../SceneGraphNode.scss';
 import Button from '../../common/Input/Button/Button';
 import DataManager from '../../../api/DataManager';
-import { OriginKey } from '../../../api/keys';
-import Icon from '../../common/Icon/Icon';
+import { NavigationAnchorKey, NavigationAimKey, RetargetAnchorKey } from '../../../api/keys';
+import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
+import SvgIcon from '../../common/SvgIcon/SvgIcon';
+import FocusIcon from 'svg-react-loader?name=Focus!../../../icons/focus.svg';
 import Shortcut from './../Shortcut';
 
 const types = {
@@ -35,16 +37,16 @@ const getFocusButton = (isSceneGraphNode, identifier, subowners) => {
   if (isSceneGraphNode) {
     const focusButton = <div className={styles.buttonContainer}>
       <Button className={styles.shybutton} identifier={identifier} transparent onClick={focusOnThis} >
-        <Icon icon="gps_fixed" />
+        <SvgIcon><FocusIcon/></SvgIcon>
       </Button>
     </div>
 
     const bothButtons = <div className={styles.buttonContainer}>
       <Button className={styles.globeButton} identifier={identifier} onClick={gotoThis} >
-        <Icon icon="language" />
+        <MaterialIcon icon="language" />
       </Button>
        <Button className={styles.shybutton} identifier={identifier} onClick={focusOnThis} >
-        <Icon icon="gps_fixed" />
+        <SvgIcon><FocusIcon/></SvgIcon>
       </Button>
     </div>
 
@@ -61,14 +63,19 @@ const getFocusButton = (isSceneGraphNode, identifier, subowners) => {
 
 const gotoThis = (e) => {
   e.stopPropagation();
-  DataManager.setValue(OriginKey, '"' + e.currentTarget.getAttribute("identifier") + '"');
+  DataManager.setValue(NavigationAnchorKey, '"' + e.currentTarget.getAttribute("identifier") + '"');
+  DataManager.setValue(NavigationAimKey, '"' + e.currentTarget.getAttribute("identifier") + '"');
   const GotoGeoScript = 'openspace.globebrowsing.goToGeo(0, 0, 20000000)';
   DataManager.runScript(GotoGeoScript);
 }
 
 const focusOnThis = (e) => {
   e.stopPropagation();
-  DataManager.setValue(OriginKey, e.currentTarget.getAttribute("identifier"));
+  DataManager.setValue(NavigationAnchorKey, e.currentTarget.getAttribute("identifier"));
+  DataManager.setValue(NavigationAimKey, e.currentTarget.getAttribute("identifier"));
+  if (!e.shiftKey) {
+    DataManager.trigger(RetargetAnchorKey);
+  }
 }
 
 const getTitle = (identifier, guiName, properties) => {
