@@ -38,3 +38,11 @@ export const SetDeltaTimeScript = `openspace.time.setDeltaTime(${ValuePlaceholde
 export const InterpolateTimeScript = `openspace.time.interpolateTime(${ValuePlaceholder}, ${ValuePlaceholder})`;
 export const InterpolateTimeRelativeScript = `openspace.time.interpolateTimeRelative(${ValuePlaceholder}, ${ValuePlaceholder})`;
 export const InterpolateDeltaTimeScript = `openspace.time.interpolateDeltaTime(${ValuePlaceholder}, ${ValuePlaceholder})`;
+
+// keys for session recording
+export const SessionRecordingFormatPlaceholder = '__format__';
+export const SessionRecordingTimePlaceholder = '__time__';
+export const SessionRecordingStartScript = `openspace.sessionRecording.startRecording${SessionRecordingFormatPlaceholder}("${ValuePlaceholder}")`;
+export const SessionRecordingStopScript = `openspace.sessionRecording.stopRecording()`;
+export const SessionPlaybackStartScript = `openspace.sessionRecording.startPlayback${SessionRecordingTimePlaceholder}("${ValuePlaceholder}")`;
+export const SessionPlaybackStopScript = `openspace.sessionRecording.stopPlayback()`;
