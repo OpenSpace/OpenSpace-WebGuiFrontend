@@ -40,6 +40,7 @@ export const InterpolateTimeRelativeScript = `openspace.time.interpolateTimeRela
 export const InterpolateDeltaTimeScript = `openspace.time.interpolateDeltaTime(${ValuePlaceholder}, ${ValuePlaceholder})`;
 
 // keys for session recording
+export const SessionRecordingState = 'recState';
 export const SessionRecordingFormatPlaceholder = '__format__';
 export const SessionRecordingTimePlaceholder = '__time__';
 export const SessionRecordingStartScript = `openspace.sessionRecording.startRecording${SessionRecordingFormatPlaceholder}("${ValuePlaceholder}")`;

@@ -6,6 +6,7 @@ const TOPIC_TYPES = {
   get: 'get',
   interaction: 'interaction',
   luascript: 'luascript',
+  sessionRecording: 'sessionRecording',
   set: 'set',
   subscribe: 'subscribe',
   time: 'time',

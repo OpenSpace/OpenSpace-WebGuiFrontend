@@ -18,6 +18,7 @@ import {
   SessionRecordingFormatPlaceholder,
   SessionRecordingTimePlaceholder,
   SessionRecordingStartScript,
+  SessionRecordingState,
   SessionRecordingStopScript,
   SessionPlaybackStartScript,
   SessionPlaybackStopScript,
@@ -39,9 +40,12 @@ class SessionRec extends Component {
       filenameRec: '',
       filenamePlayback: '',
       sessionMode: 'stopped',
-      showPopover: false
+      showPopover: false,
+      recState: 0,
+      recStateSubscriptionId: -1
     };
 
+    this.recStateSubscriptionCallback = this.recStateSubscriptionCallback.bind(this);
     this.togglePopover = this.togglePopover.bind(this);
     this.toggleRecording = this.toggleRecording.bind(this);
     this.stopRecording = this.stopRecording.bind();
@@ -50,9 +54,12 @@ class SessionRec extends Component {
   }
 
   componentDidMount() {
+        this.state.recStateSubscriptionId = DataManager
+      .subscribe(SessionRecordingState, this.recStateSubscriptionCallback, TopicTypes.sessionRecording);
   }
 
   componentWillUnmount() {
+    DataManager.unsubscribe(SessionRecordingState, this.state.recStateSubscriptionId);
   }
 
   get popover() {
@@ -74,7 +81,7 @@ class SessionRec extends Component {
             </div>
             <div className={`${Popover.styles.row} ${Popover.styles.content}`}>
               <Button block onClick={this.toggleRecording} title="Toggle Recording" small transparent={false}>
-                {this.state.sessionMode == 'stopped' ? <MaterialIcon icon="play_arrow" /> : <MaterialIcon icon="pause" />}
+                {this.state.recState == 0 ? <MaterialIcon icon="play_arrow" /> : <MaterialIcon icon="pause" />}
                   Recording
               </Button>
             </div>
@@ -100,7 +107,7 @@ class SessionRec extends Component {
             </div>
             <div className={`${Popover.styles.row} ${Popover.styles.content}`}>
               <Button block onClick={this.togglePlayback} title="Toggle Playback" small transparent={false}>
-                {this.state.sessionMode == 'stopped' ? <MaterialIcon icon="play_arrow" /> : <MaterialIcon icon="pause" />}
+                {this.state.recState == 0 ? <MaterialIcon icon="play_arrow" /> : <MaterialIcon icon="pause" />}
                   Playback
               </Button>
             </div>
@@ -124,9 +131,9 @@ class SessionRec extends Component {
   }
 
   toggleRecording() {
-    const { sessionMode } = this.state;
+    const { recState, sessionMode } = this.state;
 
-    if (sessionMode == 'stopped') {
+    if (recState == 0) {
       this.startRecording();
       this.setState({
         sessionMode: 'recording'
@@ -170,9 +177,9 @@ class SessionRec extends Component {
   }
 
   togglePlayback() {
-    const { sessionMode } = this.state;
+    const { recState, sessionMode } = this.state;
 
-    if (sessionMode == 'stopped') {
+    if (recState == 0) {
       this.startPlayback();
       this.setState({
         sessionMode: 'playing'
@@ -237,6 +244,15 @@ class SessionRec extends Component {
 
   togglePopover() {
     this.setState({ showPopover: !this.state.showPopover });
+  }
+
+  /**
+   * Callback for delta time subscription
+   * @param message [object] - message object sent from Subscription
+   */
+  recStateSubscriptionCallback(message) {
+    const newRecState = message;
+    this.setState( {recState: newRecState.state} );
   }
 
   render() {
