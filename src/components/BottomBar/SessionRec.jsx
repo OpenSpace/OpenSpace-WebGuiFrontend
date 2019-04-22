@@ -46,6 +46,7 @@ class SessionRec extends Component {
     };
 
     this.recStateSubscriptionCallback = this.recStateSubscriptionCallback.bind(this);
+    this.playbackListCallback = this.playbackListCallback.bind(this);
     this.togglePopover = this.togglePopover.bind(this);
     this.toggleRecording = this.toggleRecording.bind(this);
     this.stopRecording = this.stopRecording.bind();
@@ -54,7 +55,7 @@ class SessionRec extends Component {
   }
 
   componentDidMount() {
-        this.state.recStateSubscriptionId = DataManager
+    this.state.recStateSubscriptionId = DataManager
       .subscribe(SessionRecordingState, this.recStateSubscriptionCallback, TopicTypes.sessionRecording);
   }
 
@@ -179,6 +180,9 @@ class SessionRec extends Component {
   togglePlayback() {
     const { recState, sessionMode } = this.state;
 
+    this.state.playbackListSubscriptionId = DataManager
+      .getValue('playbackList', this.playbackListCallback);
+
     if (recState == 0) {
       this.startPlayback();
       this.setState({
@@ -253,6 +257,10 @@ class SessionRec extends Component {
   recStateSubscriptionCallback(message) {
     const newRecState = message;
     this.setState( {recState: newRecState.state} );
+  }
+
+  playbackListCallback(message) {
+    const listFiles = message;
   }
 
   render() {
