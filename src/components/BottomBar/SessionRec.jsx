@@ -22,10 +22,11 @@ import {
   SessionRecordingStopScript,
   SessionPlaybackStartScript,
   SessionPlaybackStopScript,
+  sessionStateIDLE,
   ValuePlaceholder
 } from '../../api/keys';
 
-import SimulationIncrement from './SimulationIncrement';
+import PlaybackFiles from './PlaybackFiles';
 import styles from './SessionRec.scss';
 
 
@@ -39,22 +40,23 @@ class SessionRec extends Component {
       timeMode: 'timeImmediate',
       filenameRec: '',
       filenamePlayback: '',
-      sessionMode: 'stopped',
       showPopover: false,
-      recState: 0,
+      recState: sessionStateIDLE,
       recStateSubscriptionId: -1
     };
 
     this.recStateSubscriptionCallback = this.recStateSubscriptionCallback.bind(this);
-    this.playbackListCallback = this.playbackListCallback.bind(this);
     this.togglePopover = this.togglePopover.bind(this);
     this.toggleRecording = this.toggleRecording.bind(this);
     this.stopRecording = this.stopRecording.bind();
     this.togglePlayback = this.togglePlayback.bind(this);
     this.stopPlayback = this.stopPlayback.bind();
+    this.updateFilenamePlaybackValue = this.updateFilenamePlaybackValue.bind(this);
   }
 
   componentDidMount() {
+    //Subscribe to session recording state in openspace (idle/recording/playback).
+    // Necessary for updating the displayed rec/play state and buttons
     this.state.recStateSubscriptionId = DataManager
       .subscribe(SessionRecordingState, this.recStateSubscriptionCallback, TopicTypes.sessionRecording);
   }
@@ -82,7 +84,7 @@ class SessionRec extends Component {
             </div>
             <div className={`${Popover.styles.row} ${Popover.styles.content}`}>
               <Button block onClick={this.toggleRecording} title="Toggle Recording" small transparent={false}>
-                {this.state.recState == 0 ? <MaterialIcon icon="play_arrow" /> : <MaterialIcon icon="pause" />}
+                {this.state.recState == sessionStateIDLE ? <MaterialIcon icon="play_arrow" /> : <MaterialIcon icon="pause" />}
                   Recording
               </Button>
             </div>
@@ -93,7 +95,7 @@ class SessionRec extends Component {
 
         <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
           <div style={{marginTop: 20}}>
-            <input name="filenamePlayback" value={this.state.filenamePlayback} onChange={evt => this.updateFilenamePlaybackValue(evt)} />
+            <PlaybackFiles />
             <div className="form-check">
               <input type="radio" value="timeImmediate" name="playbackTimeMode" className="form-check-input" checked={true} /> Immediate playback (forced time)
             </div>
@@ -108,7 +110,7 @@ class SessionRec extends Component {
             </div>
             <div className={`${Popover.styles.row} ${Popover.styles.content}`}>
               <Button block onClick={this.togglePlayback} title="Toggle Playback" small transparent={false}>
-                {this.state.recState == 0 ? <MaterialIcon icon="play_arrow" /> : <MaterialIcon icon="pause" />}
+                {this.state.recState == sessionStateIDLE ? <MaterialIcon icon="play_arrow" /> : <MaterialIcon icon="pause" />}
                   Playback
               </Button>
             </div>
@@ -132,18 +134,13 @@ class SessionRec extends Component {
   }
 
   toggleRecording() {
-    const { recState, sessionMode } = this.state;
+    const { recState } = this.state;
 
-    if (recState == 0) {
+    //Uses idle/rec/play state from openspace to toggle between record/stop
+    if (recState == sessionStateIDLE) {
       this.startRecording();
-      this.setState({
-        sessionMode: 'recording'
-      });
     } else {
       this.stopRecording();
-      this.setState({
-        sessionMode: 'stopped'
-      });
     }
   }
 
@@ -178,26 +175,20 @@ class SessionRec extends Component {
   }
 
   togglePlayback() {
-    const { recState, sessionMode } = this.state;
+    const { recState } = this.state;
 
-    this.state.playbackListSubscriptionId = DataManager
-      .getValue('playbackList', this.playbackListCallback);
-
-    if (recState == 0) {
+    //Uses idle/rec/play state from openspace to toggle between play/stop
+    if (recState == sessionStateIDLE) {
       this.startPlayback();
-      this.setState({
-        sessionMode: 'playing'
-      });
     } else {
       this.stopPlayback();
-      this.setState({
-        sessionMode: 'stopped'
-      });
     }
   }
 
   startPlayback () {
     const { timeMode, filenamePlayback } = this.state;
+
+    this.updateFilenamePlaybackValue(PlaybackFiles.playbackFile());
 
     if (timeMode == 'timeImmediate') {
       this.startPlaybackImmediate(filenamePlayback);
@@ -247,20 +238,20 @@ class SessionRec extends Component {
   }
 
   togglePopover() {
-    this.setState({ showPopover: !this.state.showPopover });
+    if (!this.state.showPopover) {
+      this.setState({ showPopover: true})
+    } else {
+      this.setState({ showPopover: false})
+    }
   }
 
   /**
-   * Callback for delta time subscription
+   * Callback for SessionRecording idle/play/record state subscription
    * @param message [object] - message object sent from Subscription
    */
   recStateSubscriptionCallback(message) {
     const newRecState = message;
     this.setState( {recState: newRecState.state} );
-  }
-
-  playbackListCallback(message) {
-    const listFiles = message;
   }
 
   render() {
