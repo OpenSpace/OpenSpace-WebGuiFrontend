@@ -13,6 +13,9 @@ import ScaleInput from '../common/Input/ScaleInput/ScaleInput';
 import FilterList from '../common/FilterList/FilterList';
 import ScenePaneListItem from '../Sidebar/ScenePaneListItem';
 import Input from '../common/Input/Input/Input';
+import Row from '../common/Row/Row';
+import Select from '../common/Input/Select/Select';
+
 
 import {
   SessionRecordingFormatPlaceholder,
@@ -26,7 +29,6 @@ import {
   ValuePlaceholder
 } from '../../api/keys';
 
-import PlaybackFiles from './PlaybackFiles';
 import styles from './SessionRec.scss';
 
 
@@ -40,6 +42,7 @@ class SessionRec extends Component {
       timeMode: 'timeImmediate',
       filenameRec: '',
       filenamePlayback: '',
+      fileList: '',
       showPopover: false,
       recState: sessionStateIDLE,
       recStateSubscriptionId: -1
@@ -52,6 +55,9 @@ class SessionRec extends Component {
     this.togglePlayback = this.togglePlayback.bind(this);
     this.stopPlayback = this.stopPlayback.bind();
     this.updateFilenamePlaybackValue = this.updateFilenamePlaybackValue.bind(this);
+    this.setPlaybackFile = this.setPlaybackFile.bind(this);
+    this.playbackListCallback = this.playbackListCallback.bind(this);
+    this.refreshPlaybackFilesList = this.refreshPlaybackFilesList.bind(this);
   }
 
   componentDidMount() {
@@ -69,6 +75,10 @@ class SessionRec extends Component {
     const { time } = this.state;
     var nodes = "first";
     var filterSubObjects = true;
+
+    const { filenamePlayback } = this.state;
+    const options = Object.values(this.state.fileList)
+      .map(fname => ({ value: fname, label: fname }));
 
     return (
       <Popover className={Picker.Popover} title="Session Rec Options" closeCallback={this.togglePopover} detachable >
@@ -95,7 +105,18 @@ class SessionRec extends Component {
 
         <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
           <div style={{marginTop: 20}}>
-            <PlaybackFiles name={this.state.name} onChange={this.updateFilenamePlaybackValue.bind(this, this.state.filenamePlayback)} />
+          <div>
+            <Row>
+            <Select
+              direction="up"
+              label="Display unit"
+              onChange={this.setPlaybackFile}
+              options={options}
+              value={filenamePlayback}
+            />
+            </Row>
+            <div style={{ height: '10px' }} />
+            </div>
             <div className="form-check">
               <input type="radio" value="timeImmediate" name="playbackTimeMode" className="form-check-input" checked={true} /> Immediate playback (forced time)
             </div>
@@ -119,6 +140,38 @@ class SessionRec extends Component {
 
       </Popover>
     );
+  }
+
+  get filenamePlayback() {
+    const { filenamePlayback } = this.state;
+    return filenamePlayback;
+  }
+
+  setPlaybackFile({ value }) {
+    this.setState({ filenamePlayback: value });
+    /*//Trigger parent to be notified of change
+    this.props.onChange(this.state.filenamePlayback);*/
+  }
+
+  refreshPlaybackFilesList() {
+    //When clicking to display sessionRecording menu, trigger openspace to
+    // read its recording directory and provide a list of available playback
+    // files (which will go to the specified callback file)
+    this.state.playbackListSubscriptionId = DataManager
+      .getValue('playbackList', this.playbackListCallback);
+    //this.setState({ filenamePlayback: value });
+  }
+
+  /**
+   * Callback for response to request for list of available playback files
+   * @param message [object] - message object sent from server module connection
+   */
+  playbackListCallback(message) {
+    let fList = [];
+    var listFiles = message;
+    //parse 'listFiles' here by newline
+    fList = String(listFiles.playbackList).split("\n");
+    this.setState({fileList: fList});
   }
 
   changePlaybackFile(event) {
@@ -243,6 +296,7 @@ class SessionRec extends Component {
 
   togglePopover() {
     if (!this.state.showPopover) {
+      this.refreshPlaybackFilesList();
       this.setState({ showPopover: true})
     } else {
       this.setState({ showPopover: false})
