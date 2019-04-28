@@ -13,7 +13,7 @@ class PlaybackFiles extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      playbackFile: '',
+      filenamePlayback: '',
       fileList: ''
     };
 
@@ -29,13 +29,15 @@ class PlaybackFiles extends Component {
   componentWillUnmount() {
   }
 
-  get playbackFile() {
-    const { playbackFile } = this.state;
-    return playbackFile;
+  get filenamePlayback() {
+    const { filenamePlayback } = this.state;
+    return filenamePlayback;
   }
 
   setPlaybackFile({ value }) {
-    this.setState({ playbackFile: value });
+    this.setState({ filenamePlayback: value });
+    //Trigger parent to be notified of change
+    this.props.onChange(this.state.filenamePlayback);
   }
 
   refreshPlaybackFilesList() {
@@ -44,7 +46,7 @@ class PlaybackFiles extends Component {
     // files (which will go to the specified callback file)
     this.state.playbackListSubscriptionId = DataManager
       .getValue('playbackList', this.playbackListCallback);
-    //this.setState({ playbackFile: value });
+    //this.setState({ filenamePlayback: value });
   }
 
   /**
@@ -60,7 +62,7 @@ class PlaybackFiles extends Component {
   }
 
   render() {
-    const { playbackFile } = this.state;
+    const { filenamePlayback } = this.state;
 
     //Trying to add filenames here
     //var flLength = this.state.fileList.length;
@@ -80,7 +82,7 @@ class PlaybackFiles extends Component {
             label="Display unit"
             onChange={this.setPlaybackFile}
             options={options}
-            value={playbackFile}
+            value={filenamePlayback}
         />
         </Row>
         <div style={{ height: '10px' }} />

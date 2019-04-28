@@ -95,7 +95,7 @@ class SessionRec extends Component {
 
         <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
           <div style={{marginTop: 20}}>
-            <PlaybackFiles />
+            <PlaybackFiles name={this.state.name} onChange={this.updateFilenamePlaybackValue.bind(this, this.state.filenamePlayback)} />
             <div className="form-check">
               <input type="radio" value="timeImmediate" name="playbackTimeMode" className="form-check-input" checked={true} /> Immediate playback (forced time)
             </div>
@@ -119,6 +119,10 @@ class SessionRec extends Component {
 
       </Popover>
     );
+  }
+
+  changePlaybackFile(event) {
+    this.setState({playbackFile: event.target.value});
   }
 
   updateFilenameRecValue(evt) {
@@ -188,7 +192,7 @@ class SessionRec extends Component {
   startPlayback () {
     const { timeMode, filenamePlayback } = this.state;
 
-    this.updateFilenamePlaybackValue(PlaybackFiles.playbackFile());
+    //this.updateFilenamePlaybackValue(PlaybackFiles.playbackFile());
 
     if (timeMode == 'timeImmediate') {
       this.startPlaybackImmediate(filenamePlayback);
