@@ -26,6 +26,8 @@ import {
   SessionPlaybackStartScript,
   SessionPlaybackStopScript,
   sessionStateIDLE,
+  sessionStateRECORDING,
+  sessionStatePLAYING,
   ValuePlaceholder
 } from '../../api/keys';
 
@@ -81,11 +83,13 @@ class SessionRec extends Component {
       .map(fname => ({ value: fname, label: fname }));
 
     return (
-      <Popover className={Picker.Popover} title="Session Rec Options" closeCallback={this.togglePopover} detachable >
+      <Popover className={Picker.Popover} title="Session Record/Playback Options" closeCallback={this.togglePopover} detachable >
 
         <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
           <div style={{marginTop: 20}}>
+            Enter record filename:
             <input name='filenameRec' value={this.state.filenameRec} onChange={evt => this.updateFilenameRecValue(evt)}/>
+            <div style={{ height: '10px' }} />
             <div className="form-check">
               <input type="radio" value="Ascii" name="format" className="form-check-input"/> ASCII
             </div>
@@ -93,9 +97,10 @@ class SessionRec extends Component {
               <input type="radio" value="Binary" name="format" className="form-check-input" checked={true} /> Binary
             </div>
             <div className={`${Popover.styles.row} ${Popover.styles.content}`}>
-              <Button block onClick={this.toggleRecording} title="Toggle Recording" small transparent={false}>
-                {this.state.recState == sessionStateIDLE ? <MaterialIcon icon="play_arrow" /> : <MaterialIcon icon="pause" />}
-                  Recording
+              <Button block onClick={this.toggleRecording} title="Toggle Recording" small transparent={false}
+                      disabled={this.state.recState == sessionStatePLAYING}>
+                {this.state.recState == sessionStateIDLE ? <MaterialIcon icon="fiber_manual_record" /> : <MaterialIcon icon="stop" />}
+                  Record
               </Button>
             </div>
           </div>
@@ -109,7 +114,7 @@ class SessionRec extends Component {
             <Row>
             <Select
               direction="up"
-              label="Display unit"
+              label="Select playback file"
               onChange={this.setPlaybackFile}
               options={options}
               value={filenamePlayback}
@@ -130,9 +135,10 @@ class SessionRec extends Component {
               <input type="radio" value="timeSimulation" name="playbackTimeMode" className="form-check-input" /> Delayed playback (simulation time)
             </div>
             <div className={`${Popover.styles.row} ${Popover.styles.content}`}>
-              <Button block onClick={this.togglePlayback} title="Toggle Playback" small transparent={false}>
-                {this.state.recState == sessionStateIDLE ? <MaterialIcon icon="play_arrow" /> : <MaterialIcon icon="pause" />}
-                  Playback
+              <Button block onClick={this.togglePlayback} title="Toggle Playback" small transparent={false}
+                      disabled={this.state.recState == sessionStateRECORDING}>
+                {this.state.recState == sessionStateIDLE ? <MaterialIcon icon="play_arrow" /> : <MaterialIcon icon="stop" />}
+                  Play
               </Button>
             </div>
           </div>
@@ -209,6 +215,7 @@ class SessionRec extends Component {
     } else if (format == 'Ascii') {
       this.startRecordingAscii(filenameRec);
     }
+    this.setState({ showPopover: false});
   }
 
   stopRecording() {
@@ -256,6 +263,7 @@ class SessionRec extends Component {
     } else if (timeMode == 'timeSimulation') {
       this.startPlaybackSimulationTime(filenamePlayback);
     }
+    this.setState({ showPopover: false});
   }
 
   stopPlayback() {
@@ -319,6 +327,7 @@ class SessionRec extends Component {
         <Picker onClick={this.togglePopover} className={`${styles.timePicker} ${showPopover ? Picker.Active : ''}`}>
           <div className={Picker.Title}>
             <span className={Picker.Name}>
+            {this.state.recState == sessionStateIDLE ? <MaterialIcon /> : (this.state.recState == sessionStatePLAYING ? <MaterialIcon icon="play_arrow" /> : <MaterialIcon icon="fiber_manual_record" /> )}
               REC
             </span>
           </div>

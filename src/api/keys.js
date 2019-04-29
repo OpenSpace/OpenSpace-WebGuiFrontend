@@ -48,3 +48,5 @@ export const SessionRecordingStopScript = `openspace.sessionRecording.stopRecord
 export const SessionPlaybackStartScript = `openspace.sessionRecording.startPlayback${SessionRecordingTimePlaceholder}("${ValuePlaceholder}")`;
 export const SessionPlaybackStopScript = `openspace.sessionRecording.stopPlayback()`;
 export const sessionStateIDLE = 0;
+export const sessionStateRECORDING = 1;
+export const sessionStatePLAYING = 2;
