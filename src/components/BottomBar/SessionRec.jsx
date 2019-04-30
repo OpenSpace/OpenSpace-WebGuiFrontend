@@ -15,6 +15,7 @@ import ScenePaneListItem from '../Sidebar/ScenePaneListItem';
 import Input from '../common/Input/Input/Input';
 import Row from '../common/Row/Row';
 import Select from '../common/Input/Select/Select';
+import Checkbox from '../common/Input/Checkbox/Checkbox';
 
 
 import {
@@ -40,8 +41,8 @@ class SessionRec extends Component {
     super(props);
 
     this.state = {
-      format: 'Binary',
-      timeMode: 'timeImmediate',
+      recAscii: false,
+      forceTime: true,
       filenameRec: '',
       filenamePlayback: '',
       fileList: '',
@@ -87,14 +88,17 @@ class SessionRec extends Component {
 
         <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
           <div style={{marginTop: 20}}>
-            Enter record filename:
+            Enter recording filename:
             <input name='filenameRec' value={this.state.filenameRec} onChange={evt => this.updateFilenameRecValue(evt)}/>
             <div style={{ height: '10px' }} />
             <div className="form-check">
-              <input type="radio" value="Ascii" name="format" className="form-check-input"/> ASCII
-            </div>
-            <div className="form-check">
-              <input type="radio" value="Binary" name="format" className="form-check-input" checked={true} /> Binary
+              <Checkbox
+                checked={this.state.recAscii}
+                name="recAsciiMode"
+                className="form-check-input"
+                label="Record in ASCII file format"
+                onChange={evt => this.setRecFormat(evt)}
+              />
             </div>
             <div className={`${Popover.styles.row} ${Popover.styles.content}`}>
               <Button block onClick={this.toggleRecording} title="Toggle Recording" small transparent={false}
@@ -123,16 +127,13 @@ class SessionRec extends Component {
             <div style={{ height: '10px' }} />
             </div>
             <div className="form-check">
-              <input type="radio" value="timeImmediate" name="playbackTimeMode" className="form-check-input" checked={true} /> Immediate playback (forced time)
-            </div>
-            <div className="form-check">
-              <input type="radio" value="timeRecorded" name="playbackTimeMode" className="form-check-input" /> Delayed playback (recorded time)
-            </div>
-            <div className="form-check">
-              <input type="radio" value="timeApplication" name="playbackTimeMode" className="form-check-input" /> Delayed playback (application time)
-            </div>
-            <div className="form-check">
-              <input type="radio" value="timeSimulation" name="playbackTimeMode" className="form-check-input" /> Delayed playback (simulation time)
+              <Checkbox
+                checked={this.state.forceTime}
+                name="forceTimeInput"
+                className="form-check-input"
+                label="Force time change to recorded time"
+                onChange={evt => this.toggleTiming(evt)}
+              />
             </div>
             <div className={`${Popover.styles.row} ${Popover.styles.content}`}>
               <Button block onClick={this.togglePlayback} title="Toggle Playback" small transparent={false}
@@ -155,8 +156,6 @@ class SessionRec extends Component {
 
   setPlaybackFile({ value }) {
     this.setState({ filenamePlayback: value });
-    /*//Trigger parent to be notified of change
-    this.props.onChange(this.state.filenamePlayback);*/
   }
 
   refreshPlaybackFilesList() {
@@ -165,7 +164,6 @@ class SessionRec extends Component {
     // files (which will go to the specified callback file)
     this.state.playbackListSubscriptionId = DataManager
       .getValue('playbackList', this.playbackListCallback);
-    //this.setState({ filenamePlayback: value });
   }
 
   /**
@@ -208,13 +206,14 @@ class SessionRec extends Component {
   }
 
   startRecording () {
-    const { format, filenameRec } = this.state;
+    const { recAscii, filenameRec } = this.state;
 
-    if (format == 'Binary') {
-      this.startRecordingBinary(filenameRec);
-    } else if (format == 'Ascii') {
+    if (recAscii) {
       this.startRecordingAscii(filenameRec);
+    } else {
+      this.startRecordingBinary(filenameRec);
     }
+    //Hide popover menu after starting record
     this.setState({ showPopover: false});
   }
 
@@ -250,19 +249,14 @@ class SessionRec extends Component {
   }
 
   startPlayback () {
-    const { timeMode, filenamePlayback } = this.state;
+    const { forceTime, filenamePlayback } = this.state;
 
-    //this.updateFilenamePlaybackValue(PlaybackFiles.playbackFile());
-
-    if (timeMode == 'timeImmediate') {
+    if (forceTime) {
       this.startPlaybackImmediate(filenamePlayback);
-    } else if (timeMode == 'timeRecorded') {
+    } else {
       this.startPlaybackRecordedTime(filenamePlayback);
-    } else if (timeMode == 'timeApplication') {
-      this.startPlaybackApplicationTime(filenamePlayback);
-    } else if (timeMode == 'timeSimulation') {
-      this.startPlaybackSimulationTime(filenamePlayback);
     }
+    //Hide popover menu after starting playback
     this.setState({ showPopover: false});
   }
 
@@ -286,20 +280,12 @@ class SessionRec extends Component {
     DataManager.runScript(script);
   }
 
-  startPlaybackApplicationTime(filename) {
-    const script = SessionPlaybackStartScript
-        .replace(SessionRecordingTimePlaceholder, "ApplicationTime")
-        .replace(ValuePlaceholder, filename);
-
-    DataManager.runScript(script);
+  setRecFormat(evt) {
+    this.setState({recAscii: evt})
   }
 
-  startPlaybackSimulationTime(filename) {
-    const script = SessionPlaybackStartScript
-        .replace(SessionRecordingTimePlaceholder, "SimulationTime")
-        .replace(ValuePlaceholder, filename);
-
-    DataManager.runScript(script);
+  toggleTiming(evt) {
+    this.setState({forceTime: evt});
   }
 
   togglePopover() {
