@@ -14,6 +14,7 @@ class Checkbox extends Component {
     };
 
     this.onChange = this.onChange.bind(this);
+    this.onClick = this.onClick.bind(this);
   }
 
   componentWillReceiveProps({ checked, value }) {
@@ -23,8 +24,11 @@ class Checkbox extends Component {
   onChange(event) {
     const { checked } = event.currentTarget;
     this.setState({ checked });
-
     this.props.onChange(checked);
+  }
+
+  onClick(event) {
+    event.stopPropagation();
   }
 
   render() {
@@ -40,6 +44,7 @@ class Checkbox extends Component {
           type="checkbox"
           checked={checked}
           onChange={this.onChange}
+          onClick={this.onClick}
         />
         <label htmlFor={id}>{ label }</label>
       </div>

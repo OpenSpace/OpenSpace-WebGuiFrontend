@@ -33,7 +33,7 @@ const types = {
   defaultProperty: Property,
 };
 
-const getFocusButton = (isSceneGraphNode, identifier, subowners) => {
+const getHeaderChildren = (isSceneGraphNode, identifier, subowners, properties) => {
   if (isSceneGraphNode) {
     const focusButton = <div className={styles.buttonContainer}>
       <Button className={styles.shybutton} identifier={identifier} transparent onClick={focusOnThis} >
@@ -57,7 +57,28 @@ const getFocusButton = (isSceneGraphNode, identifier, subowners) => {
       return focusButton;
     }
   } else {
-    return null
+    if (isGlobeBrowsingLayer(identifier, properties)) {
+      var layerEnabled = false;
+      var enabledProp = null;
+      for (var i = 0; i < properties.length; i++) {
+          var prop = properties[i];
+          if ( (prop.id  == "Enabled") ) {
+            layerEnabled = prop.Value
+            enabledProp = prop;
+            i = properties.length; //just exit early for performance
+          }
+      }
+      if (enabledProp == null) {
+        return null;
+      } else {
+        const enableBox = <div className={styles.buttonContainer}>
+          <BoolProperty Value={layerEnabled} checkBoxOnly={true} {...enabledProp} />
+        </div>
+        return enableBox;
+      }
+    } else {
+      return null
+    }
   }
 }
 
@@ -109,10 +130,38 @@ const getSubOwnerMarkup = (subowner) => {
 };
 
 
+const isGlobeBrowsingLayer = (identifier, properties) => {
+  if ( (identifier == "ColorLayers") || (identifier == "HeightLayers") || (properties.length < 2) ) {
+    //in this case, property identifiers will match but this is the group of layers not actual layers
+    //or a property of a globebrowsing layer who's first property is also a Type
+    return false;
+  }
+  var prop = properties[0];
+  //todo there must be a better way to determin if this property owner is a globebrowsing layer.....
+  //open to ANY sugestions
+  if ( (prop != undefined) && (prop.id == "Type") && (prop.Description.Identifier.lastIndexOf("ColorLayers") > 0) || (prop.Description.Identifier.lastIndexOf("HeightLayers") > 0) ) {
+    return true;
+  }
+  return false;
+}
+
+const showEnabled = (identifier, properties) => {
+  for (var i = 0; i < properties.length; i++) {
+    var prop = properties[i];
+    if ( (prop.id  == "Enabled") && (prop.Value == true) && isGlobeBrowsingLayer(identifier, properties) ) {
+      return true;
+    }
+  }
+  return false;
+}
+
+
 const PropertyOwner = ({ identifier, guiName, properties, subowners, isSceneGraphNode, expand }) => (
+
   <ToggleContent
-    headerChildren={getFocusButton(isSceneGraphNode, identifier, subowners)}
+    headerChildren={getHeaderChildren(isSceneGraphNode, identifier, subowners, properties)}
     title={getTitle(identifier, guiName, properties)}
+    showEnabled = {showEnabled(identifier, properties)}
     show={expand}
   >
     { subowners.map(subowner => (
