@@ -17,7 +17,7 @@ export const changePropertyValue = (uri, value) => ({
   },
 });
 
-export const initializePropertyTree = node => ({
+export const insertNode = node => ({
   type: actionTypes.insertNode,
   payload: {
     node,

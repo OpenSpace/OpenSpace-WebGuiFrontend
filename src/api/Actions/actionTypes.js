@@ -4,12 +4,11 @@ export const actionTypes = {
   // action types for property tree
   updatePropertyTreeNode: 'PROPERTY_TREE_UPDATE_NODE',
   changePropertyTreeNode: 'PROPERTY_TREE_CHANGE_NODE',
-  initializePropertyTree: 'PROPERTY_TREE_INITIALIZE',
   startListeningToNode: 'PROPERTY_TREE_START_LISTENING',
   stopListeningToNode: 'PROPERTY_TREE_STOP_LISTENING',
-  removeNode: 'PROPERTY_TREE_REMOVE_NODE',
-  addNode: 'PROPERTY_TREE_ADD_NODE',
   insertNode: 'PROPERTY_TREE_INSERT_NODE',
+  addNode: 'PROPERTY_TREE_ADD_NODE',
+  removeNode: 'PROPERTY_TREE_REMOVE_NODE',
 
   updateTime: "TIME_UPDATE",
   subscribeToTime: 'TIME_SUBSCRIBE',

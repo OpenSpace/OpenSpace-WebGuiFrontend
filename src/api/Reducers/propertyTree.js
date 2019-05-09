@@ -43,7 +43,7 @@ const properties = (state = [], action) => { // state refers to an array of prop
       });
     case actionTypes.removeNode: {
       return state.map((element) => {
-        if (!(element.id === action.payload.uri[0])) {
+        if (element.id !== action.payload.uri[0]) {
           return element;
         }
       });
@@ -60,20 +60,12 @@ const property = (state = {}, action) => { // state refers to a single property
         id: helperFunctions.getIdOfProperty(action.payload.node.Description.Identifier),
         Description: action.payload.node.Description,
         Value: action.payload.node.Value,
-        listeners: 0,
       };
     case actionTypes.updatePropertyTreeNode:
     case actionTypes.changePropertyTreeNode:
       return {
         ...state,
         Value: action.payload.value,
-      };
-    case actionTypes.startListeningToNode:
-    case actionTypes.stopListeningToNode:
-      return {
-        ...state,
-        listeners: (action.type === actionTypes.startListeningToNode) ?
-          state.listeners + 1 : state.listeners - 1,
       };
     default:
       return state;
@@ -111,7 +103,6 @@ export const propertyOwner = (state = {}, action = {}) => { // state refers to a
             return propertyOwner({}, updateActionNode(action, subowner));
           }),
           tag: (action.payload.node.tag === undefined) ? [] : action.payload.node.tag,
-          listeners: 0,
         };
     }
   }
