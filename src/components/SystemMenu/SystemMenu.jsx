@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import DataManager from '../../api/DataManager';
+//import DataManager from '../../api/DataManager';
 import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import Button from '../common/Input/Button/Button';
 import styles from './SystemMenu.scss';
@@ -12,15 +12,15 @@ import {
 
 class SystemMenu extends Component {
   static quit() {
-    DataManager.runScript(ShutdownScript);
+    //DataManager.runScript(ShutdownScript);
   }
 
   static console() {
-    DataManager.runScript(ToggleConsoleScript);
+    //DataManager.runScript(ToggleConsoleScript);
   }
 
   static nativeGui() {
-    DataManager.runScript(ToggleNativeGuiScript);
+    //DataManager.runScript(ToggleNativeGuiScript);
   }
 
   constructor(props) {

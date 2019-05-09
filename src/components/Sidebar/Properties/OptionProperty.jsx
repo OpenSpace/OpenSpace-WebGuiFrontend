@@ -10,15 +10,15 @@ class OptionProperty extends Property {
   }
 
   onChange({ value }) {
-    this.props.ChangeValue(parseInt(value));
+    this.props.dispatcher.set(parseInt(value));
   }
 
   componentDidMount() {
-    this.props.StartListening(this.props.Description.Identifier)
+    this.props.dispatcher.subscribe();
   }
 
   componentWillUnmount() {
-    this.props.StopListening(this.props.Description.Identifier)
+    this.props.dispatcher.unsubscribe();
   }
 
   render() {

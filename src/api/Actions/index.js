@@ -3,17 +3,16 @@ import { actionTypes } from './actionTypes';
 export const updatePropertyValue = (description, value) => ({
   type: actionTypes.updatePropertyTreeNode,
   payload: {
-    URI: description.Identifier,
+    uri: description.Identifier,
     description,
     value,
   },
 });
 
-export const changePropertyValue = (description, value) => ({
+export const changePropertyValue = (uri, value) => ({
   type: actionTypes.changePropertyTreeNode,
   payload: {
-    URI: description.Identifier,
-    description,
+    uri,
     value,
   },
 });
@@ -25,25 +24,38 @@ export const initializePropertyTree = node => ({
   },
 });
 
-
-export const startListening = URI => ({
+export const startListening = uri => ({
   type: actionTypes.startListeningToNode,
   payload: {
-    URI,
+    uri,
   },
 });
 
-export const stopListening = URI => ({
+export const stopListening = uri => ({
   type: actionTypes.stopListeningToNode,
   payload: {
-    URI,
+    uri,
   },
+});
+
+export const subscribeToTime = uri => ({
+  type: actionTypes.subscribeToTime,
+  payload: {},
+});
+
+export const unsubscribeToTime = uri => ({
+  type: actionTypes.unsubscribeToTime,
+  payload: {}
+});
+
+export const updateTime = timeData => ({
+  type: actionTypes.updateTime,
+  payload: timeData
 });
 
 export const startConnection = () => ({
   type: actionTypes.startConnection,
   payload: {
-
   },
 });
 
@@ -71,6 +83,11 @@ export const changeConnectionWait = value => ({
 export const getVersion = () => ({
   type: actionTypes.getVersion,
   payload: {},
+});
+
+export const initializeLuaApi = data => ({
+  type: actionTypes.initializeLuaApi,
+  payload: data
 });
 
 export const initializeVersion = data => ({

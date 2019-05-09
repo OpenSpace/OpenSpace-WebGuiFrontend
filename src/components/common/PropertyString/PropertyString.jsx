@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import LoadingString from '../LoadingString/LoadingString';
-import DataManager from '../../../api/DataManager';
 
 /**
  * display the value of a property in an effortless way
@@ -18,11 +17,11 @@ class PropertyString extends Component {
   componentDidMount() {
     const { method, propertyKey } = this.props;
     // get or subscribe to property
-    DataManager[method](propertyKey, this.callback);
+    //DataManager[method](propertyKey, this.callback);
   }
 
   componentWillUnmount() {
-    DataManager.unsubscribe(this.props.propertyKey, this.callback);
+    //DataManager.unsubscribe(this.props.propertyKey, this.callback);
   }
 
   callback({ Value: value }) {

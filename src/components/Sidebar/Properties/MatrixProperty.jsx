@@ -12,11 +12,11 @@ class MatrixProperty extends Property {
   }
 
   componentDidMount() {
-    this.props.StartListening(this.props.Description.Identifier);
+    this.props.dispatcher.subscribe();
   }
 
   componentWillUnmount() {
-    this.props.StopListening(this.props.Description.Identifier);
+    this.props.dispatcher.unsubscribe();
   }
 
   onChange(index) {
@@ -24,7 +24,7 @@ class MatrixProperty extends Property {
       const stateValue = this.props.Value;
       const { value } = event.currentTarget;
       stateValue[index] = parseFloat(value);
-      this.props.ChangeValue(stateValue);
+      this.props.dispatcher.set(stateValue);
     };
   }
 

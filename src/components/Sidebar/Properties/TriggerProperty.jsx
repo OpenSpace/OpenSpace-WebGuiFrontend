@@ -10,7 +10,7 @@ class TriggerProperty extends Property {
   }
 
   onChange() {
-    this.props.ChangeValue('', this.props.Description.Identifier);
+    this.props.dispatcher.set(null);
   }
 
   render() {

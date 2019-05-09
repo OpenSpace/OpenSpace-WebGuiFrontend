@@ -11,16 +11,16 @@ class NumericProperty extends Property {
   }
 
   componentDidMount() {
-    this.props.StartListening(this.props.Description.Identifier)
+    this.props.dispatcher.subscribe();
   }
 
   componentWillUnmount() {
-    this.props.StopListening(this.props.Description.Identifier)
+    this.props.dispatcher.unsubscribe();
   }
 
   onChange(event) {
     const { value } = event.currentTarget;
-    this.props.ChangeValue(parseFloat(value));
+    this.props.dispatcher.set(parseFloat(value));
   }
 
   get descriptionPopup() {

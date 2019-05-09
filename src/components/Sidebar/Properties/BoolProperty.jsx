@@ -10,15 +10,15 @@ class BoolProperty extends Property {
   }
 
   onChange(value) {
-    this.props.ChangeValue(value);
+    this.props.dispatcher.set(value);
   }
 
   componentDidMount() {
-    this.props.StartListening(this.props.Description.Identifier);
+    this.props.dispatcher.subscribe();
   }
 
   componentWillUnmount() {
-    this.props.StopListening(this.props.Description.Identifier);
+    this.props.dispatcher.unsubscribe();
   }
 
   render() {

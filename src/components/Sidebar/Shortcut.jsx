@@ -3,7 +3,6 @@ import SmallLabel from '../common/SmallLabel/SmallLabel';
 import styles from './Shortcut.scss';
 import Button from '../common/Input/Button/Button';
 import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
-import DataManager from '../../api/DataManager';
 import InfoBox from '../common/InfoBox/InfoBox';
 
 class Shortcut extends Component {
@@ -28,7 +27,7 @@ const executeShortcut = (e) => {
   e.stopPropagation();
   var script = e.currentTarget.getAttribute("script")
   if (script && script.length > 0) {
-    DataManager.runScript(e.currentTarget.getAttribute("script"));
+    //DataManager.runScript(e.currentTarget.getAttribute("script"));
   }
 }
 

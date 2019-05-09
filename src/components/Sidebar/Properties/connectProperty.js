@@ -1,15 +1,11 @@
 import { connect } from 'react-redux';
+import propertyDispatcher from '../../../api/propertyDispatcher';
 import { startListening, stopListening, changePropertyValue } from '../../../api/Actions';
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
-  StartListening: (URI) => {
-    dispatch(startListening(URI));
-  },
-  StopListening: (URI) => {
-    dispatch(stopListening(URI));
-  },
-  ChangeValue: (Value) => {
-    dispatch(changePropertyValue(ownProps.Description, Value));
-  },
-});
+const mapDispatchToProps = (dispatch, ownProps) => {
+  return {
+    dispatcher: propertyDispatcher(dispatch, ownProps.Description.Identifier)
+  }
+}
+
 export const connectProperty = Property => connect(null, mapDispatchToProps)(Property);

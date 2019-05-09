@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import DataManager from '../../../api/DataManager';
 import styles from './FocusEntry.scss';
 import { jsonToLuaString } from '../../../utils/propertyTreeHelpers';
 

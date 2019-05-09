@@ -10,7 +10,6 @@ import VecProperty from './VectorProperty';
 import MatrixProperty from './MatrixProperty';
 import styles from './../SceneGraphNode.scss';
 import Button from '../../common/Input/Button/Button';
-import DataManager from '../../../api/DataManager';
 import { NavigationAnchorKey, NavigationAimKey, RetargetAnchorKey } from '../../../api/keys';
 import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
 import SvgIcon from '../../common/SvgIcon/SvgIcon';
@@ -84,18 +83,18 @@ const getHeaderChildren = (isSceneGraphNode, identifier, subowners, properties) 
 
 const gotoThis = (e) => {
   e.stopPropagation();
-  DataManager.setValue(NavigationAnchorKey, '"' + e.currentTarget.getAttribute("identifier") + '"');
-  DataManager.setValue(NavigationAimKey, '"' + e.currentTarget.getAttribute("identifier") + '"');
+  //DataManager.setValue(NavigationAnchorKey, '"' + e.currentTarget.getAttribute("identifier") + '"');
+  //DataManager.setValue(NavigationAimKey, '"' + e.currentTarget.getAttribute("identifier") + '"');
   const GotoGeoScript = 'openspace.globebrowsing.goToGeo(0, 0, 20000000)';
-  DataManager.runScript(GotoGeoScript);
+  //DataManager.runScript(GotoGeoScript);
 }
 
 const focusOnThis = (e) => {
   e.stopPropagation();
-  DataManager.setValue(NavigationAnchorKey, e.currentTarget.getAttribute("identifier"));
-  DataManager.setValue(NavigationAimKey, e.currentTarget.getAttribute("identifier"));
+  //DataManager.setValue(NavigationAnchorKey, e.currentTarget.getAttribute("identifier"));
+  //DataManager.setValue(NavigationAimKey, e.currentTarget.getAttribute("identifier"));
   if (!e.shiftKey) {
-    DataManager.trigger(RetargetAnchorKey);
+    //DataManager.trigger(RetargetAnchorKey);
   }
 }
 

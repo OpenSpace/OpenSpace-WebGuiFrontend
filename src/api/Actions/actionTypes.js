@@ -11,11 +11,17 @@ export const actionTypes = {
   addNode: 'PROPERTY_TREE_ADD_NODE',
   insertNode: 'PROPERTY_TREE_INSERT_NODE',
 
+  updateTime: "TIME_UPDATE",
+  subscribeToTime: 'TIME_SUBSCRIBE',
+  unsubscribeToTime: 'TIME_UNSUBSCRIBE',
+
   // action types for connection
   startConnection: 'CONNECTION_START',
   onOpenConnection: 'CONNECTION_ON_OPEN',
   onCloseConnection: 'CONNECTION_ON_CLOSE',
   changeConnectionWait: 'CONNECTION_CHANGE_WAIT',
+
+  initializeLuaApi: 'LUA_API_INITIALIZE',
 
   // action types for version
   getVersion: 'VERSION_GET',

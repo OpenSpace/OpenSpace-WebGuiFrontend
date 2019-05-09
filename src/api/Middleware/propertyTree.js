@@ -1,51 +1,54 @@
-import DataManager from '../DataManager';
 import { updatePropertyValue, initializePropertyTree } from '../Actions';
-import * as helperFunctions from '../../utils/propertyTreeHelpers';
 import { actionTypes } from '../Actions/actionTypes';
 import { rootOwnerKey } from '../keys';
 
-const subscriptionIds = [];
+import api from '../api';
+import * as helperFunctions from '../../utils/propertyTreeHelpers';
+
+const subscriptions = {};
 
 const handleUpdatedValues = store => ({ Description, Value }) => {
+  const uri =  Description.Identifier;
   store.dispatch(updatePropertyValue(Description, Value));
   const state = store.getState();
-  const property = helperFunctions.traverseTreeWithURI(state.propertyTree, Description.Identifier);
+  const property = helperFunctions.findSubtree(state.propertyTree, uri);
+
+  // "Lazy unsubscribe":
+  // Cancel the subscription whenever there is an update from the 
+  // server, and there are no more active listeners on the client.
+  // (As opposed to cancelling the subscription immediately when the
+  //  number of listeners hit zero)
   if (property.listeners < 1) {
-    if (DataManager.unsubscribe(Description.Identifier, subscriptionIds[Description.Identifier])) {
-      delete subscriptionIds[Description.Identifier];
+    if (subscriptions[uri]) {
+      subscriptions[uri].cancel();
+      delete subscriptions[uri];
     }
   }
 };
 
-const startSubscription = (URI, store) => {
-  subscriptionIds[URI] = DataManager.subscribe(URI, handleUpdatedValues(store));
+const startSubscription = async (uri, store) => {
+  if (subscriptions[uri]) {
+    return;
+  }
+  const subscription = api.subscribeToProperty(uri);
+  const handleValues = handleUpdatedValues(store);
+
+  subscriptions[uri] = subscription;
+  for await (const data of subscription.iterator()) {
+    handleValues(data);
+  }
 };
 
-const getPropertyTree = (dispatch) => {
-  DataManager.getValue(rootOwnerKey, (Value) => {
-    dispatch(initializePropertyTree(Value));
-  });
+const getPropertyTree = async (dispatch) => {
+  const value = await api.getProperty(rootOwnerKey);
+  dispatch(initializePropertyTree(value));
 };
 
 const sendDataToBackEnd = (node) => {
-  switch (node.Description.Type) {
-    case 'TransferFunctionProperty': {
-      const convertedEnvelopes = helperFunctions.convertEnvelopes(node.Value);
-      DataManager.setValue(node.Description.Identifier, convertedEnvelopes);
-      break;
-    }
-    case 'TriggerProperty': {
-      DataManager.trigger(node.Description.Identifier);
-      break;
-    }
-    default: {
-      DataManager.setValue(node.Description.Identifier, node.Value);
-      break;
-    }
-  }
+  api.setProperty(node.Description.Identifier, node.Value);
 };
 
-export const updateBackend = store => next => (action) => {
+export const propertyTree = store => next => (action) => {
   const result = next(action);
   const state = store.getState();
   switch (action.type) {
@@ -54,16 +57,20 @@ export const updateBackend = store => next => (action) => {
       break;
     case actionTypes.changePropertyTreeNode: {
       const nodeToUpdate = helperFunctions
-        .traverseTreeWithURI(state.propertyTree, action.payload.URI);
+        .findSubtree(state.propertyTree, action.payload.uri);
+      if (!nodeToUpdate) {
+        return;
+      }
       sendDataToBackEnd(nodeToUpdate);
       break;
     }
     case actionTypes.startListeningToNode: {
-      const nodeToListen = helperFunctions
-        .traverseTreeWithURI(state.propertyTree, action.payload.URI);
-      if (nodeToListen.listeners === 1) {
-        startSubscription(action.payload.URI, store);
+      const subscriptionNode = helperFunctions
+        .findSubtree(state.propertyTree, action.payload.uri);
+      if (!subscriptionNode) {
+        return;
       }
+      startSubscription(action.payload.uri, store);
       break;
     }
     default:
@@ -72,4 +79,4 @@ export const updateBackend = store => next => (action) => {
   return result;
 };
 
-export default updateBackend;
+export default propertyTree;

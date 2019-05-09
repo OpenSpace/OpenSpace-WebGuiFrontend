@@ -1,4 +1,3 @@
-import DataManager from '../DataManager';
 import { actionTypes } from '../Actions/actionTypes';
 
 const defaultState = {

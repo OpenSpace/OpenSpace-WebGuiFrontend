@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Input from '../../common/Input/Input/Input';
-import DataManager from '../../../api/DataManager';
 import InfoBox from '../../common/InfoBox/InfoBox';
 
 class Property extends Component {
