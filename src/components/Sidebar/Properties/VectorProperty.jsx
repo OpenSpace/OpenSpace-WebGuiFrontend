@@ -7,11 +7,11 @@ import { connectProperty } from './connectProperty';
 
 class VectorProperty extends Property {
   componentDidMount() {
-    this.props.StartListening(this.props.Description.Identifier)
+    this.props.dispatcher.subscribe();
   }
 
   componentWillUnmount() {
-    this.props.StopListening(this.props.Description.Identifier)
+    this.props.dispatcher.unsubscribe();
   }
 
   onChange(index) {
@@ -20,7 +20,7 @@ class VectorProperty extends Property {
       const { value } = event.currentTarget;
 
       stateValue[index] = parseFloat(value);
-      this.props.ChangeValue(stateValue);
+      this.props.dispatcher.set(stateValue);
     };
   }
 

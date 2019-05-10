@@ -53,7 +53,6 @@ export const findSubtree = (node, uri) => {
   return findSubtree(subowner, slicedUri);
 };
 
-
 export const jsonToLuaString = json => `"${json}"`;
 
 export const traverseTreeForTag = (node, tag) => {

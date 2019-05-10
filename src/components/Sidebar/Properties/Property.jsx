@@ -58,11 +58,7 @@ Property.propTypes = {
     }),
     description: PropTypes.string,
   }).isRequired,
-  subscribe: PropTypes.bool,
-  Value: PropTypes.any.isRequired
+  Value: PropTypes.any
 };
 
-Property.defaultProps = {
-  subscribe: false,
-};
 export default Property;

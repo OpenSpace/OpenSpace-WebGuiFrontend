@@ -77,7 +77,7 @@ class OriginPicker extends Component {
         <div className={Picker.Title}>
           <span className={Picker.Name}>
             <LoadingString loading={this.props.anchor === undefined}>
-              { this.anchor }
+              { this.props.anchorName }
             </LoadingString>
           </span>
           <SmallLabel>Focus</SmallLabel>
@@ -92,7 +92,7 @@ class OriginPicker extends Component {
         <div className={Picker.Title}>
           <span className={Picker.Name}>
             <LoadingString loading={this.props.anchor === undefined}>
-              { this.anchor }
+              { this.props.anchorName }
             </LoadingString>
           </span>
           <SmallLabel>Anchor</SmallLabel>
@@ -101,7 +101,7 @@ class OriginPicker extends Component {
         <div className={Picker.Title}>
           <span className={Picker.Name}>
             <LoadingString loading={this.props.anchor === undefined}>
-              { this.aim }
+              { this.props.aimName }
             </LoadingString>
           </span>
           <SmallLabel>Aim</SmallLabel>
@@ -230,10 +230,18 @@ const mapStateToProps = (state) => {
   const anchor = anchorProp && anchorProp.Value;
   const aim = aimProp && aimProp.Value;
 
+  const anchorNode = findSubtree(state.propertyTree, 'Scene.' + anchor);
+  const aimNode = findSubtree(state.propertyTree, 'Scene.' + aim);
+
+  const anchorName = anchorNode ? anchorNode.guiName : anchor;
+  let aimName = aimNode ? aimNode.guiName : aim;
+
   return {
     nodes,
     anchor,
     aim,
+    anchorName,
+    aimName,
     favorites,
     navigationAction
   };

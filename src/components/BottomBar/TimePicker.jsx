@@ -320,7 +320,7 @@ class TimePicker extends Component {
         <Picker onClick={this.togglePopover} className={`${styles.timePicker} ${showPopover ? Picker.Active : ''}`}>
           <div className={Picker.Title}>
             <span className={Picker.Name}>
-              <LoadingString loading={!this.props.time === undefined}>
+              <LoadingString loading={this.props.time === undefined}>
                 { this.time }
               </LoadingString>
             </span>

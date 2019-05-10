@@ -21,11 +21,11 @@ class FocusEntry extends Component {
   }
 
   render() {
-    const { identifier } = this.props;
+    const { guiName, identifier } = this.props;
     return (
       <li className={`${styles.entry} ${this.isActive && styles.active}`} onClick={this.select}>
         <span className={styles.title}>
-          { identifier }
+          { guiName || identifier }
         </span>
       </li>
     );
@@ -34,6 +34,7 @@ class FocusEntry extends Component {
 
 FocusEntry.propTypes = {
   identifier: PropTypes.string.isRequired,
+  guiName: PropTypes.string,
   onSelect: PropTypes.func,
   active: PropTypes.string,
 };

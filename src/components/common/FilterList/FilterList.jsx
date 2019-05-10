@@ -137,7 +137,7 @@ FilterList.propTypes = {
   /**
    * Whether the search input field should gain focus automatically
    */
-   searchAutoFocus: PropTypes.bool,
+  searchAutoFocus: PropTypes.bool,
   /**
    * the component used to display entries
    */
