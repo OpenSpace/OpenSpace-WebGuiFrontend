@@ -110,8 +110,6 @@ class NumericInput extends Component {
         className={`${styles.inputGroup} ${wide ? styles.wide : ''} ${reverse ? styles.reverse : ''}`}
         onDoubleClick={this.enableTextInput}
         onContextMenu={this.enableTextInput}
-        onMouseMove={this.onHover}
-        onMouseLeave={this.onLeave}
       >
         { !this.props.noHoverHint && hoverHint !== null && (
           <div className={styles.hoverHint} style={{ width: `${100 * hoverHintOffset}%` }} />
@@ -129,6 +127,8 @@ class NumericInput extends Component {
           className={`${className} ${styles.range}`}
           style={{ '--min': min, '--max': max, '--value': value, direction: reverse ? "rtl" : "ltr" }}
           onChange={this.onChange}
+          onMouseMove={this.onHover}
+          onMouseLeave={this.onLeave}
         />
         <label htmlFor={id} className={`${styles.rangeLabel}`}>
           { label || placeholder }

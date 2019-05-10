@@ -46,7 +46,7 @@ class Checkbox extends Component {
           onChange={this.onChange}
           onClick={this.onClick}
         />
-        <label htmlFor={id}>{ label }</label>
+        { label && <label htmlFor={id}>{ label }</label> }
       </div>
     );
   }
@@ -55,7 +55,7 @@ class Checkbox extends Component {
 Checkbox.propTypes = {
   checked: PropTypes.bool,
   onChange: PropTypes.func,
-  label: PropTypes.node.isRequired,
+  label: PropTypes.node,
   left: PropTypes.bool,
   value: PropTypes.bool,
   wide: PropTypes.bool,

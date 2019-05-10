@@ -22,10 +22,9 @@ function initializeConnection(store) {
     store.dispatch(onCloseConnection());
 
     let reconnectionInterval = 1000;
-    console.log('Attempting to connect in', connection.connectionWait, 'ms.'); // eslint-disable-line
     setTimeout(() => {
       api.connect();
-      reconnectionInterval *= 2;
+      reconnectionInterval += 1000;
     }, reconnectionInterval);
   }
 
