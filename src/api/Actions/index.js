@@ -1,16 +1,15 @@
 import { actionTypes } from './actionTypes';
 
-export const updatePropertyValue = (description, value) => ({
-  type: actionTypes.updatePropertyTreeNode,
+export const updatePropertyValue = (uri, value) => ({
+  type: actionTypes.updatePropertyValue,
   payload: {
-    uri: description.Identifier,
-    description,
+    uri,
     value,
   },
 });
 
-export const changePropertyValue = (uri, value) => ({
-  type: actionTypes.changePropertyTreeNode,
+export const setPropertyValue = (uri, value) => ({
+  type: actionTypes.setPropertyValue,
   payload: {
     uri,
     value,
@@ -24,15 +23,15 @@ export const insertNode = node => ({
   },
 });
 
-export const startListening = uri => ({
-  type: actionTypes.startListeningToNode,
+export const subscribeToProperty = uri => ({
+  type: actionTypes.subscribeToProperty,
   payload: {
     uri,
   },
 });
 
-export const stopListening = uri => ({
-  type: actionTypes.stopListeningToNode,
+export const unsubscribeToProperty = uri => ({
+  type: actionTypes.unsubscribeToProperty,
   payload: {
     uri,
   },
@@ -62,14 +61,12 @@ export const startConnection = () => ({
 export const onOpenConnection = () => ({
   type: actionTypes.onOpenConnection,
   payload: {
-
   },
 });
 
 export const onCloseConnection = () => ({
   type: actionTypes.onCloseConnection,
   payload: {
-
   },
 });
 

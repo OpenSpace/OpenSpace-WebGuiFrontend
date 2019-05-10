@@ -1,14 +1,14 @@
 import {
-    startListening,
-    stopListening,
-    changePropertyValue
+    subscribeToProperty,
+    unsubscribeToProperty,
+    setPropertyValue
   } from './Actions';
 
 
 export default function propertyDispatcher(dispatch, uri) {
   return {
-    subscribe: () => dispatch(startListening(uri)),
-    unsubscribe: () => dispatch(stopListening(uri)),
-    set: (value) => dispatch(changePropertyValue(uri, value))
+    subscribe: () => dispatch(subscribeToProperty(uri)),
+    unsubscribe: () => dispatch(unsubscribeToProperty(uri)),
+    set: (value) => dispatch(setPropertyValue(uri, value))
   }
 }

@@ -31,23 +31,16 @@ const properties = (state = [], action) => { // state refers to an array of prop
       return action.payload.node.properties.map((element) => {
         return property({}, updateActionNode(action, element));
       });
-    case actionTypes.updatePropertyTreeNode:
-    case actionTypes.changePropertyTreeNode:
-    case actionTypes.startListeningToNode:
-    case actionTypes.stopListeningToNode:
+    case actionTypes.updatePropertyValue:
+    case actionTypes.setPropertyValue:
+    case actionTypes.subscribeToProperty:
+    case actionTypes.unsubscribeToProperty:
       return state.map((element) => {
         if (element.id === action.payload.uri[0]) {
           return property(element, action);
         }
         return element;
       });
-    case actionTypes.removeNode: {
-      return state.map((element) => {
-        if (element.id !== action.payload.uri[0]) {
-          return element;
-        }
-      });
-    }
     default:
       return state;
   }
@@ -61,8 +54,8 @@ const property = (state = {}, action) => { // state refers to a single property
         Description: action.payload.node.Description,
         Value: action.payload.node.Value,
       };
-    case actionTypes.updatePropertyTreeNode:
-    case actionTypes.changePropertyTreeNode:
+    case actionTypes.updatePropertyValue:
+    case actionTypes.setPropertyValue:
       return {
         ...state,
         Value: action.payload.value,

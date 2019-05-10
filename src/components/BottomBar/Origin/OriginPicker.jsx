@@ -115,6 +115,9 @@ class OriginPicker extends Component {
       this.props.aimDispatcher.set('');
       this.props.anchorDispatcher.set(identifier);
     } else if (this.props.navigationAction === NavigationActions.Anchor) {
+      if (this.props.aim === '') {
+        this.props.aimDispatcher.set(this.props.anchor);
+      }
       this.props.anchorDispatcher.set(identifier);
     } else if (this.props.navigationAction === NavigationActions.Aim) {
       this.props.aimDispatcher.set(identifier);

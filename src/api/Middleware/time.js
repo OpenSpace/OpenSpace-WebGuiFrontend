@@ -9,7 +9,6 @@ let timeTopic = undefined;
 let nSubscribers = 0;
 
 function handleData(store, data) {
-  console.log(data);
   store.dispatch(updateTime(data));
 }
 
