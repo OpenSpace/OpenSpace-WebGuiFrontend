@@ -81,7 +81,6 @@ const tryPromoteSubscription = (store, uri) => {
 
   if (isConnected && subscriptionInfo.state === PendingState) {
     subscriptionInfo.state = OrphanState;
-    subscriptionInfo.subscription = createSubscription(store, uri);
   } else {
     return;
   }
@@ -90,6 +89,7 @@ const tryPromoteSubscription = (store, uri) => {
     helperFunctions.findSubtree(state.propertyTree, uri);
 
   if (subscriptionInfo.state === OrphanState && propertyInTree) {
+    subscriptionInfo.subscription = createSubscription(store, uri);
     subscriptionInfo.state = ActiveState;
   }
 }
