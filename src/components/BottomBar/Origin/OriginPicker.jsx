@@ -212,31 +212,35 @@ class OriginPicker extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const sceneType = 'Scene';
-  let nodes = [];
-  let favorites = [];
-  if (Object.keys(state.propertyTree).length !== 0) {
-    const rootNodes = state.propertyTree.subowners.filter(
-      element => element.identifier === sceneType
-    );
-    rootNodes.forEach((node) => {
-      nodes = [...nodes, ...node.subowners];
-    });
-    favorites = nodes.filter(node => node.tag.some(tag => tag.includes(REQUIRED_TAG)))
-      .map(node => Object.assign(node, { key: node.identifier }));
-  }
+  const scene = state.propertyTree.propertyOwners.Scene
+  const uris = scene ? scene.subowners : [];
+  
+  const nodes = uris.map(uri => ({
+    ...state.propertyTree.propertyOwners[uri],
+    key: uri
+  }));
+
+  const favorites = uris.filter(uri =>
+    state.propertyTree.propertyOwners[uri].tags.some(tag =>
+      tag.includes(REQUIRED_TAG)
+    )
+  ).map(uri => ({
+    ...state.propertyTree.propertyOwners[uri],
+    key: uri
+  }));
 
   const navigationAction = state.local.originPicker.action;
-  const anchorProp = findSubtree(state.propertyTree, NavigationAnchorKey);
-  const aimProp = findSubtree(state.propertyTree, NavigationAimKey);
-  const anchor = anchorProp && anchorProp.Value;
-  const aim = aimProp && aimProp.Value;
+  const anchorProp = state.propertyTree.properties[NavigationAnchorKey];
+  const aimProp = state.propertyTree.properties[NavigationAimKey];
 
-  const anchorNode = findSubtree(state.propertyTree, 'Scene.' + anchor);
-  const aimNode = findSubtree(state.propertyTree, 'Scene.' + aim);
+  const anchor = anchorProp && anchorProp.value;
+  const aim = aimProp && aimProp.value;
 
-  const anchorName = anchorNode ? anchorNode.guiName : anchor;
-  let aimName = aimNode ? aimNode.guiName : aim;
+  const anchorNode = state.propertyTree.propertyOwners['Scene.' + anchor];
+  const aimNode = state.propertyTree.propertyOwners['Scene.' + aim];
+
+  const anchorName = anchorNode ? anchorNode.name : anchor;
+  let aimName = aimNode ? aimNode.name : aim;
 
   const popoverVisible = state.local.popovers.originPicker.visible;
 

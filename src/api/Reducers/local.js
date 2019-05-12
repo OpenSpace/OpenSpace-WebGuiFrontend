@@ -93,9 +93,7 @@ const propertyTreeExpansion = (state = defaultPropertyTreeExpansion, action) => 
         [action.payload.identifier]: action.payload.expanded
       }
     default:
-      return {
-        ...state
-      }
+      return state;
   }
 }
 

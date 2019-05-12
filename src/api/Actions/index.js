@@ -16,12 +16,24 @@ export const setPropertyValue = (uri, value) => ({
   },
 });
 
-export const insertNode = node => ({
-  type: actionTypes.insertNode,
+export const addPropertyOwners = (propertyOwners) => ({
+  type: actionTypes.addPropertyOwners,
   payload: {
-    node,
-  },
-});
+    propertyOwners
+  }
+})
+
+export const addProperties = (properties) => ({
+  type: actionTypes.addProperties,
+  payload: {
+    properties
+  }
+})
+
+export const refreshGroups = () => ({
+  type: actionTypes.refreshGroups,
+  payload: {}
+})
 
 export const subscribeToProperty = uri => ({
   type: actionTypes.subscribeToProperty,

@@ -1,9 +1,15 @@
-import { updatePropertyValue, insertNode } from '../Actions';
+import {
+  updatePropertyValue,
+  addPropertyOwners, 
+  addProperties,
+  addProperty,
+  removeProperty,
+  refreshGroups
+} from '../Actions';
 import { actionTypes } from '../Actions/actionTypes';
 import { rootOwnerKey } from '../keys';
 
 import api from '../api';
-import * as helperFunctions from '../../utils/propertyTreeHelpers';
 
 // The property tree middleware is designed to populate the react store's
 // copy of the property tree when the frontend is connected to OpenSpace.
@@ -85,15 +91,13 @@ const tryPromoteSubscription = (store, uri) => {
     return;
   }
 
-  const propertyInTree =
-    helperFunctions.findSubtree(state.propertyTree, uri);
+  const propertyInTree = !!state.propertyTree[uri];
 
   if (subscriptionInfo.state === OrphanState && propertyInTree) {
     subscriptionInfo.subscription = createSubscription(store, uri);
     subscriptionInfo.state = ActiveState;
   }
 }
-
 
 const promoteSubscriptions = store => {
   Object.keys(subscriptionInfos).forEach(uri => {
@@ -117,9 +121,53 @@ const createSubscription = (store, uri) => {
   return subscription;
 };
 
+const flattenPropertyTree = (propertyOwner, baseUri) => {
+  let propertyOwners = [];
+  let properties = [];
+  const groups = {};
+
+  propertyOwner.subowners.forEach(subowner => {
+    const uri = baseUri ?
+      baseUri + '.' + subowner.identifier : 
+      subowner.identifier;
+
+    propertyOwners.push({
+      uri,
+      identifier: subowner.identifier,
+      name: subowner.guiName,
+      properties: subowner.properties.map(p => uri + '.' + p.Description.Identifier),
+      subowners: subowner.subowners.map(p => uri + '.' + p.identifier)
+    });
+    const childData = flattenPropertyTree(subowner, uri);
+    propertyOwners = propertyOwners.concat(childData.propertyOwners);
+    properties = properties.concat(childData.properties);
+  });
+
+  propertyOwner.properties.forEach(property => {
+    const uri = property.Description.Identifier;
+    properties.push({
+      uri,
+      description: property.Description,
+      value: property.Value
+    });
+  });
+
+  return {
+    propertyOwners,
+    properties,
+    groups,
+  }
+}
+
 const getPropertyTree = async (dispatch) => {
   const value = await api.getProperty(rootOwnerKey);
-  dispatch(insertNode(value));
+  console.log(value);
+
+  const {propertyOwners, properties, groups} = flattenPropertyTree(value);
+  dispatch(addPropertyOwners(propertyOwners));
+  dispatch(addProperties(properties));
+  dispatch(refreshGroups())
+  console.log(groups)
 };
 
 const setBackendValue = (uri, value) => {
@@ -137,8 +185,8 @@ export const propertyTree = store => next => (action) => {
       markAllSubscriptionsAsPending();
       break;
     }
-    case actionTypes.insertNode: {
-      // The inserted node may include properties whose
+    case actionTypes.addProperties: {
+      // The added properteis may include properties whose
       // uri is marked as a `pending`/`orphan` subscription, so
       // we check if any subscriptions can be promoted to `active`.
       promoteSubscriptions(store);
