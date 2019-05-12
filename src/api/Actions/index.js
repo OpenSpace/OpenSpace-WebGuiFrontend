@@ -111,3 +111,23 @@ export const setNavigationAction = data => ({
   type: actionTypes.setNavigationAction,
   payload: data
 })
+
+export const setPopoverVisibility = data => ({
+  type: actionTypes.setPopoverVisibility,
+  payload: data
+})
+
+export const setPopoverAttachment = data => ({
+  type: actionTypes.setPopoverPosition,
+  payload: data
+})
+
+export const setPopoverPosition = data => ({
+  type: actionTypes.setPopoverPosition,
+  payload: data
+})
+
+export const setPropertyTreeExpansion = data => ({
+  type: actionTypes.setPropertyTreeExpansion,
+  payload: data
+})

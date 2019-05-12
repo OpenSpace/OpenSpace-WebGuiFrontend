@@ -9,16 +9,34 @@ import Shortcut from './Shortcut';
 import styles from './ScenePane.scss';
 import ScenePaneListItem from './ScenePaneListItem';
 
+import { setPropertyTreeExpansion } from '../../api/Actions'
 
-const createNode = identifier => ({
+const createNode = (identifier, expansion, setExpansionFunction) => ({
   identifier,
   subowners: [],
-  properties: []
+  properties: [],
+  expanded: expansion[identifier],
+  setExpanded: setExpansionFunction(identifier)
 });
 
-const insertNode = (node, path, tree) => {
+const expandableNode = (node, expansion, setExpansionFunction, path) => {
+  const newPath = path.slice();
+  newPath.push(node.identifier);
+
+  const stringifiedPath = newPath.join('/');
+  return {
+    ...node,
+    subowners: node.subowners.map((child) =>
+      expandableNode(child, expansion, setExpansionFunction, newPath)
+    ),
+    expanded: expansion[stringifiedPath],
+    setExpanded: setExpansionFunction(stringifiedPath)
+  }
+}
+
+const insertNode = (node, path, tree, expansion, setExpansionFunction) => {
   if (path.length === 0) {
-    tree.subowners.push(node);
+    tree.subowners.push(expandableNode(node, expansion, setExpansionFunction, path))
     return;
   }
 
@@ -29,13 +47,13 @@ const insertNode = (node, path, tree) => {
   });
 
   if (!child) {
-    child = createNode(pathComponent);
+    child = createNode(pathComponent, expansion, setExpansionFunction);
     tree.subowners.push(child);
   }
-  insertNode(node, path, child);
+  insertNode(node, path, child, expansion, setExpansionFunction);
 };
 
-const addPropertyOwnerToTree = (nodes, tree) => {
+const addPropertyOwnerToTree = (nodes, tree, expansion, setExpansionFunction) => {
   nodes.forEach(node => {
     const nodeHidden = node.properties.find(property => {
       return property.id === "GuiHidden";
@@ -49,7 +67,7 @@ const addPropertyOwnerToTree = (nodes, tree) => {
       const path = guiPath.Value.split('/');
       path.shift();
       node.isSceneGraphNode = true;
-      insertNode(node, path, tree);
+      insertNode(node, path, tree, expansion, setExpansionFunction);
     }
   });
 };
@@ -72,13 +90,13 @@ class ScenePane extends Component {
   }
 
   render() {
-    const { nodes, shortcuts } = this.props;
+    const { nodes, shortcuts, expansion, setExpansionFunction } = this.props;
 
-    const guiPathTree = createNode('Everything')
-    addPropertyOwnerToTree(nodes, guiPathTree);
+    const guiPathTree = createNode('Everything', expansion, setExpansionFunction)
+    addPropertyOwnerToTree(nodes, guiPathTree, expansion, setExpansionFunction);
 
-    const shortcutsAsTreeEntry = createNode('Shortcuts');
-    addShortcutsToTree(shortcuts, shortcutsAsTreeEntry);
+    const shortcutsAsTreeEntry = createNode('Shortcuts', expansion, setExpansionFunction);
+    addShortcutsToTree(shortcuts, shortcutsAsTreeEntry, expansion, setExpansionFunction);
 
     const list = guiPathTree.subowners;
     list.push(shortcutsAsTreeEntry);
@@ -110,6 +128,7 @@ ScenePane.defaultProps = {
 const mapStateToProps = (state) => {
   const sceneType = 'Scene';
   const subowners = state.propertyTree.subowners || [];
+  const expansion = state.local.propertyTreeExpansion;
 
   const rootNodes = subowners.filter(element => element.identifier === sceneType);
 
@@ -121,12 +140,25 @@ const mapStateToProps = (state) => {
 
   return {
     nodes: nodes,
-    shortcuts: state.shortcuts.data.shortcuts || []
+    shortcuts: state.shortcuts.data.shortcuts || [],
+    expansion,
   };
 };
 
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setExpansionFunction: identifier => expanded => {
+      dispatch(setPropertyTreeExpansion({
+        identifier: identifier,
+        expanded: expanded
+      }))
+    }
+  }
+}
+
 ScenePane = connect(
   mapStateToProps,
+  mapDispatchToProps
 )(ScenePane);
 
 export default ScenePane;

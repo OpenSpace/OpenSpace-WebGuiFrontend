@@ -33,6 +33,10 @@ export const actionTypes = {
 
   // action types for local gui settings
   setNavigationAction: 'LOCAL_SET_NAVIGATION_ACTION',
+  setPropertyTreeExpansion: 'LOCAL_SET_PROPERTY_TREE_EXPANSION',
+  setPopoverPosition: 'LOCAL_POPOVER_SET_POSIITON',
+  setPopoverVisibility: 'LOCAL_POPOVER_SET_VISIBILITY',
+  setPopoverAttachment: 'LOCAL_POPOVER_SET_ATTACHMENT',
 
   // action types for transfer function editor
   addTransferFunction: 'TRANSFERFUNCTION_ADD_TRANSFER_FUNCTION',

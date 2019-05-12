@@ -119,7 +119,18 @@ const getSubOwnerMarkup = (subowner) => {
   if (!subowner.script) {
     if ( (subowner.subowners && subowner.subowners.length > 0) ||
          (subowner.properties && hasVisibleProperties(subowner.properties) && subowner.properties.length > 0) )  {
-      return <PropertyOwner {...subowner} key={subowner.identifier} expand={shouldAutoExpand(subowner)}/>
+      if (!subowner.setExpanded) {
+        debugger;
+      }
+
+      const expanded = subowner.expanded === undefined ?
+        shouldAutoExpand(subowner) :
+        subowner.expanded;
+
+      return <PropertyOwner {...subowner}
+                            key={subowner.identifier}
+                            expanded={expanded}
+            />
     } else {
       return "";
     }
@@ -155,13 +166,14 @@ const showEnabled = (identifier, properties) => {
 }
 
 
-const PropertyOwner = ({ identifier, guiName, properties, subowners, isSceneGraphNode, expand }) => (
+const PropertyOwner = ({ identifier, guiName, properties, subowners, isSceneGraphNode, expanded, setExpanded }) => (
 
   <ToggleContent
     headerChildren={getHeaderChildren(isSceneGraphNode, identifier, subowners, properties)}
     title={getTitle(identifier, guiName, properties)}
     showEnabled = {showEnabled(identifier, properties)}
-    show={expand}
+    expanded={expanded}
+    setExpanded={setExpanded}
   >
     { subowners.map(subowner => (
       getSubOwnerMarkup(subowner)
@@ -186,6 +198,8 @@ PropertyOwner.propTypes = {
   isSceneGraphNode: PropTypes.bool.isRequired,
   identifier: PropTypes.string.isRequired,
   properties: PropTypes.arrayOf(PropTypes.object),
+  expanded: PropTypes.bool,
+  setExpanded: PropTypes.func.isRequired,
   subowners: PropTypes.arrayOf(PropTypes.shape({
     identifier: PropTypes.string,
     subowners: PropTypes.array,
