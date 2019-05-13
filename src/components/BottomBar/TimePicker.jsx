@@ -9,7 +9,7 @@ import Picker from './Picker';
 import Time from '../common/Input/Time/Time';
 import ToggleContent from '../common/ToggleContent/ToggleContent';
 import ScaleInput from '../common/Input/ScaleInput/ScaleInput';
-import { subscribeToTime, unsubscribeToTime } from '../../api/Actions';
+import { subscribeToTime, unsubscribeToTime, setPopoverVisibility } from '../../api/Actions';
 import { connect } from 'react-redux';
 
 import SimulationIncrement from './SimulationIncrement';
@@ -22,7 +22,6 @@ class TimePicker extends Component {
 
     this.state = {
       pendingTime: new Date(),
-      showPopover: false,
       showCalendar: false,
       useLock: false,
     };
@@ -273,7 +272,7 @@ class TimePicker extends Component {
   }
 
   togglePopover() {
-    this.setState({ showPopover: !this.state.showPopover });
+    this.props.setPopoverVisibility(!this.props.popoverVisible)
   }
 
   toggleLock() {
@@ -314,10 +313,10 @@ class TimePicker extends Component {
   }
 
   render() {
-    const { showPopover } = this.state;
+    const { popoverVisible } = this.props;
     return (
       <div className={Picker.Wrapper}>
-        <Picker onClick={this.togglePopover} className={`${styles.timePicker} ${showPopover ? Picker.Active : ''}`}>
+        <Picker onClick={this.togglePopover} className={`${styles.timePicker} ${popoverVisible ? Picker.Active : ''}`}>
           <div className={Picker.Title}>
             <span className={Picker.Name}>
               <LoadingString loading={this.props.time === undefined}>
@@ -328,7 +327,7 @@ class TimePicker extends Component {
           </div>
         </Picker>
 
-        { showPopover && this.popover }
+        { popoverVisible && this.popover }
       </div>
     );
   }
@@ -340,6 +339,7 @@ const mapStateToProps = (state) => {
     deltaTime: state.time.deltaTime,
     targetDeltaTime: state.time.targetDeltaTime,
     isPaused: state.time.isPaused,
+    popoverVisible: state.local.popovers.timePicker.visible,
     luaApi: state.luaApi
   }
 }
@@ -347,7 +347,13 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     startSubscription: () => dispatch(subscribeToTime()),
-    stopSubscription: () => dispatch(unsubscribeToTime())
+    stopSubscription: () => dispatch(unsubscribeToTime()),
+    setPopoverVisibility: (visible) => {
+      dispatch(setPopoverVisibility({
+        popover: 'timePicker',
+        visible
+      }));
+    },
   }
 }
 

@@ -9,50 +9,7 @@ import Shortcut from './Shortcut';
 import styles from './ScenePane.scss';
 import ScenePaneListItem from './ScenePaneListItem';
 
-
-const createNode = identifier => ({
-  identifier,
-  subowners: [],
-  properties: []
-});
-
-const insertNode = (node, path, tree) => {
-  if (path.length === 0) {
-    tree.subowners.push(node);
-    return;
-  }
-
-  const pathComponent = path.shift();
-
-  let child = tree.subowners.find((subowner) => {
-    return subowner.identifier == pathComponent;
-  });
-
-  if (!child) {
-    child = createNode(pathComponent);
-    tree.subowners.push(child);
-  }
-  insertNode(node, path, child);
-};
-
-const addPropertyOwnerToTree = (nodes, tree) => {
-  nodes.forEach(node => {
-    const nodeHidden = node.properties.find(property => {
-      return property.id === "GuiHidden";
-    });
-
-    const guiPath = node.properties.find(property => {
-      return property.id === "GuiPath";
-    });
-
-    if (guiPath && guiPath.Value && !nodeHidden) {
-      const path = guiPath.Value.split('/');
-      path.shift();
-      node.isSceneGraphNode = true;
-      insertNode(node, path, tree);
-    }
-  });
-};
+import { setPropertyTreeExpansion } from '../../api/Actions'
 
 const addShortcutsToTree = (shortcuts, tree) => {
   shortcuts.forEach(shortcut => {
@@ -74,16 +31,14 @@ class ScenePane extends Component {
   render() {
     const { nodes, shortcuts } = this.props;
 
-    const guiPathTree = createNode('Everything')
-    addPropertyOwnerToTree(nodes, guiPathTree);
+    //const guiPathTree = createNode('Everything', expansion, setExpansionFunction)
+    //addPropertyOwnerToTree(nodes, guiPathTree, expansion, setExpansionFunction);
 
-    const shortcutsAsTreeEntry = createNode('Shortcuts');
-    addShortcutsToTree(shortcuts, shortcutsAsTreeEntry);
+    //const shortcutsAsTreeEntry = createNode('Shortcuts', expansion, setExpansionFunction);
+    //addShortcutsToTree(shortcuts, shortcutsAsTreeEntry, expansion, setExpansionFunction);
 
-    const list = guiPathTree.subowners;
+    const list = [];
     list.push(shortcutsAsTreeEntry);
-
-    var filterSubObjects = true;
 
     return (
       <Pane title="Scene" closeCallback={this.props.closeCallback}>
@@ -109,24 +64,32 @@ ScenePane.defaultProps = {
 
 const mapStateToProps = (state) => {
   const sceneType = 'Scene';
-  const subowners = state.propertyTree.subowners || [];
-
-  const rootNodes = subowners.filter(element => element.identifier === sceneType);
-
-  let nodes = [];
-
-  rootNodes.forEach((node) => {
-    nodes = [...nodes, ...node.subowners];
-  });
+  const propertyOwners = state.propertyTree.propertyOwners || [];
+  const expansion = state.local.propertyTreeExpansion;
+  const scene = propertyOwners['Scene'];
+  let nodes = scene.subowners || [];
 
   return {
     nodes: nodes,
-    shortcuts: state.shortcuts.data.shortcuts || []
+    shortcuts: state.shortcuts.data.shortcuts || [],
+    expansion,
   };
 };
 
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setExpansionFunction: identifier => expanded => {
+      dispatch(setPropertyTreeExpansion({
+        identifier: identifier,
+        expanded: expanded
+      }))
+    }
+  }
+}
+
 ScenePane = connect(
   mapStateToProps,
+  mapDispatchToProps
 )(ScenePane);
 
 export default ScenePane;

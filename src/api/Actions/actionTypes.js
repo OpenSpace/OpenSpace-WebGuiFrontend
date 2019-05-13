@@ -6,9 +6,11 @@ export const actionTypes = {
   setPropertyValue: 'PROPERTY_TREE_SET',
   subscribeToProperty: 'PROPERTY_TREE_SUBSCRIBE',
   unsubscribeToProperty: 'PROPERTY_TREE_UNSUBSCRIBE',
-  insertNode: 'PROPERTY_TREE_INSERT_NODE',
-  //addNode: 'PROPERTY_TREE_ADD_NODE',
-  //removeNode: 'PROPERTY_TREE_REMOVE_NODE',
+  addPropertyOwners: 'PROPERTY_TREE_ADD_OWNERS',
+  addProperties: 'PROPERTY_TREE_ADD_PROPERTIES',
+  removePropertyOwners: 'PROPERTY_TREE_REMOVE_OWNERS',
+  removeProperties: 'PROPERTY_TREE_REMOVE_PROPERTIES',
+  refreshGroups: 'GROUPS_REFRESH',
 
   updateTime: "TIME_UPDATE",
   subscribeToTime: 'TIME_SUBSCRIBE',
@@ -33,6 +35,10 @@ export const actionTypes = {
 
   // action types for local gui settings
   setNavigationAction: 'LOCAL_SET_NAVIGATION_ACTION',
+  setPropertyTreeExpansion: 'LOCAL_SET_PROPERTY_TREE_EXPANSION',
+  setPopoverPosition: 'LOCAL_POPOVER_SET_POSIITON',
+  setPopoverVisibility: 'LOCAL_POPOVER_SET_VISIBILITY',
+  setPopoverAttachment: 'LOCAL_POPOVER_SET_ATTACHMENT',
 
   // action types for transfer function editor
   addTransferFunction: 'TRANSFERFUNCTION_ADD_TRANSFER_FUNCTION',

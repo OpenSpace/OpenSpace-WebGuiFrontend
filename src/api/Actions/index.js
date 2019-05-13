@@ -16,12 +16,24 @@ export const setPropertyValue = (uri, value) => ({
   },
 });
 
-export const insertNode = node => ({
-  type: actionTypes.insertNode,
+export const addPropertyOwners = (propertyOwners) => ({
+  type: actionTypes.addPropertyOwners,
   payload: {
-    node,
-  },
-});
+    propertyOwners
+  }
+})
+
+export const addProperties = (properties) => ({
+  type: actionTypes.addProperties,
+  payload: {
+    properties
+  }
+})
+
+export const refreshGroups = () => ({
+  type: actionTypes.refreshGroups,
+  payload: {}
+})
 
 export const subscribeToProperty = uri => ({
   type: actionTypes.subscribeToProperty,
@@ -109,5 +121,25 @@ export const initializeShortcuts = data => ({
 
 export const setNavigationAction = data => ({
   type: actionTypes.setNavigationAction,
+  payload: data
+})
+
+export const setPopoverVisibility = data => ({
+  type: actionTypes.setPopoverVisibility,
+  payload: data
+})
+
+export const setPopoverAttachment = data => ({
+  type: actionTypes.setPopoverPosition,
+  payload: data
+})
+
+export const setPopoverPosition = data => ({
+  type: actionTypes.setPopoverPosition,
+  payload: data
+})
+
+export const setPropertyTreeExpansion = data => ({
+  type: actionTypes.setPropertyTreeExpansion,
   payload: data
 })

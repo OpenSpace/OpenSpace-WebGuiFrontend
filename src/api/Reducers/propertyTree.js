@@ -1,108 +1,94 @@
-import * as helperFunctions from '../../utils/propertyTreeHelpers';
 import { actionTypes } from '../Actions/actionTypes';
 
-function updateActionNode(action, node) {
-  return {
-    ...action,
-    payload: {
-      node,
-    },
-  };
-};
+// actions:
+  // addPropertyOwners
+  // addProperties
+  // removePropertyOwners
+  // removeProperties
+  // updatePropertyValue
+  // setPropertyValue
 
-function generateSubAction(state, action, subownerIdentifier) {
-  const payload = action.payload || {};
-  const uri = helperFunctions.splitUri(payload.uri || '');
-  if (uri[0] === subownerIdentifier) {
-    return {
-      ...action,
-      payload: {
-        ...action.payload,
-        uri: uri.slice(1)
-      }
-    }
-  }
-  return {};
-}
 
-const properties = (state = [], action) => { // state refers to an array of properties
+const property = (state = {}, action) => {
+  const uri = action.payload.uri;
   switch (action.type) {
-    case actionTypes.insertNode:
-      return action.payload.node.properties.map((element) => {
-        return property({}, updateActionNode(action, element));
-      });
-    case actionTypes.updatePropertyValue:
-    case actionTypes.setPropertyValue:
-    case actionTypes.subscribeToProperty:
-    case actionTypes.unsubscribeToProperty:
-      return state.map((element) => {
-        if (element.id === action.payload.uri[0]) {
-          return property(element, action);
-        }
-        return element;
-      });
-    default:
-      return state;
-  }
-};
-
-const property = (state = {}, action) => { // state refers to a single property
-  switch (action.type) {
-    case actionTypes.insertNode:
-      return {
-        id: helperFunctions.getIdOfProperty(action.payload.node.Description.Identifier),
-        Description: action.payload.node.Description,
-        Value: action.payload.node.Value,
-      };
     case actionTypes.updatePropertyValue:
     case actionTypes.setPropertyValue:
       return {
         ...state,
-        Value: action.payload.value,
-      };
+        value: action.payload.value
+      }
     default:
       return state;
   }
-};
-
-const propertyOwners = (state = [], action) => { // state refers to an array of property owners
-  switch (action.type) {
-    case actionTypes.insertNode: {
-      return action.payload.subowners.map(() => propertyOwner({}, action));
-    }
-    default:
-      return state.map(subowner => {
-        const subAction = generateSubAction(state, action, subowner.identifier)
-        return propertyOwner(subowner, subAction);
-      });
-    }
 }
 
-export const propertyOwner = (state = {}, action = {}) => { // state refers to a single node
-  if (!action) {
-    return state;
-  }
-  const payload = action.payload || {};
-  const uri = helperFunctions.splitUri(payload.uri || '');
+const properties = (state = {}, action) => {
+  switch (action.type) {
+    case actionTypes.addProperties: {
+      const inputProperties = action.payload.properties;
+      const newState = {...state};
 
-  if (uri.length === 0) {
-    switch (action.type) {
-      case actionTypes.insertNode:
-        return {
-          identifier: action.payload.node.identifier,
-          guiName: action.payload.node.guiName,
-          properties: properties({}, action),
-          subowners: action.payload.node.subowners.map((subowner) => {
-            return propertyOwner({}, updateActionNode(action, subowner));
-          }),
-          tag: (action.payload.node.tag === undefined) ? [] : action.payload.node.tag,
-        };
+      inputProperties.forEach(property => {
+        newState[property.uri] = {
+          description: property.description,
+          value: property.value
+        }
+      });
+
+      return newState;
     }
+    case actionTypes.removeProperties: {
+      const newState = {...state};
+      action.payload.uris.forEach(uri => {
+        delete newState[uri];
+      });
+      return newState;
+    }
+    case actionTypes.updatePropertyValue:
+    case actionTypes.setPropertyValue:
+      return {
+        ...state,
+        [action.payload.uri]: property(state[action.payload.uri], action)
+      }
+    default:
+      return state;
   }
+}
 
+const propertyOwners = (state = {}, action) => {
+  switch (action.type) {
+    case actionTypes.addPropertyOwners: {
+      const inputOwners = action.payload.propertyOwners;
+      const newState = {...state};
+      inputOwners.forEach(owner => {
+        newState[owner.uri] = {
+          identifier: owner.identifier,
+          name: owner.name,
+          properties: owner.properties,
+          subowners: owner.subowners,
+          tags: owner.tags || [],  
+        }
+      });
+      return newState;
+    }
+    case actionTypes.removePropertyOwners: {
+      const newState = {...state};
+      action.payload.uris.forEach(uri => {
+        delete newState[uri];
+      });
+      return newState;
+    }
+    default:
+      return state;
+  }
+}
+
+export const propertyTree = (state = {}, action) => {
   return {
-    ...state,
     properties: properties(state.properties, action),
-    subowners:  propertyOwners(state.subowners, action)
+    propertyOwners: propertyOwners(state.propertyOwners, action)
   };
-};
+}
+
+
