@@ -43,7 +43,7 @@ class Property extends Component {
       return null;
     }
 
-    return <ConcreteProperty key={description.Identifier} uri={description.Identifier} subscribe />;
+    return <ConcreteProperty key={description.Identifier} description={description} value={value} subscribe />;
   }
 }
 

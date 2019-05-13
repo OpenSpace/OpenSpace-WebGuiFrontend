@@ -39,7 +39,7 @@ class PropertyBase extends Component {
     </span>);
     return (
       <PropInput
-        value={Value}
+        value={value}
         label={placeholder}
         placeholder={Description.Name}
         onChange={this.onChange}
