@@ -32,7 +32,7 @@ class Property extends Component {
   render() {
     const { description, value } = this.props;
 
-    if (!description || !value) {
+    if (description === undefined || value === undefined) {
       return null;
     }
 

@@ -68,7 +68,6 @@ const popovers = (state = {}, action) => {
     case actionTypes.setPopoverPosition:
     case actionTypes.setPopoverVisibility:
     case actionTypes.setPopoverAttachment:
-      console.log('change!', action.payload.popover)
       return {
         ...state,
         [action.payload.popover]: popover(state[action.payload.popover], action)

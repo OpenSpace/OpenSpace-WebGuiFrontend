@@ -147,8 +147,10 @@ const mapStateToProps = (state, ownProps) => {
   }
 
   const data = state.propertyTree.propertyOwners[uri];
-  let subowners = data ? data.subowners : [];
-  let properties = data ? data.properties : [];  
+  const subowners = data ? data.subowners : [];
+  const properties = data ? data.properties : [];
+  const nameProp = state.propertyTree.properties[uri + ".GuiName"];
+  const name = nameProp && nameProp.value;
 
   const expanded = state.local.propertyTreeExpansion[uri];
 

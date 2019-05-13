@@ -161,13 +161,11 @@ const flattenPropertyTree = (propertyOwner, baseUri) => {
 
 const getPropertyTree = async (dispatch) => {
   const value = await api.getProperty(rootOwnerKey);
-  console.log(value);
-
+  
   const {propertyOwners, properties, groups} = flattenPropertyTree(value);
   dispatch(addPropertyOwners(propertyOwners));
   dispatch(addProperties(properties));
   dispatch(refreshGroups())
-  console.log(groups)
 };
 
 const setBackendValue = (uri, value) => {
