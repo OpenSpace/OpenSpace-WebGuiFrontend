@@ -10,7 +10,8 @@ class InfoBox extends Component {
     this.state = { showPopup: false };
 
     this.setRef = this.setRef.bind(this);
-    this.togglePopup = this.togglePopup.bind(this);
+    this.showPopup = this.showPopup.bind(this);
+    this.hidePopup = this.hidePopup.bind(this);
   }
 
   setRef(what) {
@@ -25,8 +26,12 @@ class InfoBox extends Component {
     return { top: `${top}px`, left: `${right}px` };
   }
 
-  togglePopup() {
-    this.setState({ showPopup: !this.state.showPopup });
+  showPopup() {
+    this.setState({ showPopup: true });
+  }
+
+  hidePopup() {
+    this.setState({ showPopup: false });
   }
 
   render() {
@@ -37,8 +42,8 @@ class InfoBox extends Component {
         ref={this.setRef('wrapper')}
       >
         <MaterialIcon icon={icon}
-         onMouseEnter={this.togglePopup}
-         onMouseLeave={this.togglePopup} />
+         onMouseEnter={this.showPopup}
+         onMouseLeave={this.hidePopup} />
         { showPopup && (
           <Tooltip fixed placement="right" style={this.position}>
             { text }
