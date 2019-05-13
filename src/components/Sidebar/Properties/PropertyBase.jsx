@@ -14,8 +14,8 @@ class PropertyBase extends Component {
   }
 
   get inputType() {
-    const { Description } = this.props;
-    switch (Description.Type) {
+    const { description } = this.props;
+    switch (description.Type) {
       case 'StringProperty':
       default:
         return Input;
@@ -23,19 +23,19 @@ class PropertyBase extends Component {
   }
 
   get descriptionPopup() {
-    const { description } = this.props.Description;
+    const { description } = this.props.description;
     return description ? (<InfoBox text={description} />) : '';
   }
 
   get disabled() {
-    return this.props.Description.MetaData.isReadOnly;
+    return this.props.description.MetaData.isReadOnly;
   }
 
   render() {
-    const { Description, Value } = this.props;
+    const { description, value } = this.props;
     const PropInput = this.inputType;
     const placeholder = (<span>
-      { Description.Name } { this.descriptionPopup }
+      { description.Name } { this.descriptionPopup }
     </span>);
     return (
       <PropInput
@@ -50,7 +50,7 @@ class PropertyBase extends Component {
 }
 
 PropertyBase.propTypes = {
-  Description: PropTypes.shape({
+  description: PropTypes.shape({
     Identifier: PropTypes.string,
     Name: PropTypes.string,
     MetaData: PropTypes.shape({
@@ -58,7 +58,7 @@ PropertyBase.propTypes = {
     }),
     description: PropTypes.string,
   }).isRequired,
-  Value: PropTypes.any
+  value: PropTypes.any
 };
 
 export default PropertyBase;

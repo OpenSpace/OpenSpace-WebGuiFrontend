@@ -10,6 +10,8 @@ import VecProperty from './VectorProperty';
 import MatrixProperty from './MatrixProperty';
 import PropertyBase from './PropertyBase';
 
+import { connect } from 'react-redux';
+
 const concreteProperties = {
   BoolProperty,
   OptionProperty,
@@ -27,20 +29,37 @@ const concreteProperties = {
 };
 
 class Property extends Component {
-  constructor(props) {
-
-  }
-
   render() {
     const { description, value } = this.props;
-    const ConcreteProperty = concreteProperties[Description.Type] || concreteProperties.defaultProperty;
 
-    if ( description.MetaData &&  (description.MetaData.Visibility == "Hidden") ) {
+    if (!description || !value) {
       return null;
     }
-    return <ConcreteProperty key={Description.Identifier} uri={Description.Identifier} subscribe />;
+
+    const ConcreteProperty =
+      concreteProperties[description.Type] || concreteProperties.defaultProperty;
+
+    if (description.MetaData && description.MetaData.Visibility === "Hidden") {
+      return null;
+    }
+
+    return <ConcreteProperty key={description.Identifier} uri={description.Identifier} subscribe />;
   }
 }
+
+const mapStateToProps = (state, ownProps) => {
+  const { uri } = ownProps;
+  const property = state.propertyTree.properties[uri] || {};
+
+  return {
+    value: property.value,
+    description: property.description
+  }
+}
+
+Property = connect(
+  mapStateToProps
+)(Property);
 
 export default Property;
 export const Types = concreteProperties;
