@@ -40,30 +40,7 @@ class FilterList extends Component {
       return valuesAsStrings.some(test => matcher(test, search));
     };
 
-
-    const findSceneGraphNodes = (data, found = []) => {
-      var sceneGraphNodes = [];
-      if (data.isSceneGraphNode) {
-        found.push(data);
-      }
-
-      Object.values(data).forEach((value) => {
-        if(typeof value === 'object') {
-          findSceneGraphNodes(value, found);
-        }
-      });
-    
-      return found;
-    };
-
-  
-    if (filterSubObjects) {
-      var sceneGraphNodes = findSceneGraphNodes(data);   
-      return sceneGraphNodes.filter(matcherFunc);
-    } else {
-      return data.filter(matcherFunc);      
-    }
-
+    return data.filter(matcherFunc);
   }
 
   render() {
@@ -91,7 +68,7 @@ class FilterList extends Component {
             { entries.map(entry => (
               <EntryComponent
                 {...entry}
-                key={entry.identifier}
+                key={entry.key}
                 onSelect={this.props.onSelect}
                 active={this.props.active}
               />)) }

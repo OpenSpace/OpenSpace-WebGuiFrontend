@@ -11,43 +11,25 @@ import ScenePaneListItem from './ScenePaneListItem';
 
 import { setPropertyTreeExpansion } from '../../api/Actions'
 
-const addShortcutsToTree = (shortcuts, tree) => {
-  shortcuts.forEach(shortcut => {
-    if (shortcut.guiPath !== undefined) {
-      const path = shortcut.guiPath.split('/');
-      path.shift();
-      shortcut.identifier = shortcut.name;
-      shortcut.isSceneGraphNode = false;
-      insertNode(shortcut, path, tree);
-    }
-  });
-}
-
 class ScenePane extends Component {
   constructor(props) {
     super(props);
   }
 
   render() {
-    const { nodes, shortcuts } = this.props;
-
-    //const guiPathTree = createNode('Everything', expansion, setExpansionFunction)
-    //addPropertyOwnerToTree(nodes, guiPathTree, expansion, setExpansionFunction);
-
-    //const shortcutsAsTreeEntry = createNode('Shortcuts', expansion, setExpansionFunction);
-    //addShortcutsToTree(shortcuts, shortcutsAsTreeEntry, expansion, setExpansionFunction);
-
-    const list = [];
-    list.push(shortcutsAsTreeEntry);
+    const entries = this.props.groups.map(item => ({
+      key: item,
+      path: item
+    }));
 
     return (
       <Pane title="Scene" closeCallback={this.props.closeCallback}>
-        { (list.length === 0) && (
+        { (entries.length === 0) && (
           <LoadingBlocks className={Pane.styles.loading} />
         )}
 
-        { list.length > 0 && (
-          <FilterList data={list} viewComponent={ScenePaneListItem} searchAutoFocus filterSubObjects />
+        { entries.length > 0 && (
+          <FilterList data={entries} viewComponent={ScenePaneListItem} searchAutoFocus />
         )}
       </Pane>
     );
@@ -63,16 +45,37 @@ ScenePane.defaultProps = {
 };
 
 const mapStateToProps = (state) => {
-  const sceneType = 'Scene';
-  const propertyOwners = state.propertyTree.propertyOwners || [];
-  const expansion = state.local.propertyTreeExpansion;
-  const scene = propertyOwners['Scene'];
-  let nodes = scene.subowners || [];
+  const allGroups = state.groups;
+
+  const topLevelGroups = Object.keys(allGroups).filter(path => {
+    // Get the number of slashes in the path
+    const depth = (path.match(/\//g) || []).length;
+    return depth <= 1;
+  }).map(path =>
+    path.slice(1) // Remove leading slash.
+  ).reduce((obj, key) => ({ // Convert back to object
+      ...obj,
+      [key]: true
+  }), {});
+
+  // Reorder properties based on SceneProperties ordering property.
+  const sortedGroups = [];
+  const ordering = state.propertyTree.properties['Modules.ImGUI.Main.SceneProperties.Ordering'];
+  if (ordering && ordering.value) {
+    ordering.value.forEach(item => {
+      if (topLevelGroups[item]) {
+        sortedGroups.push(item);
+        delete topLevelGroups[item];
+      }
+    })
+  }
+  // Add the remaining items to the end.
+  Object.keys(topLevelGroups).forEach(item => {
+    sortedGroups.push(item);
+  });
 
   return {
-    nodes: nodes,
-    shortcuts: state.shortcuts.data.shortcuts || [],
-    expansion,
+    groups: sortedGroups
   };
 };
 
