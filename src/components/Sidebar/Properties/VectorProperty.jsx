@@ -16,7 +16,7 @@ class VectorProperty extends PropertyBase {
 
   onChange(index) {
     return (event) => {
-      const stateValue = this.props.Value;
+      const stateValue = this.props.value;
       const { value } = event.currentTarget;
 
       stateValue[index] = parseFloat(value);
@@ -25,15 +25,15 @@ class VectorProperty extends PropertyBase {
   }
 
   render() {
-    const { Description } = this.props;
-    const { SteppingValue, MaximumValue, MinimumValue } = Description.AdditionalData;
+    const { description } = this.props;
+    const { SteppingValue, MaximumValue, MinimumValue } = description.AdditionalData;
     const firstLabel = (<span>
-      { Description.Name } { this.descriptionPopup }
+      { description.Name } { this.descriptionPopup }
     </span>);
 
     // eslint-disable-next-line react/no-array-index-key
-    const values = this.props.Value
-      .map((value, index) => ({ key: `${Description.Name}-${index}`, value }));
+    const values = this.props.value
+      .map((value, index) => ({ key: `${description.Name}-${index}`, value }));
 
     return (
       <Row className={styles.vectorProperty}>
@@ -42,7 +42,7 @@ class VectorProperty extends PropertyBase {
             key={component.key}
             value={component.value}
             label={index === 0 ? firstLabel : ' '}
-            placeholder={`Value ${index}`}
+            placeholder={`value ${index}`}
             onChange={this.onChange(index)}
             step={SteppingValue[index]}
             max={MaximumValue[index]}

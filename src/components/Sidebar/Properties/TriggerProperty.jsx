@@ -14,7 +14,7 @@ class TriggerProperty extends PropertyBase {
   }
 
   render() {
-    const { Name } = this.props.Description;
+    const { Name } = this.props.description;
     return (
       <div>
         <Button onClick={this.onChange}>

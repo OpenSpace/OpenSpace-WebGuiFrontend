@@ -4,7 +4,7 @@ import { startListening, stopListening, changePropertyValue } from '../../../api
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    dispatcher: propertyDispatcher(dispatch, ownProps.Description.Identifier)
+    dispatcher: propertyDispatcher(dispatch, ownProps.description.Identifier)
   }
 }
 

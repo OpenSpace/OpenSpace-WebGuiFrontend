@@ -22,13 +22,13 @@ class BoolProperty extends PropertyBase {
   }
 
   render() {
-    const { Description, Value } = this.props;
+    const { description, value } = this.props;
     const showText = !this.props.checkBoxOnly;
 
     return (
       <Checkbox
-        checked={Value}
-        label={showText ? (<span>{Description.Name} {this.descriptionPopup}</span>) : null}
+        checked={value}
+        label={showText ? (<span>{description.Name} {this.descriptionPopup}</span>) : null}
         onChange={this.onChange}
         disabled={this.disabled}
       />

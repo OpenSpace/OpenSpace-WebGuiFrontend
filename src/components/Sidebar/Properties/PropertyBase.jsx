@@ -9,7 +9,7 @@ class PropertyBase extends Component {
   }
 
   get uri() {
-    const { Identifier } = this.props.Description;
+    const { Identifier } = this.props.description;
     return Identifier;
   }
 
@@ -41,7 +41,7 @@ class PropertyBase extends Component {
       <PropInput
         value={value}
         label={placeholder}
-        placeholder={Description.Name}
+        placeholder={description.Name}
         onChange={this.onChange}
         disabled={this.disabled}
       />

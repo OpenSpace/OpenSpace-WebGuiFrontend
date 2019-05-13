@@ -21,7 +21,7 @@ class MatrixProperty extends PropertyBase {
 
   onChange(index) {
     return (event) => {
-      const stateValue = this.props.Value;
+      const stateValue = this.props.value;
       const { value } = event.currentTarget;
       stateValue[index] = parseFloat(value);
       this.props.dispatcher.set(stateValue);
@@ -29,14 +29,14 @@ class MatrixProperty extends PropertyBase {
   }
 
   render() {
-    const { Description, Value } = this.props;
-    const { SteppingValue, MaximumValue, MinimumValue } = Description.AdditionalData;
+    const { description, value } = this.props;
+    const { SteppingValue, MaximumValue, MinimumValue } = description.AdditionalData;
     const firstLabel = (<span>
-      { Description.Name } { this.descriptionPopup }
+      { description.Name } { this.descriptionPopup }
     </span>);
 
-    const values = Value.map((value, index) => ({
-        key: `${Description.Name}-${index}`,
+    const values = value.map((value, index) => ({
+        key: `${description.Name}-${index}`,
         value: parseFloat(value),
         index,
       }));
@@ -56,7 +56,7 @@ class MatrixProperty extends PropertyBase {
                 key={comp.key}
                 value={comp.value}
                 label={comp.index === 0 ? firstLabel : ' '}
-                placeholder={`Value ${comp.index}`}
+                placeholder={`value ${comp.index}`}
                 onChange={this.onChange(comp.index)}
                 step={SteppingValue[comp.index] || 0.01}
                 max={MaximumValue[comp.index] || 100}

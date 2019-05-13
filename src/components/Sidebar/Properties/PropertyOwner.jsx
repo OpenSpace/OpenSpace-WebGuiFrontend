@@ -44,7 +44,7 @@ const getHeaderChildren = (isSceneGraphNode, identifier, subowners, properties) 
       for (var i = 0; i < properties.length; i++) {
           var prop = properties[i];
           if ( (prop.id  == "Enabled") ) {
-            layerEnabled = prop.Value
+            layerEnabled = prop.value
             enabledProp = prop;
             i = properties.length; //just exit early for performance
           }
@@ -53,7 +53,7 @@ const getHeaderChildren = (isSceneGraphNode, identifier, subowners, properties) 
         return null;
       } else {
         const enableBox = <div className={styles.buttonContainer}>
-          <BoolProperty Value={layerEnabled} checkBoxOnly={true} {...enabledProp} />
+          <BoolProperty value={layerEnabled} checkBoxOnly={true} {...enabledProp} />
         </div>
         return enableBox;
       }
@@ -79,7 +79,7 @@ const getTitle = (identifier, guiName, properties) => {
   var title = guiName || identifier;
   for (var i = 0; i < properties.length; i++) {
     if (properties[i].id  == "GuiName") {
-        title = properties[i].Value;
+        title = properties[i].value;
     }
   }
   return title;
@@ -89,7 +89,7 @@ const getTitle = (identifier, guiName, properties) => {
 const shouldAutoExpand = (subowner) => subowner.identifier === 'Renderable';
 
 const hasVisibleProperties = (properties) => {
-  const visibleProps = properties.filter(prop => {return ( prop.Description.MetaData &&  (prop.Description.MetaData.Visibility != "Hidden")) });
+  const visibleProps = properties.filter(prop => {return ( prop.description.MetaData &&  (prop.description.MetaData.Visibility != "Hidden")) });
   return visibleProps.length > 0;
 }
 
@@ -102,7 +102,7 @@ const isGlobeBrowsingLayer = (identifier, properties) => {
   var prop = properties[0];
   //todo there must be a better way to determin if this property owner is a globebrowsing layer.....
   //open to ANY sugestions
-  if ( (prop != undefined) && (prop.id == "Type") && (prop.Description.Identifier.lastIndexOf("ColorLayers") > 0) || (prop.Description.Identifier.lastIndexOf("HeightLayers") > 0) ) {
+  if ( (prop != undefined) && (prop.id == "Type") && (prop.description.Identifier.lastIndexOf("ColorLayers") > 0) || (prop.description.Identifier.lastIndexOf("HeightLayers") > 0) ) {
     return true;
   }
   return false;
@@ -112,7 +112,7 @@ const isGlobeBrowsingLayer = (identifier, properties) => {
 const showEnabled = (identifier, properties) => {
   for (var i = 0; i < properties.length; i++) {
     var prop = properties[i];
-    if ( (prop.id  == "Enabled") && (prop.Value == true) && isGlobeBrowsingLayer(identifier, properties) ) {
+    if ( (prop.id  == "Enabled") && (prop.value == true) && isGlobeBrowsingLayer(identifier, properties) ) {
       return true;
     }
   }

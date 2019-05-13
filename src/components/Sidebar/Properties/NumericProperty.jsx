@@ -24,20 +24,20 @@ class NumericProperty extends PropertyBase {
   }
 
   get descriptionPopup() {
-    let { Description } = this.props;
-    const { MaximumValue, MinimumValue } = Description.AdditionalData;
-    const description = `${Description.description}\nMin: ${MinimumValue}, max: ${MaximumValue}`;
-    return description ? (<InfoBox text={description} />) : '';
+    let { description } = this.props;
+    const { MaximumValue, MinimumValue } = description.AdditionalData;
+    const descriptionString = `${description.description}\nMin: ${MinimumValue}, max: ${MaximumValue}`;
+    return descriptionString ? (<InfoBox text={descriptionString} />) : '';
   }
 
   render() {
-    const { Description, Value } = this.props;
-    const { SteppingValue, MaximumValue, MinimumValue } = Description.AdditionalData;
+    const { description, value } = this.props;
+    const { SteppingValue, MaximumValue, MinimumValue } = description.AdditionalData;
     return (
       <NumericInput
-        value={Value}
-        label={(<span>{Description.Name} {this.descriptionPopup}</span>)}
-        placeholder={Description.Name}
+        value={value}
+        label={(<span>{description.Name} {this.descriptionPopup}</span>)}
+        placeholder={description.Name}
         onChange={this.onChange}
         step={SteppingValue}
         max={MaximumValue}
