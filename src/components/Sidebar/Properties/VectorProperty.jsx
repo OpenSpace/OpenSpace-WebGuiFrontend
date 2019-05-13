@@ -1,11 +1,11 @@
 import React from 'react';
-import Property from './Property';
+import PropertyBase from './PropertyBase';
 import NumericInput from '../../common/Input/NumericInput/NumericInput';
 import Row from '../../common/Row/Row';
 import styles from './Property.scss';
 import { connectProperty } from './connectProperty';
 
-class VectorProperty extends Property {
+class VectorProperty extends PropertyBase {
   componentDidMount() {
     this.props.dispatcher.subscribe();
   }

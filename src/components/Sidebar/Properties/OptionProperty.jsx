@@ -1,9 +1,9 @@
 import React from 'react';
-import Property from './Property';
+import PropertyBase from './PropertyBase';
 import Select from '../../common/Input/Select/Select';
 import { connectProperty } from './connectProperty';
 
-class OptionProperty extends Property {
+class OptionProperty extends PropertyBase {
   constructor(props) {
     super(props);
     this.onChange = this.onChange.bind(this);

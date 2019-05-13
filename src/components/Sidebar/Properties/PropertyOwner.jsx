@@ -2,12 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ToggleContent from '../../common/ToggleContent/ToggleContent';
 import Property from './Property';
-import BoolProperty from './BoolProperty';
-import NumericProperty from './NumericProperty';
-import OptionProperty from './OptionProperty';
-import TriggerProperty from './TriggerProperty';
-import VecProperty from './VectorProperty';
-import MatrixProperty from './MatrixProperty';
 import styles from './../SceneGraphNode.scss';
 import Button from '../../common/Input/Button/Button';
 import { NavigationAnchorKey, NavigationAimKey, RetargetAnchorKey } from '../../../api/keys';
@@ -16,21 +10,9 @@ import SvgIcon from '../../common/SvgIcon/SvgIcon';
 import FocusIcon from 'svg-react-loader?name=Focus!../../../icons/focus.svg';
 import Shortcut from './../Shortcut';
 
-const types = {
-  BoolProperty,
-  OptionProperty,
-  TriggerProperty,
-  StringProperty: Property,
-  NumericProperty,
-  FloatProperty: NumericProperty,
-  IntProperty: NumericProperty,
-  Vec2Property: VecProperty,
-  Vec3Property: VecProperty,
-  Vec4Property: VecProperty,
-  MatrixProperty,
-  DMat4Property: MatrixProperty,
-  defaultProperty: Property,
-};
+import { setPropertyTreeExpansion } from '../../../api/Actions';
+
+import { connect } from 'react-redux';
 
 const getHeaderChildren = (isSceneGraphNode, identifier, subowners, properties) => {
   if (isSceneGraphNode) {
@@ -56,7 +38,7 @@ const getHeaderChildren = (isSceneGraphNode, identifier, subowners, properties) 
       return focusButton;
     }
   } else {
-    if (isGlobeBrowsingLayer(identifier, properties)) {
+    /*if (isGlobeBrowsingLayer(identifier, properties)) {
       var layerEnabled = false;
       var enabledProp = null;
       for (var i = 0; i < properties.length; i++) {
@@ -76,17 +58,12 @@ const getHeaderChildren = (isSceneGraphNode, identifier, subowners, properties) 
         return enableBox;
       }
     } else {
+
       return null
     }
+    */
+    return null;
   }
-}
-
-const gotoThis = (e) => {
-  e.stopPropagation();
-  //DataManager.setValue(NavigationAnchorKey, '"' + e.currentTarget.getAttribute("identifier") + '"');
-  //DataManager.setValue(NavigationAimKey, '"' + e.currentTarget.getAttribute("identifier") + '"');
-  const GotoGeoScript = 'openspace.globebrowsing.goToGeo(0, 0, 20000000)';
-  //DataManager.runScript(GotoGeoScript);
 }
 
 const focusOnThis = (e) => {
@@ -108,37 +85,13 @@ const getTitle = (identifier, guiName, properties) => {
   return title;
 };
 
+/*
 const shouldAutoExpand = (subowner) => subowner.identifier === 'Renderable';
 
 const hasVisibleProperties = (properties) => {
   const visibleProps = properties.filter(prop => {return ( prop.Description.MetaData &&  (prop.Description.MetaData.Visibility != "Hidden")) });
   return visibleProps.length > 0;
 }
-
-const getSubOwnerMarkup = (subowner) => {
-  if (!subowner.script) {
-    if ( (subowner.subowners && subowner.subowners.length > 0) ||
-         (subowner.properties && hasVisibleProperties(subowner.properties) && subowner.properties.length > 0) )  {
-      if (!subowner.setExpanded) {
-        debugger;
-      }
-
-      const expanded = subowner.expanded === undefined ?
-        shouldAutoExpand(subowner) :
-        subowner.expanded;
-
-      return <PropertyOwner {...subowner}
-                            key={subowner.identifier}
-                            expanded={expanded}
-            />
-    } else {
-      return "";
-    }
-  } else {
-    return <Shortcut {...subowner} key={subowner.name} />
-  }
-};
-
 
 const isGlobeBrowsingLayer = (identifier, properties) => {
   if ( (identifier == "ColorLayers") || (identifier == "HeightLayers") || (properties.length < 2) ) {
@@ -155,6 +108,7 @@ const isGlobeBrowsingLayer = (identifier, properties) => {
   return false;
 }
 
+
 const showEnabled = (identifier, properties) => {
   for (var i = 0; i < properties.length; i++) {
     var prop = properties[i];
@@ -164,47 +118,71 @@ const showEnabled = (identifier, properties) => {
   }
   return false;
 }
+*/
 
 
-const PropertyOwner = ({ identifier, guiName, properties, subowners, isSceneGraphNode, expanded, setExpanded }) => (
+//showEnabled(identifier, properties)
+
+let PropertyOwner = ({ identifier, name, properties, subowners, isSceneGraphNode, expanded, setExpanded }) => (
 
   <ToggleContent
     headerChildren={getHeaderChildren(isSceneGraphNode, identifier, subowners, properties)}
-    title={getTitle(identifier, guiName, properties)}
-    showEnabled = {showEnabled(identifier, properties)}
+    title={getTitle(identifier, name, properties)}
+    showEnabled = {false}
     expanded={expanded}
     setExpanded={setExpanded}
   >
-    { subowners.map(subowner => (
-      getSubOwnerMarkup(subowner)
-    )) }
-    
-    { properties.map((prop) => {
-      const { Description } = prop;
-
-      if ( Description.MetaData &&  (Description.MetaData.Visibility == "Hidden") ) {
-        return;
-      }
-        
-      const Type = types[Description.Type] || types.defaultProperty;
-        return (
-          <Type key={Description.Identifier} {...prop} subscribe />
-        );
-    }) }
+    { subowners.map(uri => <PropertyOwner key={uri} uri={uri} />) }
+    { properties.map(uri => <Property key={uri} uri={uri} />) }
   </ToggleContent>
 );
 
+const mapStateToProps = (state, ownProps) => {
+  const { uri } = ownProps;
+  const splitUri = uri.split('.');
+  
+  let identifier = '';
+  if (splitUri.length > 0) {
+    identifier = splitUri[splitUri.length - 1];
+  }
+
+  const data = state.propertyTree.propertyOwners[uri];
+  let subowners = data ? data.subowners : [];
+  let properties = data ? data.properties : [];  
+
+  const expanded = state.local.propertyTreeExpansion[uri];
+
+  return {
+    identifier,
+    name,
+    subowners,
+    properties,
+    expanded
+  };
+}
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+  const setExpanded = (expanded) => {
+    dispatch(setPropertyTreeExpansion({
+      identifier: ownProps.uri, 
+      expanded
+    }));
+  }
+  return {
+    setExpanded
+  };
+}
+
+PropertyOwner = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(PropertyOwner);
+
+
 PropertyOwner.propTypes = {
   isSceneGraphNode: PropTypes.bool.isRequired,
-  identifier: PropTypes.string.isRequired,
-  properties: PropTypes.arrayOf(PropTypes.object),
-  expanded: PropTypes.bool,
-  setExpanded: PropTypes.func.isRequired,
-  subowners: PropTypes.arrayOf(PropTypes.shape({
-    identifier: PropTypes.string,
-    subowners: PropTypes.array,
-    properties: PropTypes.array,
-  })),
+  uri: PropTypes.string.isRequired,
+  expanded: PropTypes.bool
 };
 
 PropertyOwner.defaultProps = {
@@ -214,5 +192,3 @@ PropertyOwner.defaultProps = {
 };
 
 export default PropertyOwner;
-export const Types = types;
-export const GetType = type => types[type] || types.defaultProperty;

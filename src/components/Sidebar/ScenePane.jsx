@@ -9,8 +9,6 @@ import Shortcut from './Shortcut';
 import styles from './ScenePane.scss';
 import ScenePaneListItem from './ScenePaneListItem';
 
-import { setPropertyTreeExpansion } from '../../api/Actions'
-
 class ScenePane extends Component {
   constructor(props) {
     super(props);
@@ -59,7 +57,7 @@ const mapStateToProps = (state) => {
   }), {});
 
   // Reorder properties based on SceneProperties ordering property.
-  const sortedGroups = [];
+  let sortedGroups = [];
   const ordering = state.propertyTree.properties['Modules.ImGUI.Main.SceneProperties.Ordering'];
   if (ordering && ordering.value) {
     ordering.value.forEach(item => {
@@ -74,25 +72,17 @@ const mapStateToProps = (state) => {
     sortedGroups.push(item);
   });
 
+  // Add back the leading slash
+  sortedGroups = sortedGroups.map(path => '/' + path);
+
   return {
     groups: sortedGroups
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    setExpansionFunction: identifier => expanded => {
-      dispatch(setPropertyTreeExpansion({
-        identifier: identifier,
-        expanded: expanded
-      }))
-    }
-  }
-}
 
 ScenePane = connect(
   mapStateToProps,
-  mapDispatchToProps
 )(ScenePane);
 
 export default ScenePane;

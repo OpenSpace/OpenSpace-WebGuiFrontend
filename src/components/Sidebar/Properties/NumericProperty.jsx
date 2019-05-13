@@ -1,10 +1,10 @@
 import React from 'react';
-import Property from './Property';
+import PropertyBase from './PropertyBase';
 import NumericInput from '../../common/Input/NumericInput/NumericInput';
 import InfoBox from '../../common/InfoBox/InfoBox';
 import { connectProperty } from './connectProperty';
 
-class NumericProperty extends Property {
+class NumericProperty extends PropertyBase {
   constructor(props) {
     super(props);
     this.onChange = this.onChange.bind(this);

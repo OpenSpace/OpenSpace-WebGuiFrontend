@@ -1,9 +1,9 @@
 import React from 'react';
-import Property from './Property';
+import PropertyBase from './PropertyBase';
 import Checkbox from '../../common/Input/Checkbox/Checkbox';
 import { connectProperty } from './connectProperty';
 
-class BoolProperty extends Property {
+class BoolProperty extends PropertyBase {
   constructor(props) {
     super(props);
     this.onChange = this.onChange.bind(this);

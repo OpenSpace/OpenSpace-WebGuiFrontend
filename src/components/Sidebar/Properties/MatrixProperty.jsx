@@ -1,11 +1,11 @@
 import React from 'react';
-import Property from './Property';
+import PropertyBase from './PropertyBase';
 import NumericInput from '../../common/Input/NumericInput/NumericInput';
 import Row from '../../common/Row/Row';
 import styles from './Property.scss';
 import { connectProperty } from './connectProperty';
 
-class MatrixProperty extends Property {
+class MatrixProperty extends PropertyBase {
   constructor(props) {
     super(props);
     this.onChange = this.onChange.bind(this);

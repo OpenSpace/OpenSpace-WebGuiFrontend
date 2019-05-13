@@ -1,64 +1,47 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import Input from '../../common/Input/Input/Input';
-import InfoBox from '../../common/InfoBox/InfoBox';
+import Checkbox from '../../common/Input/Checkbox/Checkbox';
+import { connectProperty } from './connectProperty';
+
+import BoolProperty from './BoolProperty';
+import NumericProperty from './NumericProperty';
+import OptionProperty from './OptionProperty';
+import TriggerProperty from './TriggerProperty';
+import VecProperty from './VectorProperty';
+import MatrixProperty from './MatrixProperty';
+import PropertyBase from './PropertyBase';
+
+const concreteProperties = {
+  BoolProperty,
+  OptionProperty,
+  TriggerProperty,
+  StringProperty: PropertyBase,
+  NumericProperty,
+  FloatProperty: NumericProperty,
+  IntProperty: NumericProperty,
+  Vec2Property: VecProperty,
+  Vec3Property: VecProperty,
+  Vec4Property: VecProperty,
+  MatrixProperty,
+  DMat4Property: MatrixProperty,
+  defaultProperty: PropertyBase,
+};
 
 class Property extends Component {
   constructor(props) {
-    super(props);
-  }
 
-  get uri() {
-    const { Identifier } = this.props.Description;
-    return Identifier;
-  }
-
-  get inputType() {
-    const { Description } = this.props;
-    switch (Description.Type) {
-      case 'StringProperty':
-      default:
-        return Input;
-    }
-  }
-
-  get descriptionPopup() {
-    const { description } = this.props.Description;
-    return description ? (<InfoBox text={description} />) : '';
-  }
-
-  get disabled() {
-    return this.props.Description.MetaData.isReadOnly;
   }
 
   render() {
-    const { Description, Value } = this.props;
-    const PropInput = this.inputType;
-    const placeholder = (<span>
-      { Description.Name } { this.descriptionPopup }
-    </span>);
-    return (
-      <PropInput
-        value={Value}
-        label={placeholder}
-        placeholder={Description.Name}
-        onChange={this.onChange}
-        disabled={this.disabled}
-      />
-    );
+    const { description, value } = this.props;
+    const ConcreteProperty = concreteProperties[Description.Type] || concreteProperties.defaultProperty;
+
+    if ( description.MetaData &&  (description.MetaData.Visibility == "Hidden") ) {
+      return null;
+    }
+    return <ConcreteProperty key={Description.Identifier} uri={Description.Identifier} subscribe />;
   }
 }
 
-Property.propTypes = {
-  Description: PropTypes.shape({
-    Identifier: PropTypes.string,
-    Name: PropTypes.string,
-    MetaData: PropTypes.shape({
-      isReadOnly: PropTypes.bool,
-    }),
-    description: PropTypes.string,
-  }).isRequired,
-  Value: PropTypes.any
-};
-
 export default Property;
+export const Types = concreteProperties;
+export const GetType = type => concreteProperties[type] || concreteProperties.defaultProperty;

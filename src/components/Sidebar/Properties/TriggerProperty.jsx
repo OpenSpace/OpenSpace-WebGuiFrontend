@@ -1,9 +1,9 @@
 import React from 'react';
-import Property from './Property';
+import PropertyBase from './PropertyBase';
 import Button from '../../common/Input/Button/Button';
 import { connectProperty } from './connectProperty';
 
-class TriggerProperty extends Property {
+class TriggerProperty extends PropertyBase {
   constructor(props) {
     super(props);
     this.onChange = this.onChange.bind(this);
