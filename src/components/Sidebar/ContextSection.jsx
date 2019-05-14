@@ -12,11 +12,13 @@ class ContextSection extends Component {
     const focusOrAnchor = this.props.aim ? "Anchor" : "Focus";
     return <>
       {this.props.anchor &&
-        <PropertyOwner name={"Current " + focusOrAnchor + ": " + this.props.anchorName}
+        <PropertyOwner treeId={this.props.treeId}
+                       name={"Current " + focusOrAnchor + ": " + this.props.anchorName}
                        uri={this.props.anchor}/>
       }
       {this.props.aim &&
-        <PropertyOwner name={"Current Aim: " + this.props.aimName}
+        <PropertyOwner treeId={this.props.treeId}
+                       name={"Current Aim: " + this.props.aimName}
                        uri={this.props.aim}/>
       }
     </>

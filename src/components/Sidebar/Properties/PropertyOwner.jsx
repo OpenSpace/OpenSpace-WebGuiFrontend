@@ -12,6 +12,10 @@ import Shortcut from './../Shortcut';
 
 import { setPropertyTreeExpansion } from '../../../api/Actions';
 
+const treeIdentifier = (props) => {
+  return props.treeId ? props.treeId + '$' + props.uri : props.uri;
+}
+
 import { connect } from 'react-redux';
 
 const getHeaderChildren = (isSceneGraphNode, identifier, subowners, properties) => {
@@ -86,7 +90,7 @@ const getTitle = (identifier, guiName, properties) => {
 };
 
 /*
-const shouldAutoExpand = (subowner) => subowner.identifier === 'Renderable';
+
 
 const hasVisibleProperties = (properties) => {
   const visibleProps = properties.filter(prop => {return ( prop.description.MetaData &&  (prop.description.MetaData.Visibility != "Hidden")) });
@@ -123,7 +127,7 @@ const showEnabled = (identifier, properties) => {
 
 //showEnabled(identifier, properties)
 
-let PropertyOwner = ({ identifier, name, properties, subowners, isSceneGraphNode, expanded, setExpanded }) => (
+let PropertyOwner = ({ identifier, name, properties, subowners, isSceneGraphNode, expanded, setExpanded, treeId}) => (
 
   <ToggleContent
     headerChildren={getHeaderChildren(isSceneGraphNode, identifier, subowners, properties)}
@@ -132,10 +136,15 @@ let PropertyOwner = ({ identifier, name, properties, subowners, isSceneGraphNode
     expanded={expanded}
     setExpanded={setExpanded}
   >
-    { subowners.map(uri => <PropertyOwner key={uri} uri={uri} />) }
+    { subowners.map(uri => <PropertyOwner key={uri} uri={uri} treeId={treeId} />) }
     { properties.map(uri => <Property key={uri} uri={uri} />) }
   </ToggleContent>
 );
+
+
+const shouldAutoExpand = (subowner, uri) => {
+  return false; //subowner.identifier === 'Renderable';
+}
 
 const mapStateToProps = (state, ownProps) => {
   const { uri } = ownProps;
@@ -152,7 +161,10 @@ const mapStateToProps = (state, ownProps) => {
   const nameProp = state.propertyTree.properties[uri + ".GuiName"];
   const name = ownProps.name || nameProp && nameProp.value;
 
-  const expanded = state.local.propertyTreeExpansion[uri];
+  let expanded = state.local.propertyTreeExpansion[treeIdentifier(ownProps)];
+  if (expanded === undefined) {
+    expanded = shouldAutoExpand(state, uri);
+  }
 
   return {
     identifier,
@@ -166,7 +178,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   const setExpanded = (expanded) => {
     dispatch(setPropertyTreeExpansion({
-      identifier: ownProps.uri, 
+      identifier: treeIdentifier(ownProps),
       expanded
     }));
   }
