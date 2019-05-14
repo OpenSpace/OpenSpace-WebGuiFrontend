@@ -22,19 +22,19 @@ class OptionProperty extends PropertyBase {
   }
 
   render() {
-    const { Description, Value } = this.props;
+    const { description, value } = this.props;
     const label = (
       <span>
-        { Description.Name } { this.descriptionPopup }
+        { description.Name } { this.descriptionPopup }
       </span>
     );
-    const options = Description.AdditionalData.Options
+    const options = description.AdditionalData.Options
       .map(option => ({ label: Object.values(option)[0], value: Object.keys(option)[0] }));
     return (
       <Select
         label={label}
         options={options}
-        value={Value}
+        value={value}
         onChange={this.onChange}
         disabled={this.disabled}
       />

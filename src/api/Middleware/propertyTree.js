@@ -85,13 +85,15 @@ const tryPromoteSubscription = (store, uri) => {
   const isConnected = state.connection.isConnected;
   const subscriptionInfo = subscriptionInfos[uri];
 
-  if (isConnected && subscriptionInfo.state === PendingState) {
-    subscriptionInfo.state = OrphanState;
-  } else {
+  if (!isConnected) {
     return;
   }
 
-  const propertyInTree = !!state.propertyTree[uri];
+  if (subscriptionInfo.state === PendingState) {
+    subscriptionInfo.state = OrphanState;
+  }
+
+  const propertyInTree = !!state.propertyTree.properties[uri];
 
   if (subscriptionInfo.state === OrphanState && propertyInTree) {
     subscriptionInfo.subscription = createSubscription(store, uri);
@@ -136,7 +138,8 @@ const flattenPropertyTree = (propertyOwner, baseUri) => {
       identifier: subowner.identifier,
       name: subowner.guiName,
       properties: subowner.properties.map(p => p.Description.Identifier),
-      subowners: subowner.subowners.map(p => uri + '.' + p.identifier)
+      subowners: subowner.subowners.map(p => uri + '.' + p.identifier),
+      tags: subowner.tag
     });
     const childData = flattenPropertyTree(subowner, uri);
     propertyOwners = propertyOwners.concat(childData.propertyOwners);
@@ -161,13 +164,11 @@ const flattenPropertyTree = (propertyOwner, baseUri) => {
 
 const getPropertyTree = async (dispatch) => {
   const value = await api.getProperty(rootOwnerKey);
-  console.log(value);
-
+  
   const {propertyOwners, properties, groups} = flattenPropertyTree(value);
   dispatch(addPropertyOwners(propertyOwners));
   dispatch(addProperties(properties));
   dispatch(refreshGroups())
-  console.log(groups)
 };
 
 const setBackendValue = (uri, value) => {

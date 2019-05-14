@@ -212,7 +212,7 @@ class OriginPicker extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const scene = state.propertyTree.propertyOwners.Scene
+  const scene = state.propertyTree.propertyOwners.Scene;
   const uris = scene ? scene.subowners : [];
   
   const nodes = uris.map(uri => ({
