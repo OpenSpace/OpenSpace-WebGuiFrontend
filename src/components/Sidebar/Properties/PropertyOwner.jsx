@@ -193,8 +193,15 @@ const isGlobeBrowsingLayer = (state, uri) => {
   return false;
 }
 
-const shouldSortDynamically = (state, uri) => {
-  return true;
+const shouldSortAlphabetically = (state, uri) => {
+  const splitUri = uri.split('.');
+  // The only case when property owners should not be sorted
+  // alphabetically is when they are globe browsing layers.
+  // Layer groups have the format *.Layers.[ColorLayers|HeightLayers]
+  if (splitUri.length < 2) {
+    return true;
+  }
+  return splitUri.indexOf('Layers') !== (splitUri.length - 2);
 }
 
 const displayName = (state, uri) => {
@@ -217,7 +224,7 @@ const mapStateToProps = (state, ownProps) => {
   let subowners = data ? data.subowners : [];
   let properties = data ? data.properties : [];
 
-  if (shouldSortDynamically(state, uri)) {
+  if (shouldSortAlphabetically(state, uri)) {
     subowners = subowners.slice(0).sort((a, b) => {
       const aName = displayName(state, a);
       const bName = displayName(state, b);
