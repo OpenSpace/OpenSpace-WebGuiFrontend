@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropertyOwner from './Properties/PropertyOwner';
 import Shortcut from './Shortcut';
 import Group from './Group';
+import ContextSection from './ContextSection';
 
 class ScenePaneListItem extends Component {
   constructor(props) {
@@ -10,12 +11,16 @@ class ScenePaneListItem extends Component {
 
   render() {
     const props = this.props;
+
     const isGroup = props.path !== undefined;
     const isPropertyOwner = props.uri !== undefined;
     const isShortcut = false; // TODO: support shortcuts.
 
-    if (isGroup) {
+    if (props.type === 'group') {
       return <Group key={this.props.path} path={this.props.path} />;
+    }
+    if (props.type === 'context') {
+      return <ContextSection />;
     }
 
     /*

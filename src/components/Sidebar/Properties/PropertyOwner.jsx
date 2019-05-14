@@ -150,7 +150,7 @@ const mapStateToProps = (state, ownProps) => {
   const subowners = data ? data.subowners : [];
   const properties = data ? data.properties : [];
   const nameProp = state.propertyTree.properties[uri + ".GuiName"];
-  const name = nameProp && nameProp.value;
+  const name = ownProps.name || nameProp && nameProp.value;
 
   const expanded = state.local.propertyTreeExpansion[uri];
 

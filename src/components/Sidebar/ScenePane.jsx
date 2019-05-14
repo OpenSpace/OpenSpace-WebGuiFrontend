@@ -15,10 +15,18 @@ class ScenePane extends Component {
   }
 
   render() {
-    const entries = this.props.groups.map(item => ({
+    let entries = [];
+
+    entries.push({
+      key: 'context',
+      type: 'context',
+    });
+
+    entries = entries.concat(this.props.groups.map(item => ({
       key: item,
-      path: item
-    }));
+      path: item,
+      type: 'group'
+    })));
 
     return (
       <Pane title="Scene" closeCallback={this.props.closeCallback}>

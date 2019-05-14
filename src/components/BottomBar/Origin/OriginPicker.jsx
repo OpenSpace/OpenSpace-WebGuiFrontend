@@ -8,7 +8,13 @@ import Popover from '../../common/Popover/Popover';
 import Button from '../../common/Input/Button/Button';
 import Checkbox from '../../common/Input/Checkbox/Checkbox';
 import FilterList from '../../common/FilterList/FilterList';
-import { NavigationAnchorKey, NavigationAimKey, RetargetAnchorKey, RetargetAimKey, ScenePrefixKey } from '../../../api/keys';
+import {
+  NavigationAnchorKey,
+  NavigationAimKey,
+  RetargetAnchorKey,
+  RetargetAimKey,
+  ScenePrefixKey
+} from '../../../api/keys';
 import FocusEntry from './FocusEntry';
 
 import { setNavigationAction, setPopoverVisibility } from '../../../api/Actions';
