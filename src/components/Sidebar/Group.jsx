@@ -8,7 +8,7 @@ import { setPropertyTreeExpansion } from '../../api/Actions';
 import { connect } from 'react-redux';
 
 const treeIdentifier = (props) => {
-  return props.treeId ? props.treeId + '$' + props.uri : props.uri;
+  return props.treeId ? props.treeId + '$' + props.path : props.path;
 }
 
 const title = path => {
@@ -20,11 +20,11 @@ const title = path => {
   }
 }
 
-let Group = ({ path, treeId, propertyOwners, subgroups, expanded, setExpanded }) => (
+let Group = ({ path, treeId, propertyOwners, subgroups, isExpanded, setExpanded }) => (
 
   <ToggleContent
     title={title(path)}
-    expanded={expanded}
+    expanded={isExpanded}
     setExpanded={setExpanded}
   >
     { subgroups.map(path => <Group key={path} path={path} treeId={treeId} />) }
@@ -44,12 +44,12 @@ const mapStateToProps = (state, ownProps) => {
   const data = state.groups[path] || {};
   const subgroups = data.subgroups || []
   const propertyOwners = data.propertyOwners || [];
-  const expanded = state.local.propertyTreeExpansion[treeIdentifier(ownProps)];
+  const isExpanded = state.local.propertyTreeExpansion[treeIdentifier(ownProps)];
 
   return {
     subgroups,
     propertyOwners,
-    expanded
+    isExpanded
   };
 }
 

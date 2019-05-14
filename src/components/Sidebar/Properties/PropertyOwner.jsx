@@ -127,23 +127,80 @@ const showEnabled = (identifier, properties) => {
 
 //showEnabled(identifier, properties)
 
-let PropertyOwner = ({ identifier, name, properties, subowners, isSceneGraphNode, expanded, setExpanded, treeId}) => (
 
-  <ToggleContent
+let PropertyOwner = (props) => {
+  const {
+    identifier,
+    name,
+    properties,
+    subowners,
+    isExpanded,
+    setExpanded,
+    treeId,
+    isSceneGraphNode,
+    isHidden,
+    isGlobeBrowsingLayer
+  } = props;
+
+  if (isHidden) {
+    return null;
+  }
+
+  const autoExpand = subowners.length === 1 ? true : undefined;
+
+  return <ToggleContent
     headerChildren={getHeaderChildren(isSceneGraphNode, identifier, subowners, properties)}
     title={getTitle(identifier, name, properties)}
     showEnabled = {false}
-    expanded={expanded}
+    expanded={isExpanded}
     setExpanded={setExpanded}
   >
-    { subowners.map(uri => <PropertyOwner key={uri} uri={uri} treeId={treeId} />) }
+    { subowners.map(uri => <PropertyOwner key={uri} uri={uri} treeId={treeId} autoExpand={autoExpand}/>) }
     { properties.map(uri => <Property key={uri} uri={uri} />) }
   </ToggleContent>
-);
+};
 
 
-const shouldAutoExpand = (subowner, uri) => {
-  return false; //subowner.identifier === 'Renderable';
+const shouldAutoExpand = (state, uri) => {
+  // Auto expand renderables
+  const splitUri = uri.split('.');
+  if (splitUri.length > 0 && splitUri[splitUri.length - 1] === "Renderable") {
+    return true;
+  }
+  return false;
+}
+
+const isHidden = (state, uri) => {
+  const prop = state.propertyTree.properties[uri + '.GuiHidden'];
+  return prop && prop.value;
+}
+
+const isDeadEnd = (state, uri) => {
+  const node = state.propertyTree.propertyOwners[uri];
+  const subowners = node.subowners || [];
+  const properties = node.properties || [];
+
+  const visibleProperties = properties.filter(childUri => {
+    const property = state.propertyTree.properties[childUri];
+    return property &&
+           property.description &&
+           property.description.MetaData &&
+           property.description.MetaData.Visibility !== 'Hidden';
+  });
+
+  if (visibleProperties.length > 0) {
+    return false;
+  }
+
+  const nonDeadEndSubowners = subowners.filter(childUri => {
+    return !isHidden(state, childUri) && !isDeadEnd(state, childUri);
+  });
+
+  return nonDeadEndSubowners.length === 0;
+}
+
+const isGlobeBrowsingLayer = (state, uri) => {
+  return false;
 }
 
 const mapStateToProps = (state, ownProps) => {
@@ -161,17 +218,20 @@ const mapStateToProps = (state, ownProps) => {
   const nameProp = state.propertyTree.properties[uri + ".GuiName"];
   const name = ownProps.name || nameProp && nameProp.value;
 
-  let expanded = state.local.propertyTreeExpansion[treeIdentifier(ownProps)];
-  if (expanded === undefined) {
-    expanded = shouldAutoExpand(state, uri);
+  let isExpanded = state.local.propertyTreeExpansion[treeIdentifier(ownProps)];
+  if (isExpanded === undefined) {
+    isExpanded = ownProps.autoExpand || shouldAutoExpand(state, uri);
   }
+
+  const hidden = isHidden(state, uri) || isDeadEnd(state, uri);
 
   return {
     identifier,
     name,
     subowners,
     properties,
-    expanded
+    isExpanded,
+    isHidden: hidden
   };
 }
 
@@ -196,7 +256,7 @@ PropertyOwner = connect(
 PropertyOwner.propTypes = {
   isSceneGraphNode: PropTypes.bool.isRequired,
   uri: PropTypes.string.isRequired,
-  expanded: PropTypes.bool
+  autoExpand: PropTypes.bool
 };
 
 PropertyOwner.defaultProps = {

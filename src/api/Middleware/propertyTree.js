@@ -139,7 +139,8 @@ const flattenPropertyTree = (propertyOwner, baseUri) => {
       name: subowner.guiName,
       properties: subowner.properties.map(p => p.Description.Identifier),
       subowners: subowner.subowners.map(p => uri + '.' + p.identifier),
-      tags: subowner.tag
+      tags: subowner.tag,
+      description: subowner.description
     });
     const childData = flattenPropertyTree(subowner, uri);
     propertyOwners = propertyOwners.concat(childData.propertyOwners);
