@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Input from '../Input/Input/Input';
 import CenteredLabel from '../CenteredLabel/CenteredLabel';
 import ScrollOverlay from '../ScrollOverlay/ScrollOverlay';
-import { SimpleSubstring } from '../../../utils/StringMatchers';
+import { SimpleSubstring, ObjectSubstring } from '../../../utils/StringMatchers';
 import styles from './FilterList.scss';
 
 class FilterList extends Component {
@@ -29,18 +29,16 @@ class FilterList extends Component {
       return favorites || data;
     }
 
+    let defaultMatcher = SimpleSubstring;
+    if (data.length > 0 && typeof data[0] === 'object') {
+      defaultMatcher = ObjectSubstring;
+    }
+
     // most matcher functions are case sensitive
     search = search.toLowerCase();
+    const matcherFunc = matcher || defaultMatcher;
 
-    const matcherFunc = (testObj) => {
-      const valuesAsStrings = Object.values(testObj)
-        .filter(test => ['number', 'string'].includes(typeof test))
-        .map(test => test.toString())
-        .map(test => test.toLowerCase());
-      return valuesAsStrings.some(test => matcher(test, search));
-    };
-
-    return data.filter(matcherFunc);
+    return data.filter(entry => matcherFunc(entry, search));
   }
 
   render() {
@@ -129,7 +127,6 @@ FilterList.propTypes = {
 FilterList.defaultProps = {
   active: null,
   className: '',
-  matcher: SimpleSubstring,
   onSelect: () => {},
   searchText: 'Search...',
   searchAutoFocus: false,
