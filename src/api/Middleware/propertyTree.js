@@ -85,13 +85,15 @@ const tryPromoteSubscription = (store, uri) => {
   const isConnected = state.connection.isConnected;
   const subscriptionInfo = subscriptionInfos[uri];
 
-  if (isConnected && subscriptionInfo.state === PendingState) {
-    subscriptionInfo.state = OrphanState;
-  } else {
+  if (!isConnected) {
     return;
   }
 
-  const propertyInTree = !!state.propertyTree[uri];
+  if (subscriptionInfo.state === PendingState) {
+    subscriptionInfo.state = OrphanState;
+  }
+
+  const propertyInTree = !!state.propertyTree.properties[uri];
 
   if (subscriptionInfo.state === OrphanState && propertyInTree) {
     subscriptionInfo.subscription = createSubscription(store, uri);
