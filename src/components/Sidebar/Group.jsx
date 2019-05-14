@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ToggleContent from '../common/ToggleContent/ToggleContent';
-import PropertyOwner from './Properties/PropertyOwner'
+import PropertyOwner, { displayName as propertyOwnerName} from './Properties/PropertyOwner'
 
 import { setPropertyTreeExpansion } from '../../api/Actions';
 
@@ -11,7 +11,7 @@ const treeIdentifier = (props) => {
   return props.treeId ? props.treeId + '$' + props.path : props.path;
 }
 
-const title = path => {
+const displayName = path => {
   const splitPath = path.split('/');
   if (splitPath.length > 1) {
     return splitPath[splitPath.length - 1];
@@ -20,35 +20,55 @@ const title = path => {
   }
 }
 
-let Group = ({ path, treeId, propertyOwners, subgroups, isExpanded, setExpanded }) => (
-
-  <ToggleContent
-    title={title(path)}
+let Group = ({ path, treeId, entries, isExpanded, setExpanded}) => {
+  return <ToggleContent
+    title={displayName(path)}
     expanded={isExpanded}
     setExpanded={setExpanded}
   >
-    { subgroups.map(path => <Group key={path} path={path} treeId={treeId} />) }
-    { propertyOwners.map(uri => <PropertyOwner key={uri} uri={uri} treeId={treeId} />) }
+    {
+      entries.map(entry => {
+        switch (entry.type) {
+          case 'group':
+            return <Group key={entry.payload} path={entry.payload} treeId={treeId} />
+          case 'propertyOwner':
+            return <PropertyOwner key={entry.payload} uri={entry.payload} treeId={treeId} />
+          default:
+            return null;
+        }
+      })
+    }
   </ToggleContent>
-);
+}
 
-Group.propTypes = {
-  path: PropTypes.string.isRequired,
-};
-
-Group.defaultProps = {
-};
 
 const mapStateToProps = (state, ownProps) => {
   const { path } = ownProps;
   const data = state.groups[path] || {};
-  const subgroups = data.subgroups || []
-  const propertyOwners = data.propertyOwners || [];
+  const groups = data.subgroups || []
+  const owners = data.propertyOwners || [];
   const isExpanded = state.local.propertyTreeExpansion[treeIdentifier(ownProps)];
 
+  const entries = groups.map(g => ({
+    type: 'group',
+    payload: g
+  })).concat(owners.map(o => ({
+    type: 'propertyOwner',
+    payload: o
+  }))).sort((a, b) => {
+    const aName = a.type === 'group' ?
+      displayName(a.payload) :
+      propertyOwnerName(state, a.payload);
+
+    const bName = b.type === 'group' ?
+      displayName(b.payload) :
+      propertyOwnerName(state, b.payload);
+
+    return aName.localeCompare(bName, 'en');
+  });
+
   return {
-    subgroups,
-    propertyOwners,
+    entries,
     isExpanded
   };
 }
@@ -69,5 +89,14 @@ Group = connect(
   mapStateToProps,
   mapDispatchToProps
 )(Group);
+
+Group.propTypes = {
+  path: PropTypes.string.isRequired,
+};
+
+Group.defaultProps = {
+};
+
+
 
 export default Group;

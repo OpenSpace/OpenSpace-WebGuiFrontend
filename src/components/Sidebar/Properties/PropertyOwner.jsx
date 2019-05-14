@@ -79,16 +79,6 @@ const focusOnThis = (e) => {
   }
 }
 
-const getTitle = (identifier, guiName, properties) => {
-  var title = guiName || identifier;
-  for (var i = 0; i < properties.length; i++) {
-    if (properties[i].id  == "GuiName") {
-        title = properties[i].value;
-    }
-  }
-  return title;
-};
-
 /*
 
 
@@ -150,7 +140,7 @@ let PropertyOwner = (props) => {
 
   return <ToggleContent
     headerChildren={getHeaderChildren(isSceneGraphNode, identifier, subowners, properties)}
-    title={getTitle(identifier, name, properties)}
+    title={name}
     showEnabled = {false}
     expanded={isExpanded}
     setExpanded={setExpanded}
@@ -203,6 +193,17 @@ const isGlobeBrowsingLayer = (state, uri) => {
   return false;
 }
 
+const shouldSortDynamically = (state, uri) => {
+  return true;
+}
+
+const displayName = (state, uri) => {
+  const property = state.propertyTree.properties[uri + ".GuiName"];
+  return property ?
+    property.value :
+    state.propertyTree.propertyOwners[uri].identifier;
+}
+
 const mapStateToProps = (state, ownProps) => {
   const { uri } = ownProps;
   const splitUri = uri.split('.');
@@ -213,10 +214,19 @@ const mapStateToProps = (state, ownProps) => {
   }
 
   const data = state.propertyTree.propertyOwners[uri];
-  const subowners = data ? data.subowners : [];
-  const properties = data ? data.properties : [];
+  let subowners = data ? data.subowners : [];
+  let properties = data ? data.properties : [];
+
+  if (shouldSortDynamically(state, uri)) {
+    subowners = subowners.slice(0).sort((a, b) => {
+      const aName = displayName(state, a);
+      const bName = displayName(state, b);
+      return aName.localeCompare(bName, 'en');
+    });
+  }
+
   const nameProp = state.propertyTree.properties[uri + ".GuiName"];
-  const name = ownProps.name || nameProp && nameProp.value;
+  const name = ownProps.name || displayName(state, uri);
 
   let isExpanded = state.local.propertyTreeExpansion[treeIdentifier(ownProps)];
   if (isExpanded === undefined) {
@@ -266,3 +276,4 @@ PropertyOwner.defaultProps = {
 };
 
 export default PropertyOwner;
+export { displayName };
