@@ -139,6 +139,11 @@ export const setPopoverPosition = data => ({
   payload: data
 })
 
+export const addNodeProperyPopover = data => ({
+  type: actionTypes.addNodeProperyPopover,
+  payload: data
+})
+
 export const setPropertyTreeExpansion = data => ({
   type: actionTypes.setPropertyTreeExpansion,
   payload: data

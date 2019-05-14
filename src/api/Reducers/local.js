@@ -33,6 +33,34 @@ const timePicker = (state = defaultTimePicker, action) => {
   }
 };
 
+
+/**
+ * Node Properties
+ */
+const defaultFocusNodePropertiesPanel = {
+  anchor: "unknown",
+  activeTab: 0,
+}
+const focusNodePropertiesPanel = (state = defaultFocusNodePropertiesPanel, action) => {
+  switch (action.type) {
+    default:
+      return state;
+  }
+};
+
+const defaultActiveNodePropertyPanels = [];
+const activeNodePropertyPanels = (state = defaultActiveNodePropertyPanels, action) => {
+  switch (action.type) {
+    case actionTypes.addNodeProperyPopover:
+      return {
+        ...state,
+        activeNodePropertyPanels: [...state.activeNodePropertyPanels, action.playload.nodeIdentifier] 
+      }
+    default:
+      return state;
+  }
+};
+
 /**
  * Popovers
  */
@@ -73,10 +101,19 @@ const popovers = (state = {}, action) => {
         ...state,
         [action.payload.popover]: popover(state[action.payload.popover], action)
       };
+    case actionTypes.addNodeProperyPopover:
+      console.log("addNodeProperyPopover");
+      return {
+        ...state,
+        activeNodePropertyPanels: {...state.activeNodePropertyPanels, [action.payload.uri]: popover(undefined, action)}
+      }
+
     default:
       return {
         originPicker: popover(state.originPicker, action),
-        timePicker: popover(state.timePicker, action)
+        timePicker: popover(state.timePicker, action),
+        focusNodePropertiesPanel: popover(state.focusNodePropertiesPanel, action),
+        activeNodePropertyPanels: {}
       }
   }
 }
@@ -100,7 +137,9 @@ const propertyTreeExpansion = (state = defaultPropertyTreeExpansion, action) => 
 
 export const local = combineReducers({
   originPicker,
+  focusNodePropertiesPanel,
   timePicker,
+  activeNodePropertyPanels,
   popovers,
   propertyTreeExpansion
 });

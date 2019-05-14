@@ -5,6 +5,10 @@ export const NavigationAimKey = 'NavigationHandler.OrbitalNavigator.Aim';
 export const RetargetAnchorKey = 'NavigationHandler.OrbitalNavigator.RetargetAnchor';
 export const RetargetAimKey = 'NavigationHandler.OrbitalNavigator.RetargetAim';
 
+//To get any scene graph node you need ScenePrefix+NodeIdentifier
+export const ScenePrefixKey = 'Scene.';
+
+
 // key to get all scene graph nodes
 // export const SceneGraphKey = '__allNodes';
 // key to get all properties in openspace engine

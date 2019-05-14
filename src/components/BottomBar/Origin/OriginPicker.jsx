@@ -8,7 +8,7 @@ import Popover from '../../common/Popover/Popover';
 import Button from '../../common/Input/Button/Button';
 import Checkbox from '../../common/Input/Checkbox/Checkbox';
 import FilterList from '../../common/FilterList/FilterList';
-import { NavigationAnchorKey, NavigationAimKey, RetargetAnchorKey, RetargetAimKey } from '../../../api/keys';
+import { NavigationAnchorKey, NavigationAimKey, RetargetAnchorKey, RetargetAimKey, ScenePrefixKey } from '../../../api/keys';
 import FocusEntry from './FocusEntry';
 
 import { setNavigationAction, setPopoverVisibility } from '../../../api/Actions';
@@ -236,8 +236,8 @@ const mapStateToProps = (state) => {
   const anchor = anchorProp && anchorProp.value;
   const aim = aimProp && aimProp.value;
 
-  const anchorNode = state.propertyTree.propertyOwners['Scene.' + anchor];
-  const aimNode = state.propertyTree.propertyOwners['Scene.' + aim];
+  const anchorNode = state.propertyTree.propertyOwners[ScenePrefixKey + anchor];
+  const aimNode = state.propertyTree.propertyOwners[ScenePrefixKey + aim];
 
   const anchorName = anchorNode ? anchorNode.name : anchor;
   let aimName = aimNode ? aimNode.name : aim;
