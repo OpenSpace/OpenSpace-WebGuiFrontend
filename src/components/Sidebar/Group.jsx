@@ -1,26 +1,38 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ToggleContent from '../common/ToggleContent/ToggleContent';
-import PropertyOwner, { displayName as propertyOwnerName} from './Properties/PropertyOwner'
+import PropertyOwner,
+       { displayName as propertyOwnerName,
+         nodeExpansionIdentifier as propertyOwnerNodeExpansionIdentifier }  from './Properties/PropertyOwner'
 
 import { setPropertyTreeExpansion } from '../../api/Actions';
 
 import { connect } from 'react-redux';
 
-const treeIdentifier = (props) => {
-  return props.treeId ? props.treeId + '$' + props.path : props.path;
-}
+
 
 const displayName = path => {
   const splitPath = path.split('/');
   if (splitPath.length > 1) {
     return splitPath[splitPath.length - 1];
   } else {
-    return "Untitled";
+    return 'Untitled';
   }
 }
 
-let Group = ({ path, treeId, entries, isExpanded, setExpanded}) => {
+/**
+ * Return an identifier for the tree expansion state.
+ */
+const nodeExpansionIdentifier = path => {
+  const splitPath = path.split('/');
+  if (splitPath.length > 1) {
+    return 'G:' + splitPath[splitPath.length - 1];
+  } else {
+    return '';
+  }
+}
+
+let Group = ({ path, expansionIdentifier, entries, isExpanded, setExpanded}) => {
   return <ToggleContent
     title={displayName(path)}
     expanded={isExpanded}
@@ -28,11 +40,26 @@ let Group = ({ path, treeId, entries, isExpanded, setExpanded}) => {
   >
     {
       entries.map(entry => {
+        const autoExpand = entries.length === 1;
         switch (entry.type) {
-          case 'group':
-            return <Group key={entry.payload} path={entry.payload} treeId={treeId} />
-          case 'propertyOwner':
-            return <PropertyOwner key={entry.payload} uri={entry.payload} treeId={treeId} />
+          case 'group': {
+            const childNodeIdentifier = expansionIdentifier + '/' +
+              nodeExpansionIdentifier(entry.payload);
+
+            return <Group autoExpand={autoExpand}
+                          key={entry.payload}
+                          path={entry.payload}
+                          expansionIdentifier={childNodeIdentifier} />
+            }
+          case 'propertyOwner': {
+            const childNodeIdentifier = expansionIdentifier + '/' +
+              propertyOwnerNodeExpansionIdentifier(entry.payload);
+
+            return <PropertyOwner autoExpand={autoExpand}
+                                  key={entry.payload}
+                                  uri={entry.payload}
+                                  expansionIdentifier={childNodeIdentifier} />
+            }
           default:
             return null;
         }
@@ -47,7 +74,11 @@ const mapStateToProps = (state, ownProps) => {
   const data = state.groups[path] || {};
   const groups = data.subgroups || []
   const owners = data.propertyOwners || [];
-  const isExpanded = state.local.propertyTreeExpansion[treeIdentifier(ownProps)];
+  let isExpanded = state.local.propertyTreeExpansion[ownProps.expansionIdentifier];
+
+  if (isExpanded === undefined) {
+    isExpanded = ownProps.autoExpand;
+  }
 
   const entries = groups.map(g => ({
     type: 'group',
@@ -76,7 +107,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   const setExpanded = (expanded) => {
     dispatch(setPropertyTreeExpansion({
-      identifier: treeIdentifier(ownProps),
+      identifier: ownProps.expansionIdentifier,
       expanded
     }));
   }
@@ -92,6 +123,8 @@ Group = connect(
 
 Group.propTypes = {
   path: PropTypes.string.isRequired,
+  autoExpand: PropTypes.bool,
+  expansionIdentifier: PropTypes.string.isRequired
 };
 
 Group.defaultProps = {
@@ -100,3 +133,4 @@ Group.defaultProps = {
 
 
 export default Group;
+export { nodeExpansionIdentifier };

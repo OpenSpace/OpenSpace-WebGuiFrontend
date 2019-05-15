@@ -12,10 +12,6 @@ import Shortcut from './../Shortcut';
 
 import { setPropertyTreeExpansion } from '../../../api/Actions';
 
-const treeIdentifier = (props) => {
-  return props.treeId ? props.treeId + '$' + props.uri : props.uri;
-}
-
 import { connect } from 'react-redux';
 
 const getHeaderChildren = (isSceneGraphNode, identifier, subowners, properties) => {
@@ -118,6 +114,20 @@ const showEnabled = (identifier, properties) => {
 //showEnabled(identifier, properties)
 
 
+
+/**
+ * Return an identifier for the tree expansion state.
+ */
+const nodeExpansionIdentifier = uri => {
+  const splitUri = uri.split('.');
+  if (splitUri.length > 1) {
+    return 'O:' + splitUri[splitUri.length - 1];
+  } else {
+    return '';
+  }
+}
+
+
 let PropertyOwner = (props) => {
   const {
     identifier,
@@ -126,17 +136,11 @@ let PropertyOwner = (props) => {
     subowners,
     isExpanded,
     setExpanded,
-    treeId,
+    expansionIdentifier,
     isSceneGraphNode,
-    isHidden,
     isGlobeBrowsingLayer
   } = props;
 
-  if (isHidden) {
-    return null;
-  }
-
-  const autoExpand = subowners.length === 1 ? true : undefined;
 
   return <ToggleContent
     headerChildren={getHeaderChildren(isSceneGraphNode, identifier, subowners, properties)}
@@ -145,24 +149,36 @@ let PropertyOwner = (props) => {
     expanded={isExpanded}
     setExpanded={setExpanded}
   >
-    { subowners.map(uri => <PropertyOwner key={uri} uri={uri} treeId={treeId} autoExpand={autoExpand}/>) }
-    { properties.map(uri => <Property key={uri} uri={uri} />) }
+    {
+      subowners.map(uri => {
+        let autoExpand = subowners.length + properties.length === 1 ? true : undefined;
+        const splitUri = uri.split('.');
+        if (splitUri.length > 0 && splitUri[splitUri.length - 1] === "Renderable") {
+          autoExpand = true;
+        }
+        return <PropertyOwner key={uri}
+                     uri={uri}
+                     expansionIdentifier={expansionIdentifier + '/' + nodeExpansionIdentifier(uri)}
+                     autoExpand={autoExpand}/>;
+      })
+    }
+    {
+      properties.map(uri => <Property key={uri} uri={uri} />)
+    }
   </ToggleContent>
 };
 
-
-const shouldAutoExpand = (state, uri) => {
-  // Auto expand renderables
-  const splitUri = uri.split('.');
-  if (splitUri.length > 0 && splitUri[splitUri.length - 1] === "Renderable") {
-    return true;
-  }
-  return false;
-}
-
-const isHidden = (state, uri) => {
+const isPropertyOwnerHidden = (state, uri) => {
   const prop = state.propertyTree.properties[uri + '.GuiHidden'];
   return prop && prop.value;
+}
+
+const isPropertyVisible = (state, uri) => {
+  const property = state.propertyTree.properties[uri];
+  return property &&
+         property.description &&
+         property.description.MetaData &&
+         property.description.MetaData.Visibility !== 'Hidden';
 }
 
 const isDeadEnd = (state, uri) => {
@@ -170,22 +186,16 @@ const isDeadEnd = (state, uri) => {
   const subowners = node.subowners || [];
   const properties = node.properties || [];
 
-  const visibleProperties = properties.filter(childUri => {
-    const property = state.propertyTree.properties[childUri];
-    return property &&
-           property.description &&
-           property.description.MetaData &&
-           property.description.MetaData.Visibility !== 'Hidden';
-  });
-
+  const visibleProperties = properties.filter(
+    childUri => isPropertyVisible(state, childUri)
+  );
   if (visibleProperties.length > 0) {
     return false;
   }
 
   const nonDeadEndSubowners = subowners.filter(childUri => {
-    return !isHidden(state, childUri) && !isDeadEnd(state, childUri);
+    return !isPropertyOwnerHidden(state, childUri) && !isDeadEnd(state, childUri);
   });
-
   return nonDeadEndSubowners.length === 0;
 }
 
@@ -197,7 +207,7 @@ const shouldSortAlphabetically = (state, uri) => {
   const splitUri = uri.split('.');
   // The only case when property owners should not be sorted
   // alphabetically is when they are globe browsing layers.
-  // Layer groups have the format *.Layers.[ColorLayers|HeightLayers]
+  // Layer groups have the format *.Layers.[ColorLayers|HeightLayers|...]
   if (splitUri.length < 2) {
     return true;
   }
@@ -224,6 +234,13 @@ const mapStateToProps = (state, ownProps) => {
   let subowners = data ? data.subowners : [];
   let properties = data ? data.properties : [];
 
+
+  subowners = subowners.filter(uri => (
+    !isPropertyOwnerHidden(state, uri) && !isDeadEnd(state, uri)
+  ));
+
+  properties = properties.filter(uri => isPropertyVisible(state, uri));
+
   if (shouldSortAlphabetically(state, uri)) {
     subowners = subowners.slice(0).sort((a, b) => {
       const aName = displayName(state, a);
@@ -235,12 +252,10 @@ const mapStateToProps = (state, ownProps) => {
   const nameProp = state.propertyTree.properties[uri + ".GuiName"];
   const name = ownProps.name || displayName(state, uri);
 
-  let isExpanded = state.local.propertyTreeExpansion[treeIdentifier(ownProps)];
+  let isExpanded = state.local.propertyTreeExpansion[ownProps.expansionIdentifier];
   if (isExpanded === undefined) {
-    isExpanded = ownProps.autoExpand || shouldAutoExpand(state, uri);
+    isExpanded = ownProps.autoExpand;
   }
-
-  const hidden = isHidden(state, uri) || isDeadEnd(state, uri);
 
   return {
     identifier,
@@ -248,14 +263,13 @@ const mapStateToProps = (state, ownProps) => {
     subowners,
     properties,
     isExpanded,
-    isHidden: hidden
   };
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   const setExpanded = (expanded) => {
     dispatch(setPropertyTreeExpansion({
-      identifier: treeIdentifier(ownProps),
+      identifier: ownProps.expansionIdentifier,
       expanded
     }));
   }
@@ -283,4 +297,4 @@ PropertyOwner.defaultProps = {
 };
 
 export default PropertyOwner;
-export { displayName };
+export { displayName, nodeExpansionIdentifier };

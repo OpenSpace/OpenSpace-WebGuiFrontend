@@ -32,16 +32,8 @@ class Property extends Component {
   render() {
     const { description, value } = this.props;
 
-    if (description === undefined || value === undefined) {
-      return null;
-    }
-
     const ConcreteProperty =
       concreteProperties[description.Type] || concreteProperties.defaultProperty;
-
-    if (description.MetaData && description.MetaData.Visibility === "Hidden") {
-      return null;
-    }
 
     return <ConcreteProperty key={description.Identifier} description={description} value={value} subscribe />;
   }

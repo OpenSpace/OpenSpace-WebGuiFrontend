@@ -17,10 +17,10 @@ class ScenePaneListItem extends Component {
     const isShortcut = false; // TODO: support shortcuts.
 
     if (props.type === 'group') {
-      return <Group key={this.props.path} path={this.props.path} treeId="scene" />;
+      return <Group key={this.props.path} path={this.props.path} expansionIdentifier={"scene/" + this.props.path} />;
     }
     if (props.type === 'context') {
-      return <ContextSection treeId="context" />;
+      return <ContextSection expansionIdentifier="context" />;
     }
 
     /*
