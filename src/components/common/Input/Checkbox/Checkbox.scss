@@ -7,6 +7,10 @@ $height: $font-size + $base-padding * 1.5;
     background: $ui-background-hover;
   }
 
+  &:hover .checkbox {
+    color: $blue;
+  }
+
   &.wide {
     align-items: center;
     display: flex;

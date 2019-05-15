@@ -22,7 +22,7 @@ class Checkbox extends Component {
 
     return (
       <div onClick={this.onClick} className={`${styles.wrapper} ${wide ? styles.wide : ''} ${left ? styles.left : ''}`}>
-        <MaterialIcon icon={checked ? "check_box" : "check_box_outline_blank"} />
+        <MaterialIcon className={styles.checkbox} icon={checked ? "check_box" : "check_box_outline_blank"} />
         { label && <label>{ label }</label> }
       </div>
     );
