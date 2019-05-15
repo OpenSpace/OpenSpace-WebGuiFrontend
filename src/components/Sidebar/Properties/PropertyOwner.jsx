@@ -127,6 +127,12 @@ const displayName = (state, uri) => {
     state.propertyTree.propertyOwners[uri].identifier;
 }
 
+const alphabeticalComparison = state => (a, b) => {
+  const aName = displayName(state, a);
+  const bName = displayName(state, b);
+  return aName.localeCompare(bName, 'en');
+}
+
 const mapStateToProps = (state, ownProps) => {
   const { uri } = ownProps;
   const splitUri = uri.split('.');
@@ -148,11 +154,7 @@ const mapStateToProps = (state, ownProps) => {
   properties = properties.filter(uri => isPropertyVisible(state, uri));
 
   if (shouldSortAlphabetically(state, uri)) {
-    subowners = subowners.slice(0).sort((a, b) => {
-      const aName = displayName(state, a);
-      const bName = displayName(state, b);
-      return aName.localeCompare(bName, 'en');
-    });
+    subowners = subowners.slice(0).sort(alphabeticalComparison(state));
   }
 
   const nameProp = state.propertyTree.properties[uri + ".GuiName"];
@@ -201,4 +203,8 @@ PropertyOwner.defaultProps = {
 };
 
 export default PropertyOwner;
-export { displayName, nodeExpansionIdentifier };
+export {
+  displayName,
+  nodeExpansionIdentifier,
+  alphabeticalComparison
+};

@@ -4,10 +4,11 @@ import PropTypes from 'prop-types';
 import Pane from './Pane';
 import FilterList from '../common/FilterList/FilterList';
 import LoadingBlocks from '../common/LoadingBlock/LoadingBlocks';
-import PropertyOwner from './Properties/PropertyOwner';
+import PropertyOwner, { alphabeticalComparison } from './Properties/PropertyOwner';
 import Shortcut from './Shortcut';
 import styles from './ScenePane.scss';
 import ScenePaneListItem from './ScenePaneListItem';
+import { ObjectWordBeginningSubstring } from '../../utils/StringMatchers';
 
 class ScenePane extends Component {
   constructor(props) {
@@ -40,7 +41,7 @@ class ScenePane extends Component {
         )}
 
         { entries.length > 0 && (
-          <FilterList favorites={favorites} data={entries} viewComponent={ScenePaneListItem} searchAutoFocus />
+          <FilterList favorites={favorites} matcher={this.props.matcher} data={entries} viewComponent={ScenePaneListItem} searchAutoFocus />
         )}
       </Pane>
     );
@@ -89,10 +90,19 @@ const mapStateToProps = (state) => {
   sortedGroups = sortedGroups.map(path => '/' + path);
 
   const sceneOwner = state.propertyTree.propertyOwners.Scene;
+  const sortedSceneGraphNodes = sceneOwner ?
+    sceneOwner.subowners.sort(alphabeticalComparison(state)) :
+    [];
+
+  const matcher = (test, search) => {
+    const node = state.propertyTree.propertyOwners[test.uri] || {};
+    return ObjectWordBeginningSubstring(node, search);
+  };
 
   return {
     groups: sortedGroups,
-    entries: sceneOwner ? sceneOwner.subowners : []
+    entries: sortedSceneGraphNodes,
+    matcher
   };
 };
 

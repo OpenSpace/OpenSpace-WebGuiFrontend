@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Input from '../Input/Input/Input';
 import CenteredLabel from '../CenteredLabel/CenteredLabel';
 import ScrollOverlay from '../ScrollOverlay/ScrollOverlay';
-import { SimpleSubstring, ObjectSubstring } from '../../../utils/StringMatchers';
+import { WordBeginningSubstring, ObjectWordBeginningSubstring } from '../../../utils/StringMatchers';
 import styles from './FilterList.scss';
 
 class FilterList extends Component {
@@ -29,9 +29,9 @@ class FilterList extends Component {
       return favorites || data;
     }
 
-    let defaultMatcher = SimpleSubstring;
+    let defaultMatcher = WordBeginningSubstring;
     if (data.length > 0 && typeof data[0] === 'object') {
-      defaultMatcher = ObjectSubstring;
+      defaultMatcher = ObjectWordBeginningSubstring;
     }
 
     // most matcher functions are case sensitive
