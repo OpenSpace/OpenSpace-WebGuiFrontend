@@ -27,9 +27,10 @@ class BoolProperty extends PropertyBase {
 
     return (
       <Checkbox
+        wide={!this.props.checkBoxOnly}
         checked={value}
         label={showText ? (<span>{description.Name} {this.descriptionPopup}</span>) : null}
-        onChange={this.onChange}
+        setChecked={this.onChange}
         disabled={this.disabled}
       />
     );

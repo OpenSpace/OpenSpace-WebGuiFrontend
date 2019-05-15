@@ -2,118 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ToggleContent from '../../common/ToggleContent/ToggleContent';
 import Property from './Property';
-import styles from './../SceneGraphNode.scss';
 import Button from '../../common/Input/Button/Button';
 import { NavigationAnchorKey, NavigationAimKey, RetargetAnchorKey } from '../../../api/keys';
 import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
 import SvgIcon from '../../common/SvgIcon/SvgIcon';
 import FocusIcon from 'svg-react-loader?name=Focus!../../../icons/focus.svg';
 import Shortcut from './../Shortcut';
-
+import PropertyOwnerHeader from './PropertyOwnerHeader';
 import { setPropertyTreeExpansion } from '../../../api/Actions';
 
 import { connect } from 'react-redux';
-
-const getHeaderChildren = (isSceneGraphNode, identifier, subowners, properties) => {
-  if (isSceneGraphNode) {
-    const focusButton = <div className={styles.buttonContainer}>
-      <Button className={styles.shybutton} identifier={identifier} transparent onClick={focusOnThis} >
-        <SvgIcon><FocusIcon/></SvgIcon>
-      </Button>
-    </div>
-
-    const bothButtons = <div className={styles.buttonContainer}>
-      <Button className={styles.globeButton} identifier={identifier} onClick={gotoThis} >
-        <MaterialIcon icon="language" />
-      </Button>
-       <Button className={styles.shybutton} identifier={identifier} onClick={focusOnThis} >
-        <SvgIcon><FocusIcon/></SvgIcon>
-      </Button>
-    </div>
-
-    //todo replace with isGlobe once we have a goto geo function that includes geo radius
-    if (false) {
-      return bothButtons;
-    } else {
-      return focusButton;
-    }
-  } else {
-    /*if (isGlobeBrowsingLayer(identifier, properties)) {
-      var layerEnabled = false;
-      var enabledProp = null;
-      for (var i = 0; i < properties.length; i++) {
-          var prop = properties[i];
-          if ( (prop.id  == "Enabled") ) {
-            layerEnabled = prop.value
-            enabledProp = prop;
-            i = properties.length; //just exit early for performance
-          }
-      }
-      if (enabledProp == null) {
-        return null;
-      } else {
-        const enableBox = <div className={styles.buttonContainer}>
-          <BoolProperty value={layerEnabled} checkBoxOnly={true} {...enabledProp} />
-        </div>
-        return enableBox;
-      }
-    } else {
-
-      return null
-    }
-    */
-    return null;
-  }
-}
-
-const focusOnThis = (e) => {
-  e.stopPropagation();
-  //DataManager.setValue(NavigationAnchorKey, e.currentTarget.getAttribute("identifier"));
-  //DataManager.setValue(NavigationAimKey, e.currentTarget.getAttribute("identifier"));
-  if (!e.shiftKey) {
-    //DataManager.trigger(RetargetAnchorKey);
-  }
-}
-
-/*
-
-
-const hasVisibleProperties = (properties) => {
-  const visibleProps = properties.filter(prop => {return ( prop.description.MetaData &&  (prop.description.MetaData.Visibility != "Hidden")) });
-  return visibleProps.length > 0;
-}
-
-const isGlobeBrowsingLayer = (identifier, properties) => {
-  if ( (identifier == "ColorLayers") || (identifier == "HeightLayers") || (properties.length < 2) ) {
-    //in this case, property identifiers will match but this is the group of layers not actual layers
-    //or a property of a globebrowsing layer who's first property is also a Type
-    return false;
-  }
-  var prop = properties[0];
-  //todo there must be a better way to determin if this property owner is a globebrowsing layer.....
-  //open to ANY sugestions
-  if ( (prop != undefined) && (prop.id == "Type") && (prop.description.Identifier.lastIndexOf("ColorLayers") > 0) || (prop.description.Identifier.lastIndexOf("HeightLayers") > 0) ) {
-    return true;
-  }
-  return false;
-}
-
-
-const showEnabled = (identifier, properties) => {
-  for (var i = 0; i < properties.length; i++) {
-    var prop = properties[i];
-    if ( (prop.id  == "Enabled") && (prop.value == true) && isGlobeBrowsingLayer(identifier, properties) ) {
-      return true;
-    }
-  }
-  return false;
-}
-*/
-
-
-//showEnabled(identifier, properties)
-
-
 
 /**
  * Return an identifier for the tree expansion state.
@@ -130,6 +28,7 @@ const nodeExpansionIdentifier = uri => {
 
 let PropertyOwner = (props) => {
   const {
+    uri,
     identifier,
     name,
     properties,
@@ -137,15 +36,15 @@ let PropertyOwner = (props) => {
     isExpanded,
     setExpanded,
     expansionIdentifier,
-    isSceneGraphNode,
-    isGlobeBrowsingLayer
   } = props;
 
+  const header = <PropertyOwnerHeader uri={uri}
+                                      expanded={isExpanded}
+                                      title={name}
+                                      setExpanded={setExpanded} />
 
   return <ToggleContent
-    headerChildren={getHeaderChildren(isSceneGraphNode, identifier, subowners, properties)}
-    title={name}
-    showEnabled = {false}
+    header={header}
     expanded={isExpanded}
     setExpanded={setExpanded}
   >
@@ -175,6 +74,13 @@ const isPropertyOwnerHidden = (state, uri) => {
 
 const isPropertyVisible = (state, uri) => {
   const property = state.propertyTree.properties[uri];
+
+  const splitUri = uri.split('.');
+  if (splitUri.length > 1) {
+    if (splitUri[splitUri.length - 1] === 'Enabled')
+      return false;
+  }
+
   return property &&
          property.description &&
          property.description.MetaData &&
@@ -254,7 +160,7 @@ const mapStateToProps = (state, ownProps) => {
 
   let isExpanded = state.local.propertyTreeExpansion[ownProps.expansionIdentifier];
   if (isExpanded === undefined) {
-    isExpanded = ownProps.autoExpand;
+    isExpanded = ownProps.autoExpand || false;
   }
 
   return {
@@ -285,13 +191,11 @@ PropertyOwner = connect(
 
 
 PropertyOwner.propTypes = {
-  isSceneGraphNode: PropTypes.bool.isRequired,
   uri: PropTypes.string.isRequired,
   autoExpand: PropTypes.bool
 };
 
 PropertyOwner.defaultProps = {
-  isSceneGraphNode: false,
   properties: [],
   subowners: [],
 };

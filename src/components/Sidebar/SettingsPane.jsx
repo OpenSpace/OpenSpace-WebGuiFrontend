@@ -16,7 +16,8 @@ class SettingsPane extends Component {
   render() {
     const entries = this.props.propertyOwners.map(uri => ({
       key: uri,
-      uri: uri
+      uri: uri,
+      expansionIdentifier: uri
     }));
 
     return (

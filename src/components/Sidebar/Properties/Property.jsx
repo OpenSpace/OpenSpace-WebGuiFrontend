@@ -35,7 +35,7 @@ class Property extends Component {
     const ConcreteProperty =
       concreteProperties[description.Type] || concreteProperties.defaultProperty;
 
-    return <ConcreteProperty key={description.Identifier} description={description} value={value} subscribe />;
+    return <ConcreteProperty {...this.props} key={description.Identifier} description={description} value={value} subscribe />;
   }
 }
 

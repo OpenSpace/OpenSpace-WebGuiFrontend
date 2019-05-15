@@ -19,10 +19,16 @@ class ScenePaneListItem extends Component {
     if (props.type === 'group') {
       return <Group key={this.props.path}
                     path={this.props.path}
-                    expansionIdentifier={"scene/" + this.props.path} />;
+                    expansionIdentifier={'scene/' + this.props.path} />;
     }
     if (props.type === 'context') {
       return <ContextSection expansionIdentifier="context" />;
+    }
+    if (props.type === 'propertyOwner') {
+      return <PropertyOwner
+              key={this.props.uri}
+              uri={this.props.uri}
+              expansionIdentifier={'scene-search/' + this.props.uri} />
     }
 
     /*
