@@ -54,8 +54,9 @@ const mapStateToProps = (state) => {
   const allUris = Object.keys(state.propertyTree.propertyOwners || {});
 
   const propertyOwners = allUris.filter(uri => {
-    return uri.identifier !== sceneUri && uri.indexOf('.') === -1
+    return uri !== sceneUri && uri.indexOf('.') === -1
   });
+
   return {
     propertyOwners,
   };
