@@ -14,12 +14,14 @@ class ContextSection extends Component {
       {this.props.anchor &&
         <PropertyOwner expansionIdentifier={this.props.expansionIdentifier + '/anchor'}
                        name={"Current " + focusOrAnchor + ": " + this.props.anchorName}
-                       uri={this.props.anchor}/>
+                       uri={this.props.anchor}
+                       autoExpand={true} />
       }
       {this.props.aim &&
         <PropertyOwner expansionIdentifier={this.props.expansionIdentifier + '/aim'}
                        name={"Current Aim: " + this.props.aimName}
-                       uri={this.props.aim}/>
+                       uri={this.props.aim}
+                       autoExpand={true} />
       }
     </>
   }
