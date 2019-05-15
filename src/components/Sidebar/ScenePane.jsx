@@ -15,14 +15,19 @@ class ScenePane extends Component {
   }
 
   render() {
-    let entries = [];
+    let favorites = [];
+    const entries = this.props.entries.map(uri => ({
+      key: uri,
+      type: 'propertyOwner',
+      uri: uri
+    }));
 
-    entries.push({
+    favorites.push({
       key: 'context',
       type: 'context',
     });
 
-    entries = entries.concat(this.props.groups.map(item => ({
+    favorites = favorites.concat(this.props.groups.map(item => ({
       key: item,
       path: item,
       type: 'group'
@@ -35,7 +40,7 @@ class ScenePane extends Component {
         )}
 
         { entries.length > 0 && (
-          <FilterList data={entries} viewComponent={ScenePaneListItem} searchAutoFocus />
+          <FilterList favorites={favorites} data={entries} viewComponent={ScenePaneListItem} searchAutoFocus />
         )}
       </Pane>
     );
@@ -83,8 +88,11 @@ const mapStateToProps = (state) => {
   // Add back the leading slash
   sortedGroups = sortedGroups.map(path => '/' + path);
 
+  const sceneOwner = state.propertyTree.propertyOwners.Scene;
+
   return {
-    groups: sortedGroups
+    groups: sortedGroups,
+    entries: sceneOwner ? sceneOwner.subowners : []
   };
 };
 
