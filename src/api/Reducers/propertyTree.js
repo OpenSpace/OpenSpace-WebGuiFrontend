@@ -1,3 +1,4 @@
+import { combineReducers } from 'redux';
 import { actionTypes } from '../Actions/actionTypes';
 
 // actions:
@@ -84,11 +85,7 @@ const propertyOwners = (state = {}, action) => {
   }
 }
 
-export const propertyTree = (state = {}, action) => {
-  return {
-    properties: properties(state.properties, action),
-    propertyOwners: propertyOwners(state.propertyOwners, action)
-  };
-}
-
-
+export const propertyTree = combineReducers({
+  properties,
+  propertyOwners
+});

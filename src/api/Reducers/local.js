@@ -69,7 +69,7 @@ const defaultPopover = {
   position: undefined,
   attached: true
 }
-const popover = (state = defaultPopover, action) => {
+const popover = (state = defaultPopover, action = {}) => {
   switch (action.type) {
     case actionTypes.setPopoverVisibility:
       return {
@@ -91,7 +91,14 @@ const popover = (state = defaultPopover, action) => {
   }
 }
 
-const popovers = (state = {}, action) => {
+const defaultPopovers = {
+  originPicker: popover(),
+  timePicker: popover(),
+  focusNodePropertiesPanel: popover(),
+  activeNodePropertyPanels: {}
+}
+
+const popovers = (state = defaultPopovers, action) => {
   switch (action.type) {
     case actionTypes.setPopoverPosition:
     case actionTypes.setPopoverVisibility:
@@ -108,12 +115,7 @@ const popovers = (state = {}, action) => {
       }
 
     default:
-      return {
-        originPicker: popover(state.originPicker, action),
-        timePicker: popover(state.timePicker, action),
-        focusNodePropertiesPanel: popover(state.focusNodePropertiesPanel, action),
-        activeNodePropertyPanels: {}
-      }
+      return state;
   }
 }
 

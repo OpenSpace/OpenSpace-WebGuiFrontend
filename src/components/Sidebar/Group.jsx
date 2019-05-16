@@ -9,6 +9,7 @@ import { setPropertyTreeExpansion } from '../../api/Actions';
 
 import { connect } from 'react-redux';
 
+import subStateToProps from '../../utils/subStateToProps';
 
 
 const displayName = path => {
@@ -33,13 +34,18 @@ const nodeExpansionIdentifier = path => {
 }
 
 let Group = ({ path, expansionIdentifier, entries, isExpanded, setExpanded}) => {
+
+  let sortedEntries = entries.sort((a, b) => 
+    a.name.localeCompare(b.name, 'en')
+  );
+
   return <ToggleContent
     title={displayName(path)}
     expanded={isExpanded}
     setExpanded={setExpanded}
   >
     {
-      entries.map(entry => {
+      sortedEntries.map(entry => {
         const autoExpand = entries.length === 1;
         switch (entry.type) {
           case 'group': {
@@ -68,41 +74,41 @@ let Group = ({ path, expansionIdentifier, entries, isExpanded, setExpanded}) => 
   </ToggleContent>
 }
 
-
-const mapStateToProps = (state, ownProps) => {
-  const { path } = ownProps;
-  const data = state.groups[path] || {};
-  const groups = data.subgroups || []
+const mapSubStateToProps = (
+  { groups, propertyOwners, properties, propertyTreeExpansion },
+  { path, expansionIdentifier, autoExpand }
+) => {
+  const data = groups[path] || {};
+  const subGroups = data.subgroups || []
   const owners = data.propertyOwners || [];
-  let isExpanded = state.local.propertyTreeExpansion[ownProps.expansionIdentifier];
+  let isExpanded = propertyTreeExpansion[expansionIdentifier];
 
   if (isExpanded === undefined) {
-    isExpanded = ownProps.autoExpand;
+    isExpanded = autoExpand;
   }
 
-  const entries = groups.map(g => ({
+  const entries = subGroups.map(g => ({
     type: 'group',
-    payload: g
+    payload: g,
+    name: displayName(g)
   })).concat(owners.map(o => ({
     type: 'propertyOwner',
-    payload: o
-  }))).sort((a, b) => {
-    const aName = a.type === 'group' ?
-      displayName(a.payload) :
-      propertyOwnerName(state, a.payload);
-
-    const bName = b.type === 'group' ?
-      displayName(b.payload) :
-      propertyOwnerName(state, b.payload);
-
-    return aName.localeCompare(bName, 'en');
-  });
+    payload: o,
+    name: propertyOwnerName(propertyOwners, properties, o)
+  })));
 
   return {
     entries,
     isExpanded
   };
 }
+
+const mapStateToSubState = state => ({
+  groups: state.groups,
+  propertyOwners: state.propertyTree.propertyOwners,
+  properties: state.propertyTree.properties,
+  propertyTreeExpansion: state.local.propertyTreeExpansion
+})
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   const setExpanded = (expanded) => {
@@ -117,7 +123,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 }
 
 Group = connect(
-  mapStateToProps,
+  subStateToProps(mapSubStateToProps, mapStateToSubState),
   mapDispatchToProps
 )(Group);
 

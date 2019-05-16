@@ -44,6 +44,7 @@ SettingsPane.defaultProps = {
 
 const mapStateToProps = (state) => {
   const sceneUri = 'Scene';
+
   if (!state.propertyTree) {
     return { entries: [] };
   }

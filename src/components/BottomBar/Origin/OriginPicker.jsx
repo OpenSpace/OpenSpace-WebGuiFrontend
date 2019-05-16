@@ -28,7 +28,8 @@ import Aim from 'svg-react-loader?name=Aim!../../../icons/aim.svg';
 import Focus from 'svg-react-loader?name=Focus!../../../icons/focus.svg';
 
 import propertyDispatcher from '../../../api/propertyDispatcher';
-import { findSubtree } from '../../../utils/propertyTreeHelpers';
+import subStateToProps from '../../../utils/subStateToProps';
+
 
 // tag that each focusable node must have
 const REQUIRED_TAG = 'GUI.Interesting';
@@ -217,38 +218,38 @@ class OriginPicker extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  const scene = state.propertyTree.propertyOwners.Scene;
+const mapSubStateToProps = ({properties, propertyOwners, originPicker, originPickerPopover}) => {
+  const scene = propertyOwners.Scene;
   const uris = scene ? scene.subowners : [];
   
   const nodes = uris.map(uri => ({
-    ...state.propertyTree.propertyOwners[uri],
+    ...propertyOwners[uri],
     key: uri
   }));
 
   const favorites = uris.filter(uri =>
-    state.propertyTree.propertyOwners[uri].tags.some(tag =>
+    propertyOwners[uri].tags.some(tag =>
       tag.includes(REQUIRED_TAG)
     )
   ).map(uri => ({
-    ...state.propertyTree.propertyOwners[uri],
+    ...propertyOwners[uri],
     key: uri
   }));
 
-  const navigationAction = state.local.originPicker.action;
-  const anchorProp = state.propertyTree.properties[NavigationAnchorKey];
-  const aimProp = state.propertyTree.properties[NavigationAimKey];
+  const navigationAction = originPicker.action;
+  const anchorProp = properties[NavigationAnchorKey];
+  const aimProp = properties[NavigationAimKey];
 
   const anchor = anchorProp && anchorProp.value;
   const aim = aimProp && aimProp.value;
 
-  const anchorNode = state.propertyTree.propertyOwners[ScenePrefixKey + anchor];
-  const aimNode = state.propertyTree.propertyOwners[ScenePrefixKey + aim];
+  const anchorNode = propertyOwners[ScenePrefixKey + anchor];
+  const aimNode = propertyOwners[ScenePrefixKey + aim];
 
   const anchorName = anchorNode ? anchorNode.name : anchor;
   let aimName = aimNode ? aimNode.name : aim;
 
-  const popoverVisible = state.local.popovers.originPicker.visible;
+  const popoverVisible = originPickerPopover.visible;
 
   return {
     nodes,
@@ -261,6 +262,13 @@ const mapStateToProps = (state) => {
     popoverVisible,
   };
 };
+
+const mapStateToSubState = (state) => ({
+  propertyOwners: state.propertyTree.propertyOwners,
+  properties: state.propertyTree.properties,
+  originPicker: state.local.originPicker,
+  originPickerPopover: state.local.popovers.originPicker
+});
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -280,8 +288,9 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
+
 OriginPicker = connect(
-  mapStateToProps,
+  subStateToProps(mapSubStateToProps, mapStateToSubState),
   mapDispatchToProps
 )(OriginPicker);
 

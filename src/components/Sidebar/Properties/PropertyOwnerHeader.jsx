@@ -28,13 +28,15 @@ let PropertyOwnerHeader = ({ title, expanded, setExpanded, onIcon, offIcon, quic
       icon={expanded ? onIcon : offIcon}
       className={toggleHeaderStyles.icon}
     />
+    <span className={styles.buttonContainer}>
+      { quickToggleUri && <Property uri={quickToggleUri} checkBoxOnly={true} /> }
+    </span>
     <span className={toggleHeaderStyles.title} >
       { title }
     </span>
     <span className={styles.buttonContainer}>
-    { quickToggleUri && <Property uri={quickToggleUri} checkBoxOnly={true} /> }
-    { focusAction && <MaterialIcon icon="check_box" /> }
-    { popOutAction && null }
+      { focusAction && <MaterialIcon icon="check_box" /> }
+      { popOutAction && null }
     </span>
   </header>
 }

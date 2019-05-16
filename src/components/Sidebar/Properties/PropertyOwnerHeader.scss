@@ -1,8 +1,8 @@
 .buttonContainer {
-  position: absolute;
-  right: 3px;
-  height: 100%;
-  overflow: hidden;
+  display: inline-block;
+  position: relative;
+  top: 2px;
+  margin-right: 5px;
 }
 
 .globeButton {

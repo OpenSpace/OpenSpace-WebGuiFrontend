@@ -1,4 +1,3 @@
-import { combineReducers } from 'redux';
 import { propertyTree } from './propertyTree';
 import { groups } from './groups';
 import { time } from './time';

@@ -10,6 +10,7 @@ import FocusIcon from 'svg-react-loader?name=Focus!../../../icons/focus.svg';
 import Shortcut from './../Shortcut';
 import PropertyOwnerHeader from './PropertyOwnerHeader';
 import { setPropertyTreeExpansion } from '../../../api/Actions';
+import subStateToProps from '../../../utils/subStateToProps';
 
 import { connect } from 'react-redux';
 
@@ -36,7 +37,14 @@ let PropertyOwner = (props) => {
     isExpanded,
     setExpanded,
     expansionIdentifier,
+    sort
   } = props;
+
+  const sortedSubowners = (
+    sort ?
+      (subowners.sort((a, b) => a.name.localeCompare(b.name, 'en'))) :
+      subowners
+    ).map(data => data.uri)
 
   const header = <PropertyOwnerHeader uri={uri}
                                       expanded={isExpanded}
@@ -49,8 +57,8 @@ let PropertyOwner = (props) => {
     setExpanded={setExpanded}
   >
     {
-      subowners.map(uri => {
-        let autoExpand = subowners.length + properties.length === 1 ? true : undefined;
+      sortedSubowners.map(uri => {
+        let autoExpand = sortedSubowners.length + properties.length === 1 ? true : undefined;
         const splitUri = uri.split('.');
         if (splitUri.length > 0 && splitUri[splitUri.length - 1] === "Renderable") {
           autoExpand = true;
@@ -67,13 +75,13 @@ let PropertyOwner = (props) => {
   </ToggleContent>
 };
 
-const isPropertyOwnerHidden = (state, uri) => {
-  const prop = state.propertyTree.properties[uri + '.GuiHidden'];
+const isPropertyOwnerHidden = (properties, uri) => {
+  const prop = properties[uri + '.GuiHidden'];
   return prop && prop.value;
 }
 
-const isPropertyVisible = (state, uri) => {
-  const property = state.propertyTree.properties[uri];
+const isPropertyVisible = (properties, uri) => {
+  const property = properties[uri];
 
   const splitUri = uri.split('.');
   if (splitUri.length > 1) {
@@ -87,20 +95,20 @@ const isPropertyVisible = (state, uri) => {
          property.description.MetaData.Visibility !== 'Hidden';
 }
 
-const isDeadEnd = (state, uri) => {
-  const node = state.propertyTree.propertyOwners[uri];
+const isDeadEnd = (propertyOwners, properties, uri) => {
+  const node = propertyOwners[uri];
   const subowners = node.subowners || [];
-  const properties = node.properties || [];
+  const subproperties = node.properties || [];
 
-  const visibleProperties = properties.filter(
-    childUri => isPropertyVisible(state, childUri)
+  const visibleProperties = subproperties.filter(
+    childUri => isPropertyVisible(properties, childUri)
   );
   if (visibleProperties.length > 0) {
     return false;
   }
 
   const nonDeadEndSubowners = subowners.filter(childUri => {
-    return !isPropertyOwnerHidden(state, childUri) && !isDeadEnd(state, childUri);
+    return !isPropertyOwnerHidden(properties, childUri) && !isDeadEnd(propertyOwners, properties, childUri);
   });
   return nonDeadEndSubowners.length === 0;
 }
@@ -109,7 +117,7 @@ const isGlobeBrowsingLayer = (state, uri) => {
   return false;
 }
 
-const shouldSortAlphabetically = (state, uri) => {
+const shouldSortAlphabetically = uri => {
   const splitUri = uri.split('.');
   // The only case when property owners should not be sorted
   // alphabetically is when they are globe browsing layers.
@@ -120,21 +128,17 @@ const shouldSortAlphabetically = (state, uri) => {
   return splitUri.indexOf('Layers') !== (splitUri.length - 2);
 }
 
-const displayName = (state, uri) => {
-  const property = state.propertyTree.properties[uri + ".GuiName"];
+const displayName = (propertyOwners, properties, uri) => {
+  const property = properties[uri + ".GuiName"];
   return property ?
     property.value :
-    state.propertyTree.propertyOwners[uri].identifier;
+    propertyOwners[uri].identifier;
 }
 
-const alphabeticalComparison = state => (a, b) => {
-  const aName = displayName(state, a);
-  const bName = displayName(state, b);
-  return aName.localeCompare(bName, 'en');
-}
-
-const mapStateToProps = (state, ownProps) => {
-  const { uri } = ownProps;
+const mapSubStateToProps = (
+  {propertyOwners, properties, propertyTreeExpansion},
+  {uri, name, autoExpand, expansionIdentifier}
+) => {
   const splitUri = uri.split('.');
   
   let identifier = '';
@@ -142,37 +146,44 @@ const mapStateToProps = (state, ownProps) => {
     identifier = splitUri[splitUri.length - 1];
   }
 
-  const data = state.propertyTree.propertyOwners[uri];
+  const data = propertyOwners[uri];
   let subowners = data ? data.subowners : [];
-  let properties = data ? data.properties : [];
-
+  let subProperties = data ? data.properties : [];
 
   subowners = subowners.filter(uri => (
-    !isPropertyOwnerHidden(state, uri) && !isDeadEnd(state, uri)
-  ));
+    !isPropertyOwnerHidden(properties, uri) && !isDeadEnd(propertyOwners, properties, uri)
+  )).map(uri => ({
+    uri,
+    name: displayName(propertyOwners, properties, uri)
+  }));
 
-  properties = properties.filter(uri => isPropertyVisible(state, uri));
+  subProperties = subProperties.filter(uri => isPropertyVisible(properties, uri));
 
-  if (shouldSortAlphabetically(state, uri)) {
-    subowners = subowners.slice(0).sort(alphabeticalComparison(state));
-  }
+  const sort = shouldSortAlphabetically(uri);
 
-  const nameProp = state.propertyTree.properties[uri + ".GuiName"];
-  const name = ownProps.name || displayName(state, uri);
+  const nameProp = properties[uri + ".GuiName"];
+  name = name || displayName(propertyOwners, properties, uri);
 
-  let isExpanded = state.local.propertyTreeExpansion[ownProps.expansionIdentifier];
+  let isExpanded = propertyTreeExpansion[expansionIdentifier];
   if (isExpanded === undefined) {
-    isExpanded = ownProps.autoExpand || false;
+    isExpanded = autoExpand || false;
   }
 
   return {
     identifier,
     name,
     subowners,
-    properties,
+    properties: subProperties,
     isExpanded,
+    sort
   };
 }
+
+const mapStateToSubState = state => ({
+  propertyOwners: state.propertyTree.propertyOwners,
+  properties: state.propertyTree.properties,
+  propertyTreeExpansion: state.local.propertyTreeExpansion
+})
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   const setExpanded = (expanded) => {
@@ -187,7 +198,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 }
 
 PropertyOwner = connect(
-  mapStateToProps,
+  subStateToProps(mapSubStateToProps, mapStateToSubState),
   mapDispatchToProps
 )(PropertyOwner);
 
@@ -205,6 +216,5 @@ PropertyOwner.defaultProps = {
 export default PropertyOwner;
 export {
   displayName,
-  nodeExpansionIdentifier,
-  alphabeticalComparison
+  nodeExpansionIdentifier
 };

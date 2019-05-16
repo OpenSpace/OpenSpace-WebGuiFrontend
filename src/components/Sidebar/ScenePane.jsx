@@ -4,11 +4,12 @@ import PropTypes from 'prop-types';
 import Pane from './Pane';
 import FilterList from '../common/FilterList/FilterList';
 import LoadingBlocks from '../common/LoadingBlock/LoadingBlocks';
-import PropertyOwner, { alphabeticalComparison } from './Properties/PropertyOwner';
+import PropertyOwner from './Properties/PropertyOwner';
 import Shortcut from './Shortcut';
 import styles from './ScenePane.scss';
 import ScenePaneListItem from './ScenePaneListItem';
 import { ObjectWordBeginningSubstring } from '../../utils/StringMatchers';
+import subStateToProps from '../../utils/subStateToProps';
 
 class ScenePane extends Component {
   constructor(props) {
@@ -56,10 +57,15 @@ ScenePane.defaultProps = {
   closeCallback: null,
 };
 
-const mapStateToProps = (state) => {
-  const allGroups = state.groups;
 
-  const topLevelGroups = Object.keys(allGroups).filter(path => {
+const mapStateToSubState = (state) => ({
+  properties: state.propertyTree.properties,
+  propertyOwners: state.propertyTree.propertyOwners,
+  groups: state.groups
+})
+
+const mapSubStateToProps = ({ groups, properties, propertyOwners }) => {
+  const topLevelGroups = Object.keys(groups).filter(path => {
     // Get the number of slashes in the path
     const depth = (path.match(/\//g) || []).length;
     return depth <= 1;
@@ -72,7 +78,7 @@ const mapStateToProps = (state) => {
 
   // Reorder properties based on SceneProperties ordering property.
   let sortedGroups = [];
-  const ordering = state.propertyTree.properties['Modules.ImGUI.Main.SceneProperties.Ordering'];
+  const ordering = properties['Modules.ImGUI.Main.SceneProperties.Ordering'];
   if (ordering && ordering.value) {
     ordering.value.forEach(item => {
       if (topLevelGroups[item]) {
@@ -89,26 +95,23 @@ const mapStateToProps = (state) => {
   // Add back the leading slash
   sortedGroups = sortedGroups.map(path => '/' + path);
 
-  const sceneOwner = state.propertyTree.propertyOwners.Scene;
-  const sortedSceneGraphNodes = sceneOwner ?
-    sceneOwner.subowners.sort(alphabeticalComparison(state)) :
-    [];
-
   const matcher = (test, search) => {
-    const node = state.propertyTree.propertyOwners[test.uri] || {};
+    const node = propertyOwners[test.uri] || {};
     return ObjectWordBeginningSubstring(node, search);
   };
 
+  const sceneOwner = propertyOwners.Scene || {};
+
   return {
     groups: sortedGroups,
-    entries: sortedSceneGraphNodes,
+    entries: sceneOwner.subowners || [],
     matcher
   };
 };
 
 
 ScenePane = connect(
-  mapStateToProps,
+  subStateToProps(mapSubStateToProps, mapStateToSubState)
 )(ScenePane);
 
 export default ScenePane;
