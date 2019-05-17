@@ -99,19 +99,19 @@ const tryPromoteSubscription = (store, uri) => {
     subscriptionInfo.subscription = createSubscription(store, uri);
     subscriptionInfo.state = ActiveState;
   }
-}
+};
 
 const promoteSubscriptions = store => {
   Object.keys(subscriptionInfos).forEach(uri => {
     tryPromoteSubscription(store, uri);
   });
-}
+};
 
 const markAllSubscriptionsAsPending = () => {
   Object.keys(subscriptionInfos).forEach((uri) => {
     subscriptionInfos[uri].state = PendingState;
   });
-}
+};
 
 const createSubscription = (store, uri) => {
   const subscription = api.subscribeToProperty(uri);
@@ -161,7 +161,7 @@ const flattenPropertyTree = (propertyOwner, baseUri) => {
     properties,
     groups,
   }
-}
+};
 
 const getPropertyTree = async (dispatch) => {
   const value = await api.getProperty(rootOwnerKey);

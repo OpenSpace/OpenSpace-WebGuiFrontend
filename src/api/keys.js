@@ -22,11 +22,3 @@ export const TogglePauseScript = 'openspace.time.togglePause()';
 export const InterpolateTogglePauseScript = 'openspace.time.interpolateTogglePause()';
 // key for getting current time subscription
 export const TimeKey = 'special:currentTime';
-// script to toggle shutdown
-export const ShutdownScript = 'openspace.toggleShutdown()';
-// toggle console
-export const ToggleConsoleScript = 'openspace.setPropertyValueSingle("LuaConsole.IsVisible", ' +
-                                   'not openspace.getPropertyValue("LuaConsole.IsVisible"))';
-export const ToggleNativeGuiScript = 'local b = openspace.getPropertyValue("Modules.ImGUI.Main.Enabled");' + 
-                                     'openspace.setPropertyValueSingle("Modules.ImGUI.Main.Enabled", not b);' +
-                                     'openspace.setPropertyValueSingle("Modules.ImGUI.Main.IsHidden", b);';

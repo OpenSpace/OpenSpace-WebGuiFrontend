@@ -46,7 +46,11 @@ class ScenePane extends Component {
         )}
 
         { entries.length > 0 && (
-          <FilterList favorites={favorites} matcher={this.props.matcher} data={entries} viewComponent={ScenePaneListItem} searchAutoFocus />
+          <FilterList favorites={favorites}
+                      matcher={this.props.matcher}
+                      data={entries}
+                      viewComponent={ScenePaneListItem}
+                      searchAutoFocus />
         )}
       </Pane>
     );
@@ -66,7 +70,7 @@ const mapStateToSubState = (state) => ({
   propertyOwners: state.propertyTree.propertyOwners,
   groups: state.groups,
   shortcuts: state.shortcuts.data.shortcuts
-})
+});
 
 const mapSubStateToProps = ({ groups, properties, propertyOwners, shortcuts }) => {
   const topLevelGroups = Object.keys(groups).filter(path => {
