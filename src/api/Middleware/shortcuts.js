@@ -1,18 +1,30 @@
 import { initializeShortcuts } from '../Actions';
 import { actionTypes } from '../Actions/actionTypes';
 
-let topic = -1;
+import api from '../api';
+
+let topic = undefined;
 
 const subscribeToShortcuts = callback => {
-/*  topic = DataManager.subscribeToShortcuts((data) => {
-    callback(data);
-  })*/
+  topic = api.startTopic('shortcuts', {
+    event: 'start_subscription',
+  });
+  (async () => {
+    for await (const data of topic.iterator()) {
+      callback(data);
+    }
+  })();
 };
 
 const unsubscribeToShortcuts = () => {
-  /*if (topic !== -1) {
-    DataManager.unsubscribeToShortcuts(topic);
-  }*/
+  if (!topic) {
+    return;
+  }
+
+  topic.talk({
+    event: 'stop_subscription'
+  });
+  topic.cancel();
 }
 
 export const shortcuts = store => next => (action) => {
@@ -26,6 +38,13 @@ export const shortcuts = store => next => (action) => {
     case actionTypes.onCloseConnection:
       unsubscribeToShortcuts();
       break;
+    case actionTypes.executeShortcut:
+      const index = action.payload;
+      const shortcut = store.getState().shortcuts.data.shortcuts[index];
+      const script = shortcut.script;
+      api.executeLuaScript(script, false);
+      break;
+    break;
     default:
       break;
   }

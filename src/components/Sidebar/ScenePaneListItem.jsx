@@ -12,10 +12,6 @@ class ScenePaneListItem extends Component {
   render() {
     const props = this.props;
 
-    const isGroup = props.path !== undefined;
-    const isPropertyOwner = props.uri !== undefined;
-    const isShortcut = false; // TODO: support shortcuts.
-
     if (props.type === 'group') {
       return <Group key={this.props.path}
                     path={this.props.path}
@@ -30,25 +26,10 @@ class ScenePaneListItem extends Component {
               uri={this.props.uri}
               expansionIdentifier={'scene-search/' + this.props.uri} />
     }
-
-    /*
-    if (this.props.subowners != null) {
-      return <PropertyOwner
-              {...propertyOwnerOrShortcut}
-              key={propertyOwnerOrShortcut.identifier}
-              onClick={this.props.onSelect}
-              active={this.props.active}
-           />
-    } else {
-      return <Shortcut
-              {...propertyOwnerOrShortcut}
-              key={propertyOwnerOrShortcut.identifier}
-              onClick={this.props.onSelect}
-              active={this.props.active}
-            />
+    if (props.type === 'shortcut') {
+      return <Shortcut index={this.props.index}/>
     }
-    */
-    return <li>{JSON.stringify(this.props)}</li>;
+    return null;
   }
 
 

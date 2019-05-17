@@ -18,11 +18,15 @@ class ScenePane extends Component {
 
   render() {
     let favorites = [];
-    const entries = this.props.entries.map(uri => ({
+    const entries = this.props.propertyOwners.map(uri => ({
       key: uri,
       type: 'propertyOwner',
       uri: uri
-    }));
+    })).concat(this.props.shortcuts.map((shortcut, index) => ({
+      key: 'shortcut: ' + shortcut.name,
+      type: 'shortcut',
+      index
+    })));
 
     favorites.push({
       key: 'context',
@@ -57,14 +61,14 @@ ScenePane.defaultProps = {
   closeCallback: null,
 };
 
-
 const mapStateToSubState = (state) => ({
   properties: state.propertyTree.properties,
   propertyOwners: state.propertyTree.propertyOwners,
-  groups: state.groups
+  groups: state.groups,
+  shortcuts: state.shortcuts.data.shortcuts
 })
 
-const mapSubStateToProps = ({ groups, properties, propertyOwners }) => {
+const mapSubStateToProps = ({ groups, properties, propertyOwners, shortcuts }) => {
   const topLevelGroups = Object.keys(groups).filter(path => {
     // Get the number of slashes in the path
     const depth = (path.match(/\//g) || []).length;
@@ -96,15 +100,22 @@ const mapSubStateToProps = ({ groups, properties, propertyOwners }) => {
   sortedGroups = sortedGroups.map(path => '/' + path);
 
   const matcher = (test, search) => {
-    const node = propertyOwners[test.uri] || {};
-    return ObjectWordBeginningSubstring(node, search);
+    if (test.type === 'propertyOwner') {
+      const node = propertyOwners[test.uri] || {};
+      return ObjectWordBeginningSubstring(node, search);
+    } else if (test.type === 'shortcut') {
+      const shortcut = shortcuts[test.index];
+      return ObjectWordBeginningSubstring(shortcut, search)
+    }
+    return false;
   };
 
   const sceneOwner = propertyOwners.Scene || {};
 
   return {
     groups: sortedGroups,
-    entries: sceneOwner.subowners || [],
+    propertyOwners: sceneOwner.subowners || [],
+    shortcuts: shortcuts || [],
     matcher
   };
 };

@@ -4,6 +4,7 @@ import ToggleContent from '../common/ToggleContent/ToggleContent';
 import PropertyOwner,
        { displayName as propertyOwnerName,
          nodeExpansionIdentifier as propertyOwnerNodeExpansionIdentifier }  from './Properties/PropertyOwner'
+import Shortcut from './Shortcut';
 
 import { setPropertyTreeExpansion } from '../../api/Actions';
 
@@ -66,6 +67,10 @@ let Group = ({ path, expansionIdentifier, entries, isExpanded, setExpanded}) => 
                                   uri={entry.payload}
                                   expansionIdentifier={childNodeIdentifier} />
             }
+          case 'shortcut': {
+            return <Shortcut key={entry.payload}
+                             index={entry.payload} />
+          }
           default:
             return null;
         }
@@ -75,12 +80,13 @@ let Group = ({ path, expansionIdentifier, entries, isExpanded, setExpanded}) => 
 }
 
 const mapSubStateToProps = (
-  { groups, propertyOwners, properties, propertyTreeExpansion },
+  { groups, propertyOwners, properties, propertyTreeExpansion, shortcuts },
   { path, expansionIdentifier, autoExpand }
 ) => {
   const data = groups[path] || {};
-  const subGroups = data.subgroups || []
+  const subGroups = data.subgroups || [];
   const owners = data.propertyOwners || [];
+  const subShortcuts = data.shortcuts || [];
   let isExpanded = propertyTreeExpansion[expansionIdentifier];
 
   if (isExpanded === undefined) {
@@ -95,6 +101,10 @@ const mapSubStateToProps = (
     type: 'propertyOwner',
     payload: o,
     name: propertyOwnerName(propertyOwners, properties, o)
+  }))).concat(subShortcuts.map(i => ({
+    type: 'shortcut',
+    payload: i,
+    name: shortcuts[i].name || ''
   })));
 
   return {
@@ -107,7 +117,8 @@ const mapStateToSubState = state => ({
   groups: state.groups,
   propertyOwners: state.propertyTree.propertyOwners,
   properties: state.propertyTree.properties,
-  propertyTreeExpansion: state.local.propertyTreeExpansion
+  propertyTreeExpansion: state.local.propertyTreeExpansion,
+  shortcuts: state.shortcuts.data.shortcuts || []
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => {

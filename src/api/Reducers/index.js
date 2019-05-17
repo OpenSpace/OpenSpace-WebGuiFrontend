@@ -9,13 +9,14 @@ import { luaApi } from './luaApi';
 
 // Add more reducers here
 const openspaceApp = (state = {}, action) => {
-  const propTree = propertyTree(state.propertyTree, action);
+  const propertyTreeReducer = propertyTree(state.propertyTree, action);
+  const shortcutsReducer = shortcuts(state.shortcuts, action);
   return {
-    propertyTree: propTree,
-    groups: groups(state.groups, action, propTree),
+    propertyTree: propertyTreeReducer,
+	shortcuts: shortcutsReducer,
+    groups: groups(state.groups, action, propertyTreeReducer, shortcutsReducer),
     time: time(state.time, action),
     connection: connection(state.connection, action),
-    shortcuts: shortcuts(state.shortcuts, action),
     version: version(state.version, action),
     local: local(state.local, action),
     luaApi: luaApi(state.luaApi, action)

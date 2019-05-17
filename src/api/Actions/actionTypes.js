@@ -33,6 +33,8 @@ export const actionTypes = {
   unsubscribeToShortcuts: 'SHORTCUTS_UNSUBSCRIBE',
   initializeShortcuts: 'SHORTCUTS_INITIALIZE',
 
+  executeShortcut: 'SHORTCUT_EXECUTE',
+
   // action types for local gui settings
   setNavigationAction: 'LOCAL_SET_NAVIGATION_ACTION',
   setPropertyTreeExpansion: 'LOCAL_SET_PROPERTY_TREE_EXPANSION',
