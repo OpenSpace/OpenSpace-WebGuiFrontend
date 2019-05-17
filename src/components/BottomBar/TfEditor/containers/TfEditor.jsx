@@ -173,10 +173,10 @@ const mapDispatchToProps = dispatch => ({
     dispatch(changeColor(color, URI));
   },
   StartListening: (URI) => {
-    dispatch(startListening(URI));
+    dispatch(subscribeToProperty(URI));
   },
   StopListening: (URI) => {
-    dispatch(stopListening(URI));
+    dispatch(unscubscribeToProperty(URI));
   },
 });
 

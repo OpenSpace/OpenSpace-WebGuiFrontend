@@ -1,39 +1,39 @@
 import React from 'react';
-import Property from './Property';
+import PropertyBase from './PropertyBase';
 import NumericInput from '../../common/Input/NumericInput/NumericInput';
 import Row from '../../common/Row/Row';
 import styles from './Property.scss';
 import { connectProperty } from './connectProperty';
 
-class VectorProperty extends Property {
+class VectorProperty extends PropertyBase {
   componentDidMount() {
-    this.props.StartListening(this.props.Description.Identifier)
+    this.props.dispatcher.subscribe();
   }
 
   componentWillUnmount() {
-    this.props.StopListening(this.props.Description.Identifier)
+    this.props.dispatcher.unsubscribe();
   }
 
   onChange(index) {
     return (event) => {
-      const stateValue = this.props.Value;
+      const stateValue = this.props.value;
       const { value } = event.currentTarget;
 
       stateValue[index] = parseFloat(value);
-      this.props.ChangeValue(stateValue);
+      this.props.dispatcher.set(stateValue);
     };
   }
 
   render() {
-    const { Description } = this.props;
-    const { SteppingValue, MaximumValue, MinimumValue } = Description.AdditionalData;
+    const { description } = this.props;
+    const { SteppingValue, MaximumValue, MinimumValue } = description.AdditionalData;
     const firstLabel = (<span>
-      { Description.Name } { this.descriptionPopup }
+      { description.Name } { this.descriptionPopup }
     </span>);
 
     // eslint-disable-next-line react/no-array-index-key
-    const values = this.props.Value
-      .map((value, index) => ({ key: `${Description.Name}-${index}`, value }));
+    const values = this.props.value
+      .map((value, index) => ({ key: `${description.Name}-${index}`, value }));
 
     return (
       <Row className={styles.vectorProperty}>
@@ -42,7 +42,7 @@ class VectorProperty extends Property {
             key={component.key}
             value={component.value}
             label={index === 0 ? firstLabel : ' '}
-            placeholder={`Value ${index}`}
+            placeholder={`value ${index}`}
             onChange={this.onChange(index)}
             step={SteppingValue[index]}
             max={MaximumValue[index]}
@@ -54,6 +54,5 @@ class VectorProperty extends Property {
     );
   }
 }
-VectorProperty = connectProperty(VectorProperty);
 
 export default VectorProperty;

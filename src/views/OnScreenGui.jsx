@@ -71,11 +71,12 @@ class OnScreenGui extends Component {
             )}
           />
         </Router>
-
         { this.props.connectionLost && (
           <Overlay>
             <Error>
-              Connection lost. Trying to reconnect again soon.
+              <h2>Houston, we've had a...</h2>
+              <p>...disconnection between the user interface and OpenSpace.</p>
+              <p>Trying to reconnect soon.</p>
             </Error>
           </Overlay>
         )}

@@ -15,10 +15,8 @@
   margin-left: -3px;
 }
 
-
 .title {
   display: inline-block;
-  font-weight: bold;
 }
 
 .icon {
@@ -26,16 +24,4 @@
   top: 2px;
   display: inline-block;
   color: $text-color-blur;
-}
-
-.headerChildren {
-  position: absolute;
-  width: 100%;
-  top: 0px;
-  bottom: 0px;
-  overflow: hidden;
-}
-
-.layerenabled {
-  color: #00AA00;
 }

@@ -1,54 +1,39 @@
 import {
   onOpenConnection,
-  changeConnectionWait,
+  initializeLuaApi,
   onCloseConnection,
-  getVersion,
   subscribeToShortcuts
 } from '../Actions';
 
 import { actionTypes } from '../Actions/actionTypes';
+import api from '../api';
 
-/**
- * start reconnection attempts, at intervals ever increasing
- */
-const tryToReconnect = (store) => {
-  const { connection } = store.getState();
+let openspace = undefined;
 
-  console.log('Attempting to connect in', connection.connectionWait, 'ms.'); // eslint-disable-line
-  setTimeout(() => {
-    connection.connection.reconnect();
-    connection.connectionWait *= 2;
-    store.dispatch(changeConnectionWait(connection.connectionWait));
-  }, connection.connectionWait);
-};
+function initializeConnection(store) {
+  async function onConnect() {
+    openspace = await api.library();
 
-const connectionStatusCallback = (store, event, origin) => {
-  store.getState();
-  switch (origin) {
-    case 'onOpen':
-      // everything is all right!
-      store.dispatch(onOpenConnection());
-      store.dispatch(getVersion());
-      store.dispatch(subscribeToShortcuts());
-      break;
-    case 'onClose':
-      store.dispatch(onCloseConnection());
-      tryToReconnect(store);
-      break;
-    case 'onError':
-      break;
-    default:
-      // unknown
+    store.dispatch(onOpenConnection());
+    store.dispatch(initializeLuaApi(openspace));
   }
-};
 
-const initializeConnection = (store) => {
-  store.getState().connection.connection.addStatusCallback((connection, event, origin) => {
-    connectionStatusCallback(store, event, origin);
-  });
-};
+  function onDisconnect() {
+    store.dispatch(onCloseConnection());
 
-export const connection = store => next => (action) => {
+    let reconnectionInterval = 1000;
+    setTimeout(() => {
+      api.connect();
+      reconnectionInterval += 1000;
+    }, reconnectionInterval);
+  }
+
+  api.onConnect(onConnect);
+  api.onDisconnect(onDisconnect);
+  api.connect();
+}
+
+export const connection = store => next => action => {
   const result = next(action);
   switch (action.type) {
     case actionTypes.startConnection:

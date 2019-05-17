@@ -1,43 +1,43 @@
 import React from 'react';
-import Property from './Property';
+import PropertyBase from './PropertyBase';
 import NumericInput from '../../common/Input/NumericInput/NumericInput';
 import InfoBox from '../../common/InfoBox/InfoBox';
 import { connectProperty } from './connectProperty';
 
-class NumericProperty extends Property {
+class NumericProperty extends PropertyBase {
   constructor(props) {
     super(props);
     this.onChange = this.onChange.bind(this);
   }
 
   componentDidMount() {
-    this.props.StartListening(this.props.Description.Identifier)
+    this.props.dispatcher.subscribe();
   }
 
   componentWillUnmount() {
-    this.props.StopListening(this.props.Description.Identifier)
+    this.props.dispatcher.unsubscribe();
   }
 
   onChange(event) {
     const { value } = event.currentTarget;
-    this.props.ChangeValue(parseFloat(value));
+    this.props.dispatcher.set(parseFloat(value));
   }
 
   get descriptionPopup() {
-    let { Description } = this.props;
-    const { MaximumValue, MinimumValue } = Description.AdditionalData;
-    const description = `${Description.description}\nMin: ${MinimumValue}, max: ${MaximumValue}`;
-    return description ? (<InfoBox text={description} />) : '';
+    let { description } = this.props;
+    const { MaximumValue, MinimumValue } = description.AdditionalData;
+    const descriptionString = `${description.description}\nMin: ${MinimumValue}, max: ${MaximumValue}`;
+    return descriptionString ? (<InfoBox text={descriptionString} />) : '';
   }
 
   render() {
-    const { Description, Value } = this.props;
-    const { SteppingValue, MaximumValue, MinimumValue } = Description.AdditionalData;
+    const { description, value } = this.props;
+    const { SteppingValue, MaximumValue, MinimumValue } = description.AdditionalData;
     return (
       <NumericInput
-        value={Value}
-        label={(<span>{Description.Name} {this.descriptionPopup}</span>)}
-        placeholder={Description.Name}
+        value={value}
+        label={(<span>{description.Name} {this.descriptionPopup}</span>)}
+        placeholder={description.Name}
         onChange={this.onChange}
         step={SteppingValue}
         max={MaximumValue}
@@ -48,5 +48,4 @@ class NumericProperty extends Property {
   }
 }
 
-NumericProperty = connectProperty(NumericProperty)
 export default NumericProperty;

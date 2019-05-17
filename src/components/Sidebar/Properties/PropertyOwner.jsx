@@ -1,205 +1,231 @@
-import React from 'react';
+import React, { Component, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import ToggleContent from '../../common/ToggleContent/ToggleContent';
 import Property from './Property';
-import BoolProperty from './BoolProperty';
-import NumericProperty from './NumericProperty';
-import OptionProperty from './OptionProperty';
-import TriggerProperty from './TriggerProperty';
-import VecProperty from './VectorProperty';
-import MatrixProperty from './MatrixProperty';
-import styles from './../SceneGraphNode.scss';
 import Button from '../../common/Input/Button/Button';
-import DataManager from '../../../api/DataManager';
 import { NavigationAnchorKey, NavigationAimKey, RetargetAnchorKey } from '../../../api/keys';
 import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
 import SvgIcon from '../../common/SvgIcon/SvgIcon';
 import FocusIcon from 'svg-react-loader?name=Focus!../../../icons/focus.svg';
 import Shortcut from './../Shortcut';
+import PropertyOwnerHeader from './PropertyOwnerHeader';
+import { setPropertyTreeExpansion } from '../../../api/Actions';
+import subStateToProps from '../../../utils/subStateToProps';
 
-const types = {
-  BoolProperty,
-  OptionProperty,
-  TriggerProperty,
-  StringProperty: Property,
-  NumericProperty,
-  FloatProperty: NumericProperty,
-  IntProperty: NumericProperty,
-  Vec2Property: VecProperty,
-  Vec3Property: VecProperty,
-  Vec4Property: VecProperty,
-  MatrixProperty,
-  DMat4Property: MatrixProperty,
-  defaultProperty: Property,
-};
+import { connect } from 'react-redux';
+import shallowEqualObjects from 'shallow-equal/objects';
+import shallowEqualArrays from 'shallow-equal/arrays';
 
-const getHeaderChildren = (isSceneGraphNode, identifier, subowners, properties) => {
-  if (isSceneGraphNode) {
-    const focusButton = <div className={styles.buttonContainer}>
-      <Button className={styles.shybutton} identifier={identifier} transparent onClick={focusOnThis} >
-        <SvgIcon><FocusIcon/></SvgIcon>
-      </Button>
-    </div>
-
-    const bothButtons = <div className={styles.buttonContainer}>
-      <Button className={styles.globeButton} identifier={identifier} onClick={gotoThis} >
-        <MaterialIcon icon="language" />
-      </Button>
-       <Button className={styles.shybutton} identifier={identifier} onClick={focusOnThis} >
-        <SvgIcon><FocusIcon/></SvgIcon>
-      </Button>
-    </div>
-
-    //todo replace with isGlobe once we have a goto geo function that includes geo radius
-    if (false) {
-      return bothButtons;
-    } else {
-      return focusButton;
-    }
+/**
+ * Return an identifier for the tree expansion state.
+ */
+const nodeExpansionIdentifier = uri => {
+  const splitUri = uri.split('.');
+  if (splitUri.length > 1) {
+    return 'O:' + splitUri[splitUri.length - 1];
   } else {
-    if (isGlobeBrowsingLayer(identifier, properties)) {
-      var layerEnabled = false;
-      var enabledProp = null;
-      for (var i = 0; i < properties.length; i++) {
-          var prop = properties[i];
-          if ( (prop.id  == "Enabled") ) {
-            layerEnabled = prop.Value
-            enabledProp = prop;
-            i = properties.length; //just exit early for performance
+    return '';
+  }
+}
+
+class PropertyOwnerComponent extends Component {
+
+  shouldComponentUpdate(nextProps) {
+    return !(
+      this.props.uri === nextProps.uri &&
+      this.props.name === nextProps.name &&
+      shallowEqualArrays(this.props.properties, nextProps.properties) &&
+      shallowEqualArrays(this.props.subowners, nextProps.subowners) &&
+      shallowEqualObjects(this.props.subownerNames, nextProps.subownerNames) &&
+      this.props.isExpanded === nextProps.isExpanded &&
+      this.props.setExpanded === nextProps.setExpanded &&
+      this.props.autoExpand === nextProps.autoExpand &&
+      this.props.expansionIdentifier === nextProps.expansionIdentifier &&
+      this.props.sort === nextProps.sort);
+  }
+
+  render() {
+    const {
+      uri,
+      name,
+      properties,
+      subowners,
+      subownerNames,
+      isExpanded,
+      setExpanded,
+      expansionIdentifier,
+      sort
+    } = this.props;
+
+    const sortedSubowners =
+      sort ?
+        (subowners.slice(0).sort((a, b) => subownerNames[a].localeCompare(subownerNames[b], 'en'))) :
+        subowners;
+
+    const header = <PropertyOwnerHeader uri={uri}
+                                        expanded={isExpanded}
+                                        title={name}
+                                        setExpanded={setExpanded} />
+
+    return <ToggleContent
+      header={header}
+      expanded={isExpanded}
+      setExpanded={setExpanded}
+    >
+      {
+        sortedSubowners.map(uri => {
+          let autoExpand = sortedSubowners.length + properties.length === 1 ? true : undefined;
+          const splitUri = uri.split('.');
+          if (splitUri.length > 0 && splitUri[splitUri.length - 1] === "Renderable") {
+            autoExpand = true;
           }
+          return <PropertyOwner key={uri}
+                       uri={uri}
+                       expansionIdentifier={expansionIdentifier + '/' + nodeExpansionIdentifier(uri)}
+                       autoExpand={autoExpand}/>;
+        })
       }
-      if (enabledProp == null) {
-        return null;
-      } else {
-        const enableBox = <div className={styles.buttonContainer}>
-          <BoolProperty Value={layerEnabled} checkBoxOnly={true} {...enabledProp} />
-        </div>
-        return enableBox;
+      {
+        properties.map(uri => <Property key={uri} uri={uri} />)
       }
-    } else {
-      return null
-    }
-  }
+    </ToggleContent>
+  };
 }
 
-const gotoThis = (e) => {
-  e.stopPropagation();
-  DataManager.setValue(NavigationAnchorKey, '"' + e.currentTarget.getAttribute("identifier") + '"');
-  DataManager.setValue(NavigationAimKey, '"' + e.currentTarget.getAttribute("identifier") + '"');
-  const GotoGeoScript = 'openspace.globebrowsing.goToGeo(0, 0, 20000000)';
-  DataManager.runScript(GotoGeoScript);
+const isPropertyOwnerHidden = (properties, uri) => {
+  const prop = properties[uri + '.GuiHidden'];
+  return prop && prop.value;
 }
 
-const focusOnThis = (e) => {
-  e.stopPropagation();
-  DataManager.setValue(NavigationAnchorKey, e.currentTarget.getAttribute("identifier"));
-  DataManager.setValue(NavigationAimKey, e.currentTarget.getAttribute("identifier"));
-  if (!e.shiftKey) {
-    DataManager.trigger(RetargetAnchorKey);
+const isPropertyVisible = (properties, uri) => {
+  const property = properties[uri];
+
+  const splitUri = uri.split('.');
+  if (splitUri.length > 1) {
+    if (splitUri[splitUri.length - 1] === 'Enabled')
+      return false;
   }
+
+  return property &&
+         property.description &&
+         property.description.MetaData &&
+         property.description.MetaData.Visibility !== 'Hidden';
 }
 
-const getTitle = (identifier, guiName, properties) => {
-  var title = guiName || identifier;
-  for (var i = 0; i < properties.length; i++) {
-    if (properties[i].id  == "GuiName") {
-        title = properties[i].Value;
-    }
-  }
-  return title;
-};
+const isDeadEnd = (propertyOwners, properties, uri) => {
+  const node = propertyOwners[uri];
+  const subowners = node.subowners || [];
+  const subproperties = node.properties || [];
 
-const shouldAutoExpand = (subowner) => subowner.identifier === 'Renderable';
-
-const hasVisibleProperties = (properties) => {
-  const visibleProps = properties.filter(prop => {return ( prop.Description.MetaData &&  (prop.Description.MetaData.Visibility != "Hidden")) });
-  return visibleProps.length > 0;
-}
-
-const getSubOwnerMarkup = (subowner) => {
-  if (!subowner.script) {
-    if ( (subowner.subowners && subowner.subowners.length > 0) ||
-         (subowner.properties && hasVisibleProperties(subowner.properties) && subowner.properties.length > 0) )  {
-      return <PropertyOwner {...subowner} key={subowner.identifier} expand={shouldAutoExpand(subowner)}/>
-    } else {
-      return "";
-    }
-  } else {
-    return <Shortcut {...subowner} key={subowner.name} />
-  }
-};
-
-
-const isGlobeBrowsingLayer = (identifier, properties) => {
-  if ( (identifier == "ColorLayers") || (identifier == "HeightLayers") || (properties.length < 2) ) {
-    //in this case, property identifiers will match but this is the group of layers not actual layers
-    //or a property of a globebrowsing layer who's first property is also a Type
+  const visibleProperties = subproperties.filter(
+    childUri => isPropertyVisible(properties, childUri)
+  );
+  if (visibleProperties.length > 0) {
     return false;
   }
-  var prop = properties[0];
-  //todo there must be a better way to determin if this property owner is a globebrowsing layer.....
-  //open to ANY sugestions
-  if ( (prop != undefined) && (prop.id == "Type") && (prop.Description.Identifier.lastIndexOf("ColorLayers") > 0) || (prop.Description.Identifier.lastIndexOf("HeightLayers") > 0) ) {
+
+  const nonDeadEndSubowners = subowners.filter(childUri => {
+    return !isPropertyOwnerHidden(properties, childUri) && !isDeadEnd(propertyOwners, properties, childUri);
+  });
+  return nonDeadEndSubowners.length === 0;
+}
+
+const isGlobeBrowsingLayer = (state, uri) => {
+  return false;
+}
+
+const shouldSortAlphabetically = uri => {
+  const splitUri = uri.split('.');
+  // The only case when property owners should not be sorted
+  // alphabetically is when they are globe browsing layers.
+  // Layer groups have the format *.Layers.[ColorLayers|HeightLayers|...]
+  if (splitUri.length < 2) {
     return true;
   }
-  return false;
+  return splitUri.indexOf('Layers') !== (splitUri.length - 2);
 }
 
-const showEnabled = (identifier, properties) => {
-  for (var i = 0; i < properties.length; i++) {
-    var prop = properties[i];
-    if ( (prop.id  == "Enabled") && (prop.Value == true) && isGlobeBrowsingLayer(identifier, properties) ) {
-      return true;
-    }
+const displayName = (propertyOwners, properties, uri) => {
+  const property = properties[uri + ".GuiName"];
+  return property ?
+    property.value :
+    propertyOwners[uri].identifier;
+}
+
+const mapSubStateToProps = (
+  {propertyOwners, properties, propertyTreeExpansion},
+  {uri, name, autoExpand, expansionIdentifier}
+) => {
+  const data = propertyOwners[uri];
+  let subowners = data ? data.subowners : [];
+  let subProperties = data ? data.properties : [];
+
+  subowners = subowners.filter(uri => (
+    !isPropertyOwnerHidden(properties, uri) && !isDeadEnd(propertyOwners, properties, uri)
+  ));
+
+  const subownerNames = {};
+  subowners.forEach(uri => {
+    subownerNames[uri] = displayName(propertyOwners, properties, uri)
+  });
+  subProperties = subProperties.filter(uri => isPropertyVisible(properties, uri));
+
+  const sort = shouldSortAlphabetically(uri);
+
+  const nameProp = properties[uri + ".GuiName"];
+  name = name || displayName(propertyOwners, properties, uri);
+
+  let isExpanded = propertyTreeExpansion[expansionIdentifier];
+  if (isExpanded === undefined) {
+    isExpanded = autoExpand || false;
   }
-  return false;
+
+  return {
+    name,
+    subowners,
+    subownerNames,
+    properties: subProperties,
+    isExpanded,
+    sort
+  };
 }
 
+const mapStateToSubState = state => ({
+  propertyOwners: state.propertyTree.propertyOwners,
+  properties: state.propertyTree.properties,
+  propertyTreeExpansion: state.local.propertyTreeExpansion
+})
 
-const PropertyOwner = ({ identifier, guiName, properties, subowners, isSceneGraphNode, expand }) => (
+const mapDispatchToProps = (dispatch, ownProps) => {
+  const setExpanded = (expanded) => {
+    dispatch(setPropertyTreeExpansion({
+      identifier: ownProps.expansionIdentifier,
+      expanded
+    }));
+  }
+  return {
+    setExpanded
+  };
+}
 
-  <ToggleContent
-    headerChildren={getHeaderChildren(isSceneGraphNode, identifier, subowners, properties)}
-    title={getTitle(identifier, guiName, properties)}
-    showEnabled = {showEnabled(identifier, properties)}
-    show={expand}
-  >
-    { subowners.map(subowner => (
-      getSubOwnerMarkup(subowner)
-    )) }
-    
-    { properties.map((prop) => {
-      const { Description } = prop;
+const PropertyOwner = connect(
+  subStateToProps(mapSubStateToProps, mapStateToSubState),
+  mapDispatchToProps
+)(PropertyOwnerComponent);
 
-      if ( Description.MetaData &&  (Description.MetaData.Visibility == "Hidden") ) {
-        return;
-      }
-        
-      const Type = types[Description.Type] || types.defaultProperty;
-        return (
-          <Type key={Description.Identifier} {...prop} subscribe />
-        );
-    }) }
-  </ToggleContent>
-);
 
 PropertyOwner.propTypes = {
-  isSceneGraphNode: PropTypes.bool.isRequired,
-  identifier: PropTypes.string.isRequired,
-  properties: PropTypes.arrayOf(PropTypes.object),
-  subowners: PropTypes.arrayOf(PropTypes.shape({
-    identifier: PropTypes.string,
-    subowners: PropTypes.array,
-    properties: PropTypes.array,
-  })),
+  uri: PropTypes.string.isRequired,
+  autoExpand: PropTypes.bool
 };
 
 PropertyOwner.defaultProps = {
-  isSceneGraphNode: false,
   properties: [],
   subowners: [],
 };
 
 export default PropertyOwner;
-export const Types = types;
-export const GetType = type => types[type] || types.defaultProperty;
+export {
+  displayName,
+  nodeExpansionIdentifier
+};
