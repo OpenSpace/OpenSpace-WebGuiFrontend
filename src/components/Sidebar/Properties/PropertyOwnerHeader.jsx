@@ -12,15 +12,33 @@ import Property from './Property';
 
 import { connect } from 'react-redux';
 
+import propertyDispatcher from '../../../api/propertyDispatcher';
+
+
+import {
+  NavigationAnchorKey,
+  NavigationAimKey,
+  RetargetAnchorKey,
+} from '../../../api/keys';
+
 /*
 <Button className={styles.globeButton} identifier={identifier} onClick={gotoThis} >
         <MaterialIcon icon="language" />
       </Button>
       */
 
-let PropertyOwnerHeader = ({ title, expanded, setExpanded, onIcon, offIcon, quickToggleUri, focusAction, popOutAction }) => {
+let PropertyOwnerHeader = ({ title, expanded, setExpanded, onIcon, offIcon, quickToggleUri, focusAction, shiftFocusAction, popOutAction }) => {
   const onClick = (evt) => {
     setExpanded(!expanded)
+  }
+
+  const onClickFocus = (evt) => {
+    if (evt.shiftKey && shiftFocusAction) {
+      shiftFocusAction();
+    } else if (focusAction) {
+      focusAction();
+    }
+    evt.stopPropagation();
   }
 
   return <header className={toggleHeaderStyles.toggle} onClick={onClick} role="button" tabIndex={0}>
@@ -28,14 +46,16 @@ let PropertyOwnerHeader = ({ title, expanded, setExpanded, onIcon, offIcon, quic
       icon={expanded ? onIcon : offIcon}
       className={toggleHeaderStyles.icon}
     />
-    <span className={styles.buttonContainer}>
-      { quickToggleUri && <Property uri={quickToggleUri} checkBoxOnly={true} /> }
-    </span>
+    { quickToggleUri &&
+        <span className={styles.buttonContainer}>
+          <Property uri={quickToggleUri} checkBoxOnly={true} />
+        </span>
+    }
     <span className={toggleHeaderStyles.title} >
       { title }
     </span>
     <span className={styles.buttonContainer}>
-      { focusAction && <MaterialIcon icon="check_box" /> }
+      { focusAction && <MaterialIcon onClick={onClickFocus} icon="check_box" /> }
       { popOutAction && null }
     </span>
   </header>
@@ -66,14 +86,30 @@ const mapStateToProps = (state, ownProps) => {
 
   return {
     title: title || displayName(state, uri),
-    quickToggleUri
+    quickToggleUri,
+
   };
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-  return {
-  };
-}
+  const { uri } = ownProps;
+  const splitUri = uri.split('.');
+  if (splitUri.length === 2 && splitUri[0] === 'Scene') {
+    return {
+      focusAction: () => {
+        propertyDispatcher(dispatch, NavigationAnchorKey).set(splitUri[1]);
+        propertyDispatcher(dispatch, NavigationAimKey).set('');
+        propertyDispatcher(dispatch, RetargetAnchorKey).set(null);
+      },
+      shiftFocusAction: () => {
+        propertyDispatcher(dispatch, NavigationAnchorKey).set(splitUri[1]);
+        propertyDispatcher(dispatch, NavigationAimKey).set('');
+      }
+    }
+  } else {
+    return {};
+  }
+};
 
 PropertyOwnerHeader = connect(
   mapStateToProps,
@@ -84,14 +120,12 @@ PropertyOwnerHeader = connect(
 PropertyOwnerHeader.propTypes = {
   expanded: PropTypes.bool.isRequired,
   setExpanded: PropTypes.func.isRequired,
-  isSceneGraphNode: PropTypes.bool.isRequired,
   uri: PropTypes.string.isRequired,
   offIcon: PropTypes.string,
   onIcon: PropTypes.string,
 };
 
 PropertyOwnerHeader.defaultProps = {
-  isSceneGraphNode: false,
   properties: [],
   subowners: [],
   offIcon: 'chevron_right',
