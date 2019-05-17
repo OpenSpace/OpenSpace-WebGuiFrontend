@@ -14,6 +14,8 @@ import { connect } from 'react-redux';
 
 import propertyDispatcher from '../../../api/propertyDispatcher';
 
+import Focus from 'svg-react-loader?name=Focus!../../../icons/focus.svg';
+
 
 import {
   NavigationAnchorKey,
@@ -47,15 +49,15 @@ let PropertyOwnerHeader = ({ title, expanded, setExpanded, onIcon, offIcon, quic
       className={toggleHeaderStyles.icon}
     />
     { quickToggleUri &&
-        <span className={styles.buttonContainer}>
+        <span className={styles.leftButtonContainer}>
           <Property uri={quickToggleUri} checkBoxOnly={true} />
         </span>
     }
     <span className={toggleHeaderStyles.title} >
       { title }
     </span>
-    <span className={styles.buttonContainer}>
-      { focusAction && <MaterialIcon onClick={onClickFocus} icon="check_box" /> }
+    <span className={styles.rightButtonContainer}>
+      { focusAction && <SvgIcon className={styles.rightButton} onClick={onClickFocus}><Focus/></SvgIcon> }
       { popOutAction && null }
     </span>
   </header>
