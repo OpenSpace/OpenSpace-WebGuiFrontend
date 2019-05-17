@@ -23,12 +23,6 @@ import {
   RetargetAnchorKey,
 } from '../../../api/keys';
 
-/*
-<Button className={styles.globeButton} identifier={identifier} onClick={gotoThis} >
-        <MaterialIcon icon="language" />
-      </Button>
-      */
-
 let PropertyOwnerHeader = ({ title, expanded, setExpanded, onIcon, offIcon, quickToggleUri, focusAction, shiftFocusAction, popOutAction }) => {
   const onClick = (evt) => {
     setExpanded(!expanded)
@@ -57,20 +51,17 @@ let PropertyOwnerHeader = ({ title, expanded, setExpanded, onIcon, offIcon, quic
       { title }
     </span>
     <span className={styles.rightButtonContainer}>
-      { focusAction && <SvgIcon className={styles.rightButton} onClick={onClickFocus}><Focus/></SvgIcon> }
-      { popOutAction && null }
+      { focusAction &&
+        <div className={styles.rightButton} onClick={onClickFocus}>
+        <SvgIcon><Focus/></SvgIcon>
+        </div>
+      }
+      {
+        popOutAction && null // TODO: Add popout action here. 
+      } 
     </span>
   </header>
 }
-
-/*const focusOnThis = (e) => {
-  e.stopPropagation();
-  //DataManager.setValue(NavigationAnchorKey, e.currentTarget.getAttribute("identifier"));
-  //DataManager.setValue(NavigationAimKey, e.currentTarget.getAttribute("identifier"));
-  if (!e.shiftKey) {
-    //DataManager.trigger(RetargetAnchorKey);
-  }
-}*/
 
 const mapStateToProps = (state, ownProps) => {
   const { uri, title } = ownProps;
