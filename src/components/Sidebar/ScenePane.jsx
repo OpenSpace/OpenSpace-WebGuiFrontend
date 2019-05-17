@@ -11,6 +11,8 @@ import ScenePaneListItem from './ScenePaneListItem';
 import { ObjectWordBeginningSubstring } from '../../utils/StringMatchers';
 import subStateToProps from '../../utils/subStateToProps';
 
+import PropertyString from '../common/PropertyString/PropertyString'
+
 class ScenePane extends Component {
   constructor(props) {
     super(props);

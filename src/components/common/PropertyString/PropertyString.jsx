@@ -1,38 +1,24 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import LoadingString from '../LoadingString/LoadingString';
-
+import propertyDispatcher from '../../../api/propertyDispatcher';
+import { connect } from 'react-redux';
 /**
  * display the value of a property in an effortless way
  */
 class PropertyString extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = { value: props.defaultValue, hasValue: false };
-
-    this.callback = this.callback.bind(this);
-  }
-
   componentDidMount() {
-    const { method, propertyKey } = this.props;
-    // get or subscribe to property
-    //DataManager[method](propertyKey, this.callback);
+    this.props.dispatcher.subscribe();
   }
 
   componentWillUnmount() {
-    //DataManager.unsubscribe(this.props.propertyKey, this.callback);
-  }
-
-  callback({ Value: value }) {
-    // console.log(value);
-    this.setState({ value, hasValue: true });
+    this.props.dispatcher.subscribe();
   }
 
   render() {
     return (
-      <LoadingString loading={!this.state.hasValue}>
-        { this.state.value }
+      <LoadingString loading={this.props.value === undefined}>
+        { this.props.value }
       </LoadingString>
     );
   }
@@ -40,13 +26,29 @@ class PropertyString extends Component {
 
 PropertyString.propTypes = {
   defaultValue: PropTypes.string,
-  propertyKey: PropTypes.string.isRequired,
-  method: PropTypes.oneOf(['getValue', 'subscribe']),
+  uri: PropTypes.string.isRequired,
 };
 
 PropertyString.defaultProps = {
-  defaultValue: 'loading',
-  method: 'getValue',
+  defaultValue: 'loading'
 };
+
+
+const mapStateToProps = (state, { uri }) => {
+  const property = state.propertyTree.properties[uri] || {};
+
+  return {
+    value: property.value,
+    description: property.description
+  }
+}
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+  return {
+    dispatcher: propertyDispatcher(dispatch, ownProps.uri)
+  }
+}
+
+PropertyString = connect(mapStateToProps, mapDispatchToProps)(PropertyString);
 
 export default PropertyString;

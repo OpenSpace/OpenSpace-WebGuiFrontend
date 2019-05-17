@@ -2,10 +2,31 @@ import { connect } from 'react-redux';
 import propertyDispatcher from '../../../api/propertyDispatcher';
 import { startListening, stopListening, changePropertyValue } from '../../../api/Actions';
 
+import subStateToProps from '../../../utils/subStateToProps';
+
 const mapDispatchToProps = (dispatch, ownProps) => {
+  const { uri } = ownProps;
   return {
-    dispatcher: propertyDispatcher(dispatch, ownProps.description.Identifier)
+    dispatcher: propertyDispatcher(dispatch, uri)
   }
 }
 
-export const connectProperty = Property => connect(null, mapDispatchToProps)(Property);
+const mapStateToSubState = (state) => ({
+  properties: state.propertyTree.properties,
+});
+
+const mapSubStateToProps = ({ properties }, ownProps) => {
+  const { uri } = ownProps;
+  const property = properties[uri] || {};
+
+  return {
+    value: property.value,
+    description: property.description
+  }
+}
+
+export const connectProperty =
+  Property => connect(
+    subStateToProps(mapSubStateToProps, mapStateToSubState),
+    mapDispatchToProps
+  )(Property);

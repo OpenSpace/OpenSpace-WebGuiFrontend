@@ -41,6 +41,5 @@ class OptionProperty extends PropertyBase {
     );
   }
 }
-OptionProperty = connectProperty(OptionProperty);
 
 export default OptionProperty;

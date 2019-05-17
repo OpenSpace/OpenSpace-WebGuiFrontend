@@ -23,7 +23,7 @@ import {
   RetargetAnchorKey,
 } from '../../../api/keys';
 
-let PropertyOwnerHeader = ({ title, expanded, setExpanded, onIcon, offIcon, quickToggleUri, focusAction, shiftFocusAction, popOutAction }) => {
+let PropertyOwnerHeader = ({title, expanded, setExpanded, onIcon, offIcon, quickToggleUri, focusAction, shiftFocusAction, popOutAction }) => {
   const onClick = (evt) => {
     setExpanded(!expanded)
   }

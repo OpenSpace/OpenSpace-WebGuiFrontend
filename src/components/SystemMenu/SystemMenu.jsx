@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-//import DataManager from '../../api/DataManager';
 import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import Button from '../common/Input/Button/Button';
 import styles from './SystemMenu.scss';
@@ -57,10 +56,8 @@ const mapStateToSubState = (state) => ({
 
 const mapSubStateToProps = ({ luaApi }) => {
   if (!luaApi) {
-    return;
+    return {};
   }
-  console.log(luaApi);
-
   return {
     quit: () => luaApi.toggleShutdown(),
     console: async () => {

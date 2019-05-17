@@ -54,6 +54,5 @@ class VectorProperty extends PropertyBase {
     );
   }
 }
-VectorProperty = connectProperty(VectorProperty);
 
 export default VectorProperty;

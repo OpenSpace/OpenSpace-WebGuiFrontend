@@ -47,7 +47,6 @@ const properties = (state = {}, action) => {
       return newState;
     }
     case actionTypes.updatePropertyValue:
-    case actionTypes.setPropertyValue:
       return {
         ...state,
         [action.payload.uri]: property(state[action.payload.uri], action)

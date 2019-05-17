@@ -10,7 +10,6 @@ import VecProperty from './VectorProperty';
 import MatrixProperty from './MatrixProperty';
 import PropertyBase from './PropertyBase';
 
-import { connect } from 'react-redux';
 
 const concreteProperties = {
   BoolProperty,
@@ -39,19 +38,7 @@ class Property extends Component {
   }
 }
 
-const mapStateToProps = (state, ownProps) => {
-  const { uri } = ownProps;
-  const property = state.propertyTree.properties[uri] || {};
-
-  return {
-    value: property.value,
-    description: property.description
-  }
-}
-
-Property = connect(
-  mapStateToProps
-)(Property);
+Property = connectProperty(Property);
 
 export default Property;
 export const Types = concreteProperties;

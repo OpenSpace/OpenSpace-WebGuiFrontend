@@ -25,6 +25,4 @@ class TriggerProperty extends PropertyBase {
   }
 }
 
-TriggerProperty = connectProperty(TriggerProperty);
-
 export default TriggerProperty;

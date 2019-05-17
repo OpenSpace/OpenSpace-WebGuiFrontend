@@ -72,5 +72,4 @@ class MatrixProperty extends PropertyBase {
   }
 }
 
-MatrixProperty = connectProperty(MatrixProperty);
 export default MatrixProperty;

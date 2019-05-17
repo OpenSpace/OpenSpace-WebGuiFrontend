@@ -37,5 +37,4 @@ class BoolProperty extends PropertyBase {
   }
 }
 
-BoolProperty = connectProperty(BoolProperty);
 export default BoolProperty;

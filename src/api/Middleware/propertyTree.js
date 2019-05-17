@@ -11,6 +11,8 @@ import { rootOwnerKey } from '../keys';
 
 import api from '../api';
 
+import { throttle } from 'lodash/function';
+
 // The property tree middleware is designed to populate the react store's
 // copy of the property tree when the frontend is connected to OpenSpace.
 // The middleware also supports subscribing and setting properties
@@ -115,9 +117,12 @@ const markAllSubscriptionsAsPending = () => {
 
 const createSubscription = (store, uri) => {
   const subscription = api.subscribeToProperty(uri);
+  const handleUpdates = (value) => handleUpdatedValues(store, uri, value);
+  const throttledHandleUpdates = throttle(handleUpdates, 200);
+
   (async () => {
     for await (const data of subscription.iterator()) {
-      handleUpdatedValues(store, uri, data.Value);
+      throttledHandleUpdates(data.Value);
     }
   })();
   return subscription;
@@ -177,7 +182,12 @@ const setBackendValue = (uri, value) => {
 };
 
 export const propertyTree = store => next => (action) => {
-  const result = next(action);
+  let result;
+  if (action.type === actionTypes.setPropertyValue) {
+    result = store;
+  } else {
+    result = next(action);
+  }
   switch (action.type) {
     case actionTypes.onOpenConnection: {
       getPropertyTree(store.dispatch);

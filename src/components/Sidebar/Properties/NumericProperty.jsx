@@ -48,5 +48,4 @@ class NumericProperty extends PropertyBase {
   }
 }
 
-NumericProperty = connectProperty(NumericProperty)
 export default NumericProperty;
