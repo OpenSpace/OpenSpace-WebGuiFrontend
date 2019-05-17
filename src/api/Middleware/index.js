@@ -8,7 +8,7 @@ import { version } from './version';
 import logger from './logger';
 
 const middleware = applyMiddleware(
-  logger, // middleWare for logging state change
+  // logger, // middleWare for logging state change
   propertyTree,
   time,
   connection,
