@@ -167,7 +167,6 @@ class SessionRec extends Component {
   }
 
   toggleRecording() {
-    //Uses idle/rec/play state from openspace to toggle between record/stop
     if (this.props.recordingState == sessionStateIdle) {
       this.startRecording();
     } else {
@@ -182,11 +181,9 @@ class SessionRec extends Component {
     } else {
       this.props.startRecordingBinary(filenameRecording);
     }
-    // emiax TODO: remove popover.
   }
 
   togglePlayback() {
-    //Uses idle/rec/play state from openspace to toggle between play/stop
     if (this.props.recordingState === sessionStateIdle) {
       this.startPlayback();
     } else {
@@ -202,9 +199,6 @@ class SessionRec extends Component {
     } else {
       this.props.startPlaybackRecordedTime(filenamePlayback);
     }
-    //Hide popover menu after starting playback
-    //this.setState({ showPopover: false});
-    // emiax TODO.
   }
 
   setUseTextFormat(useTextFormat) {
