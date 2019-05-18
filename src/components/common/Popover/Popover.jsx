@@ -14,7 +14,7 @@ const findStyles = arr => arr.split(' ')
 class Popover extends Component {
   constructor(props) {
     super(props);
-    this.state = { isDetached: false };
+    this.state = { isDetached: !props.attached };
     this.toggleDetach = this.toggleDetach.bind(this);
   }
 

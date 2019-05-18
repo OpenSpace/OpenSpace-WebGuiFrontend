@@ -22,3 +22,39 @@ export const TogglePauseScript = 'openspace.time.togglePause()';
 export const InterpolateTogglePauseScript = 'openspace.time.interpolateTogglePause()';
 // key for getting current time subscription
 export const TimeKey = 'special:currentTime';
+
+
+//renderableTypes
+export const RenderableTypes = {
+	// RenderableAtmosphere: "RenderableAtmosphere",
+	// RenderableBoxGrid: "RenderableBoxGrid",
+	// RenderableCartesianAxes: "RenderableCartesianAxes",
+	// RenderableModel: "RenderableModel",
+	// RenderablePlane: "RenderablePlane",
+	RenderablePlaneImageLocal: "RenderablePlaneImageLocal",
+	// RenderablePlaneImageOnline: "RenderablePlaneImageOnline",
+	// RenderableSphere: "RenderableSphere",
+	// RenderableSphericalGrid: "RenderableSphericalGrid",
+	// RenderableTrail: "RenderableTrail",
+	// RenderableTrailOrbit: "RenderableTrailOrbit",
+	// RenderableTrailTrajectory: "RenderableTrailTrajectory",
+	// RenderableDebugPlane: "RenderableDebugPlane",
+	RenderableBillboardsCloud: "RenderableBillboardsCloud",
+	// RenderableDUMeshes: "RenderableDUMeshes",
+	// RenderablePlanesCloud: "RenderablePlanesCloud",
+	// RenderablePoints: "RenderablePoints",
+	// RenderableGaiaStars: "RenderableGaiaStars",
+	RenderableGlobe: "RenderableGlobe",
+	// RenderableConstellationBounds: "RenderableConstellationBounds",
+	// RenderableRings: "RenderableRings",
+	RenderableStars: "RenderableStars",
+	// RenderableCrawlingLine: "RenderableCrawlingLine",
+	// RenderableFov: "RenderableFov",
+	// RenderableModelProjection: "RenderableModelProjection",
+	// RenderablePlaneProjection: "RenderablePlaneProjection",
+	// RenderablePlanetProjection: "RenderablePlanetProjection",
+	// RenderableShadowCylinder: "RenderableShadowCylinder",
+	// RenderablePlaneSpout: "RenderablePlaneSpout",
+	// RenderableTimeVaryingVolume: "RenderableTimeVaryingVolume",
+	// RenderablePlaneImageLocal: "RenderablePlaneImageLocal",
+}

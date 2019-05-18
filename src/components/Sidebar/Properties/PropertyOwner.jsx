@@ -9,7 +9,7 @@ import SvgIcon from '../../common/SvgIcon/SvgIcon';
 import FocusIcon from 'svg-react-loader?name=Focus!../../../icons/focus.svg';
 import Shortcut from './../Shortcut';
 import PropertyOwnerHeader from './PropertyOwnerHeader';
-import { setPropertyTreeExpansion } from '../../../api/Actions';
+import { setPropertyTreeExpansion, addNodeProperyPopover } from '../../../api/Actions';
 import subStateToProps from '../../../utils/subStateToProps';
 
 import { connect } from 'react-redux';
@@ -54,7 +54,9 @@ class PropertyOwnerComponent extends Component {
       isExpanded,
       setExpanded,
       expansionIdentifier,
-      sort
+      sort,
+      popOut,
+      isRenderable
     } = this.props;
 
     const sortedSubowners =
@@ -62,10 +64,13 @@ class PropertyOwnerComponent extends Component {
         (subowners.slice(0).sort((a, b) => subownerNames[a].localeCompare(subownerNames[b], 'en'))) :
         subowners;
 
+    const popOutAction = isRenderable ? popOut : undefined;
+
     const header = <PropertyOwnerHeader uri={uri}
                                         expanded={isExpanded}
                                         title={name}
-                                        setExpanded={setExpanded} />
+                                        setExpanded={setExpanded}
+                                        popOutAction={popOutAction} />
 
     return <ToggleContent
       header={header}
@@ -180,13 +185,16 @@ const mapSubStateToProps = (
     isExpanded = autoExpand || false;
   }
 
+  let renderableTypeProp = properties[uri + ".Renderable.Type"];
+  
   return {
     name,
     subowners,
     subownerNames,
     properties: subProperties,
     isExpanded,
-    sort
+    sort,
+    isRenderable: (renderableTypeProp != undefined)
   };
 }
 
@@ -203,8 +211,18 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       expanded
     }));
   }
+
+  const isFocus = ownProps.name && (ownProps.name.lastIndexOf('Current') > -1);
+  const popOut = () => {
+    dispatch(addNodeProperyPopover({
+      identifier: ownProps.uri,
+      focus: isFocus
+    }));
+  };
+
   return {
-    setExpanded
+    setExpanded,
+    popOut
   };
 }
 

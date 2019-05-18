@@ -180,7 +180,7 @@ class OriginPicker extends Component {
           {this.hasDistinctAim() ? this.anchorAndAimPicker : this.focusPicker }
         </Picker>
         { popoverVisible && (
-          <Popover closeCallback={this.togglePopover} title="Navigation" className={Picker.Popover}>
+          <Popover closeCallback={this.togglePopover} title="Navigation" className={Picker.Popover} attached={true}>
             <div>
               <Button className={styles.NavigationButton}
                       onClick={setNavigationActionToFocus}

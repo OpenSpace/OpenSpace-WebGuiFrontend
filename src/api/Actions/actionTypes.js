@@ -42,6 +42,8 @@ export const actionTypes = {
   setPopoverVisibility: 'LOCAL_POPOVER_SET_VISIBILITY',
   setPopoverAttachment: 'LOCAL_POPOVER_SET_ATTACHMENT',
   addNodeProperyPopover: 'LOCAL_ADD_NODE_PROPERTY_POPOVER',
+  removeNodeProperyPopover: 'LOCAL_REMOVE_NODE_PROPERTY_POPOVER',
+  setPopoverActiveTab: 'LOCAL_SET_POPOVER_ACTIVE_TAB',
 
   // action types for transfer function editor
   addTransferFunction: 'TRANSFERFUNCTION_ADD_TRANSFER_FUNCTION',

@@ -23,7 +23,7 @@ import {
   RetargetAnchorKey,
 } from '../../../api/keys';
 
-let PropertyOwnerHeader = ({title, expanded, setExpanded, onIcon, offIcon, quickToggleUri, focusAction, shiftFocusAction, popOutAction }) => {
+let PropertyOwnerHeader = ({title, expanded, setExpanded, onIcon, offIcon, quickToggleUri, focusAction, shiftFocusAction, popOutAction, titleClass }) => {
   const onClick = (evt) => {
     setExpanded(!expanded)
   }
@@ -37,6 +37,17 @@ let PropertyOwnerHeader = ({title, expanded, setExpanded, onIcon, offIcon, quick
     evt.stopPropagation();
   }
 
+  const popoutClick = (evt) => {
+    popOutAction()
+    evt.stopPropagation()
+  }
+
+  const popoutButton = (
+      <div className={styles.rightButton} onClick={popoutClick}>
+         <MaterialIcon icon="build"/>
+      </div>
+  )
+
   return <header className={toggleHeaderStyles.toggle} onClick={onClick} role="button" tabIndex={0}>
     <MaterialIcon
       icon={expanded ? onIcon : offIcon}
@@ -47,7 +58,7 @@ let PropertyOwnerHeader = ({title, expanded, setExpanded, onIcon, offIcon, quick
           <Property uri={quickToggleUri} checkBoxOnly={true} />
         </span>
     }
-    <span className={toggleHeaderStyles.title} >
+    <span className={`${toggleHeaderStyles.title} ${titleClass}`} >
       { title }
     </span>
     <span className={styles.rightButtonContainer}>
@@ -57,7 +68,7 @@ let PropertyOwnerHeader = ({title, expanded, setExpanded, onIcon, offIcon, quick
         </div>
       }
       {
-        popOutAction && null // TODO: Add popout action here. 
+        popOutAction && popoutButton
       } 
     </span>
   </header>
@@ -77,10 +88,23 @@ const mapStateToProps = (state, ownProps) => {
     quickToggleUri = uri + '.Renderable.Enabled';
   }
 
+  let isColorLayer = quickToggleUri && (quickToggleUri.lastIndexOf('ColorLayers') > 0);
+  let isHeightLayer = quickToggleUri && (quickToggleUri.lastIndexOf('HeightLayers') > 0);
+  var titleClass = "";
+  var enabled = quickToggleUri && state.propertyTree.properties[quickToggleUri].value;
+  if (isColorLayer || isHeightLayer) {
+      if (enabled) {
+        titleClass = styles.greenTitle;
+      } else if (isHeightLayer) {
+        titleClass = styles.grayTitle;
+      }
+  }
+
+
   return {
     title: title || displayName(state, uri),
     quickToggleUri,
-
+    titleClass,
   };
 }
 

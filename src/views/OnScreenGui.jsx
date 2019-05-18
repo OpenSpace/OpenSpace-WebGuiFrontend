@@ -9,6 +9,7 @@ import Error from '../components/common/Error/Error';
 import Overlay from '../components/common/Overlay/Overlay';
 import About from './About/About';
 import Stack from '../components/common/Stack/Stack';
+import NodePopOverContainer from '../components/NodePropertiesPanel/NodePopOverContainer';
 import { startConnection } from '../api/Actions';
 import { isCompatible,
          formatVersion,
@@ -84,6 +85,7 @@ class OnScreenGui extends Component {
           <Sidebar />
         </section>
         <section className={styles.Grid__Right}>
+          <NodePopOverContainer />
           <BottomBar />
         </section>
       </div>
