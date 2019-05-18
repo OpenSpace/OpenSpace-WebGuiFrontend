@@ -4,6 +4,7 @@ import { time } from './time';
 import { connection } from './connection';
 import { shortcuts } from './shortcuts';
 import { version } from './version';
+import { sessionRecording } from './sessionRecording';
 import { local } from './local';
 import { luaApi } from './luaApi';
 
@@ -18,6 +19,7 @@ const openspaceApp = (state = {}, action) => {
     time: time(state.time, action),
     connection: connection(state.connection, action),
     version: version(state.version, action),
+    sessionRecording: sessionRecording(state.sessionRecording, action),
     local: local(state.local, action),
     luaApi: luaApi(state.luaApi, action)
   };

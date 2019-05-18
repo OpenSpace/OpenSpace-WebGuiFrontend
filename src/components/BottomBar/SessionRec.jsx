@@ -17,6 +17,12 @@ import {
   sessionStatePlaying,
 } from '../../api/keys';
 
+import {
+  subscribeToSessionRecording,
+  unsubscribeToSessionRecording,
+  refreshSessionRecording
+} from '../../api/Actions'
+
 import styles from './SessionRec.scss';
 
 class SessionRec extends Component {
@@ -25,35 +31,61 @@ class SessionRec extends Component {
     super(props);
 
     this.state = {
-      recAscii: false,
+      useTextFormat: false,
       forceTime: true,
-      filenameRec: '',
-      filenamePlayback: '',
-      showPopover: false,
+      filenameRecording: '',
+      filenamePlayback: ''
     };
 
     this.togglePopover = this.togglePopover.bind(this);
     this.toggleRecording = this.toggleRecording.bind(this);
     this.togglePlayback = this.togglePlayback.bind(this);
-    this.stopPlayback = this.stopPlayback.bind();
-    this.updateFilenamePlaybackValue = this.updateFilenamePlaybackValue.bind(this);
     this.setPlaybackFile = this.setPlaybackFile.bind(this);
+    this.setForceTiming = this.setForceTiming.bind(this);
+    this.setUseTextFormat = this.setUseTextFormat.bind(this);
   }
 
   componentDidMount() {
-    //Subscribe to session recording state in openspace (idle/recording/playback).
-    // Necessary for updating the displayed rec/play state and buttons
-    //this.state.recStateSubscriptionId = DataManager
-    //  .subscribe(SessionRecordingState, this.recStateSubscriptionCallback, TopicTypes.sessionRecording);
-
-    // emiax TODO.
     this.props.subscribe();
   }
 
   componentWillUnmount() {
-   // DataManager.unsubscribe(SessionRecordingState, this.state.recStateSubscriptionId);
-   // emiax TODO.
    this.props.unsubscribe();
+  }
+
+  get picker() {
+    const classes = [];
+    let onClick = this.togglePopover;
+    if (this.props.recordingState === sessionStateRecording) {
+      classes.push(styles.recordingPicker);
+      onClick = this.toggleRecording;
+    } else if (this.props.recordingState === sessionStatePlaying) {
+      classes.push(styles.playingPicker);
+      onClick = this.togglePlayback;
+    } else if (this.state.showPopover) {
+      classes.push(Picker.Active)
+    }
+    return <Picker onClick={onClick}
+            className={classes.join(' ')}>
+          { this.pickerContent }
+    </Picker>
+  }
+
+  get pickerContent() {
+    switch (this.props.recordingState) {
+      case sessionStateRecording:
+        return <div>
+          <MaterialIcon icon="videocam" /> Stop recording
+        </div>;
+      case sessionStatePlaying:
+        return <div>
+          <MaterialIcon icon="stop" /> Stop playback
+        </div>;
+      default:
+        return <div>
+          <MaterialIcon className={styles.cameraIcon} icon="videocam" />
+        </div>;
+    }
   }
 
   get popover() {
@@ -67,46 +99,40 @@ class SessionRec extends Component {
 
     return (
       <Popover className={Picker.Popover}
-               closeCallback={this.togglePopover}
-               title="Record session"
-               attached={true}
-               detachable >
-        <div className={Popover.styles.content}>    
+                 closeCallback={this.togglePopover}
+                 title="Record session"
+                 attached={true}
+                 detachable >
+        <div className={Popover.styles.content}>
           <Checkbox
-            checked={this.state.recAscii}
-            name="recAsciiMode"
+            checked={this.state.useTextFormat}
             label={textFormatLabel}
-            onChange={evt => this.setRecFormat(evt)}
+            setChecked={this.setUseTextFormat}
           />
           <Row>
-            <Input value={this.props.recordingFilename}
+            <Input value={this.state.filenameRecording}
                    label={fileNameLabel}
                    placeholder={"Enter recording filename..."}
-                   onChange={evt => this.updateFilenameRecValue(evt)} />
+                   onChange={evt => this.updateRecordingFilename(evt)} />
 
             <div className={Popover.styles.row}>
               <Button onClick={this.toggleRecording}
-                      title="Toggle Recording"
-                      disabled={this.state.recState == sessionStatePlaying}
+                      title="Start Recording"
                       style={{width: 90}}>
-                {
-                  this.state.recState == sessionStateIdle ?
-                    <MaterialIcon icon="fiber_manual_record" /> :
-                    <MaterialIcon icon="stop" />
-                }
+                <MaterialIcon icon="fiber_manual_record" />
                 <span style={{marginLeft: 5}}>Record</span>
               </Button>
             </div>
           </Row>
         </div>
         <hr className={Popover.styles.delimiter} />
-        <div className={Popover.styles.title}>Playback session</div>
+        <div className={Popover.styles.title}>Play session</div>
         <div className={Popover.styles.content}>
           <Checkbox
             checked={this.state.forceTime}
             name="forceTimeInput"
             label="Force time change to recorded time"
-            onChange={evt => this.toggleTiming(evt)}
+            setChecked={this.setForceTiming}
           />        
           <Row>
             <Select
@@ -117,15 +143,10 @@ class SessionRec extends Component {
               value={filenamePlayback}
             />
             <div className={Popover.styles.row}>
-              <Button onClick={this.togglePlayback} title="Toggle Playback"
+              <Button onClick={this.togglePlayback} title="Start Playback"
                       block small transparent={false}
-                      disabled={this.state.recState == sessionStateRecording}
                       style={{width: 90}} >
-                {
-                  this.state.recState == sessionStateIdle ?
-                    <MaterialIcon icon="play_arrow" /> :
-                    <MaterialIcon icon="stop" />
-                }
+                <MaterialIcon icon="play_arrow" />
                 <span style={{marginLeft: 5}}>Play</span>
               </Button>
             </div>
@@ -135,51 +156,19 @@ class SessionRec extends Component {
     );
   }
 
-  get filenamePlayback() {
-    const { filenamePlayback } = this.state;
-    return filenamePlayback;
-  }
-
   setPlaybackFile({ value }) {
     this.setState({ filenamePlayback: value });
   }
 
-  refreshPlaybackFilesList() {
-    //When clicking to display sessionRecording menu, trigger openspace to
-    // read its recording directory and provide a list of available playback
-    // files (which will go to the specified callback file)
-    //this.state.playbackListSubscriptionId = DataManager
-    //  .getValue('playbackList', this.playbackListCallback);
-
-      // emiax TODO.
-  }
-
-  /**
-   * Callback for response to request for list of available playback files
-   * @param message [object] - message object sent from server module connection
-   */
-
-  changePlaybackFile(event) {
-    this.setState({playbackFile: event.target.value});
-  }
-
-  updateFilenameRecValue(evt) {
+  updateRecordingFilename(evt) {
     this.setState({
-      filenameRec: evt.target.value
-    });
-  }
-
-  updateFilenamePlaybackValue(evt) {
-    this.setState({
-      filenamePlayback: evt.target.value
+      filenameRecording: evt.target.value
     });
   }
 
   toggleRecording() {
-    const { recState } = this.state;
-
     //Uses idle/rec/play state from openspace to toggle between record/stop
-    if (recState == sessionStateIdle) {
+    if (this.props.recordingState == sessionStateIdle) {
       this.startRecording();
     } else {
       this.props.stopRecording();
@@ -187,24 +176,21 @@ class SessionRec extends Component {
   }
 
   startRecording () {
-    const { recAscii, filenameRec } = this.state;
-    if (recAscii) {
-      this.props.startRecordingAscii(filenameRec);
+    const { useTextFormat, filenameRecording } = this.state;
+    if (useTextFormat) {
+      this.props.startRecordingAscii(filenameRecording);
     } else {
-      this.props.startRecordingBinary(filenameRec);
+      this.props.startRecordingBinary(filenameRecording);
     }
-    //Hide popover menu after starting record
-    this.setState({ showPopover: false});
+    // emiax TODO: remove popover.
   }
 
   togglePlayback() {
-    const { recState } = this.state;
-
     //Uses idle/rec/play state from openspace to toggle between play/stop
-    if (recState == sessionStateIdle) {
+    if (this.props.recordingState === sessionStateIdle) {
       this.startPlayback();
     } else {
-      this.stopPlayback();
+      this.props.stopPlayback();
     }
   }
 
@@ -212,25 +198,21 @@ class SessionRec extends Component {
     const { forceTime, filenamePlayback } = this.state;
 
     if (forceTime) {
-      this.startPlaybackImmediate(filenamePlayback);
+      this.props.startPlaybackImmediate(filenamePlayback);
     } else {
-      this.startPlaybackRecordedTime(filenamePlayback);
+      this.props.startPlaybackRecordedTime(filenamePlayback);
     }
     //Hide popover menu after starting playback
-    this.setState({ showPopover: false});
+    //this.setState({ showPopover: false});
+    // emiax TODO.
   }
 
-  stopPlayback() {
-    //DataManager.runScript(SessionPlaybackStopScript);
-    // emiax TODO
+  setUseTextFormat(useTextFormat) {
+    this.setState({useTextFormat})
   }
 
-  setRecFormat(evt) {
-    this.setState({recAscii: evt})
-  }
-
-  toggleTiming(evt) {
-    this.setState({forceTime: evt});
+  setForceTiming(forceTime) {
+    this.setState({forceTime});
   }
 
   togglePopover() {
@@ -242,56 +224,40 @@ class SessionRec extends Component {
     }
   }
 
-  /**
-   * Callback for SessionRecording idle/play/record state subscription
-   * @param message [object] - message object sent from Subscription
-   */
-  recStateSubscriptionCallback(message) {
-    const newRecState = message;
-    this.setState( {recState: newRecState.state} );
-  }
-
   render() {
-    const { showPopover } = this.state;
     return (
       <div className={Picker.Wrapper}>
-        <Picker onClick={this.togglePopover} className={`${styles.timePicker} ${showPopover ? Picker.Active : ''}`}>
-          <div className={Picker.Title}>
-            <span className={Picker.Name}>
-            {
-              this.state.recState == sessionStateIdle ?
-                null :
-                (this.state.recState == sessionStatePlaying ?
-                  <MaterialIcon icon="play_arrow" /> :
-                  <MaterialIcon icon="fiber_manual_record" /> )}
-              REC
-            </span>
-          </div>
-        </Picker>
-
-        { showPopover && this.popover }
+        { this.picker }
+        { this.state.showPopover && this.props.recordingState === sessionStateIdle && this.popover }
       </div>
     );
   }
 }
 
 const mapSubStateToProps = ({sessionRecording, sessionRecordingPopover, luaApi}) => {
+  const fileList = sessionRecording.files || [];
+  const recordingState = sessionRecording.recordingState || sessionStateIdle;
+
   return {
-    fileList: [],
+    fileList,
+    recordingState,
     startRecordingAscii: filename => {
       luaApi.sessionRecording.startRecordingAscii(filename);
     },
     startRecordingBinary: filename => {
-      luaApi.sessionRecording.startRecordingBinary(filename);
+      luaApi.sessionRecording.startRecording(filename);
     },
     stopRecording: () => {
-      luaApi.sessionRecording.stopRecording()
+      luaApi.sessionRecording.stopRecording();
     },
     startPlaybackImmediate: filename => {
-      luaApi.sessionRecording.startPlayback('', filename);
+      luaApi.sessionRecording.startPlayback(filename);
     },
     startPlaybackRecordedTime: filename => {
-      luaApi.sessionRecording.startPlayback('RecordedTime', filename);
+      luaApi.sessionRecording.startPlaybackRecordedTime(filename);
+    },
+    stopPlayback: () => {
+      luaApi.sessionRecording.stopPlayback();
     }
   };
 };
@@ -305,16 +271,13 @@ const mapStateToSubState = (state) => ({
 const mapDispatchToProps = (dispatch) => {
   return {
     subscribe: () => {
-
+      dispatch(subscribeToSessionRecording());
     },
-    ubsubscribe: () => {
-
+    unsubscribe: () => {
+      dispatch(unsubscribeToSessionRecording());
     },
     refreshPlaybackFilesList: () => {
-
-    },
-    setNavigationAction: (action) => {
-      dispatch(setNavigationAction(action))
+      dispatch(refreshSessionRecording());
     },
     setPopoverVisibility: (visible) => {
       dispatch(setPopoverVisibility({
