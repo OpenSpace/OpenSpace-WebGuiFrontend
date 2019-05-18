@@ -33,41 +33,14 @@ const timePicker = (state = defaultTimePicker, action) => {
   }
 };
 
-
-/**
- * Node Properties
- */
-const defaultFocusNodePropertiesPanel = {
-  anchor: "unknown",
-  activeTab: 0,
-}
-const focusNodePropertiesPanel = (state = defaultFocusNodePropertiesPanel, action) => {
-  switch (action.type) {
-    default:
-      return state;
-  }
-};
-
-const defaultActiveNodePropertyPanels = [];
-const activeNodePropertyPanels = (state = defaultActiveNodePropertyPanels, action) => {
-  switch (action.type) {
-    case actionTypes.addNodeProperyPopover:
-      return {
-        ...state,
-        activeNodePropertyPanels: [...state.activeNodePropertyPanels, action.playload.nodeIdentifier] 
-      }
-    default:
-      return state;
-  }
-};
-
 /**
  * Popovers
  */
 const defaultPopover = {
   visible: false,
   position: undefined,
-  attached: true
+  attached: true,
+  activeTab: 0
 }
 const popover = (state = defaultPopover, action = {}) => {
   switch (action.type) {
@@ -99,6 +72,7 @@ const defaultPopovers = {
 }
 
 const popovers = (state = defaultPopovers, action) => {
+
   switch (action.type) {
     case actionTypes.setPopoverPosition:
     case actionTypes.setPopoverVisibility:
@@ -108,14 +82,41 @@ const popovers = (state = defaultPopovers, action) => {
         [action.payload.popover]: popover(state[action.payload.popover], action)
       };
     case actionTypes.addNodeProperyPopover:
-      console.log("addNodeProperyPopover");
+      if(action.payload.focus) {
+        return {
+          ...state,
+          focusNodePropertiesPanel: {...state.focusNodePropertiesPanel, visible: true}
+        }
+      } else{
+        return {
+          ...state,
+          activeNodePropertyPanels: {...state.activeNodePropertyPanels, [action.payload.identifier]: popover({attached: false, visible: true, activeTab: 0}, action)}
+        }
+      }
+    case actionTypes.removeNodeProperyPopover:
       return {
         ...state,
-        activeNodePropertyPanels: {...state.activeNodePropertyPanels, [action.payload.uri]: popover(undefined, action)}
+        activeNodePropertyPanels: {...state.activeNodePropertyPanels, [action.payload.identifier]: undefined}
       }
-
+    case actionTypes.setPopoverActiveTab:
+      if (action.payload.isFocusNodePanel) {
+        return {
+          ...state,
+          focusNodePropertiesPanel: {...state.focusNodePropertiesPanel, activeTab: action.payload.activeTab}
+        }
+      } else {
+        return {
+          ...state,
+          activeNodePropertyPanels: {...state.activeNodePropertyPanels, [action.payload.identifier]: {...state.activeNodePropertyPanels[action.payload.identifier], activeTab: action.payload.activeTab}}
+        }
+      }
     default:
-      return state;
+      return {
+        originPicker: popover(state.originPicker, action),
+        timePicker: popover(state.timePicker, action),
+        focusNodePropertiesPanel: popover({...state.focusNodePropertiesPanel, attached: false}, action),
+        activeNodePropertyPanels: {...state.activeNodePropertyPanels}
+      };
   }
 }
 
@@ -138,9 +139,7 @@ const propertyTreeExpansion = (state = defaultPropertyTreeExpansion, action) => 
 
 export const local = combineReducers({
   originPicker,
-  focusNodePropertiesPanel,
   timePicker,
-  activeNodePropertyPanels,
   popovers,
   propertyTreeExpansion
 });

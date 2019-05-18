@@ -16,7 +16,7 @@ const Window = (props) => {
           width: size.width,
           height: size.height,
         }}
-        {...excludeKeys(props, 'children title callback className')}
+        {...excludeKeys(props, 'children title callback className closeCallback')}
       >
         <header className="header">
           <div className={styles.title}>
@@ -45,8 +45,8 @@ Window.propTypes = {
     y: PropTypes.number,
   }),
   size: PropTypes.shape({
-    height: PropTypes.number,
-    width: PropTypes.number,
+    height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   }),
   title: PropTypes.string,
 };

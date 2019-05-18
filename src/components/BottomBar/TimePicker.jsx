@@ -155,6 +155,7 @@ class TimePicker extends Component {
         title="Select date"
         closeCallback={this.togglePopover}
         detachable
+        attached={true}
       >
         <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
           <div style={{marginTop: 20}}>

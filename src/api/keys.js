@@ -23,16 +23,41 @@ export const InterpolateTogglePauseScript = 'openspace.time.interpolateTogglePau
 // key for getting current time subscription
 export const TimeKey = 'special:currentTime';
 
-/*
-// keys for session recording
-export const SessionRecordingState = 'recState';
-export const SessionRecordingFormatPlaceholder = '__format__';
-export const SessionRecordingTimePlaceholder = '__time__';
-export const SessionRecordingStartScript = `openspace.sessionRecording.startRecording${SessionRecordingFormatPlaceholder}("${ValuePlaceholder}")`;
-export const SessionRecordingStopScript = `openspace.sessionRecording.stopRecording()`;
-export const SessionPlaybackStartScript = `openspace.sessionRecording.startPlayback${SessionRecordingTimePlaceholder}("${ValuePlaceholder}")`;
-export const SessionPlaybackStopScript = `openspace.sessionRecording.stopPlayback()`;
-export const sessionStateIDLE = 0;
-export const sessionStateRECORDING = 1;
-export const sessionStatePLAYING = 2;
-*/
+export const sessionStateIdle = 'idle';
+export const sessionStateRecording = 'recording'
+export const sessionStatePlaying = 'playing';
+
+//renderableTypes
+export const RenderableTypes = {
+	// RenderableAtmosphere: "RenderableAtmosphere",
+	// RenderableBoxGrid: "RenderableBoxGrid",
+	// RenderableCartesianAxes: "RenderableCartesianAxes",
+	// RenderableModel: "RenderableModel",
+	// RenderablePlane: "RenderablePlane",
+	RenderablePlaneImageLocal: "RenderablePlaneImageLocal",
+	// RenderablePlaneImageOnline: "RenderablePlaneImageOnline",
+	// RenderableSphere: "RenderableSphere",
+	// RenderableSphericalGrid: "RenderableSphericalGrid",
+	// RenderableTrail: "RenderableTrail",
+	// RenderableTrailOrbit: "RenderableTrailOrbit",
+	// RenderableTrailTrajectory: "RenderableTrailTrajectory",
+	// RenderableDebugPlane: "RenderableDebugPlane",
+	RenderableBillboardsCloud: "RenderableBillboardsCloud",
+	// RenderableDUMeshes: "RenderableDUMeshes",
+	// RenderablePlanesCloud: "RenderablePlanesCloud",
+	// RenderablePoints: "RenderablePoints",
+	// RenderableGaiaStars: "RenderableGaiaStars",
+	RenderableGlobe: "RenderableGlobe",
+	// RenderableConstellationBounds: "RenderableConstellationBounds",
+	// RenderableRings: "RenderableRings",
+	RenderableStars: "RenderableStars",
+	// RenderableCrawlingLine: "RenderableCrawlingLine",
+	// RenderableFov: "RenderableFov",
+	// RenderableModelProjection: "RenderableModelProjection",
+	// RenderablePlaneProjection: "RenderablePlaneProjection",
+	// RenderablePlanetProjection: "RenderablePlanetProjection",
+	// RenderableShadowCylinder: "RenderableShadowCylinder",
+	// RenderablePlaneSpout: "RenderablePlaneSpout",
+	// RenderableTimeVaryingVolume: "RenderableTimeVaryingVolume",
+	// RenderablePlaneImageLocal: "RenderablePlaneImageLocal",
+}

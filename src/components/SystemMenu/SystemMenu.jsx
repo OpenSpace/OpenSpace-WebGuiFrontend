@@ -22,7 +22,7 @@ class SystemMenu extends Component {
     return (
       <div className={styles.SystemMenu}>
         { this.state.showMenu && (
-          <Popover className={styles.popover} arrow="arrow bottom leftside">
+          <Popover className={styles.popover} arrow="arrow bottom leftside" attached={true}>
             <nav className={styles.links} onClick={this.toggleMenu}>
               <button onClick={this.props.console}>
                 Toggle console <span className={styles.shortcut}>~</span>
