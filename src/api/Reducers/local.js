@@ -67,7 +67,8 @@ const popover = (state = defaultPopover, action = {}) => {
 const defaultPopovers = {
   originPicker: popover(),
   timePicker: popover(),
-  focusNodePropertiesPanel: popover(),
+  sessionRecording: popover(),
+  focusNodePropertiesPanel: popover({ attached: false }),
   activeNodePropertyPanels: {}
 }
 
@@ -111,12 +112,7 @@ const popovers = (state = defaultPopovers, action) => {
         }
       }
     default:
-      return {
-        originPicker: popover(state.originPicker, action),
-        timePicker: popover(state.timePicker, action),
-        focusNodePropertiesPanel: popover({...state.focusNodePropertiesPanel, attached: false}, action),
-        activeNodePropertyPanels: {...state.activeNodePropertyPanels}
-      };
+      return state;
   }
 }
 

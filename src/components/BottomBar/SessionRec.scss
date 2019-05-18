@@ -1,0 +1,21 @@
+@import "../../styles/all";
+
+.cameraIcon {
+  font-size: 2em;
+}
+
+.playingPicker {
+  background-color: $blue;
+
+  &:hover {
+    background-color: $blue;
+  }
+}
+
+.recordingPicker {
+  background-color: $red;
+
+  &:hover {
+    background-color: $red;
+  }
+}

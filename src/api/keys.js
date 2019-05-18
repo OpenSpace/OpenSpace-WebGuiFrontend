@@ -23,6 +23,9 @@ export const InterpolateTogglePauseScript = 'openspace.time.interpolateTogglePau
 // key for getting current time subscription
 export const TimeKey = 'special:currentTime';
 
+export const sessionStateIdle = 'idle';
+export const sessionStateRecording = 'recording'
+export const sessionStatePlaying = 'playing';
 
 //renderableTypes
 export const RenderableTypes = {

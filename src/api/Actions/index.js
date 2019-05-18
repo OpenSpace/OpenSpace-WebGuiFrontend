@@ -159,8 +159,27 @@ export const setPopoverActiveTab = data => ({
   payload: data
 })
 
-
 export const setPropertyTreeExpansion = data => ({
   type: actionTypes.setPropertyTreeExpansion,
+  payload: data
+})
+
+export const subscribeToSessionRecording = () => ({
+  type: actionTypes.subscribeToSessionRecording,
+  payload: {}
+})
+
+export const unsubscribeToSessionRecording = () => ({
+  type: actionTypes.unsubscribeToSessionRecording,
+  payload: {}
+})
+
+export const refreshSessionRecording = () => ({
+  type: actionTypes.refreshSessionRecording,
+  payload: {}
+})
+
+export const updateSessionRecording = data => ({
+  type: actionTypes.updateSessionRecording,
   payload: data
 })

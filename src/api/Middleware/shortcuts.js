@@ -20,7 +20,6 @@ const unsubscribeToShortcuts = () => {
   if (!topic) {
     return;
   }
-
   topic.talk({
     event: 'stop_subscription'
   });

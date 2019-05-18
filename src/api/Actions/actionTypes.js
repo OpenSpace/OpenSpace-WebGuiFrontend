@@ -32,8 +32,13 @@ export const actionTypes = {
   subscribeToShortcuts: 'SHORTCUTS_SUBSCRIBE',
   unsubscribeToShortcuts: 'SHORTCUTS_UNSUBSCRIBE',
   initializeShortcuts: 'SHORTCUTS_INITIALIZE',
-
   executeShortcut: 'SHORTCUT_EXECUTE',
+
+  // action types for session recording
+  subscribeToSessionRecording: 'SESSION_RECORDING_SUBSCRIBE',
+  unsubscribeToSessionRecording: 'SESSION_RECORDING_UNSUBSCRIBE',
+  refreshSessionRecording: 'SESSION_RECORDING_REFRESH',
+  updateSessionRecording: 'SESSION_RECORDING_UPDATE',
 
   // action types for local gui settings
   setNavigationAction: 'LOCAL_SET_NAVIGATION_ACTION',
