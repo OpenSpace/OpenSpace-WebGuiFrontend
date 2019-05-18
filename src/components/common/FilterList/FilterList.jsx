@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Input from '../Input/Input/Input';
 import CenteredLabel from '../CenteredLabel/CenteredLabel';
 import ScrollOverlay from '../ScrollOverlay/ScrollOverlay';
-import { SimpleSubstring } from '../../../utils/StringMatchers';
+import { WordBeginningSubstring, ObjectWordBeginningSubstring } from '../../../utils/StringMatchers';
 import styles from './FilterList.scss';
 
 class FilterList extends Component {
@@ -29,41 +29,16 @@ class FilterList extends Component {
       return favorites || data;
     }
 
-    // most matcher functions are case sensitive
-    search = search.toLowerCase();
-
-    const matcherFunc = (testObj) => {
-      const valuesAsStrings = Object.values(testObj)
-        .filter(test => ['number', 'string'].includes(typeof test))
-        .map(test => test.toString())
-        .map(test => test.toLowerCase());
-      return valuesAsStrings.some(test => matcher(test, search));
-    };
-
-
-    const findSceneGraphNodes = (data, found = []) => {
-      var sceneGraphNodes = [];
-      if (data.isSceneGraphNode) {
-        found.push(data);
-      }
-
-      Object.values(data).forEach((value) => {
-        if(typeof value === 'object') {
-          findSceneGraphNodes(value, found);
-        }
-      });
-    
-      return found;
-    };
-
-  
-    if (filterSubObjects) {
-      var sceneGraphNodes = findSceneGraphNodes(data);   
-      return sceneGraphNodes.filter(matcherFunc);
-    } else {
-      return data.filter(matcherFunc);      
+    let defaultMatcher = WordBeginningSubstring;
+    if (data.length > 0 && typeof data[0] === 'object') {
+      defaultMatcher = ObjectWordBeginningSubstring;
     }
 
+    // most matcher functions are case sensitive
+    search = search.toLowerCase();
+    const matcherFunc = matcher || defaultMatcher;
+
+    return data.filter(entry => matcherFunc(entry, search));
   }
 
   render() {
@@ -91,7 +66,7 @@ class FilterList extends Component {
             { entries.map(entry => (
               <EntryComponent
                 {...entry}
-                key={entry.identifier}
+                key={entry.key}
                 onSelect={this.props.onSelect}
                 active={this.props.active}
               />)) }
@@ -137,7 +112,7 @@ FilterList.propTypes = {
   /**
    * Whether the search input field should gain focus automatically
    */
-   searchAutoFocus: PropTypes.bool,
+  searchAutoFocus: PropTypes.bool,
   /**
    * the component used to display entries
    */
@@ -152,7 +127,6 @@ FilterList.propTypes = {
 FilterList.defaultProps = {
   active: null,
   className: '',
-  matcher: SimpleSubstring,
   onSelect: () => {},
   searchText: 'Search...',
   searchAutoFocus: false,

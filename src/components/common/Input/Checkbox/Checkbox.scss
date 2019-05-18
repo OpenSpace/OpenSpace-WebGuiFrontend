@@ -3,18 +3,23 @@
 $height: $font-size + $base-padding * 1.5;
 
 .wrapper {
-
   &:hover {
     background: $ui-background-hover;
   }
 
+  &:hover .checkbox {
+    color: $blue;
+  }
+
   &.wide {
-    align-items: center;
-    display: flex;
-    flex-direction: row-reverse;
-    justify-content: space-between;
     height: $height;
-    padding: 0 $input-padding-horizontal;
+    padding: 7px $input-padding-horizontal;
+
+    .checkbox {
+      position: relative;
+      top: 2px;
+      margin-right: 2px;
+    }
   }
 
   &.left {

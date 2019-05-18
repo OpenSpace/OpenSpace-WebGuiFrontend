@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import DataManager, { TopicTypes } from '../../api/DataManager';
+//import DataManager, { TopicTypes } from '../../api/DataManager';
 import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import LoadingString from '../common/LoadingString/LoadingString';
 import Popover from '../common/Popover/Popover';
@@ -66,12 +66,15 @@ class SessionRec extends Component {
   componentDidMount() {
     //Subscribe to session recording state in openspace (idle/recording/playback).
     // Necessary for updating the displayed rec/play state and buttons
-    this.state.recStateSubscriptionId = DataManager
-      .subscribe(SessionRecordingState, this.recStateSubscriptionCallback, TopicTypes.sessionRecording);
+    //this.state.recStateSubscriptionId = DataManager
+    //  .subscribe(SessionRecordingState, this.recStateSubscriptionCallback, TopicTypes.sessionRecording);
+
+    // emiax TODO.
   }
 
   componentWillUnmount() {
-    DataManager.unsubscribe(SessionRecordingState, this.state.recStateSubscriptionId);
+   // DataManager.unsubscribe(SessionRecordingState, this.state.recStateSubscriptionId);
+   // emiax TODO.
   }
 
   get popover() {
@@ -162,8 +165,10 @@ class SessionRec extends Component {
     //When clicking to display sessionRecording menu, trigger openspace to
     // read its recording directory and provide a list of available playback
     // files (which will go to the specified callback file)
-    this.state.playbackListSubscriptionId = DataManager
-      .getValue('playbackList', this.playbackListCallback);
+    //this.state.playbackListSubscriptionId = DataManager
+    //  .getValue('playbackList', this.playbackListCallback);
+
+      // emiax TODO.
   }
 
   /**
@@ -218,23 +223,26 @@ class SessionRec extends Component {
   }
 
   stopRecording() {
-    DataManager.runScript(SessionRecordingStopScript);
+    //DataManager.runScript(SessionRecordingStopScript);
+    // emiax TODO
   }
 
   startRecordingAscii(filename) {
-    const script = SessionRecordingStartScript
+    /*const script = SessionRecordingStartScript
         .replace(SessionRecordingFormatPlaceholder, "Ascii")
         .replace(ValuePlaceholder, filename);
 
-    DataManager.runScript(script);
+    DataManager.runScript(script);*/
+    // emiax TODO
   }
 
   startRecordingBinary(filename) {
-    const script = SessionRecordingStartScript
+    /*const script = SessionRecordingStartScript
         .replace(SessionRecordingFormatPlaceholder, "")
         .replace(ValuePlaceholder, filename);
 
-    DataManager.runScript(script);
+    DataManager.runScript(script);*/
+    // emiax TODO
   }
 
   togglePlayback() {
@@ -261,23 +269,26 @@ class SessionRec extends Component {
   }
 
   stopPlayback() {
-    DataManager.runScript(SessionPlaybackStopScript);
+    //DataManager.runScript(SessionPlaybackStopScript);
+    // emiax TODO
   }
 
   startPlaybackImmediate(filename) {
-    const script = SessionPlaybackStartScript
+    /*const script = SessionPlaybackStartScript
         .replace(SessionRecordingTimePlaceholder, "")
         .replace(ValuePlaceholder, filename);
 
-    DataManager.runScript(script);
+    DataManager.runScript(script);*/
+    // emiax todo
   }
 
   startPlaybackRecordedTime(filename) {
-    const script = SessionPlaybackStartScript
+    /*const script = SessionPlaybackStartScript
         .replace(SessionRecordingTimePlaceholder, "RecordedTime")
         .replace(ValuePlaceholder, filename);
 
-    DataManager.runScript(script);
+    DataManager.runScript(script);*/
+    // emiax todo
   }
 
   setRecFormat(evt) {

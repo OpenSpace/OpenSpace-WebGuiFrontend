@@ -8,63 +8,10 @@ import PropertyOwner from './Properties/PropertyOwner';
 import Shortcut from './Shortcut';
 import styles from './ScenePane.scss';
 import ScenePaneListItem from './ScenePaneListItem';
+import { ObjectWordBeginningSubstring } from '../../utils/StringMatchers';
+import subStateToProps from '../../utils/subStateToProps';
 
-
-const createNode = identifier => ({
-  identifier,
-  subowners: [],
-  properties: []
-});
-
-const insertNode = (node, path, tree) => {
-  if (path.length === 0) {
-    tree.subowners.push(node);
-    return;
-  }
-
-  const pathComponent = path.shift();
-
-  let child = tree.subowners.find((subowner) => {
-    return subowner.identifier == pathComponent;
-  });
-
-  if (!child) {
-    child = createNode(pathComponent);
-    tree.subowners.push(child);
-  }
-  insertNode(node, path, child);
-};
-
-const addPropertyOwnerToTree = (nodes, tree) => {
-  nodes.forEach(node => {
-    const nodeHidden = node.properties.find(property => {
-      return property.id === "GuiHidden";
-    });
-
-    const guiPath = node.properties.find(property => {
-      return property.id === "GuiPath";
-    });
-
-    if (guiPath && guiPath.Value && !nodeHidden) {
-      const path = guiPath.Value.split('/');
-      path.shift();
-      node.isSceneGraphNode = true;
-      insertNode(node, path, tree);
-    }
-  });
-};
-
-const addShortcutsToTree = (shortcuts, tree) => {
-  shortcuts.forEach(shortcut => {
-    if (shortcut.guiPath !== undefined) {
-      const path = shortcut.guiPath.split('/');
-      path.shift();
-      shortcut.identifier = shortcut.name;
-      shortcut.isSceneGraphNode = false;
-      insertNode(shortcut, path, tree);
-    }
-  });
-}
+import PropertyString from '../common/PropertyString/PropertyString'
 
 class ScenePane extends Component {
   constructor(props) {
@@ -72,27 +19,40 @@ class ScenePane extends Component {
   }
 
   render() {
-    const { nodes, shortcuts } = this.props;
+    let favorites = [];
+    const entries = this.props.propertyOwners.map(uri => ({
+      key: uri,
+      type: 'propertyOwner',
+      uri: uri
+    })).concat(this.props.shortcuts.map((shortcut, index) => ({
+      key: 'shortcut: ' + shortcut.name,
+      type: 'shortcut',
+      index
+    })));
 
-    const guiPathTree = createNode('Everything')
-    addPropertyOwnerToTree(nodes, guiPathTree);
+    favorites.push({
+      key: 'context',
+      type: 'context',
+    });
 
-    const shortcutsAsTreeEntry = createNode('Shortcuts');
-    addShortcutsToTree(shortcuts, shortcutsAsTreeEntry);
-
-    const list = guiPathTree.subowners;
-    list.push(shortcutsAsTreeEntry);
-
-    var filterSubObjects = true;
+    favorites = favorites.concat(this.props.groups.map(item => ({
+      key: item,
+      path: item,
+      type: 'group'
+    })));
 
     return (
       <Pane title="Scene" closeCallback={this.props.closeCallback}>
-        { (list.length === 0) && (
+        { (entries.length === 0) && (
           <LoadingBlocks className={Pane.styles.loading} />
         )}
 
-        { list.length > 0 && (
-          <FilterList data={list} viewComponent={ScenePaneListItem} searchAutoFocus filterSubObjects />
+        { entries.length > 0 && (
+          <FilterList favorites={favorites}
+                      matcher={this.props.matcher}
+                      data={entries}
+                      viewComponent={ScenePaneListItem}
+                      searchAutoFocus />
         )}
       </Pane>
     );
@@ -107,26 +67,68 @@ ScenePane.defaultProps = {
   closeCallback: null,
 };
 
-const mapStateToProps = (state) => {
-  const sceneType = 'Scene';
-  const subowners = state.propertyTree.subowners || [];
+const mapStateToSubState = (state) => ({
+  properties: state.propertyTree.properties,
+  propertyOwners: state.propertyTree.propertyOwners,
+  groups: state.groups,
+  shortcuts: state.shortcuts.data.shortcuts
+});
 
-  const rootNodes = subowners.filter(element => element.identifier === sceneType);
+const mapSubStateToProps = ({ groups, properties, propertyOwners, shortcuts }) => {
+  const topLevelGroups = Object.keys(groups).filter(path => {
+    // Get the number of slashes in the path
+    const depth = (path.match(/\//g) || []).length;
+    return depth <= 1;
+  }).map(path =>
+    path.slice(1) // Remove leading slash.
+  ).reduce((obj, key) => ({ // Convert back to object
+      ...obj,
+      [key]: true
+  }), {});
 
-  let nodes = [];
-
-  rootNodes.forEach((node) => {
-    nodes = [...nodes, ...node.subowners];
+  // Reorder properties based on SceneProperties ordering property.
+  let sortedGroups = [];
+  const ordering = properties['Modules.ImGUI.Main.SceneProperties.Ordering'];
+  if (ordering && ordering.value) {
+    ordering.value.forEach(item => {
+      if (topLevelGroups[item]) {
+        sortedGroups.push(item);
+        delete topLevelGroups[item];
+      }
+    })
+  }
+  // Add the remaining items to the end.
+  Object.keys(topLevelGroups).forEach(item => {
+    sortedGroups.push(item);
   });
 
+  // Add back the leading slash
+  sortedGroups = sortedGroups.map(path => '/' + path);
+
+  const matcher = (test, search) => {
+    if (test.type === 'propertyOwner') {
+      const node = propertyOwners[test.uri] || {};
+      return ObjectWordBeginningSubstring(node, search);
+    } else if (test.type === 'shortcut') {
+      const shortcut = shortcuts[test.index];
+      return ObjectWordBeginningSubstring(shortcut, search)
+    }
+    return false;
+  };
+
+  const sceneOwner = propertyOwners.Scene || {};
+
   return {
-    nodes: nodes,
-    shortcuts: state.shortcuts.data.shortcuts || []
+    groups: sortedGroups,
+    propertyOwners: sceneOwner.subowners || [],
+    shortcuts: shortcuts || [],
+    matcher
   };
 };
 
+
 ScenePane = connect(
-  mapStateToProps,
+  subStateToProps(mapSubStateToProps, mapStateToSubState)
 )(ScenePane);
 
 export default ScenePane;

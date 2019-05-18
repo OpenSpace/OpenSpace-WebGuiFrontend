@@ -1,46 +1,45 @@
 import React from 'react';
-import Property from './Property';
+import PropertyBase from './PropertyBase';
 import Select from '../../common/Input/Select/Select';
 import { connectProperty } from './connectProperty';
 
-class OptionProperty extends Property {
+class OptionProperty extends PropertyBase {
   constructor(props) {
     super(props);
     this.onChange = this.onChange.bind(this);
   }
 
   onChange({ value }) {
-    this.props.ChangeValue(parseInt(value));
+    this.props.dispatcher.set(parseInt(value));
   }
 
   componentDidMount() {
-    this.props.StartListening(this.props.Description.Identifier)
+    this.props.dispatcher.subscribe();
   }
 
   componentWillUnmount() {
-    this.props.StopListening(this.props.Description.Identifier)
+    this.props.dispatcher.unsubscribe();
   }
 
   render() {
-    const { Description, Value } = this.props;
+    const { description, value } = this.props;
     const label = (
       <span>
-        { Description.Name } { this.descriptionPopup }
+        { description.Name } { this.descriptionPopup }
       </span>
     );
-    const options = Description.AdditionalData.Options
+    const options = description.AdditionalData.Options
       .map(option => ({ label: Object.values(option)[0], value: Object.keys(option)[0] }));
     return (
       <Select
         label={label}
         options={options}
-        value={Value}
+        value={value}
         onChange={this.onChange}
         disabled={this.disabled}
       />
     );
   }
 }
-OptionProperty = connectProperty(OptionProperty);
 
 export default OptionProperty;

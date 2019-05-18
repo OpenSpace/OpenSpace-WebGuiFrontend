@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import DataManager from '../../../api/DataManager';
 import styles from './FocusEntry.scss';
 import { jsonToLuaString } from '../../../utils/propertyTreeHelpers';
 
@@ -22,11 +21,11 @@ class FocusEntry extends Component {
   }
 
   render() {
-    const { identifier } = this.props;
+    const { name, identifier } = this.props;
     return (
       <li className={`${styles.entry} ${this.isActive && styles.active}`} onClick={this.select}>
         <span className={styles.title}>
-          { identifier }
+          { name || identifier }
         </span>
       </li>
     );
@@ -35,6 +34,7 @@ class FocusEntry extends Component {
 
 FocusEntry.propTypes = {
   identifier: PropTypes.string.isRequired,
+  name: PropTypes.string,
   onSelect: PropTypes.func,
   active: PropTypes.string,
 };

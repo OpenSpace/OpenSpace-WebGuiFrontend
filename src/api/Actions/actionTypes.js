@@ -2,20 +2,27 @@
 
 export const actionTypes = {
   // action types for property tree
-  updatePropertyTreeNode: 'PROPERTY_TREE_UPDATE_NODE',
-  changePropertyTreeNode: 'PROPERTY_TREE_CHANGE_NODE',
-  initializePropertyTree: 'PROPERTY_TREE_INITIALIZE',
-  startListeningToNode: 'PROPERTY_TREE_START_LISTENING',
-  stopListeningToNode: 'PROPERTY_TREE_STOP_LISTENING',
-  removeNode: 'PROPERTY_TREE_REMOVE_NODE',
-  addNode: 'PROPERTY_TREE_ADD_NODE',
-  insertNode: 'PROPERTY_TREE_INSERT_NODE',
+  updatePropertyValue: 'PROPERTY_TREE_UPDATE_NODE',
+  setPropertyValue: 'PROPERTY_TREE_SET',
+  subscribeToProperty: 'PROPERTY_TREE_SUBSCRIBE',
+  unsubscribeToProperty: 'PROPERTY_TREE_UNSUBSCRIBE',
+  addPropertyOwners: 'PROPERTY_TREE_ADD_OWNERS',
+  addProperties: 'PROPERTY_TREE_ADD_PROPERTIES',
+  removePropertyOwners: 'PROPERTY_TREE_REMOVE_OWNERS',
+  removeProperties: 'PROPERTY_TREE_REMOVE_PROPERTIES',
+  refreshGroups: 'GROUPS_REFRESH',
+
+  updateTime: "TIME_UPDATE",
+  subscribeToTime: 'TIME_SUBSCRIBE',
+  unsubscribeToTime: 'TIME_UNSUBSCRIBE',
 
   // action types for connection
   startConnection: 'CONNECTION_START',
   onOpenConnection: 'CONNECTION_ON_OPEN',
   onCloseConnection: 'CONNECTION_ON_CLOSE',
   changeConnectionWait: 'CONNECTION_CHANGE_WAIT',
+
+  initializeLuaApi: 'LUA_API_INITIALIZE',
 
   // action types for version
   getVersion: 'VERSION_GET',
@@ -26,8 +33,15 @@ export const actionTypes = {
   unsubscribeToShortcuts: 'SHORTCUTS_UNSUBSCRIBE',
   initializeShortcuts: 'SHORTCUTS_INITIALIZE',
 
+  executeShortcut: 'SHORTCUT_EXECUTE',
+
   // action types for local gui settings
   setNavigationAction: 'LOCAL_SET_NAVIGATION_ACTION',
+  setPropertyTreeExpansion: 'LOCAL_SET_PROPERTY_TREE_EXPANSION',
+  setPopoverPosition: 'LOCAL_POPOVER_SET_POSIITON',
+  setPopoverVisibility: 'LOCAL_POPOVER_SET_VISIBILITY',
+  setPopoverAttachment: 'LOCAL_POPOVER_SET_ATTACHMENT',
+  addNodeProperyPopover: 'LOCAL_ADD_NODE_PROPERTY_POPOVER',
 
   // action types for transfer function editor
   addTransferFunction: 'TRANSFERFUNCTION_ADD_TRANSFER_FUNCTION',

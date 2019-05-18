@@ -1,36 +1,31 @@
 @import "../../styles/all";
 
-
 .active {
   height: 100%;
 }
 
 .shortcutContainer {
 	width:100%;
-	height: 45px;
-	padding-top:10px;
+	padding-bottom: 6px;
+	padding-top: 6px;
   pointer-events: auto;
+  position: relative;
 }
 
 .executeButton {
-	right:25px;
+	right: 0;
   position: absolute;
   cursor: pointer;
-  padding-bottom: 10px;
-  height: 30px;
+  top: 0;
+  bottom: 0;
 }
 
 .executeButton i {
-    cursor: pointer;
-}
-
-
-li {
-  background: $ui-background-active;
+  cursor: pointer;
 }
 
 .shortcutContainer:hover {
-    background-color: $ui-background-hover;
+  background-color: $ui-background-hover;
 }
 
 

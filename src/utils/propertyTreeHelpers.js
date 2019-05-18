@@ -1,17 +1,20 @@
-export const splitURI = (URI) => {
-  const indexForIdentifier = URI.indexOf('.');
-  const identifier = URI.substring(0, indexForIdentifier !== -1 ?
-    indexForIdentifier : URI.length);
-  const newURI = URI.substring(indexForIdentifier + 1, URI.length);
-
-  return { identifier, URI: newURI, isLastOwner: newURI.indexOf('.') === -1, isLastNode: URI.indexOf('.') === -1 };
+export const splitUri = (uri) => {
+  if (typeof uri == 'string') {
+    if (uri === '') {
+      return [];
+    }
+    return uri.split('.');
+  } else {
+    return uri;
+  }
 };
 
-export const getIdOfProperty = (URI) => {
-  const indexForIdentifier = URI.lastIndexOf('.');
-  return URI.substring(indexForIdentifier !== -1 ?
-    indexForIdentifier + 1 : 0, URI.length);
+export const getIdOfProperty = (uri) => {
+  const a = splitUri(uri);
+  return a[a.length-1];
 };
+
+
 
 // Function to return a deep copy of an object
 export const keepCloning = (objectpassed) => {
@@ -26,28 +29,29 @@ export const keepCloning = (objectpassed) => {
   return temporaryStorage;
 };
 
-export const traverseTreeWithURI = (node, URI) => {
-  const splittedURI = splitURI(URI);
-  let tmpValue;
-  if (splittedURI.isLastNode) {
-    node.properties.forEach((element) => {
-      if (element.id === splittedURI.URI) {
-        tmpValue = element;
-      }
-    });
-    return tmpValue;
+export const findSubtree = (node, uri) => {
+  const splittedUri = splitUri(uri);
+  if (splittedUri.length === 0) {
+    return node;
   }
-  node.subowners.forEach((element) => {
-    if (element.identifier === splittedURI.identifier) {
-      if (splittedURI.isLastNode) { tmpValue = element; } else {
-        tmpValue = traverseTreeWithURI(element, splittedURI.URI);
-      }
-      return tmpValue;
-    }
-  });
-  return tmpValue;
-};
+  if (splittedUri.length === 1) {
+    return node.properties.find(element => {
+      return element.id === splittedUri[0]
+    }) || node.subowners.find(element => {
+      return element.identifier === splittedUri[0]
+    });
+  }
+  const subowner = node.subowners.find(element => {
+    return element.identifier === splittedUri[0]
+  })
 
+  if (!subowner) {
+    return;
+  }
+
+  const slicedUri = splittedUri.slice(1);
+  return findSubtree(subowner, slicedUri);
+};
 
 export const jsonToLuaString = json => `"${json}"`;
 

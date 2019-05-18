@@ -1,20 +1,20 @@
 import React from 'react';
-import Property from './Property';
+import PropertyBase from './PropertyBase';
 import Button from '../../common/Input/Button/Button';
 import { connectProperty } from './connectProperty';
 
-class TriggerProperty extends Property {
+class TriggerProperty extends PropertyBase {
   constructor(props) {
     super(props);
     this.onChange = this.onChange.bind(this);
   }
 
   onChange() {
-    this.props.ChangeValue('', this.props.Description.Identifier);
+    this.props.dispatcher.set(null);
   }
 
   render() {
-    const { Name } = this.props.Description;
+    const { Name } = this.props.description;
     return (
       <div>
         <Button onClick={this.onChange}>
@@ -24,7 +24,5 @@ class TriggerProperty extends Property {
     );
   }
 }
-
-TriggerProperty = connectProperty(TriggerProperty);
 
 export default TriggerProperty;
