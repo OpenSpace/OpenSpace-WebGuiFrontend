@@ -137,7 +137,8 @@ class SessionRec extends Component {
           <Row>
             <Select
               direction="up"
-              label="Select playback file"
+              label="Playback file"
+              placeholder="Select playback file..."
               onChange={this.setPlaybackFile}
               options={options}
               value={filenamePlayback}

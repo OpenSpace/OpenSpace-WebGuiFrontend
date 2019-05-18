@@ -3,6 +3,10 @@
 .ErrorBox {
   padding: 20px;
   width: 100%;
+
+  p {
+    margin-bottom: 1em;
+  }
 }
 
 .severe,
@@ -12,4 +16,11 @@
 
 .warning {
   background: $ui-warning;
+}
+
+.errorButton {
+  background-color: rgba(255, 255, 255, 0.2);
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.3) !important;
+  }
 }

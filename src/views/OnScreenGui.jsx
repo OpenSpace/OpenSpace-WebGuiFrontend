@@ -5,6 +5,7 @@ import '../styles/base.scss';
 import styles from './OnScreenGui.scss';
 import Sidebar from '../components/Sidebar/Sidebar';
 import BottomBar from '../components/BottomBar/BottomBar';
+import Button from '../components/common/Input/Button/Button';
 import Error from '../components/common/Error/Error';
 import Overlay from '../components/common/Overlay/Overlay';
 import About from './About/About';
@@ -53,6 +54,10 @@ class OnScreenGui extends Component {
     }
   }
 
+  reloadGui() {
+    location.reload();
+  }
+
   render() {
     this.checkVersion();
     return (
@@ -77,7 +82,8 @@ class OnScreenGui extends Component {
             <Error>
               <h2>Houston, we've had a...</h2>
               <p>...disconnection between the user interface and OpenSpace.</p>
-              <p>Trying to reconnect soon.</p>
+              <p>Trying to reconnect automatically, but you may want to...</p>
+              <Button className={Error.styles.errorButton} onClick={this.reloadGui}>Reload the user interface</Button>
             </Error>
           </Overlay>
         )}
