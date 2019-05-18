@@ -12,7 +12,7 @@ $height: $font-size + $base-padding * 1.5;
   }
 
   &.wide {
-    height: $height;
+    min-height: $height;
     padding: 7px $input-padding-horizontal;
 
     .checkbox {
