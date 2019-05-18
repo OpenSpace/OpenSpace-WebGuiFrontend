@@ -51,9 +51,7 @@ class NodePropertiesPanel extends Component {
 
   contentForTab(activeTab) {
     if (activeTab == 0) {
-
       let featuredProperties = this.propertiesForRenderableType();
-
       if (featuredProperties) {
         return featuredProperties.map(prop => <Property key={prop} uri={this.props.nodeURI + ".Renderable." + prop} />)
       } else {
@@ -82,8 +80,6 @@ class NodePropertiesPanel extends Component {
           }
       }      
     } else {
-      //no tabs otherwise
-      console.log("Not a known renderable type:", this.props.renderableType);
       return;
     }
   }
@@ -148,7 +144,7 @@ const mapStateToProps = (state, ownProps) => {
   let myPopover = ownProps.isFocusNodePanel ? state.local.popovers.focusNodePropertiesPanel : state.local.popovers.activeNodePropertyPanels[ownProps.uri]
   var popoverVisible = myPopover ? myPopover.visible : false;
   const popoverAttached = myPopover ? myPopover.attached : false;
-  const popoverActiveTab = myPopover ? myPopover.activeTab : 0;
+  const popoverActiveTab = myPopover && myPopover.activeTab ? myPopover.activeTab : 0;
 
   const node = state.propertyTree.propertyOwners[nodeURI] ? state.propertyTree.propertyOwners[nodeURI] : {};
   const nodeName = node.name;
