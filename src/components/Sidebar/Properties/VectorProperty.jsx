@@ -1,17 +1,26 @@
-import React from 'react';
-import PropertyBase from './PropertyBase';
+import React, { Component } from 'react';
 import NumericInput from '../../common/Input/NumericInput/NumericInput';
 import Row from '../../common/Row/Row';
+import InfoBox from '../../common/InfoBox/InfoBox';
 import styles from './Property.scss';
 import { connectProperty } from './connectProperty';
 
-class VectorProperty extends PropertyBase {
+class VectorProperty extends Component {
   componentDidMount() {
     this.props.dispatcher.subscribe();
   }
 
   componentWillUnmount() {
     this.props.dispatcher.unsubscribe();
+  }
+
+  get descriptionPopup() {
+    const { description } = this.props.description;
+    return description ? <InfoBox text={description} /> : '';
+  }
+
+  get disabled() {
+    return this.props.description.MetaData.isReadOnly;
   }
 
   onChange(index) {

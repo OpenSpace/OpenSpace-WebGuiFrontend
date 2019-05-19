@@ -1,9 +1,9 @@
-import React from 'react';
-import PropertyBase from './PropertyBase';
+import React, { Component } from 'react';
 import Checkbox from '../../common/Input/Checkbox/Checkbox';
 import { connectProperty } from './connectProperty';
+import InfoBox from '../../common/InfoBox/InfoBox';
 
-class BoolProperty extends PropertyBase {
+class BoolProperty extends Component {
   constructor(props) {
     super(props);
     this.onChange = this.onChange.bind(this);
@@ -19,6 +19,15 @@ class BoolProperty extends PropertyBase {
 
   componentWillUnmount() {
     this.props.dispatcher.unsubscribe();
+  }
+
+  get descriptionPopup() {
+    const { description } = this.props.description;
+    return description ? <InfoBox text={description} /> : '';
+  }
+
+  get disabled() {
+    return this.props.description.MetaData.isReadOnly;
   }
 
   render() {

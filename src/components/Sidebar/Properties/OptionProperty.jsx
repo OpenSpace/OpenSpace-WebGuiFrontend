@@ -1,9 +1,9 @@
-import React from 'react';
-import PropertyBase from './PropertyBase';
+import React, { Component } from 'react';
 import Select from '../../common/Input/Select/Select';
+import InfoBox from '../../common/InfoBox/InfoBox';
 import { connectProperty } from './connectProperty';
 
-class OptionProperty extends PropertyBase {
+class OptionProperty extends Component {
   constructor(props) {
     super(props);
     this.onChange = this.onChange.bind(this);
@@ -19,6 +19,15 @@ class OptionProperty extends PropertyBase {
 
   componentWillUnmount() {
     this.props.dispatcher.unsubscribe();
+  }
+
+  get descriptionPopup() {
+    const { description } = this.props.description;
+    return description ? <InfoBox text={description} /> : '';
+  }
+
+  get disabled() {
+    return this.props.description.MetaData.isReadOnly;
   }
 
   render() {

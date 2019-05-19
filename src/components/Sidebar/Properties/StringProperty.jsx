@@ -3,23 +3,18 @@ import PropTypes from 'prop-types';
 import Input from '../../common/Input/Input/Input';
 import InfoBox from '../../common/InfoBox/InfoBox';
 
-class PropertyBase extends Component {
+class StringProperty extends Component {
   constructor(props) {
     super(props);
+    this.onChange = this.onChange.bind(this);
   }
 
-  get uri() {
-    const { Identifier } = this.props.description;
-    return Identifier;
+  componentDidMount() {
+    this.props.dispatcher.subscribe();
   }
 
-  get inputType() {
-    const { description } = this.props;
-    switch (description.Type) {
-      case 'StringProperty':
-      default:
-        return Input;
-    }
+  componentWillUnmount() {
+    this.props.dispatcher.unsubscribe();
   }
 
   get descriptionPopup() {
@@ -31,25 +26,29 @@ class PropertyBase extends Component {
     return this.props.description.MetaData.isReadOnly;
   }
 
+  onChange(evt) {
+    const value = evt.target.value;
+    this.props.dispatcher.set(value);
+  }
+
   render() {
     const { description, value } = this.props;
-    const PropInput = this.inputType;
     const placeholder = (<span>
       { description.Name } { this.descriptionPopup }
     </span>);
     return (
-      <PropInput
+      <Input
         value={value}
         label={placeholder}
         placeholder={description.Name}
-        onChange={this.onChange}
+        onEnter={this.onChange}
         disabled={this.disabled}
       />
     );
   }
 }
 
-PropertyBase.propTypes = {
+StringProperty.propTypes = {
   description: PropTypes.shape({
     Identifier: PropTypes.string,
     Name: PropTypes.string,
@@ -61,4 +60,4 @@ PropertyBase.propTypes = {
   value: PropTypes.any
 };
 
-export default PropertyBase;
+export default StringProperty;
