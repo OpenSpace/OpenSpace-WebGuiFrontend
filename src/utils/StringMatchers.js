@@ -9,9 +9,13 @@
 export const SimpleSubstring = (test: string, search: string): bool =>
   test.includes(search);
 
-export const WordBeginningSubstring = (test: string, search: string): bool =>
-  test.split(" ").some(word => word.indexOf(search) === 0);
-
+export const WordBeginningSubstring = (test: string, search: string): bool => {
+  const searchWords = search.split(" ");
+  const testWords = test.split(" ");
+  return searchWords.every(searchWord =>
+    testWords.some(testWord => testWord.indexOf(searchWord) === 0)
+  );
+};
 
 /**
  * Check if object has any values which has search as substring
