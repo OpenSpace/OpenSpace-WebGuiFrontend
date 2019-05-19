@@ -150,18 +150,20 @@ class OriginPicker extends Component {
     if (this.props.anchor !== undefined &&
         !defaultList.find(node => node.identifier === this.props.anchor))
     {
-      defaultList.push(
-        nodes.find(node => node.identifier === this.props.anchor)
-      );
+      const anchorNode = nodes.find(node => node.identifier === this.props.anchor);
+      if (anchorNode) {
+        defaultList.push(anchorNode);
+      }
     }
 
     // Make sure current aim is in the defualt list
     if (this.hasDistinctAim() &&
         !defaultList.find(node => node.identifier === this.props.aim))
     {
-      defaultList.push(
-        nodes.find(node => node.identifier === this.props.aim)
-      );
+      const aimNode = nodes.find(node => node.identifier === this.props.aim);
+      if (aimNode) {
+        defaultList.push(aimNode);
+      }
     }
 
     const searchPlaceholder = {
