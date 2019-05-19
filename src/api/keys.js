@@ -61,3 +61,8 @@ export const RenderableTypes = {
 	// RenderableTimeVaryingVolume: "RenderableTimeVaryingVolume",
 	// RenderablePlaneImageLocal: "RenderablePlaneImageLocal",
 }
+
+//being explicit to avoid future errors
+export const LayerGroupKeys = ["Layers.ColorLayers", "Layers.HeightLayers",
+                        "Layers.Overlays", "Layers.NightLayers",
+                        "Layers.WaterMasks"];

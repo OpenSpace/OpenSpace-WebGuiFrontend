@@ -6,7 +6,7 @@ import Button from '../../common/Input/Button/Button';
 import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
 import SvgIcon from '../../common/SvgIcon/SvgIcon';
 import FocusIcon from 'svg-react-loader?name=Focus!../../../icons/focus.svg';
-
+import { LayerGroupKeys } from '../../../api/keys';
 import { displayName } from './PropertyOwner';
 import Property from './Property';
 
@@ -87,19 +87,25 @@ const mapStateToProps = (state, ownProps) => {
   } else if (state.propertyTree.properties[uri + '.Renderable.Enabled']) {
     quickToggleUri = uri + '.Renderable.Enabled';
   }
-
-  let isColorLayer = quickToggleUri && (quickToggleUri.lastIndexOf('ColorLayers') > 0);
+  //check for layers so we can make the titles green
+  var isLayer = false;
+  LayerGroupKeys.forEach( (layerGroup) => {
+    if ( (uri.indexOf(layerGroup) > -1) && !(uri.endsWith(layerGroup)) ) {
+      isLayer = true;
+    }
+  });
   let isHeightLayer = quickToggleUri && (quickToggleUri.lastIndexOf('HeightLayers') > 0);
   var titleClass = "";
   var enabled = quickToggleUri && state.propertyTree.properties[quickToggleUri].value;
-  if (isColorLayer || isHeightLayer) {
+  if (isLayer) {
       if (enabled) {
         titleClass = styles.greenTitle;
       } else if (isHeightLayer) {
+        //make height layers visually distinguishable from other layers
+        //specificlly color layers where they might have the same name
         titleClass = styles.grayTitle;
       }
   }
-
 
   return {
     title: title || displayName(state, uri),

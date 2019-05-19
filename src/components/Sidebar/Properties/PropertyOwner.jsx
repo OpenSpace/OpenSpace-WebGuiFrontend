@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import ToggleContent from '../../common/ToggleContent/ToggleContent';
 import Property from './Property';
 import Button from '../../common/Input/Button/Button';
-import { NavigationAnchorKey, NavigationAimKey, RetargetAnchorKey } from '../../../api/keys';
+import { NavigationAnchorKey, NavigationAimKey, RetargetAnchorKey, LayerGroupKeys } from '../../../api/keys';
 import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
 import SvgIcon from '../../common/SvgIcon/SvgIcon';
 import FocusIcon from 'svg-react-loader?name=Focus!../../../icons/focus.svg';
@@ -135,10 +135,6 @@ const isDeadEnd = (propertyOwners, properties, uri) => {
   return nonDeadEndSubowners.length === 0;
 }
 
-const isGlobeBrowsingLayer = (state, uri) => {
-  return false;
-}
-
 const shouldSortAlphabetically = uri => {
   const splitUri = uri.split('.');
   // The only case when property owners should not be sorted
@@ -151,7 +147,27 @@ const shouldSortAlphabetically = uri => {
 }
 
 const displayName = (propertyOwners, properties, uri) => {
-  const property = properties[uri + ".GuiName"];
+
+  const isGlobeBrowsingLayer = (uri) => {
+    if (uri == undefined) {
+      return false;
+    }
+
+    var found = false;
+    LayerGroupKeys.forEach( (layerGroup) => {
+      if ( (uri.indexOf(layerGroup) > -1) && !(uri.endsWith(layerGroup)) ) {
+        found = true;
+      }
+    });
+
+    return found;
+  }
+
+  var property = properties[uri + ".GuiName"];
+  if (!property && isGlobeBrowsingLayer(uri) && propertyOwners[uri] && propertyOwners[uri].name) {
+    property = {value: propertyOwners[uri].name};
+  }
+
   return property ?
     property.value :
     propertyOwners[uri].identifier;
@@ -186,7 +202,7 @@ const mapSubStateToProps = (
   }
 
   let renderableTypeProp = properties[uri + ".Renderable.Type"];
-  
+
   return {
     name,
     subowners,
