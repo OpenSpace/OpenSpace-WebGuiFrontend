@@ -118,7 +118,8 @@ class SessionRec extends Component {
             <div className={Popover.styles.row}>
               <Button onClick={this.toggleRecording}
                       title="Start Recording"
-                      style={{width: 90}}>
+                      style={{width: 90}}
+                      disabled={!this.state.filenameRecording}>
                 <MaterialIcon icon="fiber_manual_record" />
                 <span style={{marginLeft: 5}}>Record</span>
               </Button>
@@ -146,7 +147,8 @@ class SessionRec extends Component {
             <div className={Popover.styles.row}>
               <Button onClick={this.togglePlayback} title="Start Playback"
                       block small transparent={false}
-                      style={{width: 90}} >
+                      style={{width: 90}}
+                      disabled={!this.state.filenamePlayback}>
                 <MaterialIcon icon="play_arrow" />
                 <span style={{marginLeft: 5}}>Play</span>
               </Button>
