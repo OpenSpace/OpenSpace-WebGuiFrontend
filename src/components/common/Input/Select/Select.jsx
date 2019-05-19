@@ -17,7 +17,7 @@ const Select = (props) => {
         id={id}
         className={`${styles.select} ${styles[direction]}`}
       />
-      { props.value && <label htmlFor={id} className={styles.selectlabel}>{ label }</label> }
+      { props.value !== undefined && <label htmlFor={id} className={styles.selectlabel}>{ label }</label> }
     </div>
   );
 };

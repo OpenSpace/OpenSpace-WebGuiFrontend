@@ -34,7 +34,7 @@ class SessionRec extends Component {
       useTextFormat: false,
       forceTime: true,
       filenameRecording: '',
-      filenamePlayback: ''
+      filenamePlayback: undefined
     };
 
     this.togglePopover = this.togglePopover.bind(this);
