@@ -37,7 +37,8 @@ class Shortcut extends Component {
   }
 
   render() {
-    const { index, documentation, name, script, execute } = this.props.data;
+    const { index, documentation, name, script } = this.props.data;
+    const execute = this.props.execute;
 
     return (
       <div key={name} className={styles.shortcutContainer}>
@@ -56,8 +57,6 @@ const mapStateToSubState = (state) => ({
 
 const mapSubStateToProps = ({ shortcuts }, { index }) => {
   const shortcut = shortcuts[index];
-  console.log(shortcut);
-
   return {
     data: shortcut
   }
