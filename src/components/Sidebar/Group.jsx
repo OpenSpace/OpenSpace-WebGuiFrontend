@@ -7,6 +7,7 @@ import PropertyOwner,
 import Shortcut from './Shortcut';
 
 import { setPropertyTreeExpansion } from '../../api/Actions';
+import { sortGroups } from '../../api/keys';
 
 import { connect } from 'react-redux';
 
@@ -34,11 +35,23 @@ const nodeExpansionIdentifier = path => {
   }
 }
 
-let Group = ({ path, expansionIdentifier, entries, isExpanded, setExpanded}) => {
+let Group = ({ path, expansionIdentifier, entries, isExpanded, setExpanded, sortOrdering}) => {
 
-  let sortedEntries = entries.sort((a, b) => 
+  var sortedEntries = entries.sort((a, b) =>
     a.name.localeCompare(b.name, 'en')
   );
+
+  var sortedArray = [];
+  if (sortOrdering && sortOrdering.value) {
+      console.log("was", sortedArray, sortedEntries);
+      sortedArray = sortedEntries.sort((a,b) => {
+        if (sortOrdering.value.indexOf(a.name) < sortOrdering.value.indexOf(b.name)) {
+          return -1;
+        } else {
+          return 1;
+        }
+      });
+  }
 
   return <ToggleContent
     title={displayName(path)}
@@ -79,6 +92,7 @@ let Group = ({ path, expansionIdentifier, entries, isExpanded, setExpanded}) => 
   </ToggleContent>
 }
 
+
 const mapSubStateToProps = (
   { groups, propertyOwners, properties, propertyTreeExpansion, shortcuts },
   { path, expansionIdentifier, autoExpand }
@@ -107,9 +121,14 @@ const mapSubStateToProps = (
     name: shortcuts[i].name || ''
   })));
 
+  const pathFragments = path.split('/');
+  const groupName = pathFragments[pathFragments.length - 1];
+  const sortOrdering = sortGroups[groupName];
+
   return {
     entries,
-    isExpanded
+    isExpanded,
+    sortOrdering
   };
 }
 

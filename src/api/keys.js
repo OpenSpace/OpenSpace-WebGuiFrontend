@@ -66,3 +66,15 @@ export const RenderableTypes = {
 export const LayerGroupKeys = ["Layers.ColorLayers", "Layers.HeightLayers",
                         "Layers.Overlays", "Layers.NightLayers",
                         "Layers.WaterMasks"];
+
+//Temp hack until we build gui path sorting into the assets or peoperties
+export const sortGroups = {
+	['Planets']: {
+    value: ["Mercury", "Venus",
+            "Earth", "Mars", "Jupiter",
+            "Saturn", "Uranus", "Neptune"]
+  },
+  ['Solar System']: {
+    value: ["Planets", "Dwarf Planets", "Sun", "Solar System Barycenter"]
+  },
+}
