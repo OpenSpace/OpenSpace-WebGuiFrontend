@@ -11,7 +11,7 @@ import Overlay from '../components/common/Overlay/Overlay';
 import About from './About/About';
 import Stack from '../components/common/Stack/Stack';
 import NodePopOverContainer from '../components/NodePropertiesPanel/NodePopOverContainer';
-import { startConnection } from '../api/Actions';
+import { startConnection, setShowAbout } from '../api/Actions';
 import { isCompatible,
          formatVersion,
          RequiredSocketApiVersion,
@@ -24,7 +24,7 @@ class OnScreenGui extends Component {
   }
 
   componentDidMount() {
-    this.props.StartConnection();
+    this.props.startConnection();
   }
 
   checkVersion() {
@@ -62,21 +62,16 @@ class OnScreenGui extends Component {
     this.checkVersion();
     return (
       <div className={styles.app}>
-        <Router>
-          <Route
-            path="/about"
-            render={() => (
-              <Overlay>
-                <Stack style={{ maxWidth: '500px' }}>
-                  <Link style={{ alignSelf: 'flex-end', color: 'white' }} to="/">
-                    Close
-                  </Link>
-                  <About />
-                </Stack>
-              </Overlay>
-            )}
-          />
-        </Router>
+        { this.props.showAbout && (
+          <Overlay>
+            <Stack style={{ maxWidth: '500px' }}>
+              <Button style={{ alignSelf: 'flex-end', color: 'white' }} onClick={this.props.hideAbout}>
+                Close
+              </Button>
+              <About />
+            </Stack>
+          </Overlay>
+        )}
         { this.props.connectionLost && (
           <Overlay>
             <Error>
@@ -101,13 +96,17 @@ class OnScreenGui extends Component {
 
 const mapStateToProps = state => ({
   connectionLost: state.connection.connectionLost,
-  version: state.version
+  version: state.version,
+  showAbout: state.local.showAbout
 });
 
 const mapDispatchToProps = dispatch => ({
-  StartConnection: () => {
+  startConnection: () => {
     dispatch(startConnection());
   },
+  hideAbout: () => {
+    dispatch(setShowAbout(false))
+  }
 });
 
 OnScreenGui = withRouter(connect(

@@ -134,6 +134,11 @@ export const setPopoverVisibility = data => ({
   payload: data
 })
 
+export const setShowAbout = show => ({
+  type: actionTypes.setShowAbout,
+  payload: show
+})
+
 export const setPopoverAttachment = data => ({
   type: actionTypes.setPopoverPosition,
   payload: data

@@ -6,6 +6,7 @@ import styles from './SystemMenu.scss';
 import Popover from '../common/Popover/Popover';
 import subStateToProps from '../../utils/subStateToProps';
 import { connect } from 'react-redux';
+import { setShowAbout } from '../../api/Actions'
 
 class SystemMenu extends Component {
   constructor(props) {
@@ -24,6 +25,13 @@ class SystemMenu extends Component {
         { this.state.showMenu && (
           <Popover className={styles.popover} arrow="arrow bottom leftside" attached={true}>
             <nav className={styles.links} onClick={this.toggleMenu}>
+
+              <button onClick={this.props.showAbout}>
+                About OpenSpace
+              </button>
+
+              <hr className={Popover.styles.delimiter} />
+
               <button onClick={this.props.console}>
                 Toggle console <span className={styles.shortcut}>~</span>
               </button>
@@ -37,7 +45,6 @@ class SystemMenu extends Component {
                 <MaterialIcon icon="exit_to_app" className={styles.linkIcon} />
                 Quit OpenSpace <span className={styles.shortcut}>ESC</span>
               </button>
-
             </nav>
           </Popover>
         )}
@@ -73,18 +80,15 @@ const mapSubStateToProps = ({ luaApi }) => {
   };
 };
 
+const mapDispatchToProps = dispatch => {
+  return {
+    showAbout: () => dispatch(setShowAbout(true))
+  }
+}
 
 SystemMenu = connect(
-  subStateToProps(mapSubStateToProps, mapStateToSubState)
+  subStateToProps(mapSubStateToProps, mapStateToSubState),
+  mapDispatchToProps,
 )(SystemMenu);
-
-/*
-TODO: Add link to About. Currently not working inside Cef Gui.
-<hr className={Popover.styles.delimiter} />
-<Link to="about">
-  <Icon icon="info" className={styles.linkIcon} />
-  About
-</Link>
-*/
 
 export default SystemMenu;

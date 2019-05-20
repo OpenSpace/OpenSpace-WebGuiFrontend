@@ -1,4 +1,5 @@
 $animation-duration: 100ms;
+$slow-animation-duration: 500ms;
 $loading-animation-duration: 2s;
 $animation-easing: cubic-bezier(0.4, 0.0, 0.2, 1);
 $loading-easing: linear;
@@ -6,8 +7,9 @@ $loading-easing: linear;
 $background-transition: background $animation-duration $animation-easing;
 $loading-animation: loading-pulse $loading-animation-duration $loading-easing infinite;
 $fade-in-animation: fade-in $animation-duration $animation-easing;
+$slow-fade-in-animation: fade-in $slow-animation-duration $animation-easing;
 $appear-animation: appear $animation-duration $animation-easing;
-$slide-up-animation: slide-up 1000ms $animation-easing;
+$slide-up-animation: slide-up 500ms $animation-easing;
 
 @keyframes loading-pulse {
   0% {
@@ -41,7 +43,7 @@ $slide-up-animation: slide-up 1000ms $animation-easing;
 @keyframes slide-up {
   0% {
     opacity: 0;
-    transform: translateY(20%);
+    transform: translateY(5%);
   }
   100% {
     opacity: 1;

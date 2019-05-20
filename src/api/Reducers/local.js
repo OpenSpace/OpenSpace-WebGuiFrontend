@@ -132,10 +132,20 @@ const propertyTreeExpansion = (state = defaultPropertyTreeExpansion, action) => 
   }
 }
 
+const showAbout = (state = false, action) => {
+  switch (action.type) {
+    case actionTypes.setShowAbout:
+      return action.payload;
+    default:
+      return state;
+  }
+}
+
 
 export const local = combineReducers({
   originPicker,
   timePicker,
   popovers,
-  propertyTreeExpansion
+  propertyTreeExpansion,
+  showAbout
 });
