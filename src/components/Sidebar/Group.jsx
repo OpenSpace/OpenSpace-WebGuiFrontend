@@ -41,10 +41,8 @@ let Group = ({ path, expansionIdentifier, entries, isExpanded, setExpanded, sort
     a.name.localeCompare(b.name, 'en')
   );
 
-  var sortedArray = [];
   if (sortOrdering && sortOrdering.value) {
-      console.log("was", sortedArray, sortedEntries);
-      sortedArray = sortedEntries.sort((a,b) => {
+      sortedEntries.sort((a,b) => {
         if (sortOrdering.value.indexOf(a.name) < sortOrdering.value.indexOf(b.name)) {
           return -1;
         } else {
