@@ -36,7 +36,7 @@ class SystemMenu extends Component {
                 Toggle console <span className={styles.shortcut}>~</span>
               </button>
               <button onClick={this.props.nativeGui}>
-                Toggle native GUI <span className={styles.shortcut}>F3</span>
+                Toggle native GUI <span className={styles.shortcut}>F1</span>
               </button>
 
               <hr className={Popover.styles.delimiter} />
