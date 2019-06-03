@@ -6,7 +6,6 @@ import LoadingString from '../../common/LoadingString/LoadingString';
 import Picker from '../Picker';
 import Popover from '../../common/Popover/Popover';
 import Button from '../../common/Input/Button/Button';
-import Checkbox from '../../common/Input/Checkbox/Checkbox';
 import FilterList from '../../common/FilterList/FilterList';
 import {
   NavigationAnchorKey,
@@ -17,7 +16,11 @@ import {
 } from '../../../api/keys';
 import FocusEntry from './FocusEntry';
 
-import { setNavigationAction, setPopoverVisibility } from '../../../api/Actions';
+import {
+  setNavigationAction, 
+  setOriginPickerShowFavorites,
+  setPopoverVisibility
+} from '../../../api/Actions';
 
 import styles from './OriginPicker.scss';
 
@@ -139,6 +142,8 @@ class OriginPicker extends Component {
     const {
       nodes,
       favorites,
+      showFavorites,
+      setShowFavorites,
       setNavigationAction,
       navigationAction,
       popoverVisible
@@ -206,6 +211,8 @@ class OriginPicker extends Component {
             <FilterList
               data={nodes}
               favorites={defaultList}
+              showFavorites={showFavorites}
+              setShowFavorites={setShowFavorites}
               className={styles.list}
               searchText={searchPlaceholder}
               viewComponent={FocusEntry}
@@ -239,6 +246,7 @@ const mapSubStateToProps = ({properties, propertyOwners, originPicker, originPic
   }));
 
   const navigationAction = originPicker.action;
+  const showFavorites = originPicker.showFavorites;
   const anchorProp = properties[NavigationAnchorKey];
   const aimProp = properties[NavigationAimKey];
 
@@ -260,6 +268,7 @@ const mapSubStateToProps = ({properties, propertyOwners, originPicker, originPic
     anchorName,
     aimName,
     favorites,
+    showFavorites,
     navigationAction,
     popoverVisible,
   };
@@ -274,8 +283,11 @@ const mapStateToSubState = (state) => ({
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setNavigationAction: (action) => {
+    setNavigationAction: action => {
       dispatch(setNavigationAction(action))
+    },
+    setShowFavorites: action => {
+      dispatch(setOriginPickerShowFavorites(action))
     },
     anchorDispatcher: propertyDispatcher(dispatch, NavigationAnchorKey),
     aimDispatcher: propertyDispatcher(dispatch, NavigationAimKey),

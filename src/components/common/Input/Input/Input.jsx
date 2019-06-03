@@ -76,12 +76,12 @@ class Input extends Component {
    * @returns {*}
    */
   get inheritProps() {
-    const doNotInclude = 'onEnter wide onChange loading value clearable';
+    const doNotInclude = 'children onEnter wide onChange loading value clearable';
     return excludeKeys(this.props, doNotInclude);
   }
 
   render() {
-    const { placeholder, className, wide, loading, clearable, label } = this.props;
+    const { placeholder, className, wide, loading, clearable, label, children } = this.props;
     const { value, id } = this.state;
     return (
       <div className={`${styles.group} ${wide ? styles.wide : ''}`}>
@@ -100,6 +100,7 @@ class Input extends Component {
         <label htmlFor={id} className={`${styles.label} ${this.hasInput && styles.hasinput}`}>
           { label || placeholder }
         </label>
+        { children }
         { clearable && (
           <MaterialIcon
             icon="cancel"

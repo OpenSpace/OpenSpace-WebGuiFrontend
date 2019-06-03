@@ -122,17 +122,22 @@ export const initializeShortcuts = data => ({
 export const executeShortcut = index => ({
   type: actionTypes.executeShortcut,
   payload: index
-})
+});
 
 export const setNavigationAction = data => ({
   type: actionTypes.setNavigationAction,
   payload: data
-})
+});
+
+export const setOriginPickerShowFavorites = showFavorites => ({
+  type: actionTypes.setOriginPickerShowFavorites,
+  payload: showFavorites
+});
 
 export const setPopoverVisibility = data => ({
   type: actionTypes.setPopoverVisibility,
   payload: data
-})
+});
 
 export const setShowAbout = show => ({
   type: actionTypes.setShowAbout,
