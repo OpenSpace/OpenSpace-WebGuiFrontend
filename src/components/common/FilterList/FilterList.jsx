@@ -22,10 +22,10 @@ class FilterList extends Component {
   }
 
   get filtered() {
-    const { favorites, data, matcher, filterSubObjects} = this.props;
+    const { favorites, showFavorites, data, matcher, filterSubObjects} = this.props;
 
     let { search } = this.state;
-    if (search === '') {
+    if (search === '' && showFavorites) {
       return favorites || data;
     }
 
@@ -46,6 +46,28 @@ class FilterList extends Component {
     const { search } = this.state;
     const entries = this.filtered;
 
+    let inputChildren = null;
+
+    if (this.props.setShowFavorites && this.state.search === '') {
+      if (this.props.showFavorites) {
+        inputChildren =
+          <div
+            className={styles.favoritesButton}
+            onClick={() => this.props.setShowFavorites(false)}
+          >
+            More
+          </div>
+      } else {
+        inputChildren =
+          <div
+            className={styles.favoritesButton}
+            onClick={() => this.props.setShowFavorites(true)}
+          >
+            Less
+          </div>
+      }
+    }
+
     return (
       <section className={`${this.props.className} ${styles.filterList}`}>
         <Input
@@ -54,7 +76,9 @@ class FilterList extends Component {
           onChange={this.changeSearch}
           clearable
           autoFocus={this.props.searchAutoFocus}
-        />
+        >
+          {inputChildren}
+        </Input>
 
         <ScrollOverlay>
           { entries.length === 0 && (
@@ -98,6 +122,16 @@ FilterList.propTypes = {
    */
   favorites: PropTypes.array,
   /**
+   * Show favorites
+   */
+  showFavorites: PropTypes.bool,
+  /**
+   * Optional: set show favorites.
+   * Takes one bool specifying if only the favorites should
+   * be shown when the search field is empty.
+   */
+  setShowFavorites: PropTypes.func,
+  /**
    * the function used to filter the list
    */
   matcher: PropTypes.func,
@@ -128,6 +162,7 @@ FilterList.defaultProps = {
   active: null,
   className: '',
   onSelect: () => {},
+  showFavorites: true,
   searchText: 'Search...',
   searchAutoFocus: false,
   viewComponent: props => (<li>{ JSON.stringify(props) }</li>),

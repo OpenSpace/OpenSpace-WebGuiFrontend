@@ -5,7 +5,8 @@ import { combineReducers } from 'redux';
  * Origin Picker
  */
 const defaultOriginPicker = {
-  action: 'Focus'
+  action: 'Focus',
+  showFavorites: true
 };
 const originPicker = (state = defaultOriginPicker, action) => {
   switch (action.type) {
@@ -14,6 +15,11 @@ const originPicker = (state = defaultOriginPicker, action) => {
         ...state,
         action: action.payload
       };
+    case actionTypes.setOriginPickerShowFavorites:
+      return {
+        ...state,
+        showFavorites: action.payload
+      }
     default:
       return state;
   }

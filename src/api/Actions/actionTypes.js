@@ -42,6 +42,7 @@ export const actionTypes = {
 
   // action types for local gui settings
   setNavigationAction: 'LOCAL_SET_NAVIGATION_ACTION',
+  setOriginPickerShowFavorites: 'LOCAL_SET_ORIGIN_PICKER_SHOW_FAVORITES',
   setPropertyTreeExpansion: 'LOCAL_SET_PROPERTY_TREE_EXPANSION',
   setPopoverPosition: 'LOCAL_POPOVER_SET_POSIITON',
   setPopoverVisibility: 'LOCAL_POPOVER_SET_VISIBILITY',
