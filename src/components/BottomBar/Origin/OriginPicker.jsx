@@ -171,6 +171,9 @@ class OriginPicker extends Component {
       }
     }
 
+    const sortedDefaultList = defaultList.slice(0).sort((a, b) => a.name.localeCompare(b.name));
+    const sortedNodes = nodes.slice(0).sort((a, b) => a.name.localeCompare(b.name));
+
     const searchPlaceholder = {
       Focus: "Search for a new focus...",
       Anchor: "Search for a new anchor...",
@@ -209,8 +212,8 @@ class OriginPicker extends Component {
               </Button>
             </div>
             <FilterList
-              data={nodes}
-              favorites={defaultList}
+              data={sortedNodes}
+              favorites={sortedDefaultList}
               showFavorites={showFavorites}
               setShowFavorites={setShowFavorites}
               className={styles.list}
