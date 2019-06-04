@@ -79,7 +79,7 @@ class TimePicker extends Component {
     let unit = "second";
 
     if (increment === 1) {
-      return "Realtime" + (this.state.isPaused ? " (Paused)" : "");
+      return "Realtime" + (this.props.isPaused ? " (Paused)" : "");
     }
 
     (() => {
