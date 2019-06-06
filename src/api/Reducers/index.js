@@ -5,6 +5,7 @@ import { fetchData} from './fetchData';
 import { storyTree } from './storyTree';
 import { shortcuts } from './shortcuts';
 import { version } from './version';
+import { local } from './local';
 
 // Add more reducers here
 const openspaceApp = combineReducers({
@@ -14,6 +15,7 @@ const openspaceApp = combineReducers({
   storyTree,
   shortcuts,
   version,
+  local
 });
 
 export default openspaceApp;

@@ -18,9 +18,9 @@ import TouchBar from '../components/TouchBar/TouchBar';
 import styles from './OnTouchGui.scss';
 import { traverseTreeWithURI } from '../utils/propertyTreeHelpers';
 import {
-  infoIconKey, ValuePlaceholder, OriginKey, StoryIdentifierKey,
+  infoIconKey, ValuePlaceholder, StoryIdentifierKey,
   ApplyRemoveTagKey, ApplyAddTagKey, FocusNodesListKey, defaultStory,
-  OverlimitKey, ScaleKey, ZoomInLimitKey,
+  OverlimitKey, ScaleKey, ZoomInLimitKey, NavigationAnchorKey
 } from '../api/keys';
 import Slider from '../components/ImageSlider/Slider';
 import { UpdateDeltaTimeNow } from '../utils/timeHelpers';
@@ -129,7 +129,7 @@ class OnTouchGui extends Component {
     this.setState({ currentStory: selectedStory });
 
     const {
-      storyIdentifierNode, applyRemoveTag, focusNodesList, applyAddTag, focusNode, overViewNode,
+      storyIdentifierNode, applyRemoveTag, focusNodesList, applyAddTag, anchorNode, overViewNode,
     } = this.props;
 
     // Check if the selected story is different from the OpenSpace property value
@@ -154,7 +154,7 @@ class OnTouchGui extends Component {
       this.props.ChangePropertyValue(focusNodesList.Description, json.focusbuttons);
       applyStoryInterestingTagsToFocusNodes();
       this.props.ChangePropertyValue(applyAddTag.Description, '');
-      this.props.ChangePropertyValue(focusNode.Description, json.start.planet);
+      this.props.ChangePropertyValue(anchorNode.Description, json.start.planet);
       this.props.ChangePropertyValue(overViewNode.Description, json.overviewlimit);
       setStoryStart(json.start.location, json.start.time);
 
@@ -288,7 +288,7 @@ const mapStateToProps = (state) => {
   let applyRemoveTag = [];
   let applyAddTag = [];
   let focusNodesList = [];
-  let focusNode;
+  let anchorNode;
   let overViewNode;
   let zoomInNode;
   const scaleNodes = [];
@@ -299,7 +299,7 @@ const mapStateToProps = (state) => {
     applyRemoveTag = traverseTreeWithURI(state.propertyTree, ApplyRemoveTagKey);
     applyAddTag = traverseTreeWithURI(state.propertyTree, ApplyAddTagKey);
     focusNodesList = traverseTreeWithURI(state.propertyTree, FocusNodesListKey);
-    focusNode = traverseTreeWithURI(state.propertyTree, OriginKey);
+    anchorNode = traverseTreeWithURI(state.propertyTree, NavigationAnchorKey);
     overViewNode = traverseTreeWithURI(state.propertyTree, OverlimitKey);
     zoomInNode = traverseTreeWithURI(state.propertyTree, ZoomInLimitKey);
 
@@ -322,7 +322,7 @@ const mapStateToProps = (state) => {
     connectionLost: state.connection.connectionLost,
     story,
     reset: state.storyTree.reset,
-    focusNode,
+    anchorNode,
     overViewNode,
     zoomInNode,
     scaleNodes,
@@ -373,7 +373,7 @@ OnTouchGui.propTypes = {
   applyRemoveTag: PropTypes.objectOf(PropTypes.shape({})),
   applyAddTag: PropTypes.objectOf(PropTypes.shape({})),
   focusNodesList: PropTypes.objectOf(PropTypes.shape({})),
-  focusNode: PropTypes.objectOf(PropTypes.shape({})),
+  anchorNode: PropTypes.objectOf(PropTypes.shape({})),
   overViewNode: PropTypes.objectOf(PropTypes.shape({})),
   zoomInNode: PropTypes.objectOf(PropTypes.shape({})),
   scaleNodes: PropTypes.objectOf(PropTypes.shape({})),
@@ -394,7 +394,7 @@ OnTouchGui.defaultProps = {
   applyRemoveTag: {},
   applyAddTag: {},
   focusNodesList: {},
-  focusNode: {},
+  anchorNode: {},
   overViewNode: {},
   zoomInNode: {},
   scaleNodes: {},

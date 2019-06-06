@@ -8,7 +8,7 @@ import Picker from '../Picker';
 import Popover from '../../common/Popover/Popover';
 import FilterList from '../../common/FilterList/FilterList';
 import DataManager from '../../../api/DataManager';
-import { OriginKey } from '../../../api/keys';
+import { NavigationAnchorKey, NavigationAimKey, RetargetAnchorKey, RetargetAimKey } from '../../../api/keys';
 import FocusEntry from './FocusEntry';
 
 import Earth from './images/earth.png';
@@ -37,11 +37,13 @@ class OriginPicker extends Component {
   }
 
   componentDidMount() {
-    DataManager.subscribe(OriginKey, this.updateOrigin);
+    DataManager.subscribe(NavigationAnchorKey, this.updateAnchor);
+    DataManager.subscribe(NavigationAimKey, this.updateAim);
   }
 
   componentWillUnmount() {
-    DataManager.unsubscribe(OriginKey, this.updateOrigin);
+    DataManager.unsubscribe(NavigationAnchorKey, this.updateAnchor);
+    DataManager.unsubscribe(NavigationAimKey, this.updateAim);
   }
 
   get icon() {

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { OriginKey, SetGoToGeoScript, ValuePlaceholder, ScaleKey } from '../../../../api/keys';
+import { NavigationAnchorKey, SetGoToGeoScript, ValuePlaceholder, ScaleKey } from '../../../../api/keys';
 import { traverseTreeWithURI } from '../../../../utils/propertyTreeHelpers';
 import { changePropertyValue, startListening, stopListening } from '../../../../api/Actions';
 import DateController from './../presentational/DateController';
@@ -134,7 +134,7 @@ const mapStateToProps = (state) => {
       nodes = [...nodes, ...node.subowners];
     });
 
-    originNode = traverseTreeWithURI(state.propertyTree, OriginKey);
+    originNode = traverseTreeWithURI(state.propertyTree, NavigationAnchorKey);
 
     if (story.scaleplanets) {
       story.scaleplanets.planets.forEach((node) => {

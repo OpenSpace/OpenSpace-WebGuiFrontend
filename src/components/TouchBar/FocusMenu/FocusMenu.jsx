@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import FocusButton from './FocusButton';
-import { OriginKey, ApplyOverviewKey, FocusNodesListKey, ApplyFlyToKey } from '../../../api/keys';
+import { NavigationAnchorKey, ApplyOverviewKey, FocusNodesListKey, ApplyFlyToKey } from '../../../api/keys';
 import { changePropertyValue, startListening, stopListening } from '../../../api/Actions';
 import { traverseTreeWithURI } from '../../../utils/propertyTreeHelpers';
 import styles from './FocusMenu.scss';
@@ -28,7 +28,7 @@ class FocusMenu extends Component {
   componentDidUpdate() {
     if (this.props.originNode.length !== 0) {
       if (this.props.originNode.listeners <= 0) {
-        this.props.StartListening(OriginKey);
+        this.props.StartListening(NavigationAnchorKey);
         this.setState({ origin: this.props.originNode.Value });
       }
       if (this.state.origin !== this.props.originNode.Value) {
@@ -38,7 +38,7 @@ class FocusMenu extends Component {
   }
 
   componentWillUnmount() {
-    this.props.StopListening(OriginKey);
+    this.props.StopListening(NavigationAnchorKey);
   }
 
   onChangeOrigin(origin) {
@@ -99,7 +99,7 @@ const mapStateToProps = (state) => {
         (fromStringToArray(focusNodesString.Value).includes(node.identifier)));
     }
 
-    originNode = traverseTreeWithURI(state.propertyTree, OriginKey);
+    originNode = traverseTreeWithURI(state.propertyTree, NavigationAnchorKey);
     applyOverview = traverseTreeWithURI(state.propertyTree, ApplyOverviewKey);
     applyFlyTo = traverseTreeWithURI(state.propertyTree, ApplyFlyToKey);
   }

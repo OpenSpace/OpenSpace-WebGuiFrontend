@@ -5,7 +5,7 @@ import MarkerInfo from './MarkerInfo';
 import { traverseTreeWithURI, jsonToLuaTable } from '../../../utils/propertyTreeHelpers';
 import { startListening, stopListening } from '../../../api/Actions/index';
 import { fromStringToArray } from '../../../utils/storyHelpers';
-import { OriginKey, FocusNodesListKey } from '../../../api/keys';
+import { NavigationAnchorKey, FocusNodesListKey } from '../../../api/keys';
 
 class Markers extends Component {
   constructor(props) {
@@ -173,7 +173,7 @@ const mapStateToProps = (state) => {
         screenSpaceRadius.push(traverseTreeWithURI(state.propertyTree, `Scene.${node.identifier}.ScreenSizeRadius`));
       });
 
-      focusNodeName = traverseTreeWithURI(state.propertyTree, OriginKey).Value;
+      focusNodeName = traverseTreeWithURI(state.propertyTree, NavigationAnchorKey).Value;
       currentFocusNode = focusNodes.find(node => node.identifier === focusNodeName);
     }
   }

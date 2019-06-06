@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import DataManager from '../../api/DataManager';
-import Icon from '../common/Icon/Icon';
+import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import Button from '../common/Input/Button/Button';
 import styles from './SystemMenu.scss';
 import Popover from '../common/Popover/Popover';
@@ -49,7 +49,7 @@ class SystemMenu extends Component {
               <hr className={Popover.styles.delimiter} />
 
               <button onClick={SystemMenu.quit}>
-                <Icon icon="exit_to_app" className={styles.linkIcon} />
+                <MaterialIcon icon="exit_to_app" className={styles.linkIcon} />
                 Quit OpenSpace <span className={styles.shortcut}>ESC</span>
               </button>
 
@@ -60,7 +60,7 @@ class SystemMenu extends Component {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <Icon icon="help" className={styles.linkIcon} />
+                <MaterialIcon icon="help" className={styles.linkIcon} />
                 Help
               </a>
               <a
@@ -68,7 +68,7 @@ class SystemMenu extends Component {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <Icon icon="bug_report" className={styles.linkIcon} />
+                <MaterialIcon icon="bug_report" className={styles.linkIcon} />
                 Report a problem
               </a>
               <a
@@ -76,11 +76,11 @@ class SystemMenu extends Component {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <Icon icon="public" className={styles.linkIcon} />
+                <MaterialIcon icon="public" className={styles.linkIcon} />
                 openspaceproject.com
               </a>
               <Link to="about">
-                <Icon icon="info" className={styles.linkIcon} />
+                <MaterialIcon icon="info" className={styles.linkIcon} />
                 About
               </Link>
             </nav>
@@ -88,7 +88,7 @@ class SystemMenu extends Component {
         )}
 
         <Button className={styles.button} transparent onClick={this.toggleMenu}>
-          <Icon icon="more_vert" className={styles.icon} />
+          <MaterialIcon icon="more_vert" className={styles.icon} />
         </Button>
       </div>
     );

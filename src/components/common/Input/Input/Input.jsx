@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { excludeKeys } from '../../../../utils/helpers';
-import Icon from '../../Icon/Icon';
+import MaterialIcon from '../../MaterialIcon/MaterialIcon';
 import styles from './Input.scss';
 
 class Input extends Component {
@@ -101,7 +101,7 @@ class Input extends Component {
           { label || placeholder }
         </label>
         { clearable && (
-          <Icon
+          <MaterialIcon
             icon="cancel"
             className={`${styles.clearbutton} ${this.hasInput && styles.hasinput}`}
             onClick={this.clear}

@@ -70,6 +70,7 @@ class FilterList extends Component {
     const EntryComponent = this.props.viewComponent;
     const { search } = this.state;
     const entries = this.filtered;
+
     return (
       <section className={`${this.props.className} ${styles.filterList}`}>
         <Input
@@ -91,7 +92,7 @@ class FilterList extends Component {
               <EntryComponent
                 {...entry}
                 key={entry.identifier}
-                onClick={this.props.onSelect}
+                onSelect={this.props.onSelect}
                 active={this.props.active}
               />)) }
           </ul>
@@ -141,16 +142,22 @@ FilterList.propTypes = {
    * the component used to display entries
    */
   viewComponent: PropTypes.func,
+
+  /**
+   * props to pass to the view component
+   */
+  viewComponentProps: PropTypes.object,
 };
 
 FilterList.defaultProps = {
   active: null,
   className: '',
   matcher: SimpleSubstring,
-  onSelect: null,
+  onSelect: () => {},
   searchText: 'Search...',
   searchAutoFocus: false,
   viewComponent: props => (<li>{ JSON.stringify(props) }</li>),
+  viewComponentProps: {},
 };
 
 export default FilterList;
