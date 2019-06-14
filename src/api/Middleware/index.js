@@ -1,4 +1,3 @@
-import '@babel/polyfill';
 import { applyMiddleware } from 'redux';
 import { propertyTree } from './propertyTree';
 import { time } from './time';

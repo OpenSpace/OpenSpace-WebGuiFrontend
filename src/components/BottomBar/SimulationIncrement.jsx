@@ -137,14 +137,14 @@ class SimulationIncrement extends Component {
     const adjustedDelta = round10(targetDeltaTime / this.stepSize, StepPrecisions[stepSize]);
 
     const options = Object.values(Steps)
-      .map(step => ({ value: step, label: step }));
+      .map(step => ({ value: step, label: step, isSelected: step === stepSize }));
 
     return (
       <div>
         <Row>
         <Select
-            direction="up"
             label="Display unit"
+            menuPlacement="top"
             onChange={this.setStepSize}
             options={options}
             value={stepSize}
