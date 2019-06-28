@@ -4,8 +4,14 @@ import Row from '../../common/Row/Row';
 import InfoBox from '../../common/InfoBox/InfoBox';
 import styles from './Property.scss';
 import { connectProperty } from './connectProperty';
+import { copyTextToClipboard } from '../../../utils/helpers';
 
 class VectorProperty extends Component {
+  constructor(props) {
+    super(props);
+    this.copyUri = this.copyUri.bind(this);
+  }
+
   componentDidMount() {
     this.props.dispatcher.subscribe();
   }
@@ -17,6 +23,10 @@ class VectorProperty extends Component {
   get descriptionPopup() {
     const { description } = this.props.description;
     return description ? <InfoBox text={description} /> : '';
+  }
+
+  copyUri() {
+    copyTextToClipboard(this.props.description.Identifier);
   }
 
   get disabled() {
@@ -36,7 +46,7 @@ class VectorProperty extends Component {
   render() {
     const { description } = this.props;
     const { SteppingValue, MaximumValue, MinimumValue } = description.AdditionalData;
-    const firstLabel = (<span>
+    const firstLabel = (<span onClick={this.copyUri}>
       { description.Name } { this.descriptionPopup }
     </span>);
 

@@ -2,11 +2,13 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Input from '../../common/Input/Input/Input';
 import InfoBox from '../../common/InfoBox/InfoBox';
+import { copyTextToClipboard } from '../../../utils/helpers';
 
 class StringProperty extends Component {
   constructor(props) {
     super(props);
     this.onChange = this.onChange.bind(this);
+    this.copyUri = this.copyUri.bind(this);
   }
 
   componentDidMount() {
@@ -22,6 +24,10 @@ class StringProperty extends Component {
     return description ? (<InfoBox text={description} />) : '';
   }
 
+  copyUri() {
+    copyTextToClipboard(this.props.description.Identifier);
+  }
+
   get disabled() {
     return this.props.description.MetaData.isReadOnly;
   }
@@ -33,13 +39,13 @@ class StringProperty extends Component {
 
   render() {
     const { description, value } = this.props;
-    const placeholder = (<span>
+    const label = (<span onClick={this.copyUri}>
       { description.Name } { this.descriptionPopup }
     </span>);
     return (
       <Input
         value={value}
-        label={placeholder}
+        label={label}
         placeholder={description.Name}
         onEnter={this.onChange}
         disabled={this.disabled}

@@ -2,11 +2,13 @@ import React, { Component } from 'react';
 import Select from '../../common/Input/Select/Select';
 import InfoBox from '../../common/InfoBox/InfoBox';
 import { connectProperty } from './connectProperty';
+import { copyTextToClipboard } from '../../../utils/helpers';
 
 class OptionProperty extends Component {
   constructor(props) {
     super(props);
     this.onChange = this.onChange.bind(this);
+    this.copyUri = this.copyUri.bind(this);
   }
 
   onChange({ value }) {
@@ -26,6 +28,10 @@ class OptionProperty extends Component {
     return description ? <InfoBox text={description} /> : '';
   }
 
+  copyUri() {
+    copyTextToClipboard(this.props.description.Identifier);
+  }
+
   get disabled() {
     return this.props.description.MetaData.isReadOnly;
   }
@@ -33,7 +39,7 @@ class OptionProperty extends Component {
   render() {
     const { description, value } = this.props;
     const label = (
-      <span>
+      <span onClick={this.copyUri}>
         { description.Name } { this.descriptionPopup }
       </span>
     );

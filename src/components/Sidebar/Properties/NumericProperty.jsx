@@ -2,11 +2,13 @@ import React, { Component } from 'react';
 import NumericInput from '../../common/Input/NumericInput/NumericInput';
 import InfoBox from '../../common/InfoBox/InfoBox';
 import { connectProperty } from './connectProperty';
+import { copyTextToClipboard } from '../../../utils/helpers';
 
 class NumericProperty extends Component {
   constructor(props) {
     super(props);
     this.onChange = this.onChange.bind(this);
+    this.copyUri = this.copyUri.bind(this);
   }
 
   componentDidMount() {
@@ -38,13 +40,17 @@ class NumericProperty extends Component {
     return descriptionString ? (<InfoBox text={descriptionString} />) : '';
   }
 
+  copyUri() {
+    copyTextToClipboard(this.props.description.Identifier);
+  }
+
   render() {
     const { description, value } = this.props;
     const { SteppingValue, MaximumValue, MinimumValue } = description.AdditionalData;
     return (
       <NumericInput
         value={value}
-        label={(<span>{description.Name} {this.descriptionPopup}</span>)}
+        label={(<span onClick={this.copyUri}>{description.Name} {this.descriptionPopup}</span>)}
         placeholder={description.Name}
         onChange={this.onChange}
         step={SteppingValue}
