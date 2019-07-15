@@ -28,15 +28,10 @@ module.exports = {
       '/': {
         target: 'http://localhost:4680',
         bypass: function(req, res, proxyOptions) {
-          console.log(req.originalUrl);
           if (req.originalUrl.indexOf('/frontend') === 0 ||
               req.originalUrl.indexOf('/environment.js') === 0)
           {
-            console.log('Not proxying request');
             return req.originalUrl;
-          } else {
-            console.log('proxying request to 4680 (prod)')
-            return undefined;
           }
         }
       }
