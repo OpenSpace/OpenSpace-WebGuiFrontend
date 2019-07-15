@@ -57,6 +57,11 @@
     }
   }
 
+  .devModeNotifier {
+    padding: ($base-padding / 2) $base-padding;
+    color: $ui-warning;
+  }
+
   button {
     background: transparent;
     border: none;
