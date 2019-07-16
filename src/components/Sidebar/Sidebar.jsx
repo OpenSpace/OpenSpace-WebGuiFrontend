@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 
 import TabMenu from './TabMenu/TabMenu';
 import SystemMenu from '../SystemMenu/SystemMenu';
@@ -7,20 +7,16 @@ import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import SmallLabel from '../common/SmallLabel/SmallLabel';
 import ScenePane from './ScenePane';
 import SettingsPane from './SettingsPane';
-import Resizable from 're-resizable';
+import { Resizable } from 're-resizable';
 
 import styles from './Sidebar.scss';
-
-const RightHandle = () => (
-  <div className={styles.rightHandle}/>
-)
 
 const views = {
   settings: SettingsPane,
   scene: ScenePane,
 };
 
-class Sidebar extends React.Component {
+class Sidebar extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -60,12 +56,23 @@ class Sidebar extends React.Component {
 
     return (
       <Resizable
+        enable={{
+          top: false,
+          right: true,
+          bottom: false,
+          left: false,
+          topRight: false,
+          bottomRight: false,
+          bottomLeft: false,
+          topLeft: false,
+          right: !!this.state.view
+        }}
         size={size}
         minHeight={size.height}
         maxHeight={size.height}
         minWidth={200}
         maxWidth={window.innerWidth - 50}
-        handleComponent={{right: RightHandle}}
+        handleClasses={{right: styles.rightHandle}}
         onResizeStop={this.onResizeStop}
       >
         <section className={`${styles.Sidebar} ${view ? styles.active : ''}`}>

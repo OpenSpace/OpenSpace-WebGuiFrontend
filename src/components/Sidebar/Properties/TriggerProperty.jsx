@@ -1,22 +1,27 @@
-import React from 'react';
-import Property from './Property';
+import React, { Component } from 'react';
 import Button from '../../common/Input/Button/Button';
+import InfoBox from '../../common/InfoBox/InfoBox';
 import { connectProperty } from './connectProperty';
 
-class TriggerProperty extends Property {
+class TriggerProperty extends Component {
   constructor(props) {
     super(props);
     this.onChange = this.onChange.bind(this);
   }
 
   onChange() {
-    this.props.ChangeValue('', this.props.Description.Identifier);
+    this.props.dispatcher.set(null);
+  }
+
+  get descriptionPopup() {
+    const { description } = this.props.description;
+    return description ? <InfoBox text={description} /> : '';
   }
 
   render() {
-    const { Name } = this.props.Description;
+    const { Name } = this.props.description;
     return (
-      <div>
+      <div style={{marginBottom: 3}}>
         <Button onClick={this.onChange}>
           { Name }
         </Button> { this.descriptionPopup }
@@ -24,7 +29,5 @@ class TriggerProperty extends Property {
     );
   }
 }
-
-TriggerProperty = connectProperty(TriggerProperty);
 
 export default TriggerProperty;

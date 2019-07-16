@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import DataManager, { TopicTypes } from '../../api/DataManager';
-import Icon from '../common/Icon/Icon';
+import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import LoadingString from '../common/LoadingString/LoadingString';
 import Popover from '../common/Popover/Popover';
 import SmallLabel from '../common/SmallLabel/SmallLabel';
@@ -10,70 +9,22 @@ import Picker from './Picker';
 import Time from '../common/Input/Time/Time';
 import ToggleContent from '../common/ToggleContent/ToggleContent';
 import ScaleInput from '../common/Input/ScaleInput/ScaleInput';
-
-import {
-  TogglePauseScript,
-  InterpolateTogglePauseScript,
-  CurrentTimeKey,
-  DeltaTime,
-  ValuePlaceholder,
-  InterpolateTimeScript,
-  SetDeltaTimeScript,
-  InterpolateDeltaTimeScript,
-  InterpolateTimeRelativeScript,
-  InterpolateDeltaTime
-} from '../../api/keys';
+import { subscribeToTime, unsubscribeToTime, setPopoverVisibility } from '../../api/Actions';
+import { connect } from 'react-redux';
 
 import SimulationIncrement from './SimulationIncrement';
 import styles from './TimePicker.scss';
 import * as timeHelpers from '../../utils/timeHelpers';
 
-/**
- * Make sure the date string contains a time zone
- * @param date
- * @param zone - the time zone in ISO 8601 format
- * @constructor
- */
-const DateStringWithTimeZone = (date, zone = 'Z') =>
-  (!date.includes('Z') ? `${date}${zone}` : date);
 
 class TimePicker extends Component {
-  static togglePause(e) {
-    const shift = e.getModifierState("Shift");
-    if (shift) {
-      DataManager.runScript(TogglePauseScript);
-    } else {
-      DataManager.runScript(InterpolateTogglePauseScript);
-    }
-  }
-
-  static realtime(e) {
-    const shift = e.getModifierState("Shift");
-    let script = '';
-    if (shift) {
-      script = SetDeltaTimeScript.replace(ValuePlaceholder, 1);
-    } else {
-      script = InterpolateDeltaTimeScript
-        .replace(ValuePlaceholder, 1)
-        .replace(ValuePlaceholder, 1); // interpolation time
-    }
-    DataManager.runScript(script);
-  }
-
   constructor(props) {
     super(props);
 
     this.state = {
-      time: new Date(),
       pendingTime: new Date(),
-      isPaused: false,
-      targetDeltaTime: 0,
-      hasTime: false,
-      showPopover: false,
       showCalendar: false,
       useLock: false,
-      timeSubscriptionId: -1,
-      deltaTimeSubscriptionId: -1
     };
 
     this.timeSubscriptionCallback = this.timeSubscriptionCallback.bind(this);
@@ -86,33 +37,50 @@ class TimePicker extends Component {
     this.setToPendingTime = this.setToPendingTime.bind(this);
     this.interpolateToPendingTime = this.interpolateToPendingTime.bind(this);
     this.resetPendingTime = this.resetPendingTime.bind(this);
+    this.togglePause = this.togglePause.bind(this);
+    this.realtime = this.realtime.bind(this);
+  }
+
+  togglePause(e) {
+    const openspace = this.props.luaApi;
+    const shift = e.getModifierState("Shift");
+    if (shift) {
+      openspace.time.togglePause();
+    } else {
+      openspace.time.interpolateTogglePause();
+    }
+  }
+
+  realtime(e) {
+    const openspace = this.props.luaApi;
+    const shift = e.getModifierState("Shift");
+    let script = '';
+    if (shift) {
+      openspace.time.setDeltaTime(1);
+    } else {
+      openspace.time.interpolateDeltaTime(1, 1);
+    }
   }
 
   componentDidMount() {
-    // subscribe to data
-    this.state.timeSubscriptionId = DataManager
-      .subscribe(CurrentTimeKey, this.timeSubscriptionCallback, TopicTypes.time);
-
-    this.state.deltaTimeSubscriptionId = DataManager
-      .subscribe(DeltaTime, this.deltaTimeSubscriptionCallback, TopicTypes.time);
+    this.props.startSubscription();
   }
 
   componentWillUnmount() {
-    DataManager.unsubscribe(CurrentTimeKey, this.state.timeSubscriptionId);
-    DataManager.unsubscribe(DeltaTime, this.state.deltaTimeSubscriptionId);
+    this.props.stopSubscription();
   }
 
   get time() {
-    return this.state.time.toUTCString();
+    return this.props.time && this.props.time.toUTCString();
   }
 
   get speed() {
-    let increment = Math.abs(this.state.targetDeltaTime);
-    const sign = Math.sign(this.state.targetDeltaTime) === -1 ? '-' : '';
+    let increment = Math.abs(this.props.targetDeltaTime);
+    const sign = Math.sign(this.props.targetDeltaTime) === -1 ? '-' : '';
     let unit = "second";
 
     if (increment === 1) {
-      return "Realtime";
+      return "Realtime" + (this.props.isPaused ? " (Paused)" : "");
     }
 
     (() => {
@@ -150,7 +118,7 @@ class TimePicker extends Component {
     increment = Math.round(increment);
     const pluralSuffix = (increment !== 1) ? 's' : '';
 
-    return sign + increment + " " + unit + pluralSuffix + " / second" + (this.state.isPaused ? " (Paused)" : "");
+    return sign + increment + " " + unit + pluralSuffix + " / second" + (this.props.isPaused ? " (Paused)" : "");
   }
 
   get date() {
@@ -159,7 +127,9 @@ class TimePicker extends Component {
   }
 
   get calendar() {
-    const { time, showCalendar } = this.state;
+    const { showCalendar } = this.state;
+    const { time } = this.props;
+
     return showCalendar && <div>
       <hr className={Popover.styles.delimiter} />
       <Calendar selected={time} activeMonth={time} onChange={this.changeDate} todayButton />
@@ -177,24 +147,27 @@ class TimePicker extends Component {
   }
 
   get popover() {
-    const { time, pendingTime } = this.state;
+    const { useLock, pendingTime } = this.state;
+    const { time } = this.props;
+
     return (
       <Popover
         className={Picker.Popover}
         title="Select date"
         closeCallback={this.togglePopover}
         detachable
+        attached={true}
       >
         <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
           <div style={{marginTop: 20}}>
             <Button onClick={this.toggleLock} title="Toggle lock" small transparent={!this.state.useLock}>
-            <Icon icon={this.state.useLock ? 'lock' : 'lock_open'} />
+              <MaterialIcon icon={this.state.useLock ? 'lock' : 'lock_open'} />
             </Button>
           </div>
-          <Time time={pendingTime} onChange={this.changeDate} />
+          <Time time={useLock ? pendingTime : time} onChange={this.changeDate} />
           <div style={{marginTop: 20}}>
             <Button onClick={this.toggleCalendar} title="Toggle calendar" small transparent={!this.state.showCalendar}>
-            <Icon icon="view_day" />
+              <MaterialIcon icon="view_day" />
             </Button>
           </div>
         </div>
@@ -204,15 +177,15 @@ class TimePicker extends Component {
 
         <div className={Popover.styles.title}>Simulation speed</div>
         <div className={Popover.styles.content}>
-          <SimulationIncrement />
+          <SimulationIncrement/>
         </div>
         <hr className={Popover.styles.delimiter} />
 
         <div className={`${Popover.styles.row} ${Popover.styles.content}`}>
-          <Button block smalltext onClick={TimePicker.togglePause}>
-            {this.state.isPaused ? <Icon icon="play_arrow" /> : <Icon icon="pause" />}
+          <Button block smalltext onClick={this.togglePause}>
+            {this.props.isPaused ? <MaterialIcon icon="play_arrow" /> : <MaterialIcon icon="pause" />}
           </Button>
-          <Button block smalltext onClick={TimePicker.realtime}>
+          <Button block smalltext onClick={this.realtime}>
             Realtime
           </Button>
           <Button block smalltext onClick={this.now}>
@@ -239,7 +212,7 @@ class TimePicker extends Component {
 
   resetPendingTime() {
     this.setState({
-      pendingTime: new Date(this.state.time),
+      pendingTime: new Date(this.props.time),
       useLock: false
     });
   }
@@ -250,11 +223,12 @@ class TimePicker extends Component {
     // ISO 8601-style time zones (the Z). It does, however, always assume that UTC
     // is given.
     const fixedTimeString = time.toJSON().replace('Z', '');
-    DataManager.setValue('__time', fixedTimeString);
+    const openspace = this.props.luaApi;
+    openspace.time.setTime(fixedTimeString);
   }
 
   setDateRelative(delta) {
-    const newTime = new Date(this.state.time);
+    const newTime = new Date(this.props.time);
     newTime.setSeconds(newTime.getSeconds() + delta);
 
     this.setState({ time: newTime });
@@ -263,28 +237,21 @@ class TimePicker extends Component {
     // is given.
 
     const fixedTimeString = newTime.toJSON().replace('Z', '');
-    DataManager.setValue('__time', fixedTimeString);
+    const openspace = this.props.luaApi;
+    openspace.time.setTime(fixedTimeString);
   }
 
   interpolateDate(time) {
     const interpolationTime = 1.0;
     const fixedTimeString = time.toJSON().replace('Z', '');
-
-    const script = InterpolateTimeScript
-      .replace(ValuePlaceholder, '"' + fixedTimeString + '"')
-      .replace(ValuePlaceholder, interpolationTime);
-
-    DataManager.runScript(script);
+    const openspace = this.props.luaApi;
+    openspace.time.interpolateTime(fixedTimeString, interpolationTime);
   }
 
   interpolateDateRelative(delta) {
     const interpolationTime = 1.0;
-
-    const script = InterpolateTimeRelativeScript
-      .replace(ValuePlaceholder, delta)
-      .replace(ValuePlaceholder, interpolationTime);
-
-    DataManager.runScript(script);
+    const openspace = this.props.luaApi;
+    openspace.time.interpolateTimeRelative(delta, interpolationTime);
   }
 
   changeDate(event) {
@@ -307,14 +274,13 @@ class TimePicker extends Component {
   }
 
   togglePopover() {
-    debugger;
-    this.setState({ showPopover: !this.state.showPopover });
+    this.props.setPopoverVisibility(!this.props.popoverVisible)
   }
 
   toggleLock() {
     this.setState({
       useLock: !this.state.useLock,
-      pendingTime: new Date(this.state.time)
+      pendingTime: new Date(this.props.time)
     });
   }
 
@@ -349,24 +315,50 @@ class TimePicker extends Component {
   }
 
   render() {
-    const { showPopover } = this.state;
+    const { popoverVisible } = this.props;
     return (
       <div className={Picker.Wrapper}>
-        <Picker onClick={this.togglePopover} className={`${styles.timePicker} ${showPopover ? Picker.Active : ''}`}>
+        <Picker onClick={this.togglePopover} className={`${styles.timePicker} ${popoverVisible ? Picker.Active : ''}`}>
           <div className={Picker.Title}>
             <span className={Picker.Name}>
-              <LoadingString loading={!this.state.hasTime}>
+              <LoadingString loading={this.props.time === undefined}>
                 { this.time }
               </LoadingString>
             </span>
-            <SmallLabel>{ this.state.hasTime ? this.speed : ""}</SmallLabel>
+            <SmallLabel>{ this.props.targetDeltaTime === undefined ? "" : this.speed}</SmallLabel>
           </div>
         </Picker>
 
-        { showPopover && this.popover }
+        { popoverVisible && this.popover }
       </div>
     );
   }
 }
+
+const mapStateToProps = (state) => {
+  return {
+    time: state.time.time,
+    deltaTime: state.time.deltaTime,
+    targetDeltaTime: state.time.targetDeltaTime,
+    isPaused: state.time.isPaused,
+    popoverVisible: state.local.popovers.timePicker.visible,
+    luaApi: state.luaApi
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    startSubscription: () => dispatch(subscribeToTime()),
+    stopSubscription: () => dispatch(unsubscribeToTime()),
+    setPopoverVisibility: (visible) => {
+      dispatch(setPopoverVisibility({
+        popover: 'timePicker',
+        visible
+      }));
+    },
+  }
+}
+
+TimePicker = connect(mapStateToProps, mapDispatchToProps)(TimePicker);
 
 export default TimePicker;

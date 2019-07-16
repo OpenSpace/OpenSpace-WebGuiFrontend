@@ -1,13 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Icon from '../../../common/Icon/Icon';
+import Icon from '../../../common/MaterialIcon/MaterialIcon';
 import SmallLabel from '../../../common/SmallLabel/SmallLabel';
 import styles from './../style/UtilitiesButtons.scss';
 
 const HomeButton = props => (
   <div
-    /*className={`${styles.UtilitiesButton} ${this.isActive && styles.active}`}*/
-    className={`${styles.UtilitiesButton} ${styles.active}`}
+    className={`${styles.UtilitiesButton}`}
     onClick={props.handleClick}
     role="button"
     tabIndex="0"

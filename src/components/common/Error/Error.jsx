@@ -18,4 +18,6 @@ Error.defaultProps = {
   className: styles.error,
 };
 
+Error.styles = styles;
+
 export default Error;

@@ -5,20 +5,38 @@ import logo from './logo.png';
 import { SCMInfoKey, VersionInfoKey } from '../../api/keys';
 import PropertyString from '../../components/common/PropertyString/PropertyString';
 import { connect } from 'react-redux';
-import { formatVersion } from '../../api/Version';
+import { formatVersion, isOlder } from '../../api/Version';
 import LoadingString from '../../components/common/LoadingString/LoadingString';
 
-const openSpaceVersion = (props) =>
-  <p>OpenSpace version: {props.hasVersion ?
+const openSpaceVersion = (props) => {
+  const currentVersion = <p>OpenSpace version: {props.hasVersion ?
       formatVersion(props.version.openSpaceVersion) :
       <LoadingString loading={true}/>}
   </p>
 
-const socketApiVersion = (props) =>
+  let latestAvailableVersion = null;
+
+  if (props.hasVersion &&
+      props.version.latestOpenSpaceVersion &&
+      isOlder(props.version.openSpaceVersion, props.version.latestOpenSpaceVersion)
+  ) {
+    latestAvailableVersion = <p className={styles.notification}>
+      Version {formatVersion(props.version.latestOpenSpaceVersion)} is available at openspaceproject.com
+    </p>;
+  }
+
+  return <>
+    {currentVersion}
+    {latestAvailableVersion}
+  </>
+
+}
+
+/*const socketApiVersion = (props) =>
   <p>Socket API version: {props.hasVersion ?
       formatVersion(props.version.socketApiVersion) :
       <LoadingString loading={true}/>}
-  </p>
+  </p>*/
 
 let About = (props) => (
   <Row className={styles.about}>
@@ -28,19 +46,16 @@ let About = (props) => (
     <section>
       <h1>OpenSpace</h1>
       <p>
-          openspaceproject.com
-      </p>
-      <p>
         OpenSpace is open source interactive data
         visualization software designed to visualize
         the entire known universe and portray our
         ongoing efforts to investigate the cosmos.
       </p>
       {openSpaceVersion(props)}
-      {socketApiVersion(props)}
       <p>
         &copy; 2014 - { (new Date()).getUTCFullYear() }
-        &nbsp; OpenSpace Development Team
+        &nbsp; OpenSpace Development Team<br/>
+        openspaceproject.com
       </p>
     </section>
   </Row>

@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import DataManager from '../../../api/DataManager';
 import styles from './FocusEntry.scss';
 import { jsonToLuaString } from '../../../utils/propertyTreeHelpers';
-
-const ORIGIN_KEY = 'NavigationHandler.Origin';
 
 class FocusEntry extends Component {
   constructor(props) {
@@ -12,12 +9,10 @@ class FocusEntry extends Component {
     this.select = this.select.bind(this);
   }
 
-  select() {
+  select(evt) {
     const { identifier } = this.props;
-    if (this.props.onClick) {
-      this.props.onClick(identifier);
-    } else {
-      DataManager.setValue(ORIGIN_KEY, identifier);
+    if (this.props.onSelect) {
+      this.props.onSelect(identifier, evt);
     }
   }
 
@@ -26,11 +21,11 @@ class FocusEntry extends Component {
   }
 
   render() {
-    const { identifier } = this.props;
+    const { name, identifier } = this.props;
     return (
       <li className={`${styles.entry} ${this.isActive && styles.active}`} onClick={this.select}>
         <span className={styles.title}>
-          { identifier }
+          { name || identifier }
         </span>
       </li>
     );
@@ -39,12 +34,13 @@ class FocusEntry extends Component {
 
 FocusEntry.propTypes = {
   identifier: PropTypes.string.isRequired,
-  onClick: PropTypes.func,
+  name: PropTypes.string,
+  onSelect: PropTypes.func,
   active: PropTypes.string,
 };
 
 FocusEntry.defaultProps = {
-  onClick: null,
+  onSelect: null,
   active: '',
 };
 

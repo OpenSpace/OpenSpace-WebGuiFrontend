@@ -1,30 +1,71 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ReactSelect from 'react-select';
-import 'react-select/dist/react-select.css';
 import Input from '../Input/Input';
 import styles from './Select.scss';
 import { excludeKeys } from '../../../../utils/helpers';
 
+const selectStyles = {
+  control: (provided) => ({
+    ...provided,
+    backgroundColor: '#222',
+    borderWidth: 0,
+    boxShadow: 'none',
+    height: 41
+  }),
+  menu: (provided) => ({
+    ...provided,
+    backgroundColor: '#222',
+    margin: 0
+  }),
+  placeholder: (provided) => ({
+    ...provided,
+    color: '#D9DA6D'
+  }),
+  indicatorSeparator: () => ({
+  }),
+  dropdownIndicator: (provided) => ({
+    ...provided,
+    ':hover': {
+      color: '#fff'
+    },
+    color: '#999',
+    paddingRight: 8
+  }),
+  option: (provided, state) => ({
+    ...excludeKeys(provided, ':active'),
+    color: '#FFF',
+    backgroundColor: state.isFocused ? '#333' : '#222'
+  }),
+  singleValue: (provided, state) => ({
+    ...provided,
+    color: '#fff',
+    paddingTop: 10,
+    marginLeft: 0
+  })
+};
+
 const Select = (props) => {
-  const { label, direction } = props;
-  const inheritedProps = excludeKeys(props, 'label direction');
+  const { value, label } = props;
+  const inheritedProps = excludeKeys(props, 'label');
   const id = props.id || `select-${Input.nextId}`;
+
   return (
     <div className={styles.selectgroup}>
       <ReactSelect
         {...inheritedProps}
         id={id}
-        className={`${styles.select} ${styles[direction]}`}
+        placeholder={label}
+        styles={selectStyles}
+        value={inheritedProps.options.filter(opt => opt.value == value)}
       />
-      <label htmlFor={id} className={styles.selectlabel}>{ label }</label>
+      { props.value !== undefined && <label htmlFor={id} className={styles.selectlabel}>{ label }</label> }
     </div>
   );
 };
 
 Select.propTypes = {
   clearable: PropTypes.bool,
-  direction: PropTypes.oneOf(['up', 'down']),
   id: PropTypes.string,
   label: PropTypes.node.isRequired,
   options: PropTypes.arrayOf(
@@ -36,7 +77,6 @@ Select.propTypes = {
 };
 
 Select.defaultProps = {
-  direction: 'down',
   id: null,
   searchable: false,
   clearable: false,

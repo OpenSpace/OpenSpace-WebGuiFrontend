@@ -3,16 +3,21 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import FocusButton from './FocusButton';
-import { NavigationAnchorKey, ApplyOverviewKey, FocusNodesListKey, ApplyFlyToKey } from '../../../api/keys';
-import { changePropertyValue, startListening, stopListening } from '../../../api/Actions';
-import { traverseTreeWithURI } from '../../../utils/propertyTreeHelpers';
+import {
+  ScenePrefixKey,
+  NavigationAnchorKey,
+  ApplyOverviewKey,
+  FocusNodesListKey,
+  ApplyFlyToKey
+} from '../../../api/keys';
+import {
+  setPropertyValue,
+  subscribeToProperty,
+  unsubscribeToProperty
+} from '../../../api/Actions';
 import styles from './FocusMenu.scss';
 import OverViewButton from './OverViewButton';
-import {throttle} from "lodash/function";
-import { fromStringToArray } from '../../../utils/storyHelpers';
 import { UpdateDeltaTimeNow } from '../../../utils/timeHelpers';
-
-const UpdateDelayMs = 1000;
 
 class FocusMenu extends Component {
   constructor(props) {
@@ -22,28 +27,39 @@ class FocusMenu extends Component {
       origin: '',
     };
 
-    this.triggerChanges = throttle(this.triggerChanges.bind(this), UpdateDelayMs);
+    this.applyOverview = this.applyOverview.bind(this);
+    this.applyFlyTo = this.applyFlyTo.bind(this);
   }
 
   componentDidUpdate() {
-    if (this.props.originNode.length !== 0) {
-      if (this.props.originNode.listeners <= 0) {
-        this.props.StartListening(NavigationAnchorKey);
-        this.setState({ origin: this.props.originNode.Value });
-      }
-      if (this.state.origin !== this.props.originNode.Value) {
-        this.setState({ origin: this.props.originNode.Value });
+    if (this.props.anchor !== undefined) {
+      if (this.state.origin !== this.props.anchor.value) {
+        this.setState({ origin: this.props.anchor.value });
       }
     }
   }
 
-  componentWillUnmount() {
-    this.props.StopListening(NavigationAnchorKey);
+  componentDidMount() {
+    this.props.startListening(NavigationAnchorKey);
   }
 
-  onChangeOrigin(origin) {
-    UpdateDeltaTimeNow(1);
-    this.props.ChangePropertyValue(this.props.originNode.Description, origin.origin);
+  componentWillUnmount() {
+    this.props.stopListening(NavigationAnchorKey);
+  }
+
+  onChangeFocus(origin) {
+    this.props.luaApi.time.setPause(false);
+    UpdateDeltaTimeNow(this.props.luaApi, 1);
+    this.props.changePropertyValue(NavigationAnchorKey, origin.origin);
+    this.applyFlyTo();
+  }
+
+  applyFlyTo() {
+    this.props.changePropertyValue(ApplyFlyToKey, null);
+  }
+
+  applyOverview() {
+    this.props.changePropertyValue(ApplyOverviewKey, null);
   }
 
   createFocusButtons() {
@@ -53,26 +69,18 @@ class FocusMenu extends Component {
         (<FocusButton
           key={node.identifier}
           identifier={node.identifier}
-          active={this.state.origin}
-          onChangeOrigin={origin => this.onChangeOrigin({ origin })}
-          onRefocus={this.triggerChanges}
-          descriptionFlyTo={this.props.applyFlyTo.Description}
+          active={this.props.anchor.value}
+          onChangeFocus={origin => this.onChangeFocus({ origin })}
         />));
     return (focusPicker);
-  }
-
-  triggerChanges(description){
-    this.props.ChangePropertyValue(description,'');
   }
 
   render() {
     return (
       <div className={styles.FocusMenu}>
-        {this.props.originNode !== undefined &&
-          <OverViewButton
-            onApplyOverview={this.triggerChanges}
-            descriptionOverview={this.props.applyOverview.Description}
-          />}
+        {this.props.anchor !== undefined &&
+          <OverViewButton onClick={this.applyOverview} />
+        }
         {this.props.focusNodes.length > 0 && this.createFocusButtons()}
       </div>
     );
@@ -80,46 +88,36 @@ class FocusMenu extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const sceneType = 'Scene';
-  let originNode = [];
+  let anchor = [];
   let nodes = [];
   let focusNodes = [];
-  let applyOverview;
-  let applyFlyTo;
 
   if (Object.keys(state.propertyTree).length !== 0) {
-    const rootNodes = state.propertyTree.subowners.filter(element => element.identifier === sceneType);
-    rootNodes.forEach((node) => {
-      nodes = [...nodes, ...node.subowners];
-    });
-
-    if (state.storyTree.story.focusbuttons !== undefined) {
-      const focusNodesString = traverseTreeWithURI(state.propertyTree, FocusNodesListKey);
-      focusNodes = nodes.filter(node =>
-        (fromStringToArray(focusNodesString.Value).includes(node.identifier)));
+    const buttons = state.storyTree.story.focusbuttons;
+    if (buttons) {
+      focusNodes = buttons.map(button => 
+        state.propertyTree.propertyOwners[ScenePrefixKey + button]
+      );
     }
 
-    originNode = traverseTreeWithURI(state.propertyTree, NavigationAnchorKey);
-    applyOverview = traverseTreeWithURI(state.propertyTree, ApplyOverviewKey);
-    applyFlyTo = traverseTreeWithURI(state.propertyTree, ApplyFlyToKey);
+    anchor = state.propertyTree.properties[NavigationAnchorKey];
   }
   return {
     focusNodes,
-    originNode,
-    applyOverview,
-    applyFlyTo,
+    anchor,
+    luaApi: state.luaApi
   };
 };
 
 const mapDispatchToProps = dispatch => ({
-  ChangePropertyValue: (description, value) => {
-    dispatch(changePropertyValue(description, value));
+  changePropertyValue: (uri, value) => {
+    dispatch(setPropertyValue(uri, value));
   },
-  StartListening: (URI) => {
-    dispatch(startListening(URI));
+  startListening: (uri) => {
+    dispatch(subscribeToProperty(uri));
   },
-  StopListening: (URI) => {
-    dispatch(stopListening(URI));
+  stopListening: (uri) => {
+    dispatch(unsubscribeToProperty(uri));
   },
 });
 
@@ -131,37 +129,23 @@ FocusMenu = connect(
 FocusMenu.propTypes = {
   focusNodes: PropTypes.arrayOf(PropTypes.shape({
     identifier: PropTypes.string,
-    Description: PropTypes.string,
+    description: PropTypes.string,
     properties: PropTypes.arrayOf(PropTypes.object),
     subowners: PropTypes.arrayOf(PropTypes.object),
   })),
-  originNode: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.string,
-    Description: PropTypes.string,
-    Value: PropTypes.string,
-    listeners: PropTypes.number,
-  })),
-  overview: PropTypes.objectOf(PropTypes.shape({
-    Identifier: PropTypes.string,
-    Description: PropTypes.string,
-    Value: PropTypes.string,
-  })),
-  ChangePropertyValue: PropTypes.func,
-  StartListening: PropTypes.func,
-  StopListening: PropTypes.func,
+  anchor: PropTypes.string,
+  changePropertyValue: PropTypes.func,
+  startListening: PropTypes.func,
+  stopListening: PropTypes.func,
 };
 
 FocusMenu.defaultProps = {
   focusNodes: [],
   properties: [],
   subowners: [],
-  originNode: [],
-  overview: {},
-  Description: '',
-  Value: '',
-  ChangePropertyValue: null,
-  StopListening: null,
-  StartListening: null,
+  changePropertyValue: null,
+  stopListening: null,
+  startListening: null,
 };
 
 export default FocusMenu;

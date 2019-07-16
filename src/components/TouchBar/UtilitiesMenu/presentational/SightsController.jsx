@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Picker from '../../../BottomBar/Picker';
-import Icon from '../../../common/Icon/Icon';
+import Icon from '../../../common/MaterialIcon/MaterialIcon';
 import SmallLabel from '../../../common/SmallLabel/SmallLabel';
 
 import buttonStyle from './../style/UtilitiesButtons.scss';

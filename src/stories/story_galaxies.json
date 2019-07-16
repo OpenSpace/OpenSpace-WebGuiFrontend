@@ -10,7 +10,7 @@
   "sightscontroller" : "false",
   "start": {
     "planet": "Earth",
-    "time": "openspace.time.currentWallTime()",
+    "time": "NOW",
     "location": {
       "latitude": "40.758701",
       "longitude": "-111.876183",
@@ -42,7 +42,7 @@
     {
       "URI":"Scene.TullyGalaxies.Renderable.Enabled",
       "label":"Tully Galaxies",
-      "defaultvalue": "false"
+      "defaultvalue": "true"
     }
   ]
 }

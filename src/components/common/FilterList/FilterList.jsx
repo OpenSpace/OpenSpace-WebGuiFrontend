@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Input from '../Input/Input/Input';
 import CenteredLabel from '../CenteredLabel/CenteredLabel';
 import ScrollOverlay from '../ScrollOverlay/ScrollOverlay';
-import { SimpleSubstring } from '../../../utils/StringMatchers';
+import { WordBeginningSubstring, ObjectWordBeginningSubstring } from '../../../utils/StringMatchers';
 import styles from './FilterList.scss';
 
 class FilterList extends Component {
@@ -22,54 +22,51 @@ class FilterList extends Component {
   }
 
   get filtered() {
-    const { favorites, data, matcher, filterSubObjects} = this.props;
+    const { favorites, showFavorites, data, matcher, filterSubObjects} = this.props;
 
     let { search } = this.state;
-    if (search === '') {
+    if (search === '' && showFavorites) {
       return favorites || data;
+    }
+
+    let defaultMatcher = WordBeginningSubstring;
+    if (data.length > 0 && typeof data[0] === 'object') {
+      defaultMatcher = ObjectWordBeginningSubstring;
     }
 
     // most matcher functions are case sensitive
     search = search.toLowerCase();
+    const matcherFunc = matcher || defaultMatcher;
 
-    const matcherFunc = (testObj) => {
-      const valuesAsStrings = Object.values(testObj)
-        .filter(test => ['number', 'string'].includes(typeof test))
-        .map(test => test.toString())
-        .map(test => test.toLowerCase());
-      return valuesAsStrings.some(test => matcher(test, search));
-    };
-
-
-    const findSceneGraphNodes = (data, found = []) => {
-      var sceneGraphNodes = [];
-      if (data.isSceneGraphNode) {
-        found.push(data);
-      }
-
-      Object.values(data).forEach((value) => {
-        if(typeof value === 'object') {
-          findSceneGraphNodes(value, found);
-        }
-      });
-    
-      return found;
-    };
-
-  
-    if (filterSubObjects) {
-      var sceneGraphNodes = findSceneGraphNodes(data);   
-      return sceneGraphNodes.filter(matcherFunc);
-    } else {
-      return data.filter(matcherFunc);      
-    }
-
+    return data.filter(entry => matcherFunc(entry, search));
   }
 
   render() {
     const EntryComponent = this.props.viewComponent;
     const { search } = this.state;
     const entries = this.filtered;
+
+    let inputChildren = null;
+
+    if (this.props.setShowFavorites && this.state.search === '') {
+      if (this.props.showFavorites) {
+        inputChildren =
+          <div
+            className={styles.favoritesButton}
+            onClick={() => this.props.setShowFavorites(false)}
+          >
+            More
+          </div>
+      } else {
+        inputChildren =
+          <div
+            className={styles.favoritesButton}
+            onClick={() => this.props.setShowFavorites(true)}
+          >
+            Less
+          </div>
+      }
+    }
 
     return (
       <section className={`${this.props.className} ${styles.filterList}`}>
@@ -79,7 +76,9 @@ class FilterList extends Component {
           onChange={this.changeSearch}
           clearable
           autoFocus={this.props.searchAutoFocus}
-        />
+        >
+          {inputChildren}
+        </Input>
 
         <ScrollOverlay>
           { entries.length === 0 && (
@@ -91,7 +90,6 @@ class FilterList extends Component {
             { entries.map(entry => (
               <EntryComponent
                 {...entry}
-                key={entry.identifier}
                 onSelect={this.props.onSelect}
                 active={this.props.active}
               />)) }
@@ -123,6 +121,16 @@ FilterList.propTypes = {
    */
   favorites: PropTypes.array,
   /**
+   * Show favorites
+   */
+  showFavorites: PropTypes.bool,
+  /**
+   * Optional: set show favorites.
+   * Takes one bool specifying if only the favorites should
+   * be shown when the search field is empty.
+   */
+  setShowFavorites: PropTypes.func,
+  /**
    * the function used to filter the list
    */
   matcher: PropTypes.func,
@@ -137,7 +145,7 @@ FilterList.propTypes = {
   /**
    * Whether the search input field should gain focus automatically
    */
-   searchAutoFocus: PropTypes.bool,
+  searchAutoFocus: PropTypes.bool,
   /**
    * the component used to display entries
    */
@@ -152,8 +160,8 @@ FilterList.propTypes = {
 FilterList.defaultProps = {
   active: null,
   className: '',
-  matcher: SimpleSubstring,
   onSelect: () => {},
+  showFavorites: true,
   searchText: 'Search...',
   searchAutoFocus: false,
   viewComponent: props => (<li>{ JSON.stringify(props) }</li>),

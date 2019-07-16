@@ -1,69 +1,103 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import Input from '../../common/Input/Input/Input';
-import DataManager from '../../../api/DataManager';
-import InfoBox from '../../common/InfoBox/InfoBox';
+import Checkbox from '../../common/Input/Checkbox/Checkbox';
+import { connectProperty } from './connectProperty';
+
+import BoolProperty from './BoolProperty';
+import NumericProperty from './NumericProperty';
+import OptionProperty from './OptionProperty';
+import TriggerProperty from './TriggerProperty';
+import VecProperty from './VectorProperty';
+import MatrixProperty from './MatrixProperty';
+import StringProperty from './StringProperty';
+import StringListProperty from './StringListProperty';
+
+
+const concreteProperties = {
+  BoolProperty,
+  OptionProperty,
+  TriggerProperty,
+  StringProperty: StringProperty,
+  StringListProperty: StringListProperty,
+
+  FloatProperty: NumericProperty,
+  DoubleProperty: NumericProperty,
+  LongDoubleProperty: NumericProperty,
+  LongLongProperty: NumericProperty,
+  ULongLongProperty: NumericProperty,
+  LongProperty: NumericProperty,
+  ULongProperty: NumericProperty,
+  IntProperty: NumericProperty,
+  UIntProperty: NumericProperty,
+  ShortProperty: NumericProperty,
+  UShortProperty: NumericProperty,
+  SignedCharProperty: NumericProperty,
+  UCharProperty: NumericProperty,
+
+  Vec2Property: VecProperty,
+  Vec3Property: VecProperty,
+  Vec4Property: VecProperty,
+
+  IVec2Property: VecProperty,
+  IVec3Property: VecProperty,
+  IVec4Property: VecProperty,
+
+  UVec2Property: VecProperty,
+  UVec3Property: VecProperty,
+  UVec4Property: VecProperty,
+
+  DVec2Property: VecProperty,
+  DVec3Property: VecProperty,
+  DVec4Property: VecProperty,
+
+  // Only square matrices are displayed property
+  // at this point. --emiax
+
+  Mat2Property: MatrixProperty,
+  //Mat2x3Property: MatrixProperty,
+  //Mat2x4Property: MatrixProperty,
+
+  //Mat3x2Property: MatrixProperty,
+  Mat3Property: MatrixProperty,
+  //Mat3x4Property: MatrixProperty,
+
+  //Mat4x2Property: MatrixProperty,
+  //Mat4x3Property: MatrixProperty,
+  Mat4Property: MatrixProperty,
+
+  DMat2Property: MatrixProperty,
+  //DMat2x3Property: MatrixProperty,
+  //DMat2x4Property: MatrixProperty,
+
+  //DMat3x2Property: MatrixProperty,
+  DMat3Property: MatrixProperty,
+  //DMat3x4Property: MatrixProperty,
+
+  //DMat4x2Property: MatrixProperty,
+  //DMat4x3Property: MatrixProperty,
+  DMat4Property: MatrixProperty,
+};
 
 class Property extends Component {
-  constructor(props) {
-    super(props);
-  }
-
-  get uri() {
-    const { Identifier } = this.props.Description;
-    return Identifier;
-  }
-
-  get inputType() {
-    const { Description } = this.props;
-    switch (Description.Type) {
-      case 'StringProperty':
-      default:
-        return Input;
-    }
-  }
-
-  get descriptionPopup() {
-    const { description } = this.props.Description;
-    return description ? (<InfoBox text={description} />) : '';
-  }
-
-  get disabled() {
-    return this.props.Description.MetaData.isReadOnly;
-  }
-
   render() {
-    const { Description, Value } = this.props;
-    const PropInput = this.inputType;
-    const placeholder = (<span>
-      { Description.Name } { this.descriptionPopup }
-    </span>);
-    return (
-      <PropInput
-        value={Value}
-        label={placeholder}
-        placeholder={Description.Name}
-        onChange={this.onChange}
-        disabled={this.disabled}
-      />
-    );
+    const { description, value } = this.props;
+
+    const ConcreteProperty = concreteProperties[description.Type];
+
+    if (!ConcreteProperty) {
+      console.error("Missing property", description.Type, description);
+      return null;
+    }
+
+    return <ConcreteProperty {...this.props}
+                        key={description.Identifier}
+                        description={description}
+                        value={value}
+                        subscribe />;
   }
 }
 
-Property.propTypes = {
-  Description: PropTypes.shape({
-    Identifier: PropTypes.string,
-    Name: PropTypes.string,
-    MetaData: PropTypes.shape({
-      isReadOnly: PropTypes.bool,
-    }),
-    description: PropTypes.string,
-  }).isRequired,
-  subscribe: PropTypes.bool,
-  Value: PropTypes.any.isRequired
-};
+Property = connectProperty(Property);
 
-Property.defaultProps = {
-  subscribe: false,
-};
 export default Property;
+export const Types = concreteProperties;
+export const GetType = type => concreteProperties[type];

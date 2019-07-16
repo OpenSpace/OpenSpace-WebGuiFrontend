@@ -1,46 +1,59 @@
-import React from 'react';
-import Property from './Property';
+import React, { Component } from 'react';
 import Select from '../../common/Input/Select/Select';
+import InfoBox from '../../common/InfoBox/InfoBox';
 import { connectProperty } from './connectProperty';
 
-class OptionProperty extends Property {
+class OptionProperty extends Component {
   constructor(props) {
     super(props);
     this.onChange = this.onChange.bind(this);
   }
 
   onChange({ value }) {
-    this.props.ChangeValue(parseInt(value));
+    this.props.dispatcher.set(parseInt(value));
   }
 
   componentDidMount() {
-    this.props.StartListening(this.props.Description.Identifier)
+    this.props.dispatcher.subscribe();
   }
 
   componentWillUnmount() {
-    this.props.StopListening(this.props.Description.Identifier)
+    this.props.dispatcher.unsubscribe();
+  }
+
+  get descriptionPopup() {
+    const { description } = this.props.description;
+    return description ? <InfoBox text={description} /> : '';
+  }
+
+  get disabled() {
+    return this.props.description.MetaData.isReadOnly;
   }
 
   render() {
-    const { Description, Value } = this.props;
+    const { description, value } = this.props;
     const label = (
       <span>
-        { Description.Name } { this.descriptionPopup }
+        { description.Name } { this.descriptionPopup }
       </span>
     );
-    const options = Description.AdditionalData.Options
-      .map(option => ({ label: Object.values(option)[0], value: Object.keys(option)[0] }));
+    
+    const options = description.AdditionalData.Options
+      .map(option => ({
+        label: Object.values(option)[0],
+        value: ('' + Object.keys(option)[0]),
+        isSelected: ('' + Object.keys(option)[0]) === ('' + value)
+      }));
     return (
       <Select
         label={label}
         options={options}
-        value={Value}
         onChange={this.onChange}
         disabled={this.disabled}
+        value={value}
       />
     );
   }
 }
-OptionProperty = connectProperty(OptionProperty);
 
 export default OptionProperty;

@@ -4,13 +4,13 @@
   "storyinfo": "The Solar System is the gravitationally bound system comprising the Sun and the objects that orbit it, either directly or indirectly. Of the objects that orbit the Sun directly, the largest eight are the planets, with the remainder being smaller objects, such as dwarf planets and small Solar System bodies.",
   "infofile": "info_solarsystem",
   "overviewlimit": 1.5e+13,
-  "focusbuttons": "\"Mercury\", \"Venus\", \"Earth\", \"Mars\", \"Jupiter\", \"Saturn\", \"Uranus\", \"Neptune\"",
+  "focusbuttons": ["Mercury","Venus","Earth","Mars", "Jupiter", "Saturn", "Uranus", "Neptune"],
   "timecontroller": "true",
   "datecontroller":  "false",
   "sightscontroller" : "false",
   "start": {
     "planet": "Earth",
-    "time": "openspace.time.currentWallTime()",
+    "time": "NOW",
     "location": {
       "latitude": "40.758701",
       "longitude": "-111.876183",

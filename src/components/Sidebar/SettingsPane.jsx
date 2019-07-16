@@ -5,6 +5,7 @@ import Pane from './Pane';
 import LoadingBlocks from '../common/LoadingBlock/LoadingBlocks';
 import FilterList from '../common/FilterList/FilterList';
 import PropertyOwner from './Properties/PropertyOwner';
+import { ScenePrefixKey } from '../../api/keys';
 
 import styles from './SettingsPane.scss';
 
@@ -14,21 +15,20 @@ class SettingsPane extends Component {
   }
 
   render() {
-    const { properties } = this.props;
+    const entries = this.props.propertyOwners.map(uri => ({
+      key: uri,
+      uri: uri,
+      expansionIdentifier: uri
+    }));
 
     return (
       <Pane title="Settings" closeCallback={this.props.closeCallback}>
-        { (properties.length === 0) && (
+        { (entries.length === 0) && (
           <LoadingBlocks className={Pane.styles.loading} />
         )}
 
-        {(properties.length > 0) && (
-          <FilterList
-            data={properties}
-            className={styles.list}
-            viewComponent={PropertyOwner}
-            searchAutoFocus
-          />
+        {(entries.length > 0) && (
+          <FilterList data={entries} viewComponent={PropertyOwner} searchAutoFocus />
         )}
       </Pane>
     );
@@ -44,16 +44,22 @@ SettingsPane.defaultProps = {
 };
 
 const mapStateToProps = (state) => {
-  const sceneType = 'Scene';
+
   if (!state.propertyTree) {
-    return { properties: [] };
+    return { entries: [] };
   }
-  if (!state.propertyTree.subowners) {
-    return { properties: [] };
+  if (!state.propertyTree.propertyOwners) {
+    return { entries: [] };
   }
-  const properties = state.propertyTree.subowners.filter(element => element.identifier !== sceneType);
+
+  const allUris = Object.keys(state.propertyTree.propertyOwners || {});
+
+  const propertyOwners = allUris.filter(uri => {
+    return uri !== ScenePrefixKey && uri.indexOf('.') === -1
+  });
+
   return {
-    properties,
+    propertyOwners,
   };
 };
 

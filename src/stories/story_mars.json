@@ -3,7 +3,7 @@
   "storytitle": "Interesting sights on Mars",
   "storyinfo": "Mars is the fourth planet from the Sun and the second-smallest planet in the Solar System after Mercury.",
   "overviewlimit": 6.0e+7,
-  "focusbuttons": "\"Mars\"",
+  "focusbuttons": ["Mars"],
   "timecontroller": "true",
   "datecontroller" : "false",
   "sightscontroller":  [
@@ -82,14 +82,14 @@
   ],
   "start": {
     "planet": "Mars",
-    "time": "\"2015-07-14T23:00:00.00\"",
+    "time": "2015-07-14T23:00:00.00",
     "location": {
       "latitude": "-13.96",
       "longitude": "55.58",
       "altitude": "20000000"
     }
   },
-  "hideplanets": ["Mercury", "Venus", "Earth", "Jupiter", "Saturn", "Uranus", "Neptune"],
+  "hidenodes": ["Mercury", "Venus", "Earth", "Jupiter", "Saturn", "Uranus", "Neptune"],
   "hideinfoicons": ["Mars"],
   "highresplanets": ["Mars"],
   "noshadingplanets": ["Mars"]

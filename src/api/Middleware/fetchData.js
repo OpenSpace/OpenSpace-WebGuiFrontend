@@ -1,10 +1,9 @@
 import { actionTypes } from '../Actions/actionTypes';
 import { fetchDataDone, fetchDataFailed } from "../Actions";
-import fetch from 'node-fetch';
-import {dataEndpointKey} from "../keys";
+import { DataEndpointKey } from "../keys";
 
 const fetchingInfo = (dispatch, id) => {
-  fetch(`${dataEndpointKey}${id}.json`)
+  fetch(`${DataEndpointKey}${id}.json`)
     .then(res => res.json())
     .then(data => {
       dispatch(fetchDataDone(data, id));

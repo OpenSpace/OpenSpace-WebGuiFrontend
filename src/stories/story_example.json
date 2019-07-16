@@ -1,7 +1,7 @@
 {
   "storyidentifier":"example",
   "overviewlimit": 2.2e+13,
-  "focusbuttons": "\"Earth\", \"Mercury\", \"Venus\", \"Mars\", \"Jupiter\", \"Saturn\"",
+  "focusbuttons": ["Earth", "Mercury", "Venus", "Mars", "Jupiter", "Saturn"],
   "timecontroller": "true",
   "datecontroller":  [
     {
@@ -75,7 +75,7 @@
   ],
   "start": {
     "planet": "Mars",
-    "time": "\"2015-07-14T08:00:00.00\"",
+    "time": "2015-07-14T08:00:00.00",
     "location": {
       "latitude": "-13.96",
       "longitude": "55.58",

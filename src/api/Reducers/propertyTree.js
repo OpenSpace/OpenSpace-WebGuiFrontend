@@ -1,222 +1,90 @@
-import * as helperFunctions from '../../utils/propertyTreeHelpers';
-import envelopes from './envelopes';
+import { combineReducers } from 'redux';
 import { actionTypes } from '../Actions/actionTypes';
 
-const updateActionURI = (action, splittedURI) => {
-  return {
-    ...action,
-    payload: {
-      ...action.payload,
-      URI: splittedURI.URI,
-      identifier: splittedURI.identifier,
-      isLastNode: splittedURI.isLastNode,
-    },
-  };
-};
+// actions:
+  // addPropertyOwners
+  // addProperties
+  // removePropertyOwners
+  // removeProperties
+  // updatePropertyValue
+  // setPropertyValue
 
-const updateActionNode = (action, node) => {
-  return {
-    ...action,
-    payload: {
-      node,
-    },
-  };
-};
 
-const updateActionType = (action, type) => {
-  return {
-    ...action,
-    type,
-  };
-};
-
-const changePropertyOwnerState = (state, action) => {
+const property = (state = {}, action) => {
+  const uri = action.payload.uri;
   switch (action.type) {
-    case actionTypes.startListeningToNode:
-    case actionTypes.stopListeningToNode:
+    case actionTypes.updatePropertyValue:
+    case actionTypes.setPropertyValue:
       return {
         ...state,
-        listeners: (action.type === actionTypes.startListeningToNode) ?
-          state.listeners + 1 : state.listeners - 1,
-      };
-    case actionTypes.updatePropertyTreeNode:
-      return {
-        identifier: action.payload.node.identifier,
-        properties: properties(undefined, action),
-        subowners: action.payload.node.subowners.map((subowner) => {
-          const newAction = {
-            ...action,
-            payload: {
-              node: subowner,
-            },
-          };
-          return propertyOwner(undefined, newAction);
-        }),
-        tag: (action.payload.node.tag === undefined) ? [] : action.payload.node.tag,
-        listeners: 0,
-      };
+        value: action.payload.value
+      }
     default:
       return state;
   }
-};
+}
 
-export const setPropertyValue = (state, action) => {
+const properties = (state = {}, action) => {
   switch (action.type) {
-    case actionTypes.insertNode:
-      if (action.payload.node.Description.Type === 'TransferFunctionProperty') {
-        return envelopes(undefined, action);
-      }
-      return action.payload.node.Value;
-    case actionTypes.updatePropertyTreeNode:
-    case actionTypes.changePropertyTreeNode:
-      if (state.Description.Type === 'TransferFunctionProperty') {
-        return envelopes(state.Value, action);
-      }
-      return action.payload.value;
-    default:
-      return action.payload.Value;
-  }
-};
+    case actionTypes.addProperties: {
+      const inputProperties = action.payload.properties;
+      const newState = {...state};
 
-const property = (state = {}, action) => { // state refers to a single property
-  switch (action.type) {
-    case actionTypes.insertNode:
-      return {
-        id: helperFunctions.getIdOfProperty(action.payload.node.Description.Identifier),
-        Description: action.payload.node.Description,
-        Value: setPropertyValue(undefined, action),
-        listeners: 0,
-      };
-    case actionTypes.updatePropertyTreeNode:
-    case actionTypes.changePropertyTreeNode:
-      return {
-        ...state,
-        Value: setPropertyValue(state, action),
-      };
-    case actionTypes.startListeningToNode:
-    case actionTypes.stopListeningToNode:
-      return {
-        ...state,
-        listeners: (action.type === actionTypes.startListeningToNode) ?
-          state.listeners + 1 : state.listeners - 1,
-      };
-    default:
-      return state;
-  }
-};
-
-const properties = (state = [], action) => { // state refers to an array of properties
-  switch (action.type) {
-    case actionTypes.insertNode:
-      return action.payload.node.properties.map((element) => {
-        return property(undefined, updateActionNode(action, element));
-      });
-    case actionTypes.updatePropertyTreeNode:
-    case actionTypes.changePropertyTreeNode:
-    case actionTypes.startListeningToNode:
-    case actionTypes.stopListeningToNode:
-      return state.map((element) => {
-        if (element.id === action.payload.identifier) {
-          return property(element, action);
-        }
-        return element;
-      });
-    case actionTypes.removeNode: {
-      return state.map((element) => {
-        if (!(element.id === action.payload.identifier)) {
-          return element;
+      inputProperties.forEach(property => {
+        newState[property.uri] = {
+          description: property.description,
+          value: property.value
         }
       });
+
+      return newState;
     }
+    case actionTypes.removeProperties: {
+      const newState = {...state};
+      action.payload.uris.forEach(uri => {
+        delete newState[uri];
+      });
+      return newState;
+    }
+    case actionTypes.updatePropertyValue:
+      return {
+        ...state,
+        [action.payload.uri]: property(state[action.payload.uri], action)
+      }
     default:
       return state;
   }
-};
+}
 
-export const propertyOwner = (state = {}, action) => { // state refers to a single node
+const propertyOwners = (state = {}, action) => {
   switch (action.type) {
-    case actionTypes.insertNode:
-      return {
-        identifier: action.payload.node.identifier,
-        guiName: action.payload.node.guiName,
-        properties: properties(undefined, action),
-        subowners: action.payload.node.subowners.map((subowner) => {
-          return propertyOwner(undefined, updateActionNode(action, subowner));
-        }),
-        tag: (action.payload.node.tag === undefined) ? [] : action.payload.node.tag,
-        listeners: 0,
-      };
-
-    case actionTypes.startListeningToNode:
-    case actionTypes.stopListeningToNode:
-    case actionTypes.updatePropertyTreeNode:
-    case actionTypes.changePropertyTreeNode: {
-      const splittedURI = helperFunctions.splitURI(action.payload.URI);
-      if (action.payload.isLastNode) {
-        return changePropertyOwnerState(state, action);
-      }
-      const newAction = updateActionURI(action, splittedURI);
-      return {
-        ...state,
-        subowners: state.subowners.map((element) => {
-          if (element.identifier === splittedURI.identifier) {
-            return propertyOwner(element, newAction);
-          }
-          return element;
-        }),
-        properties: properties(state.properties, newAction),
-      };
-    }
-
-    case actionTypes.removeNode: {
-      const splittedURI = helperFunctions.splitURI(action.payload.URI);
-      const newAction = updateActionURI(action, splittedURI);
-      return {
-        ...state,
-        subowners: state.subowners.map((element) => {
-          if (element.identifier === splittedURI.identifier) {
-            if (!splittedURI.isLastNode) {
-              return propertyOwner(element, newAction);
-            }
-          } else {
-            return element;
-          }
-        }),
-        properties: (splittedURI.isLastOwner) ?
-          properties(state.properties, newAction) :
-          state.properties,
-      };
-    }
-
-    case actionTypes.addNode: {
-      const splittedURI = helperFunctions.splitURI(action.payload.URI);
-      if (action.payload.isLastOwner) {
-        if (action.payload.subowners === undefined) {
-          return {
-            ...state,
-            properties: properties(state.properties, action),
-          };
+    case actionTypes.addPropertyOwners: {
+      const inputOwners = action.payload.propertyOwners;
+      const newState = {...state};
+      inputOwners.forEach(owner => {
+        newState[owner.uri] = {
+          identifier: owner.identifier,
+          name: owner.name,
+          properties: owner.properties,
+          subowners: owner.subowners,
+          tags: owner.tags || [],  
         }
-        return {
-          ...state,
-          subowners: [
-            ...state.subowners,
-            propertyOwner(undefined, updateActionType( action, actionTypes.insertNode) ), 
-          ],
-        };
-      }
-      const newAction = getNewNodeAction(action, splittedURI);
-      return {
-        ...state,
-        subowners: state.subowners.map((element) => {
-          if (element.identifier === splittedURI.identifier) {
-            return propertyOwner(element, newAction);
-          }
-          return element;
-        }),
-      };
+      });
+      return newState;
+    }
+    case actionTypes.removePropertyOwners: {
+      const newState = {...state};
+      action.payload.uris.forEach(uri => {
+        delete newState[uri];
+      });
+      return newState;
     }
     default:
       return state;
   }
-};
+}
+
+export const propertyTree = combineReducers({
+  properties,
+  propertyOwners
+});
