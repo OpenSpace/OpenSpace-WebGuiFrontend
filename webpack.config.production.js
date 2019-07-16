@@ -36,9 +36,7 @@ module.exports = {
               options: {
                 sourceMap: true,
                 importLoaders: 2,
-                modules: true,
-                localIdentName: '[path][name]-[local]',
-                minimize: false,
+                modules: true
               },
             }, {
               loader: 'sass-loader',
