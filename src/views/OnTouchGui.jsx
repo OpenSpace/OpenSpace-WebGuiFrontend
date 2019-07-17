@@ -127,13 +127,13 @@ class OnTouchGui extends Component {
 
     // Set all the story specific properties
     this.props.changePropertyValue(storyIdentifierNode.description.Identifier, selectedStory);
-    if(json.focusbuttons){
+    if (json.focusbuttons) {
       this.props.changePropertyValue(focusNodesList.description.Identifier, json.focusbuttons.toString());
 
-      if(json.focusbuttons.length !== 0){
+      if (json.focusbuttons.length !== 0) {
         addStoryTags(this.props.luaApi,json.focusbuttons);
-      }     
-    }else{
+      }
+    } else {
       this.props.changePropertyValue(focusNodesList.description.Identifier, "");
     }
     this.props.changePropertyValue(anchorNode.description.Identifier, json.start.planet);
@@ -340,7 +340,6 @@ OnTouchGui = withRouter(connect(
 // we wrap it up in another component that only renders the gui after
 // luaApi has been connected
 class RequireLuaApi extends Component {
-
   componentDidMount() {
     this.props.StartConnection();
   }

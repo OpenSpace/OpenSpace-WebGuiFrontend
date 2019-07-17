@@ -5,22 +5,22 @@ import ToggleBoolButton from './ToggleBoolButton';
 class ToggleBoolButtons extends Component {
   constructor(props) {
     super(props);
-	}
+  }
 
   get propertiesButtons(){
     return (
       this.props.properties.map((property, i) => {
         return(
-			    <ToggleBoolButton
-			        key={property.URI}
-			        property={property}
-			    />
+          <ToggleBoolButton
+              key={property.URI}
+              property={property}
+          />
         );
       })
     );
   }
 
- render() {
+render() {
   return (
     <div style={{ display: 'flex' }}>
       {this.propertiesButtons}
@@ -30,9 +30,7 @@ class ToggleBoolButtons extends Component {
 }
 
 const mapStateToProps = (state) => {
-
-	const properties = state.storyTree.story.toggleboolproperties;
-
+  const properties = state.storyTree.story.toggleboolproperties;
   return {
     properties
   };

@@ -9,9 +9,9 @@ export const setStoryStart = (luaApi, startPosition, startTime) => {
     startPosition.altitude
   );
 
-  if(startTime === "NOW"){
+  if (startTime === "NOW") {
     setDate(luaApi, new Date().toISOString());
-  }else{
+  } else {
       setDate(luaApi, startTime);
   }
 

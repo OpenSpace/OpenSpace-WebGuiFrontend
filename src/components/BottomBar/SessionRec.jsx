@@ -26,7 +26,6 @@ import {
 import styles from './SessionRec.scss';
 
 class SessionRec extends Component {
-
   constructor(props) {
     super(props);
 

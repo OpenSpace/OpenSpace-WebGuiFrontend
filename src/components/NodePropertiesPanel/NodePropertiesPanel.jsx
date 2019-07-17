@@ -13,11 +13,10 @@ import { NavigationAnchorKey, ScenePrefixKey, RenderableTypes } from '../../api/
 import { setPopoverVisibility, removeNodePropertyPopover, setPopoverActiveTab} from '../../api/Actions';
 
 class NodePropertiesPanel extends Component {
-
   constructor(props) {
     super(props);
     this.togglePopover = this.togglePopover.bind(this);
-	}
+  }
 
   togglePopover() {
       if (this.props.isFocusNodePanel) {
@@ -99,7 +98,7 @@ class NodePropertiesPanel extends Component {
     if (RenderableTypes[this.props.renderableType]) {
       switch (this.props.renderableType) {
         case RenderableTypes.RenderableGlobe:
-          return [this.buttonForTab(activeTab, 1,"Color Layers"), (this.buttonForTab(activeTab, 2, "Height Layers"))];
+          return [this.buttonForTab(activeTab, 1, "Color Layers"), (this.buttonForTab(activeTab, 2, "Height Layers"))];
       }      
     } else {
       return [];
@@ -142,7 +141,6 @@ class NodePropertiesPanel extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-
   let aim = state.propertyTree.properties[NavigationAnchorKey] ? state.propertyTree.properties[NavigationAnchorKey].value : undefined;
   var nodeURI = ownProps.isFocusNodePanel ? ScenePrefixKey + aim : ownProps.uri;
 
@@ -179,7 +177,6 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-
   const setPopoverVisibilityAction = (visible, uri) => {
     dispatch(setPopoverVisibility({
       popover: uri,

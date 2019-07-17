@@ -156,5 +156,3 @@ PropertyOwnerHeader.defaultProps = {
 };
 
 export default PropertyOwnerHeader;
-
-
