@@ -35,7 +35,7 @@ class SystemMenu extends Component {
                 environment.developmentMode ?
                   <div>
                     <hr className={Popover.styles.delimiter} />
-                    <div className={styles.devModeNotifier}>GUI dev mode enabled</div>
+                    <div className={styles.devModeNotifier}>GUI running in dev mode</div>
                   </div> : null
               }
 
