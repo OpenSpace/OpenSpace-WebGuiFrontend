@@ -10,40 +10,20 @@ npm install
 # run development app
 npm start
 # open gui
-open http://localhost:8080
+open http://localhost:4690
 ```
+
+To run the development version of the gui inside OpenSpace, go to `data/assets/customization/gui.asset` and change the dev flag to true.
+
+## Deploy
+
+When pushed to master, a github hook will be triggered to build the gui.
+In the main OpenSpace repository, go to `data/assets/util/webgui.asset` and change the commit hash to the latest one. Make sure to test it in production mode before pushing the update to OpenSpace master, i.e. change the dev flag to false in  `data/assets/customization/gui.asset`. The production gui is served at http://localhost:4680.
 
 ### Components
 
-There are several useful and reusable components to make it easier for you as the developer. Most of 
-these general-purpose components are in [`src/comoponents/common`](src/components/common). To see
-some of them, [Storybook](https://github.com/storybooks/storybook) is a useful tool. It allows you
-to see them and try them out. When you are developing common-use components, please add stories for 
-them. 
-
-#### Using Storybook
-
-To start storybook, run 
-
-```sh
-npm run storybook
-open http://localhost:9001
-``` 
-
-in your favourite terminal. This will start Storybook and open it up in your browser.
-
-To add stories, add a file called `WhateverYourComponentNameIs.story.jsx`. It will get picked up by
-Storybook. The `.story.jsx` ending is the important part of the file name, as this is what the 
-Storybook config is looking for. See the [Storybook documentation](https://storybook.js.org/basics/introduction/) 
-for instructions on how to build stories. 
-
-Using Storybook, you will help 
-
-* your fellow developers understand how a component may be used, and
-* yourself in writing a clear, friendly API for your components.
-
-Please try and declare every special case in your stories, as that will further improve the 
-usefulness of the tool.
+There are several useful and reusable components to make it easier for you as the developer. Most of
+these general-purpose components are in [`src/comoponents/common`](src/components/common).
 
 ### Types
 
