@@ -15,11 +15,6 @@ open http://localhost:4690
 
 To run the development version of the gui inside OpenSpace, go to `data/assets/customization/gui.asset` and change the dev flag to true.
 
-## Deploy
-
-When pushed to master, a github hook will be triggered to build the gui.
-In the main OpenSpace repository, go to `data/assets/util/webgui.asset` and change the commit hash to the latest one. Make sure to test it in production mode before pushing the update to OpenSpace master, i.e. change the dev flag to false in  `data/assets/customization/gui.asset`. The production gui is served at http://localhost:4680.
-
 ### Components
 
 There are several useful and reusable components to make it easier for you as the developer. Most of
@@ -48,5 +43,10 @@ function stringReturner(a: string, bMightBeAnything): string {
   // The interesting parts of this code snippet is higlighted above 
 }
 ```
+
+## Deploy
+
+When pushed to master, a github hook will be triggered to build the gui.
+In the main OpenSpace repository, go to `data/assets/util/webgui.asset` and change the commit hash to the latest one. Make sure to test it in production mode before pushing the update to OpenSpace master, i.e. change the dev flag to false in  `data/assets/customization/gui.asset`. The production gui is served at http://localhost:4680.
 
 For more about Flow, check out https://flow.org
