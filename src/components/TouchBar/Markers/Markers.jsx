@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Marker from './Marker';
+import { ScenePrefixKey, NavigationAnchorKey } from '../../../api/keys';
 
 class Markers extends Component {
   constructor(props) {
     super(props);
   }
 
+  /* TODO: When we handle occlusion properly we want
+   to show markers for all focus nodes at the same time
   createInfoMarkers(){
     return (
       this.props.focusNodes.map((node, i) => {
@@ -19,28 +22,25 @@ class Markers extends Component {
       })
     );
   }
-
+  */
   render() {
     return(
       <div className='Markers'>
-        {this.createInfoMarkers()}
+          <Marker
+              key = {this.props.anchorNode.identifier}
+              nodeIdentifier = {this.props.anchorNode.identifier}
+          />
       </div>
     );
   }
 }
 
 const mapStateToProps = (state) => {
-  let focusNodes = [];
-  const focusButtons = state.storyTree.story.focusbuttons;
-
-  if (focusButtons) {
-    focusNodes = focusButtons.map(button => 
-      state.propertyTree.propertyOwners['Scene.' + button]
-    );
-  }
+  const anchorNodeId = state.propertyTree.properties[NavigationAnchorKey].value;
+  const anchorNode = state.propertyTree.propertyOwners[ScenePrefixKey + anchorNodeId];
 
   return {
-    focusNodes
+    anchorNode
   }
 };
 
