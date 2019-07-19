@@ -74,15 +74,15 @@ class Controllers extends Component {
 
     return (
       <div style={{ display: 'flex' }}>
-        { (story && story.timecontroller !== 'false') &&
+        { (story && story.timecontroller !== false) &&
           <TimePlayerController />
         }
-        {(story && story.datecontroller !== 'false') &&
+        {(story && story.datecontroller !== false) &&
         <DateController
           dateList={story.datecontroller}
           onChangeSight={this.onChangeSight}
         />}
-        {(story && story.sightscontroller !== 'false') &&
+        {(story && story.sightscontroller !== false) &&
         <SightsController
           sightsList={story.sightscontroller}
           onChangeSight={this.onChangeSight}

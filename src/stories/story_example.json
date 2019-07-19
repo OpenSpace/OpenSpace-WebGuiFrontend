@@ -2,7 +2,7 @@
   "storyidentifier":"example",
   "overviewlimit": 2.2e+13,
   "focusbuttons": ["Earth", "Mercury", "Venus", "Mars", "Jupiter", "Saturn"],
-  "timecontroller": "true",
+  "timecontroller": true,
   "datecontroller":  [
     {
       "info": "Hurricane Irma",
@@ -86,12 +86,12 @@
     {
       "URI":"Scene.MarsTrail.renderable.Enabled",
       "label":"Mars Trail",
-      "defaultvalue": "true"
+      "defaultvalue": true
     },
     {
       "URI":"Scene.Mars.RenderableGlobe.Atmosphere",
       "label":"Mars Atmosphere",
-      "defaultvalue": "false"
+      "defaultvalue": false
     }
   ]
 }

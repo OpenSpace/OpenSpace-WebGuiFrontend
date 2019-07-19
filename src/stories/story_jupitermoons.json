@@ -5,9 +5,9 @@
   "infofile": "info_jupitermoons",
   "overviewlimit": 5.0e+9,
   "focusbuttons": ["Jupiter", "Io", "Europa", "Ganymede", "Callisto"],
-  "timecontroller": "true",
-  "datecontroller": "false",
-  "sightscontroller" : "false",
+  "timecontroller": true,
+  "datecontroller": false,
+  "sightscontroller" : false,
   "start": {
     "planet": "Jupiter",
     "time": "NOW",

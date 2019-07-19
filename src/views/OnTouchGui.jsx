@@ -154,7 +154,7 @@ class OnTouchGui extends Component {
     // If the previous story toggled bool properties reset them to default value
     if (this.props.story.toggleboolproperties) {
       this.props.story.toggleboolproperties.forEach((property) => {
-        const defaultValue = (property.defaultvalue === 'true') ? true : false;
+        const defaultValue = (property.defaultvalue === true) ? true : false;
         this.props.luaApi.setPropertyValue(property.URI, defaultValue);
       });
     }
