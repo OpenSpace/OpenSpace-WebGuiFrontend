@@ -10,7 +10,7 @@
   "sightscontroller" : false,
   "start": {
     "planet": "Jupiter",
-    "time": "NOW",
+    "date": "NOW",
     "location": {
       "latitude": -10,
       "longitude": -10,

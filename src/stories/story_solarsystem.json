@@ -10,7 +10,7 @@
   "sightscontroller" : false,
   "start": {
     "planet": "Earth",
-    "time": "NOW",
+    "date": "NOW",
     "location": {
       "latitude": 40.758701,
       "longitude": -111.876183,

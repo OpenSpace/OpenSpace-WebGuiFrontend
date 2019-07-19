@@ -97,7 +97,7 @@ class TimePlayerController extends Component {
         </div>
         <div className={styles.SimulationIncrement}>
           <div className={styles.TimeText}>
-            {new Date(this.time).toLocaleString()}
+            {new Date(this.time).toUTCString()}
           </div>
           <div className={styles.PlayerContainer}>
             <Icon icon="fast_rewind" id={FastRewind} className={`${styles.Icon} ${(this.props.deltaTime === -FastSpeed) && styles.active}`} onClick={this.clickPlayer} />

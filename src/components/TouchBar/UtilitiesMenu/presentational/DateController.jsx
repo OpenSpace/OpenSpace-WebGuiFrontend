@@ -49,7 +49,7 @@ class DateController extends Component {
         onClick={this.pickDate}
       >
         <span className={styles.date} id={date.date}>
-          {new Date(date.date).toLocaleDateString()}
+          {new Date(date.date).toLocaleDateString('en-US', {year: 'numeric', month: 'numeric', day: 'numeric' })}
         </span>
         <SmallLabel className={styles.label} id={date.date}>
           {date.planet},{date.info}
@@ -61,7 +61,8 @@ class DateController extends Component {
 
   pickDate(e) {
     this.togglePopover();
-    timeHelpers.setDate(this.props.luaApi, new Date(e.target.id).toISOString());
+    const timeString = timeHelpers.DateStringWithTimeZone(e.target.id);
+    timeHelpers.setDate(this.props.luaApi, new Date(timeString));
     const selectedDate = this.props.dateList.find(date => date.date === e.target.id);
     this.props.onChangeSight(selectedDate);
   }

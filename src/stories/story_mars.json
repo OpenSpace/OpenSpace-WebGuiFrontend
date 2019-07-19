@@ -82,7 +82,7 @@
   ],
   "start": {
     "planet": "Mars",
-    "time": "2015-07-14T23:00:00.00",
+    "date": "2015-07-14T23:00:00.00",
     "location": {
       "latitude": -13.96,
       "longitude": 55.58,

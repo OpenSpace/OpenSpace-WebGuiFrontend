@@ -8,7 +8,7 @@
   "datecontroller":  [
     {
       "info": "Hurricane Irma",
-      "date": "2017-09-16T20:00:00.00",
+      "date": "2017-09-16T15:00:00.00",
       "planet": "Earth",
       "location": {
         "latitude": 24.555059,
@@ -28,7 +28,7 @@
     },
     {
       "info": "Hurricane Jose",
-      "date": "2017-09-08T20:00:00.00",
+      "date": "2017-09-08T15:00:00.00",
       "planet": "Earth",
       "location": {
         "latitude": 18.073099,
@@ -40,7 +40,7 @@
   "sightscontroller" : false,
   "start": {
     "planet": "Earth",
-    "time": "NOW",
+    "date": "NOW",
     "location": {
       "latitude": 40.758701,
       "longitude": -111.876183,

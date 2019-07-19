@@ -9,22 +9,30 @@ export const realtime = (luaApi) => {
 };
 
 export const setDateToNow = (luaApi) => {
-  const now = new Date().toISOString();
+  const now = new Date();
   setDate(luaApi, now);
   UpdateDeltaTimeNow(luaApi, 1);
 };
 
-// Spice, that is handling the time parsing in OpenSpace does not support
-// ISO 8601-style time zones (the Z). It does, however, always assume that UTC
-// is given.
-export const setDate = (luaApi, time) => {
-  const fixedTimeString = time.toString().replace('Z', '');
-  luaApi.time.setTime(fixedTimeString);
+/**
+* SPICE, that is handling the time parsing in OpenSpace assumes UTC time.
+* It does not accept ISO 8601-style time zones (the Z)
+* @param luaApi
+* @param time - string assumed to be in UTC
+*/
+export const setDate = (luaApi, date) => {
+  // date.toJSON returns a UTC format string including timezone 'Z'
+  // but the lua api only accepts a UTC string without time zone
+  const fixedDateString = date.toJSON().replace('Z', '');
+  luaApi.time.setTime(fixedDateString);
 };
 
 /**
- * Make sure the date string contains a time zone
- * @param date
+ * Make sure the date string contains a time zone. When
+ * creating a javascript Date, the browser will interpret
+ * all date strings as local time, unless specifying the
+ * timezone as 'Z' which will interpret it as UTC
+ * @param date - date string with or without timezone 'Z'
  * @param zone - the time zone in ISO 8601 format
  * @constructor
  */

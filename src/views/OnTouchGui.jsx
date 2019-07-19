@@ -12,7 +12,7 @@ import Stack from '../components/common/Stack/Stack';
 
 import {
   setPropertyValue, startConnection, fetchData, addStoryTree, subscribeToProperty,
-  unsubscribeToProperty,  addStoryInfo, resetStoryInfo,
+  unsubscribeToProperty, addStoryInfo, resetStoryInfo,
 } from '../api/Actions';
 import TouchBar from '../components/TouchBar/TouchBar';
 import styles from './OnTouchGui.scss';
@@ -24,7 +24,7 @@ import Slider from '../components/ImageSlider/Slider';
 import { UpdateDeltaTimeNow } from '../utils/timeHelpers';
 import { toggleShading, toggleHighResolution, toggleHidePlanet, toggleGalaxies, 
          toggleZoomOut, setStoryStart, hideDevInfoOnScreen, showDistanceOnScreen, 
-         addStoryTags, removeStoryTags,
+         addStoryTags, removeStoryTags, storyFileParser, infoFileParser
 } from '../utils/storyHelpers';
 import DeveloperMenu from '../components/TouchBar/UtilitiesMenu/presentational/DeveloperMenu';
 import { isCompatible,
@@ -137,8 +137,8 @@ class OnTouchGui extends Component {
       this.props.changePropertyValue(focusNodesList.description.Identifier, "");
     }
     this.props.changePropertyValue(anchorNode.description.Identifier, json.start.planet);
-    this.props.changePropertyValue(overViewNode.description.Identifier, Number(json.overviewlimit));
-    setStoryStart(this.props.luaApi, json.start.location, json.start.time);
+    this.props.changePropertyValue(overViewNode.description.Identifier, json.overviewlimit);
+    setStoryStart(this.props.luaApi, json.start.location, json.start.date);
 
     // Check settings of the previous story and reset values
     this.checkStorySettings(this.props.story, true);
@@ -192,18 +192,22 @@ class OnTouchGui extends Component {
 
   // Read in json-file for new story and add it to redux
   addStoryTree(selectedStory) {
-    const json = require(`../stories/story_${selectedStory}.json`);
 
-    this.props.AddStoryTree(json);
+    const storyFile = storyFileParser(selectedStory);
 
-    if (json.infofile) {
-      const info = require(`../stories/${json.infofile}.json`);
+    this.props.AddStoryTree(storyFile);
+    if (storyFile.infofile) {
+      const info = infoFileParser(storyFile.infofile);
+
       this.props.AddStoryInfo(info);
     } else {
       this.props.ResetStoryInfo();
     }
-    return json;
+
+    return storyFile;
   }
+
+
 
   changeStory(e) {
     this.setStory(e.target.id);

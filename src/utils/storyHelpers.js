@@ -9,12 +9,7 @@ export const setStoryStart = (luaApi, startPosition, startTime) => {
     startPosition.altitude
   );
 
-  if (startTime === "NOW") {
-    setDate(luaApi, new Date().toISOString());
-  } else {
-      setDate(luaApi, startTime);
-  }
-
+  setDate(luaApi, startTime);
 };
 
 export const addStoryTags= (luaApi, nodes) => {
@@ -80,3 +75,38 @@ export const hideDevInfoOnScreen = (luaApi, value) => {
 export const showDistanceOnScreen = (luaApi, value) => {
   luaApi.setPropertyValue(`Dashboard.Distance.Enabled`, value);
 };
+
+/**
+* This function helps verifying the input values of the json file
+* and also converts where appropriate, for example the json date
+* strings are converted into javascript Date objects
+* @param story - the selected story identifier
+*/ 
+export const storyFileParser = (story) => {
+
+  const json = require(`../stories/story_${story}.json`);
+  //TODO: Loop through all items and verify their format and type
+  let parsedJSON = json;
+
+  //The strings from the json files are assumed to be UTC
+  //unless specified as 'NOW'
+  const startDateString = json.start.date;
+  let startDate = undefined;
+  if(startDateString === "NOW"){
+   startDate = new Date();
+  }else{
+    startDate = new Date(startDateString);
+  }
+  parsedJSON.start.date = startDate;
+
+  return parsedJSON;
+}
+
+export const infoFileParser = (infoFile) => {
+
+  const info = require(`../stories/${infoFile}.json`);
+  let parsedInfo = info;
+
+  return parsedInfo;
+
+}
