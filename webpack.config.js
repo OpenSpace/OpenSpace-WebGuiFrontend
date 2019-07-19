@@ -1,15 +1,16 @@
 const { resolve } = require('path');
 const webpack = require('webpack');
 
-const PublicPath = '/';
+const PublicPath = '/frontend/';
 
 module.exports = {
   mode: 'development',
   context: resolve(__dirname, 'src'),
   entry: [
     'react-hot-loader/patch',
-    'webpack-dev-server/client?http://localhost:4680',
+    'webpack-dev-server/client?http://localhost:4690',
     'webpack/hot/only-dev-server',
+    './devmode.js',
     './index.jsx',
   ],
   output: {
@@ -23,6 +24,18 @@ module.exports = {
     hot: true,
     contentBase: resolve(__dirname, 'dist'),
     publicPath: PublicPath,
+    proxy: {
+      '/': {
+        target: 'http://localhost:4680',
+        bypass: function(req, res, proxyOptions) {
+          if (req.originalUrl.indexOf('/frontend') === 0 ||
+              req.originalUrl.indexOf('/environment.js') === 0)
+          {
+            return req.originalUrl;
+          }
+        }
+      }
+    }
   },
   module: {
     rules: [

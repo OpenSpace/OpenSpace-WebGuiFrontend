@@ -1,9 +1,11 @@
 const defaults = {
   wsAddress: 'localhost',
-  wsPort: 4682
+  wsPort: 4682,
+  developmentMode: false
 }
 
-const overrides = window.OpenSpaceEnvironment || {};
-const env = {...defaults, ...overrides};
+const openSpaceOverrides = window.OpenSpaceEnvironment || {};
+const devOverrides = window.DevelopmentEnvironment || {};
+const env = {...defaults, ...devOverrides, ...openSpaceOverrides};
 
 export default env;
