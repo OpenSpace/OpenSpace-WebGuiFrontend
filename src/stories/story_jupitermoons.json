@@ -12,9 +12,9 @@
     "planet": "Jupiter",
     "time": "NOW",
     "location": {
-      "latitude": "-10",
-      "longitude": "-10",
-      "altitude": "1000000000"
+      "latitude": -10,
+      "longitude": -10,
+      "altitude": 1000000000
     }
   },
   "hidenodes": ["Mercury", "Venus", "Earth", "Mars", "Saturn", "Uranus", "Neptune"],

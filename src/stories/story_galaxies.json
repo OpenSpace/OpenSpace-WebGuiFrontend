@@ -12,9 +12,9 @@
     "planet": "Earth",
     "time": "NOW",
     "location": {
-      "latitude": "40.758701",
-      "longitude": "-111.876183",
-      "altitude": "2.0e+7"
+      "latitude": 40.758701,
+      "longitude": -111.876183,
+      "altitude": 2.0e+7
     }
   },
   "galaxies": "true",

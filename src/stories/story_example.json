@@ -9,9 +9,9 @@
       "date": "2017-09-16T08:00:00.00",
       "planet": "Earth",
       "location": {
-        "latitude": "24.555059",
-        "longitude": "-81.779984",
-        "altitude": "10000000"
+        "latitude": 24.555059,
+        "longitude": -81.779984,
+        "altitude": 10000000
       }
     },
     {
@@ -29,9 +29,9 @@
       "date": "2017-09-08T08:00:00.00",
       "planet": "Earth",
       "location": {
-        "latitude": "18.073099",
-        "longitude": "-63.082199",
-        "altitude": "10000000"
+        "latitude": 18.073099,
+        "longitude": -63.082199,
+        "altitude": 10000000
       }
     }
   ],
@@ -40,36 +40,36 @@
       "info": "Norrköping",
       "planet": "Earth",
       "location": {
-        "latitude": "58.5877",
-        "longitude": "16.1924",
-        "altitude": "1000000"
+        "latitude": 58.5877,
+        "longitude": 16.1924,
+        "altitude": 1000000
       }
     },
     {
       "info": "Huygens Crater",
       "planet": "Mars",
       "location": {
-        "latitude": "-13.96",
-        "longitude": "55.58",
-        "altitude": "3000000"
+        "latitude": -13.96,
+        "longitude": 55.58,
+        "altitude": 3000000
       }
     },
     {
       "info": "Salt Lake City",
       "planet": "Earth",
       "location": {
-        "latitude": "40.758701",
-        "longitude": "-111.876183",
-        "altitude": "1000000"
+        "latitude": 40.758701,
+        "longitude": -111.876183,
+        "altitude": 1000000
       }
     },
     {
       "info": "New York",
       "planet": "Earth",
       "location": {
-        "latitude": "40.730610",
-        "longitude": "-73.935242",
-        "altitude": "1000000"
+        "latitude": 40.730610,
+        "longitude": -73.935242,
+        "altitude": 1000000
       }
     }
   ],
@@ -77,9 +77,9 @@
     "planet": "Mars",
     "time": "2015-07-14T08:00:00.00",
     "location": {
-      "latitude": "-13.96",
-      "longitude": "55.58",
-      "altitude": "20000000"
+      "latitude": -13.96,
+      "longitude": 55.58,
+      "altitude": 20000000
     }
   },
    "toggleboolproperties": [

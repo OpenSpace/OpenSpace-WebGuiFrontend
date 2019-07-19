@@ -11,9 +11,9 @@
     "planet": "Earth",
     "time": "NOW",
     "location": {
-      "latitude": "40.758701",
-      "longitude": "-111.876183",
-      "altitude": "20000000"
+      "latitude": 40.758701,
+      "longitude": -111.876183,
+      "altitude": 20000000
     }
   }
 }
