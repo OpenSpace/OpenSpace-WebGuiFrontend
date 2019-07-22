@@ -2,98 +2,225 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import SmallLabel from '../../common/SmallLabel/SmallLabel';
-import Icon from '../../common/Icon/Icon';
 import LoadingString from '../../common/LoadingString/LoadingString';
 import Picker from '../Picker';
 import Popover from '../../common/Popover/Popover';
+import Button from '../../common/Input/Button/Button';
 import FilterList from '../../common/FilterList/FilterList';
-import DataManager from '../../../api/DataManager';
-import { NavigationAnchorKey, NavigationAimKey, RetargetAnchorKey, RetargetAimKey } from '../../../api/keys';
+import {
+  NavigationAnchorKey,
+  NavigationAimKey,
+  RetargetAnchorKey,
+  RetargetAimKey,
+  ScenePrefixKey
+} from '../../../api/keys';
 import FocusEntry from './FocusEntry';
 
-import Earth from './images/earth.png';
+import {
+  setNavigationAction, 
+  setOriginPickerShowFavorites,
+  setPopoverVisibility
+} from '../../../api/Actions';
+
 import styles from './OriginPicker.scss';
 
-const icons = {
-  Earth,
-};
+import SvgIcon from '../../common/SvgIcon/SvgIcon';
+import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
+import Anchor from 'svg-react-loader?name=Anchor!../../../icons/anchor.svg';
+import Aim from 'svg-react-loader?name=Aim!../../../icons/aim.svg';
+import Focus from 'svg-react-loader?name=Focus!../../../icons/focus.svg';
+
+import propertyDispatcher from '../../../api/propertyDispatcher';
+import subStateToProps from '../../../utils/subStateToProps';
+
 
 // tag that each focusable node must have
-const REQUIRED_TAG = 'planet_solarSystem';
+const REQUIRED_TAG = 'GUI.Interesting';
+
+const NavigationActions = {
+  Focus: 'Focus',
+  Anchor: 'Anchor',
+  Aim: 'Aim'
+};
 
 class OriginPicker extends Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      origin: 'Mercury',
-      hasOrigin: false,
-      sceneGraphNodes: [],
-      showPopover: false,
-    };
-
-    this.updateOrigin = this.updateOrigin.bind(this);
     this.togglePopover = this.togglePopover.bind(this);
+    this.onSelect = this.onSelect.bind(this);
   }
 
   componentDidMount() {
-    DataManager.subscribe(NavigationAnchorKey, this.updateAnchor);
-    DataManager.subscribe(NavigationAimKey, this.updateAim);
+    this.props.anchorDispatcher.subscribe();
+    this.props.aimDispatcher.subscribe();
   }
 
   componentWillUnmount() {
-    DataManager.unsubscribe(NavigationAnchorKey, this.updateAnchor);
-    DataManager.unsubscribe(NavigationAimKey, this.updateAim);
+    this.props.anchorDispatcher.unsubscribe();
+    this.props.aimDispatcher.unsubscribe();
   }
 
-  get icon() {
-    const icon = icons[this.state.origin];
-    if (icon) {
-      return (
-        <img src={icon} className={styles.iconImage} alt={this.state.origin} />
-      );
-    }
-    return (<Icon icon="language" className={styles.Icon} />);
+  get anchor() {
+    return this.props.anchor;
   }
 
-  get origin() {
-    return this.state.origin;
+  get aim() {
+    return this.props.aim;
   }
 
-  updateOrigin(data) {
-    const { Value } = data;
-    this.setState({ origin: Value, hasOrigin: Value !== '' });
+  hasDistinctAim() {
+    return (this.props.aim !== '') &&
+           (this.props.aim !== this.props.anchor);
   }
 
   togglePopover() {
-    this.setState({ showPopover: !this.state.showPopover });
+    this.props.setPopoverVisibility(!this.props.popoverVisible)
   }
 
+  get focusPicker() {
+    return (
+      <div className={styles.Grid}>
+        <SvgIcon className={styles.Icon}><Focus/></SvgIcon>
+        <div className={Picker.Title}>
+          <span className={Picker.Name}>
+            <LoadingString loading={this.props.anchor === undefined}>
+              { this.props.anchorName }
+            </LoadingString>
+          </span>
+          <SmallLabel>Focus</SmallLabel>
+        </div>
+      </div>);
+  }
+
+  get anchorAndAimPicker() {
+    return (
+      <div className={styles.Grid}>
+        <SvgIcon className={styles.Icon}><Anchor/></SvgIcon>
+        <div className={Picker.Title}>
+          <span className={Picker.Name}>
+            <LoadingString loading={this.props.anchor === undefined}>
+              { this.props.anchorName }
+            </LoadingString>
+          </span>
+          <SmallLabel>Anchor</SmallLabel>
+        </div>
+        <SvgIcon style={{marginLeft: 10}} className={styles.Icon}><Aim/></SvgIcon>
+        <div className={Picker.Title}>
+          <span className={Picker.Name}>
+            <LoadingString loading={this.props.anchor === undefined}>
+              { this.props.aimName }
+            </LoadingString>
+          </span>
+          <SmallLabel>Aim</SmallLabel>
+        </div>
+      </div>
+      );
+  }
+
+  onSelect(identifier, evt) {
+    if (this.props.navigationAction === NavigationActions.Focus) {
+      this.props.aimDispatcher.set('');
+      this.props.anchorDispatcher.set(identifier);
+    } else if (this.props.navigationAction === NavigationActions.Anchor) {
+      if (this.props.aim === '') {
+        this.props.aimDispatcher.set(this.props.anchor);
+      }
+      this.props.anchorDispatcher.set(identifier);
+    } else if (this.props.navigationAction === NavigationActions.Aim) {
+      this.props.aimDispatcher.set(identifier);
+    }
+    if (!evt.shiftKey) {
+      if (this.props.navigationAction === NavigationActions.Aim) {
+        this.props.retargetAimDispatcher.set(null);
+      } else {
+        this.props.retargetAnchorDispatcher.set(null);
+      }
+    }
+  };
+
   render() {
-    const { hasOrigin, showPopover } = this.state;
-    const { nodes, favorites } = this.props;
+    const {
+      nodes,
+      favorites,
+      showFavorites,
+      setShowFavorites,
+      setNavigationAction,
+      navigationAction,
+      popoverVisible
+    } = this.props;
+
+    const defaultList = favorites.slice();
+
+    // Make sure current anchor is in the default list
+    if (this.props.anchor !== undefined &&
+        !defaultList.find(node => node.identifier === this.props.anchor))
+    {
+      const anchorNode = nodes.find(node => node.identifier === this.props.anchor);
+      if (anchorNode) {
+        defaultList.push(anchorNode);
+      }
+    }
+
+    // Make sure current aim is in the defualt list
+    if (this.hasDistinctAim() &&
+        !defaultList.find(node => node.identifier === this.props.aim))
+    {
+      const aimNode = nodes.find(node => node.identifier === this.props.aim);
+      if (aimNode) {
+        defaultList.push(aimNode);
+      }
+    }
+
+    const sortedDefaultList = defaultList.slice(0).sort((a, b) => a.name.localeCompare(b.name));
+    const sortedNodes = nodes.slice(0).sort((a, b) => a.name.localeCompare(b.name));
+
+    const searchPlaceholder = {
+      Focus: "Search for a new focus...",
+      Anchor: "Search for a new anchor...",
+      Aim: "Search for a new aim...",
+    }[navigationAction];
+
+    const setNavigationActionToFocus = () => { setNavigationAction(NavigationActions.Focus); };
+    const setNavigationActionToAnchor = () => { setNavigationAction(NavigationActions.Anchor); };
+    const setNavigationActionToAim = () => { setNavigationAction(NavigationActions.Aim); };
+
     return (
       <div className={Picker.Wrapper}>
-        <Picker onClick={this.togglePopover} className={(showPopover ? Picker.Active : '')}>
-          { this.icon }
-          <div className={Picker.Title}>
-            <span className={Picker.Name}>
-              <LoadingString loading={!hasOrigin}>
-                { this.origin }
-              </LoadingString>
-            </span>
-            <SmallLabel>Focus</SmallLabel>
-          </div>
+        <Picker onClick={this.togglePopover} className={(popoverVisible ? Picker.Active : '')}>
+          {this.hasDistinctAim() ? this.anchorAndAimPicker : this.focusPicker }
         </Picker>
-        { showPopover && (
-          <Popover closeCallback={this.togglePopover} title="Select focus" className={Picker.Popover}>
+        { popoverVisible && (
+          <Popover closeCallback={this.togglePopover} title="Navigation" className={Picker.Popover} attached={true}>
+            <div>
+              <Button className={styles.NavigationButton}
+                      onClick={setNavigationActionToFocus}
+                      title="Select focus"
+                      transparent={this.props.navigationAction !== NavigationActions.Focus}>
+                <SvgIcon className={styles.ButtonIcon}><Focus/></SvgIcon>
+              </Button>
+              <Button className={styles.NavigationButton}
+                      onClick={setNavigationActionToAnchor}
+                      title="Select anchor"
+                      transparent={this.props.navigationAction !== NavigationActions.Anchor}>
+                <SvgIcon className={styles.ButtonIcon}><Anchor/></SvgIcon>
+              </Button>
+              <Button className={styles.NavigationButton}
+                      onClick={setNavigationActionToAim}
+                      title="Select aim"
+                      transparent={this.props.navigationAction !== NavigationActions.Aim}>
+                <SvgIcon className={styles.ButtonIcon}><Aim/></SvgIcon>
+              </Button>
+            </div>
             <FilterList
-              data={nodes}
-              favorites={favorites}
+              data={sortedNodes}
+              favorites={sortedDefaultList}
+              showFavorites={showFavorites}
+              setShowFavorites={setShowFavorites}
               className={styles.list}
-              searchText="Search the universe..."
+              searchText={searchPlaceholder}
               viewComponent={FocusEntry}
-              active={this.origin}
+              onSelect={this.onSelect}
+              active={this.props.navigationAction === NavigationActions.Aim ? this.aim : this.anchor}
               searchAutoFocus
             />
           </Popover>
@@ -103,28 +230,85 @@ class OriginPicker extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  const sceneType = 'Scene';
-  let nodes = [];
-  let favorites = [];
-  if (Object.keys(state.propertyTree).length !== 0) {
-    const rootNodes = state.propertyTree.subowners.filter(
-      element => element.identifier === sceneType
-    );
-    rootNodes.forEach((node) => {
-      nodes = [...nodes, ...node.subowners];
-    });
-    favorites = nodes.filter(node => node.tag.some(tag => tag.includes(REQUIRED_TAG)))
-      .map(node => Object.assign(node, { key: node.identifier }));
-  }
+const mapSubStateToProps = ({properties, propertyOwners, originPicker, originPickerPopover}) => {
+  const scene = propertyOwners.Scene;
+  const uris = scene ? scene.subowners : [];
+  
+  const nodes = uris.map(uri => ({
+    ...propertyOwners[uri],
+    key: uri
+  }));
+
+  const favorites = uris.filter(uri =>
+    propertyOwners[uri].tags.some(tag =>
+      tag.includes(REQUIRED_TAG)
+    )
+  ).map(uri => ({
+    ...propertyOwners[uri],
+    key: uri
+  }));
+
+  const navigationAction = originPicker.action;
+  const showFavorites = originPicker.showFavorites;
+  const anchorProp = properties[NavigationAnchorKey];
+  const aimProp = properties[NavigationAimKey];
+
+  const anchor = anchorProp && anchorProp.value;
+  const aim = aimProp && aimProp.value;
+
+  const anchorNode = propertyOwners[ScenePrefixKey + anchor];
+  const aimNode = propertyOwners[ScenePrefixKey + aim];
+
+  const anchorName = anchorNode ? anchorNode.name : anchor;
+  let aimName = aimNode ? aimNode.name : aim;
+
+  const popoverVisible = originPickerPopover.visible;
+
   return {
     nodes,
-    favorites
+    anchor,
+    aim,
+    anchorName,
+    aimName,
+    favorites,
+    showFavorites,
+    navigationAction,
+    popoverVisible,
   };
 };
 
+const mapStateToSubState = (state) => ({
+  propertyOwners: state.propertyTree.propertyOwners,
+  properties: state.propertyTree.properties,
+  originPicker: state.local.originPicker,
+  originPickerPopover: state.local.popovers.originPicker
+});
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setNavigationAction: action => {
+      dispatch(setNavigationAction(action))
+    },
+    setShowFavorites: action => {
+      dispatch(setOriginPickerShowFavorites(action))
+    },
+    anchorDispatcher: propertyDispatcher(dispatch, NavigationAnchorKey),
+    aimDispatcher: propertyDispatcher(dispatch, NavigationAimKey),
+    retargetAnchorDispatcher: propertyDispatcher(dispatch, RetargetAnchorKey),
+    retargetAimDispatcher: propertyDispatcher(dispatch, RetargetAimKey),
+    setPopoverVisibility: (visible) => {
+      dispatch(setPopoverVisibility({
+        popover: 'originPicker',
+        visible
+      }));
+    },
+  }
+}
+
+
 OriginPicker = connect(
-  mapStateToProps,
+  subStateToProps(mapSubStateToProps, mapStateToSubState),
+  mapDispatchToProps
 )(OriginPicker);
 
 export default OriginPicker;

@@ -54,7 +54,7 @@ class TimeController extends Component {
   setSimulationSpeed(value) {
     this.beforeAdjust = this.beforeAdjust || this.state.deltaTime;
     const simulationSpeed = (value ** 5);
-    timeHelpers.UpdateDeltaTimeNow(this.beforeAdjust * simulationSpeed);
+    timeHelpers.UpdateDeltaTimeNow(this.props.luaApi, this.beforeAdjust * simulationSpeed);
   }
 
   setDate(time) {
@@ -87,7 +87,7 @@ class TimeController extends Component {
           <Button block smalltext flexgrow fixedwidth onClick={this.handleOnTogglePause}>
             {this.state.paused ? 'Play' : 'Pause'}
           </Button>
-          <Button block smalltext flexgrow fixedwidth onClick={timeHelpers.now}>
+          <Button block smalltext flexgrow fixedwidth onClick={() => timeHelpers.setDateToNow(this.props.luaApi)}>
             Now
           </Button>
         </div>

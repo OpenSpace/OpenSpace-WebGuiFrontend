@@ -11,21 +11,20 @@ import About from './About/About';
 import Stack from '../components/common/Stack/Stack';
 
 import {
-  changePropertyValue, startConnection, fetchData, addStoryTree, startListening,
-  addStoryInfo, resetStoryInfo,
+  setPropertyValue, startConnection, fetchData, addStoryTree, subscribeToProperty,
+  unsubscribeToProperty, addStoryInfo, resetStoryInfo,
 } from '../api/Actions';
 import TouchBar from '../components/TouchBar/TouchBar';
 import styles from './OnTouchGui.scss';
-import { traverseTreeWithURI } from '../utils/propertyTreeHelpers';
 import {
-  infoIconKey, ValuePlaceholder, StoryIdentifierKey,
-  ApplyRemoveTagKey, ApplyAddTagKey, FocusNodesListKey, defaultStory,
-  OverlimitKey, ScaleKey, ZoomInLimitKey, NavigationAnchorKey
+  InfoIconKey, ValuePlaceholder, StoryIdentifierKey, FocusNodesListKey, 
+  DefaultStory, OverlimitKey, ScaleKey, ZoomInLimitKey, NavigationAnchorKey
 } from '../api/keys';
 import Slider from '../components/ImageSlider/Slider';
 import { UpdateDeltaTimeNow } from '../utils/timeHelpers';
-import { toggleShading, toggleHighResolution, toggleHidePlanet, toggleGalaxies, toggleZoomOut,
-  resetBoolProperty, setStoryStart, hideDevInfoOnScreen, showDistanceOnScreen, applyStoryInterestingTagsToFocusNodes
+import { toggleShading, toggleHighResolution, toggleHidePlanet, toggleGalaxies, 
+         toggleZoomOut, setStoryStart, hideDevInfoOnScreen, showDistanceOnScreen, 
+         addStoryTags, removeStoryTags, storyFileParser, infoFileParser
 } from '../utils/storyHelpers';
 import DeveloperMenu from '../components/TouchBar/UtilitiesMenu/presentational/DeveloperMenu';
 import { isCompatible,
@@ -41,7 +40,7 @@ class OnTouchGui extends Component {
     this.checkedVersion = false;
     this.state = {
       developerMode: false,
-      currentStory: defaultStory
+      currentStory: DefaultStory
     };
 
     this.changeStory = this.changeStory.bind(this);
@@ -54,12 +53,15 @@ class OnTouchGui extends Component {
 
   componentDidMount() {
     this.props.StartConnection();
-    this.props.FetchData(infoIconKey);
+    this.props.FetchData(InfoIconKey);
 
     document.addEventListener('keydown', this.handleKeyPress);
 
-    hideDevInfoOnScreen(true);
-    showDistanceOnScreen(false);
+    hideDevInfoOnScreen(this.props.luaApi, true);
+    showDistanceOnScreen(this.props.luaApi, false);
+
+    this.props.startListening(StoryIdentifierKey);
+    this.props.startListening(FocusNodesListKey);
   }
 
   checkVersion() {
@@ -89,137 +91,123 @@ class OnTouchGui extends Component {
     }
   }
 
-  componentDidUpdate() {
-    if (!storyIdentifierNode) return;
-
-    const { storyIdentifierNode, story } = this.props;
-
-    if (storyIdentifierNode.length !== 0) {
-      if (storyIdentifierNode.Value.charAt(0) === '"') {
-        storyIdentifierNode.Value = storyIdentifierNode.Value.substring(1, storyIdentifierNode.length - 1);
-      }
-      if (storyIdentifierNode.Value.charAt(storyIdentifierNode.length - 1) === '"') {
-        storyIdentifierNode.Value = storyIdentifierNode.Value.substring(0, storyIdentifierNode.length - 1);
-      }
-      if (storyIdentifierNode.listeners === 0) {
-        this.props.StartListening(StoryIdentifierKey);
-        this.props.StartListening(FocusNodesListKey);
-      }
-      if (storyIdentifierNode.Value !== story.storyidentifier) {
-        if (storyIdentifierNode.Value.length !== 0 || story.storyidentifier.length !== 0) {
-          this.addStoryTree(story.storyidentifier);
-        }
-      }
-    }
-    if (this.props.reset) {
-      UpdateDeltaTimeNow(1);
-      this.setStory('');
-    }
-  }
-
   componentWillUnmount() {
     document.removeEventListener('keydown', this.handleKeyPress);
+    this.props.stopListening(StoryIdentifierKey);
+    this.props.stopListening(FocusNodesListKey);
   }
 
   setStory(selectedStory) {
-    if (selectedStory === '') {
-      this.setState({ currentStory: defaultStory });
-      return;
-    }
-    this.setState({ currentStory: selectedStory });
-
     const {
       storyIdentifierNode, applyRemoveTag, focusNodesList, applyAddTag, anchorNode, overViewNode,
     } = this.props;
 
-    // Check if the selected story is different from the OpenSpace property value
-    if (storyIdentifierNode.Value !== selectedStory) {
-      const json = this.addStoryTree(selectedStory);
+    const previousStory = storyIdentifierNode.value;
+    this.setState({ currentStory: selectedStory });
 
-      // If the previous story was the default there is no tags to remove
-      if (storyIdentifierNode.Value !== defaultStory) {
-        this.props.ChangePropertyValue(applyRemoveTag.Description, '');
-      }
+    // Return if the selected story is the same as the OpenSpace property value
+    if (previousStory === selectedStory)
+      return;
 
-      // If the current story is the default - hide distance info on screen
-      if (selectedStory === defaultStory) {
-        showDistanceOnScreen(false);
-      }
-      else {
-        showDistanceOnScreen(true);
-      }
-
-      // Set all the story specific properties
-      this.props.ChangePropertyValue(storyIdentifierNode.Description, selectedStory);
-      this.props.ChangePropertyValue(focusNodesList.Description, json.focusbuttons);
-      applyStoryInterestingTagsToFocusNodes();
-      this.props.ChangePropertyValue(applyAddTag.Description, '');
-      this.props.ChangePropertyValue(anchorNode.Description, json.start.planet);
-      this.props.ChangePropertyValue(overViewNode.Description, json.overviewlimit);
-      setStoryStart(json.start.location, json.start.time);
-
-      // Check settings of the previous story and reset values
-      this.checkStorySettings(this.props.story, 'true');
-      // Check and set the settings of the current story
-      this.checkStorySettings(json, 'false');
-
-      // If the previous story scaled planets reset value
-      if (this.props.story.scaleplanets) {
-        this.props.scaleNodes.forEach((planet) => {
-          this.props.ChangePropertyValue(planet.Description, 1);
-        });
-      }
-      // If the previous story toggled bool properties reset them to default value
-      if (this.props.story.toggleboolproperties) {
-        this.props.story.toggleboolproperties.forEach((property) => {
-          resetBoolProperty(property.URI, property.defaultvalue);
-        });
-      }
+    // If the previous story had an empty focus node list
+    if (focusNodesList.value.length !== 0) {
+      const focusNodes = focusNodesList.value.split(',');
+      removeStoryTags(this.props.luaApi, focusNodes);
     }
+
+    const json = this.addStoryTree(selectedStory);
+    
+    // If the current story is the default - hide distance info on screen
+    if (selectedStory === DefaultStory) {
+      showDistanceOnScreen(this.props.luaApi, false);
+    }
+    else {
+      showDistanceOnScreen(this.props.luaApi, true);
+    }
+
+    // Set all the story specific properties
+    this.props.changePropertyValue(storyIdentifierNode.description.Identifier, selectedStory);
+    if (json.focusbuttons) {
+      this.props.changePropertyValue(focusNodesList.description.Identifier, json.focusbuttons.toString());
+
+      if (json.focusbuttons.length !== 0) {
+        addStoryTags(this.props.luaApi,json.focusbuttons);
+      }
+    } else {
+      this.props.changePropertyValue(focusNodesList.description.Identifier, "");
+    }
+    this.props.changePropertyValue(anchorNode.description.Identifier, json.start.planet);
+    this.props.changePropertyValue(overViewNode.description.Identifier, json.overviewlimit);
+    setStoryStart(this.props.luaApi, json.start.location, json.start.date);
+
+    // Check settings of the previous story and reset values
+    this.checkStorySettings(this.props.story, true);
+    // Check and set the settings of the current story
+    this.checkStorySettings(json, false);
+
+    // If the previous story scaled planets reset value
+    if (this.props.story.scalenodes) {
+      this.props.scaleNodes.forEach((node) => {
+        this.props.changePropertyValue(node.description.Identifier, 1);
+      });
+    }
+    // If the previous story toggled bool properties reset them to default value
+    if (this.props.story.toggleboolproperties) {
+      this.props.story.toggleboolproperties.forEach((property) => {
+        const defaultValue = (property.defaultvalue === true) ? true : false;
+        this.props.luaApi.setPropertyValue(property.URI, defaultValue);
+      });
+    }
+    
   }
 
   resetStory () {
-    this.setStory('');
+    UpdateDeltaTimeNow(this.props.luaApi, 1);
+    this.setStory(DefaultStory);
   }
 
   checkStorySettings(story, value) {
-    const oppositeValue = (value === 'true') ? 'false' : 'true';
+    const oppositeValue = (value === true) ? false : true;
 
-    if (story.hideplanets) {
-      story.hideplanets.forEach(planet => toggleHidePlanet(planet, value));
+    if (story.hidenodes) {
+      story.hidenodes.forEach(planet => toggleHidePlanet(this.props.luaApi, planet, value));
     }
     if (story.highresplanets) {
-      story.highresplanets.forEach(planet => toggleHighResolution(planet, oppositeValue));
+      story.highresplanets.forEach(planet => toggleHighResolution(this.props.luaApi, planet, oppositeValue));
     }
     if (story.noshadingplanets) {
-      story.noshadingplanets.forEach(planet => toggleShading(planet, value));
+      story.noshadingplanets.forEach(planet => toggleShading(this.props.luaApi, planet, value));
     }
     if (story.galaxies) {
-      toggleGalaxies(oppositeValue);
+      toggleGalaxies(this.props.luaApi, oppositeValue);
     }
     if (story.inzoomlimit) {
-      const zoomLimit = (value === 'true') ? '0' : story.inzoomlimit;
-      this.props.ChangePropertyValue(this.props.zoomInNode.Description, zoomLimit);
+      const zoomLimit = (value === true) ? 0 : Number(story.inzoomlimit);
+      this.props.changePropertyValue(this.props.zoomInNode.description.Identifier, zoomLimit);
     }
     if (story.zoomout) {
-      toggleZoomOut(oppositeValue);
+      toggleZoomOut(this.props.luaApi, oppositeValue);
     }
   }
 
   // Read in json-file for new story and add it to redux
   addStoryTree(selectedStory) {
-    const json = require(`../stories/story_${selectedStory}.json`);
 
-    this.props.AddStoryTree(json);
+    const storyFile = storyFileParser(selectedStory);
 
-    if (json.infofile) {
-      const info = require(`../stories/${json.infofile}.json`);
+    this.props.AddStoryTree(storyFile);
+    if (storyFile.infofile) {
+      const info = infoFileParser(storyFile.infofile);
+
       this.props.AddStoryInfo(info);
     } else {
       this.props.ResetStoryInfo();
     }
-    return json;
+
+    return storyFile;
   }
+
+
 
   changeStory(e) {
     this.setStory(e.target.id);
@@ -235,9 +223,9 @@ class OnTouchGui extends Component {
     this.setState({ developerMode: !this.state.developerMode });
 
     if (this.state.developerMode === true) {
-      hideDevInfoOnScreen(false);
+      hideDevInfoOnScreen(this.props.luaApi, false);
     } else {
-      hideDevInfoOnScreen(true);
+      hideDevInfoOnScreen(this.props.luaApi, true);
     }
   }
 
@@ -271,13 +259,12 @@ class OnTouchGui extends Component {
         {this.state.developerMode &&
           <DeveloperMenu
             changeStory={this.changeStory}
-            storyIdentifier={this.props.storyIdentifierNode.Value}
+            storyIdentifier={this.props.storyIdentifierNode.value}
           />}
         <p className={styles.storyTitle}> {this.props.story.storytitle} </p>
-        {(this.state.currentStory !== defaultStory)
-          ? <TouchBar resetStory={this.resetStory} /> : <Slider changeStory={this.setStory} />
-        }
-       
+        {(this.state.currentStory === DefaultStory)
+          ? <Slider changeStory={this.setStory} /> : <TouchBar resetStory={this.resetStory} />
+        }      
       </div>
     );
   }
@@ -285,8 +272,6 @@ class OnTouchGui extends Component {
 
 const mapStateToProps = (state) => {
   let storyIdentifierNode = [];
-  let applyRemoveTag = [];
-  let applyAddTag = [];
   let focusNodesList = [];
   let anchorNode;
   let overViewNode;
@@ -294,19 +279,17 @@ const mapStateToProps = (state) => {
   const scaleNodes = [];
   const story = state.storyTree.story;
 
-  if (Object.keys(state.propertyTree).length !== 0) {
-    storyIdentifierNode = traverseTreeWithURI(state.propertyTree, StoryIdentifierKey);
-    applyRemoveTag = traverseTreeWithURI(state.propertyTree, ApplyRemoveTagKey);
-    applyAddTag = traverseTreeWithURI(state.propertyTree, ApplyAddTagKey);
-    focusNodesList = traverseTreeWithURI(state.propertyTree, FocusNodesListKey);
-    anchorNode = traverseTreeWithURI(state.propertyTree, NavigationAnchorKey);
-    overViewNode = traverseTreeWithURI(state.propertyTree, OverlimitKey);
-    zoomInNode = traverseTreeWithURI(state.propertyTree, ZoomInLimitKey);
+  if (state.propertyTree !== undefined) {
+    storyIdentifierNode = state.propertyTree.properties[StoryIdentifierKey];
+    focusNodesList = state.propertyTree.properties[FocusNodesListKey];
+    anchorNode = state.propertyTree.properties[NavigationAnchorKey];
+    overViewNode = state.propertyTree.properties[OverlimitKey];
+    zoomInNode = state.propertyTree.properties[ZoomInLimitKey];
 
-    if (story.scaleplanets) {
-      story.scaleplanets.planets.forEach((node) => {
-        //scaleNodes.push(traverseTreeWithURI(state.propertyTree, ScaleKey.replace(ValuePlaceholder, `${node}`)));
-        let foundScaleNode = traverseTreeWithURI(state.propertyTree, ScaleKey.replace(ValuePlaceholder, `${node}`));
+    if (story.scalenodes) {
+      story.scalenodes.nodes.forEach((node) => {
+        let foundScaleNode = state.propertyTree.properties[ScaleKey.replace(ValuePlaceholder, `${node}`)];
+
         if (foundScaleNode) {
           scaleNodes.push(foundScaleNode);
         }
@@ -315,8 +298,6 @@ const mapStateToProps = (state) => {
   }
 
   return {
-    applyRemoveTag,
-    applyAddTag,
     focusNodesList,
     storyIdentifierNode,
     connectionLost: state.connection.connectionLost,
@@ -326,15 +307,13 @@ const mapStateToProps = (state) => {
     overViewNode,
     zoomInNode,
     scaleNodes,
+    luaApi: state.luaApi
   };
 };
 
 const mapDispatchToProps = dispatch => ({
-  ChangePropertyValue: (discription, URI) => {
-    dispatch(changePropertyValue(discription, URI));
-  },
-  StartConnection: () => {
-    dispatch(startConnection());
+  changePropertyValue: (uri, value) => {
+    dispatch(setPropertyValue(uri, value));
   },
   FetchData: (id) => {
     dispatch(fetchData(id));
@@ -348,30 +327,61 @@ const mapDispatchToProps = dispatch => ({
   ResetStoryInfo: () => {
     dispatch(resetStoryInfo());
   },
-  StartListening: (URI) => {
-    dispatch(startListening(URI));
+  startListening: (uri) => {
+    dispatch(subscribeToProperty(uri));
+  },
+  stopListening: (uri) => {
+    dispatch(unsubscribeToProperty(uri));
   },
 });
-
-
 
 OnTouchGui = withRouter(connect(
   mapStateToProps,
   mapDispatchToProps,
 )(OnTouchGui));
 
+// Because some of the functionality in OnTouch Gui requires the luaApi
+// we wrap it up in another component that only renders the gui after
+// luaApi has been connected
+class RequireLuaApi extends Component {
+  componentDidMount() {
+    this.props.StartConnection();
+  }
+
+  render() {
+    if (!this.props.luaApi) {
+      return null;
+    }
+    return <>{this.props.children}</>;
+  }
+}
+
+const mapState = state => {
+  return {
+    luaApi: state.luaApi,
+  }
+};
+
+const mapDispatch = dispatch => ({
+  StartConnection: () => {
+    dispatch(startConnection());
+  }
+})
+
+RequireLuaApi = connect(mapState, mapDispatch)(RequireLuaApi);
+
+const WrappedOnTouchGui = (props) => <RequireLuaApi><OnTouchGui {...props} /></RequireLuaApi>
+
 OnTouchGui.propTypes = {
   StartConnection: PropTypes.func,
   FetchData: PropTypes.func,
-  ChangePropertyValue: PropTypes.func,
-  StartListening: PropTypes.func,
+  changePropertyValue: PropTypes.func,
+  startListening: PropTypes.func,
   AddStoryTree: PropTypes.func,
   AddStoryInfo: PropTypes.func,
   ResetStoryInfo: PropTypes.func,
   storyIdentifierNode: PropTypes.objectOf(PropTypes.shape({})),
   story: PropTypes.objectOf(PropTypes.shape({})),
-  applyRemoveTag: PropTypes.objectOf(PropTypes.shape({})),
-  applyAddTag: PropTypes.objectOf(PropTypes.shape({})),
   focusNodesList: PropTypes.objectOf(PropTypes.shape({})),
   anchorNode: PropTypes.objectOf(PropTypes.shape({})),
   overViewNode: PropTypes.objectOf(PropTypes.shape({})),
@@ -384,15 +394,13 @@ OnTouchGui.propTypes = {
 OnTouchGui.defaultProps = {
   StartConnection: () => {},
   FetchData: () => {},
-  ChangePropertyValue: () => {},
-  StartListening: () => {},
+  changePropertyValue: () => {},
+  startListening: () => {},
   AddStoryTree: () => {},
   AddStoryInfo: () => {},
   ResetStoryInfo: () => {},
   storyIdentifierNode: {},
   story: {},
-  applyRemoveTag: {},
-  applyAddTag: {},
   focusNodesList: {},
   anchorNode: {},
   overViewNode: {},
@@ -402,4 +410,4 @@ OnTouchGui.defaultProps = {
   reset: null,
 };
 
-export default OnTouchGui;
+export default WrappedOnTouchGui;

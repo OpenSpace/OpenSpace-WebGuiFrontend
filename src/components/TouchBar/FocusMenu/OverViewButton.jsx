@@ -1,22 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Icon from '../../common/Icon/Icon';
+import Icon from '../../common/MaterialIcon/MaterialIcon';
 import SmallLabel from '../../common/SmallLabel/SmallLabel';
 import styles from './FocusButton.scss';
 
 class OverViewButton extends Component {
-  constructor(props) {
-    super(props);
-    this.applyOverview = this.applyOverview.bind(this);
-  }
-
-  applyOverview() {
-    this.props.onApplyOverview(this.props.descriptionOverview);
-  }
-
   render() {
     return (
-      <div className={styles.FocusButton} onClick={this.applyOverview} role="button" tabIndex="0">
+      <div className={styles.FocusButton} onClick={this.props.onClick} role="button" tabIndex="0">
         <Icon icon="track_changes" className={styles.Icon} />
         <SmallLabel>Overview</SmallLabel>
       </div>
@@ -25,7 +16,7 @@ class OverViewButton extends Component {
 }
 
 OverViewButton.propTypes = {
-  onApplyOverview: PropTypes.func.isRequired,
+  onClick: PropTypes.func.isRequired,
 };
 
 export default OverViewButton;

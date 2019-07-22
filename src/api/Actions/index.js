@@ -1,63 +1,84 @@
 import { actionTypes } from './actionTypes';
 
-export const updatePropertyValue = (description, value) => ({
-  type: actionTypes.updatePropertyTreeNode,
+export const updatePropertyValue = (uri, value) => ({
+  type: actionTypes.updatePropertyValue,
   payload: {
-    URI: description.Identifier,
-    description,
+    uri,
     value,
   },
 });
 
-export const changePropertyValue = (description, value) => ({
-  type: actionTypes.changePropertyTreeNode,
+export const setPropertyValue = (uri, value) => ({
+  type: actionTypes.setPropertyValue,
   payload: {
-    URI: description.Identifier,
-    description,
+    uri,
     value,
   },
 });
 
-export const initializePropertyTree = node => ({
-  type: actionTypes.insertNode,
+export const addPropertyOwners = (propertyOwners) => ({
+  type: actionTypes.addPropertyOwners,
   payload: {
-    node,
+    propertyOwners
+  }
+})
+
+export const addProperties = (properties) => ({
+  type: actionTypes.addProperties,
+  payload: {
+    properties
+  }
+})
+
+export const refreshGroups = () => ({
+  type: actionTypes.refreshGroups,
+  payload: {}
+})
+
+export const subscribeToProperty = uri => ({
+  type: actionTypes.subscribeToProperty,
+  payload: {
+    uri,
   },
 });
 
-
-export const startListening = URI => ({
-  type: actionTypes.startListeningToNode,
+export const unsubscribeToProperty = uri => ({
+  type: actionTypes.unsubscribeToProperty,
   payload: {
-    URI,
+    uri,
   },
 });
 
-export const stopListening = URI => ({
-  type: actionTypes.stopListeningToNode,
-  payload: {
-    URI,
-  },
+export const subscribeToTime = uri => ({
+  type: actionTypes.subscribeToTime,
+  payload: {},
+});
+
+export const unsubscribeToTime = uri => ({
+  type: actionTypes.unsubscribeToTime,
+  payload: {}
+});
+
+export const updateTime = timeData => ({
+  type: actionTypes.updateTime,
+  payload: timeData
 });
 
 export const startConnection = () => ({
   type: actionTypes.startConnection,
   payload: {
-
   },
 });
 
 export const onOpenConnection = () => ({
   type: actionTypes.onOpenConnection,
   payload: {
-
   },
 });
 
 export const onCloseConnection = () => ({
   type: actionTypes.onCloseConnection,
   payload: {
-
   },
 });
 
@@ -122,6 +143,11 @@ export const getVersion = () => ({
   payload: {},
 });
 
+export const initializeLuaApi = data => ({
+  type: actionTypes.initializeLuaApi,
+  payload: data
+});
+
 export const initializeVersion = data => ({
   type: actionTypes.initializeVersion,
   payload: data
@@ -141,3 +167,78 @@ export const initializeShortcuts = data => ({
   type: actionTypes.initializeShortcuts,
   payload: data
 });
+
+export const executeShortcut = index => ({
+  type: actionTypes.executeShortcut,
+  payload: index
+});
+
+export const setNavigationAction = data => ({
+  type: actionTypes.setNavigationAction,
+  payload: data
+});
+
+export const setOriginPickerShowFavorites = showFavorites => ({
+  type: actionTypes.setOriginPickerShowFavorites,
+  payload: showFavorites
+});
+
+export const setPopoverVisibility = data => ({
+  type: actionTypes.setPopoverVisibility,
+  payload: data
+});
+
+export const setShowAbout = show => ({
+  type: actionTypes.setShowAbout,
+  payload: show
+})
+
+export const setPopoverAttachment = data => ({
+  type: actionTypes.setPopoverPosition,
+  payload: data
+})
+
+export const setPopoverPosition = data => ({
+  type: actionTypes.setPopoverPosition,
+  payload: data
+})
+
+export const addNodePropertyPopover = data => ({
+  type: actionTypes.addNodePropertyPopover,
+  payload: data
+})
+
+export const removeNodePropertyPopover = data => ({
+  type: actionTypes.removeNodePropertyPopover,
+  payload: data
+})
+
+export const setPopoverActiveTab = data => ({
+  type: actionTypes.setPopoverActiveTab,
+  payload: data
+})
+
+export const setPropertyTreeExpansion = data => ({
+  type: actionTypes.setPropertyTreeExpansion,
+  payload: data
+})
+
+export const subscribeToSessionRecording = () => ({
+  type: actionTypes.subscribeToSessionRecording,
+  payload: {}
+})
+
+export const unsubscribeToSessionRecording = () => ({
+  type: actionTypes.unsubscribeToSessionRecording,
+  payload: {}
+})
+
+export const refreshSessionRecording = () => ({
+  type: actionTypes.refreshSessionRecording,
+  payload: {}
+})
+
+export const updateSessionRecording = data => ({
+  type: actionTypes.updateSessionRecording,
+  payload: data
+})

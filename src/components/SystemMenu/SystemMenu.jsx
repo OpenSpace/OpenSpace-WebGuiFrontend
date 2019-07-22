@@ -1,28 +1,14 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import DataManager from '../../api/DataManager';
 import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import Button from '../common/Input/Button/Button';
 import styles from './SystemMenu.scss';
 import Popover from '../common/Popover/Popover';
-import {
-  ShutdownScript,
-  ToggleConsoleScript,
-  ToggleNativeGuiScript } from '../../api/keys';
+import subStateToProps from '../../utils/subStateToProps';
+import { connect } from 'react-redux';
+import { setShowAbout } from '../../api/Actions'
 
 class SystemMenu extends Component {
-  static quit() {
-    DataManager.runScript(ShutdownScript);
-  }
-
-  static console() {
-    DataManager.runScript(ToggleConsoleScript);
-  }
-
-  static nativeGui() {
-    DataManager.runScript(ToggleNativeGuiScript);
-  }
-
   constructor(props) {
     super(props);
     this.state = { showMenu: false };
@@ -37,52 +23,28 @@ class SystemMenu extends Component {
     return (
       <div className={styles.SystemMenu}>
         { this.state.showMenu && (
-          <Popover className={styles.popover} arrow="arrow bottom leftside">
+          <Popover className={styles.popover} arrow="arrow bottom leftside" attached={true}>
             <nav className={styles.links} onClick={this.toggleMenu}>
-              <button onClick={SystemMenu.console}>
-                Toggle console <span className={styles.shortcut}>~</span>
-              </button>
-              <button onClick={SystemMenu.nativeGui}>
-                Toggle native GUI <span className={styles.shortcut}>F3</span>
+
+              <button onClick={this.props.showAbout}>
+                About OpenSpace
               </button>
 
               <hr className={Popover.styles.delimiter} />
 
-              <button onClick={SystemMenu.quit}>
+              <button onClick={this.props.console}>
+                Toggle console <span className={styles.shortcut}>~</span>
+              </button>
+              <button onClick={this.props.nativeGui}>
+                Toggle native GUI <span className={styles.shortcut}>F1</span>
+              </button>
+
+              <hr className={Popover.styles.delimiter} />
+
+              <button onClick={this.props.quit}>
                 <MaterialIcon icon="exit_to_app" className={styles.linkIcon} />
                 Quit OpenSpace <span className={styles.shortcut}>ESC</span>
               </button>
-
-              <hr className={Popover.styles.delimiter} />
-
-              <a
-                href="https://github.com/OpenSpace/OpenSpace/wiki/General-Getting-Started-Guide-Using-OpenSpace"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <MaterialIcon icon="help" className={styles.linkIcon} />
-                Help
-              </a>
-              <a
-                href="https://github.com/OpenSpace/OpenSpace/issues/new"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <MaterialIcon icon="bug_report" className={styles.linkIcon} />
-                Report a problem
-              </a>
-              <a
-                href="http://openspaceproject.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <MaterialIcon icon="public" className={styles.linkIcon} />
-                openspaceproject.com
-              </a>
-              <Link to="about">
-                <MaterialIcon icon="info" className={styles.linkIcon} />
-                About
-              </Link>
             </nav>
           </Popover>
         )}
@@ -95,13 +57,38 @@ class SystemMenu extends Component {
   }
 }
 
-/*
-TODO: Add link to About. Currently not working inside Cef Gui.
-<hr className={Popover.styles.delimiter} />
-<Link to="about">
-  <Icon icon="info" className={styles.linkIcon} />
-  About
-</Link>
-*/
+const mapStateToSubState = (state) => ({
+  luaApi: state.luaApi,
+});
+
+const mapSubStateToProps = ({ luaApi }) => {
+  if (!luaApi) {
+    return {};
+  }
+  return {
+    quit: () => luaApi.toggleShutdown(),
+    console: async () => {
+      const data = await luaApi.getPropertyValue("LuaConsole.IsVisible");
+      const visible = data[1] || false;
+      luaApi.setPropertyValue("LuaConsole.IsVisible", !visible);
+    },
+    nativeGui: async () => {
+      const data = await luaApi.getPropertyValue("Modules.ImGUI.Main.Enabled");
+      const visible = data[1] || false;
+      luaApi.setPropertyValue("Modules.ImGUI.Main.Enabled", !visible);
+    },
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    showAbout: () => dispatch(setShowAbout(true))
+  }
+}
+
+SystemMenu = connect(
+  subStateToProps(mapSubStateToProps, mapStateToSubState),
+  mapDispatchToProps,
+)(SystemMenu);
 
 export default SystemMenu;

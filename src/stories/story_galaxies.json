@@ -4,45 +4,45 @@
   "storyinfo": "A galaxy is a gravitationally bound system of stars, stellar remnants, interstellar gas, dust, and dark matter. Galaxies range in size from just a few hundred million stars to one hundred trillion stars. Galaxies are categorized according to their visual morphology as elliptical, spiral, or irregular.",
   "overviewlimit": 2.0e+25,
   "inzoomlimit": 1.2e+25,
-  "zoomout": "true",
-  "timecontroller": "false",
-  "datecontroller":  "false",
-  "sightscontroller" : "false",
+  "zoomout": true,
+  "timecontroller": false,
+  "datecontroller":  false,
+  "sightscontroller" : false,
   "start": {
     "planet": "Earth",
-    "time": "openspace.time.currentWallTime()",
+    "time": "NOW",
     "location": {
-      "latitude": "40.758701",
-      "longitude": "-111.876183",
-      "altitude": "2.0e+7"
+      "latitude": 40.758701,
+      "longitude": -111.876183,
+      "altitude": 2.0e+7
     }
   },
-  "galaxies": "true",
+  "galaxies": true,
   "toggleboolproperties": [
     {
       "URI":"Scene.Abell.Renderable.Enabled",
       "label":"Abell Galaxy Clusters",
-      "defaultvalue": "false"
+      "defaultvalue": false
     },
     {
       "URI":"Scene.SloanDigitalSkySurvey.Renderable.Enabled",
       "label":"Sloan Digital Sky Survey",
-      "defaultvalue": "true"
+      "defaultvalue": true
     },
     {
       "URI":"Scene.2MASS.Renderable.Enabled",
       "label":"2MASS Galaxies",
-      "defaultvalue": "false"
+      "defaultvalue": false
     },
     {
       "URI":"Scene.GalaxySuperclusters.Renderable.Enabled",
       "label":"Galaxy Superclusters",
-      "defaultvalue": "false"
+      "defaultvalue": false
     },
     {
       "URI":"Scene.TullyGalaxies.Renderable.Enabled",
       "label":"Tully Galaxies",
-      "defaultvalue": "false"
+      "defaultvalue": true
     }
   ]
 }

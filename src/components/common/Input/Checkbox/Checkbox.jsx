@@ -2,46 +2,28 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { excludeKeys } from '../../../../utils/helpers';
 import styles from './Checkbox.scss';
+import MaterialIcon from '../../MaterialIcon/MaterialIcon';
 import Input from '../Input/Input';
 
 class Checkbox extends Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      checked: props.checked || props.value,
-      id: `checkbox-${Input.nextId}`,
-    };
-
-    this.onChange = this.onChange.bind(this);
+    this.onClick = this.onClick.bind(this);
   }
 
-  componentWillReceiveProps({ checked, value }) {
-    this.setState({ checked: checked || value });
-  }
 
-  onChange(event) {
-    const { checked } = event.currentTarget;
-    this.setState({ checked });
-
-    this.props.onChange(checked);
+  onClick(evt) {
+    this.props.setChecked(!this.props.checked);
+    evt.stopPropagation();
   }
 
   render() {
-    const inheritProps = excludeKeys(this.props, 'wide id label onChange type left');
-    const { label, wide, left } = this.props;
-    const { checked, id } = this.state;
+    const { checked, label, wide, left } = this.props;
 
     return (
-      <div className={`${styles.wrapper} ${wide ? styles.wide : ''} ${left ? styles.left : ''}`}>
-        <input
-          {...inheritProps}
-          id={id}
-          type="checkbox"
-          checked={checked}
-          onChange={this.onChange}
-        />
-        <label htmlFor={id}>{ label }</label>
+      <div onClick={this.onClick} className={`${styles.wrapper} ${wide ? styles.wide : ''} ${left ? styles.left : ''}`}>
+        <MaterialIcon className={styles.checkbox} icon={checked ? "check_box" : "check_box_outline_blank"} />
+        { label && <label>{ label }</label> }
       </div>
     );
   }
@@ -49,8 +31,8 @@ class Checkbox extends Component {
 
 Checkbox.propTypes = {
   checked: PropTypes.bool,
-  onChange: PropTypes.func,
-  label: PropTypes.node.isRequired,
+  setChecked: PropTypes.func,
+  label: PropTypes.node,
   left: PropTypes.bool,
   value: PropTypes.bool,
   wide: PropTypes.bool,

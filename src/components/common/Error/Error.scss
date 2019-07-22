@@ -1,18 +1,26 @@
 @import '../../../styles/all';
 
 .ErrorBox {
-  border-top: 3px solid transparent;
-  padding: $sidebar-padding;
+  padding: 20px;
   width: 100%;
+
+  p {
+    margin-bottom: 1em;
+  }
 }
 
 .severe,
 .error {
   background: $ui-danger;
-  border-color: darken($ui-danger, 10%);
 }
 
 .warning {
   background: $ui-warning;
-  border-color: darken($ui-warning, 10%)
+}
+
+.errorButton {
+  background-color: rgba(255, 255, 255, 0.2);
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.3) !important;
+  }
 }

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Icon from '../../common/Icon/Icon';
+import Icon from '../../common/MaterialIcon/MaterialIcon';
 import SmallLabel from '../../common/SmallLabel/SmallLabel';
 import styles from './FocusButton.scss';
 
@@ -27,12 +27,17 @@ class FocusButton extends Component {
   }
 
   select() {
-    this.isActive ? this.props.onRefocus(this.props.descriptionFlyTo) : this.props.onChangeOrigin(this.props.identifier);
+    this.props.onChangeFocus(this.props.identifier);
   }
 
   render() {
     return (
-      <div className={`${styles.FocusButton} ${this.isActive && styles.active}`} onClick={this.select} role="button" tabIndex="0">
+      <div 
+        className={`${styles.FocusButton} ${this.isActive && styles.active}`} 
+        onClick={this.select} 
+        role="button" 
+        tabIndex="0"
+      >
         { this.icon }
         <SmallLabel>{this.props.identifier}</SmallLabel>
       </div>
@@ -43,8 +48,7 @@ class FocusButton extends Component {
 FocusButton.propTypes = {
   active: PropTypes.string.isRequired,
   identifier: PropTypes.string.isRequired,
-  onChangeOrigin: PropTypes.func.isRequired,
-  onRefocus: PropTypes.func.isRequired,
+  onChangeFocus: PropTypes.func.isRequired,
 };
 
 export default FocusButton;

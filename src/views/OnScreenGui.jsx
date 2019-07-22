@@ -5,11 +5,13 @@ import '../styles/base.scss';
 import styles from './OnScreenGui.scss';
 import Sidebar from '../components/Sidebar/Sidebar';
 import BottomBar from '../components/BottomBar/BottomBar';
+import Button from '../components/common/Input/Button/Button';
 import Error from '../components/common/Error/Error';
 import Overlay from '../components/common/Overlay/Overlay';
 import About from './About/About';
 import Stack from '../components/common/Stack/Stack';
-import { startConnection } from '../api/Actions';
+import NodePopOverContainer from '../components/NodePropertiesPanel/NodePopOverContainer';
+import { startConnection, setShowAbout } from '../api/Actions';
 import { isCompatible,
          formatVersion,
          RequiredSocketApiVersion,
@@ -22,7 +24,7 @@ class OnScreenGui extends Component {
   }
 
   componentDidMount() {
-    this.props.StartConnection();
+    this.props.startConnection();
   }
 
   checkVersion() {
@@ -52,30 +54,31 @@ class OnScreenGui extends Component {
     }
   }
 
+  reloadGui() {
+    location.reload();
+  }
+
   render() {
     this.checkVersion();
     return (
       <div className={styles.app}>
-        <Router basename="/onscreen/">
-          <Route
-            path="/about"
-            render={() => (
-              <Overlay>
-                <Stack style={{ maxWidth: '500px' }}>
-                  <Link style={{ alignSelf: 'flex-end', color: 'white' }} to="/">
-                    Close
-                  </Link>
-                  <About />
-                </Stack>
-              </Overlay>
-            )}
-          />
-        </Router>
-
+        { this.props.showAbout && (
+          <Overlay>
+            <Stack style={{ maxWidth: '500px' }}>
+              <Button style={{ alignSelf: 'flex-end', color: 'white' }} onClick={this.props.hideAbout}>
+                Close
+              </Button>
+              <About />
+            </Stack>
+          </Overlay>
+        )}
         { this.props.connectionLost && (
           <Overlay>
             <Error>
-              Connection lost. Trying to reconnect again soon.
+              <h2>Houston, we've had a...</h2>
+              <p>...disconnection between the user interface and OpenSpace.</p>
+              <p>Trying to reconnect automatically, but you may want to...</p>
+              <Button className={Error.styles.errorButton} onClick={this.reloadGui}>Reload the user interface</Button>
             </Error>
           </Overlay>
         )}
@@ -83,6 +86,7 @@ class OnScreenGui extends Component {
           <Sidebar />
         </section>
         <section className={styles.Grid__Right}>
+          <NodePopOverContainer />
           <BottomBar />
         </section>
       </div>
@@ -92,13 +96,17 @@ class OnScreenGui extends Component {
 
 const mapStateToProps = state => ({
   connectionLost: state.connection.connectionLost,
-  version: state.version
+  version: state.version,
+  showAbout: state.local.showAbout
 });
 
 const mapDispatchToProps = dispatch => ({
-  StartConnection: () => {
+  startConnection: () => {
     dispatch(startConnection());
   },
+  hideAbout: () => {
+    dispatch(setShowAbout(false))
+  }
 });
 
 OnScreenGui = withRouter(connect(

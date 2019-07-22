@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import HomeButton from './../presentational/HomeButton';
 import { resetStoryTree } from '../../../../api/Actions';
-import { defaultStory } from '../../../../api/keys';
 
 class HomeButtonContainer extends Component {
   constructor(props) {

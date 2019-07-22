@@ -35,6 +35,12 @@ $small-padding: ($vertical-padding / 2) ($base-padding / 2);
   font-size: 0.8em;
 }
 
+.largeltext {
+  font-size: 1.4em;
+}
+
+
+
 // Why redeclaring some styles here?!
 // Well, some properties from the classes above (small, for instance)
 // needs to overwrite others. Due to the last rule applies nature of

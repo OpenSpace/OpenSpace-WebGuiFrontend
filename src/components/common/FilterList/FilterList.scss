@@ -8,3 +8,22 @@
     height: unquote("calc(100% - #{$input-total-height})");
   }
 }
+
+.favoritesButton {
+  background-color: $text-color-blur;
+  color: $ui-background-solid;
+  cursor: pointer;
+  font-size: 0.8em;
+  position: absolute;
+  right: $input-padding-horizontal;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: opacity $animation-duration $animation-easing;
+  padding: 3px;
+  border-radius: 3px;
+
+  &:focus,
+  &:hover {
+    background-color: $text-color-focus;
+  }
+}

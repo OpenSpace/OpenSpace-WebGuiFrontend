@@ -3,33 +3,78 @@ import SmallLabel from '../common/SmallLabel/SmallLabel';
 import styles from './Shortcut.scss';
 import Button from '../common/Input/Button/Button';
 import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
-import DataManager from '../../api/DataManager';
 import InfoBox from '../common/InfoBox/InfoBox';
+import subStateToProps from '../../utils/subStateToProps';
+import { connect } from 'react-redux';
+import { executeShortcut } from '../../api/Actions'
+
+
+const modifierStrings = {
+  alt: 'ALT',
+  control: 'CTRL',
+  shift: 'SHIFT',
+  super: 'SUPER'
+};
 
 class Shortcut extends Component {
   constructor(props) {
-      super(props);
-    }
+    super(props);
+  }
 
-    render() {
-      const { documentation, name, script } = this.props;
-      return (
-        <div key={name} className={styles.shortcutContainer}>
-          <Button className= {styles.executeButton} script={script} onClick={executeShortcut} >
-            <MaterialIcon icon="call_missed_outgoing" />
-            </Button>
-          <div className={styles.content}> {name} &nbsp; <InfoBox text={documentation} /></div>
-        </div>
-      );
+  get keybinding() {
+    const { key, modifiers } = this.props.data;
+    if (!(key && modifiers)) {
+      return null;
+    }
+    const modifierString = Object.keys(modifiers)
+      .map(m => modifiers[m] ? modifierStrings[m] : false)
+      .filter(m => m)
+      .join(' + ');
+
+    const keyString = (modifierString === '') ? key : (modifierString + ' + ' + key);
+
+    return <span className={styles.keybinding}>{keyString}</span>;
+  }
+
+  render() {
+    const { index, documentation, name, script } = this.props.data;
+    const execute = this.props.execute;
+
+    return (
+      <div key={name} className={styles.shortcutContainer}>
+        <Button transparent className={styles.executeButton} onClick={execute} >
+          <MaterialIcon icon="play_arrow" />
+          </Button>
+        <div className={styles.content}> {name} {this.keybinding} &nbsp; <InfoBox text={documentation} /></div>
+      </div>
+    );
    }
 }
 
-const executeShortcut = (e) => {
-  e.stopPropagation();
-  var script = e.currentTarget.getAttribute("script")
-  if (script && script.length > 0) {
-    DataManager.runScript(e.currentTarget.getAttribute("script"));
+const mapStateToSubState = (state) => ({
+  shortcuts: state.shortcuts.data.shortcuts
+})
+
+const mapSubStateToProps = ({ shortcuts }, { index }) => {
+  const shortcut = shortcuts[index];
+  return {
+    data: shortcut
+  }
+};
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+  return {
+    execute: () => {
+      dispatch(executeShortcut(ownProps.index))
+    }
   }
 }
+
+Shortcut = connect(
+  subStateToProps(mapSubStateToProps, mapStateToSubState),
+  mapDispatchToProps,
+)(Shortcut);
+
+
 
 export default Shortcut;

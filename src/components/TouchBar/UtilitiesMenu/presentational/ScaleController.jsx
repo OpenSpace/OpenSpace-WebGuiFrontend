@@ -7,7 +7,7 @@ const ScaleController = props =>
   (
     <div
       onClick={props.onChangeScale}
-      className={`${buttonStyle.UtilitiesButton} ${props.scale !== '1' && buttonStyle.active}`}
+      className={`${buttonStyle.UtilitiesButton} ${props.scale !== 1 && buttonStyle.active}`}
       role="button"
       tabIndex="0"
     >
@@ -18,7 +18,7 @@ const ScaleController = props =>
 
 ScaleController.propTypes = {
   onChangeScale: PropTypes.func.isRequired,
-  scale: PropTypes.string.isRequired,
+  scale: PropTypes.number.isRequired,
   info: PropTypes.string.isRequired,
 };
 

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Icon from '../../../common/Icon/Icon';
+import Icon from '../../../common/MaterialIcon/MaterialIcon';
 import SmallLabel from '../../../common/SmallLabel/SmallLabel';
 
 import { instructionImage } from '../../../../api/resources';

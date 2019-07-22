@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import SmallLabel from '../../../common/SmallLabel/SmallLabel';
-import Icon from '../../../common/Icon/Icon';
+import Icon from '../../../common/MaterialIcon/MaterialIcon';
 import Popover from '../../../common/Popover/Popover';
 import Picker from '../../../BottomBar/Picker';
 import Button from '../../../common/Input/Button/Button';
@@ -48,7 +49,7 @@ class DateController extends Component {
         onClick={this.pickDate}
       >
         <span className={styles.date} id={date.date}>
-          {new Date(date.date).toLocaleDateString()}
+          {new Date(date.date).toLocaleDateString('en-US', {year: 'numeric', month: 'numeric', day: 'numeric' })}
         </span>
         <SmallLabel className={styles.label} id={date.date}>
           {date.planet},{date.info}
@@ -60,7 +61,8 @@ class DateController extends Component {
 
   pickDate(e) {
     this.togglePopover();
-    timeHelpers.setDate(new Date(e.target.id));
+    const timeString = timeHelpers.DateStringWithTimeZone(e.target.id);
+    timeHelpers.setDate(this.props.luaApi, new Date(timeString));
     const selectedDate = this.props.dateList.find(date => date.date === e.target.id);
     this.props.onChangeSight(selectedDate);
   }
@@ -101,5 +103,13 @@ DateController.defaultProps = {
   onChangeSight: () => {},
   dateList: [],
 };
+
+const mapStateToProps = (state) => {
+  return {
+    luaApi: state.luaApi
+  };
+};
+
+DateController = connect(mapStateToProps)(DateController);
 
 export default DateController;

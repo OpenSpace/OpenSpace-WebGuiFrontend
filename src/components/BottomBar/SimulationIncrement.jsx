@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { throttle } from 'lodash/function';
-import DataManager, { TopicTypes } from '../../api/DataManager';
 import { DeltaTime, ValuePlaceholder, SetDeltaTimeScript, InterpolateDeltaTimeScript } from '../../api/keys';
 import NumericInput from '../common/Input/NumericInput/NumericInput';
 import Row from '../common/Row/Row';
@@ -8,17 +7,17 @@ import Select from '../common/Input/Select/Select';
 import { round10 } from '../../utils/rounding';
 import ScaleInput from '../common/Input/ScaleInput/ScaleInput';
 
-const UpdateDelayMs = 1000;
+import { subscribeToTime, unsubscribeToTime } from '../../api/Actions';
+import { connect } from 'react-redux';
+
+const updateDelayMs = 1000;
 // Throttle the delta time updating, so that we don't accidentally flood
 // the simulation with updates.
-const UpdateDeltaTimeNow = (value, interpolationTime) => {
+const updateDeltaTimeNow = (openspace, value, interpolationTime) => {
   interpolationTime = interpolationTime || 0;
-  const script = InterpolateDeltaTimeScript
-    .replace(ValuePlaceholder, value)
-    .replace(ValuePlaceholder, interpolationTime);
-  DataManager.runScript(script);
+  openspace.time.interpolateDeltaTime(value, interpolationTime);
 };
-const UpdateDeltaTime = throttle(UpdateDeltaTimeNow, UpdateDelayMs);
+const updateDeltaTime = throttle(updateDeltaTimeNow, updateDelayMs);
 
 const Steps = {
   seconds: 'Seconds',
@@ -61,12 +60,10 @@ class SimulationIncrement extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      deltaTime: 1,
       stepSize: Steps.seconds,
       quickAdjust: 1,
     };
 
-    this.deltaTimeUpdated = this.deltaTimeUpdated.bind(this);
     this.setPositiveDeltaTime = this.setPositiveDeltaTime.bind(this);
     this.setNegativeDeltaTime = this.setNegativeDeltaTime.bind(this);
     this.setStepSize = this.setStepSize.bind(this);
@@ -74,11 +71,11 @@ class SimulationIncrement extends Component {
   }
 
   componentDidMount() {
-    this.deltaTimeSubscriptionId = DataManager.subscribe(DeltaTime, this.deltaTimeUpdated, TopicTypes.time);
+    this.props.startSubscription();
   }
 
   componentWillUnmount() {
-    DataManager.unsubscribe(DeltaTime, this.deltaTimeSubscriptionId);
+    this.props.stopSubscription();
   }
 
   get stepSize() {
@@ -97,9 +94,9 @@ class SimulationIncrement extends Component {
     if (isNaN(deltaTime)) {
       return;
     }
-    // optimistic ui change
-    this.setState({ deltaTime });
-    UpdateDeltaTimeNow(deltaTime, interpolationTime);
+    if (this.props.luaApi) {
+      updateDeltaTimeNow(this.props.luaApi, deltaTime, interpolationTime);
+    }
   }
 
   setPositiveDeltaTime(event) {
@@ -119,35 +116,35 @@ class SimulationIncrement extends Component {
   }
 
   setQuickAdjust(value) {
+    if (!this.props.luaApi) {
+      return;
+    }
     const interpolationTime = 1;
     if (value !== 0) {
-      this.beforeAdjust = this.beforeAdjust || this.state.deltaTime;
+      this.beforeAdjust = this.beforeAdjust || this.props.targetDeltaTime;
       const quickAdjust = this.beforeAdjust + this.stepSize * (value ** 5);
-      UpdateDeltaTimeNow(quickAdjust, interpolationTime);
+      updateDeltaTimeNow(this.props.luaApi, quickAdjust, interpolationTime);
     } else {
-      UpdateDeltaTime.cancel();
-      UpdateDeltaTimeNow(this.beforeAdjust || 0, interpolationTime);
+      updateDeltaTime.cancel();
+      updateDeltaTimeNow(this.props.luaApi, this.beforeAdjust || 0, interpolationTime);
       this.beforeAdjust = null;
     }
   }
 
-  deltaTimeUpdated({targetDeltaTime}) {
-    this.setState({deltaTime: targetDeltaTime});
-  }
-
   render() {
-    const { deltaTime, stepSize } = this.state;
-    const adjustedDelta = round10(deltaTime / this.stepSize, StepPrecisions[stepSize]);
+    const { stepSize } = this.state;
+    const { targetDeltaTime } = this.props;
+    const adjustedDelta = round10(targetDeltaTime / this.stepSize, StepPrecisions[stepSize]);
 
     const options = Object.values(Steps)
-      .map(step => ({ value: step, label: step }));
+      .map(step => ({ value: step, label: step, isSelected: step === stepSize }));
 
     return (
       <div>
         <Row>
         <Select
-            direction="up"
             label="Display unit"
+            menuPlacement="top"
             onChange={this.setStepSize}
             options={options}
             value={stepSize}
@@ -157,6 +154,7 @@ class SimulationIncrement extends Component {
         <Row>
           <NumericInput
             {...this.limits}
+            disabled={!this.props.luaApi}
             onChange={this.setNegativeDeltaTime}
             placeholder={`Negative ${stepSize} / second`}
             value={-adjustedDelta}
@@ -165,6 +163,7 @@ class SimulationIncrement extends Component {
           />
           <NumericInput
             {...this.limits}
+            disabled={!this.props.luaApi}
             onChange={this.setPositiveDeltaTime}
             placeholder={`${stepSize} / second`}
             value={adjustedDelta}
@@ -184,4 +183,22 @@ class SimulationIncrement extends Component {
   }
 }
 
+const mapStateToProps = (state) => {
+  return {
+    time: state.time.time,
+    deltaTime: state.time.deltaTime,
+    targetDeltaTime: state.time.targetDeltaTime,
+    isPaused: state.time.isPaused,
+    luaApi: state.luaApi
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    startSubscription: () => dispatch(subscribeToTime()),
+    stopSubscription: () => dispatch(unsubscribeToTime())
+  }
+}
+
+SimulationIncrement = connect(mapStateToProps, mapDispatchToProps)(SimulationIncrement);
 export default SimulationIncrement;

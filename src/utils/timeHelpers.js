@@ -1,31 +1,38 @@
 import {SetDeltaTimeScript, TogglePauseScript, ValuePlaceholder} from "../api/keys";
-import DataManager from "../api/DataManager";
 
-export const togglePause = () => {
-  DataManager.runScript(TogglePauseScript);
+export const togglePause = (luaApi) => {
+  luaApi.time.togglePause();
 };
 
-export const realtime = () => {
-  const script = SetDeltaTimeScript.replace(ValuePlaceholder, 1);
-  DataManager.runScript(script);
+export const realtime = (luaApi) => {
+  luaApi.time.setDeltaTime(1);
 };
 
-export const now = () => {
-  setDate(new Date());
-  UpdateDeltaTimeNow(1);
-};
-
-// Spice, that is handling the time parsing in OpenSpace does not support
-// ISO 8601-style time zones (the Z). It does, however, always assume that UTC
-// is given.
-export const setDate = (time) => {
-  const fixedTimeString = time.toJSON().replace('Z', '');
-  DataManager.setValue('__time', fixedTimeString);
+export const setDateToNow = (luaApi) => {
+  const now = new Date();
+  setDate(luaApi, now);
+  UpdateDeltaTimeNow(luaApi, 1);
 };
 
 /**
- * Make sure the date string contains a time zone
- * @param date
+* SPICE, that is handling the time parsing in OpenSpace assumes UTC time.
+* It does not accept ISO 8601-style time zones (the Z)
+* @param luaApi
+* @param time - string assumed to be in UTC
+*/
+export const setDate = (luaApi, date) => {
+  // date.toJSON returns a UTC format string including timezone 'Z'
+  // but the lua api only accepts a UTC string without time zone
+  const fixedDateString = date.toJSON().replace('Z', '');
+  luaApi.time.setTime(fixedDateString);
+};
+
+/**
+ * Make sure the date string contains a time zone. When
+ * creating a javascript Date, the browser will interpret
+ * all date strings as local time, unless specifying the
+ * timezone as 'Z' which will interpret it as UTC
+ * @param date - date string with or without timezone 'Z'
  * @param zone - the time zone in ISO 8601 format
  * @constructor
  */
@@ -33,9 +40,8 @@ export const DateStringWithTimeZone = (date, zone = 'Z') => {
   return (!date.includes('Z') ? `${date}${zone}` : date);
 };
 
-export const UpdateDeltaTimeNow = (value) => {
-  const script = SetDeltaTimeScript.replace(ValuePlaceholder, value);
-  DataManager.runScript(script);
+export const UpdateDeltaTimeNow = (luaApi, value) => {
+  luaApi.time.setDeltaTime(value);
 };
 
 export const sortDates = (dateList) => {

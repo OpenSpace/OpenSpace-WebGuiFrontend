@@ -1,26 +1,26 @@
 {
   "storyidentifier":"jupitermoons",
-  "storytitle": "Jupiter and it's moons",
+  "storytitle": "Jupiter and its moons",
   "storyinfo": "There are 69 known moons of Jupiter. This gives Jupiter the largest number of moons with reasonably stable orbits of any planet in the Solar System.",
   "infofile": "info_jupitermoons",
   "overviewlimit": 5.0e+9,
-  "focusbuttons": "\"Jupiter\", \"Io\", \"Europa\", \"Ganymede\", \"Callisto\"",
-  "timecontroller": "true",
-  "datecontroller": "false",
-  "sightscontroller" : "false",
+  "focusbuttons": ["Jupiter", "Io", "Europa", "Ganymede", "Callisto"],
+  "timecontroller": true,
+  "datecontroller": false,
+  "sightscontroller" : false,
   "start": {
     "planet": "Jupiter",
-    "time": "openspace.time.currentWallTime()",
+    "date": "NOW",
     "location": {
-      "latitude": "-10",
-      "longitude": "-10",
-      "altitude": "1000000000"
+      "latitude": -10,
+      "longitude": -10,
+      "altitude": 1000000000
     }
   },
-  "hideplanets": ["Mercury", "Venus", "Earth", "Mars", "Saturn", "Uranus", "Neptune"],
-  "scaleplanets": {
+  "hidenodes": ["Mercury", "Venus", "Earth", "Mars", "Saturn", "Uranus", "Neptune"],
+  "scalenodes": {
     "info": "Moons",
     "scale": 10,
-    "planets": ["Io", "Europa", "Ganymede", "Callisto"]
+    "nodes": ["Io", "Europa", "Ganymede", "Callisto"]
   }
 }

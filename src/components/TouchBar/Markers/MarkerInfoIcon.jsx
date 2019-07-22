@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Icon from '../../common/Icon/Icon';
+import Icon from '../../common/MaterialIcon/MaterialIcon';
 import styles from './MarkerInfo.scss';
 import Popover from '../../common/Popover/Popover';
 
@@ -23,7 +23,7 @@ class MarkerInfoIcon extends Component {
   }
 
   render() {
-    const { positionStyles, identifier, planetInfo } = this.props;
+    const { positionStyles, identifier, nodeInfo } = this.props;
     return (
       <div>
         <Icon
@@ -40,17 +40,17 @@ class MarkerInfoIcon extends Component {
           closeCallback={() => this.toggleInfoWindow()}
         >
           <p className={styles.InfoText}>
-            {planetInfo ? planetInfo.info : 'No data available'}
+            {nodeInfo ? nodeInfo.info : 'No data available'}
           </p>
         </Popover>}
       </div>);
   }
 }
 
-MarkerInfoIcon.PropTypes = {
+MarkerInfoIcon.propTypes = {
   positionStyles: PropTypes.objectOf(PropTypes.shape({})).isRequired,
   identifier: PropTypes.string.isRequired,
-  planetInfo: PropTypes.objectOf(PropTypes.shape({})).isRequired,
+  nodeInfo: PropTypes.object.isRequired,
 };
 
 export default MarkerInfoIcon;

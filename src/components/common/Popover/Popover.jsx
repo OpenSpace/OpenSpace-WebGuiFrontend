@@ -14,7 +14,7 @@ const findStyles = arr => arr.split(' ')
 class Popover extends Component {
   constructor(props) {
     super(props);
-    this.state = { isDetached: false };
+    this.state = { isDetached: !props.attached };
     this.toggleDetach = this.toggleDetach.bind(this);
   }
 
@@ -27,7 +27,12 @@ class Popover extends Component {
   }
 
   get inheritedProps() {
-    const doNotInclude = 'title arrow closeCallback detachable';
+    const doNotInclude = 'title arrow closeCallback detachable attached';
+    return excludeKeys(this.props, doNotInclude);
+  }
+
+  get windowInheritedProps() {
+    const doNotInclude = 'detachable attached';
     return excludeKeys(this.props, doNotInclude);
   }
 
@@ -60,7 +65,7 @@ class Popover extends Component {
   }
 
   get asWindow() {
-    return (<Window {...this.props}>{ this.props.children }</Window>);
+    return (<Window {...this.windowInheritedProps}>{ this.props.children }</Window>);
   }
 
   toggleDetach() {
@@ -78,6 +83,7 @@ Popover.propTypes = {
   closeCallback: PropTypes.func,
   className: PropTypes.string,
   detachable: PropTypes.bool,
+  attached: PropTypes.bool,
   title: PropTypes.string,
 };
 
@@ -86,6 +92,7 @@ Popover.defaultProps = {
   closeCallback: null,
   className: '',
   detachable: false,
+  attached: true,
   title: null,
 };
 

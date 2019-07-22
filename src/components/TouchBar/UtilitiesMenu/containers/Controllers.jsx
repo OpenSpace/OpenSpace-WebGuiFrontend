@@ -2,15 +2,13 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { NavigationAnchorKey, SetGoToGeoScript, ValuePlaceholder, ScaleKey } from '../../../../api/keys';
-import { traverseTreeWithURI } from '../../../../utils/propertyTreeHelpers';
-import { changePropertyValue, startListening, stopListening } from '../../../../api/Actions';
+import { NavigationAnchorKey, ValuePlaceholder, ScaleKey } from '../../../../api/keys';
+import { setPropertyValue, subscribeToProperty, unsubscribeToProperty } from '../../../../api/Actions';
 import DateController from './../presentational/DateController';
 import TimePlayerController from './../presentational/TimePlayerController';
 import SightsController from './../presentational/SightsController';
 import ScaleController from './../presentational/ScaleController';
-import ToggleBoolButton from './../presentational/ToggleBoolButton';
-import DataManager from '../../../../api/DataManager';
+import ToggleBoolButtons from './../presentational/ToggleBoolButtons';
 import { UpdateDeltaTimeNow } from '../../../../utils/timeHelpers';
 
 class Controllers extends Component {
@@ -19,66 +17,56 @@ class Controllers extends Component {
 
     this.onChangeSight = this.onChangeSight.bind(this);
     this.onChangeScale = this.onChangeScale.bind(this);
-    this.onToggleBoolProperty = this.onToggleBoolProperty.bind(this);
   }
 
-  componentWillReceiveProps() {
+  componentDidMount(){
+
     if (this.props.scaleNodes.length !== 0) {
-      if (this.props.scaleNodes[0].listeners <= 0) {
-        this.props.scaleNodes.forEach(scaleNode =>
-          this.props.StartListening(scaleNode.Description.Identifier),
-        );
-      }
-    }
-    if (this.props.toggleBoolNodes.length !== 0) {
-      if (this.props.toggleBoolNodes[0].listeners <= 0) {
-        this.props.toggleBoolNodes.forEach(toggleBoolNode =>
-          this.props.StartListening(toggleBoolNode.Description.Identifier),
-        );
-      }
+      this.props.scaleNodes.forEach(scaleNode =>
+        this.props.startListening(scaleNode.description.Identifier),
+      );
     }
   }
 
   componentWillUnmount() {
     if (this.props.scaleNodes.length !== 0) {
       this.props.scaleNodes.forEach(scaleNode =>
-        this.props.StopListening(scaleNode.Description.Identifier),
-      );
-    }
-    if (this.props.toggleBoolNodes.length !== 0) {
-      this.props.toggleBoolNodes.forEach(toggleBoolNode =>
-        this.props.StopListening(toggleBoolNode.Description.Identifier),
+        this.props.stopListening(scaleNode.description.Identifier),
       );
     }
   }
 
   onChangeSight(selected) {
-    UpdateDeltaTimeNow(1);
-    // Check if the sight is on the current focus, otherwise change focus node
+
+    UpdateDeltaTimeNow(this.props.luaApi, 1);
+    // Check if the sight is on the current anchor, otherwise change anchor node
     if (this.props.originNode !== selected.planet) {
-      this.props.ChangePropertyValue(this.props.originNode.Description, selected.planet);
+      this.props.changePropertyValue(this.props.originNode.description.Identifier, selected.planet);
     }
-    const script = SetGoToGeoScript.replace(ValuePlaceholder, `${selected.location.latitude}, ${selected.location.longitude}, ${selected.location.altitude}`);
-    DataManager.runScript(script);
+
+    this.props.luaApi.globebrowsing.goToGeo(
+      selected.location.latitude,
+      selected.location.longitude,
+      selected.location.altitude
+    );
   }
 
   onChangeScale() {
-    const scale = this.props.story.scaleplanets.scale;
+    const scale = this.props.story.scalenodes.scale;
+    const currentScale = this.props.scaleNodes[0].value;
 
-    this.props.story.scaleplanets.planets.forEach((planet, i) => {
-      if (Number(scale) !== Number(this.props.scaleNodes[i].Value)) {
-        this.props.ChangePropertyValue(this.props.scaleNodes[i].Description, scale);
-      } else {
-        this.props.ChangePropertyValue(this.props.scaleNodes[i].Description, 1);
-      }
-    });
-  }
+    if(Number(currentScale) !== Number(scale)){
+      this.props.story.scalenodes.nodes.forEach((node, i) => {
+        this.props.changePropertyValue(this.props.scaleNodes[i].description.Identifier, scale);
+        this.props.scaleNodes[i].value = scale;
+      });   
+    } else {
+        this.props.story.scalenodes.nodes.forEach((node, i) => {
+          this.props.changePropertyValue(this.props.scaleNodes[i].description.Identifier, 1);
+          this.props.scaleNodes[i].value = 1;
+      }); 
+    }
 
-  onToggleBoolProperty(uri) {
-    const propertyNode = this.props.toggleBoolNodes
-      .find(property => property.Description.Identifier === uri);
-    const value = (propertyNode.Value) ? false : true;
-    this.props.ChangePropertyValue(propertyNode.Description, value);
   }
 
   render() {
@@ -86,33 +74,29 @@ class Controllers extends Component {
 
     return (
       <div style={{ display: 'flex' }}>
-        { (story && story.timecontroller !== 'false') &&
+        { (story && story.timecontroller !== false) &&
           <TimePlayerController />
         }
-        {(story && story.datecontroller !== 'false') &&
+        {(story && story.datecontroller !== false) &&
         <DateController
           dateList={story.datecontroller}
           onChangeSight={this.onChangeSight}
         />}
-        {(story && story.sightscontroller !== 'false') &&
+        {(story && story.sightscontroller !== false) &&
         <SightsController
           sightsList={story.sightscontroller}
           onChangeSight={this.onChangeSight}
         />}
-        {(story && story.scaleplanets) &&
+        {(story && story.scalenodes) &&
           <ScaleController
-            info={story.scaleplanets.info}
-            scale={(Number(this.props.scaleNodes[0].Value) !== Number(story.scaleplanets.scale))
-              ? '1' : story.scaleplanets.scale}
+            info={story.scalenodes.info}
+            scale={(Number(this.props.scaleNodes[0].value) !== Number(story.scalenodes.scale))
+              ? 1 : Number(story.scalenodes.scale)}
             onChangeScale={this.onChangeScale}
           />
         }
         {(story && story.toggleboolproperties) &&
-        <ToggleBoolButton
-          properties={story.toggleboolproperties}
-          nodes={this.props.toggleBoolNodes}
-          onToggle={this.onToggleBoolProperty}
-        />
+        <ToggleBoolButtons/>
         }
       </div>
     );
@@ -121,56 +105,40 @@ class Controllers extends Component {
 
 const mapStateToProps = (state) => {
   let originNode = [];
-  let nodes = [];
-  const sceneType = 'Scene';
   const story = state.storyTree.story;
   const scaleNodes = [];
-  const toggleBoolNodes = [];
   
-  if (Object.keys(state.propertyTree).length !== 0) {
-    const rootNodes = state.propertyTree.subowners
-      .filter(element => element.identifier === sceneType);
-    rootNodes.forEach((node) => {
-      nodes = [...nodes, ...node.subowners];
-    });
+  if (state.propertyTree !== undefined) {
+    originNode = state.propertyTree.properties[NavigationAnchorKey];
 
-    originNode = traverseTreeWithURI(state.propertyTree, NavigationAnchorKey);
-
-    if (story.scaleplanets) {
-      story.scaleplanets.planets.forEach((node) => {
-        //scaleNodes.push(traverseTreeWithURI(state.propertyTree, ScaleKey.replace(ValuePlaceholder, `${node}`)));
-        let foundScaleNode = traverseTreeWithURI(state.propertyTree, ScaleKey.replace(ValuePlaceholder, `${node}`));
-        if (foundScaleNode) {
-          scaleNodes.push(foundScaleNode);
+    if (story.scalenodes) {
+      story.scalenodes.nodes.forEach(node => {
+        const scaleNode =
+          state.propertyTree.properties[ScaleKey.replace(ValuePlaceholder, `${node}`)];
+        if (scaleNode) {
+          scaleNodes.push(scaleNode);
         }
-      },
-      );
-    }
-
-    if (story.toggleboolproperties) {
-      story.toggleboolproperties.forEach((property) => {
-        toggleBoolNodes.push(traverseTreeWithURI(state.propertyTree, property.URI));
-      },
-      );
+      });
     }
   }
+
   return {
     originNode,
     story,
     scaleNodes,
-    toggleBoolNodes,
+    luaApi: state.luaApi
   };
 };
 
 const mapDispatchToProps = dispatch => ({
-  ChangePropertyValue: (description, value) => {
-    dispatch(changePropertyValue(description, value));
+  changePropertyValue: (uri, value) => {
+    dispatch(setPropertyValue(uri, value));
   },
-  StartListening: (URI) => {
-    dispatch(startListening(URI));
+  startListening: (uri) => {
+    dispatch(subscribeToProperty(uri));
   },
-  StopListening: (URI) => {
-    dispatch(stopListening(URI));
+  stopListening: (uri) => {
+    dispatch(unsubscribeToProperty(uri));
   },
 });
 
@@ -182,20 +150,16 @@ Controllers = connect(
 Controllers.propTypes = {
   originNode: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.string,
-    Description: PropTypes.string,
-    Value: PropTypes.string,
+    description: PropTypes.string,
+    value: PropTypes.string,
     listeners: PropTypes.number,
   })),
-  ChangePropertyValue: PropTypes.func,
-  StartListening: PropTypes.func,
-  StopListening: PropTypes.func,
+  changePropertyValue: PropTypes.func,
+  startListening: PropTypes.func,
+  stopListening: PropTypes.func,
   scaleNodes: PropTypes.objectOf(PropTypes.shape({
-    Value: PropTypes.string,
-    Description: PropTypes.string,
-  })),
-  toggleBoolNodes: PropTypes.objectOf(PropTypes.shape({
-    Value: PropTypes.string,
-    Description: PropTypes.string,
+    value: PropTypes.string,
+    description: PropTypes.string,
   })),
   story: PropTypes.objectOf(PropTypes.shape({})),
 };
@@ -203,11 +167,10 @@ Controllers.propTypes = {
 Controllers.defaultProps = {
   originNode: [],
   scaleNodes: {},
-  toggleBoolNodes: {},
   story: {},
-  ChangePropertyValue: () => {},
-  StartListening: () => {},
-  StopListening: () => {},
+  changePropertyValue: () => {},
+  startListening: () => {},
+  stopListening: () => {},
 };
 
 export default Controllers;

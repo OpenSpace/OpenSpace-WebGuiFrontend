@@ -4,26 +4,25 @@ import MaterialIcon from '../MaterialIcon/MaterialIcon';
 
 import styles from './ToggleHeader.scss';
 
-const ToggleHeader = ({ title, toggled, onClick, onIcon, offIcon, children}) => (
+const ToggleHeader = ({ title, expanded, onClick, onIcon, offIcon, showEnabled }) => (
   <header className={styles.toggle} onClick={onClick} role="button" tabIndex={0}>
-    <div className={styles.headerChildren}>{children}</div>
     <MaterialIcon
-      icon={toggled ? onIcon : offIcon}
+      icon={expanded ? onIcon : offIcon}
       className={styles.icon}
     />
-    <span className={styles.title}>
+    <span className={`${styles.title}`} >
       { title }
     </span>
   </header>
 );
 
 ToggleHeader.propTypes = {
-  children: PropTypes.node,
   offIcon: PropTypes.string,
   onClick: PropTypes.func.isRequired,
   onIcon: PropTypes.string,
   title: PropTypes.string.isRequired,
-  toggled: PropTypes.bool.isRequired,
+  showEnabled: PropTypes.bool,
+  expanded: PropTypes.bool.isRequired,
 };
 
 ToggleHeader.defaultProps = {

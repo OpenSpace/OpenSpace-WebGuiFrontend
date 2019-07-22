@@ -1,42 +1,51 @@
-import React from 'react';
-import Property from './Property';
+import React, { Component } from 'react';
 import NumericInput from '../../common/Input/NumericInput/NumericInput';
 import Row from '../../common/Row/Row';
+import InfoBox from '../../common/InfoBox/InfoBox';
 import styles from './Property.scss';
 import { connectProperty } from './connectProperty';
 
-class MatrixProperty extends Property {
+class MatrixProperty extends Component {
   constructor(props) {
     super(props);
     this.onChange = this.onChange.bind(this);
   }
 
   componentDidMount() {
-    this.props.StartListening(this.props.Description.Identifier);
+    this.props.dispatcher.subscribe();
   }
 
   componentWillUnmount() {
-    this.props.StopListening(this.props.Description.Identifier);
+    this.props.dispatcher.unsubscribe();
+  }
+
+  get descriptionPopup() {
+    const { description } = this.props.description;
+    return description ? <InfoBox text={description} /> : '';
+  }
+
+  get disabled() {
+    return this.props.description.MetaData.isReadOnly;
   }
 
   onChange(index) {
     return (event) => {
-      const stateValue = this.props.Value;
+      const stateValue = this.props.value;
       const { value } = event.currentTarget;
       stateValue[index] = parseFloat(value);
-      this.props.ChangeValue(stateValue);
+      this.props.dispatcher.set(stateValue);
     };
   }
 
   render() {
-    const { Description, Value } = this.props;
-    const { SteppingValue, MaximumValue, MinimumValue } = Description.AdditionalData;
+    const { description, value } = this.props;
+    const { SteppingValue, MaximumValue, MinimumValue } = description.AdditionalData;
     const firstLabel = (<span>
-      { Description.Name } { this.descriptionPopup }
+      { description.Name } { this.descriptionPopup }
     </span>);
 
-    const values = Value.map((value, index) => ({
-        key: `${Description.Name}-${index}`,
+    const values = value.map((value, index) => ({
+        key: `${description.Name}-${index}`,
         value: parseFloat(value),
         index,
       }));
@@ -56,7 +65,7 @@ class MatrixProperty extends Property {
                 key={comp.key}
                 value={comp.value}
                 label={comp.index === 0 ? firstLabel : ' '}
-                placeholder={`Value ${comp.index}`}
+                placeholder={`value ${comp.index}`}
                 onChange={this.onChange(comp.index)}
                 step={SteppingValue[comp.index] || 0.01}
                 max={MaximumValue[comp.index] || 100}
@@ -72,5 +81,4 @@ class MatrixProperty extends Property {
   }
 }
 
-MatrixProperty = connectProperty(MatrixProperty);
 export default MatrixProperty;

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Icon from '../../../common/Icon/Icon';
+import Icon from '../../../common/MaterialIcon/MaterialIcon';
 import SmallLabel from '../../../common/SmallLabel/SmallLabel';
 import Picker from '../../../BottomBar/Picker';
 import Popover from '../../../common/Popover/Popover';

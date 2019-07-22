@@ -5,12 +5,12 @@ import styles from './MarkerInfo.scss';
 import MarkerInfoIcon from './MarkerInfoIcon';
 
 const MarkerInfo = (props) => {
-  const { position, size, showInfo, identifier, showLabel, planetRadius, planetInfo } = props;
+  const { position, size, showInfoIcon, identifier, showLabel, offset, nodeInfo } = props;
 
   const positionStyles = {
     MarkerInfo: {
       left: `${Number(position[0])}px`,
-      bottom: `calc(${Number(position[1])}px + ${planetRadius}px)`,
+      bottom: `calc(${Number(position[1])}px + ${offset}px)`,
     },
     Icon: {
       fontSize: `${size}em`,
@@ -22,11 +22,11 @@ const MarkerInfo = (props) => {
 
   return (
     <div className={styles.MarkerInfo} style={positionStyles.MarkerInfo}>
-      {showInfo &&
+      {showInfoIcon &&
         <MarkerInfoIcon
           identifier={identifier}
           positionStyles={positionStyles}
-          planetInfo={planetInfo}
+          nodeInfo={nodeInfo}
         />}
       {showLabel &&
         <SmallLabel
@@ -38,20 +38,20 @@ const MarkerInfo = (props) => {
   );
 };
 
-MarkerInfo.PropTypes = {
+MarkerInfo.propTypes = {
   position: PropTypes.array,
   identifier: PropTypes.string.isRequired,
   size: PropTypes.number.isRequired,
-  showInfo: PropTypes.bool,
-  planetInfo: PropTypes.objectOf(PropTypes.string),
+  showInfoIcon: PropTypes.bool.isRequired,
+  nodeInfo: PropTypes.object.isRequired,
   showLabel: PropTypes.bool.isRequired,
-  planetRadius: PropTypes.number.isRequired,
+  offset: PropTypes.number.isRequired,
 };
 
 MarkerInfo.defaultProps = {
   position: '',
-  showInfo: false,
-  planetInfo: {},
+  showInfoIcon: false,
+  nodeInfo: {},
 };
 
 export default MarkerInfo;
