@@ -4,6 +4,7 @@ import OriginPicker from './Origin/OriginPicker';
 import TimePicker from './TimePicker';
 import TfEditor from './TfEditor/containers/TfEditor';
 import SessionRec from './SessionRec';
+import ScreenSpaceRenderablePanel from './ScreenSpaceRenderablePanel';
 import styles from './BottomBar.scss';
 
 // <TfEditor /> is currently disabled.
@@ -13,6 +14,7 @@ const BottomBar = () => (
     <OriginPicker />
     <TimePicker />
     <SessionRec />
+    <ScreenSpaceRenderablePanel />
   </div>
 );
 
