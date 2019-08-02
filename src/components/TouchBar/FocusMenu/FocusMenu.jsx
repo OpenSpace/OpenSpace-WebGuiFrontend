@@ -8,7 +8,8 @@ import {
   NavigationAnchorKey,
   ApplyOverviewKey,
   FocusNodesListKey,
-  ApplyFlyToKey
+  ApplyFlyToKey,
+  globeBrowsingLocationDefaultLatLon
 } from '../../../api/keys';
 import {
   setPropertyValue,
@@ -52,6 +53,10 @@ class FocusMenu extends Component {
     UpdateDeltaTimeNow(this.props.luaApi, 1);
     this.props.changePropertyValue(NavigationAnchorKey, origin.origin);
     this.applyFlyTo();
+    this.props.luaApi.globebrowsing.goToGeo(
+      globeBrowsingLocationDefaultLatLon[0],
+      globeBrowsingLocationDefaultLatLon[1]
+    );
   }
 
   applyFlyTo() {

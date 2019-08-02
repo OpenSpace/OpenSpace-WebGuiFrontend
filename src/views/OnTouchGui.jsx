@@ -138,7 +138,7 @@ class OnTouchGui extends Component {
     }
     this.props.changePropertyValue(anchorNode.description.Identifier, json.start.planet);
     this.props.changePropertyValue(overViewNode.description.Identifier, json.overviewlimit);
-    setStoryStart(this.props.luaApi, json.start.location, json.start.date);
+    setStoryStart(this.props.luaApi, json.start.location, json.start.date, json.overviewlimit);
 
     // Check settings of the previous story and reset values
     this.checkStorySettings(this.props.story, true);
