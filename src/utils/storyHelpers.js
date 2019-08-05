@@ -2,7 +2,7 @@ import { setDate } from './timeHelpers';
 import { StoryTagKey } from './../api/keys'
 
 // Function to set the time and location for the start of a story
-export const setStoryStart = (luaApi, startPosition, startTime) => {
+export const setStoryStart = (luaApi, startPosition, startTime, overviewLimit) => {
   luaApi.globebrowsing.goToGeo( 
     startPosition.latitude, 
     startPosition.longitude,
@@ -10,6 +10,7 @@ export const setStoryStart = (luaApi, startPosition, startTime) => {
   );
 
   setDate(luaApi, startTime);
+  luaApi.setPropertyValue(`NavigationHandler.OrbitalNavigator.StoryOverviewLimit`, overviewLimit);
 };
 
 export const addStoryTags= (luaApi, nodes) => {
