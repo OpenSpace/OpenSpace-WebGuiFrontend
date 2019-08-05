@@ -10,7 +10,6 @@ export const setStoryStart = (luaApi, startPosition, startTime, overviewLimit) =
   );
 
   setDate(luaApi, startTime);
-
   luaApi.setPropertyValue(`NavigationHandler.OrbitalNavigator.StoryOverviewLimit`, overviewLimit);
 };
 
@@ -55,6 +54,7 @@ export const toggleGalaxies = (luaApi, value) => {
 // and a slower velocity is used
 export const toggleZoomOut = (luaApi, value) => {
   const velocity = value ? 0.02 : 0.04;
+
   luaApi.setPropertyValue(`NavigationHandler.OrbitalNavigator.VelocityZoomControl`, velocity);
   luaApi.setPropertyValue(`NavigationHandler.OrbitalNavigator.Overview`, value);
 };
