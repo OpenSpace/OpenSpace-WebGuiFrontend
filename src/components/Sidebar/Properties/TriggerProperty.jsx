@@ -2,11 +2,13 @@ import React, { Component } from 'react';
 import Button from '../../common/Input/Button/Button';
 import InfoBox from '../../common/InfoBox/InfoBox';
 import { connectProperty } from './connectProperty';
+import { copyTextToClipboard } from '../../../utils/helpers';
 
 class TriggerProperty extends Component {
   constructor(props) {
     super(props);
     this.onChange = this.onChange.bind(this);
+    this.copyUri = this.copyUri.bind(this);
   }
 
   onChange() {
@@ -15,7 +17,11 @@ class TriggerProperty extends Component {
 
   get descriptionPopup() {
     const { description } = this.props.description;
-    return description ? <InfoBox text={description} /> : '';
+    return description ? <span onClick={this.copyUri}><InfoBox text={description} /></span> : '';
+  }
+
+  copyUri() {
+    copyTextToClipboard(this.props.description.Identifier);
   }
 
   render() {

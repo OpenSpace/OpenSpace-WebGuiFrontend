@@ -105,10 +105,9 @@ export const LayerGroupKeys = ["Layers.ColorLayers", "Layers.HeightLayers",
                         "Layers.Overlays", "Layers.NightLayers",
                         "Layers.WaterMasks"];
 
-
 export const globeBrowsingLocationDefaultLatLon = [15.0, 10.0];
 
-//Temp hack until we build gui path sorting into the assets or properties
+//Temp hack until we build gui path sorting into the assets or peoperties
 export const sortGroups = {
 	['Planets']: {
     value: ["Mercury", "Venus",

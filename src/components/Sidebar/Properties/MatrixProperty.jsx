@@ -4,11 +4,13 @@ import Row from '../../common/Row/Row';
 import InfoBox from '../../common/InfoBox/InfoBox';
 import styles from './Property.scss';
 import { connectProperty } from './connectProperty';
+import { copyTextToClipboard } from '../../../utils/helpers';
 
 class MatrixProperty extends Component {
   constructor(props) {
     super(props);
     this.onChange = this.onChange.bind(this);
+    this.copyUri = this.copyUri.bind(this);
   }
 
   componentDidMount() {
@@ -22,6 +24,10 @@ class MatrixProperty extends Component {
   get descriptionPopup() {
     const { description } = this.props.description;
     return description ? <InfoBox text={description} /> : '';
+  }
+
+  copyUri() {
+    copyTextToClipboard(this.props.description.Identifier);
   }
 
   get disabled() {
@@ -40,9 +46,11 @@ class MatrixProperty extends Component {
   render() {
     const { description, value } = this.props;
     const { SteppingValue, MaximumValue, MinimumValue } = description.AdditionalData;
-    const firstLabel = (<span>
-      { description.Name } { this.descriptionPopup }
-    </span>);
+    const firstLabel = (
+      <span onClick={this.copyUri}>
+        { description.Name } { this.descriptionPopup }
+      </span>
+    );
 
     const values = value.map((value, index) => ({
         key: `${description.Name}-${index}`,

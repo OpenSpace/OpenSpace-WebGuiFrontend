@@ -25,7 +25,8 @@ const openspaceApp = (state = {}, action) => {
     local: local(state.local, action),
     luaApi: luaApi(state.luaApi, action),
     fetchData: fetchData(state.fetchData, action),
-    storyTree: storyTree(state.storyTree, action)
+    storyTree: storyTree(state.storyTree, action),
+    luaApi: luaApi(state.luaApi, action)
   };
 };
 

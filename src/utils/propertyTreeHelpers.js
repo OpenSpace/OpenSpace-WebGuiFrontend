@@ -30,7 +30,9 @@ export const keepCloning = (objectpassed) => {
   }
   return temporaryStorage;
 };
-/*
+
+
+// TODO: Delete unused function
 export const findSubtree = (node, uri) => {
   const splittedUri = splitUri(uri);
   if (splittedUri.length === 0) {
@@ -43,7 +45,7 @@ export const findSubtree = (node, uri) => {
       return element.identifier === splittedUri[0]
     });
   }
-  console.log(node);
+
   const subowner = node.subowners.find(element => {
     return element.identifier === splittedUri[0]
   })
@@ -55,9 +57,11 @@ export const findSubtree = (node, uri) => {
   const slicedUri = splittedUri.slice(1);
   return findSubtree(subowner, slicedUri);
 };
-*/
+
+// TODO: Delete unused function
 export const jsonToLuaString = json => `"${json}"`;
 
+// TODO: Delete unused function
 export const traverseTreeForTag = (node, tag) => {
   let data;
   node.subowners.map(element => {

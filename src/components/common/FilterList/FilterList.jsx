@@ -90,6 +90,7 @@ class FilterList extends Component {
             { entries.map(entry => (
               <EntryComponent
                 {...entry}
+                key={entry.key}
                 onSelect={this.props.onSelect}
                 active={this.props.active}
               />)) }

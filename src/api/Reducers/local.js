@@ -73,6 +73,7 @@ const defaultPopovers = {
   originPicker: popover(),
   timePicker: popover(),
   sessionRecording: popover(),
+  screenSpaceRenderables: popover(),
   focusNodePropertiesPanel: popover({ attached: false }),
   activeNodePropertyPanels: {}
 }

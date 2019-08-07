@@ -7,6 +7,7 @@ import Popover from '../common/Popover/Popover';
 import subStateToProps from '../../utils/subStateToProps';
 import { connect } from 'react-redux';
 import { setShowAbout } from '../../api/Actions'
+import environment from '../../api/Environment';
 
 class SystemMenu extends Component {
   constructor(props) {
@@ -29,7 +30,13 @@ class SystemMenu extends Component {
               <button onClick={this.props.showAbout}>
                 About OpenSpace
               </button>
-
+              {
+                environment.developmentMode ?
+                  <div>
+                    <hr className={Popover.styles.delimiter} />
+                    <div className={styles.devModeNotifier}>GUI running in dev mode</div>
+                  </div> : null
+              }
               <hr className={Popover.styles.delimiter} />
 
               <button onClick={this.props.console}>

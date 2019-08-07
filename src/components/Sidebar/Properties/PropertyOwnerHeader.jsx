@@ -6,17 +6,13 @@ import Button from '../../common/Input/Button/Button';
 import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
 import SvgIcon from '../../common/SvgIcon/SvgIcon';
 import FocusIcon from 'svg-react-loader?name=Focus!../../../icons/focus.svg';
-import { LayerGroupKeys, ScenePrefixKey } from '../../../api/keys';
+import { LayerGroupKeys } from '../../../api/keys';
 import { displayName } from './PropertyOwner';
 import Property from './Property';
 
 import { connect } from 'react-redux';
-
 import propertyDispatcher from '../../../api/propertyDispatcher';
-
 import Focus from 'svg-react-loader?name=Focus!../../../icons/focus.svg';
-
-
 import {
   NavigationAnchorKey,
   NavigationAimKey,
@@ -117,7 +113,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   const { uri } = ownProps;
   const splitUri = uri.split('.');
-  if (splitUri.length === 2 && splitUri[0] === ScenePrefixKey) {
+  if (splitUri.length === 2 && splitUri[0] === 'Scene') {
     return {
       focusAction: () => {
         propertyDispatcher(dispatch, NavigationAnchorKey).set(splitUri[1]);
