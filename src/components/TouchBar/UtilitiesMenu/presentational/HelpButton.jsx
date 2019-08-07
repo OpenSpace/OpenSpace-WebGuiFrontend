@@ -14,12 +14,19 @@ class HelpButton extends Component {
     };
 
     this.handleClick = this.handleClick.bind(this);
+    this.timeout = null;
+  }
+
+  componentWillUnmount() {
+      if (this.timeout) {
+        clearTimeout(this.timeout);
+    }
   }
 
   // Show image for 10s and then set state to false
   handleClick() {
     this.setState({ showImage: !this.state.showImage });
-    setTimeout(() => {
+    this.timeout = setTimeout(() => {
       this.setState({
         showImage: false,
       });
