@@ -9,7 +9,7 @@ import Row from '../common/Row/Row';
 
 import ScrollOverlay from '../common/ScrollOverlay/ScrollOverlay';
 
-import { setPopoverVisibility, onOpenConnection } from '../../api/Actions';
+import { setPopoverVisibility, reloadPropertyTree } from '../../api/Actions';
 import { connect } from 'react-redux';
 
 import styles from './ScreenSpaceRenderablePanel.scss';
@@ -166,10 +166,12 @@ const mapDispatchToProps = dispatch => ({
       popover: 'screenSpaceRenderables',
       visible
     }));
-    dispatch(onOpenConnection());
+    if (visible) {
+      dispatch(reloadPropertyTree());
+    }
   },
   refresh: () => {
-    dispatch(onOpenConnection());
+    dispatch(reloadPropertyTree());
   }
 })
 

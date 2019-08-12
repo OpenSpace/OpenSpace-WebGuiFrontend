@@ -2,11 +2,10 @@ import {
   updatePropertyValue,
   addPropertyOwners, 
   addProperties,
-  addProperty,
-  removeProperty,
   refreshGroups
 } from '../Actions';
 import { actionTypes } from '../Actions/actionTypes';
+import { reloadPropertyTree } from '../Actions';
 import { rootOwnerKey } from '../keys';
 
 import api from '../api';
@@ -181,15 +180,23 @@ const setBackendValue = (uri, value) => {
   api.setProperty(uri, value);
 };
 
-export const propertyTree = store => next => (action) => {
+export const propertyTree = store => next => action => {
   let result;
+
   if (action.type === actionTypes.setPropertyValue) {
+    // Optimization: Capture the setPropertyValue action, and don't let other middleware or
+    // reducers act on that action, since they shouldn't act on it anyways.
     result = store;
   } else {
     result = next(action);
   }
+
   switch (action.type) {
     case actionTypes.onOpenConnection: {
+      store.dispatch(reloadPropertyTree());
+      break;
+    }
+    case actionTypes.reloadPropertyTree: {
       getPropertyTree(store.dispatch);
       break;
     }
