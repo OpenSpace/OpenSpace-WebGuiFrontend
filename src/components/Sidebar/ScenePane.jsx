@@ -20,7 +20,7 @@ class ScenePane extends Component {
       type: 'propertyOwner',
       uri: uri
     })).concat(this.props.shortcuts.map((shortcut, index) => ({
-      key: 'shortcut: ' + shortcut.name,
+      key: 'shortcut: ' + index,
       type: 'shortcut',
       index
     })));
