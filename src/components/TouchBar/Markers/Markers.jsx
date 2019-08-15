@@ -15,7 +15,6 @@ class Markers extends Component {
   }
 
   componentDidMount(){
-    //start listening for relevant properties
     if(!this.props.focusNodes)
       return;
 
@@ -31,7 +30,7 @@ class Markers extends Component {
 
     if(!this.props.focusNodes)
       return;
-    //stop listening for relevant properties
+
     this.props.focusNodes.map(node => {
       this.props.stopListening(`Scene.${node}.ScreenSpacePosition`);
       this.props.stopListening(`Scene.${node}.ScreenSizeRadius`);
@@ -66,14 +65,42 @@ class Markers extends Component {
     return markers;
   }
 
-  // Determines whether this marker is visible by checking occlusion between
-  // all nodes that are currently visible on the screen
+  //Determines size of the marker
+  static determineSize(nodeRadius){
+
+    let size = nodeRadius * 0.1;
+    const max_marker_size = 3;
+    const min_marker_size = 1.5;
+
+    if (size >= max_marker_size)
+      size = max_marker_size;
+    if (size <= min_marker_size)
+      size = min_marker_size;
+
+    return size;
+  }
+
+  // Returns info text for the node if it exists, otherwise warn
+  static getInfoText(node, infoNodes){
+
+    if(infoNodes){ //else get infotext for the icon
+      for (let i = 0; i < infoNodes.length; i++) {
+        if (node === infoNodes[i].name) {
+          return infoNodes[i].info;
+        }
+      }
+      console.warn('No info text available for ' + node);
+    }
+    console.warn('No info file available for this story');
+  }
+
+  // Determines whether this marker is visible by checking possible
+  // occlusion by all nodes that are currently visible on the screen
   static updateVisibility(markerNodes){
 
     for (let index = 0; index < markerNodes.length; index++) {
       let node = markerNodes[index];
 
-      //if this node is not on screen, we continue
       if(!node.visibility){
         continue;
       }
@@ -84,7 +111,7 @@ class Markers extends Component {
       for (let compareIndex = 0; compareIndex < markerNodes.length; compareIndex++) {
 
         const compareNode = markerNodes[compareIndex];
-        //if the other node is not visible we continue
+
         if(!compareNode.visibility){
           continue;
         }
@@ -93,8 +120,11 @@ class Markers extends Component {
         const compareNodeCenterY = compareNode.screenSpacePos[1];
 
         // check if this marker position is occluded by the comparing node
-        const thisMarkerOutsideCircle = Markers.outsideCircle(compareNodeCenterX, compareNodeCenterY,
-                  compareNode.screenSpaceRadius * occlusionMarginFactor, nodeCenterX, nodeCenterY + node.screenSpaceRadius);
+        const thisMarkerOutsideCircle = Markers.outsideCircle(
+          compareNodeCenterX, compareNodeCenterY,
+          compareNode.screenSpaceRadius * occlusionMarginFactor,
+          nodeCenterX, nodeCenterY + node.screenSpaceRadius
+        );
 
         const compareIsInfront = (node.distanceFromCamera > compareNode.distanceFromCamera);
 
@@ -110,21 +140,6 @@ class Markers extends Component {
         markerNode.size = Markers.determineSize(markerNode.screenSpaceRadius);
       }
     })
-  }
-
-  //Determines size of the marker
-  static determineSize(nodeRadius){
-
-    let size = nodeRadius * 0.1;
-    const max_marker_size = 3;
-    const min_marker_size = 1.5;
-
-    if (size >= max_marker_size)
-      size = max_marker_size;
-    if (size <= min_marker_size)
-      size = min_marker_size;
-
-    return size;
   }
 
   render() {
@@ -155,40 +170,31 @@ const mapStateToProps = (state) => {
 
   focusNodes = state.storyTree.story.focusbuttons;
   infoNodes = state.storyTree.info.infonodes;
-  let hiddenInfoIcons = state.storyTree.story.hideinfoicons;
-  let hiddenLabels = state.storyTree.story.hidelabels;
+  const showInfoIcons = state.storyTree.story.showinfoicons;
+  const showLabels = state.storyTree.story.showlabels;
 
   focusNodes.map(node => {
 
     let infoText = undefined;
-    let showInfoIcon = true;
-    let showLabel = true;
+    let showInfoIcon = false;
+    let showLabel = false;
 
     // hide labels specified in the json file
-    if(hiddenLabels){
-      for (let i = 0; i < hiddenLabels.length; i++) {
-        if (node === hiddenLabels[i]) {
-          showLabel = false;
+    if(showLabels){
+      for (let i = 0; i < showLabels.length; i++) {
+        if (node === showLabels[i]) {
+          showLabel = true;
         }
       }
     }
-    // if hide-icons are specified in the json file, hide them
-    if(hiddenInfoIcons){
-      for (let i = 0; i < hiddenInfoIcons.length; i++) {
-        if (node === hiddenInfoIcons[i]) {
-          showInfoIcon = false;
+    // if show-icons are specified in the json file
+    if(showInfoIcons){
+      for (let i = 0; i < showInfoIcons.length; i++) {
+        if (node === showInfoIcons[i]) {
+          showInfoIcon = true;
+          infoText = Markers.getInfoText(node, infoNodes);
         }
       }
-    }
-
-    if(infoNodes){ //else get infotext for the icon
-      for (let i = 0; i < infoNodes.length; i++) {
-        if (node === infoNodes[i].name) {
-          infoText = infoNodes[i].info;
-        }
-      }
-    }else {
-      showInfoIcon = false;
     }
 
     let markerProperties = {
@@ -198,7 +204,7 @@ const mapStateToProps = (state) => {
       screenSpaceRadius: state.propertyTree.properties[`Scene.${node}.ScreenSizeRadius`].value,
       distanceFromCamera: state.propertyTree.properties[`Scene.${node}.DistanceFromCamToNode`].value,
       size: 0,
-      infoText: infoText ? infoText : 'No info',
+      infoText: infoText ? infoText : 'No available info',
       showInfoIcon: showInfoIcon,
       showLabel: showLabel
     };

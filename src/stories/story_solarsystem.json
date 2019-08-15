@@ -5,6 +5,8 @@
   "infofile": "info_solarsystem",
   "overviewlimit": 1.5e+13,
   "focusbuttons": ["Mercury","Venus","Earth","Mars", "Jupiter", "Saturn", "Uranus", "Neptune"],
+  "showinfoicons": ["Mercury","Venus","Earth","Mars", "Jupiter", "Saturn", "Uranus", "Neptune"],
+  "showlabels": ["Mercury","Venus","Earth","Mars", "Jupiter", "Saturn", "Uranus", "Neptune"],
   "timecontroller": true,
   "datecontroller":  false,
   "sightscontroller" : false,

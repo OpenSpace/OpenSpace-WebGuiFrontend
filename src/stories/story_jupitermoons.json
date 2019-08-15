@@ -5,6 +5,8 @@
   "infofile": "info_jupitermoons",
   "overviewlimit": 5.0e+9,
   "focusbuttons": ["Jupiter", "Io", "Europa", "Ganymede", "Callisto"],
+  "showinfoicons": ["Jupiter", "Io", "Europa", "Ganymede", "Callisto"],
+  "showlabels": ["Jupiter", "Io", "Europa", "Ganymede", "Callisto"],
   "timecontroller": true,
   "datecontroller": false,
   "sightscontroller" : false,

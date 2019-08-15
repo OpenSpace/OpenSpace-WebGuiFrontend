@@ -4,6 +4,7 @@
   "storyinfo": "Earth is the third planet from the Sun and the only object in the Universe known to harbor life. According to radiometric dating and other sources of evidence, Earth formed over 4.5 billion years ago.",
   "overviewlimit": 1.0e+9,
   "focusbuttons": ["Earth"],
+  "hidenodes": ["Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune"],
   "timecontroller": true,
   "datecontroller":  [
     {
@@ -46,7 +47,5 @@
       "longitude": -111.876183,
       "altitude": 20000000
     }
-  },
-  "hidenodes": ["Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune"],
-  "hideinfoicons": ["Earth"]
+  }
 }
