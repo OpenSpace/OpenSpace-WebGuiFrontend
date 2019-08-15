@@ -5,7 +5,7 @@ import styles from './MarkerInfo.scss';
 import MarkerInfoIcon from './MarkerInfoIcon';
 
 const MarkerInfo = (props) => {
-  const { position, size, showInfoIcon, identifier, showLabel, offset, nodeInfo } = props;
+  const { position, size, showInfoIcon, identifier, showLabel, offset, infoText } = props;
 
   const positionStyles = {
     MarkerInfo: {
@@ -26,7 +26,7 @@ const MarkerInfo = (props) => {
         <MarkerInfoIcon
           identifier={identifier}
           positionStyles={positionStyles}
-          nodeInfo={nodeInfo}
+          infoText={infoText}
         />}
       {showLabel &&
         <SmallLabel
@@ -43,7 +43,7 @@ MarkerInfo.propTypes = {
   identifier: PropTypes.string.isRequired,
   size: PropTypes.number.isRequired,
   showInfoIcon: PropTypes.bool.isRequired,
-  nodeInfo: PropTypes.object.isRequired,
+  infoText: PropTypes.string.isRequired,
   showLabel: PropTypes.bool.isRequired,
   offset: PropTypes.number.isRequired,
 };
@@ -51,7 +51,7 @@ MarkerInfo.propTypes = {
 MarkerInfo.defaultProps = {
   position: '',
   showInfoIcon: false,
-  nodeInfo: {},
+  infoText: 'No info available',
 };
 
 export default MarkerInfo;

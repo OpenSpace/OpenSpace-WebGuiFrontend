@@ -23,7 +23,7 @@ class MarkerInfoIcon extends Component {
   }
 
   render() {
-    const { positionStyles, identifier, nodeInfo } = this.props;
+    const { positionStyles, identifier, infoText } = this.props;
     return (
       <div>
         <Icon
@@ -40,7 +40,7 @@ class MarkerInfoIcon extends Component {
           closeCallback={() => this.toggleInfoWindow()}
         >
           <p className={styles.InfoText}>
-            {nodeInfo ? nodeInfo.info : 'No data available'}
+            {infoText ? infoText : 'No data available'}
           </p>
         </Popover>}
       </div>);
@@ -50,7 +50,7 @@ class MarkerInfoIcon extends Component {
 MarkerInfoIcon.propTypes = {
   positionStyles: PropTypes.objectOf(PropTypes.shape({})).isRequired,
   identifier: PropTypes.string.isRequired,
-  nodeInfo: PropTypes.object.isRequired,
+  infoText: PropTypes.string.isRequired,
 };
 
 export default MarkerInfoIcon;
