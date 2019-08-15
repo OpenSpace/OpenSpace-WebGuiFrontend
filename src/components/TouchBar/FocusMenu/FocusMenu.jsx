@@ -95,7 +95,6 @@ class FocusMenu extends Component {
 
 const mapStateToProps = (state) => {
   let anchor = [];
-  let nodes = [];
   let focusNodes = [];
 
   if (Object.keys(state.propertyTree).length !== 0) {
