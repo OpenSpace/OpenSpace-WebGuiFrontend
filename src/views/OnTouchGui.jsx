@@ -40,7 +40,8 @@ class OnTouchGui extends Component {
     this.checkedVersion = false;
     this.state = {
       developerMode: false,
-      currentStory: DefaultStory
+      currentStory: DefaultStory,
+      sliderStartStory: DefaultStory
     };
 
     this.changeStory = this.changeStory.bind(this);
@@ -162,6 +163,7 @@ class OnTouchGui extends Component {
   }
 
   resetStory () {
+    this.state.sliderStartStory = this.state.currentStory;
     UpdateDeltaTimeNow(this.props.luaApi, 1);
     this.setStory(DefaultStory);
   }
@@ -206,8 +208,6 @@ class OnTouchGui extends Component {
 
     return storyFile;
   }
-
-
 
   changeStory(e) {
     this.setStory(e.target.id);
@@ -263,7 +263,8 @@ class OnTouchGui extends Component {
           />}
         <p className={styles.storyTitle}> {this.props.story.storytitle} </p>
         {(this.state.currentStory === DefaultStory)
-          ? <Slider changeStory={this.setStory} /> : <TouchBar resetStory={this.resetStory} />
+          ? <Slider startSlider = {this.state.sliderStartStory} changeStory={this.setStory} />
+          : <TouchBar resetStory={this.resetStory} />
         }      
       </div>
     );
