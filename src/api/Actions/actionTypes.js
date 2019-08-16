@@ -10,6 +10,7 @@ export const actionTypes = {
   addProperties: 'PROPERTY_TREE_ADD_PROPERTIES',
   removePropertyOwners: 'PROPERTY_TREE_REMOVE_OWNERS',
   removeProperties: 'PROPERTY_TREE_REMOVE_PROPERTIES',
+  reloadPropertyTree: 'PROPERTY_TREE_RELOAD',
   refreshGroups: 'GROUPS_REFRESH',
 
   updateTime: "TIME_UPDATE",

@@ -47,6 +47,9 @@ class ScrollOverlay extends Component {
    * @param target - the `.scroll-content` node
    */
   updateScrollIndicators(target) {
+    if (!document.body.contains(target)) {
+      return;
+    }
     // compare using `< 1` instead of `=== 0` because floating point precision
     const bottomHeight = target.scrollTop + target.clientHeight;
     const atBottom = Math.abs(bottomHeight - target.scrollHeight) < 1;

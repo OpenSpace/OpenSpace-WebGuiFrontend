@@ -76,6 +76,12 @@ export const onOpenConnection = () => ({
   },
 });
 
+export const reloadPropertyTree = () => ({
+  type: actionTypes.reloadPropertyTree,
+  payload: {
+  },
+});
+
 export const onCloseConnection = () => ({
   type: actionTypes.onCloseConnection,
   payload: {

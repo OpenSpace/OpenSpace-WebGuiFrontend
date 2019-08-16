@@ -150,7 +150,7 @@ FilterList.propTypes = {
   /**
    * the component used to display entries
    */
-  viewComponent: PropTypes.func,
+  viewComponent: PropTypes.elementType,
 
   /**
    * props to pass to the view component

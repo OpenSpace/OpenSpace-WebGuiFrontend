@@ -41,7 +41,7 @@ class Shortcut extends Component {
     const execute = this.props.execute;
 
     return (
-      <div key={name} className={styles.shortcutContainer}>
+      <div className={styles.shortcutContainer}>
         <Button transparent className={styles.executeButton} onClick={execute} >
           <MaterialIcon icon="play_arrow" />
           </Button>
