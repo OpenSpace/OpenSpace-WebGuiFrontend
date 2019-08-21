@@ -112,7 +112,7 @@ class Markers extends Component {
 
         const compareNode = markerNodes[compareIndex];
 
-        if(!compareNode.visibility){
+        if(!compareNode.visibility || compareNode.name === node.name){
           continue;
         }
         
@@ -134,12 +134,6 @@ class Markers extends Component {
       }
     }
 
-    markerNodes.map(markerNode =>{
-      //if the marker is not occluded, calculate its size
-      if(markerNode.visibility){
-        markerNode.size = Markers.determineSize(markerNode.screenSpaceRadius);
-      }
-    })
   }
 
   render() {
@@ -179,7 +173,7 @@ const mapStateToProps = (state) => {
     let showInfoIcon = false;
     let showLabel = false;
 
-    // hide labels specified in the json file
+    // show labels specified in the json file
     if(showLabels){
       for (let i = 0; i < showLabels.length; i++) {
         if (node === showLabels[i]) {
@@ -213,6 +207,13 @@ const mapStateToProps = (state) => {
   })
 
   Markers.updateVisibility(markerNodes);
+
+  markerNodes.map(markerNode =>{
+    //if the marker is not occluded, calculate its size
+    if(markerNode.visibility){
+      markerNode.size = Markers.determineSize(markerNode.screenSpaceRadius);
+    }
+  })
 
   return {
     focusNodes,
