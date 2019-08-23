@@ -23,8 +23,8 @@ import {
 import Slider from '../components/ImageSlider/Slider';
 import { UpdateDeltaTimeNow } from '../utils/timeHelpers';
 import { toggleShading, toggleHighResolution, toggleHidePlanet, toggleGalaxies, 
-         toggleZoomOut, setStoryStart, hideDevInfoOnScreen, showDistanceOnScreen, 
-         addStoryTags, removeStoryTags, storyFileParser, infoFileParser
+         toggleZoomOut, setStoryStart, showDevInfoOnScreen, addStoryTags,
+         removeStoryTags, storyFileParser, infoFileParser
 } from '../utils/storyHelpers';
 import DeveloperMenu from '../components/TouchBar/UtilitiesMenu/presentational/DeveloperMenu';
 import { isCompatible,
@@ -58,8 +58,7 @@ class OnTouchGui extends Component {
 
     document.addEventListener('keydown', this.handleKeyPress);
 
-    hideDevInfoOnScreen(this.props.luaApi, true);
-    showDistanceOnScreen(this.props.luaApi, false);
+    showDevInfoOnScreen(this.props.luaApi, false);
 
     this.props.startListening(StoryIdentifierKey);
     this.props.startListening(FocusNodesListKey);
@@ -117,14 +116,6 @@ class OnTouchGui extends Component {
     }
 
     const json = this.addStoryTree(selectedStory);
-    
-    // If the current story is the default - hide distance info on screen
-    if (selectedStory === DefaultStory) {
-      showDistanceOnScreen(this.props.luaApi, false);
-    }
-    else {
-      showDistanceOnScreen(this.props.luaApi, true);
-    }
 
     // Set all the story specific properties
     this.props.changePropertyValue(storyIdentifierNode.description.Identifier, selectedStory);
@@ -223,9 +214,9 @@ class OnTouchGui extends Component {
     this.setState({ developerMode: !this.state.developerMode });
 
     if (this.state.developerMode === true) {
-      hideDevInfoOnScreen(this.props.luaApi, false);
+      showDevInfoOnScreen(this.props.luaApi, true);
     } else {
-      hideDevInfoOnScreen(this.props.luaApi, true);
+      showDevInfoOnScreen(this.props.luaApi, false);
     }
   }
 

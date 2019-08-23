@@ -59,22 +59,24 @@ export const toggleZoomOut = (luaApi, value) => {
   luaApi.setPropertyValue(`NavigationHandler.OrbitalNavigator.Overview`, value);
 };
 
-// Function to hide logs and information on screen.
+// Function to show logs and information on screen.
 // The distance from camera to focus will still be displayed.
-export const hideDevInfoOnScreen = (luaApi, value) => {
-  luaApi.setPropertyValue(`RenderEngine.ShowVersion`, !value);
-  luaApi.setPropertyValue(`RenderEngine.ShowCamera`, !value);
-  luaApi.setPropertyValue(`RenderEngine.ShowLog`, !value);
-  luaApi.setPropertyValue(`Dashboard.Date.Enabled`, !value);
-  luaApi.setPropertyValue(`Dashboard.SimulationIncrement.Enabled`, !value);
-  luaApi.setPropertyValue(`Dashboard.Framerate.Enabled`, !value);
-  luaApi.setPropertyValue(`Dashboard.ParallelConnection.Enabled`, !value);
-  luaApi.setPropertyValue(`Dashboard.Distance.StoryStyleActive`, value);
-};
-
-// Function to show or hide distance from camera to focus on screen.
-export const showDistanceOnScreen = (luaApi, value) => {
+export const showDevInfoOnScreen = (luaApi, value) => {
+  if(value){
+      luaApi.setPropertyValue(`Dashboard.StartPositionOffset`, [10,-70]);
+  }else{
+      luaApi.setPropertyValue(`Dashboard.StartPositionOffset`, [10, 0]);
+  }
+  luaApi.setPropertyValue(`RenderEngine.ShowVersion`, value);
+  luaApi.setPropertyValue(`RenderEngine.ShowCamera`, value);
+  luaApi.setPropertyValue(`RenderEngine.ShowLog`, value);
+  luaApi.setPropertyValue(`Dashboard.Date.Enabled`, value);
+  luaApi.setPropertyValue(`Dashboard.GlobeLocation.Enabled`, value);
+  luaApi.setPropertyValue(`Dashboard.SimulationIncrement.Enabled`, value);
+  luaApi.setPropertyValue(`Dashboard.Framerate.Enabled`, value);
+  luaApi.setPropertyValue(`Dashboard.ParallelConnection.Enabled`, value);
   luaApi.setPropertyValue(`Dashboard.Distance.Enabled`, value);
+
 };
 
 /**
