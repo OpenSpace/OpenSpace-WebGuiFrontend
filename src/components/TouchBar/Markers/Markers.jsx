@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import MarkerInfo from './MarkerInfo';
-import { subscribeToProperty, unsubscribeToProperty } from '../../../api/Actions/index';
+import { subscribeToProperty, unsubscribeToProperty, setPropertyValue } from '../../../api/Actions/index';
 
 class Markers extends Component {
   constructor(props) {
@@ -19,6 +19,7 @@ class Markers extends Component {
       return;
 
     this.props.focusNodes.map(node => {
+      this.props.changePropertyValue(`Scene.${node}.ComputeScreenSpaceData`, true);
       this.props.startListening(`Scene.${node}.ScreenSpacePosition`);
       this.props.startListening(`Scene.${node}.ScreenSizeRadius`);
       this.props.startListening(`Scene.${node}.ScreenVisibility`);
@@ -32,6 +33,7 @@ class Markers extends Component {
       return;
 
     this.props.focusNodes.map(node => {
+      this.props.changePropertyValue(`Scene.${node}.ComputeScreenSpaceData`, false);
       this.props.stopListening(`Scene.${node}.ScreenSpacePosition`);
       this.props.stopListening(`Scene.${node}.ScreenSizeRadius`);
       this.props.stopListening(`Scene.${node}.ScreenVisibility`);
@@ -222,6 +224,9 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = dispatch => ({
+  changePropertyValue: (uri, value) => {
+    dispatch(setPropertyValue(uri, value));
+  },
   startListening: (uri) => {
     dispatch(subscribeToProperty(uri));
   },
