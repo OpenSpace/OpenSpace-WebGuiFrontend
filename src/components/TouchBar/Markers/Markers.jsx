@@ -15,10 +15,10 @@ class Markers extends Component {
   }
 
   componentDidMount(){
-    if(!this.props.focusNodes)
+    if(!this.props.trackingNodes)
       return;
 
-    this.props.focusNodes.map(node => {
+    this.props.trackingNodes.map(node => {
       this.props.changePropertyValue(`Scene.${node}.ComputeScreenSpaceData`, true);
       this.props.startListening(`Scene.${node}.ScreenSpacePosition`);
       this.props.startListening(`Scene.${node}.ScreenSizeRadius`);
@@ -29,10 +29,10 @@ class Markers extends Component {
 
   componentWillUnMount(){
 
-    if(!this.props.focusNodes)
+    if(!this.props.trackingNodes)
       return;
 
-    this.props.focusNodes.map(node => {
+    this.props.trackingNodes.map(node => {
       this.props.changePropertyValue(`Scene.${node}.ComputeScreenSpaceData`, false);
       this.props.stopListening(`Scene.${node}.ScreenSpacePosition`);
       this.props.stopListening(`Scene.${node}.ScreenSizeRadius`);
@@ -140,7 +140,7 @@ class Markers extends Component {
 
   render() {
 
-    if(!this.props.focusNodes)
+    if(!this.props.trackingNodes)
     {
       return null;
     }
@@ -155,38 +155,55 @@ class Markers extends Component {
 
 const mapStateToProps = (state) => {
 
+  // Keeps track of the nodes we need to subscribe screen space data from
+  let trackingNodes = undefined;
+  // Keeps track of the markers we want to render
   let markerNodes = [];
-  let focusNodes = undefined;
-  let infoNodes = undefined;
+  const infoIconNodes = state.storyTree.story.showinfoicons;
+  const labelNodes = state.storyTree.story.showlabels;
 
-  //terminate if there are no focus nodes to track
-  if(!state.storyTree.story.focusbuttons){
-    return {focusNodes};
+  //terminate if there are no markers to track
+  if(!labelNodes && !infoIconNodes){
+    return {trackingNodes};
   }
 
-  focusNodes = state.storyTree.story.focusbuttons;
-  infoNodes = state.storyTree.info.infonodes;
-  const showInfoIcons = state.storyTree.story.showinfoicons;
-  const showLabels = state.storyTree.story.showlabels;
+  //the nodes containing info that may or may not be shown
+  const infoNodes = state.storyTree.info.infonodes;
+  trackingNodes = [];
 
-  focusNodes.map(node => {
+  if(labelNodes){
+    labelNodes.map(node => {
+      trackingNodes.push(node);
+    })
+  }
+
+  if(infoIconNodes){
+    infoIconNodes.map(node => {
+      if(!trackingNodes.includes(node)){
+        trackingNodes.push(node);
+      }
+    })
+  }
+
+  trackingNodes.map(node => {
 
     let infoText = undefined;
     let showInfoIcon = false;
     let showLabel = false;
 
     // show labels specified in the json file
-    if(showLabels){
-      for (let i = 0; i < showLabels.length; i++) {
-        if (node === showLabels[i]) {
+    if(labelNodes){
+      for (let i = 0; i < labelNodes.length; i++) {
+        if (node === labelNodes[i]) {
           showLabel = true;
         }
       }
     }
+
     // if show-icons are specified in the json file
-    if(showInfoIcons){
-      for (let i = 0; i < showInfoIcons.length; i++) {
-        if (node === showInfoIcons[i]) {
+    if(infoIconNodes){
+      for (let i = 0; i < infoIconNodes.length; i++) {
+        if (node === infoIconNodes[i]) {
           showInfoIcon = true;
           infoText = Markers.getInfoText(node, infoNodes);
         }
@@ -218,8 +235,8 @@ const mapStateToProps = (state) => {
   })
 
   return {
-    focusNodes,
-    markerNodes
+    markerNodes,
+    trackingNodes
   }
 };
 
