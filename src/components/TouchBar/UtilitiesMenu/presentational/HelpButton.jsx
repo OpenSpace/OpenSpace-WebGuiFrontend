@@ -14,23 +14,42 @@ class HelpButton extends Component {
     };
 
     this.handleClick = this.handleClick.bind(this);
-    this.timeout = null;
+  }
+
+  componentDidMount() {
+    this.timeout = 0;
   }
 
   componentWillUnmount() {
-      if (this.timeout) {
-        clearTimeout(this.timeout);
+    if (this.timeout) {
+      clearTimeout(this.timeout);
+      this.timeout = 0;
     }
+  }
+
+  hideImage() {
+    this.setState({
+      showImage: false,
+    });
+
+    clearTimeout(this.timeout);
+    this.timeout = 0;
   }
 
   // Show image for 10s and then set state to false
   handleClick() {
+
+    if (this.timeout) {
+      clearTimeout(this.timeout);
+      this.timeout = 0;
+    }
     this.setState({ showImage: !this.state.showImage });
-    this.timeout = setTimeout(() => {
-      this.setState({
-        showImage: false,
-      });
-    }, 10000);
+
+    if (!this.state.showImage) {
+      this.timeout = setTimeout(() => {
+          this.hideImage()
+      }, 9500); // match with animation-delay in .css
+    }
   }
 
   render() {

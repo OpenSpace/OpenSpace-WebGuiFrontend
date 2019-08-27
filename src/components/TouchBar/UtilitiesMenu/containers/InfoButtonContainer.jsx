@@ -15,9 +15,9 @@ class InfoButtonController extends Component {
   render() {
     return (
       <div>
-        {this.props.story.storytitle &&
+        {this.props.story.title &&
         <InfoButton
-          storyTitle={this.props.story.storytitle}
+          storyTitle={this.props.story.title}
           storyInfo={this.props.story.storyinfo}
         />
         }
@@ -36,8 +36,8 @@ InfoButtonController = connect(
 
 InfoButtonController.propTypes = {
   story: PropTypes.objectOf(PropTypes.shape({
-    storytitle: PropTypes.string,
-    storyinfo: PropTypes.string,
+    storyTitle: PropTypes.string,
+    storyInfo: PropTypes.string,
   })),
 };
 
