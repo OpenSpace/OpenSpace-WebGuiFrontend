@@ -1,13 +1,10 @@
 {
-  "storyidentifier": "galaxies",
-  "storytitle": "Galaxies",
+  "identifier": "galaxies",
+  "title": "Galaxies",
   "storyinfo": "A galaxy is a gravitationally bound system of stars, stellar remnants, interstellar gas, dust, and dark matter. Galaxies range in size from just a few hundred million stars to one hundred trillion stars. Galaxies are categorized according to their visual morphology as elliptical, spiral, or irregular.",
   "overviewlimit": 2.0e+25,
   "inzoomlimit": 1.2e+25,
   "zoomout": true,
-  "timecontroller": false,
-  "datecontroller":  false,
-  "sightscontroller" : false,
   "start": {
     "planet": "Earth",
     "date": "NOW",

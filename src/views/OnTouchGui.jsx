@@ -22,7 +22,7 @@ import {
 } from '../api/keys';
 import Slider from '../components/ImageSlider/Slider';
 import { UpdateDeltaTimeNow } from '../utils/timeHelpers';
-import { toggleShading, toggleHighResolution, toggleHidePlanet, toggleGalaxies, 
+import { toggleShading, toggleHighResolution, toggleShowNode, toggleGalaxies,
          toggleZoomOut, setStoryStart, showDevInfoOnScreen, addStoryTags,
          removeStoryTags, storyFileParser, infoFileParser
 } from '../utils/storyHelpers';
@@ -146,7 +146,7 @@ class OnTouchGui extends Component {
     // If the previous story toggled bool properties reset them to default value
     if (this.props.story.toggleboolproperties) {
       this.props.story.toggleboolproperties.forEach((property) => {
-        const defaultValue = (property.defaultvalue === true) ? true : false;
+        const defaultValue = property.defaultvalue ? true : false;
         this.props.luaApi.setPropertyValue(property.URI, defaultValue);
       });
     }
@@ -160,22 +160,22 @@ class OnTouchGui extends Component {
   }
 
   checkStorySettings(story, value) {
-    const oppositeValue = (value === true) ? false : true;
+    const oppositeValue = value ? false : true;
 
     if (story.hidenodes) {
-      story.hidenodes.forEach(planet => toggleHidePlanet(this.props.luaApi, planet, value));
+      story.hidenodes.forEach(node => toggleShowNode(this.props.luaApi, node, value));
     }
     if (story.highresplanets) {
-      story.highresplanets.forEach(planet => toggleHighResolution(this.props.luaApi, planet, oppositeValue));
+      story.highresplanets.forEach(node => toggleHighResolution(this.props.luaApi, node, oppositeValue));
     }
     if (story.noshadingplanets) {
-      story.noshadingplanets.forEach(planet => toggleShading(this.props.luaApi, planet, value));
+      story.noshadingplanets.forEach(node => toggleShading(this.props.luaApi, node, value));
     }
     if (story.galaxies) {
       toggleGalaxies(this.props.luaApi, oppositeValue);
     }
     if (story.inzoomlimit) {
-      const zoomLimit = (value === true) ? 0 : Number(story.inzoomlimit);
+      const zoomLimit = value ? 0 : story.inzoomlimit;
       this.props.changePropertyValue(this.props.zoomInNode.description.Identifier, zoomLimit);
     }
     if (story.zoomout) {
@@ -189,8 +189,8 @@ class OnTouchGui extends Component {
     const storyFile = storyFileParser(selectedStory);
 
     this.props.AddStoryTree(storyFile);
-    if (storyFile.infofile) {
-      const info = infoFileParser(storyFile.infofile);
+    if (storyFile.infoiconsfile) {
+      const info = infoFileParser(storyFile.infoiconsfile);
 
       this.props.AddStoryInfo(info);
     } else {
@@ -213,7 +213,7 @@ class OnTouchGui extends Component {
   toggleDeveloperMode() {
     this.setState({ developerMode: !this.state.developerMode });
 
-    if (this.state.developerMode === true) {
+    if (this.state.developerMode) {
       showDevInfoOnScreen(this.props.luaApi, true);
     } else {
       showDevInfoOnScreen(this.props.luaApi, false);
@@ -252,7 +252,7 @@ class OnTouchGui extends Component {
             changeStory={this.changeStory}
             storyIdentifier={this.props.storyIdentifierNode.value}
           />}
-        <p className={styles.storyTitle}> {this.props.story.storytitle} </p>
+        <p className={styles.storyTitle}> {this.props.story.title} </p>
         {(this.state.currentStory === DefaultStory)
           ? <Slider startSlider = {this.state.sliderStartStory} changeStory={this.setStory} />
           : <TouchBar resetStory={this.resetStory} />

@@ -1,5 +1,6 @@
 {
-  "storyidentifier":"example",
+  "identifier":"example",
+  "title":"Example",
   "overviewlimit": 2.2e+13,
   "focusbuttons": ["Earth", "Mercury", "Venus", "Mars", "Jupiter", "Saturn"],
   "showinfoicons": ["Earth", "Mercury", "Venus", "Mars", "Jupiter", "Saturn"],

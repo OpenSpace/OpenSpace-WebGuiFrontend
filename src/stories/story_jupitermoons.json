@@ -1,8 +1,8 @@
 {
-  "storyidentifier":"jupitermoons",
-  "storytitle": "Jupiter and its moons",
+  "identifier":"jupitermoons",
+  "title": "Jupiter and its moons",
   "storyinfo": "There are 69 known moons of Jupiter. This gives Jupiter the largest number of moons with reasonably stable orbits of any planet in the Solar System.",
-  "infofile": "info_jupitermoons",
+  "infoiconsfile": "info_jupitermoons",
   "overviewlimit": 5.0e+9,
   "focusbuttons": ["Jupiter", "Io", "Europa", "Ganymede", "Callisto"],
   "showinfoicons": ["Jupiter", "Io", "Europa", "Ganymede", "Callisto"],

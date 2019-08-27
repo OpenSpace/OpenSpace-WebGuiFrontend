@@ -25,23 +25,23 @@ export const removeStoryTags = (luaApi, nodes) => {
   });
 };
 
-// Function to toggle the shading on a planet, value = 'true' equals shading enabled
-export const toggleShading = (luaApi, planet, value) => {
-  luaApi.setPropertyValue(`Scene.${planet}.Renderable.PerformShading`, value);
+// Function to toggle the shading on a node, value = 'true' equals shading enabled
+export const toggleShading = (luaApi, node, value) => {
+  luaApi.setPropertyValue(`Scene.${node}.Renderable.PerformShading`, value);
 };
 
-// Function to toggle high resolution data for a planet, data of type CTX_Mosaic
+// Function to toggle high resolution data for a node, data of type CTX_Mosaic
 // value = 'true' equals high resolution data enabled
-export const toggleHighResolution = (luaApi, planet, value) => {
-  luaApi.setPropertyValue(`Scene.${planet}.Renderable.Layers.ColorLayers.CTX_Mosaic_Utah.Enabled`, value);
+export const toggleHighResolution = (luaApi, node, value) => {
+  luaApi.setPropertyValue(`Scene.${node}.Renderable.Layers.ColorLayers.CTX_Mosaic_Utah.Enabled`, value);
 };
 
-// Function to toggle the visibility of a planet,
-// value = 'true' equals the planet being visible and not hidden
-export const toggleHidePlanet = (luaApi, planet, value) => {
-  luaApi.setPropertyValue(`Scene.${planet}.Renderable.Enabled`, value);
-  luaApi.setPropertyValue(`Scene.${planet}Trail.Renderable.Enabled`, value);
-  luaApi.setPropertyValue(`Scene.${planet}.ScreenVisibility`, value);
+// Function to toggle the visibility of a node with a trail,
+// value = 'true' equals the node being shown
+export const toggleShowNode = (luaApi, node, value) => {
+  luaApi.setPropertyValue(`Scene.${node}.Renderable.Enabled`, value);
+  luaApi.setPropertyValue(`Scene.${node}Trail.Renderable.Enabled`, value);
+  luaApi.setPropertyValue(`Scene.${node}.ScreenVisibility`, value);
 };
 
 // Function to toggle the visibility of galaxies, value = 'true' equals galaxies enabled
@@ -108,7 +108,7 @@ export const storyFileParser = (story) => {
 export const infoFileParser = (infoFile) => {
 
   const info = require(`../stories/${infoFile}.json`);
-  let parsedInfo = info;
+  const parsedInfo = info;
 
   return parsedInfo;
 

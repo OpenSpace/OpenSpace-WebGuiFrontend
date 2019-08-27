@@ -1,10 +1,9 @@
 {
-  "storyidentifier":"mars",
-  "storytitle": "Interesting sights on Mars",
+  "identifier":"mars",
+  "title": "Interesting sights on Mars",
   "storyinfo": "Mars is the fourth planet from the Sun and the second-smallest planet in the Solar System after Mercury.",
   "overviewlimit": 6.0e+7,
   "focusbuttons": ["Mars"],
-  "showlabels": ["Mars"],
   "hidenodes": ["Mercury", "Venus", "Earth", "Jupiter", "Saturn", "Uranus", "Neptune"],
   "timecontroller": true,
   "datecontroller" : false,
