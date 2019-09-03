@@ -1,8 +1,8 @@
 @import "../../../styles/all";
 
 .RightArrow, .LeftArrow {
-  height: 50px;
-  width: 50px;
+  height: 5vw;
+  width: 5vw;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -20,7 +20,7 @@
 .RightArrow {
   position: absolute;
   top: 50%;
-  right: 25px;
+  right: 1vw;
   z-index: 999;
   color: #fff;
 }
@@ -28,12 +28,12 @@
 .LeftArrow {
   position: absolute;
   top: 50%;
-  left: 25px;
+  left: 1vw;
   z-index: 999;
   color: #fff;
 }
 
-$icon-size: 40px;
+$icon-size: 2vw;
 
 .Icon {
   font-size: $icon-size;

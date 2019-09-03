@@ -4,8 +4,8 @@ import Icon from '../../common/MaterialIcon/MaterialIcon';
 import styles from './Arrows.scss';
 
 const LeftArrow = ({ prevSlide }) => (
-  <div className={styles.LeftArrow} >
-    <Icon icon="keyboard_arrow_left" className={styles.Icon} onClick={prevSlide} />
+  <div className={styles.LeftArrow} onClick={prevSlide} >
+    <Icon icon="keyboard_arrow_left" className={styles.Icon} />
   </div>
 );
 
