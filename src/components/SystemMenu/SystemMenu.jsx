@@ -48,6 +48,11 @@ class SystemMenu extends Component {
                 Toggle native GUI <span className={styles.shortcut}>F1</span>
               </button>
 
+              <button onClick={this.props.saveChange}>
+                Save last change to profile
+              </button>
+
+
               <hr className={Popover.styles.delimiter} />
 
               <button onClick={this.props.quit}>
@@ -85,6 +90,9 @@ const mapSubStateToProps = ({ luaApi }) => {
       const data = await luaApi.getPropertyValue("Modules.ImGUI.Main.Enabled");
       const visible = data[1] || false;
       luaApi.setPropertyValue("Modules.ImGUI.Main.Enabled", !visible);
+    },
+    saveChange: async () => {
+      luaApi.saveLastChangeToProfile();
     },
   };
 };
