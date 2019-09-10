@@ -1,8 +1,9 @@
 import { setDate } from './timeHelpers';
-import { ApplyFlyToKey,FlightDestinationDistanceKey, OverlimitKey} from './../api/keys'
+import { ApplyFlyToKey,
+        FlightDestinationDistanceKey } from './../api/keys'
 
 // Function to set the time and location for the start of a story
-export const setStoryStart = (luaApi, startPosition, startTime, overviewLimit) => {
+export const setStoryStart = (luaApi, startPosition, startTime) => {
   luaApi.globebrowsing.goToGeo( 
     startPosition.latitude, 
     startPosition.longitude,
@@ -10,16 +11,14 @@ export const setStoryStart = (luaApi, startPosition, startTime, overviewLimit) =
   );
 
   setDate(luaApi, startTime);
-
   luaApi.setPropertyValue(ApplyFlyToKey, false);
-  luaApi.setPropertyValue(OverlimitKey, overviewLimit);
-
 };
 
 // TODO evaluate flyTo vs toggleZoomOut
 
 // activates flying linearly to a set distance from the anchor
-export const flyTo = (luaApi, value) => {
+export const flyTo = (luaApi, value, velocity = 0.02) => {
+  luaApi.setPropertyValue(`NavigationHandler.OrbitalNavigator.VelocityZoomControl`, velocity);
   luaApi.setPropertyValue(FlightDestinationDistanceKey, value);
   luaApi.setPropertyValue(ApplyFlyToKey, true);
 }
@@ -47,14 +46,6 @@ export const toggleShowNode = (luaApi, node, value) => {
 export const toggleGalaxies = (luaApi, value) => {
   luaApi.setPropertyValue(`Scene.SloanDigitalSkySurvey.Renderable.Enabled`, value);
   luaApi.setPropertyValue(`Scene.TullyGalaxies.Renderable.Enabled`, value);
-};
-
-// Function to zoom out once a story is picked, value = 'true' equals overview enabled,
-// and a slower velocity is used
-export const toggleZoomOut = (luaApi, value) => {
-  const velocity = value ? 0.02 : 0.04;
-
-  luaApi.setPropertyValue(`NavigationHandler.OrbitalNavigator.VelocityZoomControl`, velocity);
 };
 
 // Function to show logs and information on screen.

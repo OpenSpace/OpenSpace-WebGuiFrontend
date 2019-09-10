@@ -12,19 +12,19 @@ import Stack from '../components/common/Stack/Stack';
 
 import {
   setPropertyValue, startConnection, fetchData, addStoryTree, subscribeToProperty,
-  unsubscribeToProperty, addStoryInfo, resetStoryInfo,
+  unsubscribeToProperty, addStoryInfo, resetStoryInfo
 } from '../api/Actions';
 import TouchBar from '../components/TouchBar/TouchBar';
 import styles from './OnTouchGui.scss';
 import {
-  InfoIconKey, ValuePlaceholder, StoryIdentifierKey, FocusNodesListKey, 
-  DefaultStory, OverlimitKey, ScaleKey, ZoomInLimitKey, NavigationAnchorKey
+  InfoIconKey, ValuePlaceholder, DefaultStory, ScaleKey,
+  NavigationAnchorKey, ZoomInLimitKey, ZoomOutLimitKey
 } from '../api/keys';
 import Slider from '../components/ImageSlider/Slider';
 import { UpdateDeltaTimeNow } from '../utils/timeHelpers';
 import { toggleShading, toggleHighResolution, toggleShowNode, toggleGalaxies,
-         toggleZoomOut, setStoryStart, showDevInfoOnScreen, addStoryTags,
-         removeStoryTags, storyFileParser, infoFileParser, flyTo
+         toggleZoomOut, setStoryStart, showDevInfoOnScreen, storyFileParser,
+         infoFileParser, flyTo
 } from '../utils/storyHelpers';
 import DeveloperMenu from '../components/TouchBar/UtilitiesMenu/presentational/DeveloperMenu';
 import { isCompatible,
@@ -59,9 +59,6 @@ class OnTouchGui extends Component {
     document.addEventListener('keydown', this.handleKeyPress);
 
     showDevInfoOnScreen(this.props.luaApi, false);
-
-    this.props.startListening(StoryIdentifierKey);
-    this.props.startListening(FocusNodesListKey);
   }
 
   checkVersion() {
@@ -93,16 +90,11 @@ class OnTouchGui extends Component {
 
   componentWillUnmount() {
     document.removeEventListener('keydown', this.handleKeyPress);
-    this.props.stopListening(StoryIdentifierKey);
-    this.props.stopListening(FocusNodesListKey);
   }
 
   setStory(selectedStory) {
-    const {
-      storyIdentifierNode, applyRemoveTag, focusNodesList, applyAddTag, anchorNode, overViewNode,
-    } = this.props;
 
-    const previousStory = storyIdentifierNode.value;
+    const previousStory = this.props.storyIdentifier;
     this.setState({ currentStory: selectedStory });
 
     // Return if the selected story is the same as the OpenSpace property value
@@ -112,15 +104,24 @@ class OnTouchGui extends Component {
     const json = this.addStoryTree(selectedStory);
 
     // Set all the story specific properties
-    this.props.changePropertyValue(storyIdentifierNode.description.Identifier, selectedStory);
-    if (json.focusbuttons) {
-      this.props.changePropertyValue(focusNodesList.description.Identifier, json.focusbuttons.toString());
-    } else {
-      this.props.changePropertyValue(focusNodesList.description.Identifier, "");
+    this.props.changePropertyValue(this.props.anchorNode.description.Identifier, json.start.planet);
+    setStoryStart(this.props.luaApi, json.start.location, json.start.date);
+
+    if(json.overviewlimit){
+      this.props.changePropertyValue(ZoomOutLimitKey, json.overviewlimit);
     }
-    this.props.changePropertyValue(anchorNode.description.Identifier, json.start.planet);
-    this.props.changePropertyValue(overViewNode.description.Identifier, json.overviewlimit);
-    setStoryStart(this.props.luaApi, json.start.location, json.start.date, json.overviewlimit);
+    if(json.inzoomlimit){
+      this.props.changePropertyValue(ZoomInLimitKey, json.inzoomlimit);
+    }else{
+      json.inzoomlimit = 1.0;
+      this.props.changePropertyValue(ZoomInLimitKey, 1.0);
+    }
+    console.log(json.inzoomlimit)
+    if (json.start.overviewzoom){
+      flyTo(this.props.luaApi, json.overviewlimit);
+    }
+
+    this.props.changePropertyValue(this.props.anchorNode.description.Identifier, json.start.planet);
 
     // Check settings of the previous story and reset values
     this.checkStorySettings(this.props.story, true);
@@ -137,12 +138,8 @@ class OnTouchGui extends Component {
     if (this.props.story.toggleboolproperties) {
       this.props.story.toggleboolproperties.forEach((property) => {
         const defaultValue = property.defaultvalue ? true : false;
-        this.props.luaApi.setPropertyValue(property.URI, defaultValue);
+        this.props.changePropertyValue(property.URI, defaultValue);
       });
-    }
-
-    if (json.start.overviewzoom){
-      flyTo(this.props.luaApi, json.overviewlimit);
     }
   }
 
@@ -166,13 +163,6 @@ class OnTouchGui extends Component {
     }
     if (story.galaxies) {
       toggleGalaxies(this.props.luaApi, oppositeValue);
-    }
-    if (story.inzoomlimit) {
-      const zoomLimit = value ? 0 : story.inzoomlimit;
-      this.props.changePropertyValue(this.props.zoomInNode.description.Identifier, zoomLimit);
-    }
-    if (story.zoomout) {
-      toggleZoomOut(this.props.luaApi, oppositeValue);
     }
   }
 
@@ -243,7 +233,7 @@ class OnTouchGui extends Component {
         {this.state.developerMode &&
           <DeveloperMenu
             changeStory={this.changeStory}
-            storyIdentifier={this.props.storyIdentifierNode.value}
+            storyIdentifier={this.props.storyIdentifier}
           />}
         <p className={styles.storyTitle}> {this.props.story.title} </p>
         {(this.state.currentStory === DefaultStory)
@@ -256,20 +246,16 @@ class OnTouchGui extends Component {
 }
 
 const mapStateToProps = (state) => {
-  let storyIdentifierNode = [];
+  let storyIdentifier = [];
   let focusNodesList = [];
   let anchorNode;
-  let overViewNode;
-  let zoomInNode;
   const scaleNodes = [];
   const story = state.storyTree.story;
 
   if (state.propertyTree !== undefined) {
-    storyIdentifierNode = state.propertyTree.properties[StoryIdentifierKey];
-    focusNodesList = state.propertyTree.properties[FocusNodesListKey];
+
+    storyIdentifier = story.identifier;
     anchorNode = state.propertyTree.properties[NavigationAnchorKey];
-    overViewNode = state.propertyTree.properties[OverlimitKey];
-    zoomInNode = state.propertyTree.properties[ZoomInLimitKey];
 
     if (story.scalenodes) {
       story.scalenodes.nodes.forEach((node) => {
@@ -284,13 +270,11 @@ const mapStateToProps = (state) => {
 
   return {
     focusNodesList,
-    storyIdentifierNode,
+    storyIdentifier,
     connectionLost: state.connection.connectionLost,
     story,
     reset: state.storyTree.reset,
     anchorNode,
-    overViewNode,
-    zoomInNode,
     scaleNodes,
     luaApi: state.luaApi
   };
@@ -365,12 +349,10 @@ OnTouchGui.propTypes = {
   AddStoryTree: PropTypes.func,
   AddStoryInfo: PropTypes.func,
   ResetStoryInfo: PropTypes.func,
-  storyIdentifierNode: PropTypes.objectOf(PropTypes.shape({})),
+  storyIdentifier: PropTypes.objectOf(PropTypes.shape({})),
   story: PropTypes.objectOf(PropTypes.shape({})),
   focusNodesList: PropTypes.objectOf(PropTypes.shape({})),
   anchorNode: PropTypes.objectOf(PropTypes.shape({})),
-  overViewNode: PropTypes.objectOf(PropTypes.shape({})),
-  zoomInNode: PropTypes.objectOf(PropTypes.shape({})),
   scaleNodes: PropTypes.objectOf(PropTypes.shape({})),
   connectionLost: PropTypes.bool,
   reset: PropTypes.bool,
@@ -384,12 +366,10 @@ OnTouchGui.defaultProps = {
   AddStoryTree: () => {},
   AddStoryInfo: () => {},
   ResetStoryInfo: () => {},
-  storyIdentifierNode: {},
+  storyIdentifier: {},
   story: {},
   focusNodesList: {},
   anchorNode: {},
-  overViewNode: {},
-  zoomInNode: {},
   scaleNodes: {},
   connectionLost: null,
   reset: null,

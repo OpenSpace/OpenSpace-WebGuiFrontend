@@ -6,9 +6,7 @@ import FocusButton from './FocusButton';
 import {
   ScenePrefixKey,
   NavigationAnchorKey,
-  FocusNodesListKey,
   ApplyFlyToKey,
-  OverlimitKey,
   FlightDestinationDistanceKey,
   globeBrowsingLocationDefaultLatLon
 } from '../../../api/keys';

@@ -39,16 +39,12 @@ export const FlightDestinationDistanceKey = 'NavigationHandler.OrbitalNavigator.
 export const InfoIconKey = 'info_icons';
 // key for endpoint for json files
 export const DataEndpointKey = 'https://openspace.github.io/sci/mastertheses/2018/info/solarsystem/';
-// key for getting story identifier property
-export const StoryIdentifierKey = 'Modules.WebGui.StoryHandler.StoryIdentifier';
-// key for focus nodes list property
-export const FocusNodesListKey = 'Modules.WebGui.StoryHandler.FocusNodesList';
 // key for default story
 export const DefaultStory = 'default';
-// key for overview limit in the webgui module
-export const OverlimitKey = 'Modules.WebGui.StoryHandler.OverviewLimit';
-// key for zoom in limit
-export const ZoomInLimitKey = 'Modules.WebGui.StoryHandler.ZoomInLimit';
+// key for max zoom out limit in the touch module
+export const ZoomOutLimitKey = 'Modules.Touch.TouchInteraction.ZoomOutLimit';
+// key for zoom in limit in the touch module
+export const ZoomInLimitKey = 'Modules.Touch.TouchInteraction.ZoomInLimit';
 // key for scale property
 export const ScaleKey = `Scene.${ValuePlaceholder}.Scale.Scale`;
 // keys for timePlayerController
