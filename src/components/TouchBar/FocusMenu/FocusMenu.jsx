@@ -6,9 +6,10 @@ import FocusButton from './FocusButton';
 import {
   ScenePrefixKey,
   NavigationAnchorKey,
-  ApplyOverviewKey,
   FocusNodesListKey,
   ApplyFlyToKey,
+  OverlimitKey,
+  FlightDestinationDistanceKey,
   globeBrowsingLocationDefaultLatLon
 } from '../../../api/keys';
 import {
@@ -61,11 +62,13 @@ class FocusMenu extends Component {
   }
 
   applyFlyTo() {
-    this.props.changePropertyValue(ApplyFlyToKey, null);
+    this.props.changePropertyValue(FlightDestinationDistanceKey, 200000000)
+    this.props.changePropertyValue(ApplyFlyToKey, true);
   }
 
   applyOverview() {
-    this.props.changePropertyValue(ApplyOverviewKey, null);
+    this.props.changePropertyValue(FlightDestinationDistanceKey, this.props.overviewLimit);
+    this.props.changePropertyValue(ApplyFlyToKey, true);
   }
 
   createFocusButtons() {
@@ -97,6 +100,8 @@ const mapStateToProps = (state) => {
   let anchor = [];
   let focusNodes = [];
 
+  const overviewLimit = state.storyTree.story.overviewlimit;
+
   if (Object.keys(state.propertyTree).length !== 0) {
     const buttons = state.storyTree.story.focusbuttons;
     if (buttons) {
@@ -108,6 +113,7 @@ const mapStateToProps = (state) => {
     anchor = state.propertyTree.properties[NavigationAnchorKey];
   }
   return {
+    overviewLimit,
     focusNodes,
     anchor,
     luaApi: state.luaApi

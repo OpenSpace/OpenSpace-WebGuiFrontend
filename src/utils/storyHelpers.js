@@ -1,5 +1,5 @@
 import { setDate } from './timeHelpers';
-import { StoryTagKey } from './../api/keys'
+import { ApplyFlyToKey,FlightDestinationDistanceKey, OverlimitKey} from './../api/keys'
 
 // Function to set the time and location for the start of a story
 export const setStoryStart = (luaApi, startPosition, startTime, overviewLimit) => {
@@ -10,20 +10,19 @@ export const setStoryStart = (luaApi, startPosition, startTime, overviewLimit) =
   );
 
   setDate(luaApi, startTime);
-  luaApi.setPropertyValue(`NavigationHandler.OrbitalNavigator.StoryOverviewLimit`, overviewLimit);
+
+  luaApi.setPropertyValue(ApplyFlyToKey, false);
+  luaApi.setPropertyValue(OverlimitKey, overviewLimit);
+
 };
 
-export const addStoryTags= (luaApi, nodes) => {
-  nodes.forEach(node => {
-    luaApi.addTag(node, StoryTagKey);
-  });
-};
+// TODO evaluate flyTo vs toggleZoomOut
 
-export const removeStoryTags = (luaApi, nodes) => {
-  nodes.forEach(node => {
-    luaApi.removeTag(node, StoryTagKey);
-  });
-};
+// activates flying linearly to a set distance from the anchor
+export const flyTo = (luaApi, value) => {
+  luaApi.setPropertyValue(FlightDestinationDistanceKey, value);
+  luaApi.setPropertyValue(ApplyFlyToKey, true);
+}
 
 // Function to toggle the shading on a node, value = 'true' equals shading enabled
 export const toggleShading = (luaApi, node, value) => {
@@ -56,7 +55,6 @@ export const toggleZoomOut = (luaApi, value) => {
   const velocity = value ? 0.02 : 0.04;
 
   luaApi.setPropertyValue(`NavigationHandler.OrbitalNavigator.VelocityZoomControl`, velocity);
-  luaApi.setPropertyValue(`NavigationHandler.OrbitalNavigator.Overview`, value);
 };
 
 // Function to show logs and information on screen.

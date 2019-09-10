@@ -67,10 +67,14 @@ class Markers extends Component {
     return markers;
   }
 
-  //Determines size of the marker
+  // Determines size of the marker
   static determineSize(nodeRadius){
 
-    let size = nodeRadius * 0.1;
+    // Factor controlling size of a marker in
+    // relation to screen space radius of a node
+    const radiusFactor = 0.1;
+
+    let size = nodeRadius * radiusFactor;
     const max_marker_size = 3;
     const min_marker_size = 1.5;
 
@@ -162,7 +166,7 @@ const mapStateToProps = (state) => {
   const infoIconNodes = state.storyTree.story.showinfoicons;
   const labelNodes = state.storyTree.story.showlabels;
 
-  //terminate if there are no markers to track
+  // terminate if there are no markers to track
   if(!labelNodes && !infoIconNodes){
     return {trackingNodes};
   }

@@ -24,7 +24,7 @@ import Slider from '../components/ImageSlider/Slider';
 import { UpdateDeltaTimeNow } from '../utils/timeHelpers';
 import { toggleShading, toggleHighResolution, toggleShowNode, toggleGalaxies,
          toggleZoomOut, setStoryStart, showDevInfoOnScreen, addStoryTags,
-         removeStoryTags, storyFileParser, infoFileParser
+         removeStoryTags, storyFileParser, infoFileParser, flyTo
 } from '../utils/storyHelpers';
 import DeveloperMenu from '../components/TouchBar/UtilitiesMenu/presentational/DeveloperMenu';
 import { isCompatible,
@@ -109,22 +109,12 @@ class OnTouchGui extends Component {
     if (previousStory === selectedStory)
       return;
 
-    // If the previous story had an empty focus node list
-    if (focusNodesList.value.length !== 0) {
-      const focusNodes = focusNodesList.value.split(',');
-      removeStoryTags(this.props.luaApi, focusNodes);
-    }
-
     const json = this.addStoryTree(selectedStory);
 
     // Set all the story specific properties
     this.props.changePropertyValue(storyIdentifierNode.description.Identifier, selectedStory);
     if (json.focusbuttons) {
       this.props.changePropertyValue(focusNodesList.description.Identifier, json.focusbuttons.toString());
-
-      if (json.focusbuttons.length !== 0) {
-        addStoryTags(this.props.luaApi,json.focusbuttons);
-      }
     } else {
       this.props.changePropertyValue(focusNodesList.description.Identifier, "");
     }
@@ -150,7 +140,10 @@ class OnTouchGui extends Component {
         this.props.luaApi.setPropertyValue(property.URI, defaultValue);
       });
     }
-    
+
+    if (json.start.overviewzoom){
+      flyTo(this.props.luaApi, json.overviewlimit);
+    }
   }
 
   resetStory () {

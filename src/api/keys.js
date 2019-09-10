@@ -31,20 +31,16 @@ export const CurrentTimeKey = 'currentTime';
 export const DeltaTime = 'deltaTime';
 // value placeholder in scripts with parameter
 export const ValuePlaceholder = '___value___';
-// key for setting/getting the solarSystemOverview property
-export const ApplyOverviewKey = 'NavigationHandler.OrbitalNavigator.ApplyOverview';
 // key  for apply fly to trigger property
-export const ApplyFlyToKey = 'NavigationHandler.OrbitalNavigator.ApplyFlyTo';
-// key  for setting the overview limit in the navigation handler
-export const StoryOverviewLimitKey = 'NavigationHandler.OrbitalNavigator.StoryOverviewLimit';
+export const ApplyFlyToKey = 'NavigationHandler.OrbitalNavigator.ApplyLinearFlight';
+// key for accessing the flight destination distance from the current anchor
+export const FlightDestinationDistanceKey = 'NavigationHandler.OrbitalNavigator.FlightDestinationDistance';
 // key for json file with info for icons
 export const InfoIconKey = 'info_icons';
 // key for endpoint for json files
 export const DataEndpointKey = 'https://openspace.github.io/sci/mastertheses/2018/info/solarsystem/';
 // key for getting story identifier property
 export const StoryIdentifierKey = 'Modules.WebGui.StoryHandler.StoryIdentifier';
-// key for getting story interesting tag
-export const StoryTagKey = 'Story.Interesting';
 // key for focus nodes list property
 export const FocusNodesListKey = 'Modules.WebGui.StoryHandler.FocusNodesList';
 // key for default story
