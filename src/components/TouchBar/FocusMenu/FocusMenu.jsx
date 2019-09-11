@@ -6,6 +6,7 @@ import FocusButton from './FocusButton';
 import {
   ScenePrefixKey,
   NavigationAnchorKey,
+  RetargetAnchorKey,
   ApplyFlyToKey,
   FlightDestinationDistanceKey,
   globeBrowsingLocationDefaultLatLon
@@ -18,6 +19,8 @@ import {
 import styles from './FocusMenu.scss';
 import OverViewButton from './OverViewButton';
 import { UpdateDeltaTimeNow } from '../../../utils/timeHelpers';
+import propertyDispatcher from '../../../api/propertyDispatcher';
+
 
 class FocusMenu extends Component {
   constructor(props) {
@@ -40,31 +43,37 @@ class FocusMenu extends Component {
   }
 
   componentDidMount() {
-    this.props.startListening(NavigationAnchorKey);
+    this.props.anchorDispatcher.subscribe();
+    this.props.retargetAnchorDispatcher.subscribe();
   }
 
   componentWillUnmount() {
-    this.props.stopListening(NavigationAnchorKey);
+    this.props.anchorDispatcher.unsubscribe();
+    this.props.retargetAnchorDispatcher.unsubscribe();
   }
 
   onChangeFocus(origin) {
     this.props.luaApi.time.setPause(false);
     UpdateDeltaTimeNow(this.props.luaApi, 1);
-    this.props.changePropertyValue(NavigationAnchorKey, origin.origin);
+    this.props.anchorDispatcher.set(origin.origin);
+    this.props.retargetAnchorDispatcher.set(null);
     this.applyFlyTo();
-    
-    this.props.luaApi.globebrowsing.goToGeo(
-      globeBrowsingLocationDefaultLatLon[0],
-      globeBrowsingLocationDefaultLatLon[1]
-    );
   }
 
   applyFlyTo() {
-    this.props.changePropertyValue(FlightDestinationDistanceKey, 200000000)
+    // TODO: Handle the individual flight distances for each node
+    // Both by user overriding in json, and getting an automatic
+    let myFlightDistance = 200000000;
+    this.props.changePropertyValue(FlightDestinationDistanceKey, myFlightDistance)
     this.props.changePropertyValue(ApplyFlyToKey, true);
   }
 
   applyOverview() {
+    this.props.luaApi.globebrowsing.goToGeo(
+      globeBrowsingLocationDefaultLatLon[0],
+      globeBrowsingLocationDefaultLatLon[0]
+    );
+
     this.props.changePropertyValue(FlightDestinationDistanceKey, this.props.overviewLimit);
     this.props.changePropertyValue(ApplyFlyToKey, true);
   }
@@ -122,12 +131,10 @@ const mapDispatchToProps = dispatch => ({
   changePropertyValue: (uri, value) => {
     dispatch(setPropertyValue(uri, value));
   },
-  startListening: (uri) => {
-    dispatch(subscribeToProperty(uri));
-  },
-  stopListening: (uri) => {
-    dispatch(unsubscribeToProperty(uri));
-  },
+  anchorDispatcher: propertyDispatcher(
+    dispatch, NavigationAnchorKey),
+  retargetAnchorDispatcher: propertyDispatcher(
+    dispatch, RetargetAnchorKey)
 });
 
 FocusMenu = connect(
@@ -144,8 +151,6 @@ FocusMenu.propTypes = {
   })),
   anchor: PropTypes.string,
   changePropertyValue: PropTypes.func,
-  startListening: PropTypes.func,
-  stopListening: PropTypes.func,
 };
 
 FocusMenu.defaultProps = {
@@ -153,8 +158,6 @@ FocusMenu.defaultProps = {
   properties: [],
   subowners: [],
   changePropertyValue: null,
-  stopListening: null,
-  startListening: null,
 };
 
 export default FocusMenu;

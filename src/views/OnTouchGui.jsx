@@ -247,7 +247,6 @@ class OnTouchGui extends Component {
 
 const mapStateToProps = (state) => {
   let storyIdentifier = [];
-  let focusNodesList = [];
   let anchorNode;
   const scaleNodes = [];
   const story = state.storyTree.story;
@@ -269,7 +268,6 @@ const mapStateToProps = (state) => {
   }
 
   return {
-    focusNodesList,
     storyIdentifier,
     connectionLost: state.connection.connectionLost,
     story,
@@ -351,7 +349,6 @@ OnTouchGui.propTypes = {
   ResetStoryInfo: PropTypes.func,
   storyIdentifier: PropTypes.objectOf(PropTypes.shape({})),
   story: PropTypes.objectOf(PropTypes.shape({})),
-  focusNodesList: PropTypes.objectOf(PropTypes.shape({})),
   anchorNode: PropTypes.objectOf(PropTypes.shape({})),
   scaleNodes: PropTypes.objectOf(PropTypes.shape({})),
   connectionLost: PropTypes.bool,
@@ -368,7 +365,6 @@ OnTouchGui.defaultProps = {
   ResetStoryInfo: () => {},
   storyIdentifier: {},
   story: {},
-  focusNodesList: {},
   anchorNode: {},
   scaleNodes: {},
   connectionLost: null,
