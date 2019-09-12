@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { CurrentTimeKey, DeltaTime } from '../../../../api/keys';
-import DataManager, { TopicTypes } from '../../../../api/DataManager';
 import styles from './../style/TimeController.scss';
 import Button from '../../../common/Input/Button/Button';
 import * as timeHelpers from '../../../../utils/timeHelpers';
@@ -42,9 +41,6 @@ class TimeController extends Component {
   componentWillUnmount() {
     // TODO timetopic have no unsubscribe function, therefore this.mounted is used as a workaround.
     this.mounted = false;
-    // DataManager.unsubscribe(CurrentTimeKey, this.state.subscriptionIdCurrent);
-    // DataManager.unsubscribe(DeltaTime, this.state.subscriptionIdDelta);
-    // this.setState({ subscriptionIdCurrent: -1, subscriptionIdDelta: -1 });
   }
 
   get time() {
