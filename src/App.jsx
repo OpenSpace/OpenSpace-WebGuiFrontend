@@ -6,7 +6,6 @@ import OnTouchGui from './views/OnTouchGui';
 import OnStartMenu from './views/OnStartMenu';
 import NotFound from './views/NotFound';
 
-// TODO: add routing
 const App = () => (
   <Router>
     <Switch>
