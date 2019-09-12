@@ -69,11 +69,8 @@ class FocusMenu extends Component {
   }
 
   applyOverview() {
-    this.props.luaApi.globebrowsing.goToGeo(
-      globeBrowsingLocationDefaultLatLon[0],
-      globeBrowsingLocationDefaultLatLon[0]
-    );
-
+    // TODO: Handle an interpolation of SetNavigationState to be able to have a
+    // smooth navigation to a pre-defined overview location
     this.props.changePropertyValue(FlightDestinationDistanceKey, this.props.overviewLimit);
     this.props.changePropertyValue(ApplyFlyToKey, true);
   }
