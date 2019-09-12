@@ -1,4 +1,10 @@
+@import "../../styles/all";
+
 .timePicker {
   min-width: 280px;
   width: 100%;
+}
+
+.timePicker.disabledBySessionPlayback {
+  background-color: darken(rgba($blue, .7), 20%);
 }
