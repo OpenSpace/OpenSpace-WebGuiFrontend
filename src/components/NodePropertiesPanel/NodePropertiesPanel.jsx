@@ -30,7 +30,7 @@ class NodePropertiesPanel extends Component {
   propertiesForRenderableType() {
     switch (this.props.renderableType) {
       case RenderableTypes.RenderableGlobe:
-        return ["Enabled", "PerformShading", "LodScaleFactor"];
+        return ["Enabled", "PerformShading", "TargetLodScaleFactor"];
       case RenderableTypes.RenderableBillboardsCloud:
         return ["Enabled", "DrawElements", "RenderOption", "Opacity", "DrawLabels"];
       case RenderableTypes.RenderablePlaneImageLocal:
