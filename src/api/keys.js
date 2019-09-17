@@ -41,6 +41,8 @@ export const InfoIconKey = 'info_icons';
 export const DataEndpointKey = 'https://openspace.github.io/sci/mastertheses/2018/info/solarsystem/';
 // key for default story
 export const DefaultStory = 'default';
+// key for the bounding sphere radius of a renderable
+export const BoundingSphereKey = `Scene.${ValuePlaceholder}.Renderable.BoundingSphere`;
 // key for max zoom out limit in the touch module
 export const ZoomOutLimitKey = 'Modules.Touch.TouchInteraction.ZoomOutLimit';
 // key for zoom in limit in the touch module

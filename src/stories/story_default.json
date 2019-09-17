@@ -1,6 +1,6 @@
 {
   "identifier": "default",
-  "overviewlimit": -1,
+  "overviewlimit": 0,
   "inzoomlimit": 0,
   "zoomout": false,
   "focusbuttons": [],

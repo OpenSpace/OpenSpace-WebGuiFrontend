@@ -5,6 +5,8 @@ import PropTypes from 'prop-types';
 import FocusButton from './FocusButton';
 import {
   ScenePrefixKey,
+  ValuePlaceholder,
+  BoundingSphereKey,
   NavigationAnchorKey,
   RetargetAnchorKey,
   ApplyFlyToKey,
@@ -21,6 +23,7 @@ import OverViewButton from './OverViewButton';
 import { UpdateDeltaTimeNow } from '../../../utils/timeHelpers';
 import propertyDispatcher from '../../../api/propertyDispatcher';
 
+const DISTANCE_FACTOR = 4.0;
 
 class FocusMenu extends Component {
   constructor(props) {
@@ -45,11 +48,13 @@ class FocusMenu extends Component {
   componentDidMount() {
     this.props.anchorDispatcher.subscribe();
     this.props.retargetAnchorDispatcher.subscribe();
+    this.props.flightDestinationDispatcher.subscribe();
   }
 
   componentWillUnmount() {
     this.props.anchorDispatcher.unsubscribe();
     this.props.retargetAnchorDispatcher.unsubscribe();
+    this.props.flightDestinationDispatcher.unsubscribe();
   }
 
   onChangeFocus(origin) {
@@ -57,14 +62,16 @@ class FocusMenu extends Component {
     UpdateDeltaTimeNow(this.props.luaApi, 1);
     this.props.anchorDispatcher.set(origin.origin);
     this.props.retargetAnchorDispatcher.set(null);
-    this.applyFlyTo();
+    this.applyFlyTo(origin.origin);
   }
 
-  applyFlyTo() {
-    // TODO: Handle the individual flight distances for each node
-    // Both by user overriding in json, and getting an automatic
-    let myFlightDistance = 200000000;
-    this.props.changePropertyValue(FlightDestinationDistanceKey, myFlightDistance)
+  applyFlyTo(flyToNode) {
+    // TODO: Implement user overriding automatic node distance in json
+    let distanceNode = this.props.focusDistances.find(function(node){
+        return node.name === flyToNode
+    });
+
+    this.props.changePropertyValue(FlightDestinationDistanceKey, distanceNode.focusDistance)
     this.props.changePropertyValue(ApplyFlyToKey, true);
   }
 
@@ -103,6 +110,7 @@ class FocusMenu extends Component {
 const mapStateToProps = (state) => {
   let anchor = [];
   let focusNodes = [];
+  let focusDistances = [];
 
   const overviewLimit = state.storyTree.story.overviewlimit;
 
@@ -115,10 +123,23 @@ const mapStateToProps = (state) => {
     }
 
     anchor = state.propertyTree.properties[NavigationAnchorKey];
+    // TODO: Implement user overriding automatic node distance in json
+    focusNodes.forEach(node => {
+        const radius = state.propertyTree.properties
+                    [BoundingSphereKey.replace(ValuePlaceholder, `${node.name}`)].value;
+        if (radius) {
+          const focusDistance = radius * DISTANCE_FACTOR; 
+          const focusDistanceNode = {'name': node.name, 'focusDistance': focusDistance};
+
+          focusDistances.push(focusDistanceNode);
+        }
+      });
   }
+
   return {
     overviewLimit,
     focusNodes,
+    focusDistances,
     anchor,
     luaApi: state.luaApi
   };
@@ -128,6 +149,8 @@ const mapDispatchToProps = dispatch => ({
   changePropertyValue: (uri, value) => {
     dispatch(setPropertyValue(uri, value));
   },
+  flightDestinationDispatcher: propertyDispatcher(
+    dispatch, FlightDestinationDistanceKey),
   anchorDispatcher: propertyDispatcher(
     dispatch, NavigationAnchorKey),
   retargetAnchorDispatcher: propertyDispatcher(
@@ -139,21 +162,9 @@ FocusMenu = connect(
   mapDispatchToProps,
 )(FocusMenu);
 
-FocusMenu.propTypes = {
-  focusNodes: PropTypes.arrayOf(PropTypes.shape({
-    identifier: PropTypes.string,
-    description: PropTypes.string,
-    properties: PropTypes.arrayOf(PropTypes.object),
-    subowners: PropTypes.arrayOf(PropTypes.object),
-  })),
-  anchor: PropTypes.string,
-  changePropertyValue: PropTypes.func,
-};
-
 FocusMenu.defaultProps = {
   focusNodes: [],
   properties: [],
-  subowners: [],
   changePropertyValue: null,
 };
 
