@@ -1,3 +1,7 @@
+// TODO: Revisit these functions and determine if any should be
+// kept since most of this functionality is now more easily handled
+// by the lua API
+
 export const splitUri = (uri) => {
   if (typeof uri == 'string') {
     if (uri === '') {
@@ -14,8 +18,6 @@ export const getIdOfProperty = (uri) => {
   return a[a.length-1];
 };
 
-
-
 // Function to return a deep copy of an object
 export const keepCloning = (objectpassed) => {
   if (objectpassed === null || typeof objectpassed !== 'object') {
@@ -29,6 +31,8 @@ export const keepCloning = (objectpassed) => {
   return temporaryStorage;
 };
 
+
+// TODO: Delete unused function
 export const findSubtree = (node, uri) => {
   const splittedUri = splitUri(uri);
   if (splittedUri.length === 0) {
@@ -41,6 +45,7 @@ export const findSubtree = (node, uri) => {
       return element.identifier === splittedUri[0]
     });
   }
+
   const subowner = node.subowners.find(element => {
     return element.identifier === splittedUri[0]
   })
@@ -53,8 +58,10 @@ export const findSubtree = (node, uri) => {
   return findSubtree(subowner, slicedUri);
 };
 
+// TODO: Delete unused function
 export const jsonToLuaString = json => `"${json}"`;
 
+// TODO: Delete unused function
 export const traverseTreeForTag = (node, tag) => {
   let data;
   node.subowners.map(element => {

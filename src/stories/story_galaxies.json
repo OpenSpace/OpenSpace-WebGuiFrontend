@@ -1,0 +1,45 @@
+{
+  "identifier": "galaxies",
+  "title": "Galaxies",
+  "storyinfo": "A galaxy is a gravitationally bound system of stars, stellar remnants, interstellar gas, dust, and dark matter. Galaxies range in size from just a few hundred million stars to one hundred trillion stars. Galaxies are categorized according to their visual morphology as elliptical, spiral, or irregular.",
+  "overviewlimit": 2.0e+25,
+  "inzoomlimit": 1.0e+25,
+  "start": {
+    "overviewzoom": true,
+    "planet": "Earth",
+    "date": "NOW",
+    "location": {
+      "latitude": 40.758701,
+      "longitude": -111.876183,
+      "altitude": 2.0e+7
+    }
+  },
+  "galaxies": true,
+  "toggleboolproperties": [
+    {
+      "URI":"Scene.Abell.Renderable.Enabled",
+      "label":"Abell Galaxy Clusters",
+      "defaultvalue": false
+    },
+    {
+      "URI":"Scene.SloanDigitalSkySurvey.Renderable.Enabled",
+      "label":"Sloan Digital Sky Survey",
+      "defaultvalue": true
+    },
+    {
+      "URI":"Scene.2MASS.Renderable.Enabled",
+      "label":"2MASS Galaxies",
+      "defaultvalue": false
+    },
+    {
+      "URI":"Scene.GalaxySuperclusters.Renderable.Enabled",
+      "label":"Galaxy Superclusters",
+      "defaultvalue": false
+    },
+    {
+      "URI":"Scene.TullyGalaxies.Renderable.Enabled",
+      "label":"Tully Galaxies",
+      "defaultvalue": true
+    }
+  ]
+}

@@ -5,15 +5,15 @@
 }
 
 .shortcutContainer {
-	width:100%;
-	padding-bottom: 6px;
-	padding-top: 6px;
+  width:100%;
+  padding-bottom: 6px;
+  padding-top: 6px;
   pointer-events: auto;
   position: relative;
 }
 
 .executeButton {
-	right: 0;
+  right: 0;
   position: absolute;
   cursor: pointer;
   top: 0;
@@ -27,7 +27,6 @@
 .shortcutContainer:hover {
   background-color: $ui-background-hover;
 }
-
 
 .icon {
   font-size: 18px;

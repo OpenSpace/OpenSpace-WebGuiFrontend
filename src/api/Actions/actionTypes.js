@@ -23,6 +23,11 @@ export const actionTypes = {
   onCloseConnection: 'CONNECTION_ON_CLOSE',
   changeConnectionWait: 'CONNECTION_CHANGE_WAIT',
 
+  // action types for fetching story data from json files
+  fetchData: 'FETCH_DATA',
+  fetchDataDone: 'FETCH_DATA_DONE',
+  fetchDataFailed: 'FETCH_DATA_FAILED',
+
   initializeLuaApi: 'LUA_API_INITIALIZE',
 
   // action types for version
@@ -48,11 +53,14 @@ export const actionTypes = {
   setPopoverPosition: 'LOCAL_POPOVER_SET_POSIITON',
   setPopoverVisibility: 'LOCAL_POPOVER_SET_VISIBILITY',
   setPopoverAttachment: 'LOCAL_POPOVER_SET_ATTACHMENT',
-  addNodeProperyPopover: 'LOCAL_ADD_NODE_PROPERTY_POPOVER',
-  removeNodeProperyPopover: 'LOCAL_REMOVE_NODE_PROPERTY_POPOVER',
+  addNodePropertyPopover: 'LOCAL_ADD_NODE_PROPERTY_POPOVER',
+  removeNodePropertyPopover: 'LOCAL_REMOVE_NODE_PROPERTY_POPOVER',
   setPopoverActiveTab: 'LOCAL_SET_POPOVER_ACTIVE_TAB',
 
   setShowAbout: 'LOCAL_SET_SHOW_ABOUT',
+
+  // action types for local gui settings
+  setNavigationAction: 'LOCAL_SET_NAVIGATION_ACTION',
 
   // action types for transfer function editor
   addTransferFunction: 'TRANSFERFUNCTION_ADD_TRANSFER_FUNCTION',
@@ -65,4 +73,10 @@ export const actionTypes = {
   toggleActiveEnvelope: 'TRANSFERFUNCTION_TOGGLE_ACTIVE_ENVELOPE',
   toggleActivePoint: 'TRANSFERFUNCTION_TOGGLE_ACTIVE_POINT',
   setClickablePoint: 'TRANSFERFUNCTION_TOGGLE_CLICKABLE_POINT',
+
+  // actions types for story tree
+  addStoryTree: 'STORY_TREE_ADD',
+  addStoryInfo: 'STORY_TREE_ADD_INFO',
+  resetStoryInfo: 'STORY_TREE_RESET_INFO',
+  resetStoryTree: 'STORY_TREE_RESET',
 };

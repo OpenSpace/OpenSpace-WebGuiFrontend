@@ -14,6 +14,7 @@ import { connect } from 'react-redux';
 
 import SimulationIncrement from './SimulationIncrement';
 import styles from './TimePicker.scss';
+import * as timeHelpers from '../../utils/timeHelpers';
 
 
 class TimePicker extends Component {
@@ -301,7 +302,7 @@ class TimePicker extends Component {
     if (!this.state.useLock) {
       newState.pendingTime = new Date(time);
     }
-    this.setState(newState);
+    //this.setState(newState);
   }
 
   /**
@@ -310,7 +311,7 @@ class TimePicker extends Component {
    */
   deltaTimeSubscriptionCallback(message) {
     const { isPaused, targetDeltaTime } = message;
-    this.setState({ isPaused, targetDeltaTime });
+    //this.setState({ isPaused, targetDeltaTime });
   }
 
   render() {

@@ -30,7 +30,6 @@ class SystemMenu extends Component {
               <button onClick={this.props.showAbout}>
                 About OpenSpace
               </button>
-
               {
                 environment.developmentMode ?
                   <div>
@@ -38,7 +37,6 @@ class SystemMenu extends Component {
                     <div className={styles.devModeNotifier}>GUI running in dev mode</div>
                   </div> : null
               }
-
               <hr className={Popover.styles.delimiter} />
 
               <button onClick={this.props.console}>

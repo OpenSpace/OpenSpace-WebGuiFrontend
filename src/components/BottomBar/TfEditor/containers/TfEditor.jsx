@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import TfIcon from 'svg-react-loader?name=TfIcon!../images/tf.svg';
 import { addEnvelope, deleteEnvelope, clearEnvelopes, addPoint, changeColor } from '../../../../api/Actions/transferFunctionActions';
 import EditorContainer from '../presentational/EditorContainer';
-import { startListening, stopListening } from '../../../../api/Actions';
+import { subscribeToProperty, unsubscribeToProperty } from '../../../../api/Actions';
 import { findAllNodesWithTag } from '../../../../utils/propertyTreeHelpers';
 import Window from '../../../common/Window/Window';
 import Picker from '../../Picker';
@@ -34,7 +34,7 @@ class TfEditor extends Component {
   componentDidMount() {
     this.props.volumes.forEach((volume) => {
       volume.data.properties.forEach((property) => {
-        this.props.StartListening(property.Description.Identifier);
+        this.props.StartListening(property.description.Identifier);
       });
     });
   }
@@ -42,19 +42,21 @@ class TfEditor extends Component {
   componentDidUpdate(prevProps, prevState) {
     if (this.state.currentVolume === null && this.props.volumes.length !== 0) {
       this.setState({ currentVolume: this.props.volumes[0].name });
-      const URI = this.props.volumes[0].data.properties.find(obj => obj.id === 'TransferFunction').Description.Identifier;
+      const URI = this.props.volumes[0].data.properties.find(obj => obj.id === 'TransferFunction').description.Identifier;
       this.setState({ URI });
     }
     if (this.state.color !== prevState.color) {
       const { currentVolume } = this.state;
-      this.props.ChangeColor(this.state.color, this.props.volumes.find(obj => obj.id === currentVolume.name).data.properties.find(obj => obj.id === 'TransferFunction').Description.Identifier);
+      this.props.ChangeColor(this.state.color, 
+        this.props.volumes.find(obj => obj.id === currentVolume.name).data.properties
+        .find(obj => obj.id === 'TransferFunction').description.Identifier);
     }
   }
 
   componentWillUnmount() {
     this.props.volumes.forEach((volume) => {
       volume.data.properties.forEach((property) => {
-        this.props.StopListening(property.Description.Identifier);
+        this.props.StopListening(property.description.Identifier);
       });
     });
   }
@@ -65,7 +67,8 @@ class TfEditor extends Component {
 
   handleVolumeChange(event) {
     this.setState({ currentVolume: event.value });
-    const URI = this.props.volumes.find(obj => obj.id === this.state.currentVolume.name).data.properties.find(obj => obj.id === 'TransferFunction').Description.Identifier;
+    const URI = this.props.volumes.find(obj => obj.id === this.state.currentVolume.name).data.properties
+      .find(obj => obj.id === 'TransferFunction').description.Identifier;
     this.setState({ URI });
   }
 
@@ -92,7 +95,12 @@ class TfEditor extends Component {
             <div>
               { showTfEditor && (
                 <div>
-                  <Window size={{ width: 1200, height: 700 }} closeCallback={this.toggleTfEditor} title={'Transfer Function Editor'} className={styles.Window}>
+                  <Window 
+                    size={{ width: 1200, height: 700 }}
+                    closeCallback={this.toggleTfEditor}
+                    title={'Transfer Function Editor'}
+                    className={styles.Window}
+                  >
                     <div className={styles.Canvas}>
                       <div className={styles.FlexContainer}>
                         <EditorContainer
@@ -107,10 +115,21 @@ class TfEditor extends Component {
                             onColorChange={color => this.setState({ color })}
                           />
                           <div className={styles.FlexColumn}>
-                            <Button className={styles.Button} onClick={() => this.props.AddEnvelope(defaultEnvelopePoints, URI)} children={' Add Envelope'} />
-                            <Button className={styles.Button} onClick={() => this.props.DeleteEnvelope(URI)} children={' Delete Envelope'} />
-                            <Button className={styles.Button} onClick={() => this.props.AddPoint(color, URI)} children={' Add Point'} />
-
+                            <Button 
+                              className={styles.Button} 
+                              onClick={() => this.props.AddEnvelope(defaultEnvelopePoints, URI)} 
+                              children={' Add Envelope'} 
+                            />
+                            <Button 
+                              className={styles.Button}
+                              onClick={() => this.props.DeleteEnvelope(URI)}
+                              children={' Delete Envelope'}
+                            />
+                            <Button
+                              className={styles.Button}
+                              onClick={() => this.props.AddPoint(color, URI)}
+                              children={' Add Point'}
+                            />
                             <Select
                               onChange={this.handleVolumeChange}
                               label={'Select Volume'}

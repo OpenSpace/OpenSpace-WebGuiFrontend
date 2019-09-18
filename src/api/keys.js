@@ -8,7 +8,6 @@ export const RetargetAimKey = 'NavigationHandler.OrbitalNavigator.RetargetAim';
 //To get any scene graph node you need ScenePrefix+NodeIdentifier
 export const ScenePrefixKey = 'Scene.';
 
-
 // key to get all scene graph nodes
 // export const SceneGraphKey = '__allNodes';
 // key to get all properties in openspace engine
@@ -17,12 +16,45 @@ export const rootOwnerKey = '__rootOwner';
 // export const AllScreenSpaceRenderablesKey = '__screenSpaceRenderables';
 export const VersionInfoKey = 'VersionInfo';
 export const SCMInfoKey = 'SCMInfo';
-// script to toggle pause
-export const TogglePauseScript = 'openspace.time.togglePause()';
-export const InterpolateTogglePauseScript = 'openspace.time.interpolateTogglePause()';
 // key for getting current time subscription
 export const TimeKey = 'special:currentTime';
 
+// TODO: Some of the following constants are removed in master and
+// should be considered deprecated. 
+
+// script to toggle pause
+//export const TogglePauseScript = 'openspace.time.togglePause()';
+//export const InterpolateTogglePauseScript = 'openspace.time.interpolateTogglePause()';
+// key for getting current simulation time
+export const CurrentTimeKey = 'currentTime';
+// key for getting the delta time
+export const DeltaTime = 'deltaTime';
+// value placeholder in scripts with parameter
+export const ValuePlaceholder = '___value___';
+// key  for apply fly to trigger property
+export const ApplyFlyToKey = 'NavigationHandler.OrbitalNavigator.ApplyLinearFlight';
+// key for accessing the flight destination distance from the current anchor
+export const FlightDestinationDistanceKey = 'NavigationHandler.OrbitalNavigator.FlightDestinationDistance';
+// key for json file with info for icons
+export const InfoIconKey = 'info_icons';
+// key for endpoint for json files
+export const DataEndpointKey = 'https://openspace.github.io/sci/mastertheses/2018/info/solarsystem/';
+// key for default story
+export const DefaultStory = 'default';
+// key for the bounding sphere radius of a renderable
+export const BoundingSphereKey = `Scene.${ValuePlaceholder}.Renderable.BoundingSphere`;
+// key for max zoom out limit in the touch module
+export const ZoomOutLimitKey = 'Modules.Touch.TouchInteraction.ZoomOutLimit';
+// key for zoom in limit in the touch module
+export const ZoomInLimitKey = 'Modules.Touch.TouchInteraction.ZoomInLimit';
+// key for scale property
+export const ScaleKey = `Scene.${ValuePlaceholder}.Scale.Scale`;
+// keys for timePlayerController
+export const FastRewind = 'fast_rewind';
+export const Rewind = 'rewind';
+export const Play = 'play';
+export const Forward = 'forward';
+export const FastForward = 'fast_forward';
 export const sessionStateIdle = 'idle';
 export const sessionStateRecording = 'recording'
 export const sessionStatePlaying = 'playing';
@@ -66,6 +98,8 @@ export const RenderableTypes = {
 export const LayerGroupKeys = ["Layers.ColorLayers", "Layers.HeightLayers",
                         "Layers.Overlays", "Layers.NightLayers",
                         "Layers.WaterMasks"];
+
+export const globeBrowsingLocationDefaultLatLon = [15.0, 10.0];
 
 //Temp hack until we build gui path sorting into the assets or peoperties
 export const sortGroups = {

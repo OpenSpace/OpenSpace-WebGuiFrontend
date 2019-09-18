@@ -36,7 +36,6 @@ const nodeExpansionIdentifier = path => {
 }
 
 let Group = ({ path, expansionIdentifier, entries, isExpanded, setExpanded, sortOrdering}) => {
-
   var sortedEntries = entries.sort((a, b) =>
     a.name.localeCompare(b.name, 'en')
   );

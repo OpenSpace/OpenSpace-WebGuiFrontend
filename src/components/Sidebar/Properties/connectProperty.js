@@ -1,6 +1,5 @@
 import { connect } from 'react-redux';
 import propertyDispatcher from '../../../api/propertyDispatcher';
-import { startListening, stopListening, changePropertyValue } from '../../../api/Actions';
 
 import subStateToProps from '../../../utils/subStateToProps';
 

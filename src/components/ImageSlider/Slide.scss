@@ -1,0 +1,49 @@
+@import "../../styles/all";
+
+.Slide {
+    display: inline-block;
+    height: 100%;
+    width: 100%;
+    background-repeat: no-repeat;
+}
+
+.Container {
+    position: relative;
+    color: black;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    hyphens: auto;
+}
+
+.StoryInfo {
+    height: 50%;
+    width: 30%;
+    min-height: 400px;
+    min-width: 500px;
+    position: absolute;
+    top: 50%;
+    left: 25%;
+    transform: translate(-50%, -50%);
+    background-color: $ui-background;
+    margin-left: 5vw;
+}
+
+.StoryName {
+    position: absolute;
+    padding: 5%;
+    text-align: center;
+    color: white;
+    font-size: calc(7px + 2vw);
+    min-width: 500px;
+}
+
+.Description {
+    position: absolute;
+    top: 25%;
+    color: white;
+    font-size: calc(7px + 0.4vw);
+    text-align: left;
+    margin: 0 auto;
+    padding: 5%;
+    min-width: 500px;
+}

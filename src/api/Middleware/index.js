@@ -2,6 +2,7 @@ import { applyMiddleware } from 'redux';
 import { propertyTree } from './propertyTree';
 import { time } from './time';
 import { connection } from './connection';
+import { fetchData } from './fetchData';
 import { shortcuts } from './shortcuts';
 import { version } from './version';
 import { sessionRecording } from './sessionRecording';
@@ -14,7 +15,8 @@ const middleware = applyMiddleware(
   sessionRecording,
   connection,
   shortcuts,
-  version
+  version,
+  fetchData,
 );
 
 export default middleware;

@@ -46,9 +46,11 @@ class MatrixProperty extends Component {
   render() {
     const { description, value } = this.props;
     const { SteppingValue, MaximumValue, MinimumValue } = description.AdditionalData;
-    const firstLabel = (<span onClick={this.copyUri}>
-      { description.Name } { this.descriptionPopup }
-    </span>);
+    const firstLabel = (
+      <span onClick={this.copyUri}>
+        { description.Name } { this.descriptionPopup }
+      </span>
+    );
 
     const values = value.map((value, index) => ({
         key: `${description.Name}-${index}`,

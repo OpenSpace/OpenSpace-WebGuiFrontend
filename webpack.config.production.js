@@ -70,4 +70,11 @@ module.exports = {
     resolve: {
         extensions: ['.js', '.jsx'],
     }
+
+    plugins: [
+        new webpack.optimize.UglifyJsPlugin({
+            sourceMap: true,
+            comments: false
+        })
+    ]
 };

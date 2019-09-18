@@ -11,12 +11,8 @@ import { displayName } from './PropertyOwner';
 import Property from './Property';
 
 import { connect } from 'react-redux';
-
 import propertyDispatcher from '../../../api/propertyDispatcher';
-
 import Focus from 'svg-react-loader?name=Focus!../../../icons/focus.svg';
-
-
 import {
   NavigationAnchorKey,
   NavigationAimKey,
@@ -156,5 +152,3 @@ PropertyOwnerHeader.defaultProps = {
 };
 
 export default PropertyOwnerHeader;
-
-

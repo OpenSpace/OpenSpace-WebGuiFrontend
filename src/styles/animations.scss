@@ -7,6 +7,7 @@ $loading-easing: linear;
 $background-transition: background $animation-duration $animation-easing;
 $loading-animation: loading-pulse $loading-animation-duration $loading-easing infinite;
 $fade-in-animation: fade-in $animation-duration $animation-easing;
+$fade-out-animation: fade-out $loading-animation-duration $animation-easing;
 $slow-fade-in-animation: fade-in $slow-animation-duration $animation-easing;
 $appear-animation: appear $animation-duration $animation-easing;
 $slide-up-animation: slide-up 500ms $animation-easing;
@@ -26,6 +27,15 @@ $slide-up-animation: slide-up 500ms $animation-easing;
   }
   100% {
     opacity: 1;
+  }
+}
+
+@keyframes fade-out {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
   }
 }
 

@@ -62,6 +62,7 @@ export const sessionRecording = store => next => action => {
         dataCallback = (data) => store.dispatch(updateSessionRecording(data));
         subscribe();
       }
+      break;
     case actionTypes.refreshSessionRecording:
       dataCallback = (data) => store.dispatch(updateSessionRecording(data)),
       refresh();
@@ -78,6 +79,7 @@ export const sessionRecording = store => next => action => {
       if (nSubscribers === 0) {
         unsubscribe();
       }
+      break;
     default:
       break;
   }

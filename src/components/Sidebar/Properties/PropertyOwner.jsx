@@ -9,7 +9,7 @@ import SvgIcon from '../../common/SvgIcon/SvgIcon';
 import FocusIcon from 'svg-react-loader?name=Focus!../../../icons/focus.svg';
 import Shortcut from './../Shortcut';
 import PropertyOwnerHeader from './PropertyOwnerHeader';
-import { setPropertyTreeExpansion, addNodeProperyPopover } from '../../../api/Actions';
+import { setPropertyTreeExpansion, addNodePropertyPopover } from '../../../api/Actions';
 import subStateToProps from '../../../utils/subStateToProps';
 
 import { connect } from 'react-redux';
@@ -230,7 +230,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
   const isFocus = ownProps.name && (ownProps.name.lastIndexOf('Current') > -1);
   const popOut = () => {
-    dispatch(addNodeProperyPopover({
+    dispatch(addNodePropertyPopover({
       identifier: ownProps.uri,
       focus: isFocus
     }));

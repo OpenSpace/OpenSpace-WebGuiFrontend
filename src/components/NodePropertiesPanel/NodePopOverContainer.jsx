@@ -6,11 +6,11 @@ import styles from './NodePopOverContainer.scss';
 
 class NodePopOverContainer extends Component {
 
-	constructor(props) {
-    	super(props);
-	}
+  constructor(props) {
+    super(props);
+  }
 
-	render() {
+  render() {
     const { activeNodePropertyPanels } = this.props;
     return (
       <div className={styles.nodePopOverContainer}>

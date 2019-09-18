@@ -19,12 +19,11 @@ const originPicker = (state = defaultOriginPicker, action) => {
       return {
         ...state,
         showFavorites: action.payload
-      }
+      };
     default:
       return state;
   }
 };
-
 
 /**
  * Time picker
@@ -89,7 +88,7 @@ const popovers = (state = defaultPopovers, action) => {
         ...state,
         [action.payload.popover]: popover(state[action.payload.popover], action)
       };
-    case actionTypes.addNodeProperyPopover:
+    case actionTypes.addNodePropertyPopover:
       if(action.payload.focus) {
         return {
           ...state,
@@ -101,7 +100,7 @@ const popovers = (state = defaultPopovers, action) => {
           activeNodePropertyPanels: {...state.activeNodePropertyPanels, [action.payload.identifier]: popover({attached: false, visible: true, activeTab: 0}, action)}
         }
       }
-    case actionTypes.removeNodeProperyPopover:
+    case actionTypes.removeNodePropertyPopover:
       return {
         ...state,
         activeNodePropertyPanels: {...state.activeNodePropertyPanels, [action.payload.identifier]: undefined}
@@ -147,7 +146,6 @@ const showAbout = (state = false, action) => {
       return state;
   }
 }
-
 
 export const local = combineReducers({
   originPicker,

@@ -1,0 +1,50 @@
+{
+  "identifier":"earthweather",
+  "title": "Weather and events on Earth",
+  "storyinfo": "Earth is the third planet from the Sun and the only object in the Universe known to harbor life. According to radiometric dating and other sources of evidence, Earth formed over 4.5 billion years ago.",
+  "overviewlimit": 1.0e+9,
+  "focusbuttons": ["Earth"],
+  "hidenodes": ["Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune"],
+  "timecontroller": true,
+  "datecontroller":  [
+    {
+      "info": "Hurricane Irma",
+      "date": "2017-09-16T15:00:00.00",
+      "planet": "Earth",
+      "location": {
+        "latitude": 24.555059,
+        "longitude": -81.779984,
+        "altitude": 10000000
+      }
+    },
+    {
+      "info": "Solar Eclipse",
+      "date": "2017-08-21T17:20:00.00",
+      "planet": "Earth",
+      "location": {
+        "latitude": 29.951065,
+        "longitude": -90.071533,
+        "altitude": 10000000
+      }
+    },
+    {
+      "info": "Hurricane Jose",
+      "date": "2017-09-08T15:00:00.00",
+      "planet": "Earth",
+      "location": {
+        "latitude": 18.073099,
+        "longitude": -63.082199,
+        "altitude": 10000000
+      }
+    }
+  ],
+  "start": {
+    "planet": "Earth",
+    "date": "NOW",
+    "location": {
+      "latitude": 40.758701,
+      "longitude": -111.876183,
+      "altitude": 20000000
+    }
+  }
+}

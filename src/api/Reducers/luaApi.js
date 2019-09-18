@@ -1,6 +1,6 @@
 import { actionTypes } from '../Actions/actionTypes';
 
-const defaultState = {};
+const defaultState = undefined;
 
 export const luaApi = (state = defaultState, action) => { // state refers to local
   switch (action.type) {

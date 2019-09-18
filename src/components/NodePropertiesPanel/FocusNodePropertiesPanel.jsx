@@ -5,9 +5,9 @@ import { NavigationAnchorKey, ScenePrefixKey } from '../../api/keys';
 
 class FocusNodePropertiesPanel extends Component {
 
-	constructor(props) {
+  constructor(props) {
     super(props);
-	}
+  }
 
   render() {
     const { node } = this.props;
