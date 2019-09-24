@@ -1,7 +1,7 @@
 const defaults = {
   wsAddress: 'localhost',
   wsPort: 4682,
-  developmentMode: true
+  developmentMode: false
 }
 
 const openSpaceOverrides = window.OpenSpaceEnvironment || {};
