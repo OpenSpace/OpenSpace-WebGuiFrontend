@@ -12,6 +12,7 @@ const App = () => (
       <Route path="/ontouch" component={OnTouchGui} />
       {/* Here, more GUI variations can be added. */}
       {/* <Route path="/tablet" component={TabletGui} /> */}
+      <Route path="/" component={BrowserGui} />
       <Route component={NotFound} />
     </Switch>
   </Router>
