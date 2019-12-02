@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { throttle } from 'lodash/function';
-import { DeltaTime, ValuePlaceholder, SetDeltaTimeScript, InterpolateDeltaTimeScript } from '../../api/keys';
 import NumericInput from '../common/Input/NumericInput/NumericInput';
 import Row from '../common/Row/Row';
 import Select from '../common/Input/Select/Select';
@@ -14,8 +13,15 @@ const updateDelayMs = 1000;
 // Throttle the delta time updating, so that we don't accidentally flood
 // the simulation with updates.
 const updateDeltaTimeNow = (openspace, value, interpolationTime) => {
-  interpolationTime = interpolationTime || 0;
-  openspace.time.interpolateDeltaTime(value, interpolationTime);
+  // Calling interpolateDeltaTime with one or two arguments actually make a difference,
+  // even if the second argument is undefined. This is because undefined is translated to
+  // nil in the mapping to the underlying lua api.
+  // Hence, we check for undefined below:
+  if (interpolationTime === undefined) {
+    openspace.time.interpolateDeltaTime(value);
+  } else {
+    openspace.time.interpolateDeltaTime(value, interpolationTime);
+  }
 };
 const updateDeltaTime = throttle(updateDeltaTimeNow, updateDelayMs);
 
@@ -89,13 +95,12 @@ class SimulationIncrement extends Component {
   }
 
   setDeltaTime(value) {
-    const interpolationTime = 1;
     const deltaTime = parseFloat(value) * this.stepSize;
     if (isNaN(deltaTime)) {
       return;
     }
     if (this.props.luaApi) {
-      updateDeltaTimeNow(this.props.luaApi, deltaTime, interpolationTime);
+      updateDeltaTimeNow(this.props.luaApi, deltaTime);
     }
   }
 
@@ -119,14 +124,13 @@ class SimulationIncrement extends Component {
     if (!this.props.luaApi) {
       return;
     }
-    const interpolationTime = 1;
     if (value !== 0) {
       this.beforeAdjust = this.beforeAdjust || this.props.targetDeltaTime;
       const quickAdjust = this.beforeAdjust + this.stepSize * (value ** 5);
-      updateDeltaTimeNow(this.props.luaApi, quickAdjust, interpolationTime);
+      updateDeltaTimeNow(this.props.luaApi, quickAdjust);
     } else {
       updateDeltaTime.cancel();
-      updateDeltaTimeNow(this.props.luaApi, this.beforeAdjust || 0, interpolationTime);
+      updateDeltaTimeNow(this.props.luaApi, this.beforeAdjust || 0);
       this.beforeAdjust = null;
     }
   }
@@ -134,7 +138,8 @@ class SimulationIncrement extends Component {
   render() {
     const { stepSize } = this.state;
     const { targetDeltaTime } = this.props;
-    const adjustedDelta = round10(targetDeltaTime / this.stepSize, StepPrecisions[stepSize]);
+    const adjustedDelta =
+      round10(targetDeltaTime / this.stepSize, StepPrecisions[stepSize]);
 
     const options = Object.values(Steps)
       .map(step => ({ value: step, label: step, isSelected: step === stepSize }));

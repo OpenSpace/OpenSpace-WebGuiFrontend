@@ -62,7 +62,7 @@ class TimePicker extends Component {
     if (shift) {
       openspace.time.setDeltaTime(1);
     } else {
-      openspace.time.interpolateDeltaTime(1, 1);
+      openspace.time.interpolateDeltaTime(1);
     }
   }
 
@@ -246,16 +246,14 @@ class TimePicker extends Component {
   }
 
   interpolateDate(time) {
-    const interpolationTime = 1.0;
     const fixedTimeString = time.toJSON().replace('Z', '');
     const openspace = this.props.luaApi;
-    openspace.time.interpolateTime(fixedTimeString, interpolationTime);
+    openspace.time.interpolateTime(fixedTimeString);
   }
 
   interpolateDateRelative(delta) {
-    const interpolationTime = 1.0;
     const openspace = this.props.luaApi;
-    openspace.time.interpolateTimeRelative(delta, interpolationTime);
+    openspace.time.interpolateTimeRelative(delta);
   }
 
   changeDate(event) {
