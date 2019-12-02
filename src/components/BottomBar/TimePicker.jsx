@@ -7,15 +7,19 @@ import Button from '../common/Input/Button/Button';
 import Calendar from '../common/Calendar/Calendar';
 import Picker from './Picker';
 import Time from '../common/Input/Time/Time';
-import ToggleContent from '../common/ToggleContent/ToggleContent';
-import ScaleInput from '../common/Input/ScaleInput/ScaleInput';
-import { subscribeToTime, unsubscribeToTime, setPopoverVisibility } from '../../api/Actions';
+import { sessionStatePlaying } from '../../api/keys';
+import {
+  subscribeToTime,
+  unsubscribeToTime,
+  setPopoverVisibility,
+  subscribeToSessionRecording,
+  unsubscribeToSessionRecording
+} from '../../api/Actions';
 import { connect } from 'react-redux';
 
 import SimulationIncrement from './SimulationIncrement';
 import styles from './TimePicker.scss';
 import * as timeHelpers from '../../utils/timeHelpers';
-
 
 class TimePicker extends Component {
   constructor(props) {
@@ -63,11 +67,11 @@ class TimePicker extends Component {
   }
 
   componentDidMount() {
-    this.props.startSubscription();
+    this.props.startSubscriptions();
   }
 
   componentWillUnmount() {
-    this.props.stopSubscription();
+    this.props.stopSubscriptions();
   }
 
   get time() {
@@ -315,10 +319,20 @@ class TimePicker extends Component {
   }
 
   render() {
-    const { popoverVisible } = this.props;
+    const { popoverVisible, sessionRecordingState } = this.props;
+    const enabled = sessionRecordingState !== sessionStatePlaying;
+
+    const popoverEnabledAndVisible = popoverVisible && enabled;
+
+    const pickerClasses = [
+      styles.timePicker,
+      popoverEnabledAndVisible ? Picker.Active : '',
+      enabled ? '' : styles.disabledBySessionPlayback
+    ].join(' ');
+
     return (
       <div className={Picker.Wrapper}>
-        <Picker onClick={this.togglePopover} className={`${styles.timePicker} ${popoverVisible ? Picker.Active : ''}`}>
+        <Picker onClick={enabled && this.togglePopover} className={pickerClasses}>
           <div className={Picker.Title}>
             <span className={Picker.Name}>
               <LoadingString loading={this.props.time === undefined}>
@@ -329,7 +343,7 @@ class TimePicker extends Component {
           </div>
         </Picker>
 
-        { popoverVisible && this.popover }
+        { popoverEnabledAndVisible && this.popover }
       </div>
     );
   }
@@ -342,14 +356,21 @@ const mapStateToProps = (state) => {
     targetDeltaTime: state.time.targetDeltaTime,
     isPaused: state.time.isPaused,
     popoverVisible: state.local.popovers.timePicker.visible,
+    sessionRecordingState: state.sessionRecording.recordingState,
     luaApi: state.luaApi
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    startSubscription: () => dispatch(subscribeToTime()),
-    stopSubscription: () => dispatch(unsubscribeToTime()),
+    startSubscriptions: () => {
+      dispatch(subscribeToTime());
+      dispatch(subscribeToSessionRecording());
+    },
+    stopSubscriptions: () => {
+      dispatch(unsubscribeToTime());
+      dispatch(unsubscribeToSessionRecording());
+    },
     setPopoverVisibility: (visible) => {
       dispatch(setPopoverVisibility({
         popover: 'timePicker',

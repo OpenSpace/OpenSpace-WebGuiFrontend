@@ -12,14 +12,17 @@ import {
   NavigationAimKey,
   RetargetAnchorKey,
   RetargetAimKey,
-  ScenePrefixKey
+  ScenePrefixKey,
+  sessionStatePlaying
 } from '../../../api/keys';
 import FocusEntry from './FocusEntry';
 
 import {
-  setNavigationAction, 
+  setNavigationAction,
   setOriginPickerShowFavorites,
-  setPopoverVisibility
+  setPopoverVisibility,
+  subscribeToSessionRecording,
+  unsubscribeToSessionRecording
 } from '../../../api/Actions';
 
 import styles from './OriginPicker.scss';
@@ -53,11 +56,13 @@ class OriginPicker extends Component {
   componentDidMount() {
     this.props.anchorDispatcher.subscribe();
     this.props.aimDispatcher.subscribe();
+    this.props.startSessionRecordingSubscription();
   }
 
   componentWillUnmount() {
     this.props.anchorDispatcher.unsubscribe();
     this.props.aimDispatcher.unsubscribe();
+    this.props.stopSessionRecordingSubscription();
   }
 
   get anchor() {
@@ -146,7 +151,8 @@ class OriginPicker extends Component {
       setShowFavorites,
       setNavigationAction,
       navigationAction,
-      popoverVisible
+      popoverVisible,
+      sessionRecordingState
     } = this.props;
 
     const defaultList = favorites.slice();
@@ -184,13 +190,25 @@ class OriginPicker extends Component {
     const setNavigationActionToAnchor = () => { setNavigationAction(NavigationActions.Anchor); };
     const setNavigationActionToAim = () => { setNavigationAction(NavigationActions.Aim); };
 
+    const enabled = sessionRecordingState !== sessionStatePlaying;
+    const popoverEnabledAndVisible = popoverVisible && enabled;
+
+    const pickerClasses = [
+      styles.originPicker,
+      popoverEnabledAndVisible ? Picker.Active : '',
+      enabled ? '' : styles.disabledBySessionPlayback
+    ].join(' ');
+
     return (
       <div className={Picker.Wrapper}>
-        <Picker onClick={this.togglePopover} className={(popoverVisible ? Picker.Active : '')}>
+        <Picker onClick={this.togglePopover} className={pickerClasses}>
           {this.hasDistinctAim() ? this.anchorAndAimPicker : this.focusPicker }
         </Picker>
-        { popoverVisible && (
-          <Popover closeCallback={this.togglePopover} title="Navigation" className={Picker.Popover} attached={true}>
+        { popoverEnabledAndVisible && (
+          <Popover closeCallback={enabled && this.togglePopover}
+                   title="Navigation"
+                   className={Picker.Popover}
+                   attached={true}>
             <div>
               <Button className={styles.NavigationButton}
                       onClick={setNavigationActionToFocus}
@@ -230,7 +248,13 @@ class OriginPicker extends Component {
   }
 }
 
-const mapSubStateToProps = ({properties, propertyOwners, originPicker, originPickerPopover}) => {
+const mapSubStateToProps = ({
+  properties,
+  propertyOwners,
+  originPicker,
+  originPickerPopover,
+  sessionRecordingState
+}) => {
   const scene = propertyOwners.Scene;
   const uris = scene ? scene.subowners : [];
   
@@ -274,6 +298,7 @@ const mapSubStateToProps = ({properties, propertyOwners, originPicker, originPic
     showFavorites,
     navigationAction,
     popoverVisible,
+    sessionRecordingState
   };
 };
 
@@ -281,10 +306,11 @@ const mapStateToSubState = (state) => ({
   propertyOwners: state.propertyTree.propertyOwners,
   properties: state.propertyTree.properties,
   originPicker: state.local.originPicker,
-  originPickerPopover: state.local.popovers.originPicker
+  originPickerPopover: state.local.popovers.originPicker,
+  sessionRecordingState: state.sessionRecording.recordingState,
 });
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
     setNavigationAction: action => {
       dispatch(setNavigationAction(action))
@@ -294,6 +320,12 @@ const mapDispatchToProps = (dispatch) => {
     },
     anchorDispatcher: propertyDispatcher(dispatch, NavigationAnchorKey),
     aimDispatcher: propertyDispatcher(dispatch, NavigationAimKey),
+    startSessionRecordingSubscription: () => {
+      dispatch(subscribeToSessionRecording());
+    },
+    stopSessionRecordingSubscription: () => {
+      dispatch(unsubscribeToSessionRecording());
+    },
     retargetAnchorDispatcher: propertyDispatcher(dispatch, RetargetAnchorKey),
     retargetAimDispatcher: propertyDispatcher(dispatch, RetargetAimKey),
     setPopoverVisibility: (visible) => {
