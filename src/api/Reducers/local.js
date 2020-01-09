@@ -147,10 +147,20 @@ const showAbout = (state = false, action) => {
   }
 }
 
+const showApod = (state = false, action) => {
+  switch (action.type) {
+    case actionTypes.setShowApod:
+      return action.payload;
+    default:
+      return state;
+  }
+}
+
 export const local = combineReducers({
   originPicker,
   timePicker,
   popovers,
   propertyTreeExpansion,
-  showAbout
+  showAbout,
+  showApod
 });

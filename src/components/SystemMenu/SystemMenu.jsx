@@ -6,7 +6,7 @@ import styles from './SystemMenu.scss';
 import Popover from '../common/Popover/Popover';
 import subStateToProps from '../../utils/subStateToProps';
 import { connect } from 'react-redux';
-import { setShowAbout } from '../../api/Actions'
+import { setShowAbout, setShowApod } from '../../api/Actions'
 import environment from '../../api/Environment';
 
 class SystemMenu extends Component {
@@ -29,6 +29,10 @@ class SystemMenu extends Component {
 
               <button onClick={this.props.showAbout}>
                 About OpenSpace
+              </button>
+
+              <button onClick={this.props.showApod}>
+                Show NASA APOD
               </button>
               {
                 environment.developmentMode ?
@@ -97,7 +101,8 @@ const mapSubStateToProps = ({ luaApi }) => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    showAbout: () => dispatch(setShowAbout(true))
+    showAbout: () => dispatch(setShowAbout(true)),
+    showApod: () => dispatch(setShowApod(true))
   }
 }
 

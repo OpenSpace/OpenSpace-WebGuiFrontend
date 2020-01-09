@@ -58,6 +58,7 @@ export const actionTypes = {
   setPopoverActiveTab: 'LOCAL_SET_POPOVER_ACTIVE_TAB',
 
   setShowAbout: 'LOCAL_SET_SHOW_ABOUT',
+  setShowApod: 'LOCAL_SET_SHOW_APOD',
 
   // action types for local gui settings
   setNavigationAction: 'LOCAL_SET_NAVIGATION_ACTION',

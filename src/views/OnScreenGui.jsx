@@ -9,9 +9,10 @@ import Button from '../components/common/Input/Button/Button';
 import Error from '../components/common/Error/Error';
 import Overlay from '../components/common/Overlay/Overlay';
 import About from './About/About';
+import Apod from './Apod/Apod';
 import Stack from '../components/common/Stack/Stack';
 import NodePopOverContainer from '../components/NodePropertiesPanel/NodePopOverContainer';
-import { startConnection, setShowAbout } from '../api/Actions';
+import { startConnection, setShowAbout, setShowApod } from '../api/Actions';
 import { isCompatible,
          formatVersion,
          RequiredSocketApiVersion,
@@ -72,6 +73,18 @@ class OnScreenGui extends Component {
             </Stack>
           </Overlay>
         )}
+
+        { this.props.showApod && (
+          <Overlay>
+            <Stack style={{ maxWidth: '500px' }}>
+              <Button style={{ alignSelf: 'flex-end', color: 'white' }} onClick={this.props.hideApod}>
+                Close
+              </Button>
+              <Apod />
+            </Stack>
+          </Overlay>
+        )}
+
         { this.props.connectionLost && (
           <Overlay>
             <Error>
@@ -97,7 +110,8 @@ class OnScreenGui extends Component {
 const mapStateToProps = state => ({
   connectionLost: state.connection.connectionLost,
   version: state.version,
-  showAbout: state.local.showAbout
+  showAbout: state.local.showAbout,
+  showApod: state.local.showApod
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -106,6 +120,9 @@ const mapDispatchToProps = dispatch => ({
   },
   hideAbout: () => {
     dispatch(setShowAbout(false))
+  },
+  hideApod: () => {
+    dispatch(setShowApod(false))
   }
 });
 

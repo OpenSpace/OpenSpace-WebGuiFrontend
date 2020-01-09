@@ -1,0 +1,40 @@
+/* Apod.scss */
+
+
+@import "../../styles/all";
+
+.apod {
+  animation: $slide-up-animation;
+  max-width: 500px;
+  width: 100%;
+}
+
+.apod section + section {
+  margin-left: 20px;
+}
+
+.apod img {
+  width: 350px;
+}
+
+.apod h1 {
+  font-size: 40px;
+  line-height: 1;
+  margin: 24px 0;
+}
+
+.apod a {
+  box-shadow: inset 0 -3.3px 0 $blue;
+  color: inherit;
+  text-decoration: none;
+  transition: $background-transition;
+
+  &:hover {
+    background: $blue;
+  }
+}
+
+.apod p + p {
+  margin-top: $font-size;
+}
+

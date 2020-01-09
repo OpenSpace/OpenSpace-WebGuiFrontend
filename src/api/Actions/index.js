@@ -199,6 +199,12 @@ export const setShowAbout = show => ({
   payload: show
 })
 
+export const setShowApod = show => ({
+  type: actionTypes.setShowApod,
+  payload: show
+})
+
+
 export const setPopoverAttachment = data => ({
   type: actionTypes.setPopoverPosition,
   payload: data
