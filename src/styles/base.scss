@@ -18,6 +18,12 @@
     font-size: $font-size;
   }
 
+  @media only screen and (min-width: 1600px) {
+    html {
+    font-size: $font-size-hires;
+    }
+  }
+
   html, body, #root {
     height: 100vh;
     width: 100vw;
