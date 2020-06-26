@@ -103,7 +103,8 @@ const mapSubStateToProps = ({ groups, properties, propertyOwners, shortcuts }) =
   const matcher = (test, search) => {
     if (test.type === 'propertyOwner') {
       const node = propertyOwners[test.uri] || {};
-      return ObjectWordBeginningSubstring(node, search);
+      const guiHidden = properties[test.uri + ".GuiHidden"];
+      return ObjectWordBeginningSubstring(node, search) && !guiHidden;
     } else if (test.type === 'shortcut') {
       const shortcut = shortcuts[test.index];
       return ObjectWordBeginningSubstring(shortcut, search)

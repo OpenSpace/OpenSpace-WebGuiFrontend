@@ -178,7 +178,11 @@ class OriginPicker extends Component {
     }
 
     const sortedDefaultList = defaultList.slice(0).sort((a, b) => a.name.localeCompare(b.name));
-    const sortedNodes = nodes.slice(0).sort((a, b) => a.name.localeCompare(b.name));
+    const filteredNodes = nodes.filter(node => {
+      const hasHiddenProp = node.properties.indexOf(node.key + ".GuiHidden") > -1;
+      return !hasHiddenProp;
+    });
+    const sortedNodes = filteredNodes.slice(0).sort((a, b) => a.name.localeCompare(b.name));
 
     const searchPlaceholder = {
       Focus: "Search for a new focus...",
