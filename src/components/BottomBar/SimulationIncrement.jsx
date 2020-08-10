@@ -8,6 +8,7 @@ import ScaleInput from '../common/Input/ScaleInput/ScaleInput';
 
 import { subscribeToTime, unsubscribeToTime } from '../../api/Actions';
 import { connect } from 'react-redux';
+import Button from '../common/Input/Button/Button';
 
 const updateDelayMs = 1000;
 // Throttle the delta time updating, so that we don't accidentally flood
@@ -74,6 +75,8 @@ class SimulationIncrement extends Component {
     this.setNegativeDeltaTime = this.setNegativeDeltaTime.bind(this);
     this.setStepSize = this.setStepSize.bind(this);
     this.setQuickAdjust = this.setQuickAdjust.bind(this);
+    this.nextDeltaTimeStep = this.nextDeltaTimeStep.bind(this);
+    this.prevDeltaTimeStep = this.prevDeltaTimeStep.bind(this)
   }
 
   componentDidMount() {
@@ -135,6 +138,16 @@ class SimulationIncrement extends Component {
     }
   }
 
+  nextDeltaTimeStep(event) {
+    const openspace = this.props.luaApi;
+    openspace.time.interpolateNextDeltaTimeStep();
+  }
+
+  prevDeltaTimeStep(event) {
+    const openspace = this.props.luaApi;
+    openspace.time.interpolatePreviousDeltaTimeStep();
+  }
+
   render() {
     const { stepSize } = this.state;
     const { targetDeltaTime } = this.props;
@@ -183,6 +196,15 @@ class SimulationIncrement extends Component {
           max={10}
           onChange={this.setQuickAdjust}
         />
+        <div style={{ height: '10px' }} />
+        <Row> 
+          <Button block smalltext onClick={this.prevDeltaTimeStep}>
+            Previous Delta Time
+          </Button>
+          <Button block smalltext onClick={this.nextDeltaTimeStep}>
+            Next Delta Time
+          </Button>
+        </Row>
       </div>
     );
   }
