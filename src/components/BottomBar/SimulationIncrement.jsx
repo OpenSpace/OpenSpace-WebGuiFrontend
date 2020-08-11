@@ -7,8 +7,10 @@ import { round10 } from '../../utils/rounding';
 import ScaleInput from '../common/Input/ScaleInput/ScaleInput';
 
 import { subscribeToTime, unsubscribeToTime } from '../../api/Actions';
+import { subscribeToDeltaTimes, unsubscribeToDeltaTimes } from '../../api/Actions';
 import { connect } from 'react-redux';
 import Button from '../common/Input/Button/Button';
+import SmallLabel from '../common/SmallLabel/SmallLabel';
 
 const updateDelayMs = 1000;
 // Throttle the delta time updating, so that we don't accidentally flood
@@ -80,11 +82,11 @@ class SimulationIncrement extends Component {
   }
 
   componentDidMount() {
-    this.props.startSubscription();
+    this.props.startSubscriptions();
   }
 
   componentWillUnmount() {
-    this.props.stopSubscription();
+    this.props.stopSubscriptions();
   }
 
   get stepSize() {
@@ -148,6 +150,35 @@ class SimulationIncrement extends Component {
     openspace.time.interpolatePreviousDeltaTimeStep();
   }
 
+  get deltaTimeStepsContol() {
+    const { hasNextDeltaTimeStep, hasPrevDeltaTimeStep } = this.props;
+
+    return <div> 
+      <Row>
+        <div>
+          <Button 
+            block smalltext 
+            disabled={!hasPrevDeltaTimeStep}
+            onClick={this.prevDeltaTimeStep}
+          >
+            Prev Delta Time
+          </Button>
+          <SmallLabel smalltext>prev val</SmallLabel>
+        </div>
+        <div>
+          <Button 
+            block smalltext 
+            disabled={!hasNextDeltaTimeStep}
+            onClick={this.nextDeltaTimeStep}
+          >
+            Next Delta Time
+          </Button>
+          <SmallLabel smalltext>next val</SmallLabel>
+        </div>
+      </Row>
+    </div>
+  }
+
   render() {
     const { stepSize } = this.state;
     const { targetDeltaTime } = this.props;
@@ -160,7 +191,7 @@ class SimulationIncrement extends Component {
     return (
       <div>
         <Row>
-        <Select
+          <Select
             label="Display unit"
             menuPlacement="top"
             onChange={this.setStepSize}
@@ -197,14 +228,7 @@ class SimulationIncrement extends Component {
           onChange={this.setQuickAdjust}
         />
         <div style={{ height: '10px' }} />
-        <Row> 
-          <Button block smalltext onClick={this.prevDeltaTimeStep}>
-            Previous Delta Time
-          </Button>
-          <Button block smalltext onClick={this.nextDeltaTimeStep}>
-            Next Delta Time
-          </Button>
-        </Row>
+        {this.deltaTimeStepsContol}
       </div>
     );
   }
@@ -216,14 +240,22 @@ const mapStateToProps = (state) => {
     deltaTime: state.time.deltaTime,
     targetDeltaTime: state.time.targetDeltaTime,
     isPaused: state.time.isPaused,
-    luaApi: state.luaApi
+    luaApi: state.luaApi,
+    hasNextDeltaTimeStep: state.deltaTimes.hasNextDeltaTimeStep,
+    hasPrevDeltaTimeStep: state.deltaTimes.hasPrevDeltaTimeStep
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    startSubscription: () => dispatch(subscribeToTime()),
-    stopSubscription: () => dispatch(unsubscribeToTime())
+    startSubscriptions: () => {
+      dispatch(subscribeToTime());
+      dispatch(subscribeToDeltaTimes());
+    },
+    stopSubscriptions: () => {
+      dispatch(unsubscribeToTime());
+      dispatch(unsubscribeToDeltaTimes());
+    }
   }
 }
 

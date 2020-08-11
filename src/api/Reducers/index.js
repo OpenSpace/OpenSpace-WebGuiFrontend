@@ -1,6 +1,7 @@
 import { propertyTree } from './propertyTree';
 import { groups } from './groups';
 import { time } from './time';
+import { deltaTimes } from './deltaTimes';
 import { connection } from './connection';
 import { fetchData} from './fetchData';
 import { storyTree } from './storyTree';
@@ -19,6 +20,7 @@ const openspaceApp = (state = {}, action) => {
 	  shortcuts: shortcutsReducer,
     groups: groups(state.groups, action, propertyTreeReducer, shortcutsReducer),
     time: time(state.time, action),
+    deltaTimes: deltaTimes(state.deltaTimes, action),
     connection: connection(state.connection, action),
     version: version(state.version, action),
     sessionRecording: sessionRecording(state.sessionRecording, action),
