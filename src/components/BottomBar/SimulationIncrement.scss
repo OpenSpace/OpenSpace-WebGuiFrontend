@@ -1,0 +1,12 @@
+@import "../../styles/all";
+
+.deltaTimeStepLabel {
+    display: block;
+    pointer-events: none;
+    color: $text-color-blur;
+    font-size: $input-label-size;
+}
+
+.deltaTimeStepRowGroup {
+    flex: 1;
+}

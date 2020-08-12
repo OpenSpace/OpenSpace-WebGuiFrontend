@@ -10,7 +10,7 @@ import { subscribeToTime, unsubscribeToTime } from '../../api/Actions';
 import { subscribeToDeltaTimes, unsubscribeToDeltaTimes } from '../../api/Actions';
 import { connect } from 'react-redux';
 import Button from '../common/Input/Button/Button';
-import SmallLabel from '../common/SmallLabel/SmallLabel';
+import styles from './SimulationIncrement.scss';
 
 const updateDelayMs = 1000;
 // Throttle the delta time updating, so that we don't accidentally flood
@@ -151,32 +151,49 @@ class SimulationIncrement extends Component {
   }
 
   get deltaTimeStepsContol() {
-    const { hasNextDeltaTimeStep, hasPrevDeltaTimeStep } = this.props;
+    const { stepSize } = this.state;
+    const { 
+      hasNextDeltaTimeStep, 
+      hasPrevDeltaTimeStep, 
+      nextDeltaTimeStep, 
+      prevDeltaTimeStep 
+    } = this.props;
 
-    return <div> 
-      <Row>
-        <div>
+    const adjustedNextDelta =
+      round10(nextDeltaTimeStep / this.stepSize, StepPrecisions[stepSize]);
+
+    const adjustedPrevDelta =
+      round10(prevDeltaTimeStep / this.stepSize, StepPrecisions[stepSize]);
+
+    const nextLabel = hasNextDeltaTimeStep ? `${adjustedNextDelta} ${stepSize} / second` : 'None';
+    const prevLabel = hasPrevDeltaTimeStep ? `${adjustedPrevDelta} ${stepSize} / second` : 'None';
+
+    return <Row> 
+        <div className={styles.deltaTimeStepRowGroup}>
           <Button 
             block smalltext 
             disabled={!hasPrevDeltaTimeStep}
             onClick={this.prevDeltaTimeStep}
           >
-            Prev Delta Time
+            Previous Speed
           </Button>
-          <SmallLabel smalltext>prev val</SmallLabel>
+          <label className={styles.deltaTimeStepLabel} smalltext>
+            {prevLabel}
+          </label>
         </div>
-        <div>
+        <div className={styles.deltaTimeStepRowGroup}>
           <Button 
             block smalltext 
             disabled={!hasNextDeltaTimeStep}
             onClick={this.nextDeltaTimeStep}
           >
-            Next Delta Time
+            Next Speed
           </Button>
-          <SmallLabel smalltext>next val</SmallLabel>
+          <label className={styles.deltaTimeStepLabel} smalltext>
+            {nextLabel}
+          </label>
         </div>
-      </Row>
-    </div>
+    </Row>
   }
 
   render() {
@@ -242,7 +259,9 @@ const mapStateToProps = (state) => {
     isPaused: state.time.isPaused,
     luaApi: state.luaApi,
     hasNextDeltaTimeStep: state.deltaTimes.hasNextDeltaTimeStep,
-    hasPrevDeltaTimeStep: state.deltaTimes.hasPrevDeltaTimeStep
+    hasPrevDeltaTimeStep: state.deltaTimes.hasPrevDeltaTimeStep,
+    nextDeltaTimeStep: state.deltaTimes.nextDeltaTimeStep,
+    prevDeltaTimeStep: state.deltaTimes.prevDeltaTimeStep
   }
 }
 
