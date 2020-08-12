@@ -11,6 +11,7 @@ import { subscribeToDeltaTimes, unsubscribeToDeltaTimes } from '../../api/Action
 import { connect } from 'react-redux';
 import Button from '../common/Input/Button/Button';
 import styles from './SimulationIncrement.scss';
+import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 
 const updateDelayMs = 1000;
 // Throttle the delta time updating, so that we don't accidentally flood
@@ -73,12 +74,23 @@ class SimulationIncrement extends Component {
       quickAdjust: 1,
     };
 
+    this.togglePause = this.togglePause.bind(this);
     this.setPositiveDeltaTime = this.setPositiveDeltaTime.bind(this);
     this.setNegativeDeltaTime = this.setNegativeDeltaTime.bind(this);
     this.setStepSize = this.setStepSize.bind(this);
     this.setQuickAdjust = this.setQuickAdjust.bind(this);
     this.nextDeltaTimeStep = this.nextDeltaTimeStep.bind(this);
     this.prevDeltaTimeStep = this.prevDeltaTimeStep.bind(this)
+  }
+
+  togglePause(e) {
+    const openspace = this.props.luaApi;
+    const shift = e.getModifierState("Shift");
+    if (shift) {
+      openspace.time.togglePause();
+    } else {
+      openspace.time.interpolateTogglePause();
+    }
   }
 
   componentDidMount() {
@@ -156,7 +168,8 @@ class SimulationIncrement extends Component {
       hasNextDeltaTimeStep, 
       hasPrevDeltaTimeStep, 
       nextDeltaTimeStep, 
-      prevDeltaTimeStep 
+      prevDeltaTimeStep, 
+      isPaused 
     } = this.props;
 
     const adjustedNextDelta =
@@ -172,14 +185,20 @@ class SimulationIncrement extends Component {
         <div className={styles.deltaTimeStepRowGroup}>
           <Button 
             block smalltext 
+            className={styles.deltaTimeStepRowGroup}
             disabled={!hasPrevDeltaTimeStep}
             onClick={this.prevDeltaTimeStep}
           >
-            Previous Speed
+            <MaterialIcon icon="fast_rewind" />
           </Button>
-          <label className={styles.deltaTimeStepLabel} smalltext>
+          <label className={styles.deltaTimeStepLabel}>
             {prevLabel}
           </label>
+        </div>
+        <div className={styles.deltaTimeStepRowGroup}>
+          <Button block smalltext onClick={this.togglePause}>
+              {isPaused ? <MaterialIcon icon="play_arrow" /> : <MaterialIcon icon="pause" />}
+          </Button>
         </div>
         <div className={styles.deltaTimeStepRowGroup}>
           <Button 
@@ -187,9 +206,9 @@ class SimulationIncrement extends Component {
             disabled={!hasNextDeltaTimeStep}
             onClick={this.nextDeltaTimeStep}
           >
-            Next Speed
+            <MaterialIcon icon="fast_forward" />
           </Button>
-          <label className={styles.deltaTimeStepLabel} smalltext>
+          <label className={styles.deltaTimeStepLabel}>
             {nextLabel}
           </label>
         </div>
