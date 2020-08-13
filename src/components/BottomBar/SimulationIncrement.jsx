@@ -49,9 +49,9 @@ const StepPrecisions = {
   [Steps.seconds]: 0,
   [Steps.minutes]: -3,
   [Steps.hours]: -4,
-  [Steps.days]: -7,
-  [Steps.months]: -10,
-  [Steps.years]: -14,
+  [Steps.days]: -5,
+  [Steps.months]: -7,
+  [Steps.years]: -10,
 };
 const Limits = {
   [Steps.seconds]: { min: 0, max: 300, step: 1 },
@@ -182,10 +182,9 @@ class SimulationIncrement extends Component {
     const prevLabel = hasPrevDeltaTimeStep ? `${adjustedPrevDelta} ${stepSize} / second` : 'None';
 
     return <Row> 
-        <div className={styles.deltaTimeStepRowGroup}>
+        <div style={{flex: 3}}>
           <Button 
-            block smalltext 
-            className={styles.deltaTimeStepRowGroup}
+            block 
             disabled={!hasPrevDeltaTimeStep}
             onClick={this.prevDeltaTimeStep}
           >
@@ -195,14 +194,14 @@ class SimulationIncrement extends Component {
             {prevLabel}
           </label>
         </div>
-        <div className={styles.deltaTimeStepRowGroup}>
-          <Button block smalltext onClick={this.togglePause}>
+        <div style={{flex: 2}}>
+          <Button block onClick={this.togglePause}>
               {isPaused ? <MaterialIcon icon="play_arrow" /> : <MaterialIcon icon="pause" />}
           </Button>
         </div>
-        <div className={styles.deltaTimeStepRowGroup}>
+        <div style={{flex: 3}}>
           <Button 
-            block smalltext 
+            block 
             disabled={!hasNextDeltaTimeStep}
             onClick={this.nextDeltaTimeStep}
           >

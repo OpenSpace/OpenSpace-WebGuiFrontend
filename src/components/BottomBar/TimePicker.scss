@@ -8,3 +8,7 @@
 .timePicker.disabledBySessionPlayback {
   background-color: darken(rgba($blue, .7), 20%);
 }
+
+.timePopover {
+  width: 350px;
+}

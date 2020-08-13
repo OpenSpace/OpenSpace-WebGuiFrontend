@@ -145,7 +145,7 @@ class TimePicker extends Component {
 
     return (
       <Popover
-        className={Picker.Popover}
+        className={`${styles.timePopover} ${Picker.Popover}`}
         title="Select date"
         closeCallback={this.togglePopover}
         detachable
