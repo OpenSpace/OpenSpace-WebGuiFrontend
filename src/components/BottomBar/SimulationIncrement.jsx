@@ -147,7 +147,9 @@ class SimulationIncrement extends Component {
       updateDeltaTimeNow(this.props.luaApi, quickAdjust);
     } else {
       updateDeltaTime.cancel();
-      updateDeltaTimeNow(this.props.luaApi, this.beforeAdjust || 0);
+      if(this.beforeAdjust) {
+        updateDeltaTimeNow(this.props.luaApi, this.beforeAdjust);
+      }
       this.beforeAdjust = null;
     }
   }
