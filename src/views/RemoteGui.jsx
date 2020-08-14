@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { withRouter, HashRouter as Router, Route, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import '../styles/base.scss';
-import styles from './OnScreenGui.scss';
+import styles from './RemoteGui.scss';
 import Sidebar from '../components/Sidebar/Sidebar';
 import BottomBar from '../components/BottomBar/BottomBar';
 import Button from '../components/common/Input/Button/Button';
@@ -17,11 +17,10 @@ import { isCompatible,
          RequiredSocketApiVersion,
          RequiredOpenSpaceVersion } from '../api/Version';
 
-class OnScreenGui extends Component {
+class RemoteGui extends Component {
   constructor(props) {
     super(props);
     this.checkedVersion = false;
-    this.showFlightController = props.showFlightController;
   }
 
   componentDidMount() {
@@ -88,7 +87,7 @@ class OnScreenGui extends Component {
         </section>
         <section className={styles.Grid__Right}>
           <NodePopOverContainer />
-          <BottomBar showFlightController={this.props.showFlightController}/>
+          <BottomBar showFlightController="true"/>
         </section>
       </div>
     );
@@ -110,9 +109,9 @@ const mapDispatchToProps = dispatch => ({
   }
 });
 
-OnScreenGui = withRouter(connect(
+RemoteGui = withRouter(connect(
   mapStateToProps,
   mapDispatchToProps,
-)(OnScreenGui));
+)(RemoteGui));
 
-export default OnScreenGui;
+export default RemoteGui;
