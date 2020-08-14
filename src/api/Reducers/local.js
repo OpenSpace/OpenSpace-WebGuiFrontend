@@ -75,7 +75,8 @@ const defaultPopovers = {
   sessionRecording: popover(),
   screenSpaceRenderables: popover(),
   focusNodePropertiesPanel: popover({ attached: false }),
-  activeNodePropertyPanels: {}
+  activeNodePropertyPanels: {},
+  flightController: {}
 }
 
 const popovers = (state = defaultPopovers, action) => {

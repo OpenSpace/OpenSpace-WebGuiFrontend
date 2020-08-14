@@ -1,0 +1,22 @@
+@import "../../styles/all";
+
+.icon {
+  font-size: 2em;
+}
+
+.flightControlPopover {
+	min-width: 400px;
+}
+
+button {
+	cursor: pointer;
+}
+
+.control_area {
+	float: left;
+	height: 400px;
+  	width: 400px;
+  	outline: 2px solid gray;
+  	outline-offset: -10px;
+  	cursor: crosshair;
+}
