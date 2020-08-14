@@ -46,6 +46,11 @@ export const actionTypes = {
   refreshSessionRecording: 'SESSION_RECORDING_REFRESH',
   updateSessionRecording: 'SESSION_RECORDING_UPDATE',
 
+  // action types for flight control
+  connectFlightController: 'CONNECT_FLIGHT_CONTROLLER',
+  disconnectFlightController: 'DISCONNECT_FLIGHT_CONTROLLER',
+  sendFlightControl: 'SEND_FLIGHT_CONTROL',
+
   // action types for local gui settings
   setNavigationAction: 'LOCAL_SET_NAVIGATION_ACTION',
   setOriginPickerShowFavorites: 'LOCAL_SET_ORIGIN_PICKER_SHOW_FAVORITES',
