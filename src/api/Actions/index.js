@@ -64,6 +64,21 @@ export const updateTime = timeData => ({
   payload: timeData
 });
 
+export const connectFlightController = () => ({
+  type: actionTypes.connectFlightController,
+  payload: {},
+});
+
+export const disconnectFlightController = () => ({
+  type: actionTypes.disconnectFlightController,
+  payload: {}
+});
+
+export const sendFlightControl = (flightControl) => ({
+  type: actionTypes.sendFlightControl,
+  payload: flightControl
+});
+
 export const startConnection = () => ({
   type: actionTypes.startConnection,
   payload: {

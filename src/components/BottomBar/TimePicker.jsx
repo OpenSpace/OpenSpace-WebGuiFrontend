@@ -374,7 +374,7 @@ const mapDispatchToProps = (dispatch) => {
         popover: 'timePicker',
         visible
       }));
-    },
+    }
   }
 }
 
