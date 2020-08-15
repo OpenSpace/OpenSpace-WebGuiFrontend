@@ -26,7 +26,7 @@ these general-purpose components are in [`src/comoponents/common`](src/component
 
 ### Create a new GUI
 
-If you are creating your own gui, you can overwrite the route *onscreen* with you own custom route in [`/src/App.jsx`](/src/App.jsx).
+If you are creating your own gui, you can overwrite the route *onscreen* with your own custom route in [`/src/App.jsx`](/src/App.jsx).
 An example of this can be seen in [`touch.profile`](https://github.com/OpenSpace/OpenSpace/blob/master/data/profiles/).
 
 ### Types
