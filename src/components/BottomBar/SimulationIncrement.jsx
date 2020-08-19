@@ -277,11 +277,11 @@ const mapStateToProps = (state) => {
     deltaTime: state.time.deltaTime,
     targetDeltaTime: state.time.targetDeltaTime,
     isPaused: state.time.isPaused,
-    luaApi: state.luaApi,
     hasNextDeltaTimeStep: state.deltaTimes.hasNextDeltaTimeStep,
     hasPrevDeltaTimeStep: state.deltaTimes.hasPrevDeltaTimeStep,
     nextDeltaTimeStep: state.deltaTimes.nextDeltaTimeStep,
-    prevDeltaTimeStep: state.deltaTimes.prevDeltaTimeStep
+    prevDeltaTimeStep: state.deltaTimes.prevDeltaTimeStep,
+    luaApi: state.luaApi
   }
 }
 
