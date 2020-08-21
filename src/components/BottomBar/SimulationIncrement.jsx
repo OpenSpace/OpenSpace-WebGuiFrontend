@@ -190,7 +190,6 @@ class SimulationIncrement extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    time: state.time.time,
     deltaTime: state.time.deltaTime,
     targetDeltaTime: state.time.targetDeltaTime,
     isPaused: state.time.isPaused,
