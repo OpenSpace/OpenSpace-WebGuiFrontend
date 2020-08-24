@@ -64,6 +64,21 @@ export const updateTime = timeData => ({
   payload: timeData
 });
 
+export const subscribeToDeltaTimes = uri => ({
+  type: actionTypes.subscribeToDeltaTimes,
+  payload: {},
+});
+
+export const unsubscribeToDeltaTimes = uri => ({
+  type: actionTypes.unsubscribeToDeltaTimes,
+  payload: {}
+});
+
+export const updateDeltaTimes = deltaTimesData => ({
+  type: actionTypes.updateDeltaTimes,
+  payload: deltaTimesData
+});
+
 export const startConnection = () => ({
   type: actionTypes.startConnection,
   payload: {

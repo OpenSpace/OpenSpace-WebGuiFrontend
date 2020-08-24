@@ -41,18 +41,7 @@ class TimePicker extends Component {
     this.setToPendingTime = this.setToPendingTime.bind(this);
     this.interpolateToPendingTime = this.interpolateToPendingTime.bind(this);
     this.resetPendingTime = this.resetPendingTime.bind(this);
-    this.togglePause = this.togglePause.bind(this);
     this.realtime = this.realtime.bind(this);
-  }
-
-  togglePause(e) {
-    const openspace = this.props.luaApi;
-    const shift = e.getModifierState("Shift");
-    if (shift) {
-      openspace.time.togglePause();
-    } else {
-      openspace.time.interpolateTogglePause();
-    }
   }
 
   realtime(e) {
@@ -156,7 +145,7 @@ class TimePicker extends Component {
 
     return (
       <Popover
-        className={Picker.Popover}
+        className={`${styles.timePopover} ${Picker.Popover}`}
         title="Select date"
         closeCallback={this.togglePopover}
         detachable
@@ -186,9 +175,6 @@ class TimePicker extends Component {
         <hr className={Popover.styles.delimiter} />
 
         <div className={`${Popover.styles.row} ${Popover.styles.content}`}>
-          <Button block smalltext onClick={this.togglePause}>
-            {this.props.isPaused ? <MaterialIcon icon="play_arrow" /> : <MaterialIcon icon="pause" />}
-          </Button>
           <Button block smalltext onClick={this.realtime}>
             Realtime
           </Button>
