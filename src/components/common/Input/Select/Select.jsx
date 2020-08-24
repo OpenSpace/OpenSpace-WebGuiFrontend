@@ -58,6 +58,7 @@ const Select = (props) => {
         placeholder={label}
         styles={selectStyles}
         value={inheritedProps.options.filter(opt => opt.value == value)}
+        blurInputOnSelect
       />
       { props.value !== undefined && <label htmlFor={id} className={styles.selectlabel}>{ label }</label> }
     </div>
