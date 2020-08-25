@@ -18,7 +18,8 @@ const defaultState = {
   hasNextStep: undefined,
   hasPrevStep: undefined,
   nextStep: undefined,
-  prevStep: undefined
+  prevStep: undefined,
+  deltaTimeSteps: undefined
 };
 
 export const time = (state = defaultState, action = {}) => {
@@ -32,6 +33,7 @@ export const time = (state = defaultState, action = {}) => {
       const hasPrevStep = action.payload.hasPrevStep;
       const nextStep = action.payload.nextStep;
       const prevStep = action.payload.prevStep;
+      const deltaTimeSteps = action.payload.deltaTimeSteps;
       const newState = {...state};
 
       if (time !== undefined) {
@@ -57,6 +59,9 @@ export const time = (state = defaultState, action = {}) => {
       }
       if (prevStep !== undefined) {
         newState.prevDeltaTimeStep = prevStep;
+      }
+      if (deltaTimeSteps !== undefined) {
+        newState.deltaTimeSteps = deltaTimeSteps;
       }
       return newState;
   }
