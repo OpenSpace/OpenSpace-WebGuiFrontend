@@ -17,11 +17,6 @@ export const actionTypes = {
   subscribeToTime: 'TIME_SUBSCRIBE',
   unsubscribeToTime: 'TIME_UNSUBSCRIBE',
 
-  // action types for delta times
-  updateDeltaTimes: 'DELTA_TIMES_UPDATE',
-  subscribeToDeltaTimes: 'DELTA_TIMES_SUBSCRIBE',
-  unsubscribeToDeltaTimes: 'DELTA_TIMES_UNSUBSCRIBE',
-
   // action types for connection
   startConnection: 'CONNECTION_START',
   onOpenConnection: 'CONNECTION_ON_OPEN',

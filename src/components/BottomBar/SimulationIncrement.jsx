@@ -276,10 +276,10 @@ const mapStateToProps = (state) => {
     deltaTime: state.time.deltaTime,
     targetDeltaTime: state.time.targetDeltaTime,
     isPaused: state.time.isPaused,
-    hasNextDeltaTimeStep: state.deltaTimes.hasNextDeltaTimeStep,
-    hasPrevDeltaTimeStep: state.deltaTimes.hasPrevDeltaTimeStep,
-    nextDeltaTimeStep: state.deltaTimes.nextDeltaTimeStep,
-    prevDeltaTimeStep: state.deltaTimes.prevDeltaTimeStep,
+    hasNextDeltaTimeStep: state.time.hasNextDeltaTimeStep,
+    hasPrevDeltaTimeStep: state.time.hasPrevDeltaTimeStep,
+    nextDeltaTimeStep: state.time.nextDeltaTimeStep,
+    prevDeltaTimeStep: state.time.prevDeltaTimeStep,
     luaApi: state.luaApi
   }
 }
@@ -288,11 +288,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     startSubscriptions: () => {
       dispatch(subscribeToTime());
-      dispatch(subscribeToDeltaTimes());
     },
     stopSubscriptions: () => {
       dispatch(unsubscribeToTime());
-      dispatch(unsubscribeToDeltaTimes());
     }
   }
 }

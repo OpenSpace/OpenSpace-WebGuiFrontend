@@ -14,7 +14,12 @@ const defaultState = {
   time: undefined,
   targetDeltaTime: undefined,
   deltaTime: undefined,
-  isPaused: undefined
+  isPaused: undefined,
+  hasNextStep: undefined,
+  hasPrevStep: undefined,
+  nextStep: undefined,
+  prevStep: undefined,
+  deltaTimeSteps: undefined
 };
 
 export const time = (state = defaultState, action = {}) => {
@@ -24,6 +29,11 @@ export const time = (state = defaultState, action = {}) => {
       const deltaTime = action.payload.deltaTime;
       const targetDeltaTime = action.payload.targetDeltaTime;
       const isPaused = action.payload.isPaused;
+      const hasNextStep = action.payload.hasNextStep;
+      const hasPrevStep = action.payload.hasPrevStep;
+      const nextStep = action.payload.nextStep;
+      const prevStep = action.payload.prevStep;
+      const deltaTimeSteps = action.payload.deltaTimeSteps;
       const newState = {...state};
 
       if (time !== undefined) {
@@ -37,6 +47,21 @@ export const time = (state = defaultState, action = {}) => {
       }
       if (isPaused !== undefined) {
         newState.isPaused = isPaused;
+      }
+      if (hasNextStep !== undefined) {
+        newState.hasNextDeltaTimeStep = hasNextStep;
+      }
+      if (hasPrevStep !== undefined) {
+        newState.hasPrevDeltaTimeStep = hasPrevStep;
+      }
+      if (nextStep !== undefined) {
+        newState.nextDeltaTimeStep = nextStep;
+      }
+      if (prevStep !== undefined) {
+        newState.prevDeltaTimeStep = prevStep;
+      }
+      if (deltaTimeSteps !== undefined) {
+        newState.deltaTimeSteps = deltaTimeSteps;
       }
       return newState;
   }
