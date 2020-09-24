@@ -69,10 +69,11 @@ class TimePicker extends Component {
 
   get speed() {
     let increment = Math.abs(this.props.targetDeltaTime);
-    const sign = Math.sign(this.props.targetDeltaTime) === -1 ? '-' : '';
+    let isNegative = Math.sign(this.props.targetDeltaTime) === -1;
+    const sign = isNegative ? '-' : '';
     let unit = "second";
 
-    if (increment === 1) {
+    if (increment === 1 && !isNegative) {
       return "Realtime" + (this.props.isPaused ? " (Paused)" : "");
     }
 
