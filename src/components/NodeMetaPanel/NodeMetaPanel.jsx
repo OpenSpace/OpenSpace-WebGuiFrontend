@@ -87,6 +87,7 @@ class NodeMetaPanel extends Component {
     }
 
     description = foundDoc.description.replace(/\\n/g,"");
+    foundDoc.license = foundDoc.license.replace(/\\n/g,"");
     if (activeTab == 0) {
       return (
         <Row>
@@ -98,9 +99,9 @@ class NodeMetaPanel extends Component {
         <div>
         <Row>Author: {foundDoc.author}</Row>
         <Row>Version: {foundDoc.version}</Row>
-          <Row>License: {foundDoc.license}</Row>
+          <Row>License: <span className={styles.pad_span} dangerouslySetInnerHTML={{__html: foundDoc.license}} /></Row>
           <Row>
-            URL: <span id='docurl'>{foundDoc.url}</span>
+            URL: <span className={styles.pad_span} id='docurl'>{foundDoc.url}</span>
             <span className={styles.copyButton} onClick={this.copyURL}>
               <MaterialIcon icon="content_cut" />
             </span>
