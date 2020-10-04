@@ -129,8 +129,8 @@ class FlightControlPanel extends Component {
       var orbitX = 0;
       var orbitY = 0;
 
-      var deltaX = event.movementX/10;
-      var deltaY = -event.movementY/10;
+      var deltaX = event.movementX/20;
+      var deltaY = -event.movementY/20;
       var inputState = {values: {}};
 
       if (event.shiftKey) {
