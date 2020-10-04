@@ -11,6 +11,7 @@ import Overlay from '../components/common/Overlay/Overlay';
 import About from './About/About';
 import Stack from '../components/common/Stack/Stack';
 import NodePopOverContainer from '../components/NodePropertiesPanel/NodePopOverContainer';
+import NodeMetaContainer from '../components/NodeMetaPanel/NodeMetaContainer';
 import { startConnection, setShowAbout } from '../api/Actions';
 import { isCompatible,
          formatVersion,
@@ -88,6 +89,7 @@ class OnScreenGui extends Component {
         </section>
         <section className={styles.Grid__Right}>
           <NodePopOverContainer />
+          <NodeMetaContainer />
           <BottomBar showFlightController={this.props.showFlightController}/>
         </section>
       </div>

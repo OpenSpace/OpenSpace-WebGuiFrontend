@@ -360,7 +360,6 @@ const mapDispatchToProps = dispatch => {
       }));
     },
     connectFlightController: () => {
-      console.log("connect controller on mount")
       dispatch(connectFlightController());
     },
     sendFlightControl: (payload) => {

@@ -63,7 +63,9 @@ let About = (props) => (
 
 const mapStateToProps = state => ({
   hasVersion: state.version.isInitialized,
-  version: state.version.data
+  version: state.version.data,
+  hasDocumentation: state.documentation.isInitialized,
+  documentation: state.documentation.data
 });
 
 About = connect(

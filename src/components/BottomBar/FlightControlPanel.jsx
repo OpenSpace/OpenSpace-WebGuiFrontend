@@ -70,7 +70,6 @@ class FlightControlPanel extends Component {
   }
 
   mouseDown(event) {
-    console.log("mouse ODWN");
     this.touchStartX = event.clientX;
     this.touchStartY = event.clientY;
   }
@@ -153,9 +152,9 @@ class FlightControlPanel extends Component {
   }
 
   get popover() {
-    const rotationButtonColor = this.props.rotationFriction ? "#cc0000" : "#00cc00";
-    const zoomButtonColor = this.props.zoomFriction ? "#cc0000" : "#00cc00";
-    const rollButtonColor = this.props.rollFriction ? "#cc0000" : "#00cc00";
+    const rotationButtonColor = this.props.rotationFriction ? "#222" : "#888";
+    const zoomButtonColor = this.props.zoomFriction ? "#222" : "#888";
+    const rollButtonColor = this.props.rollFriction ? "#222" : "#888";
 
     return (
       <Popover
@@ -170,19 +169,19 @@ class FlightControlPanel extends Component {
           <Row>
            <Button onClick={this.toggleRotation}
                     title="orbit"
-                    style={{width: 133, color: rotationButtonColor}}
+                    style={{width: 133, background: rotationButtonColor}}
                     disabled={false}>
               <span style={{marginLeft: 5}}>Rotation</span>
             </Button>
            <Button onClick={this.toggleZoom}
                     title="orbit"
-                    style={{width: 133, color: zoomButtonColor}}
+                    style={{width: 133, background: zoomButtonColor}}
                     disabled={false}>
               <span style={{marginLeft: 5}}>Zoom</span>
             </Button>
             <Button onClick={this.toggleRoll}
                     title="orbit"
-                    style={{width: 133, color: rollButtonColor}}
+                    style={{width: 133, background: rollButtonColor}}
                     disabled={false}>
               <span style={{marginLeft: 5}}>Roll</span>
             </Button>
