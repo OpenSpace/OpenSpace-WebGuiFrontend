@@ -146,6 +146,7 @@ class OriginPicker extends Component {
       updateViewPayload.anchor = identifier;
     } else if (this.props.navigationAction === NavigationActions.Aim) {
       updateViewPayload.aim = identifier;
+      updateViewPayload.anchor = this.props.anchor;
     }
     if (!evt.shiftKey) {
       if (this.props.navigationAction === NavigationActions.Aim) {
@@ -162,6 +163,15 @@ class OriginPicker extends Component {
     updateViewPayload.retargetAnchor = shouldRetargetAnchor;
     updateViewPayload.resetVelocities = !evt.ctrlKey;
     this.props.sendFlightControl(updateViewPayload);
+    if (updateViewPayload.aim) {
+      this.props.anchorDispatcher.set(updateViewPayload.anchor);
+      this.props.aimDispatcher.set(updateViewPayload.aim);
+    } else if (updateViewPayload.anchor != '') {
+      this.props.anchorDispatcher.set(updateViewPayload.anchor);
+    } else {
+      this.props.anchorDispatcher.set(updateViewPayload.focus);
+      this.props.aimDispatcher.set(updateViewPayload.aim);
+    }
   };
 
   render() {
