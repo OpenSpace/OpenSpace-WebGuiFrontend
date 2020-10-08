@@ -172,7 +172,7 @@ const isGlobeBrowsingLayer = (uri) => {
     });
 
     return found && (splitUri.length == 6);
-  }
+}
 
 const displayName = (propertyOwners, properties, uri) => {
 
@@ -214,7 +214,11 @@ const mapSubStateToProps = (
 
   let renderableTypeProp = properties[uri + ".Renderable.Type"];
   var property = properties[uri + ".GuiName"];
-  var showMeta = isGlobeBrowsingLayer(uri) || isSceneGraphNode(uri);
+  var hasDescription = properties[uri + ".GuiDescription"];
+  var showMeta = false;
+  if ( (isSceneGraphNode(uri) || isGlobeBrowsingLayer(uri)) && hasDescription) {
+    showMeta = hasDescription;
+  }
 
   return {
     name,

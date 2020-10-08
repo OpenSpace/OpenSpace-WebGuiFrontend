@@ -85,8 +85,14 @@ class NodeMetaPanel extends Component {
         </Row>
       )
     }
-
-    description = foundDoc.description.replace(/\\n/g,"");
+    var rawDescription = "";
+    if (this.props.description) {
+      rawDescription = this.props.description;
+    } else {
+      rawDescription = foundDoc.description;
+    }
+    console.log("rawDescription",rawDescription)
+    description = rawDescription.replace(/\\n/g,"");
     foundDoc.license = foundDoc.license.replace(/\\n/g,"");
     if (activeTab == 0) {
       return (
@@ -167,13 +173,16 @@ const mapStateToProps = (state, ownProps) => {
   const node = state.propertyTree.propertyOwners[nodeURI] ? state.propertyTree.propertyOwners[nodeURI] : {};
   const nodeName = node.name;
 
+  const guiDescription = state.propertyTree.properties[nodeURI+".GuiDescription"] ? state.propertyTree.properties[nodeURI+".GuiDescription"].value : null;
+
   return {
     nodeURI: nodeURI,
     nodeName: nodeName,
     activeTab: popoverActiveTab,
     showPopover: popoverVisible,
     attached: popoverAttached,
-    documentation: state.documentation.data
+    documentation: state.documentation.data,
+    description: guiDescription
   };
 };
 
