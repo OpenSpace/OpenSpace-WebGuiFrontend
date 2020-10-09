@@ -75,7 +75,9 @@ const defaultPopovers = {
   sessionRecording: popover(),
   screenSpaceRenderables: popover(),
   focusNodePropertiesPanel: popover({ attached: false }),
-  activeNodePropertyPanels: {}
+  activeNodePropertyPanels: {},
+  activeNodeMetaPanels: {},
+  flightController: {}
 }
 
 const popovers = (state = defaultPopovers, action) => {
@@ -105,11 +107,26 @@ const popovers = (state = defaultPopovers, action) => {
         ...state,
         activeNodePropertyPanels: {...state.activeNodePropertyPanels, [action.payload.identifier]: undefined}
       }
+    case actionTypes.addNodeMetaPopover:
+      return {
+        ...state,
+        activeNodeMetaPanels: {...state.activeNodeMetaPanels, [action.payload.identifier]: popover({attached: false, visible: true, activeTab: 0}, action)}
+      }
+    case actionTypes.removeNodeMetaPopover:
+      return {
+        ...state,
+        activeNodeMetaPanels: {...state.activeNodeMetaPanels, [action.payload.identifier]: undefined}
+      }
     case actionTypes.setPopoverActiveTab:
       if (action.payload.isFocusNodePanel) {
         return {
           ...state,
           focusNodePropertiesPanel: {...state.focusNodePropertiesPanel, activeTab: action.payload.activeTab}
+        }
+      } else if (action.payload.isMeta) {
+        return {
+          ...state,
+          activeNodeMetaPanels: {...state.activeNodeMetaPanels, [action.payload.identifier]: {...state.activeNodeMetaPanels[action.payload.identifier], activeTab: action.payload.activeTab}}
         }
       } else {
         return {

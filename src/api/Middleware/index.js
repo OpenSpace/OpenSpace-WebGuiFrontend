@@ -6,6 +6,9 @@ import { fetchData } from './fetchData';
 import { shortcuts } from './shortcuts';
 import { version } from './version';
 import { sessionRecording } from './sessionRecording';
+import { flightController } from './flightController';
+import { documentation } from './documentation';
+
 import logger from './logger';
 
 const middleware = applyMiddleware(
@@ -17,6 +20,8 @@ const middleware = applyMiddleware(
   shortcuts,
   version,
   fetchData,
+  flightController,
+  documentation,
 );
 
 export default middleware;

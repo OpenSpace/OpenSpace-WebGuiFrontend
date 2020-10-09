@@ -6,15 +6,15 @@ import TfEditor from './TfEditor/containers/TfEditor';
 import SessionRec from './SessionRec';
 import ScreenSpaceRenderablePanel from './ScreenSpaceRenderablePanel';
 import styles from './BottomBar.scss';
+import FlightControlPanel from './FlightControlPanel';
 
-// <TfEditor /> is currently disabled.
-
-const BottomBar = () => (
+const BottomBar = (props) => (
   <div className={styles.BottomBar}>
     <OriginPicker />
     <TimePicker />
     <SessionRec />
     <ScreenSpaceRenderablePanel />
+    {props.showFlightController && <FlightControlPanel />}
   </div>
 );
 

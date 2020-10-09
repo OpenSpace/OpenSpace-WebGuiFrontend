@@ -1,0 +1,25 @@
+.nodePopover {
+  min-width: 500px;
+  width: 100%;
+}
+
+.contentContainer {
+  max-height: 200px;
+  overflow-y: auto;
+  overflow-x: visible;
+}
+
+.copyButton {
+    padding-left:20px;
+}
+
+.description_container {
+    padding:10px;
+    size: 20px;
+}
+
+.pad_span {
+    padding-left:5px;
+    max-width: 400px;
+    word-break: break-word;
+}

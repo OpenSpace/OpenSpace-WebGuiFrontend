@@ -6,6 +6,7 @@ import { fetchData} from './fetchData';
 import { storyTree } from './storyTree';
 import { shortcuts } from './shortcuts';
 import { version } from './version';
+import { documentation } from './documentation';
 import { sessionRecording } from './sessionRecording';
 import { local } from './local';
 import { luaApi } from './luaApi';
@@ -21,6 +22,7 @@ const openspaceApp = (state = {}, action) => {
     time: time(state.time, action),
     connection: connection(state.connection, action),
     version: version(state.version, action),
+    documentation: documentation(state.documentation, action),
     sessionRecording: sessionRecording(state.sessionRecording, action),
     local: local(state.local, action),
     luaApi: luaApi(state.luaApi, action),

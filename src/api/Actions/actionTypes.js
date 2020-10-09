@@ -34,6 +34,10 @@ export const actionTypes = {
   getVersion: 'VERSION_GET',
   initializeVersion: 'VERSION_INITIALIZE',
 
+  // action types for documentation
+  getDocumentation: 'DOCUMENTATION_GET',
+  initializeDocumentation: 'DOCUMENTATION_INITIALIZE',
+
   // action types for shortcuts
   subscribeToShortcuts: 'SHORTCUTS_SUBSCRIBE',
   unsubscribeToShortcuts: 'SHORTCUTS_UNSUBSCRIBE',
@@ -46,6 +50,11 @@ export const actionTypes = {
   refreshSessionRecording: 'SESSION_RECORDING_REFRESH',
   updateSessionRecording: 'SESSION_RECORDING_UPDATE',
 
+  // action types for flight control
+  connectFlightController: 'CONNECT_FLIGHT_CONTROLLER',
+  disconnectFlightController: 'DISCONNECT_FLIGHT_CONTROLLER',
+  sendFlightControl: 'SEND_FLIGHT_CONTROL',
+
   // action types for local gui settings
   setNavigationAction: 'LOCAL_SET_NAVIGATION_ACTION',
   setOriginPickerShowFavorites: 'LOCAL_SET_ORIGIN_PICKER_SHOW_FAVORITES',
@@ -56,6 +65,8 @@ export const actionTypes = {
   addNodePropertyPopover: 'LOCAL_ADD_NODE_PROPERTY_POPOVER',
   removeNodePropertyPopover: 'LOCAL_REMOVE_NODE_PROPERTY_POPOVER',
   setPopoverActiveTab: 'LOCAL_SET_POPOVER_ACTIVE_TAB',
+  addNodeMetaPopover: 'LOCAL_ADD_NODE_META_POPOVER',
+  removeNodeMetaPopover: 'LOCAL_REMOVE_NODE_META_POPOVER',
 
   setShowAbout: 'LOCAL_SET_SHOW_ABOUT',
 

@@ -19,7 +19,7 @@ import {
   RetargetAnchorKey,
 } from '../../../api/keys';
 
-let PropertyOwnerHeader = ({title, expanded, setExpanded, onIcon, offIcon, quickToggleUri, focusAction, shiftFocusAction, popOutAction, titleClass }) => {
+let PropertyOwnerHeader = ({title, expanded, setExpanded, onIcon, offIcon, quickToggleUri, focusAction, shiftFocusAction, popOutAction, titleClass, metaAction }) => {
   const onClick = (evt) => {
     setExpanded(!expanded)
   }
@@ -38,9 +38,20 @@ let PropertyOwnerHeader = ({title, expanded, setExpanded, onIcon, offIcon, quick
     evt.stopPropagation()
   }
 
+  const metaClick = (evt) => {
+    metaAction()
+    evt.stopPropagation()
+  }
+
   const popoutButton = (
       <div className={styles.rightButton} onClick={popoutClick}>
          <MaterialIcon icon="build"/>
+      </div>
+  )
+
+  const metaButton = (
+      <div className={styles.rightButton} onClick={metaClick}>
+         <MaterialIcon icon="help_outline"/>
       </div>
   )
 
@@ -65,7 +76,10 @@ let PropertyOwnerHeader = ({title, expanded, setExpanded, onIcon, offIcon, quick
       }
       {
         popOutAction && popoutButton
-      } 
+      }
+      {
+        metaAction && metaButton
+      }
     </span>
   </header>
 }

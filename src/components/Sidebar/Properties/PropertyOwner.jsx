@@ -9,7 +9,7 @@ import SvgIcon from '../../common/SvgIcon/SvgIcon';
 import FocusIcon from 'svg-react-loader?name=Focus!../../../icons/focus.svg';
 import Shortcut from './../Shortcut';
 import PropertyOwnerHeader from './PropertyOwnerHeader';
-import { setPropertyTreeExpansion, addNodePropertyPopover } from '../../../api/Actions';
+import { setPropertyTreeExpansion, addNodePropertyPopover, addNodeMetaPopover } from '../../../api/Actions';
 import subStateToProps from '../../../utils/subStateToProps';
 
 import { connect } from 'react-redux';
@@ -56,7 +56,9 @@ class PropertyOwnerComponent extends Component {
       expansionIdentifier,
       sort,
       popOut,
-      isRenderable
+      metaAction,
+      isRenderable,
+      isSceneGraphNodeOrLayer
     } = this.props;
 
     const sortedSubowners =
@@ -65,12 +67,14 @@ class PropertyOwnerComponent extends Component {
         subowners;
 
     const popOutAction = isRenderable ? popOut : undefined;
+    const hasMetaAction = isSceneGraphNodeOrLayer ? metaAction : undefined;
 
     const header = <PropertyOwnerHeader uri={uri}
                                         expanded={isExpanded}
                                         title={name}
                                         setExpanded={setExpanded}
-                                        popOutAction={popOutAction} />
+                                        popOutAction={popOutAction}
+                                        metaAction={hasMetaAction} />
 
     return <ToggleContent
       header={header}
@@ -146,12 +150,19 @@ const shouldSortAlphabetically = uri => {
   return splitUri.indexOf('Layers') !== (splitUri.length - 2);
 }
 
-const displayName = (propertyOwners, properties, uri) => {
+const isSceneGraphNode = (uri) => {
+   if (uri == undefined) {
+      return false;
+    }
+    const splitUri = uri.split('.');
+    return (splitUri.length == 2);
+}
 
-  const isGlobeBrowsingLayer = (uri) => {
+const isGlobeBrowsingLayer = (uri) => {
     if (uri == undefined) {
       return false;
     }
+    const splitUri = uri.split('.');
 
     var found = false;
     LayerGroupKeys.forEach( (layerGroup) => {
@@ -160,8 +171,10 @@ const displayName = (propertyOwners, properties, uri) => {
       }
     });
 
-    return found;
-  }
+    return found && (splitUri.length == 6);
+}
+
+const displayName = (propertyOwners, properties, uri) => {
 
   var property = properties[uri + ".GuiName"];
   if (!property && isGlobeBrowsingLayer(uri) && propertyOwners[uri] && propertyOwners[uri].name) {
@@ -193,15 +206,19 @@ const mapSubStateToProps = (
 
   const sort = shouldSortAlphabetically(uri);
 
-  const nameProp = properties[uri + ".GuiName"];
   name = name || displayName(propertyOwners, properties, uri);
-
   let isExpanded = propertyTreeExpansion[expansionIdentifier];
   if (isExpanded === undefined) {
     isExpanded = autoExpand || false;
   }
 
   let renderableTypeProp = properties[uri + ".Renderable.Type"];
+  var property = properties[uri + ".GuiName"];
+  var hasDescription = properties[uri + ".GuiDescription"];
+  var showMeta = false;
+  if ( (isSceneGraphNode(uri) || isGlobeBrowsingLayer(uri)) && hasDescription) {
+    showMeta = hasDescription;
+  }
 
   return {
     name,
@@ -210,7 +227,8 @@ const mapSubStateToProps = (
     properties: subProperties,
     isExpanded,
     sort,
-    isRenderable: (renderableTypeProp != undefined)
+    isRenderable: (renderableTypeProp != undefined),
+    isSceneGraphNodeOrLayer: showMeta
   };
 }
 
@@ -236,9 +254,16 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     }));
   };
 
+  const metaAction = () => {
+    dispatch(addNodeMetaPopover({
+      identifier: ownProps.uri,
+    }));
+  };
+
   return {
     setExpanded,
-    popOut
+    popOut,
+    metaAction
   };
 }
 

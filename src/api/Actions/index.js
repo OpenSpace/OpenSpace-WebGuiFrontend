@@ -64,6 +64,21 @@ export const updateTime = timeData => ({
   payload: timeData
 });
 
+export const connectFlightController = () => ({
+  type: actionTypes.connectFlightController,
+  payload: {},
+});
+
+export const disconnectFlightController = () => ({
+  type: actionTypes.disconnectFlightController,
+  payload: {}
+});
+
+export const sendFlightControl = (flightControl) => ({
+  type: actionTypes.sendFlightControl,
+  payload: flightControl
+});
+
 export const startConnection = () => ({
   type: actionTypes.startConnection,
   payload: {
@@ -149,6 +164,11 @@ export const getVersion = () => ({
   payload: {},
 });
 
+export const getDocumentation = () => ({
+  type: actionTypes.getDocumentation,
+  payload: {},
+});
+
 export const initializeLuaApi = data => ({
   type: actionTypes.initializeLuaApi,
   payload: data
@@ -158,6 +178,12 @@ export const initializeVersion = data => ({
   type: actionTypes.initializeVersion,
   payload: data
 });
+
+export const initializeDocumentation = data => ({
+  type: actionTypes.initializeDocumentation,
+  payload: data
+});
+
 
 export const subscribeToShortcuts = () => ({
   type: actionTypes.subscribeToShortcuts,
@@ -218,6 +244,17 @@ export const removeNodePropertyPopover = data => ({
   type: actionTypes.removeNodePropertyPopover,
   payload: data
 })
+
+export const addNodeMetaPopover = data => ({
+  type: actionTypes.addNodeMetaPopover,
+  payload: data
+})
+
+export const removeNodeMetaPopover = data => ({
+  type: actionTypes.removeNodeMetaPopover,
+  payload: data
+})
+
 
 export const setPopoverActiveTab = data => ({
   type: actionTypes.setPopoverActiveTab,

@@ -22,7 +22,9 @@ import {
   setOriginPickerShowFavorites,
   setPopoverVisibility,
   subscribeToSessionRecording,
-  unsubscribeToSessionRecording
+  unsubscribeToSessionRecording,
+  connectFlightController,
+  sendFlightControl
 } from '../../../api/Actions';
 
 import styles from './OriginPicker.scss';
@@ -80,6 +82,9 @@ class OriginPicker extends Component {
 
   togglePopover() {
     this.props.setPopoverVisibility(!this.props.popoverVisible)
+    if (!this.props.popoverVisible) {
+      this.props.connectFlightController();
+    }
   }
 
   get focusPicker() {
@@ -123,16 +128,25 @@ class OriginPicker extends Component {
   }
 
   onSelect(identifier, evt) {
+    var updateViewPayload = {
+      type: "updateView",
+      focus: '',
+      aim: '',
+      anchor: ''
+    }
+
     if (this.props.navigationAction === NavigationActions.Focus) {
-      this.props.aimDispatcher.set('');
-      this.props.anchorDispatcher.set(identifier);
+      updateViewPayload.aim = '';
+      updateViewPayload.focus = identifier;
+      updateViewPayload.anchor = '';
     } else if (this.props.navigationAction === NavigationActions.Anchor) {
       if (this.props.aim === '') {
-        this.props.aimDispatcher.set(this.props.anchor);
+        updateViewPayload.aim = this.props.anchor;
       }
-      this.props.anchorDispatcher.set(identifier);
+      updateViewPayload.anchor = identifier;
     } else if (this.props.navigationAction === NavigationActions.Aim) {
-      this.props.aimDispatcher.set(identifier);
+      updateViewPayload.aim = identifier;
+      updateViewPayload.anchor = this.props.anchor;
     }
     if (!evt.shiftKey) {
       if (this.props.navigationAction === NavigationActions.Aim) {
@@ -140,6 +154,23 @@ class OriginPicker extends Component {
       } else {
         this.props.retargetAnchorDispatcher.set(null);
       }
+    }
+
+    var shouldRetargetAim = !evt.shiftKey && updateViewPayload.aim != null;
+    var shouldRetargetAnchor = !evt.shiftKey && updateViewPayload.aim == null;
+
+    updateViewPayload.retargetAim = shouldRetargetAim;
+    updateViewPayload.retargetAnchor = shouldRetargetAnchor;
+    updateViewPayload.resetVelocities = !evt.ctrlKey;
+    this.props.sendFlightControl(updateViewPayload);
+    if (updateViewPayload.aim) {
+      this.props.anchorDispatcher.set(updateViewPayload.anchor);
+      this.props.aimDispatcher.set(updateViewPayload.aim);
+    } else if (updateViewPayload.anchor != '') {
+      this.props.anchorDispatcher.set(updateViewPayload.anchor);
+    } else {
+      this.props.anchorDispatcher.set(updateViewPayload.focus);
+      this.props.aimDispatcher.set(updateViewPayload.aim);
     }
   };
 
@@ -338,6 +369,12 @@ const mapDispatchToProps = dispatch => {
         visible
       }));
     },
+    connectFlightController: () => {
+      dispatch(connectFlightController());
+    },
+    sendFlightControl: (payload) => {
+      dispatch(sendFlightControl(payload))
+    }
   }
 }
 
