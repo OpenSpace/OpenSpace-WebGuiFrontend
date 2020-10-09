@@ -76,8 +76,7 @@ class NodeMetaPanel extends Component {
         foundDoc = doc;
       }
     }
-    // let description = "desc for !" + identifier;
-    // let info = "info for !" + identifier;
+
     if (!foundDoc) {
       return (
         <Row>
@@ -170,10 +169,16 @@ const mapStateToProps = (state, ownProps) => {
   const popoverAttached = myPopover ? myPopover.attached : false;
   const popoverActiveTab = myPopover && myPopover.activeTab ? myPopover.activeTab : 0;
 
-  const node = state.propertyTree.propertyOwners[nodeURI] ? state.propertyTree.propertyOwners[nodeURI] : {};
+  var node = {}
+  if (state.propertyTree.propertyOwners[nodeURI]) {
+    node = state.propertyTree.propertyOwners[nodeURI];
+  }
   const nodeName = node.name;
 
-  const guiDescription = state.propertyTree.properties[nodeURI+".GuiDescription"] ? state.propertyTree.properties[nodeURI+".GuiDescription"].value : null;
+  var guiDescription = null;
+  if (state.propertyTree.properties[nodeURI+".GuiDescription"]) {
+    guiDescription = state.propertyTree.properties[nodeURI+".GuiDescription"].value;
+  }
 
   return {
     nodeURI: nodeURI,
