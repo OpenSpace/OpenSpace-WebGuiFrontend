@@ -47,7 +47,7 @@ class SystemMenu extends Component {
               </button>
 
               <button onClick={this.props.saveChange}>
-                Save last change to profile
+                Save settings to profile
               </button>
 
 
@@ -90,7 +90,7 @@ const mapSubStateToProps = ({ luaApi }) => {
       luaApi.setPropertyValue("Modules.ImGUI.Main.Enabled", !visible);
     },
     saveChange: async () => {
-      luaApi.saveLastChangeToProfile();
+      luaApi.saveSettingsToProfile();
     },
   };
 };
