@@ -78,6 +78,7 @@ class ScreenSpaceRenderablePanel extends Component {
     const slideURLLabel = <span>URL</span>;
     const noSlidesLabel = <CenteredLabel>No active slides</CenteredLabel>;
     const renderables = this.props.screenSpaceRenderables; 
+
     let slideContent;
     if (renderables.length == 0) {
       slideContent = noSlidesLabel;

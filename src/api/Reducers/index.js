@@ -7,6 +7,7 @@ import { storyTree } from './storyTree';
 import { shortcuts } from './shortcuts';
 import { version } from './version';
 import { documentation } from './documentation';
+import { exoplanets } from './exoplanets';
 import { sessionRecording } from './sessionRecording';
 import { local } from './local';
 import { luaApi } from './luaApi';
@@ -23,6 +24,7 @@ const openspaceApp = (state = {}, action) => {
     connection: connection(state.connection, action),
     version: version(state.version, action),
     documentation: documentation(state.documentation, action),
+    exoplanets: exoplanets(state.exoplanets, action),
     sessionRecording: sessionRecording(state.sessionRecording, action),
     local: local(state.local, action),
     luaApi: luaApi(state.luaApi, action),

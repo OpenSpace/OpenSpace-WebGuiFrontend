@@ -19,7 +19,7 @@ import {
   RetargetAnchorKey,
 } from '../../../api/keys';
 
-let PropertyOwnerHeader = ({title, expanded, setExpanded, onIcon, offIcon, quickToggleUri, focusAction, shiftFocusAction, popOutAction, titleClass, metaAction }) => {
+let PropertyOwnerHeader = ({title, identifier, expanded, setExpanded, onIcon, offIcon, quickToggleUri, focusAction, shiftFocusAction, popOutAction, titleClass, metaAction, trashAction }) => {
   const onClick = (evt) => {
     setExpanded(!expanded)
   }
@@ -34,14 +34,21 @@ let PropertyOwnerHeader = ({title, expanded, setExpanded, onIcon, offIcon, quick
   }
 
   const popoutClick = (evt) => {
-    popOutAction()
-    evt.stopPropagation()
+    popOutAction();
+    evt.stopPropagation();
   }
 
   const metaClick = (evt) => {
-    metaAction()
+    metaAction();
+    evt.stopPropagation();
+  }
+
+ const trashClick = (evt) => {
+    //const trashName = title.slice(0,title.lastIndexOf('(') - 1);
+    trashAction(identifier);
     evt.stopPropagation()
   }
+
 
   const popoutButton = (
       <div className={styles.rightButton} onClick={popoutClick}>
@@ -52,6 +59,12 @@ let PropertyOwnerHeader = ({title, expanded, setExpanded, onIcon, offIcon, quick
   const metaButton = (
       <div className={styles.rightButton} onClick={metaClick}>
          <MaterialIcon icon="help_outline"/>
+      </div>
+  )
+
+  const trashButton = (
+      <div className={styles.rightButton} onClick={trashClick}>
+         <MaterialIcon icon="delete"/>
       </div>
   )
 
@@ -80,6 +93,9 @@ let PropertyOwnerHeader = ({title, expanded, setExpanded, onIcon, offIcon, quick
       {
         metaAction && metaButton
       }
+      {
+        trashAction && trashButton
+      }
     </span>
   </header>
 }
@@ -91,6 +107,8 @@ const mapStateToProps = (state, ownProps) => {
 
   const splitUri = uri.split('.');
   const isRenderable = splitUri.length > 1 && splitUri[splitUri.length - 1] === 'Renderable';
+
+  const identifier = splitUri.length > 1 && splitUri[1];
 
   if (state.propertyTree.properties[uri + '.Enabled'] && !isRenderable) {
     quickToggleUri = uri + '.Enabled';
@@ -121,6 +139,7 @@ const mapStateToProps = (state, ownProps) => {
     title: title || displayName(state, uri),
     quickToggleUri,
     titleClass,
+    identifier: identifier
   };
 }
 

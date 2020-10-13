@@ -57,6 +57,7 @@ class PropertyOwnerComponent extends Component {
       sort,
       popOut,
       metaAction,
+      trashAction,
       isRenderable,
       isSceneGraphNodeOrLayer
     } = this.props;
@@ -74,6 +75,7 @@ class PropertyOwnerComponent extends Component {
                                         title={name}
                                         setExpanded={setExpanded}
                                         popOutAction={popOutAction}
+                                        trashAction={trashAction}
                                         metaAction={hasMetaAction} />
 
     return <ToggleContent

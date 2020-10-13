@@ -37,6 +37,10 @@ export const actionTypes = {
   // action types for documentation
   getDocumentation: 'DOCUMENTATION_GET',
   initializeDocumentation: 'DOCUMENTATION_INITIALIZE',
+  // action types for exoplanets
+  initializeExoplanets: 'EXOPLANETS_INITIALIZE',
+  addExoplanets: 'EXOPLANETS_ADD',
+  removeExoplanets: 'EXOPLANETS_REMOVE',
 
   // action types for shortcuts
   subscribeToShortcuts: 'SHORTCUTS_SUBSCRIBE',

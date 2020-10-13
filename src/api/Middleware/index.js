@@ -8,6 +8,7 @@ import { version } from './version';
 import { sessionRecording } from './sessionRecording';
 import { flightController } from './flightController';
 import { documentation } from './documentation';
+import { exoplanets } from './exoplanets';
 
 import logger from './logger';
 
@@ -22,6 +23,7 @@ const middleware = applyMiddleware(
   fetchData,
   flightController,
   documentation,
+  exoplanets,
 );
 
 export default middleware;

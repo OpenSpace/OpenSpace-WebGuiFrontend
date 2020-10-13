@@ -184,6 +184,21 @@ export const initializeDocumentation = data => ({
   payload: data
 });
 
+export const initializeExoplanets = data => ({
+  type: actionTypes.initializeExoplanets,
+  payload: data
+});
+
+export const addExoplanets = data => ({
+  type: actionTypes.addExoplanets,
+  payload: data
+});
+
+export const removeExoplanets = data => ({
+  type: actionTypes.removeExoplanets,
+  payload: data
+});
+
 
 export const subscribeToShortcuts = () => ({
   type: actionTypes.subscribeToShortcuts,
