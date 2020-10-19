@@ -46,9 +46,9 @@ class SystemMenu extends Component {
                 Toggle native GUI <span className={styles.shortcut}>F1</span>
               </button>
 
-              <button onClick={this.props.saveChange}>
+{/*              <button onClick={this.props.saveChange}>
                 Save settings to profile
-              </button>
+              </button>*/}
 
 
               <hr className={Popover.styles.delimiter} />
