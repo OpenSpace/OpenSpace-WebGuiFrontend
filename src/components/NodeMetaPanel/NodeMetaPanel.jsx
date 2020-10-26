@@ -72,12 +72,12 @@ class NodeMetaPanel extends Component {
     var foundDoc = null;
     for (var i = 0; i < docs.length; ++i) {
       var doc = docs[i][1];
-      if (doc.identifiers && (doc.identifiers.split(',').indexOf(identifier) > -1)) {
+      if (doc.identifiers && doc.identifiers.includes(identifier) ) {
         foundDoc = doc;
       }
     }
 
-    if (!foundDoc) {
+    if (!foundDoc && !this.props.description) {
       return (
         <Row>
         <div className={styles.description_container}>No meta info found.</div>
@@ -90,9 +90,10 @@ class NodeMetaPanel extends Component {
     } else {
       rawDescription = foundDoc.description;
     }
-    console.log("rawDescription",rawDescription)
     description = rawDescription.replace(/\\n/g,"");
-    foundDoc.license = foundDoc.license.replace(/\\n/g,"");
+    if (foundDoc) {
+      foundDoc.license = foundDoc.license.replace(/\\n/g,"");
+    }
     if (activeTab == 0) {
       return (
         <Row>
@@ -100,18 +101,26 @@ class NodeMetaPanel extends Component {
         </Row>
       )
     } else {
-      return (
-        <div>
-        <Row>Author: {foundDoc.author}</Row>
-        <Row>Version: {foundDoc.version}</Row>
-          <Row>License: <span className={styles.pad_span} dangerouslySetInnerHTML={{__html: foundDoc.license}} /></Row>
+      if (foundDoc) {
+        return (
+          <div>
+          <Row>Author: {foundDoc.author}</Row>
+          <Row>Version: {foundDoc.version}</Row>
+            <Row>License: <span className={styles.pad_span} dangerouslySetInnerHTML={{__html: foundDoc.license}} /></Row>
+            <Row>
+              URL: <span className={styles.pad_span} id='docurl'>{foundDoc.url}</span>
+              <span className={styles.copyButton} onClick={this.copyURL}>
+                <MaterialIcon icon="content_cut" />
+              </span>
+            </Row></div>
+        )
+      } else {
+        return (
           <Row>
-            URL: <span className={styles.pad_span} id='docurl'>{foundDoc.url}</span>
-            <span className={styles.copyButton} onClick={this.copyURL}>
-              <MaterialIcon icon="content_cut" />
-            </span>
-          </Row></div>
-      )
+          <div className={styles.description_container}>No meta info found.</div>
+          </Row>
+        )
+      }
     }
         
   }
