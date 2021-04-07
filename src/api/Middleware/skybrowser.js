@@ -11,7 +11,7 @@ const getWWTImages = async (luaApi, callback) => {
   var imagesNames = Object.keys(imgList[1]);
   var imagesUrls = Object.values(imgList[1]);
   var listArray = imagesNames.map( function(item, index) {
-    return {"name" : item , "url": imagesUrls[index], "identifier": toString(index), "key": item};
+    return {"name" : item , "identifier": item, "key": item, "url": imagesUrls[index]};
   });
   callback(listArray);
 };
