@@ -8,7 +8,7 @@ import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
 import Row from '../common/Row/Row';
 import ScrollOverlay from '../common/ScrollOverlay/ScrollOverlay';
 import FilterList from '../common/FilterList/FilterList';
-import FocusEntry from './Origin/FocusEntry';
+import SkybrowserFocusEntry from './Origin/SkybrowserFocusEntry';
 import propertyDispatcher from '../../api/propertyDispatcher';
 
 import {
@@ -23,7 +23,7 @@ import {
 
 import { connect } from 'react-redux';
 
-import styles from './ExoplanetsPanel.scss';
+import styles from './WWTPanel.scss';
 
 import PropertyOwner from '../Sidebar/Properties/PropertyOwner'
 import subStateToProps from '../../utils/subStateToProps';
@@ -58,13 +58,13 @@ class WWTPanel extends Component {
   get popover() {
 
    const starNameLabel = <span>Image name</span>;
-   let imgList =  this.props.systemList == null ? this.props.systemList : [{identifier: "1", name: "Andromeda Galaxy"}, {identifier: "2", name: "HorseHead nebula"}];
+   let imgList =  this.props.systemList == null ? this.props.systemList : [{identifier: "1", name: "Andromeda Galaxy", url: "https://www.keralagiftdelivery.com/images/gifts/G10202.jpg"}, {identifier: "2", name: "HorseHead nebula", url: "https://www.keralagiftdelivery.com/images/gifts/G20101.jpg" }];
    let icon = imgList ? "picture_in_picture" : "fingerprint";
    let filterList = <FilterList
      data={imgList}
      className={styles.list}
      searchText={"Space object..."}
-     viewComponent={FocusEntry}
+     viewComponent={SkybrowserFocusEntry}
      onSelect={this.onSelect}
      active={this.state.starName}
      searchAutoFocus
