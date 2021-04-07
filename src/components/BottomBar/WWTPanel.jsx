@@ -58,7 +58,7 @@ class WWTPanel extends Component {
   get popover() {
 
    const starNameLabel = <span>Image name</span>;
-   let imgList =  this.props.systemList == null ? this.props.systemList : [{identifier: "1", name: "Andromeda Galaxy"}, {identifier: "2", name: "HorseHead nebula"}];
+   let imgList =  this.props.systemList != null ? this.props.systemList : {};
    let icon = imgList ? "picture_in_picture" : "fingerprint";
    let filterList = <FilterList
      data={imgList}
