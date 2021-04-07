@@ -58,12 +58,12 @@ class WWTPanel extends Component {
   get popover() {
 
    const starNameLabel = <span>Image name</span>;
-   let imgList =  this.props.systemList == null ? this.props.systemList : [{identifier: "1", name: "Andromeda Galaxy", url: "https://www.keralagiftdelivery.com/images/gifts/G10202.jpg"}, {identifier: "2", name: "HorseHead nebula", url: "https://www.keralagiftdelivery.com/images/gifts/G20101.jpg" }];
-   let icon = imgList ? "picture_in_picture" : "fingerprint";
+   
+   let imgList =  this.props.systemList != null ? this.props.systemList : {};
    let filterList = <FilterList
      data={imgList}
      className={styles.list}
-     searchText={"Space object..."}
+     searchText={"Search from " + Object.keys(imgList).length.toString() + " images..."}
      viewComponent={SkybrowserFocusEntry}
      onSelect={this.onSelect}
      active={this.state.starName}
