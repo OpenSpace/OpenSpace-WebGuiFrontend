@@ -1,0 +1,32 @@
+@import "../../styles/all";
+
+.photoIcon {
+  font-size: 2em;
+}
+
+input[type="file"] {
+    display: none;
+}
+
+.slideList {
+    float: left;
+    height: 100%;
+    width: 100%;
+
+    :global(.scroll-content) {
+        height: 100%;
+        margin-top: 1px;
+        max-height: 200px;
+        padding-bottom: 14px;
+    }
+}
+
+.slideList header {
+    justify-content: left;
+}
+
+.list :global(.scroll-content) {
+  height: 100%;
+  margin-top: 1px;
+  max-height: 100px;
+}

@@ -27,7 +27,7 @@ const originPicker = (state = defaultOriginPicker, action) => {
 
 /**
  * Time picker
- */ 
+ */
 const defaultTimePicker = {
   // Todo: move state such as lock and calendar here.
 }
@@ -75,6 +75,7 @@ const defaultPopovers = {
   sessionRecording: popover(),
   screenSpaceRenderables: popover(),
   exoplanets: popover(),
+  skybrowser: popover(),
   focusNodePropertiesPanel: popover({ attached: false }),
   activeNodePropertyPanels: {},
   activeNodeMetaPanels: {},

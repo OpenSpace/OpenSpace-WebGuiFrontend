@@ -8,6 +8,7 @@ import { shortcuts } from './shortcuts';
 import { version } from './version';
 import { documentation } from './documentation';
 import { exoplanets } from './exoplanets';
+import { skybrowser } from './skybrowser';
 import { sessionRecording } from './sessionRecording';
 import { local } from './local';
 import { luaApi } from './luaApi';
@@ -25,6 +26,7 @@ const openspaceApp = (state = {}, action) => {
     version: version(state.version, action),
     documentation: documentation(state.documentation, action),
     exoplanets: exoplanets(state.exoplanets, action),
+    skybrowser: skybrowser(state.skybrowser, action),
     sessionRecording: sessionRecording(state.sessionRecording, action),
     local: local(state.local, action),
     luaApi: luaApi(state.luaApi, action),

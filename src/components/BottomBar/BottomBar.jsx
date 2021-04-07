@@ -8,6 +8,7 @@ import ScreenSpaceRenderablePanel from './ScreenSpaceRenderablePanel';
 import styles from './BottomBar.scss';
 import FlightControlPanel from './FlightControlPanel';
 import ExoplanetsPanel from './ExoplanetsPanel';
+import WWTPanel from './WWTPanel';
 
 const BottomBar = (props) => (
   <div className={styles.BottomBar}>
@@ -16,6 +17,7 @@ const BottomBar = (props) => (
     <SessionRec />
     <ScreenSpaceRenderablePanel />
     <ExoplanetsPanel />
+    <WWTPanel />
     {props.showFlightController && <FlightControlPanel />}
   </div>
 );
