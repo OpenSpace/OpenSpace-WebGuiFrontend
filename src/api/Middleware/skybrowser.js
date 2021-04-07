@@ -8,10 +8,10 @@ import { actionTypes } from '../Actions/actionTypes';
 
 const getWWTImages = async (luaApi, callback) => {
   var imgList = await luaApi.skybrowser.create();
-  var imagesNames = Object.keys(imgList[1]);
-  var imagesUrls = Object.values(imgList[1]);
-  var listArray = imagesNames.map( function(item, index) {
-    return {"name" : item , "identifier": item, "key": item, "url": imagesUrls[index]};
+  var imgData = Object.values(imgList[1]);
+  // item[0] -> index, item[1] -> image name, item[2] -> image url
+  var listArray = imgData.map( function(item, index) {
+    return {"name" : item[1] , "identifier": index.toString(), "key": index.toString(), "url": item[2]};
   });
   callback(listArray);
 };

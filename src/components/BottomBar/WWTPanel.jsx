@@ -59,11 +59,11 @@ class WWTPanel extends Component {
 
    const starNameLabel = <span>Image name</span>;
    let imgList =  this.props.systemList != null ? this.props.systemList : {};
-   let icon = imgList ? "picture_in_picture" : "fingerprint";
+
    let filterList = <FilterList
      data={imgList}
      className={styles.list}
-     searchText={"Space object..."}
+     searchText={"Search from " + Object.keys(imgList).length.toString() + " images..."}
      viewComponent={FocusEntry}
      onSelect={this.onSelect}
      active={this.state.starName}
