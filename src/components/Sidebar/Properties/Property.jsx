@@ -3,13 +3,13 @@ import Checkbox from '../../common/Input/Checkbox/Checkbox';
 import { connectProperty } from './connectProperty';
 
 import BoolProperty from './BoolProperty';
+import MatrixProperty from './MatrixProperty';
 import NumericProperty from './NumericProperty';
 import OptionProperty from './OptionProperty';
 import TriggerProperty from './TriggerProperty';
 import VecProperty from './VectorProperty';
-import MatrixProperty from './MatrixProperty';
 import StringProperty from './StringProperty';
-import StringListProperty from './StringListProperty';
+import ListProperty from './ListProperty';
 
 
 const concreteProperties = {
@@ -17,7 +17,10 @@ const concreteProperties = {
   OptionProperty,
   TriggerProperty,
   StringProperty: StringProperty,
-  StringListProperty: StringListProperty,
+
+  DoubleListProperty: ListProperty,
+  IntListProperty: ListProperty,
+  StringListProperty: ListProperty,
 
   FloatProperty: NumericProperty,
   DoubleProperty: NumericProperty,

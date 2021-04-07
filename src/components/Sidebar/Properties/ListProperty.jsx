@@ -4,7 +4,7 @@ import Input from '../../common/Input/Input/Input';
 import InfoBox from '../../common/InfoBox/InfoBox';
 import { copyTextToClipboard } from '../../../utils/helpers';
 
-class StringListProperty extends Component {
+class ListProperty extends Component {
   constructor(props) {
     super(props);
     this.onChange = this.onChange.bind(this);
@@ -54,7 +54,7 @@ class StringListProperty extends Component {
   }
 }
 
-StringListProperty.propTypes = {
+ListProperty.propTypes = {
   description: PropTypes.shape({
     Identifier: PropTypes.string,
     Name: PropTypes.string,
@@ -66,4 +66,4 @@ StringListProperty.propTypes = {
   value: PropTypes.any
 };
 
-export default StringListProperty;
+export default ListProperty;
