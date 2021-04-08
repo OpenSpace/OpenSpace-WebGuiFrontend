@@ -12,7 +12,8 @@ import SkybrowserFocusEntry from './Origin/SkybrowserFocusEntry';
 import propertyDispatcher from '../../api/propertyDispatcher';
 
 import {
-  setPopoverVisibility
+  setPopoverVisibility,
+  selectImgSkyBrowser
 } from '../../api/Actions';
 
 import {
@@ -53,12 +54,13 @@ class WWTPanel extends Component {
     this.setState({
       starName: identifier
     });
+    this.props.selectImage(identifier);
   }
 
   get popover() {
 
    const starNameLabel = <span>Image name</span>;
-   
+
    let imgList =  this.props.systemList != null ? this.props.systemList : {};
    let filterList = <FilterList
      data={imgList}
@@ -125,6 +127,11 @@ const mapDispatchToProps = dispatch => ({
     dispatch(setPopoverVisibility({
       popover: 'skybrowser',
       visible
+    }));
+  },
+  selectImage: (imgName) => {
+    dispatch(selectImgSkyBrowser({
+      imgName
     }));
   },
 })

@@ -204,6 +204,12 @@ export const initializeSkyBrowser = data => ({
   payload: data
 });
 
+export const selectImgSkyBrowser = data => ({
+  type: actionTypes.selectImgSkyBrowser,
+  payload: data
+});
+
+
 export const subscribeToShortcuts = () => ({
   type: actionTypes.subscribeToShortcuts,
   payload: {},

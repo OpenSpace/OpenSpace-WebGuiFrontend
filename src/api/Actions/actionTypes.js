@@ -44,6 +44,7 @@ export const actionTypes = {
 
   // action types for skybrowser
   initializeSkyBrowser: 'SKYBROWSER_INITIALIZE',
+  selectImgSkyBrowser: 'SKYBROWSER_SELECT',
 
   // action types for shortcuts
   subscribeToShortcuts: 'SHORTCUTS_SUBSCRIBE',
