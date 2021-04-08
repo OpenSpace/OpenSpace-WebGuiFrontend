@@ -11,7 +11,6 @@ class Checkbox extends Component {
     this.onClick = this.onClick.bind(this);
   }
 
-
   onClick(evt) {
     this.props.setChecked(!this.props.checked);
     evt.stopPropagation();
