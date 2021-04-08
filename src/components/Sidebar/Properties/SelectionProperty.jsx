@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import PropTypes, { bool } from 'prop-types';
+import PropTypes from 'prop-types';
 import InfoBox from '../../common/InfoBox/InfoBox';
 import { copyTextToClipboard } from '../../../utils/helpers';
 import ToggleContent from '../../common/ToggleContent/ToggleContent';
 import Checkbox from '../../common/Input/Checkbox/Checkbox';
+import Button from '../../common/Input/Button/Button';
 
 class SelectionProperty extends Component {
   constructor(props) {
@@ -13,9 +14,12 @@ class SelectionProperty extends Component {
       expanded: false
     };
 
+    this.setExpanded = this.setExpanded.bind(this);
     this.isSelected = this.isSelected.bind(this);
     this.onCheckboxChange = this.onCheckboxChange.bind(this);
     this.copyUri = this.copyUri.bind(this);
+    this.selectAllClick = this.selectAllClick.bind(this);
+    this.clearSelectionClick = this.clearSelectionClick.bind(this);
   }
 
   componentDidMount() {
@@ -24,6 +28,10 @@ class SelectionProperty extends Component {
 
   componentWillUnmount() {
     this.props.dispatcher.unsubscribe();
+  }
+
+  setExpanded(expanded) {
+    this.setState({ expanded: expanded });
   }
 
   get descriptionPopup() {
@@ -41,6 +49,10 @@ class SelectionProperty extends Component {
 
   get selection() {
     return this.props.value;
+  }
+
+  get options() {
+    return this.props.description.AdditionalData.Options;
   }
 
   onCheckboxChange(checked, option) {
@@ -61,26 +73,42 @@ class SelectionProperty extends Component {
     return this.selection.includes(option);
   }
 
+  selectAllClick(evt) {
+    this.props.dispatcher.set(this.options);
+    evt.stopPropagation();
+  }
+
+  clearSelectionClick(evt) {
+    this.props.dispatcher.set([]);
+    evt.stopPropagation();
+  }
+
   render() {
     const { description } = this.props;
-    const { Options } = description.AdditionalData;
+    const options = this.options;
 
     const label = (<span onClick={this.copyUri}>
       { description.Name } { this.descriptionPopup }
     </span>);
 
-    const setExpanded = (expanded) => {
-      this.setState({ expanded: expanded });
-    }
+    const helperButtons = (
+      <span>
+        <Button onClick={this.selectAllClick}> Select All </Button>
+        <Button onClick={this.clearSelectionClick}> Clear </Button>
+      </span>
+    )
 
     return (
       <ToggleContent
         title={label}
         expanded={this.state.expanded}
-        setExpanded={setExpanded}
+        setExpanded={this.setExpanded}
       >
+        { 
+          (options.length > 10) && helperButtons
+        }
         {
-          Options.map(opt => 
+          options.map(opt => 
             <Checkbox
               key={opt}
               label={opt}
