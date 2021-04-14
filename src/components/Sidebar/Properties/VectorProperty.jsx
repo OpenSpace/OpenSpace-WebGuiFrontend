@@ -73,8 +73,12 @@ class VectorProperty extends Component {
     const rgb = color.rgb;
     let newValue = [rgb.r / 255, rgb.g / 255, rgb.b / 255];
     if(this.hasAlpha) {
-      newValue[4] = rgb.a;
+      newValue[3] = rgb.a;
     }
+    
+    // Avoid creating numbers with lots of decimals
+    newValue = newValue.map((v) => parseFloat(v.toFixed(3)));
+
     this.props.dispatcher.set(newValue);
   }
 
