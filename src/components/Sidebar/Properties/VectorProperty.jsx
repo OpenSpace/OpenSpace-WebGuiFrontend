@@ -3,13 +3,16 @@ import NumericInput from '../../common/Input/NumericInput/NumericInput';
 import Row from '../../common/Row/Row';
 import InfoBox from '../../common/InfoBox/InfoBox';
 import styles from './Property.scss';
-import { connectProperty } from './connectProperty';
 import { copyTextToClipboard } from '../../../utils/helpers';
+import ColorPickerPopup from '../../common/ColorPicker/ColorPickerPopup';
 
 class VectorProperty extends Component {
   constructor(props) {
     super(props);
+
     this.copyUri = this.copyUri.bind(this);
+    this.valueToColor = this.valueToColor.bind(this);
+    this.onColorPickerChange = this.onColorPickerChange.bind(this);
   }
 
   componentDidMount() {
@@ -33,6 +36,29 @@ class VectorProperty extends Component {
     return this.props.description.MetaData.isReadOnly;
   }
 
+  get isColor() {
+    if(this.props.value.length < 3 || this.props.value.length > 4) {
+      return false;
+    }
+    return this.props.description.MetaData.ViewOptions.Color;
+  }
+
+  get hasAlpha() {
+    return this.isColor && this.props.value.length == 4;
+  }
+
+  valueToColor() {
+    if(!this.isColor) { return null; }
+    const {value} = this.props;
+
+    return {
+        r: value[0] * 255,
+        g: value[1] * 255,
+        b: value[2] * 255,
+        a: this.hasAlpha ? value[3]: 1.0
+    }
+  }
+
   onChange(index) {
     return (event) => {
       const stateValue = this.props.value;
@@ -41,6 +67,15 @@ class VectorProperty extends Component {
       stateValue[index] = parseFloat(value);
       this.props.dispatcher.set(stateValue);
     };
+  }
+
+  onColorPickerChange(color) {
+    const rgb = color.rgb;
+    let newValue = [rgb.r / 255, rgb.g / 255, rgb.b / 255];
+    if(this.hasAlpha) {
+      newValue[4] = rgb.a;
+    }
+    this.props.dispatcher.set(newValue);
   }
 
   render() {
@@ -69,6 +104,14 @@ class VectorProperty extends Component {
             disabled={this.disabled}
           />
         ))}
+        { this.isColor && (
+          <ColorPickerPopup
+            disableAlpha={!this.hasAlpha}
+            color={this.valueToColor()}
+            onChange={this.onColorPickerChange}
+            placement="right"
+          />
+        )}
       </Row>
     );
   }
