@@ -28,9 +28,12 @@ class NumericProperty extends Component {
     return this.props.description.MetaData.isReadOnly;
   }
 
-  onChange(event) {
-    const { value } = event.currentTarget;
-    this.props.dispatcher.set(parseFloat(value));
+  get logarithmicView() {
+    return this.props.description.MetaData.ViewOptions.Logarithmic;
+  }
+
+  onChange(newValue) {
+    this.props.dispatcher.set(newValue);
   }
 
   get descriptionPopup() {
@@ -52,11 +55,12 @@ class NumericProperty extends Component {
         value={value}
         label={(<span onClick={this.copyUri}>{description.Name} {this.descriptionPopup}</span>)}
         placeholder={description.Name}
-        onChange={this.onChange}
+        onValueChanged={this.onChange}
         step={SteppingValue}
         max={MaximumValue}
         min={MinimumValue}
         disabled={this.disabled}
+        logarithmicScale={this.logarithmicView}
       />
     );
   }

@@ -22,3 +22,5 @@ storiesOf('Input/NumericInput', module)
   .add('disableInput ', () => (<NumericInput placeholder="Number!" value={33.3} disableInput />))
   .add('with callback', () =>
     (<NumericInput placeholder="Input" value="change me" onChange={action('input')} />));
+// OBS! The onChange property of the NumericInput has been renamed and updated.
+// @TODO: When this code is picked up again it needs to be adapted to the updated NumericProperty

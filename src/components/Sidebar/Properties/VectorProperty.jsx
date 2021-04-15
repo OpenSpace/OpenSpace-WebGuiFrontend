@@ -36,6 +36,10 @@ class VectorProperty extends Component {
     return this.props.description.MetaData.isReadOnly;
   }
 
+  get logarithmicView() {
+    return this.props.description.MetaData.ViewOptions.Logarithmic;
+  }
+
   get isColor() {
     if(this.props.value.length < 3 || this.props.value.length > 4) {
       return false;
@@ -60,11 +64,10 @@ class VectorProperty extends Component {
   }
 
   onChange(index) {
-    return (event) => {
+    return (newValue) => {
       const stateValue = this.props.value;
-      const { value } = event.currentTarget;
 
-      stateValue[index] = parseFloat(value);
+      stateValue[index] = parseFloat(newValue);
       this.props.dispatcher.set(stateValue);
     };
   }
@@ -101,11 +104,12 @@ class VectorProperty extends Component {
             value={component.value}
             label={index === 0 ? firstLabel : ' '}
             placeholder={`value ${index}`}
-            onChange={this.onChange(index)}
+            onValueChanged={this.onChange(index)}
             step={SteppingValue[index]}
             max={MaximumValue[index]}
             min={MinimumValue[index]}
             disabled={this.disabled}
+            logarithmicScale={this.logarithmicView}
           />
         ))}
         { this.isColor && (

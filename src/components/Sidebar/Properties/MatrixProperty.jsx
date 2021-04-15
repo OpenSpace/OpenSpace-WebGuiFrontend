@@ -34,11 +34,14 @@ class MatrixProperty extends Component {
     return this.props.description.MetaData.isReadOnly;
   }
 
+  get logarithmicView() {
+    return this.props.description.MetaData.ViewOptions.Logarithmic;
+  }
+
   onChange(index) {
-    return (event) => {
+    return (newValue) => {
       const stateValue = this.props.value;
-      const { value } = event.currentTarget;
-      stateValue[index] = parseFloat(value);
+      stateValue[index] = parseFloat(newValue);
       this.props.dispatcher.set(stateValue);
     };
   }
@@ -74,12 +77,13 @@ class MatrixProperty extends Component {
                 value={comp.value}
                 label={comp.index === 0 ? firstLabel : ' '}
                 placeholder={`value ${comp.index}`}
-                onChange={this.onChange(comp.index)}
+                onValueChanged={this.onChange(comp.index)}
                 step={SteppingValue[comp.index] || 0.01}
                 max={MaximumValue[comp.index] || 100}
                 min={MinimumValue[comp.index] || -100}
                 disabled={this.disabled}
                 noTooltip
+                logarithmicScale={this.logarithmicView}
               />
             ))}
           </Row>
