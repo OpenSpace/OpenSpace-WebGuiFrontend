@@ -1,10 +1,7 @@
 @import '../../../styles/all';
 
 .OpenSpaceColorPicker {
-  // Override some default properties
   background: $ui-background-solid !important; // TODO: option as transparent
-  width: 175px !important;
-  box-shadow: none !important;
   font-family: $font-family !important;
 
   span {

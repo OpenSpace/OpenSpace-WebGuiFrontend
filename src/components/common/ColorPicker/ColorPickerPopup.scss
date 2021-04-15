@@ -23,6 +23,18 @@ $background: $ui-background-solid;
   border-color: rgba(white, 0.3);
   border-width: 1px;
   border-style: solid;
+  overflow: hidden;
+  position: relative;
+}
+
+.colorOverlay, .checkboard {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.colorOverlay {
+  z-index: 2;
 }
 
 // placement

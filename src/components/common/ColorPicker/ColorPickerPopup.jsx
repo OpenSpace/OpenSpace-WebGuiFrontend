@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import styles from './ColorPickerPopup.scss';
 import PropTypes from 'prop-types';
 import Button from '../Input/Button/Button';
-import Tooltip from '../Tooltip/Tooltip';
 import ColorPicker from './ColorPicker';
+var { Checkboard } = require('react-color/lib/components/common');
 
 class ColorPickerPopup extends Component {
   constructor(props) {
@@ -19,15 +19,11 @@ class ColorPickerPopup extends Component {
 
   componentDidMount() {
     window.addEventListener('scroll', this.closePopup, true);
-
-    // TODO: set from property
     window.addEventListener('mousedown', this.handleOutsideClick, true);
   }
 
   componentWillUnmount() {
     window.removeEventListener('scroll', this.closePopup);
-
-    // TODO: set from property
     window.removeEventListener('mousedown', this.handleOutsideClick);
   }
 
@@ -58,7 +54,7 @@ class ColorPickerPopup extends Component {
   }
 
   render() {
-    const { color, disableAlpha, onChange, placement, fixed} = this.props;
+    const { color, disableAlpha, onChange } = this.props;
 
     const colorSwatchBg = {
       background: `rgba(${ color.r }, ${ color.g }, ${ color.b }, ${ color.a })`
@@ -69,14 +65,20 @@ class ColorPickerPopup extends Component {
         ref={this.setRef('wrapper')}
       >
         <Button block small onClick={this.togglePopup} nopadding>
-          <div className={styles.colorSwatch} style={colorSwatchBg}></div>
+          <div className={styles.colorSwatch}>
+            <div className={styles.colorOverlay} style={colorSwatchBg}/>
+            <div className={styles.checkboard}>
+              <Checkboard size={ 10 } white="#fff" grey="#ccc" />
+            </div>
+          </div>
+
         </Button>
         { this.state.showPopup && (
             <div 
               className={`${styles.popup} ${styles.right}`}
               style={this.position}
             >
-              <ColorPicker 
+              <ColorPicker
                 disableAlpha={disableAlpha}
                 color={color}
                 onChange={onChange}
@@ -91,11 +93,11 @@ class ColorPickerPopup extends Component {
 ColorPickerPopup.propTypes = {
   color: PropTypes.object.isRequired,
   disableAlpha: PropTypes.bool,
-  onChange: PropTypes.func,
+  onChange: PropTypes.func
 };
 
 ColorPickerPopup.defaultProps = {
-  disableAlpha: false,
+  disableAlpha: false
 };
 
 export default ColorPickerPopup;
