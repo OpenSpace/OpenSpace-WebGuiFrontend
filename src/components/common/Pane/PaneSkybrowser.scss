@@ -1,0 +1,74 @@
+@import '../../../styles/all.scss';
+
+$font-size: 1rem;
+$icon-size: 18px;
+$header-height: 35px;
+$border-width: 1px;
+
+.Pane {
+  animation: $appear-animation;
+  background: $ui-background;
+  border-bottom: $border-width solid $ui-divider;
+
+  position: absolute;
+    bottom: 60px;
+    left: 50%;
+  max-width: none;
+
+ 
+}
+
+.Pane header {
+  align-items: center;
+  border-bottom: $border-width solid $ui-divider;
+  display: flex;
+  font-size: $font-size;
+  justify-content: space-between;
+  height: $header-height;
+  line-height: 1;
+
+  > * {
+    padding: 0 $sidebar-padding;
+  }
+}
+
+.content {
+
+  height: calc(100% - 35px);
+
+  :global(.scroll-content) {
+    &::-webkit-scrollbar {
+      background-color: rgba(145, 145, 145, 0.32);
+    }
+
+    &:before,
+    &:after {
+      display: none;
+    }
+  }
+}
+
+.title {
+  font-weight: bold;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.close {
+  background: none;
+  border: 0;
+  color: $text-color-blur;
+
+  &:hover, &:focus {
+    background: $ui-background-hover;
+    color: $text-color-focus;
+  }
+
+  i {
+    font-size: $icon-size !important;
+  }
+}
+
+.loading {
+  padding: $sidebar-padding;
+}

@@ -10,6 +10,8 @@ import ScrollOverlay from '../common/ScrollOverlay/ScrollOverlay';
 import FilterList from '../common/FilterList/FilterList';
 import SkybrowserFocusEntry from './Origin/SkybrowserFocusEntry';
 import propertyDispatcher from '../../api/propertyDispatcher';
+import { Resizable } from 're-resizable';
+import PopoverSkybrowser from '../common/Popover/PopoverSkybrowser';
 
 import {
   setPopoverVisibility
@@ -28,6 +30,7 @@ import styles from './WWTPanel.scss';
 import PropertyOwner from '../Sidebar/Properties/PropertyOwner'
 import subStateToProps from '../../utils/subStateToProps';
 
+
 class WWTPanel extends Component {
 
   constructor(props) {
@@ -42,6 +45,7 @@ class WWTPanel extends Component {
   togglePopover() {
     this.props.setPopoverVisibility(!this.props.popoverVisible)
   }
+
 
   updateStarName(evt) {
     this.setState({
@@ -58,6 +62,7 @@ class WWTPanel extends Component {
   get popover() {
 
    const starNameLabel = <span>Image name</span>;
+
    
    let imgList =  this.props.systemList != null ? this.props.systemList : {};
    let filterList = <FilterList
@@ -71,26 +76,32 @@ class WWTPanel extends Component {
    />;
 
     return (
-      <Popover
-        className={Picker.Popover}
+      
+      <PopoverSkybrowser
+    
         title="WorldWide Telescope"
         closeCallback={this.togglePopover}
         detachable
         attached={true}
-      >
-        <div className={Popover.styles.content}>
+        sideview={true}
+      >         
+        <div className={PopoverSkybrowser.styles.content}>
         {filterList}
-        </div>
-      </Popover>
+        </div>   
+      </PopoverSkybrowser>
+
     );
   }
 
   render() {
     const { popoverVisible, hasSystems } = this.props;
+  
 
     return (
+     
       <div className={Picker.Wrapper}>
-        {<Picker onClick={this.togglePopover}>
+        {
+          <Picker onClick={this.togglePopover}>
             <div>
               <MaterialIcon className={styles.photoIcon} icon="picture_in_picture" />
             </div>
@@ -98,6 +109,8 @@ class WWTPanel extends Component {
         }
         {popoverVisible && this.popover }
       </div>
+    
+   
     );
   }
 }

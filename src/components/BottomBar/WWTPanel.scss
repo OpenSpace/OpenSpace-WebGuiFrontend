@@ -14,10 +14,8 @@ input[type="file"] {
     width: 100%;
 
     :global(.scroll-content) {
-        height: 100%;
-        margin-top: 1px;
-        max-height: 200px;
         padding-bottom: 14px;
+        min-width: 300px; 
     }
 }
 
@@ -26,8 +24,10 @@ input[type="file"] {
 }
 
 .list :global(.scroll-content) {
-  height: 100%;
-  margin-top: 1px;
-  max-height: 200px;
+  max-height: 80vh;
+  min-width: 300px;
+
 }
+
+
 
