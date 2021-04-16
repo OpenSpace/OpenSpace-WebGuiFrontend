@@ -7,14 +7,17 @@ import api from '../api';
 import { actionTypes } from '../Actions/actionTypes';
 
 const getWWTImages = async (luaApi, callback) => {
-  var imgList = await luaApi.skybrowser.create();
-  var imgData = Object.values(imgList[1]);
-  // item[0] -> index, item[1] -> image name, item[2] -> image url
-  var listArray = imgData.map( function(item, index) {
-    return {"name" : item[1] , "identifier": index.toString(), "key": index.toString(), "url": item[2]};
-  });
-  callback(listArray);
+  let imgData = await luaApi.skybrowser.getListOfImages();
+  imgData = Object.values(imgData[1]) 
+  callback(imgData);
 };
+
+const selectImgWWT = async (id, callback) => {
+  let script = "openspace.skybrowser.selectImage(" + id + ")";
+  api.executeLuaScript(script, false);
+  //api.executeLuaScript("openspace.setPropertyValueSingle('Modules.CefWebGui.Reload', nil)");
+  callback();
+}
 
 export const skybrowser = store => next => (action) => {
   const result = next(action);
@@ -23,6 +26,10 @@ export const skybrowser = store => next => (action) => {
       getWWTImages(action.payload, (data) => {
         store.dispatch(initializeSkyBrowser(data));
       });
+      break;
+    case actionTypes.selectImgSkyBrowser:
+      selectImgWWT(action.payload.imgName, () => {
+      })
       break;
     default:
       break;

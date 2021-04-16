@@ -14,7 +14,8 @@ import { Resizable } from 're-resizable';
 import PopoverSkybrowser from '../common/Popover/PopoverSkybrowser';
 
 import {
-  setPopoverVisibility
+  setPopoverVisibility,
+  selectImgSkyBrowser
 } from '../../api/Actions';
 
 import {
@@ -36,7 +37,7 @@ class WWTPanel extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      starName: undefined,
+      imageName: undefined,
     };
     this.togglePopover = this.togglePopover.bind(this);
     this.onSelect = this.onSelect.bind(this);
@@ -46,32 +47,34 @@ class WWTPanel extends Component {
     this.props.setPopoverVisibility(!this.props.popoverVisible)
   }
 
-
-  updateStarName(evt) {
+  updateimageName(evt) {
     this.setState({
-      starName: evt.target.value
+      imageName: evt.target.value
     });
   }
 
   onSelect(identifier, evt) {
     this.setState({
-      starName: identifier
+      imageName: identifier,
     });
+    this.props.selectImage(identifier);
   }
 
   get popover() {
+    const imageNameLabel = <span>Image name</span>;
 
-   const starNameLabel = <span>Image name</span>;
+    let imgData =  this.props.systemList != null ? this.props.systemList  : {}
+    let listArray = imgData.map( function(item, index) {
+      return {"name" : item["Name"] , "identifier": index.toString() , "key": index.toString(), "url": item["Thumbnail"] };
+    });
 
-   
-   let imgList =  this.props.systemList != null ? this.props.systemList : {};
    let filterList = <FilterList
-     data={imgList}
+     data={listArray}
      className={styles.list}
-     searchText={"Search from " + Object.keys(imgList).length.toString() + " images..."}
+     searchText={"Search from " + listArray.length.toString() + " images..."}
      viewComponent={SkybrowserFocusEntry}
      onSelect={this.onSelect}
-     active={this.state.starName}
+     active={this.state.imageName}
      searchAutoFocus
    />;
 
@@ -138,6 +141,11 @@ const mapDispatchToProps = dispatch => ({
     dispatch(setPopoverVisibility({
       popover: 'skybrowser',
       visible
+    }));
+  },
+  selectImage: (imgName) => {
+    dispatch(selectImgSkyBrowser({
+      imgName
     }));
   },
 })
