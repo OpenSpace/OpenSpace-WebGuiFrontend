@@ -9,6 +9,8 @@ class ColorPickerPopup extends Component {
   constructor(props) {
     super(props);
 
+    this.mounted = false;
+
     this.state = { showPopup: false };
 
     this.setRef = this.setRef.bind(this);
@@ -18,6 +20,7 @@ class ColorPickerPopup extends Component {
   }
 
   componentDidMount() {
+    this.mounted = true;
     window.addEventListener('scroll', this.closePopup, true);
     window.addEventListener('mousedown', this.handleOutsideClick, true);
   }
@@ -25,6 +28,7 @@ class ColorPickerPopup extends Component {
   componentWillUnmount() {
     window.removeEventListener('scroll', this.closePopup);
     window.removeEventListener('mousedown', this.handleOutsideClick);
+    this.mounted = false;
   }
 
   setRef(what) {
@@ -40,7 +44,9 @@ class ColorPickerPopup extends Component {
   }
 
   togglePopup(evt) {
-    this.setState({ showPopup: !this.state.showPopup });
+    if(this.mounted) {
+      this.setState({ showPopup: !this.state.showPopup });
+    }
   }
 
   handleOutsideClick(evt) {
@@ -50,7 +56,9 @@ class ColorPickerPopup extends Component {
   }
 
   closePopup() {
-    this.setState({ showPopup: false });
+    if(this.mounted) {
+      this.setState({ showPopup: false });
+    }
   }
 
   render() {
