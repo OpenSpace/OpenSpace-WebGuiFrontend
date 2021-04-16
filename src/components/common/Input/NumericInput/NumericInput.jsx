@@ -143,7 +143,7 @@ class NumericInput extends Component {
         )}
         { !this.props.noTooltip && hoverHint !== null && (
           <Tooltip style={{ left: `${100 * hoverHint}%` }}>
-            { Number.parseFloat(this.scale(scaledHoverHintOffset).toFixed(2)) }
+            { round10(this.scale(scaledHoverHintOffset), Math.log10(this.props.step)) }
           </Tooltip>
         )}
         <input
