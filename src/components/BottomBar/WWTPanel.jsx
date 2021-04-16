@@ -65,16 +65,14 @@ class WWTPanel extends Component {
 
   getAllImages() {
     if(this.props.systemList == null) return {};
-    let listArray = this.props.systemList.map( function(item, index) {
-      return {"name" : item["Name"] , "identifier": index.toString() , "key": index.toString(), "url": item["Thumbnail"] };
-    });
-    return listArray;
+    return this.props.systemList;
   }
 
   getNearestImages() {
     let targetPoint = {RA: 1, Dec: 1};
     let searchRadius = 5;
     let maxNoOfImages = 100
+
     // Only load images that have coordinates for this mode
     let imgDataWithCoords = this.props.systemList.filter(function(img) {
       if(img["HasCoords"] == false) {
@@ -82,10 +80,6 @@ class WWTPanel extends Component {
       }
       return true;
     })
-
-    let imgData = imgDataWithCoords.map( function(img, index) {
-      return {"name" : img["Name"] , "identifier": index.toString() , "key": index.toString(), "url": img["Thumbnail"], "RA" : img["RA"], "Dec": img["Dec"] };
-    });
 
     var distance = function(a, b){
       // Account for wrap-around at 0 & 360 degrees
@@ -96,11 +90,11 @@ class WWTPanel extends Component {
       return Math.pow(RA_dist, 2) +  Math.pow(a.Dec - b.Dec, 2);
     }
 
-    var tree = new kdTree(imgData, distance, ["RA", "Dec"]);
+    var tree = new kdTree(imgDataWithCoords, distance, ["RA", "Dec"]);
     var result = tree.nearest(targetPoint, maxNoOfImages, [searchRadius]);
 
     let nearestImages = result.map( function(item, index) {
-      return {"name" : item[0]["name"] , "identifier": index.toString() , "key": index.toString(), "url": item[0]["url"] };
+      return {"name" : item[0]["name"] , "identifier":  item[0]["identifier"] , "key":  item[0]["key"], "url": item[0]["url"] };
     });
 
     return nearestImages;
