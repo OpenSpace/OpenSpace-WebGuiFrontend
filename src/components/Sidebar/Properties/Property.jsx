@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
-import Checkbox from '../../common/Input/Checkbox/Checkbox';
 import { connectProperty } from './connectProperty';
 
 import BoolProperty from './BoolProperty';
+import ListProperty from './ListProperty';
+import MatrixProperty from './MatrixProperty';
 import NumericProperty from './NumericProperty';
 import OptionProperty from './OptionProperty';
+import SelectionProperty from './SelectionProperty';
+import StringProperty from './StringProperty';
 import TriggerProperty from './TriggerProperty';
 import VecProperty from './VectorProperty';
-import MatrixProperty from './MatrixProperty';
-import StringProperty from './StringProperty';
-import StringListProperty from './StringListProperty';
 
 
 const concreteProperties = {
@@ -17,7 +17,12 @@ const concreteProperties = {
   OptionProperty,
   TriggerProperty,
   StringProperty: StringProperty,
-  StringListProperty: StringListProperty,
+
+  DoubleListProperty: ListProperty,
+  IntListProperty: ListProperty,
+  StringListProperty: ListProperty,
+
+  SelectionProperty: SelectionProperty,
 
   FloatProperty: NumericProperty,
   DoubleProperty: NumericProperty,
