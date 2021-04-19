@@ -16,7 +16,7 @@ import { kdTree } from "kd-tree-javascript";
 
 import {
   setPopoverVisibility,
-  selectImgSkyBrowser
+  selectImgSkyBrowser,
 } from '../../api/Actions';
 
 import {
@@ -38,13 +38,24 @@ class WWTPanel extends Component {
     super(props);
     this.state = {
       imageName: undefined,
-      showOnlyNearest: false,
+      showOnlyNearest: true,
+      targetData: [{RA: 0, Dec: 0}]
     };
     this.togglePopover = this.togglePopover.bind(this);
     this.onSelect = this.onSelect.bind(this);
     this.getAllImages = this.getAllImages.bind(this);
     this.getNearestImages = this.getNearestImages.bind(this);
+    this.getTargetData = this.getTargetData.bind(this);
   }
+
+  async componentDidMount(){
+    try {
+       this.interval = setInterval(() => this.getTargetData(), 2000);
+    }
+    catch(e) {
+      console.log(e);
+    }
+   }
 
   togglePopover() {
     this.props.setPopoverVisibility(!this.props.popoverVisible)
@@ -62,20 +73,38 @@ class WWTPanel extends Component {
     });
     this.props.selectImage(identifier);
   }
+  async getTargetData() {
+    try {
+      let target = await this.props.luaApi.skybrowser.getTargetData();
+      target = Object.values(target[1]);
+      target = target.map( function(img, index) {
+        return {"identifier": index.toString() ,"key": index.toString(), "RA" : img["RA"], "Dec": img["Dec"], "FOV" : img["FOV"] };
+      });
+      this.setState({
+        targetData: target
+      })
+    }
+    catch(e) {
+      console.log(e);
+    }
+  }
 
   getAllImages() {
+//    console.log(this.props.systemList);
+    let images = this.props.systemList;
     if(this.props.systemList == null) return {};
-    return this.props.systemList;
+    return images;
+
   }
 
   getNearestImages() {
-    let targetPoint = {RA: 1, Dec: 1};
-    let searchRadius = 5;
+    let targetPoint = {RA: this.state.targetData[0].RA, Dec:  this.state.targetData[0].Dec};
+    let searchRadius = this.state.targetData[0].FOV;
     let maxNoOfImages = 100
 
     // Only load images that have coordinates for this mode
     let imgDataWithCoords = this.props.systemList.filter(function(img) {
-      if(img["HasCoords"] == false) {
+      if(img["hasCoords"] == false) {
         return false; // skip
       }
       return true;
@@ -101,9 +130,9 @@ class WWTPanel extends Component {
   }
 
   get popover() {
-    const imageNameLabel = <span>Image name</span>;
+   const imageNameLabel = <span>Image name</span>;
 
-    let imageList = this.state.showOnlyNearest ? this.getNearestImages() : this.getAllImages();
+   let imageList = this.state.showOnlyNearest ? this.getNearestImages() : this.getAllImages();
 
    let filterList = <FilterList
      data={imageList}
@@ -169,7 +198,7 @@ const mapSubStateToProps = ({propertyOwners, popoverVisible, luaApi, skybrowserD
     popoverVisible: popoverVisible,
     luaApi: luaApi,
     systemList: skybrowserData,
-    hasSystems: (skybrowserData && skybrowserData.length > 0),
+    hasSystems: (skybrowserData && skybrowserData.length > 0)
   }
 };
 
@@ -177,7 +206,7 @@ const mapStateToSubState = (state) => ({
   propertyOwners: state.propertyTree.propertyOwners,
   popoverVisible: state.local.popovers.skybrowser.visible,
   luaApi: state.luaApi,
-  skybrowserData: state.skybrowser.data,
+  skybrowserData: state.skybrowser.data
 });
 
 
