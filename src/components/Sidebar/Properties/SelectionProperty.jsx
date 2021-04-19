@@ -59,8 +59,8 @@ class SelectionProperty extends Component {
     let selection = this.selection;
     const index = selection.indexOf(option)
     const isSelected = index != -1;
-    
-    if(checked && !isSelected) { // add to selection
+
+    if (checked && !isSelected) { // add to selection
       selection.push(option);
     }
     else if (!checked && isSelected) { // remove from selection
@@ -104,7 +104,7 @@ class SelectionProperty extends Component {
         expanded={this.state.expanded}
         setExpanded={this.setExpanded}
       >
-        { 
+        {
           (options.length > 10) && helperButtons
         }
         {
