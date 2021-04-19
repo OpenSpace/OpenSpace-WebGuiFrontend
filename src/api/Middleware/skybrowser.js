@@ -10,7 +10,8 @@ const getWWTImages = async (luaApi, callback) => {
   let imgData = await luaApi.skybrowser.getListOfImages();
   imgData = Object.values(imgData[1])
   imgData = imgData.map( function(img, index) {
-    return {"name" : img["Name"] , "identifier": index.toString() , "HasCoords": img["HasCoords"] ,"key": index.toString(), "url": img["Thumbnail"], "RA" : img["RA"], "Dec": img["Dec"] };
+    return {"name" : img["Name"] , "identifier": index.toString() , "hasCoords": img["HasCoords"] ,"key": index.toString(), "credits": img["Credits"],
+    "creditsUrl": img["CreditsUrl"], "url": img["Thumbnail"], "RA" : img["RA"], "Dec": img["Dec"] };
   });
   callback(imgData);
 };
