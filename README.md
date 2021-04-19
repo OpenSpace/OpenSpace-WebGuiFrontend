@@ -43,6 +43,7 @@ To make this a bit easier for y'all, this web app has support for types using th
 // @flow
 ```
 
+
 This tells our transpiler Babel (that makes our modern JavaScript readable for all browsers) that this file should be type checked! 
 A type declaration looks like
 
