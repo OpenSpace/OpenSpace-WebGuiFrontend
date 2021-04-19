@@ -13,38 +13,41 @@ class PaneSkybrowser extends Component {
     const { children, title, closeCallback } = this.props;
 
     return (
-
-    <Resizable
-    enable={{
-        top: false,
-        right: false,
-        bottom: false,
-        left: true,
-        topRight: false,
-        bottomRight: false,
-        bottomLeft: false,
-        topLeft: false,
-    }}
-    handleClasses={{right: styles.rightHandle}}
-    onResizeStop={this.onResizeStop}
-    >
       <section className={styles.Pane}>
-        <header>
-          <div className={styles.title}>
-            { title }
-          </div>
-
-          { closeCallback && (
-            <button onClick={closeCallback} className={styles.close}>
-              <MaterialIcon icon="close" className="small" />
-            </button>
-          ) }
-        </header>
-        <div className={styles.content}>
-          { children }
-        </div>
-     </section>
-      </Resizable>
+        <Resizable
+        enable={{
+            top: false,
+            right: false,
+            bottom: false,
+            left: true,
+            topRight: false,
+            bottomRight: false,
+            bottomLeft: false,
+            topLeft: false,
+        }}
+        defaultSize={{
+          width:400,
+          height: 'auto'
+        }}
+        minWidth={330}
+        handleClasses={{left: styles.leftHandle}}
+        onResizeStop={this.onResizeStop}
+        >
+          <header>
+            <div className={styles.title}>
+              { title }
+            </div>
+            { closeCallback && (
+              <button onClick={closeCallback} className={styles.close}>
+                <MaterialIcon icon="close" className="small" />
+              </button>
+            ) }
+          </header>
+          <div className={styles.content}>
+            { children }
+          </div>   
+        </Resizable>
+      </section>
     );
   }
 }

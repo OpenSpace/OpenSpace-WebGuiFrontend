@@ -47,6 +47,7 @@ class WWTPanel extends Component {
     this.props.setPopoverVisibility(!this.props.popoverVisible)
   }
 
+
   updateimageName(evt) {
     this.setState({
       imageName: evt.target.value
@@ -63,14 +64,13 @@ class WWTPanel extends Component {
   get popover() {
     const imageNameLabel = <span>Image name</span>;
 
-    let imgData =  this.props.systemList != null ? this.props.systemList  : {}
+    let imgData =  this.props.systemList != null ? this.props.systemList  : {};
     let listArray = imgData.map( function(item, index) {
       return {"name" : item["Name"] , "identifier": index.toString() , "key": index.toString(), "url": item["Thumbnail"] };
     });
 
    let filterList = <FilterList
      data={listArray}
-     className={styles.list}
      searchText={"Search from " + listArray.length.toString() + " images..."}
      viewComponent={SkybrowserFocusEntry}
      onSelect={this.onSelect}

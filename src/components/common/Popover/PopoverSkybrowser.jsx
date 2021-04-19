@@ -7,7 +7,7 @@ import styles from './PopoverSkybrowser.scss';
 import Button from '../Input/Button/Button';
 import Window from '../Window/Window';
 import { Resizable } from 're-resizable';
-import ResizableWindow from '../Window/ResizableWindow';
+import WindowSkybrowser from '../Window/WindowSkybrowser';
 import SmallLabel from '../../common/SmallLabel/SmallLabel';
 import TabMenu from '../../Sidebar/TabMenu/TabMenu';
 import PaneSkybrowser from '../Pane/PaneSkybrowser';
@@ -92,13 +92,11 @@ class PopoverSkybrowser extends Component {
                   <MaterialIcon icon="filter_none" />
                 </Button>
               )}
-              {/* to select sideview option 
                { this.props.sideview && (
                 <Button onClick={this.toggleSideview} transparent small>
-                  <MaterialIcon icon="dock-right" />
+                  <MaterialIcon icon="exit_to_app" />
                 </Button>
               )}
-               */}
               { this.props.closeCallback && (
                 <Button onClick={this.props.closeCallback} transparent small>
                   <MaterialIcon icon="close" className="small" />
@@ -116,9 +114,9 @@ class PopoverSkybrowser extends Component {
 
   get asWindow() {  
     return ( 
-        <ResizableWindow {...this.windowInheritedProps}>
+        <WindowSkybrowser {...this.windowInheritedProps}>
           { this.props.children } 
-        </ResizableWindow>
+        </WindowSkybrowser>
     );
   }
 
@@ -142,14 +140,10 @@ class PopoverSkybrowser extends Component {
   }
 
   render() {
-    
-    return this.state.isDetached ? this.asWindow : this.asPopup;
-    
-    /* with sideview option
+
     if(this.state.isDetached) return this.asWindow
     else if(this.state.isSideview) return this.asSideview 
     else return this.asPopup
-    */
 
   }
 }
