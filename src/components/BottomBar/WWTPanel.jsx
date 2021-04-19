@@ -14,6 +14,9 @@ import Checkbox from '../common/Input/Checkbox/Checkbox';
 // Import the module
 import { kdTree } from "kd-tree-javascript";
 
+import { Resizable } from 're-resizable';
+import PopoverSkybrowser from '../common/Popover/PopoverSkybrowser';
+
 import {
   setPopoverVisibility,
   selectImgSkyBrowser,
@@ -31,6 +34,7 @@ import styles from './WWTPanel.scss';
 
 import PropertyOwner from '../Sidebar/Properties/PropertyOwner'
 import subStateToProps from '../../utils/subStateToProps';
+
 
 class WWTPanel extends Component {
 
@@ -60,6 +64,7 @@ class WWTPanel extends Component {
   togglePopover() {
     this.props.setPopoverVisibility(!this.props.popoverVisible)
   }
+
 
   updateimageName(evt) {
     this.setState({
@@ -145,12 +150,14 @@ class WWTPanel extends Component {
    />;
    const textFormatLabel = <span>Show only near images</span>;
     return (
-      <Popover
-        className={Picker.Popover}
+
+      <PopoverSkybrowser
+
         title="WorldWide Telescope"
         closeCallback={this.togglePopover}
         detachable
         attached={true}
+        sideview = {true}
       >
         <div className={Popover.styles.content}>
         <Picker onClick={() => this.setState({ showOnlyNearest: false })}>
@@ -171,16 +178,20 @@ class WWTPanel extends Component {
 
         {filterList}
         </div>
-      </Popover>
+      </PopoverSkybrowser>
+
     );
   }
 
   render() {
     const { popoverVisible, hasSystems } = this.props;
 
+
     return (
+
       <div className={Picker.Wrapper}>
-        {<Picker onClick={this.togglePopover}>
+        {
+          <Picker onClick={this.togglePopover}>
             <div>
               <MaterialIcon className={styles.photoIcon} icon="picture_in_picture" />
             </div>
@@ -188,6 +199,8 @@ class WWTPanel extends Component {
         }
         {popoverVisible && this.popover }
       </div>
+
+
     );
   }
 }

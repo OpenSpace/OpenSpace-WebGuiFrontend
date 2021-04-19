@@ -1,0 +1,88 @@
+@import "../../../styles/all";
+@import "../Popover/Popover";
+
+.window {
+  background: $background;
+  border-radius: $popover-corner-radius;
+  box-shadow: $box-shadow;
+  color: $text-color-focus;
+  max-width: none;
+  position: absolute;
+  z-index: 10;
+ 
+  &.small {
+    max-width: 150px;
+  }
+
+  > :last-child {
+    padding-bottom: $popover-corner-radius;
+  }
+
+}
+
+.resizable {
+  bottom: 10%;
+}
+
+
+.window header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.window p, .content {
+    padding: 0;
+    height: 100%;
+  }
+
+.filler {
+  width: 100%;
+  height: 100%;
+}
+
+.rightHandle {
+    background: transparent;
+    border-radius: 2px;
+    height: 100%;
+    width: 100%;
+    padding: 0;
+    margin-left: 5px;
+    &:hover, &:active{
+      background: $ui-background-solid;
+    }
+  }
+  
+  .leftHandle {
+    background: transparent;
+    border-radius: 2px;
+    height: 100%;
+    width: 100%;
+    padding: 0;
+    margin-right: 5px;
+  
+    &:hover, &:active{
+      background: $ui-background-solid;
+    }
+  }
+  
+  .bottomHandle {
+    background: transparent;
+    border-radius: 2px;
+    height: 100%;
+    width: 100%;
+    padding: 0;
+    &:hover, &:active{
+      background: $ui-background-solid;
+    }
+  }
+  
+  .topHandle {
+    background: transparent;
+    border-radius: 2px;
+    height: 100%;
+    width: 100%;
+    padding: 0;
+    &:hover, &:active{
+      background: $ui-background-solid;
+    }
+  }
