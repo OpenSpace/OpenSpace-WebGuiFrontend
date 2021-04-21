@@ -47,9 +47,11 @@ class WWTPanel extends Component {
     };
     this.togglePopover = this.togglePopover.bind(this);
     this.onSelect = this.onSelect.bind(this);
+    this.hoverOnImage = this.hoverOnImage.bind(this);
     this.getAllImages = this.getAllImages.bind(this);
     this.getNearestImages = this.getNearestImages.bind(this);
     this.getTargetData = this.getTargetData.bind(this);
+    this.hoverLeavesImage = this.hoverLeavesImage.bind(this);
   }
 
   async componentDidMount(){
@@ -76,8 +78,19 @@ class WWTPanel extends Component {
     this.setState({
       imageName: identifier,
     });
-    this.props.selectImage(identifier);
+  //  this.props.selectImage(identifier);
+    this.props.luaApi.skybrowser.selectImage(Number(identifier));
   }
+
+  hoverOnImage(identifier) {
+    this.props.luaApi.skybrowser.moveCircleToHoverImage(Number(identifier));
+  }
+
+  hoverLeavesImage() {
+    //this.props.luaApi.skybrowser.disableHoverCircle();
+    console.log("YO");
+  }
+
   async getTargetData() {
     try {
       let target = await this.props.luaApi.skybrowser.getTargetData();
@@ -144,6 +157,7 @@ class WWTPanel extends Component {
      className={styles.list}
      searchText={"Search from " + imageList.length.toString() + " images..."}
      viewComponent={SkybrowserFocusEntry}
+     viewComponentProps={{"hoverFunc" : this.hoverOnImage, "hoverLeavesImage" : this.hoverLeavesImage}}
      onSelect={this.onSelect}
      active={this.state.imageName}
      searchAutoFocus
