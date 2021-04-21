@@ -25,7 +25,9 @@ class SkybrowserFocusEntry extends Component {
   render() {
     const { name, identifier, url, credits, creditsUrl } = this.props;
     return (
-      <li className={`${styles.entry} ${this.isActive && styles.active}`} onClick={this.select}>
+      <li className={`${styles.entry} ${this.isActive && styles.active}`} onClick={this.select}
+          onMouseEnter={() => {this.props.hoverFunc(this.props.identifier)} }
+          onMouseLeave={() => {this.props.hoverLeavesImage()}}>
         <span className={styles.title}>
           { name || identifier }
         </span>
