@@ -78,7 +78,6 @@ class WWTPanel extends Component {
     this.setState({
       imageName: identifier,
     });
-  //  this.props.selectImage(identifier);
     this.props.luaApi.skybrowser.selectImage(Number(identifier));
   }
 
@@ -87,8 +86,7 @@ class WWTPanel extends Component {
   }
 
   hoverLeavesImage() {
-    //this.props.luaApi.skybrowser.disableHoverCircle();
-    console.log("YO");
+    this.props.luaApi.skybrowser.disableHoverCircle();
   }
 
   async getTargetData() {
@@ -163,7 +161,7 @@ class WWTPanel extends Component {
      searchAutoFocus
    />;
    //const textFormatLabel = <span>Show only near images</span>;
-  
+
     return (
 
       <PopoverSkybrowser
@@ -176,15 +174,15 @@ class WWTPanel extends Component {
       >
         <div className={Popover.styles.content}>
           <div className={styles.row}>
-            <Picker 
-              className={`${styles.picker} ${this.state.showOnlyNearest ? styles.unselected: styles.selected}`}  
-              onClick={() => this.setState({ showOnlyNearest: false })}>                
-                <span>All images</span> {/*<MaterialIcon className={styles.photoIcon} icon="list_alt" />*/}             
+            <Picker
+              className={`${styles.picker} ${this.state.showOnlyNearest ? styles.unselected: styles.selected}`}
+              onClick={() => this.setState({ showOnlyNearest: false })}>
+                <span>All images</span> {/*<MaterialIcon className={styles.photoIcon} icon="list_alt" />*/}
             </Picker>
-            <Picker 
-              className={`${styles.picker} ${this.state.showOnlyNearest ? styles.selected : styles.unselected}`} 
+            <Picker
+              className={`${styles.picker} ${this.state.showOnlyNearest ? styles.selected : styles.unselected}`}
               onClick={() => this.setState({ showOnlyNearest: true })}>
-                <span>Nearby images</span> {/*<MaterialIcon className={styles.photoIcon} icon="my_location" />*/}    
+                <span>Nearby images</span> {/*<MaterialIcon className={styles.photoIcon} icon="my_location" />*/}
             </Picker>
           </div>
           {/*
