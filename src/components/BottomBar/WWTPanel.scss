@@ -23,6 +23,34 @@ input[type="file"] {
     justify-content: left;
 }
 
+.row {
+  display:flex;
+  flex-wrap: nowrap; 
+  width: 100%;
+}
+
+.picker {
+  align-items: center;
+  display: flex;
+  height: 100%;
+  width: inherit;
+  padding: 10px 14px;
+
+}
+
+.selected {
+  background: $ui-background-hover;
+}
+.unselected {
+  background: $ui-background;
+}
+
+
+// background: $ui-background-hover;
+
+
+
+
 /*
 .list :global(.scroll-content) {
   max-height: 80vh;

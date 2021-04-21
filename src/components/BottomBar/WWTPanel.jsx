@@ -148,7 +148,8 @@ class WWTPanel extends Component {
      active={this.state.imageName}
      searchAutoFocus
    />;
-   const textFormatLabel = <span>Show only near images</span>;
+   //const textFormatLabel = <span>Show only near images</span>;
+  
     return (
 
       <PopoverSkybrowser
@@ -160,22 +161,25 @@ class WWTPanel extends Component {
         sideview = {true}
       >
         <div className={Popover.styles.content}>
-        <Picker onClick={() => this.setState({ showOnlyNearest: false })}>
-            <div>
-              <MaterialIcon className={styles.photoIcon} icon="list_alt" />
-            </div>
-          </Picker>
-        <Picker onClick={() => this.setState({ showOnlyNearest: true })}>
-            <div>
-              <MaterialIcon className={styles.photoIcon} icon="my_location" />
-            </div>
-          </Picker>
+          <div className={styles.row}>
+            <Picker 
+              className={`${styles.picker} ${this.state.showOnlyNearest ? styles.unselected: styles.selected}`}  
+              onClick={() => this.setState({ showOnlyNearest: false })}>                
+                <span>All images</span> {/*<MaterialIcon className={styles.photoIcon} icon="list_alt" />*/}             
+            </Picker>
+            <Picker 
+              className={`${styles.picker} ${this.state.showOnlyNearest ? styles.selected : styles.unselected}`} 
+              onClick={() => this.setState({ showOnlyNearest: true })}>
+                <span>Nearby images</span> {/*<MaterialIcon className={styles.photoIcon} icon="my_location" />*/}    
+            </Picker>
+          </div>
+          {/*
             <Checkbox
               checked={this.state.showOnlyNearest}
               label={textFormatLabel}
               setChecked={() => this.setState({ showOnlyNearest: ! this.state.showOnlyNearest })}
             />
-
+          */}
         {filterList}
         </div>
       </PopoverSkybrowser>
