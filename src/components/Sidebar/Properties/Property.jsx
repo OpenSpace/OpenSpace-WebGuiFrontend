@@ -26,17 +26,12 @@ const concreteProperties = {
 
   FloatProperty: NumericProperty,
   DoubleProperty: NumericProperty,
-  LongDoubleProperty: NumericProperty,
-  LongLongProperty: NumericProperty,
-  ULongLongProperty: NumericProperty,
   LongProperty: NumericProperty,
   ULongProperty: NumericProperty,
   IntProperty: NumericProperty,
   UIntProperty: NumericProperty,
   ShortProperty: NumericProperty,
   UShortProperty: NumericProperty,
-  SignedCharProperty: NumericProperty,
-  UCharProperty: NumericProperty,
 
   Vec2Property: VecProperty,
   Vec3Property: VecProperty,
@@ -53,32 +48,13 @@ const concreteProperties = {
   DVec2Property: VecProperty,
   DVec3Property: VecProperty,
   DVec4Property: VecProperty,
-
-  // Only square matrices are displayed property
-  // at this point. --emiax
-
+  
   Mat2Property: MatrixProperty,
-  //Mat2x3Property: MatrixProperty,
-  //Mat2x4Property: MatrixProperty,
-
-  //Mat3x2Property: MatrixProperty,
   Mat3Property: MatrixProperty,
-  //Mat3x4Property: MatrixProperty,
-
-  //Mat4x2Property: MatrixProperty,
-  //Mat4x3Property: MatrixProperty,
   Mat4Property: MatrixProperty,
 
   DMat2Property: MatrixProperty,
-  //DMat2x3Property: MatrixProperty,
-  //DMat2x4Property: MatrixProperty,
-
-  //DMat3x2Property: MatrixProperty,
   DMat3Property: MatrixProperty,
-  //DMat3x4Property: MatrixProperty,
-
-  //DMat4x2Property: MatrixProperty,
-  //DMat4x3Property: MatrixProperty,
   DMat4Property: MatrixProperty,
 };
 
