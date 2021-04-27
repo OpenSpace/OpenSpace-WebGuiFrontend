@@ -121,13 +121,13 @@ class SimulationIncrement extends Component {
     }
   }
 
-  setPositiveDeltaTime(event) {
-    const dt = event.currentTarget.value;
+  setPositiveDeltaTime(value) {
+    const dt = value;
     this.setDeltaTime(dt);
   }
 
-  setNegativeDeltaTime(event) {
-    const dt = -event.currentTarget.value;
+  setNegativeDeltaTime(value) {
+    const dt = -value;
     this.setDeltaTime(dt);
   }
 
@@ -241,7 +241,7 @@ class SimulationIncrement extends Component {
           <NumericInput
             {...this.limits}
             disabled={!this.props.luaApi}
-            onChange={this.setNegativeDeltaTime}
+            onValueChanged={this.setNegativeDeltaTime}
             placeholder={`Negative ${stepSize} / second`}
             value={-adjustedDelta}
             reverse
@@ -250,7 +250,7 @@ class SimulationIncrement extends Component {
           <NumericInput
             {...this.limits}
             disabled={!this.props.luaApi}
-            onChange={this.setPositiveDeltaTime}
+            onValueChanged={this.setPositiveDeltaTime}
             placeholder={`${stepSize} / second`}
             value={adjustedDelta}
             noValue={adjustedDelta < 0}
