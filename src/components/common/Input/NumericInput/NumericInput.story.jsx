@@ -19,7 +19,6 @@ storiesOf('Input/NumericInput', module)
   .add('inputOnly ', () => (<NumericInput placeholder="Number!" value={33.3} inputOnly />))
   .add('noHoverHint ', () => (<NumericInput placeholder="Number!" value={33.3} noHoverHint />))
   .add('noTooltip ', () => (<NumericInput placeholder="Number!" value={33.3} noTooltip />))
-  .add('disableInput ', () => (<NumericInput placeholder="Number!" value={33.3} disableInput />))
   .add('with callback', () =>
     (<NumericInput placeholder="Input" value="change me" onChange={action('input')} />));
 // OBS! The onChange property of the NumericInput has been renamed and updated.

@@ -92,7 +92,7 @@ class NumericInput extends Component {
   }
 
   enableTextInput(event) {
-    if (this.props.disableInput) {
+    if (this.props.disabled) {
       return;
     }
     this.setState({ showTextInput: true, hoverHint: null });
@@ -108,7 +108,7 @@ class NumericInput extends Component {
     if (this.showTextInput) {
       return (
         <Input
-          {...excludeKeys(this.props, 'reverse onValueChanged disableInput inputOnly noHoverHint noTooltip logarithmicScale')}
+          {...excludeKeys(this.props, 'reverse onValueChanged inputOnly noHoverHint noTooltip logarithmicScale')}
           type="number"
           value={value}
           onBlur={this.onTextBlur}
@@ -120,7 +120,7 @@ class NumericInput extends Component {
 
     const { placeholder, className, label, wide, reverse, min, max, noValue, step } = this.props;
     const doNotInclude = 'wide reverse onValueChanged value className type min max step ' +
-                         'disableInput inputOnly label noHoverHint noTooltip noValue logarithmicScale';
+                         'inputOnly label noHoverHint noTooltip noValue logarithmicScale';
     const inheritedProps = excludeKeys(this.props, doNotInclude);
     const hoverHintOffset = reverse ? 1 - hoverHint : hoverHint;
 
@@ -174,7 +174,6 @@ class NumericInput extends Component {
 NumericInput.propTypes = {
   className: PropTypes.string,
   disabled: PropTypes.bool,
-  disableInput: PropTypes.bool,
   inputOnly: PropTypes.bool,
   label: PropTypes.node,
   logarithmicScale: PropTypes.bool,
@@ -194,7 +193,6 @@ NumericInput.propTypes = {
 NumericInput.defaultProps = {
   className: '',
   disabled: false,
-  disableInput: false,
   inputOnly: false,
   label: null,
   logarithmicScale: false,
