@@ -5,11 +5,16 @@
 }
 
 input[type="file"] {
-    display: none;
+  display: none;
 
 }
 
+.filterList :placeholder-shown, label {
+  text-indent: 6px;
+}
+
 .filterList input {
+  text-indent: 6px;
   background-color: rgba(255,255,255,0.12);
   border-bottom: 2px solid $ui-background-solid;
   &:hover {
@@ -21,12 +26,14 @@ input[type="file"] {
   display:flex;
   width: 100%;
   background: $ui-background-hover;
+  justify-content: space-between;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .picker {
   align-items: center;
   display: flex;
-  height: 100%;
   width: inherit;
   padding: 10px 14px;
 

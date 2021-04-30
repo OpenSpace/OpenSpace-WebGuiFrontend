@@ -26,32 +26,39 @@ $border-width: 1px;
   z-index: 10;
   width: auto;       
   bottom: calc(100% + #{$popover-arrow-size});
-
   &.small {
     max-width: 150px;
   }
-
    > :last-child {
     padding-bottom: $popover-corner-radius;
   }
-
+  ul {
+    justify-content: space-around;
+    &:last-child:after {
+      content: "";
+      flex-basis: 120px;
+    }
+  }
 }
 
 .popover p, .content {
   height: calc(100% - 34px);
   margin-top: 2px;
+
   :global(.scroll-content) {
     height: calc(100% - 84px);
   } 
   ul {
+    margin-left: 6px;
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-around;
-  
+    //justify-content: space-around;
+    /*
     &:last-child:after {
       content: "";
       flex-basis: 120px;
     }
+    */
   }
 }
 

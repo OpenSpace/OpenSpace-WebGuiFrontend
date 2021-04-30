@@ -41,12 +41,11 @@ const WindowSkybrowser = (props) => {
           topLeft: false,
         }}
         defaultSize={{
-          width:300,
-          height:400,
+          width:350,
+          height:380,
         }}
-        
-        minWidth={300}
-        minHeight={300}
+        minWidth={250}
+        minHeight={250}
         handleClasses={{
           top: styles.topHandle,
           right: styles.rightHandle,

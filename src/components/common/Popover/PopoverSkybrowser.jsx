@@ -59,8 +59,8 @@ class PopoverSkybrowser extends Component {
         <Resizable
           enable={{
             top: true,
-            right: true,
-            left: true,
+            right: false,
+            left: false,
             bottom: false,
             topRight: false,
             bottomRight: false,
@@ -68,10 +68,9 @@ class PopoverSkybrowser extends Component {
             topLeft: false,
           }}
           defaultSize={{
-            width:300,
+            width:290,
             height:400,
           }}
-          minWidth={300}
           minHeight={300}
           handleClasses={{
             top: styles.topHandle,

@@ -16,7 +16,7 @@ class SkybrowserFocusEntry extends Component {
   }
 
   truncate(str) {
-    return str.length > 20 ? str.substring(0,20) + "..." : str;
+    return str.length > 10 ? str.substring(0,10) + "..." : str;
   }
 
   select(evt) {
@@ -39,6 +39,9 @@ class SkybrowserFocusEntry extends Component {
       <li className={`${styles.entry} ${this.isActive && styles.active}`} onClick={this.select}
           onMouseEnter={() => {this.props.hoverFunc(this.props.identifier)} }
           onMouseLeave={() => {this.props.hoverLeavesImage()}}>
+          <div className={styles.image}>
+            <img src={url} alt={name} />
+          </div>
           <div className={styles.imageHeader}>   
             <span className={styles.imageTitle} 
             onMouseEnter={() => { this.setState({showFullName : true}); }} 
@@ -55,11 +58,6 @@ class SkybrowserFocusEntry extends Component {
             }}>
             </Picker>
            */}
-
-          
-          <ul>
-            <img src={url} alt={name} />
-          </ul>
       </li>
     );
   }
