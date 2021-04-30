@@ -13,7 +13,7 @@ class PaneSkybrowser extends Component {
     const { children, title, closeCallback } = this.props;
 
     return (
-      <section className={styles.Pane}>
+      <section className={styles.pane}>
         <Resizable
         enable={{
             top: false,
@@ -26,10 +26,10 @@ class PaneSkybrowser extends Component {
             topLeft: false,
         }}
         defaultSize={{
-          width:400,
-          height: 'auto'
+          width:450,
+          height: '100%'
         }}
-        minWidth={330}
+        minWidth={300}
         handleClasses={{left: styles.leftHandle}}
         onResizeStop={this.onResizeStop}
         >

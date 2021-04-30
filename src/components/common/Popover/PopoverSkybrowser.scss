@@ -31,8 +31,27 @@ $border-width: 1px;
     max-width: 150px;
   }
 
-  > :last-child {
+   > :last-child {
     padding-bottom: $popover-corner-radius;
+  }
+
+}
+
+.popover p, .content {
+  height: calc(100% - 34px);
+  margin-top: 2px;
+  :global(.scroll-content) {
+    height: calc(100% - 84px);
+  } 
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+  
+    &:last-child:after {
+      content: "";
+      flex-basis: 120px;
+    }
   }
 }
 
@@ -57,10 +76,6 @@ $border-width: 1px;
   vertical-align: top;
 }
 
-.popover p, .content {
-  padding: 0;
-  height: calc(100% - 38px);
-}
 
 .delimiter {
   margin: ($base-padding / 3) 0;

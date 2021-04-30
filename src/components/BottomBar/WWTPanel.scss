@@ -6,27 +6,21 @@
 
 input[type="file"] {
     display: none;
+
 }
 
-.slideList {
-    float: left;
-    height: 100%;
-    width: 100%;
-
-    :global(.scroll-content) {
-        padding-bottom: 14px;
-        min-width: 300px; 
-    }
-}
-
-.slideList header {
-    justify-content: left;
+.filterList input {
+  background-color: rgba(255,255,255,0.12);
+  border-bottom: 2px solid $ui-background-solid;
+  &:hover {
+    background-color: rgba(255,255,255,0.2);
+  }
 }
 
 .row {
   display:flex;
-  flex-wrap: nowrap; 
   width: 100%;
+  background: $ui-background-hover;
 }
 
 .picker {
@@ -39,21 +33,13 @@ input[type="file"] {
 }
 
 .selected {
-  background: $ui-background-hover;
+  background: $ui-background-hover; // window and popup
 }
+
 .unselected {
   background: $ui-background;
+  &:hover {
+    background: rgba(255,255,255,0.12);
+  }
 }
 
-
-// background: $ui-background-hover;
-
-
-
-
-/*
-.list :global(.scroll-content) {
-  max-height: 80vh;
-  min-width: 300px;
-}
-*/

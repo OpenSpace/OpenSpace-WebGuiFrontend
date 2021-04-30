@@ -1,14 +1,22 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import styles from './FocusEntry.scss';
+import styles from './SkybrowserFocusEntry.scss';
 import Picker from '../Picker';
 import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
+import InfoBox from '../../common/InfoBox/InfoBox';
 import { jsonToLuaString } from '../../../utils/propertyTreeHelpers';
+
 
 class SkybrowserFocusEntry extends Component {
   constructor(props) {
     super(props);
+    this.state = { showFullName: false };
     this.select = this.select.bind(this);
+    this.truncate = this.truncate.bind(this);  
+  }
+
+  truncate(str) {
+    return str.length > 20 ? str.substring(0,20) + "..." : str;
   }
 
   select(evt) {
@@ -21,32 +29,38 @@ class SkybrowserFocusEntry extends Component {
   get isActive() {
     return this.props.identifier === this.props.active;
   }
-
+  
   render() {
     const { name, identifier, url, credits, creditsUrl } = this.props;
+    //const [showFullName, setShowFullName] = useState(false);
+  
     return (
+      
       <li className={`${styles.entry} ${this.isActive && styles.active}`} onClick={this.select}
           onMouseEnter={() => {this.props.hoverFunc(this.props.identifier)} }
           onMouseLeave={() => {this.props.hoverLeavesImage()}}>
-        <span className={styles.title}>
-          { name || identifier }
-        </span>
-        <p>
-        {credits}
-        </p>
-        <Picker onClick={() =>  {
-          const newWindow = window.open(creditsUrl, '_blank', 'noopener,noreferrer');
-          if (newWindow) newWindow.opener = null;
-        }}>
-            <div>
-              <MaterialIcon className={styles.photoIcon} icon="more_horiz" />
-            </div>
-          </Picker>
-        <ul>
-          <img src={url} alt={name} />
-        </ul>
-      </li>
+          <div className={styles.imageHeader}>   
+            <span className={styles.imageTitle} 
+            onMouseEnter={() => { this.setState({showFullName : true}); }} 
+            onMouseLeave={() => { this.setState({showFullName : false}); }}>     
+              {( this.state.showFullName ? (name || identifier) : (this.truncate(name) || this.truncate(identifier)) )}
+            </span>
+            <InfoBox text={ credits }/>
+          </div>
+                
+           {/*
+            <Picker onClick={() =>  {
+            const newWindow = window.open(creditsUrl, '_blank', 'noopener,noreferrer');
+            if (newWindow) newWindow.opener = null;
+            }}>
+            </Picker>
+           */}
 
+          
+          <ul>
+            <img src={url} alt={name} />
+          </ul>
+      </li>
     );
   }
 }
