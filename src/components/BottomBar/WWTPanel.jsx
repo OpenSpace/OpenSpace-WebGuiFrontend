@@ -11,8 +11,6 @@ import FilterList from '../common/FilterList/FilterList';
 import SkybrowserFocusEntry from './Origin/SkybrowserFocusEntry';
 import propertyDispatcher from '../../api/propertyDispatcher';
 import Checkbox from '../common/Input/Checkbox/Checkbox';
-// Import the module
-import { kdTree } from "kd-tree-javascript";
 
 import { Resizable } from 're-resizable';
 import PopoverSkybrowser from '../common/Popover/PopoverSkybrowser';
@@ -116,30 +114,28 @@ class WWTPanel extends Component {
   getNearestImages() {
     let targetPoint = {RA: this.state.targetData[0].RA, Dec:  this.state.targetData[0].Dec};
     let searchRadius = this.state.targetData[0].FOV;
-    let maxNoOfImages = 100
+
+    let isWithinFOV = function (coord, target, FOV) {
+      if(coord < (target + FOV) && coord > (target - FOV )) {
+        return true;
+      }
+      else return false;
+    };
 
     // Only load images that have coordinates for this mode
-    let imgDataWithCoords = this.props.systemList.filter(function(img) {
+    let imgsWithinTarget = this.props.systemList.filter(function(img) {
       if(img["hasCoords"] == false) {
         return false; // skip
       }
-      return true;
-    })
-
-    var distance = function(a, b){
-      // Account for wrap-around at 0 & 360 degrees
-      let RA_dist = Math.abs(a.RA - b.RA);
-      if(RA_dist > 180) {
-        RA_dist = 360 - RA_dist;
+      else if (isWithinFOV(img["RA"], targetPoint.RA, searchRadius) &&
+               isWithinFOV(img["Dec"], targetPoint.Dec, searchRadius)) {
+              return true;
       }
-      return Math.pow(RA_dist, 2) +  Math.pow(a.Dec - b.Dec, 2);
-    }
-
-    var tree = new kdTree(imgDataWithCoords, distance, ["RA", "Dec"]);
-    var result = tree.nearest(targetPoint, maxNoOfImages, [searchRadius]);
-
-    let nearestImages = result.map( function(item, index) {
-      return {"name" : item[0]["name"] , "identifier":  item[0]["identifier"] , "key":  item[0]["key"], "url": item[0]["url"] };
+      return false;
+    });
+    console.log(imgsWithinTarget);
+    let nearestImages = imgsWithinTarget.map( function(item, index) {
+      return {"name" : item["name"] , "identifier":  item["identifier"] , "key": item["key"], "url": item["url"] };
     });
 
     return nearestImages;
