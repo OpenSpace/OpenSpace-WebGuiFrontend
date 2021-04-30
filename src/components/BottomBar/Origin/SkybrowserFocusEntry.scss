@@ -1,0 +1,37 @@
+@import "../../../styles/all";
+
+.entry {
+  padding: $popover-horizontal-padding;
+  height: 130px;
+  width: 120px;
+  display: inline-grid;
+  align-content: space-between;
+  &:hover {
+    background: $ui-background-hover;
+  }
+  &.active {
+    background: $ui-background-hover;
+    border-left: 4px solid $blue;
+  }
+
+}
+
+.imageHeader {
+  display: flex;
+  justify-content: space-between;
+}
+
+.imageTitle {
+  padding-right: 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 16px;
+}
+
+img {
+  width: 100px;
+  height: 50px;
+  border-radius: 2px;
+
+}
+

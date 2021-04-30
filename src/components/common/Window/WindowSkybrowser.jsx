@@ -45,7 +45,7 @@ const WindowSkybrowser = (props) => {
           height:400,
         }}
         
-        minWidth={250}
+        minWidth={300}
         minHeight={300}
         handleClasses={{
           top: styles.topHandle,

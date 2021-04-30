@@ -5,19 +5,19 @@ $icon-size: 18px;
 $header-height: 35px;
 $border-width: 1px;
 
-.Pane {
+.pane {
   animation: $appear-animation;
   background: $ui-background;
   border-bottom: $border-width solid $ui-divider;
   position: fixed;
   top: 0;
   right: 0; 
-  height: 100%;
+  height: 100%; 
+  max-height: 100%;
   max-width: 50%;
- 
 }
 
-.Pane header {
+.pane header {
   align-items: center;
   border-bottom: $border-width solid $ui-divider;
   display: flex;
@@ -25,27 +25,35 @@ $border-width: 1px;
   justify-content: space-between;
   height: $header-height;
   line-height: 1;
-
   > * {
     padding: 0 $sidebar-padding;
   }
+  
 }
 
-.content {
+.pane .content {
+  height: calc(100% - 10px);
+  input {
+    background: rgba(255,255,255,0.12);
+  }
+}
 
-  height: 100%;
+
+/*
+.pane .content {
+  height: calc(100% - 80px);
   :global(.scroll-content) {
-    max-height: 92vh;
+    max-height: auto;
     &::-webkit-scrollbar {
       background-color: rgba(145, 145, 145, 0.32);
     }
-    
     &:before,
     &:after {
       display: none;
     }
   }
 }
+*/
 
 .title {
   font-weight: bold;

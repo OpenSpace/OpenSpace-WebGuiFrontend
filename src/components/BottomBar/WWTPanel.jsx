@@ -10,7 +10,7 @@ import ScrollOverlay from '../common/ScrollOverlay/ScrollOverlay';
 import FilterList from '../common/FilterList/FilterList';
 import SkybrowserFocusEntry from './Origin/SkybrowserFocusEntry';
 import propertyDispatcher from '../../api/propertyDispatcher';
-import Checkbox from '../common/Input/Checkbox/Checkbox';
+
 // Import the module
 import { kdTree } from "kd-tree-javascript";
 
@@ -78,7 +78,7 @@ class WWTPanel extends Component {
     this.setState({
       imageName: identifier,
     });
-  //  this.props.selectImage(identifier);
+    // this.props.selectImage(identifier);
     this.props.luaApi.skybrowser.selectImage(Number(identifier));
   }
 
@@ -87,8 +87,7 @@ class WWTPanel extends Component {
   }
 
   hoverLeavesImage() {
-    //this.props.luaApi.skybrowser.disableHoverCircle();
-    console.log("YO");
+    this.props.luaApi.skybrowser.disableHoverCircle();
   }
 
   async getTargetData() {
@@ -108,7 +107,7 @@ class WWTPanel extends Component {
   }
 
   getAllImages() {
-//    console.log(this.props.systemList);
+    // console.log(this.props.systemList);
     let images = this.props.systemList;
     if(this.props.systemList == null) return {};
     return images;
@@ -153,31 +152,29 @@ class WWTPanel extends Component {
    let imageList = this.state.showOnlyNearest ? this.getNearestImages() : this.getAllImages();
 
    let filterList = <FilterList
-     data={imageList}
-     className={styles.list}
-     searchText={"Search from " + imageList.length.toString() + " images..."}
-     viewComponent={SkybrowserFocusEntry}
-     viewComponentProps={{"hoverFunc" : this.hoverOnImage, "hoverLeavesImage" : this.hoverLeavesImage}}
-     onSelect={this.onSelect}
-     active={this.state.imageName}
-     searchAutoFocus
+      className={styles.filterList}
+      data={imageList}
+      searchText={"Search from " + imageList.length.toString() + " images..."}
+      viewComponent={SkybrowserFocusEntry}
+      viewComponentProps={{"hoverFunc" : this.hoverOnImage, "hoverLeavesImage" : this.hoverLeavesImage}}
+      onSelect={this.onSelect}
+      active={this.state.imageName}
+      searchAutoFocus
    />;
-   //const textFormatLabel = <span>Show only near images</span>;
   
     return (
 
       <PopoverSkybrowser
-
         title="WorldWide Telescope"
         closeCallback={this.togglePopover}
         detachable
         attached={true}
         sideview = {true}
       >
-        <div className={Popover.styles.content}>
+        <div className={PopoverSkybrowser.styles.content}>
           <div className={styles.row}>
             <Picker 
-              className={`${styles.picker} ${this.state.showOnlyNearest ? styles.unselected: styles.selected}`}  
+              className={`${styles.picker} ${this.state.showOnlyNearest ? styles.unselected : styles.selected}`}  
               onClick={() => this.setState({ showOnlyNearest: false })}>                
                 <span>All images</span> {/*<MaterialIcon className={styles.photoIcon} icon="list_alt" />*/}             
             </Picker>
@@ -193,7 +190,7 @@ class WWTPanel extends Component {
               label={textFormatLabel}
               setChecked={() => this.setState({ showOnlyNearest: ! this.state.showOnlyNearest })}
             />
-          */}
+          */}         
         {filterList}
         </div>
       </PopoverSkybrowser>

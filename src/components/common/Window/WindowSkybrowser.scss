@@ -9,13 +9,17 @@
   max-width: none;
   position: absolute;
   z-index: 10;
- 
+  height: calc(100% - 34px);
   &.small {
     max-width: 150px;
   }
 
   > :last-child {
     padding-bottom: $popover-corner-radius;
+  } 
+  :global(.scroll-content) {
+    max-height: auto;
+    height: calc(100% - 84px);
   }
 
 }
@@ -24,16 +28,10 @@
   bottom: 10%;
 }
 
-
 .window header {
   display: flex;
   justify-content: space-between;
 }
-
-.window p, .content {
-    padding: 0;
-    height: 100%;
-  }
 
 .filler {
   width: 100%;
