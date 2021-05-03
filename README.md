@@ -2,7 +2,7 @@
 
 ## Develop
 
-First, go get [Node.js](https://nodejs.org/en/)!
+First, go get [Node.js](https://nodejs.org/en/)
 
 ```sh
 # install dependencies
