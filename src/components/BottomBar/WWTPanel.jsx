@@ -53,7 +53,7 @@ class WWTPanel extends Component {
 
   async componentDidMount(){
     try {
-       this.interval = setInterval(() => this.getTargetData(), 2000);
+       this.interval = setInterval(() => this.getTargetData(), 1000);
     }
     catch(e) {
       console.log(e);
@@ -91,7 +91,7 @@ class WWTPanel extends Component {
       let target = await this.props.luaApi.skybrowser.getTargetData();
       target = Object.values(target[1]);
       target = target.map( function(img, index) {
-        return {"identifier": index.toString() ,"key": index.toString(), "RA" : img["RA"], "Dec": img["Dec"], "FOV" : img["FOV"] };
+        return {"identifier": index.toString() ,"key": index.toString(), "RA" : img["RA"], "Dec": img["Dec"], "FOV" : img["FOV"], "Color" : img["Color"] };
       });
       this.setState({
         targetData: target
@@ -132,12 +132,8 @@ class WWTPanel extends Component {
       }
       return false;
     });
-    console.log(imgsWithinTarget);
-    let nearestImages = imgsWithinTarget.map( function(item, index) {
-      return {"name" : item["name"] , "identifier":  item["identifier"] , "key": item["key"], "url": item["url"] };
-    });
-
-    return nearestImages;
+    
+    return imgsWithinTarget;
   }
 
   get popover() {
