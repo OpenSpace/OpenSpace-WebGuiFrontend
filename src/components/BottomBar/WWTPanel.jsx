@@ -40,7 +40,8 @@ class WWTPanel extends Component {
     this.state = {
       imageName: undefined,
       showOnlyNearest: true,
-      targetData: [{RA: 0, Dec: 0}]
+      targetData: [{RA: 0, Dec: 0}],
+      selectedTarget: 0,
     };
     this.togglePopover = this.togglePopover.bind(this);
     this.onSelect = this.onSelect.bind(this);
@@ -49,6 +50,8 @@ class WWTPanel extends Component {
     this.getNearestImages = this.getNearestImages.bind(this);
     this.getTargetData = this.getTargetData.bind(this);
     this.hoverLeavesImage = this.hoverLeavesImage.bind(this);
+    this.lockTarget = this.lockTarget.bind(this);
+    this.unlockTarget = this.unlockTarget.bind(this);
   }
 
   async componentDidMount(){
@@ -76,6 +79,7 @@ class WWTPanel extends Component {
       imageName: identifier,
     });
     this.props.luaApi.skybrowser.selectImage(Number(identifier));
+    this.props.luaApi.skybrowser.unlockTarget(this.state.selectedTarget);
   }
 
   hoverOnImage(identifier) {
@@ -110,6 +114,14 @@ class WWTPanel extends Component {
 
   }
 
+  lockTarget(index) {
+    this.props.luaApi.skybrowser.lockTarget(Number(index));
+  }
+
+  unlockTarget(index) {
+    this.props.luaApi.skybrowser.unlockTarget(Number(index));
+  }
+
   getNearestImages() {
     let targetPoint = {RA: this.state.targetData[0].RA, Dec:  this.state.targetData[0].Dec};
     let searchRadius = this.state.targetData[0].FOV;
@@ -132,7 +144,7 @@ class WWTPanel extends Component {
       }
       return false;
     });
-    
+
     return imgsWithinTarget;
   }
 
@@ -162,6 +174,12 @@ class WWTPanel extends Component {
       >
         <div className={PopoverSkybrowser.styles.content}>
           <div className={styles.row}>
+          <button onClick={() => this.lockTarget(this.state.selectedTarget)}>
+          Lock target
+          </button>
+          <button onClick={() => this.unlockTarget(this.state.selectedTarget)}>
+          Unlock target
+          </button>
             <Picker
               className={`${styles.picker} ${this.state.showOnlyNearest ? styles.unselected: styles.selected}`}
               onClick={() => this.setState({ showOnlyNearest: false })}>
