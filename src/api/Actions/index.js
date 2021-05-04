@@ -164,6 +164,11 @@ export const getVersion = () => ({
   payload: {},
 });
 
+export const getMissions = () => ({
+  type: actionTypes.getMissions,
+  payload: {},
+});
+
 export const getDocumentation = () => ({
   type: actionTypes.getDocumentation,
   payload: {},
@@ -176,6 +181,11 @@ export const initializeLuaApi = data => ({
 
 export const initializeVersion = data => ({
   type: actionTypes.initializeVersion,
+  payload: data
+});
+
+export const initializeMissions = data => ({
+  type: actionTypes.initializeMissions,
   payload: data
 });
 
