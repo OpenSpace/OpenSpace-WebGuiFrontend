@@ -24,8 +24,17 @@ class Input extends Component {
     this.setInputRef = this.setInputRef.bind(this);
   }
 
-  componentWillReceiveProps({ value }) {
-    this.setState({ value });
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.value !== this.props.value) {
+      this.setState({value: this.props.value});
+    }
+  }
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if(nextProps.value != prevState.value) {
+      return {value: nextProps.value}
+    }
+    else return null; // State wasn't changed
   }
 
   /**
