@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import styles from './ColorPickerPopup.scss';
 import PropTypes from 'prop-types';
 import Button from '../Input/Button/Button';
+import Tooltip from '../Tooltip/Tooltip';
 import ColorPicker from './ColorPicker';
 var { Checkboard } = require('react-color/lib/components/common');
 
@@ -68,6 +69,10 @@ class ColorPickerPopup extends Component {
       background: `rgba(${ color.r }, ${ color.g }, ${ color.b }, ${ color.a })`
     };
 
+    const customTooltipCss = {
+      paddingRight: '4px', paddingLeft: '4px', maxWidth: '200px'
+    };
+
     return (
       <span
         ref={this.setRef('wrapper')}
@@ -79,19 +84,19 @@ class ColorPickerPopup extends Component {
               <Checkboard size={ 10 } white="#fff" grey="#ccc" />
             </div>
           </div>
-
-        </Button>
+          </Button>
         { this.state.showPopup && (
-            <div 
-              className={`${styles.popup} ${styles.right}`}
-              style={this.position}
+            <Tooltip
+              fixed
+              placement="right"
+              style={{...this.position, ...customTooltipCss}}
             >
               <ColorPicker
                 disableAlpha={disableAlpha}
                 color={color}
                 onChange={onChange}
               />
-            </div>
+            </Tooltip>
         )}
       </span>
     );
