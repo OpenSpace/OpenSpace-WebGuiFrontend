@@ -100,7 +100,7 @@ class WWTPanel extends Component {
       target = target.slice(1);
       this.setState({
         targetData: target,
-        cameraData: {FOV: camera.WindowHFOV, RA: camera.WindowDirection[0], Dec : camera.WindowDirection[1]}
+        cameraData: {FOV: camera.WindowHFOV, CartesianDirection: camera.CartesianDirection, RA : camera.RA, Dec: camera.Dec}
       });
     }
     catch(e) {
@@ -125,7 +125,7 @@ class WWTPanel extends Component {
   }
 
   getNearestImages() {
-    let targetPoint = {RA: this.state.cameraData.RA, Dec:  this.state.cameraData.Dec};
+    let targetPoint = this.state.cameraData;
     let searchRadius = this.state.cameraData.FOV / 2;
 
     let isWithinFOV = function (coord, target, FOV) {
@@ -147,20 +147,22 @@ class WWTPanel extends Component {
       return false;
     });
 
-    // Sort by distance for spherical coordinates
-    // Source: https://math.stackexchange.com/questions/833002/distance-between-two-points-in-spherical-coordinates
-    // Since coordinates are on the unit sphere, r and r' are 1
-    let sphericalDistance = function (a, b) {
-      // Convert to radians
-      let a_rad = {RA : (a.RA * Math.PI / 180), Dec : (a.Dec * Math.PI / 180)};
-      let b_rad ={RA : b.RA * Math.PI / 180, Dec : b.Dec * Math.PI / 180};
-      let distance = Math.sqrt(2 - 2 * ((Math.sin(a_rad.RA)*Math.sin(b_rad.RA)*Math.cos(a_rad.Dec - b_rad.Dec)) + (Math.cos(a_rad.RA)*Math.cos(b_rad.RA))));
+    let distPow2 = function(a, b) {
+      return (a - b)*(a - b);
+    };
+
+    let euclidianDistance = function (a, b) {
+      let sum = 0;
+      for(let i = 0; i < 3; i++) {
+          sum += distPow2(a.CartesianDirection[i], b.CartesianDirection[i])
+      }
+      let distance = Math.sqrt(sum);
       return distance;
     };
 
     imgsWithinTarget.sort((a, b) => {
       let targetPoint = this.state.targetData[this.state.selectedTarget];
-      let result = sphericalDistance(a, targetPoint) > sphericalDistance(b, targetPoint);
+      let result = euclidianDistance(a, targetPoint) > euclidianDistance(b, targetPoint);
       return result ? 1 : -1;
     }
     );
