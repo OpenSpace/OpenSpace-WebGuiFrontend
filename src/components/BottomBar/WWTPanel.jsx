@@ -42,6 +42,7 @@ class WWTPanel extends Component {
       showOnlyNearest: true,
       targetData: [{RA: 0, Dec: 0}],
       selectedTarget: 0,
+      cameraData: {FOV : 70, RA: 0, Dec: 0}
     };
     this.togglePopover = this.togglePopover.bind(this);
     this.onSelect = this.onSelect.bind(this);
@@ -56,7 +57,7 @@ class WWTPanel extends Component {
 
   async componentDidMount(){
     try {
-       this.interval = setInterval(() => this.getTargetData(), 1000);
+       this.interval = setInterval(() => this.getTargetData(), 500);
     }
     catch(e) {
       console.log(e);
@@ -79,7 +80,7 @@ class WWTPanel extends Component {
       imageName: identifier,
     });
     this.props.luaApi.skybrowser.selectImage(Number(identifier));
-    this.props.luaApi.skybrowser.unlockTarget(this.state.selectedTarget);
+    //this.props.luaApi.skybrowser.lockTarget(this.state.selectedTarget);
   }
 
   hoverOnImage(identifier) {
@@ -94,12 +95,13 @@ class WWTPanel extends Component {
     try {
       let target = await this.props.luaApi.skybrowser.getTargetData();
       target = Object.values(target[1]);
-      target = target.map( function(img, index) {
-        return {"identifier": index.toString() ,"key": index.toString(), "RA" : img["RA"], "Dec": img["Dec"], "FOV" : img["FOV"], "Color" : img["Color"] };
-      });
+      // Set the first object in the array to the camera and remove from array
+      let camera = target[0];
+      target = target.slice(1);
       this.setState({
-        targetData: target
-      })
+        targetData: target,
+        cameraData: {FOV: camera.WindowHFOV, RA: camera.WindowDirection[0], Dec : camera.WindowDirection[1]}
+      });
     }
     catch(e) {
       console.log(e);
@@ -123,8 +125,8 @@ class WWTPanel extends Component {
   }
 
   getNearestImages() {
-    let targetPoint = {RA: this.state.targetData[0].RA, Dec:  this.state.targetData[0].Dec};
-    let searchRadius = this.state.targetData[0].FOV;
+    let targetPoint = {RA: this.state.cameraData.RA, Dec:  this.state.cameraData.Dec};
+    let searchRadius = this.state.cameraData.FOV / 2;
 
     let isWithinFOV = function (coord, target, FOV) {
       if(coord < (target + FOV) && coord > (target - FOV )) {
@@ -133,7 +135,7 @@ class WWTPanel extends Component {
       else return false;
     };
 
-    // Only load images that have coordinates for this mode
+    // Only load images that have coordinates within current window
     let imgsWithinTarget = this.props.systemList.filter(function(img) {
       if(img["hasCoords"] == false) {
         return false; // skip
@@ -145,6 +147,23 @@ class WWTPanel extends Component {
       return false;
     });
 
+    // Sort by distance for spherical coordinates
+    // Source: https://math.stackexchange.com/questions/833002/distance-between-two-points-in-spherical-coordinates
+    // Since coordinates are on the unit sphere, r and r' are 1
+    let sphericalDistance = function (a, b) {
+      // Convert to radians
+      let a_rad = {RA : (a.RA * Math.PI / 180), Dec : (a.Dec * Math.PI / 180)};
+      let b_rad ={RA : b.RA * Math.PI / 180, Dec : b.Dec * Math.PI / 180};
+      let distance = Math.sqrt(2 - 2 * ((Math.sin(a_rad.RA)*Math.sin(b_rad.RA)*Math.cos(a_rad.Dec - b_rad.Dec)) + (Math.cos(a_rad.RA)*Math.cos(b_rad.RA))));
+      return distance;
+    };
+
+    imgsWithinTarget.sort((a, b) => {
+      let targetPoint = this.state.targetData[this.state.selectedTarget];
+      let result = sphericalDistance(a, targetPoint) > sphericalDistance(b, targetPoint);
+      return result ? 1 : -1;
+    }
+    );
     return imgsWithinTarget;
   }
 
