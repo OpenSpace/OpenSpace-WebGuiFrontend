@@ -18,8 +18,7 @@ export const missions = store => next => (action) => {
   switch (action.type) {
     case actionTypes.onOpenConnection:
       getMissions((data) => {
-        console.log("missions loaded", data);
-        store.dispatch(initializeMissions(data));
+        store.dispatch(initializeMissions(data.missions));
       });
       break;
     default:

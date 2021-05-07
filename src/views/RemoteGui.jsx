@@ -5,6 +5,7 @@ import '../styles/base.scss';
 import styles from './RemoteGui.scss';
 import Sidebar from '../components/Sidebar/Sidebar';
 import BottomBar from '../components/BottomBar/BottomBar';
+import EventTimeline from '../components/EventTimeline/EventTimeline';
 import Button from '../components/common/Input/Button/Button';
 import Error from '../components/common/Error/Error';
 import Overlay from '../components/common/Overlay/Overlay';
@@ -83,6 +84,9 @@ class RemoteGui extends Component {
             </Error>
           </Overlay>
         )}
+        <section>      { /* Put this section first, to get native higher z-order for following sections */ }
+          <EventTimeline />
+        </section>
         <section className={styles.Grid__Left}>
           <Sidebar />
         </section>

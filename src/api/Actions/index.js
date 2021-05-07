@@ -245,6 +245,11 @@ export const setPopoverVisibility = data => ({
   payload: data
 });
 
+export const setEventTimelineVisibility = show => ({
+  type: actionTypes.setEventTimelineVisibility,
+  payload: show
+})
+
 export const setShowAbout = show => ({
   type: actionTypes.setShowAbout,
   payload: show

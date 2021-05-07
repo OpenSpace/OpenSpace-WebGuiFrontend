@@ -12,6 +12,13 @@ $border-width: 1px;
   flex-basis: 1px;
   flex-grow: 1;
   height: calc(100% - 60px);
+  
+  h2 {
+    margin-top: 10px;
+	margin-bottom: 10px;
+	padding-left: 0.25em;
+	font-weight: normal;
+  }
 }
 
 .Pane > header {
@@ -29,8 +36,8 @@ $border-width: 1px;
 }
 
 .content {
-
   height: calc(100% - 35px);
+  overflow-y: scroll;
 
   :global(.scroll-content) {
     &::-webkit-scrollbar {
