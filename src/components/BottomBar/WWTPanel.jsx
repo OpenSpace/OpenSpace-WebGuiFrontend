@@ -57,7 +57,7 @@ class WWTPanel extends Component {
 
   async componentDidMount(){
     try {
-       this.interval = setInterval(() => this.getTargetData(), 500);
+       this.interval = setInterval(() => this.getTargetData(), 1000);
     }
     catch(e) {
       console.log(e);
@@ -100,8 +100,10 @@ class WWTPanel extends Component {
       target = target.slice(1);
       this.setState({
         targetData: target,
-        cameraData: {FOV: camera.WindowHFOV, CartesianDirection: camera.CartesianDirection, RA : camera.RA, Dec: camera.Dec}
+        cameraData: {FOV: camera.WindowHFOV, CartesianDirection: camera.CartesianDirection, RA : camera.RA, Dec: camera.Dec},
+        selectedTarget: camera.SelectedBrowserIndex
       });
+      console.log(this.state.selectedTarget);
     }
     catch(e) {
       console.log(e);
@@ -195,15 +197,15 @@ class WWTPanel extends Component {
       >
         <div className={PopoverSkybrowser.styles.content}>
           <div className={styles.row}>
-          <button onClick={() => this.props.luaApi.skybrowser.adjustCamera(this.state.selectedTarget)}>
+          <Button onClick={() => this.props.luaApi.skybrowser.adjustCamera(this.state.selectedTarget)}>
           Camera look at target
-          </button>
-          <button onClick={() => this.lockTarget(this.state.selectedTarget)}>
+          </Button>
+          <Button onClick={() => this.lockTarget(this.state.selectedTarget)}>
           Lock target
-          </button>
-          <button onClick={() => this.unlockTarget(this.state.selectedTarget)}>
+          </Button>
+          <Button onClick={() => this.unlockTarget(this.state.selectedTarget)}>
           Unlock target
-          </button>
+          </Button>
             <Picker
               className={`${styles.picker} ${this.state.showOnlyNearest ? styles.unselected: styles.selected}`}
               onClick={() => this.setState({ showOnlyNearest: false })}>
