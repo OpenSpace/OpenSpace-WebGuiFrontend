@@ -2,21 +2,25 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styles from './SkybrowserFocusEntry.scss';
 import Picker from '../Picker';
+import Button from '../../common/Input/Button/Button';
 import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
-import InfoBox from '../../common/InfoBox/InfoBox';
+import InfoBoxSkybrowser from '../../common/InfoBox/InfoBoxSkybrowser';
+import TooltipSkybrowser from '../../common/Tooltip/TooltipSkybrowser';
 import { jsonToLuaString } from '../../../utils/propertyTreeHelpers';
+
+//import { clamp } from 'lodash/number';
 
 
 class SkybrowserFocusEntry extends Component {
   constructor(props) {
     super(props);
-    this.state = { showFullName: false };
+    this.state = {selectedImageBorderColor: ''}
     this.select = this.select.bind(this);
-    this.truncate = this.truncate.bind(this);  
+    this.setBorderColor = this.setBorderColor.bind(this);
   }
 
-  truncate(str) {
-    return str.length > 10 ? str.substring(0,10) + "..." : str;
+  setBorderColor() {
+    this.setState({ selectedImageBorderColor: 'rgb(' + this.props.currentTargetColor() + ')' });
   }
 
   select(evt) {
@@ -24,40 +28,38 @@ class SkybrowserFocusEntry extends Component {
     if (this.props.onSelect) {
       this.props.onSelect(identifier, evt);
     }
+    this.setBorderColor();
   }
 
+  
   get isActive() {
     return this.props.identifier === this.props.active;
   }
   
   render() {
     const { name, identifier, url, credits, creditsUrl } = this.props;
-    //const [showFullName, setShowFullName] = useState(false);
-  
+   
     return (
       
-      <li className={`${styles.entry} ${this.isActive && styles.active}`} onClick={this.select}
+      <li className={`${styles.entry} ${this.isActive && styles.active}`} 
+          style={{ borderLeftColor: this.state.selectedImageBorderColor }} 
+          onClick={this.select}
           onMouseEnter={() => {this.props.hoverFunc(this.props.identifier)} }
           onMouseLeave={() => {this.props.hoverLeavesImage()}}>
           <div className={styles.image}>
             <img src={url} alt={name} />
           </div>
-          <div className={styles.imageHeader}>   
-            <span className={styles.imageTitle} 
-            onMouseEnter={() => { this.setState({showFullName : true}); }} 
-            onMouseLeave={() => { this.setState({showFullName : false}); }}>     
-              {( this.state.showFullName ? (name || identifier) : (this.truncate(name) || this.truncate(identifier)) )}
+          <div className={styles.imageHeader}>       
+            <span 
+            className={styles.imageTitle}>
+              { name || identifier }   
             </span>
-            <InfoBox text={ credits }/>
+            <InfoBoxSkybrowser 
+              title={(name || identifier)} 
+              text={credits}  
+              textUrl={creditsUrl}>
+            </InfoBoxSkybrowser>
           </div>
-                
-           {/*
-            <Picker onClick={() =>  {
-            const newWindow = window.open(creditsUrl, '_blank', 'noopener,noreferrer');
-            if (newWindow) newWindow.opener = null;
-            }}>
-            </Picker>
-           */}
       </li>
     );
   }

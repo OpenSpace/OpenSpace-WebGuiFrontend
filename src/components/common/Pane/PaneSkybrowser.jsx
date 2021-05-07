@@ -29,7 +29,7 @@ class PaneSkybrowser extends Component {
           width:360,
           height: '100%'
         }}
-        minWidth={300}
+        minWidth={250}
         handleClasses={{left: styles.leftHandle}}
         onResizeStop={this.onResizeStop}
         >
