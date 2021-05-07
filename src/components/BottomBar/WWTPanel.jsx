@@ -40,7 +40,9 @@ class WWTPanel extends Component {
     this.state = {
       imageName: undefined,
       showOnlyNearest: true,
-      targetData: [{RA: 0, Dec: 0}]
+      targetData: [{RA: 0, Dec: 0}],
+      selectedTarget: 0,
+      cameraData: {FOV : 70, RA: 0, Dec: 0}
     };
     this.togglePopover = this.togglePopover.bind(this);
     this.onSelect = this.onSelect.bind(this);
@@ -49,11 +51,13 @@ class WWTPanel extends Component {
     this.getNearestImages = this.getNearestImages.bind(this);
     this.getTargetData = this.getTargetData.bind(this);
     this.hoverLeavesImage = this.hoverLeavesImage.bind(this);
+    this.lockTarget = this.lockTarget.bind(this);
+    this.unlockTarget = this.unlockTarget.bind(this);
   }
 
   async componentDidMount(){
     try {
-       this.interval = setInterval(() => this.getTargetData(), 2000);
+       this.interval = setInterval(() => this.getTargetData(), 500);
     }
     catch(e) {
       console.log(e);
@@ -76,6 +80,7 @@ class WWTPanel extends Component {
       imageName: identifier,
     });
     this.props.luaApi.skybrowser.selectImage(Number(identifier));
+    //this.props.luaApi.skybrowser.lockTarget(this.state.selectedTarget);
   }
 
   hoverOnImage(identifier) {
@@ -90,12 +95,13 @@ class WWTPanel extends Component {
     try {
       let target = await this.props.luaApi.skybrowser.getTargetData();
       target = Object.values(target[1]);
-      target = target.map( function(img, index) {
-        return {"identifier": index.toString() ,"key": index.toString(), "RA" : img["RA"], "Dec": img["Dec"], "FOV" : img["FOV"] };
-      });
+      // Set the first object in the array to the camera and remove from array
+      let camera = target[0];
+      target = target.slice(1);
       this.setState({
-        targetData: target
-      })
+        targetData: target,
+        cameraData: {FOV: camera.WindowHFOV, CartesianDirection: camera.CartesianDirection, RA : camera.RA, Dec: camera.Dec}
+      });
     }
     catch(e) {
       console.log(e);
@@ -110,9 +116,17 @@ class WWTPanel extends Component {
 
   }
 
+  lockTarget(index) {
+    this.props.luaApi.skybrowser.lockTarget(Number(index));
+  }
+
+  unlockTarget(index) {
+    this.props.luaApi.skybrowser.unlockTarget(Number(index));
+  }
+
   getNearestImages() {
-    let targetPoint = {RA: this.state.targetData[0].RA, Dec:  this.state.targetData[0].Dec};
-    let searchRadius = this.state.targetData[0].FOV;
+    let targetPoint = this.state.cameraData;
+    let searchRadius = this.state.cameraData.FOV / 2;
 
     let isWithinFOV = function (coord, target, FOV) {
       if(coord < (target + FOV) && coord > (target - FOV )) {
@@ -121,7 +135,7 @@ class WWTPanel extends Component {
       else return false;
     };
 
-    // Only load images that have coordinates for this mode
+    // Only load images that have coordinates within current window
     let imgsWithinTarget = this.props.systemList.filter(function(img) {
       if(img["hasCoords"] == false) {
         return false; // skip
@@ -132,12 +146,27 @@ class WWTPanel extends Component {
       }
       return false;
     });
-    //console.log(imgsWithinTarget);
-    let nearestImages = imgsWithinTarget.map( function(item, index) {
-      return {"name" : item["name"] , "identifier":  item["identifier"] , "key": item["key"], "url": item["url"], "credits": item["credits"]  };
-    });
+    
+    let distPow2 = function(a, b) {
+      return (a - b)*(a - b);
+    };
 
-    return nearestImages;
+    let euclidianDistance = function (a, b) {
+      let sum = 0;
+      for(let i = 0; i < 3; i++) {
+          sum += distPow2(a.CartesianDirection[i], b.CartesianDirection[i])
+      }
+      let distance = Math.sqrt(sum);
+      return distance;
+    };
+
+    imgsWithinTarget.sort((a, b) => {
+      let targetPoint = this.state.targetData[this.state.selectedTarget];
+      let result = euclidianDistance(a, targetPoint) > euclidianDistance(b, targetPoint);
+      return result ? 1 : -1;
+    }
+    );
+    return imgsWithinTarget;
   }
 
   get popover() {
@@ -166,6 +195,12 @@ class WWTPanel extends Component {
       >
         <div className={PopoverSkybrowser.styles.content}>
           <div className={styles.row}>
+          <button onClick={() => this.lockTarget(this.state.selectedTarget)}>
+          Lock target
+          </button>
+          <button onClick={() => this.unlockTarget(this.state.selectedTarget)}>
+          Unlock target
+          </button>
             <Picker
               className={`${styles.picker} ${this.state.showOnlyNearest ? styles.unselected: styles.selected}`}
               onClick={() => this.setState({ showOnlyNearest: false })}>
