@@ -34,10 +34,6 @@ class MatrixProperty extends Component {
     return this.props.description.MetaData.isReadOnly;
   }
 
-  get logarithmicView() {
-    return this.props.description.MetaData.ViewOptions.Logarithmic;
-  }
-
   onChange(index) {
     return (newValue) => {
       const stateValue = this.props.value;
@@ -48,7 +44,7 @@ class MatrixProperty extends Component {
 
   render() {
     const { description, value } = this.props;
-    const { SteppingValue, MaximumValue, MinimumValue } = description.AdditionalData;
+    const { SteppingValue, MaximumValue, MinimumValue, Exponent } = description.AdditionalData;
     const firstLabel = (
       <span onClick={this.copyUri}>
         { description.Name } { this.descriptionPopup }
@@ -78,12 +74,12 @@ class MatrixProperty extends Component {
                 label={comp.index === 0 ? firstLabel : ' '}
                 placeholder={`value ${comp.index}`}
                 onValueChanged={this.onChange(comp.index)}
+                exponent={Exponent}
                 step={SteppingValue[comp.index] || 0.01}
                 max={MaximumValue[comp.index] || 100}
                 min={MinimumValue[comp.index] || -100}
                 disabled={this.disabled}
                 noTooltip
-                logarithmicScale={this.logarithmicView}
               />
             ))}
           </Row>

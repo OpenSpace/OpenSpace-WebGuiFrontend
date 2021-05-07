@@ -28,10 +28,6 @@ class NumericProperty extends Component {
     return this.props.description.MetaData.isReadOnly;
   }
 
-  get logarithmicView() {
-    return this.props.description.MetaData.ViewOptions.Logarithmic;
-  }
-
   onChange(newValue) {
     this.props.dispatcher.set(newValue);
   }
@@ -49,7 +45,7 @@ class NumericProperty extends Component {
 
   render() {
     const { description, value } = this.props;
-    const { SteppingValue, MaximumValue, MinimumValue } = description.AdditionalData;
+    const { SteppingValue, MaximumValue, MinimumValue, Exponent } = description.AdditionalData;
     return (
       <NumericInput
         value={value}
@@ -57,10 +53,10 @@ class NumericProperty extends Component {
         placeholder={description.Name}
         onValueChanged={this.onChange}
         step={SteppingValue}
+        exponent={Exponent}
         max={MaximumValue}
         min={MinimumValue}
         disabled={this.disabled}
-        logarithmicScale={this.logarithmicView}
       />
     );
   }

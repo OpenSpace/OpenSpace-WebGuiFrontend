@@ -36,10 +36,6 @@ class VectorProperty extends Component {
     return this.props.description.MetaData.isReadOnly;
   }
 
-  get logarithmicView() {
-    return this.props.description.MetaData.ViewOptions.Logarithmic;
-  }
-
   get isColor() {
     if(this.props.value.length < 3 || this.props.value.length > 4) {
       return false;
@@ -87,7 +83,7 @@ class VectorProperty extends Component {
 
   render() {
     const { description } = this.props;
-    const { SteppingValue, MaximumValue, MinimumValue } = description.AdditionalData;
+    const { SteppingValue, MaximumValue, MinimumValue, Exponent } = description.AdditionalData;
     const firstLabel = (<span onClick={this.copyUri}>
       { description.Name } { this.descriptionPopup }
     </span>);
@@ -106,10 +102,10 @@ class VectorProperty extends Component {
             placeholder={`value ${index}`}
             onValueChanged={this.onChange(index)}
             step={SteppingValue[index]}
+            exponent={Exponent}
             max={MaximumValue[index]}
             min={MinimumValue[index]}
             disabled={this.disabled}
-            logarithmicScale={this.logarithmicView}
           />
         ))}
         { this.isColor && (

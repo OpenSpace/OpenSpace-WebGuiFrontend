@@ -20,15 +20,17 @@ class NumericInput extends Component {
       hoverHint: null,
     };
 
-    // The slider is logarithmic, but the scaling of the value increases exponentially.
-    // The exponent of the scaling is set based on the max value, to give a reasonable scale
-    // for ranges of different sizes
-    const exp = (Math.abs(props.max) > 1.0) ? Math.log10(props.max) : 1.0;
-    const scale = props.logarithmicScale ? Scale.scalePow().exponent(exp) : Scale.scaleLinear();
-    this.scale = scale.domain([0, 100]).range([props.min, props.max]);
+    // Prevent setting exponent to zero
+    const exp = (props.exponent == 0) ? 1.0 : props.exponent;
 
-    this.sliderMin = scale.domain()[0];
-    this.sliderMax = scale.domain()[1];
+    // The slider is logarithmic, but the scaling of the value increases exponentially
+    this.scale =  Scale.scalePow()
+                    .exponent(exp)
+                    .domain([0, 100])
+                    .range([props.min, props.max]);
+
+    this.sliderMin = this.scale.domain()[0];
+    this.sliderMax = this.scale.domain()[1];
 
     this.onHover = this.onHover.bind(this);
     this.onLeave = this.onLeave.bind(this);
@@ -111,7 +113,7 @@ class NumericInput extends Component {
     if (this.showTextInput) {
       return (
         <Input
-          {...excludeKeys(this.props, 'reverse onValueChanged inputOnly noHoverHint noTooltip logarithmicScale')}
+          {...excludeKeys(this.props, 'reverse onValueChanged inputOnly noHoverHint noTooltip noValue exponent')}
           type="number"
           value={value}
           onBlur={this.onTextBlur}
@@ -122,8 +124,8 @@ class NumericInput extends Component {
     }
 
     const { placeholder, className, label, wide, reverse, min, max, noValue, step } = this.props;
-    const doNotInclude = 'wide reverse onValueChanged value className type min max step ' +
-                         'inputOnly label noHoverHint noTooltip noValue logarithmicScale';
+    const doNotInclude = 'wide reverse onValueChanged value className type min max step exponent ' +
+                         'inputOnly label noHoverHint noTooltip noValue';
     const inheritedProps = excludeKeys(this.props, doNotInclude);
     const hoverHintOffset = reverse ? 1 - hoverHint : hoverHint;
 
@@ -177,9 +179,9 @@ class NumericInput extends Component {
 NumericInput.propTypes = {
   className: PropTypes.string,
   disabled: PropTypes.bool,
+  exponent: PropTypes.number,
   inputOnly: PropTypes.bool,
   label: PropTypes.node,
-  logarithmicScale: PropTypes.bool,
   max: PropTypes.number,
   min: PropTypes.number,
   reverse: PropTypes.bool,
@@ -196,9 +198,9 @@ NumericInput.propTypes = {
 NumericInput.defaultProps = {
   className: '',
   disabled: false,
+  exponent: 1.0,
   inputOnly: false,
   label: null,
-  logarithmicScale: false,
   max: 100,
   min: 0,
   reverse: false,
