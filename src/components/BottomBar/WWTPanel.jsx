@@ -53,6 +53,7 @@ class WWTPanel extends Component {
     this.hoverLeavesImage = this.hoverLeavesImage.bind(this);
     this.lockTarget = this.lockTarget.bind(this);
     this.unlockTarget = this.unlockTarget.bind(this);
+    this.getCurrentTargetColor = this.getCurrentTargetColor.bind(this);
   }
 
   async componentDidMount(){
@@ -85,6 +86,7 @@ class WWTPanel extends Component {
 
   hoverOnImage(identifier) {
     this.props.luaApi.skybrowser.moveCircleToHoverImage(Number(identifier));
+   
   }
 
   hoverLeavesImage() {
@@ -122,6 +124,10 @@ class WWTPanel extends Component {
 
   unlockTarget(index) {
     this.props.luaApi.skybrowser.unlockTarget(Number(index));
+  }
+
+  getCurrentTargetColor() {
+    return this.state.targetData[this.state.selectedTarget].Color;
   }
 
   getNearestImages() {
@@ -179,7 +185,7 @@ class WWTPanel extends Component {
       data={imageList}
       searchText={"Search from " + imageList.length.toString() + " images..."}
       viewComponent={SkybrowserFocusEntry}
-      viewComponentProps={{"hoverFunc" : this.hoverOnImage, "hoverLeavesImage" : this.hoverLeavesImage}}
+      viewComponentProps={{"hoverFunc" : this.hoverOnImage, "hoverLeavesImage" : this.hoverLeavesImage, "currentTargetColor" : this.getCurrentTargetColor}}
       onSelect={this.onSelect}
       active={this.state.imageName}
       searchAutoFocus

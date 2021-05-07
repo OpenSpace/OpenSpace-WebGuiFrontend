@@ -13,7 +13,8 @@ $arrow-size: 4px;
   }
   &.active {
     background: $ui-background-hover;
-    border-left: 4px solid $blue;
+    border-left-width: 4px solid;
+    border-left-style: solid;
   }
 
 }

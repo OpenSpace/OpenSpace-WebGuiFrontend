@@ -14,17 +14,13 @@ import { jsonToLuaString } from '../../../utils/propertyTreeHelpers';
 class SkybrowserFocusEntry extends Component {
   constructor(props) {
     super(props);
-    this.state = { showImageName: false };
+    this.state = {selectedImageBorderColor: ''}
     this.select = this.select.bind(this);
-    this.setRef = this.setRef.bind(this);
-    //this.showImageNamePopup = this.showImageNamePopup.bind(this);
-    //this.hideImageNamePopup = this.hideImageNamePopup.bind(this);
+    this.setBorderColor = this.setBorderColor.bind(this);
   }
 
-  setRef(what) {
-    return (element) => {
-      this[what] = element;
-    };
+  setBorderColor() {
+    this.setState({ selectedImageBorderColor: 'rgb(' + this.props.currentTargetColor() + ')' });
   }
 
   select(evt) {
@@ -32,97 +28,37 @@ class SkybrowserFocusEntry extends Component {
     if (this.props.onSelect) {
       this.props.onSelect(identifier, evt);
     }
-  }
-  
-  /*
-  showImageNamePopup() {
-    this.setState({ showImageName: true });
+    this.setBorderColor();
   }
 
-  hideImageNamePopup() {
-    this.setState({ showImageName: false });
-  }
-  */
   
   get isActive() {
     return this.props.identifier === this.props.active;
   }
-
-  get position() {
-    if (!this.wrapper) return { top: '0px', left: '0px' }; 
-    const { top, left, right, bottom } = this.wrapper.getBoundingClientRect();
-    return { top: `${bottom} - ${top}`, left: `${right} - ${left}`};
-  }
   
   render() {
     const { name, identifier, url, credits, creditsUrl } = this.props;
-    const { showImageName, showImageInfo } = this.state;
    
     return (
       
-      <li className={`${styles.entry} ${this.isActive && styles.active}`} onClick={this.select}
+      <li className={`${styles.entry} ${this.isActive && styles.active}`} 
+          style={{ borderLeftColor: this.state.selectedImageBorderColor }} 
+          onClick={this.select}
           onMouseEnter={() => {this.props.hoverFunc(this.props.identifier)} }
           onMouseLeave={() => {this.props.hoverLeavesImage()}}>
           <div className={styles.image}>
             <img src={url} alt={name} />
           </div>
-          <div className={styles.imageHeader}>   
-         
+          <div className={styles.imageHeader}>       
             <span 
-            ref={this.setRef('wrapper')}
             className={styles.imageTitle}>
-
-            {/*
-            onMouseEnter={ (name.length > 9 || identifier.length > 9 ? this.showImageNamePopup : this.hideImageNamePopup ) } 
-            onMouseLeave={ this.hideImageNamePopup }         
-              { showImageName && (
-              <TooltipSkybrowser placement="bottom-right" style={this.position}> 
-                { name || identifier } 
-              </TooltipSkybrowser>  
-              )}
-            */}
-
               { name || identifier }   
             </span>
             <InfoBoxSkybrowser 
               title={(name || identifier)} 
               text={credits}  
               textUrl={creditsUrl}>
-           </InfoBoxSkybrowser>
-        
-
-
-            {/*
-            { credits && (
-            <MaterialIcon  icon="help"
-                onMouseEnter={this.showImageInfoPopup}
-                onMouseLeave={this.hideImageInfoPopup}/> 
-            )}
-            { showImageInfo && (
-            <TooltipSkybrowser placement="bottom-left" style={this.position}>
-              <span className={styles.tooltipTitle}> { name || identifier } </span>
-              { credits }
-
-              <Button onClick={() =>  {
-              const newWindow = window.open(creditsUrl, '_blank', 'noopener,noreferrer');
-              if (newWindow) newWindow.opener = null;
-              }}>
-              </Button>
-            </TooltipSkybrowser>
-            )}
-            */}
-
-            {/*<InfoBox text={ credits }></InfoBox> */}
-       
-                
-           {/*
-                        <Picker onClick={() =>  {
-              const newWindow = window.open(creditsUrl, '_blank', 'noopener,noreferrer');
-              if (newWindow) newWindow.opener = null;
-              }}>
-              </Picker>
-           */}
-
+            </InfoBoxSkybrowser>
           </div>
       </li>
     );
