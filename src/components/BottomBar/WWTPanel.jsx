@@ -195,6 +195,9 @@ class WWTPanel extends Component {
       >
         <div className={PopoverSkybrowser.styles.content}>
           <div className={styles.row}>
+          <button onClick={() => this.props.luaApi.skybrowser.adjustCamera(this.state.selectedTarget)}>
+          Camera look at target
+          </button>
           <button onClick={() => this.lockTarget(this.state.selectedTarget)}>
           Lock target
           </button>
