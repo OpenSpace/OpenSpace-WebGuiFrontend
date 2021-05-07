@@ -132,9 +132,9 @@ class WWTPanel extends Component {
       }
       return false;
     });
-    console.log(imgsWithinTarget);
+    //console.log(imgsWithinTarget);
     let nearestImages = imgsWithinTarget.map( function(item, index) {
-      return {"name" : item["name"] , "identifier":  item["identifier"] , "key": item["key"], "url": item["url"] };
+      return {"name" : item["name"] , "identifier":  item["identifier"] , "key": item["key"], "url": item["url"], "credits": item["credits"]  };
     });
 
     return nearestImages;

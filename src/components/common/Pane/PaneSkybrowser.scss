@@ -38,23 +38,6 @@ $border-width: 1px;
   }
 }
 
-
-/*
-.pane .content {
-  height: calc(100% - 80px);
-  :global(.scroll-content) {
-    max-height: auto;
-    &::-webkit-scrollbar {
-      background-color: rgba(145, 145, 145, 0.32);
-    }
-    &:before,
-    &:after {
-      display: none;
-    }
-  }
-}
-*/
-
 .title {
   font-weight: bold;
   letter-spacing: 0.2em;

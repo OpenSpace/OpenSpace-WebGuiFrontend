@@ -1,0 +1,90 @@
+@import "../../../styles/all";
+
+$arrow-size: 4px;
+$background: $ui-background-solid;
+$tooltip-color-light: rgba(255,255,255,0.12);
+$tooltip-color-dark: rgba(15,15,15,0.9); //rgba(60,60,60,0.95);
+
+.tooltip {
+  position: absolute;
+  background: $background;
+  border-radius: $arrow-size;
+  color: $text-color-focus;
+  font-size: 0.8 * $font-size;
+  line-height: 1.4;
+}
+
+.content {
+  max-width: 140px;
+  max-height: 150px;
+  padding: $arrow-size (2 * $arrow-size) (1.5 * $arrow-size);
+  word-wrap: break-word;
+  white-space: normal;
+  overflow: auto;
+  text-overflow: ellipsis;
+  z-index: 10;
+
+}
+
+.tooltipTitle {
+  display: block;
+  font-size: 16px; 
+  color: rgba(255,255,255,0.6); 
+}
+
+.tooltipButton {
+font-size: 11px;
+padding: 4px;
+border-radius: 4px;
+margin-top: 6px;
+background-color: rgba(70,70,70,0.8);
+}
+
+
+// placement
+.bottom-right {
+ max-width: 100px;
+ background-color: $tooltip-color-light;
+ transform: translate(0, 25px);
+}
+
+.bottom-left {
+  width: 120px;
+  background-color: $tooltip-color-dark;
+  transform: translate(-80px, 2px);
+ }
+
+.fixed {
+  position: fixed !important;
+}
+
+// arrow style
+.tooltip::after {
+  content: "";
+  display:block;
+  height: 0;
+  width: 0;
+  position: absolute;
+
+  border-color: transparent;
+  border-style: solid;
+  border-width: $arrow-size;
+
+  margin-left: -$arrow-size;
+  pointer-events: none;
+}
+
+// arrow placement
+.bottom-right::after {
+  border-bottom-color:$tooltip-color-light; //rgba(255,255,255,0.3);
+  top: -2*$arrow-size;
+  left: 1.5*$arrow-size;
+}
+
+.bottom-left::after {
+  border-bottom-color: $tooltip-color-dark; //rgba(255,255,255,0.3);
+  top: -2*$arrow-size;
+  left: 88px;
+}
+
+
