@@ -1,0 +1,124 @@
+@import "../../../../styles/all";
+@import "../Input/Input";
+
+// wrapper element
+.inputGroup {
+  position: relative;
+  box-sizing: border-box;
+  height: $input-total-height;
+}
+
+// the descriptive label
+.rangeLabel {
+  @extend .label;
+  display: block;
+  pointer-events: none;
+
+  > span > span {
+    pointer-events: all;
+  }
+
+  z-index: 4 !important; // same as top slider
+}
+
+// display value
+.leftValue, .rightValue {
+  position: absolute;
+  bottom: $padding-bottom;
+  pointer-events: none;
+}
+
+.leftValue {
+  left: $padding-horizontal;
+}
+
+.rightValue {
+  right: $padding-horizontal;
+}
+
+.wide,
+.wide .inputGroup {
+  width: 100%;
+}
+
+// mouse-tracking hover event
+.hoverHint {
+  background: rgba($blue, 0.3);
+  height: 100%;
+  left: 0;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+}
+
+// state changes
+.inputGroup {
+  .range:focus + .rangeLabel {
+    color: $green;
+  }
+
+  &:hover {
+    background: $ui-background-active;
+
+    .rangeLabel {
+      color: $text-color-focus;
+    }
+  }
+}
+
+// removing the default appearance
+.range,
+.range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+}
+
+.range {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  outline: none;
+  margin: 0;
+  background: transparent;
+
+  &:hover {
+    background: transparent;
+  }
+
+  // TODO: make backgrounds behave better
+
+  &.mainSlider {
+    background: $ui-background-hover;
+  }
+
+  // this cannot be completely removed, as that breaks the input.
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 100%;
+    width: 1px;
+    background: transparent;
+  }
+}
+
+.sliderProgress {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+
+  // calculate the width of the background bar using variables set in the component
+  --normalized-minValue: calc(var(--minValue) - var(--min));
+  --normalized-maxValue: calc(var(--maxValue) - var(--min));
+  --diff: calc(var(--normalized-maxValue) - var(--normalized-minValue));
+  --full-width: calc(var(--max) - var(--min));
+  --bg-start: calc(100% * var(--normalized-minValue) / var(--full-width));
+  --bg-stop: calc(100% * var(--diff) / var(--full-width) + var(--bg-start));
+
+    transition: $background-transition;
+    background: linear-gradient(
+      to right,
+      transparent var(--bg-start),
+      $ui-background-hover var(--bg-start) var(--bg-stop),
+      transparent var(--bg-stop)
+    );
+}
