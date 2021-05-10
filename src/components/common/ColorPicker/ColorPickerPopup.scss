@@ -1,21 +1,5 @@
 @import "../../../styles/all";
 
-$arrow-size: 4px;
-$background: $ui-background-solid;
-
-.popup {
-  background: $background;
-  border-radius: $arrow-size;
-  color: $text-color-focus;
-  font-size: 0.8 * $font-size;
-  line-height: 1.4;
-  padding: (1.5 * $arrow-size);
-  white-space: normal;
-  z-index: 10;
-
-  position: fixed !important;
-}
-
 .colorSwatch {
   width: 1.7em;
   height: 1.7em;
@@ -35,30 +19,4 @@ $background: $ui-background-solid;
 
 .colorOverlay {
   z-index: 2;
-}
-
-// placement
-.right {
-  left: unquote("calc(100% + #{$arrow-size})");
-  transform: translateY(-50%);
-}
-
-// arrow style
-.popup::after {
-  border-color: transparent;
-  border-style: solid;
-  border-width: $arrow-size;
-  content: " ";
-  height: 0;
-  margin-left: -$arrow-size;
-  pointer-events: none;
-  position: absolute;
-  width: 0;
-}
-
-// arrow placement style
-.right::after {
-  top: 50%;
-  right: 100%;
-  border-right-color: $background;
 }
