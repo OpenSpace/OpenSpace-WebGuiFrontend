@@ -86,7 +86,7 @@ class WWTPanel extends Component {
 
   hoverOnImage(identifier) {
     this.props.luaApi.skybrowser.moveCircleToHoverImage(Number(identifier));
-   
+
   }
 
   hoverLeavesImage() {
@@ -154,7 +154,7 @@ class WWTPanel extends Component {
       }
       return false;
     });
-    
+
     let distPow2 = function(a, b) {
       return (a - b)*(a - b);
     };
@@ -203,15 +203,7 @@ class WWTPanel extends Component {
       >
         <div className={PopoverSkybrowser.styles.content}>
           <div className={styles.row}>
-          <Button onClick={() => this.props.luaApi.skybrowser.adjustCamera(this.state.selectedTarget)}>
-          Camera look at target
-          </Button>
-          <Button onClick={() => this.lockTarget(this.state.selectedTarget)}>
-          Lock target
-          </Button>
-          <Button onClick={() => this.unlockTarget(this.state.selectedTarget)}>
-          Unlock target
-          </Button>
+
             <Picker
               className={`${styles.picker} ${this.state.showOnlyNearest ? styles.unselected: styles.selected}`}
               onClick={() => this.setState({ showOnlyNearest: false })}>
@@ -222,6 +214,17 @@ class WWTPanel extends Component {
               onClick={() => this.setState({ showOnlyNearest: true })}>
                 <span>Nearby images</span> {/*<MaterialIcon className={styles.photoIcon} icon="my_location" />*/}
             </Picker>
+            {/*
+            <Button onClick={() => this.props.luaApi.skybrowser.adjustCamera(this.state.selectedTarget)}>
+            Camera look at target
+            </Button>
+            <Button onClick={() => this.lockTarget(this.state.selectedTarget)}>
+            Lock target
+            </Button>
+            <Button onClick={() => this.unlockTarget(this.state.selectedTarget)}>
+            Unlock target
+            </Button>
+            */ }
           </div>
           {/*
             <Checkbox
