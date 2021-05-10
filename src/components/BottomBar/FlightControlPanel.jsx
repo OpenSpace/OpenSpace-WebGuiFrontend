@@ -213,7 +213,7 @@ class FlightControlPanel extends Component {
       <div className={Picker.Wrapper}>
         <Picker onClick={this.togglePopover}>
           <div>
-            <MaterialIcon icon="open_with" />
+            <MaterialIcon className={styles.icon} icon="open_with" />
           </div>
         </Picker>
         { popoverVisible && this.popover }
