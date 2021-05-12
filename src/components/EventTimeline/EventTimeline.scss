@@ -1,0 +1,24 @@
+@import "../../styles/all";
+
+.graph {
+	position: fixed;
+	left: 50%;
+	bottom: 0;
+	width: 100%;
+	min-width: 1024px;
+	max-width: 1440px;
+	height: 200px;
+	padding-top: 0;
+	transform: translateX(-50%);
+	clip-path: inset(-100% 0 60px 0px);	// to clear the bottom bar
+	
+	svg {
+		width: 100%;
+		overflow: visible;
+		top: 0;
+		
+		text {
+			text-transform: uppercase;
+		}
+	}
+}
