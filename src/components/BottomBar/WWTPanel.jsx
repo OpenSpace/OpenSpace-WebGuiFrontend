@@ -54,6 +54,7 @@ class WWTPanel extends Component {
     this.lockTarget = this.lockTarget.bind(this);
     this.unlockTarget = this.unlockTarget.bind(this);
     this.getCurrentTargetColor = this.getCurrentTargetColor.bind(this);
+    this.onToggleWWT = this.onToggleWWT.bind(this);
   }
 
   async componentDidMount(){
@@ -131,6 +132,12 @@ class WWTPanel extends Component {
   getCurrentTargetColor() {
     return this.state.targetData[this.state.selectedTarget].Color;
   }
+
+  onToggleWWT() {
+    this.togglePopover();
+    this.props.luaApi.skybrowser.loadImagesToWWT();
+  }
+
 
   getNearestImages() {
     let targetPoint = this.state.cameraData;
@@ -248,7 +255,7 @@ class WWTPanel extends Component {
 
       <div className={Picker.Wrapper}>
         {
-          <Picker onClick={this.togglePopover}>
+          <Picker onClick={this.onToggleWWT}>
             <div>
               <MaterialIcon className={styles.photoIcon} icon="picture_in_picture" />
             </div>
