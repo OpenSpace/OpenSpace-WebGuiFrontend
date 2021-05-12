@@ -4,7 +4,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import styles from './EventTimeline.scss';
-const TWEEN = require('tween.js');
+const TWEEN = require('@tweenjs/tween.js')
 import { throttle } from 'lodash/function';
 
 if (!Math.degToRad) {
@@ -97,19 +97,15 @@ class EventTimeline extends Component {
   get renderTimeLine() {
     return (
       <g>
-        <mask id="myMask">
-          <rect x="0" y="0" width="100" height="100" fill="white" />
-          <rect x="50" y="0" width="50" height="100" fill="black" />
-        </mask>
         <ellipse cx="50" cy="50" rx={ellipseRadii.x} ry={ellipseRadii.y} stroke="rgba(255,255,255,0.65)" strokeWidth="0.2" fill="none" />
-        <ellipse cx="50" cy="50" rx={ellipseRadii.x} ry={ellipseRadii.y} stroke="white" strokeWidth="0.25" fill="none" mask="url(#myMask)" />
+        <ellipse cx="50" cy="50" rx={ellipseRadii.x} ry={ellipseRadii.y} stroke="white" strokeWidth="0.25" fill="none" clipPath="url(#rightHalfDimMask)" />
         <line
           x1={50}  // inner radius of line
           y1={50 - ellipseRadii.y - 0.3}  // inner radius of line
           x2={50}  // outer radius of line
           y2={50 - ellipseRadii.y + 0.3}  // outer radius of line
           stroke="white" strokeWidth="0.2" />
-        </g>
+      </g>
     );
   }
 
@@ -144,8 +140,8 @@ class EventTimeline extends Component {
     if (!time) return;  // guard
 
     const fontSize = 1; // px
-    const eventTimeLineSpanDegrees = 65;
-    const declutterAngle = 5; // hide titles when events too close together
+    const eventTimeLineSpanDegrees = 65.5;  // Section of ellipse that is used to map the events on
+    const declutterAngle = 6;               // hide titles when events too close together
 
     this.calculateDesiredSpan();
     const visibleTimeSpan = this.state.timelineParams.desiredSpan / this.state.timelineParams.zoom;
@@ -255,7 +251,12 @@ class EventTimeline extends Component {
 
           <div className={`${styles.graph}`} onWheel={(e) => this.onWheel(e)}>
 
-            <svg viewBox="0 0 100 100">
+          <svg viewBox="0 -1 100 100">      {/* min-y=-1 to ensure that the ellipse stroke doesn't get clipped*/}
+            <defs>
+              <clipPath id="rightHalfDimMask">
+                <rect x="0" y="-1" width="50" height="100" />
+              </clipPath>
+            </defs>
               {this.renderTimeLine}
               {this.renderEvents}
             </svg>

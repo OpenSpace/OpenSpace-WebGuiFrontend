@@ -3,14 +3,14 @@
 .graph {
 	position: fixed;
 	left: 50%;
-	bottom: 60px;
+	bottom: 0;
 	width: 100%;
-	min-width: 800px;
+	min-width: 1024px;
 	max-width: 1440px;
-	height: 150px;
-	padding-top: 60px;
+	height: 200px;
+	padding-top: 0;
 	transform: translateX(-50%);
-	overflow: hidden;
+	clip-path: inset(-100% 0 60px 0px);	// to clear the bottom bar
 	
 	svg {
 		width: 100%;
