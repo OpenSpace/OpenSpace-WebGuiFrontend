@@ -230,7 +230,7 @@ class EventTimeline extends Component {
     const absDelta = - normalized * zoomStep * visibleTimeSpan;
     const newZoom = (desiredSpan * zoom - absDelta) / desiredSpan;
 
-    new TWEEN.Tween(this.state.timelineParams).to({ zoom: newZoom }, 200).start();
+    new TWEEN.Tween(this.state.timelineParams).to({ zoom: newZoom }, 200).easing(TWEEN.Easing.Quadratic.InOut).start();
   }
 
 
