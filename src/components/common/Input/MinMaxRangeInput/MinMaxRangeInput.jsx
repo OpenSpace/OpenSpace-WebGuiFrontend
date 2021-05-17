@@ -365,7 +365,7 @@ MinMaxRangeInput.propTypes = {
   noTooltip: PropTypes.bool,
   onMinValueChanged: PropTypes.func,
   onMaxValueChanged: PropTypes.func,
-  placeholder: PropTypes.string.isRequired,
+  placeholder: PropTypes.string,
   step: PropTypes.number,
   wide: PropTypes.bool,
 };
@@ -379,6 +379,7 @@ MinMaxRangeInput.defaultProps = {
   noTooltip: false,
   onMinValueChanged: () => {},
   onMaxValueChanged: () => {},
+  placeholder: 'value',
   step: 1,
   wide: true,
 };

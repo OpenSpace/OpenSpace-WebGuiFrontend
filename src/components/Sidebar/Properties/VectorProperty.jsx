@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import NumericInput from '../../common/Input/NumericInput/NumericInput';
+import MinMaxRangeInput from '../../common/Input/MinMaxRangeInput/MinMaxRangeInput';
 import Row from '../../common/Row/Row';
 import InfoBox from '../../common/InfoBox/InfoBox';
 import styles from './Property.scss';
@@ -13,6 +14,7 @@ class VectorProperty extends Component {
     this.copyUri = this.copyUri.bind(this);
     this.valueToColor = this.valueToColor.bind(this);
     this.onColorPickerChange = this.onColorPickerChange.bind(this);
+    this.asMinMaxRange = this.asMinMaxRange.bind(this);
   }
 
   componentDidMount() {
@@ -45,6 +47,14 @@ class VectorProperty extends Component {
 
   get hasAlpha() {
     return this.isColor && this.props.value.length == 4;
+  }
+
+  get isMinMaxRange() {
+    const isVec2 = this.props.value.length == 2;
+    if (!isVec2) {
+      return false;
+    }
+    return this.props.description.MetaData.ViewOptions.MinMaxRange;
   }
 
   valueToColor() {
@@ -81,6 +91,37 @@ class VectorProperty extends Component {
     this.props.dispatcher.set(newValue);
   }
 
+  asMinMaxRange() {
+    if (!this.isMinMaxRange) return;
+
+    const { description } = this.props;
+    const { SteppingValue, MaximumValue, MinimumValue, Exponent } = description.AdditionalData;
+    const label = (<span onClick={this.copyUri}>
+      { description.Name } { this.descriptionPopup }
+    </span>);
+    const values = this.props.value;
+
+    // Different step sizes does not make sense here, so just use the minimum
+    const stepSize = Math.min(...SteppingValue);
+
+    return (
+      <Row className={styles.vectorProperty}>
+        <MinMaxRangeInput
+          valueMin={values[0]}
+          valueMax={values[1]}
+          label={label}
+          onMinValueChanged={this.onChange(0)}
+          onMaxValueChanged={this.onChange(1)}
+          step={stepSize}
+          exponent={Exponent}
+          max={Math.max(...MaximumValue)}
+          min={Math.min(...MinimumValue)}
+          disabled={this.disabled}
+        />
+      </Row>
+    );
+  }
+
   render() {
     const { description } = this.props;
     const { SteppingValue, MaximumValue, MinimumValue, Exponent } = description.AdditionalData;
@@ -91,6 +132,10 @@ class VectorProperty extends Component {
     // eslint-disable-next-line react/no-array-index-key
     const values = this.props.value
       .map((value, index) => ({ key: `${description.Name}-${index}`, value }));
+
+    if (this.isMinMaxRange) {
+      return this.asMinMaxRange();
+    }
 
     return (
       <Row className={styles.vectorProperty}>
