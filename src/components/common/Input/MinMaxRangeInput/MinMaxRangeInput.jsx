@@ -83,27 +83,25 @@ class MinMaxRangeInput extends Component {
   }
 
   scaleValueToSlider(value) {
-    return this.scale.invert(value)
+    return this.scale.invert(value);
   }
 
   valueFromSliderPos(sliderValue) {
-    return this.scale(sliderValue)
+    return this.roundValueToStepSize(this.scale(sliderValue));
   }
 
   roundValueToStepSize(value) {
+    // TODO: this should be able to handle any step size.
+    // Now it only deals with exponents of 10
     return round10(value, Math.log10(this.props.step));
   }
 
-  updateMinValue(value) {
-    const newValue = this.roundValueToStepSize(value);
-
+  updateMinValue(newValue) {
     this.setState({ minValue: newValue });
     this.props.onMinValueChanged(newValue);
   }
 
-  updateMaxValue(value) {
-    const newValue = this.roundValueToStepSize(value);
-
+  updateMaxValue(newValue) {
     this.setState({ maxValue: newValue });
     this.props.onMaxValueChanged(newValue);
   }
@@ -274,9 +272,7 @@ class MinMaxRangeInput extends Component {
     // HoverHint is in [0, 1]. Scale to full range
     const scaledHoverHintOffset = (max - min) * hoverHint + min;
 
-    // Round to match the given step size
-    let tooltipValue = this.valueFromSliderPos(scaledHoverHintOffset);
-    tooltipValue = this.roundValueToStepSize(tooltipValue);
+    const tooltipValue = this.valueFromSliderPos(scaledHoverHintOffset);
 
     return (
       <div
@@ -309,7 +305,7 @@ class MinMaxRangeInput extends Component {
           step={step}
           onChange={event => {
             // make sure we don't pass the max slider
-            const sliderValue = Math.min(Number(event.target.value), scaledMaxValue - step);
+            const sliderValue = Math.min(event.currentTarget.value, scaledMaxValue - step);
             const value = this.valueFromSliderPos(sliderValue);
             this.updateMinValue(value);
           }}
@@ -331,7 +327,7 @@ class MinMaxRangeInput extends Component {
           step={step}
           onChange={event => {
             // make sure we don't pass the min slider
-            const sliderValue = Math.max(Number(event.target.value), scaledMinValue + step);
+            const sliderValue = Math.max(event.currentTarget.value, scaledMinValue + step);
             const value = this.valueFromSliderPos(sliderValue);
             this.updateMaxValue(value);
           }}
@@ -342,10 +338,10 @@ class MinMaxRangeInput extends Component {
           { label || placeholder }
         </label>
         <span className={styles.leftValue}>
-          {minValue}
+          { this.roundValueToStepSize(minValue) }
         </span>
         <span className={styles.rightValue}>
-          {maxValue}
+          { this.roundValueToStepSize(maxValue) }
         </span>
       </div>
     );
