@@ -63,7 +63,7 @@ class ColorPickerPopup extends Component {
   }
 
   render() {
-    const { color, disableAlpha, onChange } = this.props;
+    const { color, disableAlpha, disabled, onChange } = this.props;
 
     const colorSwatchBg = {
       background: `rgba(${ color.r }, ${ color.g }, ${ color.b }, ${ color.a })`
@@ -85,7 +85,7 @@ class ColorPickerPopup extends Component {
             </div>
           </div>
           </Button>
-        { this.state.showPopup && (
+        { !disabled && this.state.showPopup && (
             <Tooltip
               fixed
               placement="right"
@@ -106,11 +106,13 @@ class ColorPickerPopup extends Component {
 ColorPickerPopup.propTypes = {
   color: PropTypes.object.isRequired,
   disableAlpha: PropTypes.bool,
+  disabled: PropTypes.bool,
   onChange: PropTypes.func
 };
 
 ColorPickerPopup.defaultProps = {
-  disableAlpha: false
+  disableAlpha: false,
+  disabled: false
 };
 
 export default ColorPickerPopup;

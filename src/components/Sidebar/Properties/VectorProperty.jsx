@@ -118,6 +118,7 @@ class VectorProperty extends Component {
             color={this.valueToColor()}
             onChange={this.onColorPickerChange}
             placement="right"
+            disabled={this.disabled}
           />
         )}
       </Row>
