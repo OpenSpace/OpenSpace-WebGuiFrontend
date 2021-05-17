@@ -250,6 +250,7 @@ class OriginPicker extends Component {
           <Popover closeCallback={enabled && this.togglePopover}
                    title="Navigation"
                    className={Picker.Popover}
+                   detachable
                    attached={true}>
             <div>
               <Button className={styles.NavigationButton}
