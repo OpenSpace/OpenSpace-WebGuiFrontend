@@ -91,7 +91,9 @@ class NumericInput extends Component {
 
   onTextBlur(event) {
     const value = Number.parseFloat(event.currentTarget.value);
-    this.updateValue(value);
+    if(!isNaN(value)) {
+      this.updateValue(value);
+    }
     this.disableTextInput();
   }
 
