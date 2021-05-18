@@ -198,7 +198,7 @@ class NumericInput extends Component {
           { label || placeholder }
         </label>
         <span className={styles.value}>
-          {noValue ? "" : value}
+          {noValue ? "" : this.roundValueToStepSize(value)}
         </span>
       </div>
     );
