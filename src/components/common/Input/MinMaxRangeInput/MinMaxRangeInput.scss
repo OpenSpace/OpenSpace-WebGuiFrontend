@@ -118,7 +118,7 @@
     background: linear-gradient(
       to right,
       transparent var(--bg-start),
-      $ui-background-hover var(--bg-start) var(--bg-stop),
+      $ui-background-slider-input var(--bg-start) var(--bg-stop),
       transparent var(--bg-stop)
     );
 }

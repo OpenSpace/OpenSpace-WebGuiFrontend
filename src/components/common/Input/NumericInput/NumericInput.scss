@@ -106,7 +106,7 @@
 
   &::-webkit-slider-runnable-track {
     transition: $background-transition;
-    background: linear-gradient(to right, $ui-background-hover var(--bg-width), transparent var(--bg-width));
+    background: linear-gradient(to right, $ui-background-slider-input var(--bg-width), transparent var(--bg-width));
     height: 100%;
     min-width: 2px;
   }
@@ -114,7 +114,7 @@
 
 .reverse .range::-webkit-slider-runnable-track {
   transition: $background-transition;
-  background: linear-gradient(to left, $ui-background-hover var(--bg-width), transparent var(--bg-width));
+  background: linear-gradient(to left, $ui-background-slider-input var(--bg-width), transparent var(--bg-width));
   height: 100%;
   min-width: 2px;
 }
