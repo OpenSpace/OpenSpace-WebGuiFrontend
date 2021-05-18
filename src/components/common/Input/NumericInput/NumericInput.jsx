@@ -40,16 +40,10 @@ class NumericInput extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    // Update state value variable when we get new props
     if (prevProps.value !== this.props.value) {
       this.setState({ value: this.props.value });
     }
-  }
-
-  static getDerivedStateFromProps(nextProps, prevState) {
-    if (nextProps.value != prevState.value) {
-      return { value: nextProps.value }
-    }
-    else return null; // State wasn't changed
   }
 
   /**
