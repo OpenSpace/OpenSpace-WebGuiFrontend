@@ -27,7 +27,7 @@ class MinMaxRangeInput extends Component {
     this.setRef = this.setRef.bind(this);
     
     this.updateSliderScale = this.updateSliderScale.bind(this);
-    this.scaleValueToSlider = this.scaleValueToSlider.bind(this);
+    this.valueToSliderPos = this.valueToSliderPos.bind(this);
     this.valueFromSliderPos = this.valueFromSliderPos.bind(this);
 
     this.roundValueToStepSize = this.roundValueToStepSize.bind(this);
@@ -82,7 +82,7 @@ class MinMaxRangeInput extends Component {
             .range([min, max]);
   }
 
-  scaleValueToSlider(value) {
+  valueToSliderPos(value) {
     return this.scale.invert(value);
   }
 
@@ -125,8 +125,8 @@ class MinMaxRangeInput extends Component {
 
     // We have to map the value to the slider scale, to get the correct position
     // (note that we don't do this for min and max, as they are the same for any scale)
-    const scaledMinValue = this.scaleValueToSlider(minValue);
-    const scaledMaxValue = this.scaleValueToSlider(maxValue);
+    const scaledMinValue = this.valueToSliderPos(minValue);
+    const scaledMaxValue = this.valueToSliderPos(maxValue);
 
     const normalizedMinValue = (scaledMinValue - min) / (max - min);
     const normalizedMaxValue = (scaledMaxValue - min) / (max - min);
@@ -266,8 +266,8 @@ class MinMaxRangeInput extends Component {
     }
 
     // Scale values for exponential slider
-    const scaledMinValue = this.scaleValueToSlider(minValue);
-    const scaledMaxValue = this.scaleValueToSlider(maxValue);
+    const scaledMinValue = this.valueToSliderPos(minValue);
+    const scaledMaxValue = this.valueToSliderPos(maxValue);
 
     // HoverHint is in [0, 1]. Scale to full range
     const scaledHoverHintOffset = (max - min) * hoverHint + min;
