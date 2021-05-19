@@ -21,7 +21,7 @@ class InfoBoxSkybrowser extends Component {
     this.handleOutsideClick = this.handleOutsideClick.bind(this);
   }
 
-  
+
   setRef(what) {
     return (element) => {
       this[what] = element;
@@ -38,7 +38,7 @@ class InfoBoxSkybrowser extends Component {
     const newWindow = window.open(imageUrl, '_blank', 'noopener,noreferrer');
     if (newWindow) newWindow.opener = null;
   }
-  
+
   handleOutsideClick(evt) {
     if (this.wrapper && !this.wrapper.contains(evt.target)) {
       this.hidePopup();
@@ -65,25 +65,25 @@ class InfoBoxSkybrowser extends Component {
     const { icon, text, title, textUrl} = this.props;
     const { showPopup } = this.state;
     return (
-      <span ref={this.setRef('wrapper')}>   
-        <MaterialIcon 
-        icon={icon} 
-        onMouseEnter={this.showPopup} 
-        onMouseLeave={() => setTimeout(this.checkIfTooltipActive, 500)} 
+      <span ref={this.setRef('wrapper')}>
+        <MaterialIcon
+        icon={icon}
+        onMouseEnter={this.showPopup}
+        onMouseLeave={() => setTimeout(this.checkIfTooltipActive, 500)}
         style={{fontSize: '15px'}}>
         </MaterialIcon>
             { showPopup && (
-                <TooltipSkybrowser 
-                placement="bottom-left" 
-                style={this.position} 
-                onMouseEnter={this.tooltipActive} 
+                <TooltipSkybrowser
+                placement="bottom-left"
+                style={this.position}
+                onMouseEnter={this.tooltipActive}
                 onMouseLeave={this.hidePopup}>
                 <span className={styles.tooltipTitle}> { title } </span>
                 { text }
                 { text && (
                     <Button className={styles.tooltipButton} onClick={ () =>this.openImageUrl(textUrl) }>
                     Discover more
-                    </Button> 
+                    </Button>
                 )}
                 </TooltipSkybrowser>
             )}

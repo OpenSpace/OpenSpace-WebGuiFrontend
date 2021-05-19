@@ -31,35 +31,41 @@ class SkybrowserFocusEntry extends Component {
     this.setBorderColor();
   }
 
-  
+
   get isActive() {
     return this.props.identifier === this.props.active;
   }
-  
+
   render() {
-    const { name, identifier, url, credits, creditsUrl } = this.props;
-   
+    const { name, identifier, thumbnail, credits, creditsUrl, has3dCoords } = this.props;
+    const image3dbutton = has3dCoords ? <MaterialIcon
+      icon={'add_circle'}
+      style={{fontSize: '15px'}}
+      onClick={() => {this.props.add3dImage(identifier)}}>
+      </MaterialIcon> : "";
+
     return (
-      
-      <li className={`${styles.entry} ${this.isActive && styles.active}`} 
-          style={{ borderLeftColor: this.state.selectedImageBorderColor }} 
+
+      <li className={`${styles.entry} ${this.isActive && styles.active}`}
+          style={{ borderLeftColor: this.state.selectedImageBorderColor }}
           onClick={this.select}
           onMouseEnter={() => {this.props.hoverFunc(this.props.identifier)} }
           onMouseLeave={() => {this.props.hoverLeavesImage()}}>
           <div className={styles.image}>
-            <img src={url} alt={name} />
+            <img src={thumbnail} alt={name} />
           </div>
-          <div className={styles.imageHeader}>       
-            <span 
+          <div className={styles.imageHeader}>
+            <span
             className={styles.imageTitle}>
-              { name || identifier }   
+              { name || identifier }
             </span>
-            <InfoBoxSkybrowser 
-              title={(name || identifier)} 
-              text={credits}  
+            <InfoBoxSkybrowser
+              title={(name || identifier)}
+              text={credits}
               textUrl={creditsUrl}>
             </InfoBoxSkybrowser>
           </div>
+          {image3dbutton}
       </li>
     );
   }

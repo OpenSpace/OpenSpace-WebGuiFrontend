@@ -40,9 +40,9 @@ class WWTPanel extends Component {
     this.state = {
       imageName: undefined,
       showOnlyNearest: true,
-      targetData: [{RA: 0, Dec: 0}],
+      targetData: [{ra: 0, dec: 0}],
       selectedTarget: 0,
-      cameraData: {FOV : 70, RA: 0, Dec: 0}
+      cameraData: {FOV : 70, ra: 0, dec: 0}
     };
     this.togglePopover = this.togglePopover.bind(this);
     this.onSelect = this.onSelect.bind(this);
@@ -50,11 +50,13 @@ class WWTPanel extends Component {
     this.getAllImages = this.getAllImages.bind(this);
     this.getNearestImages = this.getNearestImages.bind(this);
     this.getTargetData = this.getTargetData.bind(this);
+    this.add3dImage = this.add3dImage.bind(this);
     this.hoverLeavesImage = this.hoverLeavesImage.bind(this);
     this.lockTarget = this.lockTarget.bind(this);
     this.unlockTarget = this.unlockTarget.bind(this);
     this.getCurrentTargetColor = this.getCurrentTargetColor.bind(this);
     this.onToggleWWT = this.onToggleWWT.bind(this);
+    this.getImagesWith3Dcoord = this.getImagesWith3Dcoord.bind(this);
   }
 
   async componentDidMount(){
@@ -94,6 +96,10 @@ class WWTPanel extends Component {
     this.props.luaApi.skybrowser.disableHoverCircle();
   }
 
+  add3dImage(identifier) {
+    this.props.luaApi.skybrowser.create3dSkyBrowser(Number(identifier));
+  }
+
   async getTargetData() {
     try {
       let target = await this.props.luaApi.skybrowser.getTargetData();
@@ -103,14 +109,15 @@ class WWTPanel extends Component {
       target = target.slice(1);
       this.setState({
         targetData: target,
-        cameraData: {FOV: camera.WindowHFOV, CartesianDirection: camera.CartesianDirection, RA : camera.RA, Dec: camera.Dec},
-        selectedTarget: camera.SelectedBrowserIndex
+        cameraData: {FOV: camera.windowHFOV, cartesianDirection: camera.cartesianDirection, ra : camera.ra, dec: camera.dec},
+        selectedTarget: camera.selectedBrowserIndex
       });
-      console.log(this.state.selectedTarget);
+      //console.log(this.state.selectedTarget);
     }
     catch(e) {
       console.log(e);
     }
+
   }
 
   getAllImages() {
@@ -130,7 +137,7 @@ class WWTPanel extends Component {
   }
 
   getCurrentTargetColor() {
-    return this.state.targetData[this.state.selectedTarget].Color;
+    return this.state.targetData[this.state.selectedTarget].color;
   }
 
   onToggleWWT() {
@@ -138,6 +145,15 @@ class WWTPanel extends Component {
     this.props.luaApi.skybrowser.loadImagesToWWT();
   }
 
+  getImagesWith3Dcoord() {
+    let imagesWith3DPosition = this.props.systemList.filter(function(img) {
+      if(img["has3dCoords"] == true) {
+        return true;
+      }
+      return false;
+    });
+    return imagesWith3DPosition;
+  }
 
   getNearestImages() {
     let targetPoint = this.state.cameraData;
@@ -152,11 +168,11 @@ class WWTPanel extends Component {
 
     // Only load images that have coordinates within current window
     let imgsWithinTarget = this.props.systemList.filter(function(img) {
-      if(img["hasCoords"] == false) {
+      if(img["hasCelestialCoords"] == false) {
         return false; // skip
       }
-      else if (isWithinFOV(img["RA"], targetPoint.RA, searchRadius) &&
-               isWithinFOV(img["Dec"], targetPoint.Dec, searchRadius)) {
+      else if (isWithinFOV(img["ra"], targetPoint.ra, searchRadius) &&
+               isWithinFOV(img["dec"], targetPoint.dec, searchRadius)) {
               return true;
       }
       return false;
@@ -169,7 +185,7 @@ class WWTPanel extends Component {
     let euclidianDistance = function (a, b) {
       let sum = 0;
       for(let i = 0; i < 3; i++) {
-          sum += distPow2(a.CartesianDirection[i], b.CartesianDirection[i])
+          sum += distPow2(a.cartesianDirection[i], b.cartesianDirection[i])
       }
       let distance = Math.sqrt(sum);
       return distance;
@@ -187,14 +203,16 @@ class WWTPanel extends Component {
   get popover() {
    const imageNameLabel = <span>Image name</span>;
 
-   let imageList = this.state.showOnlyNearest ? this.getNearestImages() : this.getAllImages();
+  let imageList = this.state.showOnlyNearest ? this.getNearestImages() : this.getAllImages();
+  //let imageList = this.state.showOnlyNearest ? this.getImagesWith3Dcoord() : this.getAllImages();
 
    let filterList = <FilterList
       className={styles.filterList}
       data={imageList}
       searchText={"Search from " + imageList.length.toString() + " images..."}
       viewComponent={SkybrowserFocusEntry}
-      viewComponentProps={{"hoverFunc" : this.hoverOnImage, "hoverLeavesImage" : this.hoverLeavesImage, "currentTargetColor" : this.getCurrentTargetColor}}
+      viewComponentProps={{"hoverFunc" : this.hoverOnImage, "hoverLeavesImage" : this.hoverLeavesImage,
+        "currentTargetColor" : this.getCurrentTargetColor, "add3dImage" : this.add3dImage}}
       onSelect={this.onSelect}
       active={this.state.imageName}
       searchAutoFocus
