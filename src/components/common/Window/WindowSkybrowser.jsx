@@ -6,6 +6,7 @@ import MaterialIcon from '../MaterialIcon/MaterialIcon';
 import Button from '../Input/Button/Button';
 import { excludeKeys } from '../../../utils/helpers';
 import { Resizable } from 're-resizable';
+import SkybrowserTabs from '../../common/Tabs/SkybrowserTabs';
 
 const onResizeStop = (e, direction, ref, delta) => {
 };
@@ -41,11 +42,11 @@ const WindowSkybrowser = (props) => {
           topLeft: false,
         }}
         defaultSize={{
-          width:350,
-          height:380,
+          width:360,
+          height:400,
         }}
         minWidth={250}
-        minHeight={250}
+        minHeight={280}
         handleClasses={{
           top: styles.topHandle,
           right: styles.rightHandle,
@@ -64,10 +65,15 @@ const WindowSkybrowser = (props) => {
               <MaterialIcon icon="close" className="small" />
             </Button>
           )}
-          </header>     
-          <section className={styles.filler}>
-          { children }
+          </header>  
+          <div className={styles.content}>
+          <section className={styles.imageContent}>   
+            { children }         
           </section>
+          <section>
+            {/*<SkybrowserTabs> </SkybrowserTabs>*/}
+          </section>
+          </div>  
         </Resizable>
       </section>
     </Draggable>

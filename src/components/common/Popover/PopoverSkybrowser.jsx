@@ -11,7 +11,7 @@ import WindowSkybrowser from '../Window/WindowSkybrowser';
 import SmallLabel from '../../common/SmallLabel/SmallLabel';
 import TabMenu from '../../Sidebar/TabMenu/TabMenu';
 import PaneSkybrowser from '../Pane/PaneSkybrowser';
-
+import SkybrowserTabs from '../../common/Tabs/SkybrowserTabs';
 
 const findStyles = arr => arr.split(' ')
   .map(style => styles[style] || style)
@@ -71,7 +71,7 @@ class PopoverSkybrowser extends Component {
             width:290,
             height:400,
           }}
-          minHeight={300}
+          minHeight={280}
           handleClasses={{
             top: styles.topHandle,
             right: styles.rightHandle,

@@ -7,6 +7,7 @@ import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
 import InfoBoxSkybrowser from '../../common/InfoBox/InfoBoxSkybrowser';
 import TooltipSkybrowser from '../../common/Tooltip/TooltipSkybrowser';
 import { jsonToLuaString } from '../../../utils/propertyTreeHelpers';
+import SkybrowserTabs from '../../common/Tabs/SkybrowserTabs';
 
 //import { clamp } from 'lodash/number';
 
@@ -20,7 +21,8 @@ class SkybrowserFocusEntry extends Component {
   }
 
   setBorderColor() {
-    this.setState({ selectedImageBorderColor: 'rgb(' + this.props.currentTargetColor() + ')' });
+    const color = this.props.currentTargetColor();
+    this.setState({ selectedImageBorderColor: color == "" ? 'red' : 'rgb(' + color + ')' });
   }
 
   select(evt) {
@@ -28,7 +30,9 @@ class SkybrowserFocusEntry extends Component {
     if (this.props.onSelect) {
       this.props.onSelect(identifier, evt);
     }
-    this.setBorderColor();
+ 
+    this.props.currentTargetColor ? this.setBorderColor() : null;
+
   }
 
 
@@ -67,6 +71,7 @@ class SkybrowserFocusEntry extends Component {
           </div>
           {image3dbutton}
       </li>
+      )
     );
   }
 }

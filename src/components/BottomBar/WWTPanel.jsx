@@ -6,7 +6,6 @@ import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import Input from '../common/Input/Input/Input';
 import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
 import Row from '../common/Row/Row';
-import ScrollOverlay from '../common/ScrollOverlay/ScrollOverlay';
 import FilterList from '../common/FilterList/FilterList';
 import SkybrowserFocusEntry from './Origin/SkybrowserFocusEntry';
 import propertyDispatcher from '../../api/propertyDispatcher';
@@ -31,6 +30,7 @@ import styles from './WWTPanel.scss';
 
 import PropertyOwner from '../Sidebar/Properties/PropertyOwner'
 import subStateToProps from '../../utils/subStateToProps';
+import SkybrowserTabs from '../common/Tabs/SkybrowserTabs';
 
 
 class WWTPanel extends Component {
@@ -42,7 +42,9 @@ class WWTPanel extends Component {
       showOnlyNearest: true,
       targetData: [{ra: 0, dec: 0}],
       selectedTarget: 0,
-      cameraData: {FOV : 70, ra: 0, dec: 0}
+      cameraData: {FOV : 70, RA: 0, Dec: 0},
+      selectedImages: []
+
     };
     this.togglePopover = this.togglePopover.bind(this);
     this.onSelect = this.onSelect.bind(this);
@@ -57,6 +59,10 @@ class WWTPanel extends Component {
     this.getCurrentTargetColor = this.getCurrentTargetColor.bind(this);
     this.onToggleWWT = this.onToggleWWT.bind(this);
     this.getImagesWith3Dcoord = this.getImagesWith3Dcoord.bind(this);
+    this.getCurrentTarget = this.getCurrentTarget.bind(this);
+    this.addImageToSelectedImages = this.addImageToSelectedImages.bind(this);
+
+
   }
 
   async componentDidMount(){
@@ -85,6 +91,8 @@ class WWTPanel extends Component {
     });
     this.props.luaApi.skybrowser.selectImage(Number(identifier));
     //this.props.luaApi.skybrowser.lockTarget(this.state.selectedTarget);
+    this.addImageToSelectedImages(identifier);
+    
   }
 
   hoverOnImage(identifier) {
@@ -125,7 +133,27 @@ class WWTPanel extends Component {
     let images = this.props.systemList;
     if(this.props.systemList == null) return {};
     return images;
+  }
 
+  addImageToSelectedImages(imageID) {
+    const { selectedImages } = this.state;
+
+    const selectedImage = this.props.systemList.find( (image) => {
+      return image.identifier === imageID; 
+    });
+
+      const newImage = {
+        name : selectedImage.name,
+        identifier: selectedImage.identifier,
+        url: selectedImage.url,
+        RA: selectedImage.RA,
+        Dec: selectedImage.Dec
+      };
+
+      selectedImages.length == 0 ? 
+      this.setState({selectedImages: [newImage] }) :
+      this.setState({selectedImages: [...selectedImages, newImage] }) 
+      
   }
 
   lockTarget(index) {
@@ -153,6 +181,10 @@ class WWTPanel extends Component {
       return false;
     });
     return imagesWith3DPosition;
+  }
+
+  getCurrentTarget() {
+    return this.state.selectedTarget;
   }
 
   getNearestImages() {
@@ -217,6 +249,15 @@ class WWTPanel extends Component {
       active={this.state.imageName}
       searchAutoFocus
    />;
+
+    let skybrowserTabs = <SkybrowserTabs
+    data={this.state.selectedImages}
+    viewComponent={SkybrowserFocusEntry}
+    viewComponentProps={{"hoverFunc" : this.hoverOnImage, "hoverLeavesImage" : this.hoverLeavesImage, "currentTarget" : this.getCurrentTarget }}
+    //onSelect={this.onSelect}
+    //active={this.state.imageName}
+    />;
+
     return (
 
       <PopoverSkybrowser
@@ -228,7 +269,6 @@ class WWTPanel extends Component {
       >
         <div className={PopoverSkybrowser.styles.content}>
           <div className={styles.row}>
-
             <Picker
               className={`${styles.picker} ${this.state.showOnlyNearest ? styles.unselected: styles.selected}`}
               onClick={() => this.setState({ showOnlyNearest: false })}>
@@ -251,15 +291,9 @@ class WWTPanel extends Component {
             </Button>
             */ }
           </div>
-          {/*
-            <Checkbox
-              checked={this.state.showOnlyNearest}
-              label={textFormatLabel}
-              setChecked={() => this.setState({ showOnlyNearest: ! this.state.showOnlyNearest })}
-            />
-          */}
-        {filterList}
+          {filterList}
         </div>
+        {skybrowserTabs}
       </PopoverSkybrowser>
 
     );
@@ -288,7 +322,6 @@ class WWTPanel extends Component {
 }
 
 const mapSubStateToProps = ({propertyOwners, popoverVisible, luaApi, skybrowserData}) => {
-
   return {
     popoverVisible: popoverVisible,
     luaApi: luaApi,

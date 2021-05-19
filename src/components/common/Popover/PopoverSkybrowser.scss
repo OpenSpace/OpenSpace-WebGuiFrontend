@@ -42,11 +42,16 @@ $border-width: 1px;
 }
 
 .popover p, .content {
-  height: calc(100% - 34px);
+  height: calc(100% - 196px);
   margin-top: 2px;
 
   :global(.scroll-content) {
-    height: calc(100% - 84px);
+    height: calc(100% - 86px);
+    width: 100%;
+     &::after {
+      background: transparent;
+    }
+ 
   } 
   ul {
     margin-left: 6px;

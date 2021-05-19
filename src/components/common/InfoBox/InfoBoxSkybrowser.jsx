@@ -95,7 +95,7 @@ class InfoBoxSkybrowser extends Component {
 InfoBoxSkybrowser.propTypes = {
   icon: PropTypes.string,
   title: PropTypes.string.isRequired,
-  text: PropTypes.string.isRequired,
+  text: PropTypes.string,
   textUrl: PropTypes.string
 };
 
