@@ -40,6 +40,7 @@ class WWTPanel extends Component {
     this.state = {
       imageName: undefined,
       showOnlyNearest: true,
+      targetIsLocked: false,
       targetData: [{ra: 0, dec: 0}],
       selectedTarget: 0,
       cameraData: {FOV : 70, RA: 0, Dec: 0},
@@ -59,6 +60,7 @@ class WWTPanel extends Component {
     this.onToggleWWT = this.onToggleWWT.bind(this);
     this.getImagesWith3Dcoord = this.getImagesWith3Dcoord.bind(this);
     this.addImageToSelectedImages = this.addImageToSelectedImages.bind(this);
+    this.createTargetBrowserPair = this.createTargetBrowserPair.bind(this);
   }
 
   async componentDidMount(){
@@ -103,17 +105,19 @@ class WWTPanel extends Component {
 
   async getTargetData() {
     try {
-      let target = await this.props.luaApi.skybrowser.getTargetData();
-      target = Object.values(target[1]);
+      let  target = await this.props.luaApi.skybrowser.getTargetData();
+     
+      target = target[1];
+
       // Set the first object in the array to the camera and remove from array
-      let camera = target[0];
-      target = target.slice(1);
+      let camera = target.OpenSpace;
+      delete target.OpenSpace;
       this.setState({
         targetData: target,
         cameraData: {FOV: camera.windowHFOV, cartesianDirection: camera.cartesianDirection, ra : camera.ra, dec: camera.dec},
-        selectedTarget: camera.selectedBrowserIndex
+        selectedTarget: camera.selectedBrowserId
       });
-      console.log(this.state.targetData);
+      
     }
     catch(e) {
       console.log(e);
@@ -158,19 +162,23 @@ class WWTPanel extends Component {
     let updatedImages = selectedImages;
     updatedImages[selectedTarget.toString()] = currentTargetImages;
    
-    console.log("updated : " + currentTargetImages );
-   
       this.setState({
         selectedImages: updatedImages
       })
   }
 
-  lockTarget(index) {
-    this.props.luaApi.skybrowser.lockTarget(Number(index));
+  lockTarget() {
+    this.props.luaApi.skybrowser.lockTarget(this.state.selectedTarget);
+    this.setState({ targetIsLocked: true });
   }
 
-  unlockTarget(index) {
-    this.props.luaApi.skybrowser.unlockTarget(Number(index));
+  createTargetBrowserPair() {
+    this.props.luaApi.skybrowser.createTargetBrowserPair();
+  }
+
+  unlockTarget() {
+    this.props.luaApi.skybrowser.unlockTarget(this.state.selectedTarget);
+    this.setState({ targetIsLocked: false });
   }
 
   getCurrentTargetColor() {
@@ -240,11 +248,6 @@ class WWTPanel extends Component {
   get popover() {
   
     const imageNameLabel = <span>Image name</span>;
-    console.log(this.state.selectedTarget);
-    console.log(this.state.targetData);
-
-    let selectedImageList = this.state.selectedImages;
-    {/*console.log("curr image list: " + selectedImageList["0"]);*/}
 
     let imageList = this.state.showOnlyNearest ? this.getNearestImages() : this.getAllImages();
     //let imageList = this.state.showOnlyNearest ? this.getImagesWith3Dcoord() : this.getAllImages();
@@ -267,9 +270,11 @@ class WWTPanel extends Component {
     let skybrowserTabs = <SkybrowserTabs
       targets={this.state.targetData}
       currentTarget={this.state.selectedTarget.toString()}
+      targetIsLocked={this.state.targetIsLocked}
       data={thisTabsImages}
       viewComponent={SkybrowserFocusEntry}
-      viewComponentProps={{"hoverFunc" : this.hoverOnImage, "hoverLeavesImage" : this.hoverLeavesImage }}
+      viewComponentProps={{"hoverFunc" : this.hoverOnImage, "hoverLeavesImage" : this.hoverLeavesImage, 
+      "lockTarget" : this.lockTarget , "unlockTarget" : this.unlockTarget, "createTargetBrowserPair" : this.createTargetBrowserPair }}
       //onSelect={this.onSelect}
       //active={this.state.imageName}
       />;

@@ -29,31 +29,44 @@ class SkybrowserTabs extends Component {
     }
     
     createTabs() {
-        const { targets, currentTarget } = this.props;
+        const { targets, currentTarget} = this.props;
+        const { lockTarget, unlockTarget, createTargetBrowserPair} = this.props.viewComponentProps;
    
-        const allTabs = targets.map((tab, index) => {
+        const allTabs = Object.keys(targets).map((target, index) => {
 
-            let targetcolor = 'rgb(' + tab.color + ')'; 
+            console.log(" target " + target + " index " + index);
+            console.log("current target: " + this.props.currentTarget);
+
+            let targetcolor = 'rgb(' + targets[target].color + ')'; 
+            console.log("color: " + targetcolor);
             return(
-                
-                <ul className={styles.tabHeader} key={index.toString()}>
-                    <div
-                     className={currentTarget === index.toString() ? styles.tabActive : styles.tab }
-                     onClick={() => this.handleSelectTab(tab)}
+                <ul className={styles.tabHeader}  key={index}>
+                    <div     
+                     className={ currentTarget === target ? styles.tabActive : styles.tab }
+                     styles={{borderTop: currentTarget === target ? ("5px solid " + targetcolor) : ""}} 
+                     onClick={() => this.handleSelectTab(target)}
                      >
-                    <span style={{color: currentTarget === index.toString() ? targetcolor : ""}}>{"Skybrowser " + (index + 1).toString() }</span>
-                    <Button onClick={() => this.setLockTargetMode } transparent small style={{padding: '4px'}}>
+                    <span> { targets[target].name } </span>
+                    <Button 
+                    className={this.props.targetIsLocked ? styles.lockTargetActive : styles.lockTarget } 
+                    onClick={this.props.targetIsLocked ? () => unlockTarget() : () => lockTarget() } transparent small >
                         <MaterialIcon icon="lock" className="small" />
                     </Button>                
-                    <Button onClick={() => this.handleDeleteTab(currentTarget)} transparent small style={{padding: '4px'}}>
+                    <Button onClick={() => this.handleDeleteTab(currentTarget)} transparent small style={{ borderRadius: '6px', padding: '2px 4px 2px 4px'}}>
                         <MaterialIcon icon="close" className="small"/>
                     </Button> 
-                    
-                    </div>
+                   </div>
                 </ul>
             );
         });
-        return <div className={styles.navTabs}>{allTabs}</div>
+        return (
+            <div className={styles.navTabs}>
+                {allTabs} 
+                <Button onClick={() => createTargetBrowserPair()} transparent small >
+                    <MaterialIcon icon="add" />
+                </Button>
+            </div>
+        );
     }
 
     handleSelectTab(tab) {
@@ -67,7 +80,7 @@ class SkybrowserTabs extends Component {
     handleDeleteTab(tabToDelete) {
         // Call function handle from WWTPanel that is sent as a prop, to call Lua function removeTargetBrowserPair
     };
-
+    
     setLockTargetMode() {
         // Call function handle from WWTPanel that is sent as a prop, to call Lua function lock or unlock
     };
@@ -80,8 +93,9 @@ class SkybrowserTabs extends Component {
             <section {...this.inheritedProps} className={styles.imageList}> 
                 <div className={styles.well}>     
                 {this.createTabs()}
+                    {/*<Button className={styles.addTabButton} onClick={this.handleAddTab}>Add Skybrowser</Button>*/}
                 <div className={styles.tabContent}>      
-                <Button className={styles.addTabButton} onClick={this.handleAddTab}>Add Skybrowser</Button> 
+          
                     <ScrollOverlay> 
                         { data.length === 0 ? (
                             <CenteredLabel>
