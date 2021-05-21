@@ -43,8 +43,7 @@ class WWTPanel extends Component {
       targetData: [{ra: 0, dec: 0}],
       selectedTarget: 0,
       cameraData: {FOV : 70, RA: 0, Dec: 0},
-      selectedImages: []
-
+      selectedImages: {}
     };
     this.togglePopover = this.togglePopover.bind(this);
     this.onSelect = this.onSelect.bind(this);
@@ -59,10 +58,7 @@ class WWTPanel extends Component {
     this.getCurrentTargetColor = this.getCurrentTargetColor.bind(this);
     this.onToggleWWT = this.onToggleWWT.bind(this);
     this.getImagesWith3Dcoord = this.getImagesWith3Dcoord.bind(this);
-    this.getCurrentTarget = this.getCurrentTarget.bind(this);
     this.addImageToSelectedImages = this.addImageToSelectedImages.bind(this);
-
-
   }
 
   async componentDidMount(){
@@ -78,7 +74,6 @@ class WWTPanel extends Component {
     this.props.setPopoverVisibility(!this.props.popoverVisible)
   }
 
-
   updateimageName(evt) {
     this.setState({
       imageName: evt.target.value
@@ -92,12 +87,10 @@ class WWTPanel extends Component {
     this.props.luaApi.skybrowser.selectImage(Number(identifier));
     //this.props.luaApi.skybrowser.lockTarget(this.state.selectedTarget);
     this.addImageToSelectedImages(identifier);
-    
   }
 
   hoverOnImage(identifier) {
     this.props.luaApi.skybrowser.moveCircleToHoverImage(Number(identifier));
-
   }
 
   hoverLeavesImage() {
@@ -120,7 +113,7 @@ class WWTPanel extends Component {
         cameraData: {FOV: camera.windowHFOV, cartesianDirection: camera.cartesianDirection, ra : camera.ra, dec: camera.dec},
         selectedTarget: camera.selectedBrowserIndex
       });
-      //console.log(this.state.selectedTarget);
+      console.log(this.state.targetData);
     }
     catch(e) {
       console.log(e);
@@ -136,24 +129,40 @@ class WWTPanel extends Component {
   }
 
   addImageToSelectedImages(imageID) {
-    const { selectedImages } = this.state;
+    const { selectedImages, selectedTarget } = this.state;
 
-    const selectedImage = this.props.systemList.find( (image) => {
+    const selectedImage = this.props.systemList.find( image => {
       return image.identifier === imageID; 
     });
+    
+    const newImage = {
+      name : selectedImage.name,
+      identifier: selectedImage.identifier,
+      thumbnail: selectedImage.thumbnail,
+      ra: selectedImage.ra,
+      dec: selectedImage.dec,
+      target: selectedTarget
+    }; 
 
-      const newImage = {
-        name : selectedImage.name,
-        identifier: selectedImage.identifier,
-        url: selectedImage.url,
-        RA: selectedImage.RA,
-        Dec: selectedImage.Dec
-      };
+    let currentTargetImages = selectedImages[selectedTarget.toString()];
 
-      selectedImages.length == 0 ? 
-      this.setState({selectedImages: [newImage] }) :
-      this.setState({selectedImages: [...selectedImages, newImage] }) 
-      
+    // If there are no images in the array, add the first
+    if(!currentTargetImages) {
+      currentTargetImages = [newImage];
+    }
+    // If there are images, concatinate
+    else {
+      currentTargetImages = currentTargetImages.concat(newImage);
+    }
+    
+    let updatedImages = selectedImages;
+    updatedImages[selectedTarget.toString()] = currentTargetImages;
+   
+    console.log("updated : " + currentTargetImages );
+   
+      this.setState({
+        selectedImages: updatedImages
+      })
   }
 
   lockTarget(index) {
@@ -181,10 +190,6 @@ class WWTPanel extends Component {
       return false;
     });
     return imagesWith3DPosition;
-  }
-
-  getCurrentTarget() {
-    return this.state.selectedTarget;
   }
 
   getNearestImages() {
@@ -233,12 +238,18 @@ class WWTPanel extends Component {
   }
 
   get popover() {
-   const imageNameLabel = <span>Image name</span>;
+  
+    const imageNameLabel = <span>Image name</span>;
+    console.log(this.state.selectedTarget);
+    console.log(this.state.targetData);
 
-  let imageList = this.state.showOnlyNearest ? this.getNearestImages() : this.getAllImages();
-  //let imageList = this.state.showOnlyNearest ? this.getImagesWith3Dcoord() : this.getAllImages();
+    let selectedImageList = this.state.selectedImages;
+    {/*console.log("curr image list: " + selectedImageList["0"]);*/}
 
-   let filterList = <FilterList
+    let imageList = this.state.showOnlyNearest ? this.getNearestImages() : this.getAllImages();
+    //let imageList = this.state.showOnlyNearest ? this.getImagesWith3Dcoord() : this.getAllImages();
+
+    let filterList = <FilterList
       className={styles.filterList}
       data={imageList}
       searchText={"Search from " + imageList.length.toString() + " images..."}
@@ -248,17 +259,22 @@ class WWTPanel extends Component {
       onSelect={this.onSelect}
       active={this.state.imageName}
       searchAutoFocus
-   />;
+      />;
+
+    let thisTabsImages = this.state.selectedImages[this.state.selectedTarget.toString()];
+    thisTabsImages = thisTabsImages ? thisTabsImages : [];
 
     let skybrowserTabs = <SkybrowserTabs
-    data={this.state.selectedImages}
-    viewComponent={SkybrowserFocusEntry}
-    viewComponentProps={{"hoverFunc" : this.hoverOnImage, "hoverLeavesImage" : this.hoverLeavesImage, "currentTarget" : this.getCurrentTarget }}
-    //onSelect={this.onSelect}
-    //active={this.state.imageName}
-    />;
+      targets={this.state.targetData}
+      currentTarget={this.state.selectedTarget.toString()}
+      data={thisTabsImages}
+      viewComponent={SkybrowserFocusEntry}
+      viewComponentProps={{"hoverFunc" : this.hoverOnImage, "hoverLeavesImage" : this.hoverLeavesImage }}
+      //onSelect={this.onSelect}
+      //active={this.state.imageName}
+      />;
 
-    return (
+  return (
 
       <PopoverSkybrowser
         title="WorldWide Telescope"
@@ -277,7 +293,7 @@ class WWTPanel extends Component {
             <Picker
               className={`${styles.picker} ${this.state.showOnlyNearest ? styles.selected : styles.unselected}`}
               onClick={() => this.setState({ showOnlyNearest: true })}>
-                <span>Nearby images</span> {/*<MaterialIcon className={styles.photoIcon} icon="my_location" />*/}
+                <span>Images within view</span> {/*<MaterialIcon className={styles.photoIcon} icon="my_location" />*/}
             </Picker>
             {/*
             <Button onClick={() => this.props.luaApi.skybrowser.adjustCamera(this.state.selectedTarget)}>

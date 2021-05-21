@@ -71,7 +71,6 @@ class SkybrowserFocusEntry extends Component {
           </div>
           {image3dbutton}
       </li>
-      )
     );
   }
 }
