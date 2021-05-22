@@ -60,6 +60,7 @@ export const FastForward = 'fast_forward';
 export const sessionStateIdle = 'idle';
 export const sessionStateRecording = 'recording'
 export const sessionStatePlaying = 'playing';
+export const sessionStatePaused = 'playing-paused';
 
 //renderableTypes
 export const RenderableTypes = {

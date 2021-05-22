@@ -6,11 +6,15 @@
 
 .playingPicker {
   background-color: $blue;
-
-  &:hover {
+	 &:hover {
     background-color: $blue;
   }
 }
+
+.playbackButton {
+	margin-right: 1em;
+}
+
 
 .recordingPicker {
   background-color: $red;
@@ -18,4 +22,15 @@
   &:hover {
     background-color: $red;
   }
+}
+
+.fpsInput {
+  min-width: 50%;
+  margin-bottom: 10px;
+}
+
+.fpsCheckbox {
+  min-width: 50%;
+  margin-bottom: 10px;
+  line-height: 2em;
 }
