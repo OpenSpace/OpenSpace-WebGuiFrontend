@@ -1,0 +1,80 @@
+@import "../../styles/all";
+
+.HelpMenu {
+
+	&:hover,
+    &:focus {
+      background: $ui-background-hover;
+      outline: none;
+      text-shadow: none;
+    }
+}
+
+.button {
+	align-items: center;
+	display: flex;
+	height: 100%;
+	padding: $button-padding;
+	text-shadow: 0 1px 10px rgba(#000, 0.5);
+}
+
+.icon {
+  font-size: 18px;
+  font-size: 32px;
+}
+
+.Popover {
+	XXXleft: 50%;
+  XXXbottom: unquote("calc(#{$bottom-bar-height} + #{$popover-arrow-size})");
+  XXXposition: absolute;
+  width: 210px;
+  XXXtransform: translateX(-50%);
+}
+
+.links {
+  > :first-child {
+    border-top-left-radius: $popover-corner-radius;
+    border-top-right-radius: $popover-corner-radius;
+  }
+
+  > :last-child {
+    border-bottom-left-radius: $popover-corner-radius;
+    border-bottom-right-radius: $popover-corner-radius;
+  }
+}
+
+.links {
+  .shortcut {
+    font-size: 0.8em;
+    color: $text-color-blur;
+  }
+
+  a, li {
+    padding: ($base-padding / 2) $base-padding;
+    color: $text-color-focus;
+    display: block;
+    text-decoration: none;
+
+    &:hover {
+      background: $blue;
+    }
+  }
+
+  .devModeNotifier {
+    padding: ($base-padding / 2) $base-padding;
+    color: $ui-warning;
+  }
+
+  li {
+    background: transparent;
+    border: none;
+    text-align: left;
+    width: 100%;
+  }
+}
+
+.linkIcon {
+  margin-right: 5px;
+  position: relative;
+  top: 2px;
+}
