@@ -30,7 +30,7 @@ class SkybrowserFocusEntry extends Component {
     if (this.props.onSelect) {
       this.props.onSelect(identifier, evt);
     }
- 
+
     this.props.currentTargetColor ? this.setBorderColor() : null;
 
   }
@@ -47,16 +47,20 @@ class SkybrowserFocusEntry extends Component {
       style={{fontSize: '15px'}}
       onClick={() => {this.props.add3dImage(identifier)}}>
       </MaterialIcon> : "";
+    const imageRemoveButton = this.props.removeImageSelection ? <MaterialIcon
+      icon={'highlight_off'}
+      style={{fontSize: '15px'}}
+      onClick={() => {this.props.removeImageSelection(identifier)}}>
+      </MaterialIcon> : "";
 
     return (
 
       <li className={`${styles.entry} ${this.isActive && styles.active}`}
           style={{ borderLeftColor: this.state.selectedImageBorderColor }}
-          onClick={this.select}
           onMouseEnter={() => {this.props.hoverFunc(this.props.identifier)} }
           onMouseLeave={() => {this.props.hoverLeavesImage()}}>
           <div className={styles.image}>
-            <img src={thumbnail} alt={name} />
+            <img src={thumbnail} alt={name} onClick={this.select}/>
           </div>
           <div className={styles.imageHeader}>
             <span
@@ -70,6 +74,7 @@ class SkybrowserFocusEntry extends Component {
             </InfoBoxSkybrowser>
           </div>
           {image3dbutton}
+          {imageRemoveButton}
       </li>
     );
   }

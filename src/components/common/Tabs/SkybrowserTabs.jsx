@@ -27,7 +27,7 @@ class SkybrowserTabs extends Component {
 
     onResizeStop(e, direction, ref, delta) {
     }
-    
+
     createTabs() {
         const { targets, currentTarget} = this.props;
         const { lockTarget, unlockTarget, createTargetBrowserPair, adjustCameraToTarget} = this.props.viewComponentProps;
@@ -53,14 +53,14 @@ class SkybrowserTabs extends Component {
                     </Button>              
                     <Button onClick={() => this.handleDeleteTab(currentTarget)} transparent small style={{ borderRadius: '6px', padding: '3px 4px 3px 4px'}}>
                         <MaterialIcon icon="close" className="small"/>
-                    </Button> 
+                    </Button>
                    </div>
                 </ul>
             );
         });
         return (
             <div className={styles.navTabs}>
-                {allTabs} 
+                {allTabs}
                 <Button onClick={() => createTargetBrowserPair()} transparent small >
                     <MaterialIcon icon="add" />
                 </Button>
@@ -71,7 +71,7 @@ class SkybrowserTabs extends Component {
     handleSelectTab(tab) {
         // Call function handle from WWTPanel that is sent as a prop, to call Lua function Select Browser
     };
-      
+
     handleAddTab() {
         // Call function handle from WWTPanel that is sent as a prop, to call Lua function createTargetBrowserPair
     };
@@ -79,7 +79,7 @@ class SkybrowserTabs extends Component {
     handleDeleteTab(tabToDelete) {
         // Call function handle from WWTPanel that is sent as a prop, to call Lua function removeTargetBrowserPair
     };
-    
+
     setLockTargetMode() {
         // Call function handle from WWTPanel that is sent as a prop, to call Lua function lock or unlock
     };
@@ -87,39 +87,39 @@ class SkybrowserTabs extends Component {
     render() {
         const {data} = this.props;
         const EntryComponent = this.props.viewComponent;
-        
+
         return(
-            <section {...this.inheritedProps} className={styles.imageList}> 
-                <div className={styles.well}>     
+            <section {...this.inheritedProps} className={styles.imageList}>
+                <div className={styles.well}>
                 {this.createTabs()}
                     {/*<Button className={styles.addTabButton} onClick={this.handleAddTab}>Add Skybrowser</Button>*/}
-                <div className={styles.tabContent}>      
-          
-                    <ScrollOverlay> 
+                <div className={styles.tabContent}>
+
+                    <ScrollOverlay>
                         { data.length === 0 ? (
                             <CenteredLabel>
-                                There are no loaded images in this Skybrowser. 
+                                There are no loaded images in this Skybrowser.
                             </CenteredLabel>
 
                         ) : (
-                        <ul> 
+                        <ul>
                             { data.map(entry => (
                                 <EntryComponent
                                 {...entry}
                                 {...this.props.viewComponentProps}
                                 key={entry.identifier}
-                                //onSelect={this.props.onSelect}
+                                onSelect={this.props.onSelect}
                                 //active={this.props.active}
                                 />
                             ))}
-                        </ul> 
+                        </ul>
                         )}
-                    </ScrollOverlay>             
+                    </ScrollOverlay>
                 </div>
                 </div>
-            </section> 
-        )      
-    
+            </section>
+        )
+
     };
 
 }
@@ -129,16 +129,16 @@ SkybrowserTabs.propTypes = {
     data: PropTypes.array.isRequired,
     viewComponent: PropTypes.elementType,
     viewComponentProps: PropTypes.object,
-    //onSelect: PropTypes.func,
+    onSelect: PropTypes.func,
     //active: PropTypes.any,
-   
+
 };
 
 SkybrowserTabs.defaultProps = {
     children: '',
     viewComponent: (props) => (<li>{ JSON.stringify(props) }</li>),
     viewComponentProps: {},
-    //onSelect: () => {},
+    onSelect: () => {},
     //active: null,
 };
 
