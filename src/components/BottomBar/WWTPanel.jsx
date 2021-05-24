@@ -40,7 +40,7 @@ class WWTPanel extends Component {
     this.state = {
       imageName: undefined,
       showOnlyNearest: true,
-      targetIsLocked: false,
+      targetIsLocked: true,
       targetData: [{ra: 0, dec: 0}],
       selectedTarget: 0,
       cameraData: {FOV : 70, RA: 0, Dec: 0},
@@ -61,6 +61,7 @@ class WWTPanel extends Component {
     this.getImagesWith3Dcoord = this.getImagesWith3Dcoord.bind(this);
     this.addImageToSelectedImages = this.addImageToSelectedImages.bind(this);
     this.createTargetBrowserPair = this.createTargetBrowserPair.bind(this);
+    this.adjustCameraToTarget = this.adjustCameraToTarget.bind(this);
   }
 
   async componentDidMount(){
@@ -172,14 +173,19 @@ class WWTPanel extends Component {
     this.setState({ targetIsLocked: true });
   }
 
-  createTargetBrowserPair() {
-    this.props.luaApi.skybrowser.createTargetBrowserPair();
-  }
-
   unlockTarget() {
     this.props.luaApi.skybrowser.unlockTarget(this.state.selectedTarget);
     this.setState({ targetIsLocked: false });
   }
+
+  createTargetBrowserPair() {
+    this.props.luaApi.skybrowser.createTargetBrowserPair();
+  }
+
+  adjustCameraToTarget() {
+    this.props.luaApi.skybrowser.adjustCamera(this.state.selectedTarget);
+  }
+
 
   getCurrentTargetColor() {
     return this.state.targetData[this.state.selectedTarget].color;
@@ -274,7 +280,8 @@ class WWTPanel extends Component {
       data={thisTabsImages}
       viewComponent={SkybrowserFocusEntry}
       viewComponentProps={{"hoverFunc" : this.hoverOnImage, "hoverLeavesImage" : this.hoverLeavesImage, 
-      "lockTarget" : this.lockTarget , "unlockTarget" : this.unlockTarget, "createTargetBrowserPair" : this.createTargetBrowserPair }}
+      "lockTarget" : this.lockTarget , "unlockTarget" : this.unlockTarget, "createTargetBrowserPair" : this.createTargetBrowserPair,
+      "adjustCameraToTarget" : this.adjustCameraToTarget }}
       //onSelect={this.onSelect}
       //active={this.state.imageName}
       />;
