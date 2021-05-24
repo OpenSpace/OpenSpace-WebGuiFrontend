@@ -179,8 +179,8 @@ class WWTPanel extends Component {
   }
 
   getNearestImages() {
-    let targetPoint = this.state.cameraData;
-    let searchRadius = this.state.cameraData.FOV / 2;
+    let targetPoint = this.state.targetData[this.state.selectedTarget];
+    let searchRadius = targetPoint.FOV / 2;
 
     let isWithinFOV = function (coord, target, FOV) {
       if(coord < (target + FOV) && coord > (target - FOV )) {
