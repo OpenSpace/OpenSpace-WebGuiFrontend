@@ -44,7 +44,6 @@ class WWTPanel extends Component {
       targetData: [{ra: 0, dec: 0}],
       selectedTarget: 0,
       cameraData: {FOV : 70, RA: 0, Dec: 0},
-      selectedImages: {}
     };
     this.togglePopover = this.togglePopover.bind(this);
     this.onSelect = this.onSelect.bind(this);
@@ -53,14 +52,15 @@ class WWTPanel extends Component {
     this.getNearestImages = this.getNearestImages.bind(this);
     this.getTargetData = this.getTargetData.bind(this);
     this.add3dImage = this.add3dImage.bind(this);
+    this.removeImageSelection = this.removeImageSelection.bind(this);
     this.hoverLeavesImage = this.hoverLeavesImage.bind(this);
     this.lockTarget = this.lockTarget.bind(this);
     this.unlockTarget = this.unlockTarget.bind(this);
     this.getCurrentTargetColor = this.getCurrentTargetColor.bind(this);
     this.onToggleWWT = this.onToggleWWT.bind(this);
     this.getImagesWith3Dcoord = this.getImagesWith3Dcoord.bind(this);
-    this.addImageToSelectedImages = this.addImageToSelectedImages.bind(this);
     this.createTargetBrowserPair = this.createTargetBrowserPair.bind(this);
+    this.getSelectedTargetImages = this.getSelectedTargetImages.bind(this);
   }
 
   async componentDidMount(){
@@ -88,7 +88,6 @@ class WWTPanel extends Component {
     });
     this.props.luaApi.skybrowser.selectImage(Number(identifier));
     //this.props.luaApi.skybrowser.lockTarget(this.state.selectedTarget);
-    this.addImageToSelectedImages(identifier);
   }
 
   hoverOnImage(identifier) {
@@ -103,68 +102,47 @@ class WWTPanel extends Component {
     this.props.luaApi.skybrowser.create3dSkyBrowser(Number(identifier));
   }
 
+  removeImageSelection(identifier) {
+    this.props.luaApi.skybrowser.removeSelectedImageInBrowser(Number(identifier), this.state.selectedTarget);
+  }
+
   async getTargetData() {
     try {
       let  target = await this.props.luaApi.skybrowser.getTargetData();
-     
       target = target[1];
 
       // Set the first object in the array to the camera and remove from array
       let camera = target.OpenSpace;
       delete target.OpenSpace;
+
       this.setState({
         targetData: target,
         cameraData: {FOV: camera.windowHFOV, cartesianDirection: camera.cartesianDirection, ra : camera.ra, dec: camera.dec},
         selectedTarget: camera.selectedBrowserId
       });
-      
     }
     catch(e) {
       console.log(e);
     }
+  }
 
+  getSelectedTargetImages() {
+    let selectedImagesIndices = this.state.targetData[this.state.selectedTarget].selectedImages;
+
+    if(!selectedImagesIndices) {
+      return [];
+    }
+    else {
+      // For some reason, ghoul sends this vector as an object. Convert to array
+      let indices = Object.values(selectedImagesIndices);
+      return indices.map((index) => this.props.systemList[index.toString()]);
+    }
   }
 
   getAllImages() {
-    // console.log(this.props.systemList);
     let images = this.props.systemList;
     if(this.props.systemList == null) return {};
     return images;
-  }
-
-  addImageToSelectedImages(imageID) {
-    const { selectedImages, selectedTarget } = this.state;
-
-    const selectedImage = this.props.systemList.find( image => {
-      return image.identifier === imageID; 
-    });
-    
-    const newImage = {
-      name : selectedImage.name,
-      identifier: selectedImage.identifier,
-      thumbnail: selectedImage.thumbnail,
-      ra: selectedImage.ra,
-      dec: selectedImage.dec,
-      target: selectedTarget
-    }; 
-
-    let currentTargetImages = selectedImages[selectedTarget.toString()];
-
-    // If there are no images in the array, add the first
-    if(!currentTargetImages) {
-      currentTargetImages = [newImage];
-    }
-    // If there are images, concatinate
-    else {
-      currentTargetImages = currentTargetImages.concat(newImage);
-    }
-    
-    let updatedImages = selectedImages;
-    updatedImages[selectedTarget.toString()] = currentTargetImages;
-   
-      this.setState({
-        selectedImages: updatedImages
-      })
   }
 
   lockTarget() {
@@ -246,7 +224,7 @@ class WWTPanel extends Component {
   }
 
   get popover() {
-  
+
     const imageNameLabel = <span>Image name</span>;
 
     let imageList = this.state.showOnlyNearest ? this.getNearestImages() : this.getAllImages();
@@ -264,7 +242,7 @@ class WWTPanel extends Component {
       searchAutoFocus
       />;
 
-    let thisTabsImages = this.state.selectedImages[this.state.selectedTarget.toString()];
+    let thisTabsImages = this.getSelectedTargetImages();
     thisTabsImages = thisTabsImages ? thisTabsImages : [];
 
     let skybrowserTabs = <SkybrowserTabs
@@ -272,9 +250,11 @@ class WWTPanel extends Component {
       currentTarget={this.state.selectedTarget.toString()}
       targetIsLocked={this.state.targetIsLocked}
       data={thisTabsImages}
+      onSelect={this.onSelect}
       viewComponent={SkybrowserFocusEntry}
-      viewComponentProps={{"hoverFunc" : this.hoverOnImage, "hoverLeavesImage" : this.hoverLeavesImage, 
-      "lockTarget" : this.lockTarget , "unlockTarget" : this.unlockTarget, "createTargetBrowserPair" : this.createTargetBrowserPair }}
+      viewComponentProps={{"hoverFunc" : this.hoverOnImage, "hoverLeavesImage" : this.hoverLeavesImage,
+      "lockTarget" : this.lockTarget , "unlockTarget" : this.unlockTarget, "createTargetBrowserPair" : this.createTargetBrowserPair,
+      "add3dImage" : this.add3dImage,  "removeImageSelection" : this.removeImageSelection }}
       //onSelect={this.onSelect}
       //active={this.state.imageName}
       />;
