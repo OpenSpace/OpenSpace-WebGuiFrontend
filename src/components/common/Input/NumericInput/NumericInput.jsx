@@ -167,7 +167,7 @@ class NumericInput extends Component {
       );
     }
 
-    const { placeholder, className, label, wide, reverse, min, max, noValue, step } = this.props;
+    const { placeholder, className, label, wide, reverse, noValue } = this.props;
     const doNotInclude = 'wide reverse onValueChanged value className type min max step exponent ' +
                          'inputOnly label noHoverHint noTooltip noValue';
     const inheritedProps = excludeKeys(this.props, doNotInclude);
@@ -211,7 +211,7 @@ class NumericInput extends Component {
           { label || placeholder }
         </label>
         <span className={styles.value}>
-          {noValue ? "" : this.roundValueToStepSize(value)}
+          {noValue ? "" : value}
         </span>
       </div>
     );
