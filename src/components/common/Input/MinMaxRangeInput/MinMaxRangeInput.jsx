@@ -4,7 +4,7 @@ import { excludeKeys } from '../../../../utils/helpers';
 import styles from './MinMaxRangeInput.scss';
 import Input from '../Input/Input';
 import Tooltip from '../../Tooltip/Tooltip';
-import { round10 } from '../../../../utils/rounding';
+import { roundValueToStepSize } from '../../../../utils/rounding';
 import { clamp } from 'lodash/number';
 import Row from '../../Row/Row';
 
@@ -44,6 +44,7 @@ class MinMaxRangeInput extends Component {
     this.onMaxTextBlur = this.onMaxTextBlur.bind(this);
     this.renderTextInput = this.renderTextInput.bind(this);
 
+    this.sliderResolution = 10000;
     this.scale = this.updateSliderScale();
   }
 
@@ -70,16 +71,22 @@ class MinMaxRangeInput extends Component {
   }
 
   updateSliderScale() {
-    const {exponent, min, max} = this.props;
+    const {exponent, min, max, step} = this.props;
 
     // Prevent setting exponent to zero, as it breaks the scale
     const exp = (exponent == 0) ? 1.0 : exponent;
 
+    // If linear scale, we want the resolution to match the step size
+    if (exp == 1.0) {
+      const nSteps = Math.ceil((max - min) / step);
+      this.sliderResolution = nSteps;
+    }
+
     // The slider is logarithmic, but the scaling of the value increases exponentially
     return Scale.scalePow()
             .exponent(exp)
-            .domain([min, max])
-            .range([min, max]);
+            .domain([0, this.sliderResolution]) // slider pos
+            .range([min, max]); // allowed values
   }
 
   valueToSliderPos(value) {
@@ -87,13 +94,17 @@ class MinMaxRangeInput extends Component {
   }
 
   valueFromSliderPos(sliderValue) {
-    return this.roundValueToStepSize(this.scale(sliderValue));
+    const scaledValue = this.scale(sliderValue);
+    // If almost max, return max, as rounding will prevent this if the step size
+    // is not well chosen
+    if (scaledValue > 0.999 * this.props.max) {
+      return this.props.max;
+    }
+    return this.roundValueToStepSize(scaledValue);
   }
 
   roundValueToStepSize(value) {
-    // TODO: this should be able to handle any step size.
-    // Now it only deals with exponents of 10
-    return round10(value, Math.log10(this.props.step));
+    return roundValueToStepSize(value, this.props.step);
   }
 
   updateMinValue(newValue) {
@@ -121,15 +132,12 @@ class MinMaxRangeInput extends Component {
     // should be on top and the styling of the hint bar
 
     const { minValue, maxValue } = this.state;
-    const { min, max } = this.props;
 
     // We have to map the value to the slider scale, to get the correct position
-    // (note that we don't do this for min and max, as they are the same for any scale)
     const scaledMinValue = this.valueToSliderPos(minValue);
     const scaledMaxValue = this.valueToSliderPos(maxValue);
-
-    const normalizedMinValue = (scaledMinValue - min) / (max - min);
-    const normalizedMaxValue = (scaledMaxValue - min) / (max - min);
+    const normalizedMinValue = scaledMinValue / this.sliderResolution;
+    const normalizedMaxValue = scaledMaxValue / this.sliderResolution;
 
     // Style for hint bar
     let styleLeft = 0;
@@ -269,9 +277,8 @@ class MinMaxRangeInput extends Component {
     const scaledMinValue = this.valueToSliderPos(minValue);
     const scaledMaxValue = this.valueToSliderPos(maxValue);
 
-    // HoverHint is in [0, 1]. Scale to full range
-    const scaledHoverHintOffset = (max - min) * hoverHint + min;
-
+    // HoverHint is in [0, 1]. Scale to full slider range
+    const scaledHoverHintOffset = this.sliderResolution * hoverHint;
     const tooltipValue = this.valueFromSliderPos(scaledHoverHintOffset);
 
     return (
@@ -291,7 +298,7 @@ class MinMaxRangeInput extends Component {
         <div
           className={`${className} ${styles.sliderProgress}`}
           ref={this.setRef('slider')}
-          style={{ '--min': min, '--max': max, '--minValue': scaledMinValue, '--maxValue': scaledMaxValue}}
+          style={{ '--min': 0, '--max': this.sliderResolution, '--minValue': scaledMinValue, '--maxValue': scaledMaxValue }}
         />
         <input
           {...inheritedProps}
@@ -300,9 +307,9 @@ class MinMaxRangeInput extends Component {
           ref={this.setRef('minSlider')}
           type="range"
           value={scaledMinValue}
-          min={min}
-          max={max}
-          step={step}
+          min={0}
+          max={this.sliderResolution}
+          step={1}
           onChange={event => {
             // make sure we don't pass the max slider
             const sliderValue = Math.min(event.currentTarget.value, scaledMaxValue - step);
@@ -322,9 +329,9 @@ class MinMaxRangeInput extends Component {
           ref={this.setRef('maxSlider')}
           type="range"
           value={scaledMaxValue}
-          min={min}
-          max={max}
-          step={step}
+          min={0}
+          max={this.sliderResolution}
+          step={1}
           onChange={event => {
             // make sure we don't pass the min slider
             const sliderValue = Math.max(event.currentTarget.value, scaledMinValue + step);

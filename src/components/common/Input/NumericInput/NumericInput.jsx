@@ -4,7 +4,7 @@ import { excludeKeys } from '../../../../utils/helpers';
 import styles from './NumericInput.scss';
 import Input from '../Input/Input';
 import Tooltip from '../../Tooltip/Tooltip';
-import { round10 } from '../../../../utils/rounding';
+import { roundValueToStepSize } from '../../../../utils/rounding';
 import { clamp } from 'lodash/number';
 
 const Scale = require('d3-scale');
@@ -17,7 +17,7 @@ class NumericInput extends Component {
       value: props.value,
       showTextInput: false,
       id: `numericinput-${Input.nextId}`,
-      hoverHint: null,
+      hoverHint: null
     };
 
     this.roundValueToStepSize = this.roundValueToStepSize.bind(this);
@@ -34,6 +34,7 @@ class NumericInput extends Component {
     this.disableTextInput = this.disableTextInput.bind(this);
     this.updateValue = this.updateValue.bind(this);
 
+    this.sliderResolution = 10000;
     this.scale = this.updateSliderScale();
   }
 
@@ -53,22 +54,26 @@ class NumericInput extends Component {
   }
 
   roundValueToStepSize(value) {
-    // TODO: this should be able to handle any step size.
-    // Now it only deals with exponents of 10
-    return round10(value, Math.log10(this.props.step));
+    return roundValueToStepSize(value, this.props.step);
   }
 
   updateSliderScale() {
-    const {exponent, min, max} = this.props;
+    const {exponent, min, max, step} = this.props;
 
     // Prevent setting exponent to zero, as it breaks the scale
     const exp = (exponent == 0) ? 1.0 : exponent;
 
+    // If linear scale, we want the resolution to match the step size
+    if (exp == 1.0) {
+      const nSteps = Math.ceil((max - min) / step);
+      this.sliderResolution = nSteps;
+    }
+
     // The slider is logarithmic, but the scaling of the value increases exponentially
     return Scale.scalePow()
             .exponent(exp)
-            .domain([min, max])
-            .range([min, max]);
+            .domain([0, this.sliderResolution]) // slider pos
+            .range([min, max]); // allowed values
   }
 
   valueToSliderPos(value) {
@@ -76,7 +81,13 @@ class NumericInput extends Component {
   }
 
   valueFromSliderPos(sliderValue) {
-    return this.roundValueToStepSize(this.scale(sliderValue));
+    const scaledValue = this.scale(sliderValue);
+    // If almost max, return max, as rounding will prevent this if the step size
+    // is not well chosen
+    if (scaledValue > 0.999 * this.props.max) {
+      return this.props.max;
+    }
+    return this.roundValueToStepSize(scaledValue);
   }
 
   /**
@@ -165,7 +176,7 @@ class NumericInput extends Component {
     const sliderValue = this.valueToSliderPos(value);
 
     // HoverHintOffset is in [0, 1]. Scale to full slider range
-    const scaledHoverHintOffset = (max - min) * hoverHintOffset + min;
+    const scaledHoverHintOffset = this.sliderResolution * hoverHintOffset;
     const tooltipValue = this.valueFromSliderPos(scaledHoverHintOffset);
 
     return (
@@ -187,11 +198,11 @@ class NumericInput extends Component {
           id={id}
           type="range"
           value={sliderValue}
-          min={min}
-          max={max}
-          step={step}
+          min={0}
+          max={this.sliderResolution}
+          step={1}
           className={`${className} ${styles.range}`}
-          style={{ '--min': min, '--max': max, '--value': sliderValue, direction: reverse ? "rtl" : "ltr" }}
+          style={{ '--min': 0, '--max': this.sliderResolution, '--value': sliderValue, direction: reverse ? "rtl" : "ltr" }}
           onChange={this.onSliderChange}
           onMouseMove={this.onHover}
           onMouseLeave={this.onLeave}
