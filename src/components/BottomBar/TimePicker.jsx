@@ -309,11 +309,13 @@ class TimePicker extends Component {
       (sessionRecordingState !== sessionStatePlaying) &&
       (sessionRecordingState !== sessionStatePaused);
     const popoverEnabledAndVisible = popoverVisible && enabled;
-
+    const disableClass =
+      (sessionRecordingState == sessionStatePaused) ?
+        styles.disabledBySessionPause : styles.disabledBySessionPlayback;
     const pickerClasses = [
       styles.timePicker,
       popoverEnabledAndVisible ? Picker.Active : '',
-      enabled ? '' : styles.disabledBySessionPlayback
+      enabled ? '' : disableClass
     ].join(' ');
 
     return (

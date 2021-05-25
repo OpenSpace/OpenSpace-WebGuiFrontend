@@ -229,12 +229,16 @@ class OriginPicker extends Component {
     const enabled =
       (sessionRecordingState !== sessionStatePlaying) &&
       (sessionRecordingState !== sessionStatePaused);
+    const disableClass =
+      (sessionRecordingState == sessionStatePaused) ?
+        styles.disabledBySessionPause : styles.disabledBySessionPlayback;
+
     const popoverEnabledAndVisible = popoverVisible && enabled;
 
     const pickerClasses = [
       styles.originPicker,
       popoverEnabledAndVisible ? Picker.Active : '',
-      enabled ? '' : styles.disabledBySessionPlayback
+      enabled ? '' : disableClass
     ].join(' ');
 
     return (

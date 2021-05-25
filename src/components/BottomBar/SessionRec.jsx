@@ -67,9 +67,11 @@ class SessionRec extends Component {
     if (this.props.recordingState === sessionStateRecording) {
       classes.push(styles.recordingPicker);
       onClick = this.toggleRecording;
-    } else if ((this.props.recordingState === sessionStatePlaying) ||
-      (this.props.recordingState === sessionStatePaused)) {
+    } else if (this.props.recordingState === sessionStatePlaying) {
       classes.push(styles.playingPicker);
+      onClick = undefined;
+    } else if (this.props.recordingState === sessionStatePaused) {
+      classes.push(styles.pausedPicker);
       onClick = undefined;
     } else if (this.state.showPopover) {
       classes.push(Picker.Active)

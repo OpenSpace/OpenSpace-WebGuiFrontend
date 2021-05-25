@@ -11,6 +11,13 @@
   }
 }
 
+.pausedPicker {
+  background-color: $orange;
+   &:hover {
+    background-color: $orange;
+  }
+}
+
 .playbackButton {
 	margin-right: 1em;
 }
