@@ -59,6 +59,7 @@ class MinMaxRangeInput extends Component {
 
     const scaleNeedsUpdate = (prevProps.min !== this.props.min) ||
                              (prevProps.max !== this.props.max) ||
+                             (prevProps.step !== this.props.step) ||
                              (prevProps.exponent !== this.props.exponent);
 
     if (scaleNeedsUpdate) {
@@ -143,7 +144,8 @@ class MinMaxRangeInput extends Component {
     let styleLeft = 0;
     let styleWidth = 0;
 
-    // TODO: make the hint account for when we have the mouse button down
+    // @TODO (emmbr, 2021-05-25): potentially make the hint account for when the 
+    // mouse is down, to avoid showing faulty hints when dragging slider handle
 
     const onTop = '4';
     const onBottom = '3';

@@ -46,6 +46,7 @@ class NumericInput extends Component {
 
     const scaleNeedsUpdate = (prevProps.min !== this.props.min) ||
                              (prevProps.max !== this.props.max) ||
+                             (prevProps.step !== this.props.step) ||
                              (prevProps.exponent !== this.props.exponent);
 
     if (scaleNeedsUpdate) {
