@@ -30,28 +30,28 @@ class SkybrowserTabs extends Component {
 
     createTabs() {
         const { targets, currentTarget} = this.props;
-        const { lockTarget, unlockTarget, createTargetBrowserPair} = this.props.viewComponentProps;
-
+        const { lockTarget, unlockTarget, createTargetBrowserPair, adjustCameraToTarget} = this.props.viewComponentProps;
+   
         const allTabs = Object.keys(targets).map((target, index) => {
-            let targetcolor = 'rgb(' + targets[target].color + ')';
-            {/*console.log(" target " + target + " index " + index);
-            console.log("current target: " + this.props.currentTarget);
-            console.log("color: " + targetcolor);*/}
 
+            let targetColor = 'rgb(' + targets[target].color + ')'; 
+     
             return(
-                <ul className={styles.tabHeader}  key={index}>
-                    <div
+                <ul className={styles.tabHeader} style={currentTarget === target ? {borderTop:  "3px solid " + targetColor} : {}}  key={index}>
+                    <div     
                      className={ currentTarget === target ? styles.tabActive : styles.tab }
-                     styles={{borderTop: currentTarget === target ? ("5px solid " + targetcolor) : ""}}
                      onClick={() => this.handleSelectTab(target)}
                      >
                     <span> { targets[target].name } </span>
-                    <Button
-                    className={this.props.targetIsLocked ? styles.lockTargetActive : styles.lockTarget }
+                    <Button onClick={() => adjustCameraToTarget()} style={{ borderRadius: '6px', padding: '3px 4px 3px 4px'}} transparent small >
+                        <MaterialIcon icon="filter_center_focus" className="small" />
+                    </Button>   
+                    <Button 
+                    className={this.props.targetIsLocked ? styles.lockTargetActive : styles.lockTarget } 
                     onClick={this.props.targetIsLocked ? () => unlockTarget() : () => lockTarget() } transparent small >
                         <MaterialIcon icon="lock" className="small" />
-                    </Button>
-                    <Button onClick={() => this.handleDeleteTab(currentTarget)} transparent small style={{ borderRadius: '6px', padding: '2px 4px 2px 4px'}}>
+                    </Button>              
+                    <Button onClick={() => this.handleDeleteTab(currentTarget)} transparent small style={{ borderRadius: '6px', padding: '3px 4px 3px 4px'}}>
                         <MaterialIcon icon="close" className="small"/>
                     </Button>
                    </div>

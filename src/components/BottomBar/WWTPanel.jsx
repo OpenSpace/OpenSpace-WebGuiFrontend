@@ -39,7 +39,7 @@ class WWTPanel extends Component {
     this.state = {
       imageName: "",
       showOnlyNearest: true,
-      targetIsLocked: false,
+      targetIsLocked: true,
       targetData: [{ra: 0, dec: 0}],
       selectedTarget: 0,
       cameraData: {FOV : 70, RA: 0, Dec: 0},
@@ -59,6 +59,7 @@ class WWTPanel extends Component {
     this.onToggleWWT = this.onToggleWWT.bind(this);
     this.getImagesWith3Dcoord = this.getImagesWith3Dcoord.bind(this);
     this.createTargetBrowserPair = this.createTargetBrowserPair.bind(this);
+    this.adjustCameraToTarget = this.adjustCameraToTarget.bind(this);
     this.getSelectedTargetImages = this.getSelectedTargetImages.bind(this);
     this.setOpacityOfImage = this.setOpacityOfImage.bind(this);
   }
@@ -156,14 +157,19 @@ class WWTPanel extends Component {
     this.setState({ targetIsLocked: true });
   }
 
-  createTargetBrowserPair() {
-    this.props.luaApi.skybrowser.createTargetBrowserPair();
-  }
-
   unlockTarget() {
     this.props.luaApi.skybrowser.unlockTarget(this.state.selectedTarget);
     this.setState({ targetIsLocked: false });
   }
+
+  createTargetBrowserPair() {
+    this.props.luaApi.skybrowser.createTargetBrowserPair();
+  }
+
+  adjustCameraToTarget() {
+    this.props.luaApi.skybrowser.adjustCamera(this.state.selectedTarget);
+  }
+
 
   getCurrentTargetColor() {
     return this.state.targetData[this.state.selectedTarget].color;
@@ -262,6 +268,9 @@ class WWTPanel extends Component {
       viewComponentProps={{"hoverFunc" : this.hoverOnImage, "hoverLeavesImage" : this.hoverLeavesImage,
       "lockTarget" : this.lockTarget , "unlockTarget" : this.unlockTarget, "createTargetBrowserPair" : this.createTargetBrowserPair,
       "add3dImage" : this.add3dImage,  "removeImageSelection" : this.removeImageSelection, "setOpacity": this.setOpacityOfImage, "onSelect":this.selectImage }}
+      "adjustCameraToTarget" : this.adjustCameraToTarget, "add3dImage" : this.add3dImage,  "removeImageSelection" : this.removeImageSelection }}
+      onSelect={this.onSelect}
+      //active={this.state.imageName}
       />;
 
   return (
