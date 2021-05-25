@@ -5,7 +5,7 @@ import Pane from './Pane';
 import LoadingBlocks from '../common/LoadingBlock/LoadingBlocks';
 import FilterList from '../common/FilterList/FilterList';
 import PropertyOwner from './Properties/PropertyOwner';
-import { ScenePrefixKey } from '../../api/keys';
+import { SceneKey } from '../../api/keys';
 
 import styles from './SettingsPane.scss';
 
@@ -55,7 +55,7 @@ const mapStateToProps = (state) => {
   const allUris = Object.keys(state.propertyTree.propertyOwners || {});
 
   const propertyOwners = allUris.filter(uri => {
-    return uri !== ScenePrefixKey && uri.indexOf('.') === -1
+    return uri !== SceneKey && uri.indexOf('.') === -1;
   });
 
   return {

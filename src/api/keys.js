@@ -9,6 +9,7 @@ export const ZoomFrictionKey = "NavigationHandler.OrbitalNavigator.Friction.Zoom
 export const RollFrictionKey = "NavigationHandler.OrbitalNavigator.Friction.RollFriction";
 //To get any scene graph node you need ScenePrefix+NodeIdentifier
 export const ScenePrefixKey = 'Scene.';
+export const SceneKey = 'Scene';
 
 // key to get all scene graph nodes
 // export const SceneGraphKey = '__allNodes';
