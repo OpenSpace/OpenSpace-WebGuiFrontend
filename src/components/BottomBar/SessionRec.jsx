@@ -15,6 +15,7 @@ import {
   sessionStateIdle,
   sessionStateRecording,
   sessionStatePlaying,
+  sessionStatePaused,
 } from '../../api/keys';
 
 import {
@@ -33,7 +34,10 @@ class SessionRec extends Component {
       useTextFormat: false,
       forceTime: true,
       filenameRecording: '',
-      filenamePlayback: undefined
+      filenamePlayback: undefined,
+      shouldOutputFrames: false,
+      outputFramerate: 60,
+      loopPlayback: false
     };
 
     this.togglePopover = this.togglePopover.bind(this);
@@ -41,7 +45,11 @@ class SessionRec extends Component {
     this.togglePlayback = this.togglePlayback.bind(this);
     this.setPlaybackFile = this.setPlaybackFile.bind(this);
     this.setForceTiming = this.setForceTiming.bind(this);
+    this.setLoopPlayback = this.setLoopPlayback.bind(this);
     this.setUseTextFormat = this.setUseTextFormat.bind(this);
+    this.setShouldOutputFrames = this.setShouldOutputFrames.bind(this);
+    this.pausePlayback = this.pausePlayback.bind(this);
+    this.stopPlayback = this.stopPlayback.bind(this);
   }
 
   componentDidMount() {
@@ -55,12 +63,16 @@ class SessionRec extends Component {
   get picker() {
     const classes = [];
     let onClick = this.togglePopover;
+
     if (this.props.recordingState === sessionStateRecording) {
       classes.push(styles.recordingPicker);
       onClick = this.toggleRecording;
     } else if (this.props.recordingState === sessionStatePlaying) {
       classes.push(styles.playingPicker);
-      onClick = this.togglePlayback;
+      onClick = undefined;
+    } else if (this.props.recordingState === sessionStatePaused) {
+      classes.push(styles.pausedPicker);
+      onClick = undefined;
     } else if (this.state.showPopover) {
       classes.push(Picker.Active)
     }
@@ -77,9 +89,19 @@ class SessionRec extends Component {
           <MaterialIcon icon="videocam" /> Stop recording
         </div>;
       case sessionStatePlaying:
-        return <div>
+        return (<><div className={styles.playbackButton} onClick={this.pausePlayback}>
+          <MaterialIcon icon="pause" /> Pause
+        </div>
+        <div onClick={this.stopPlayback}>
           <MaterialIcon icon="stop" /> Stop playback
-        </div>;
+        </div></>);
+      case sessionStatePaused:
+        return (<><div className={styles.playbackButton} onClick={this.pausePlayback}>
+          <MaterialIcon icon="play_arrow" /> Resume
+        </div>
+        <div onClick={this.stopPlayback}>
+          <MaterialIcon icon="stop" /> Stop playback
+        </div></>);
       default:
         return <div>
           <MaterialIcon className={styles.cameraIcon} icon="videocam" />
@@ -88,12 +110,13 @@ class SessionRec extends Component {
   }
 
   get popover() {
-    const { filenamePlayback } = this.state;
+    const { filenamePlayback, shouldOutputFrames, outputFramerate } = this.state;
 
     const options = Object.values(this.props.fileList)
       .map(fname => ({ value: fname, label: fname }));
 
     const fileNameLabel = <span>Name of recording</span>;
+    const fpsLabel = <span>FPS</span>;
     const textFormatLabel = <span>Text file format</span>;
 
     return (
@@ -133,7 +156,30 @@ class SessionRec extends Component {
             name="forceTimeInput"
             label="Force time change to recorded time"
             setChecked={this.setForceTiming}
-          />        
+          />
+          <Checkbox
+            checked={this.state.loopPlayback}
+            name="loopPlaybackInput"
+            label="Loop playback"
+            setChecked={this.setLoopPlayback}
+          />
+          <Row>
+          <Checkbox
+            checked={shouldOutputFrames}
+            name="outputFramesInput"
+            label="Output frames"
+            className={styles.fpsCheckbox}
+            setChecked={this.setShouldOutputFrames}
+          />
+          { shouldOutputFrames ? <Input value={this.state.outputFramerate}
+                   label={fpsLabel}
+                   placeholder={"framerate"}
+                   className={styles.fpsInput}
+                   visible={shouldOutputFrames}
+                   onChange={evt => this.updateOutputFramerate(evt)} />
+            : null
+          }
+          </Row>
           <Row>
             <Select
               menuPlacement="top"
@@ -168,6 +214,12 @@ class SessionRec extends Component {
     });
   }
 
+  updateOutputFramerate(evt) {
+    this.setState({
+      outputFramerate: evt.target.value
+    });
+  }
+
   toggleRecording() {
     if (this.props.recordingState == sessionStateIdle) {
       this.startRecording();
@@ -185,6 +237,14 @@ class SessionRec extends Component {
     }
   }
 
+  stopPlayback () {
+      this.props.stopPlayback();
+  }
+
+  pausePlayback () {
+      this.props.pausePlayback();
+  }
+
   togglePlayback() {
     if (this.props.recordingState === sessionStateIdle) {
       this.startPlayback();
@@ -194,13 +254,14 @@ class SessionRec extends Component {
   }
 
   startPlayback () {
-    const { forceTime, filenamePlayback } = this.state;
+    const { forceTime,
+      filenamePlayback,
+      shouldOutputFrames,
+      outputFramerate,
+      loopPlayback } = this.state;
 
-    if (forceTime) {
-      this.props.startPlaybackImmediate(filenamePlayback);
-    } else {
-      this.props.startPlaybackRecordedTime(filenamePlayback);
-    }
+    this.props.startPlaybackLua(filenamePlayback,
+      forceTime, shouldOutputFrames, outputFramerate, loopPlayback);
   }
 
   setUseTextFormat(useTextFormat) {
@@ -209,6 +270,22 @@ class SessionRec extends Component {
 
   setForceTiming(forceTime) {
     this.setState({forceTime});
+  }
+
+  setLoopPlayback(loopPlayback) {
+    if (loopPlayback) {
+      this.setState({loopPlayback: true, shouldOutputFrames: false});
+    } else {
+      this.setState({loopPlayback});
+    }
+  }
+
+  setShouldOutputFrames(shouldOutputFrames) {
+    if (shouldOutputFrames) {
+      this.setState({loopPlayback: false, shouldOutputFrames: true});
+    } else {
+      this.setState({shouldOutputFrames});
+    }
   }
 
   togglePopover() {
@@ -246,14 +323,21 @@ const mapSubStateToProps = ({sessionRecording, sessionRecordingPopover, luaApi})
     stopRecording: () => {
       luaApi.sessionRecording.stopRecording();
     },
-    startPlaybackImmediate: filename => {
-      luaApi.sessionRecording.startPlayback(filename);
-    },
-    startPlaybackRecordedTime: filename => {
-      luaApi.sessionRecording.startPlaybackRecordedTime(filename);
+    startPlaybackLua: (filename, forceTime, shouldOutputFrames, outputFramerate, loopPlayback) => {
+      if (shouldOutputFrames) {
+        luaApi.sessionRecording.enableTakeScreenShotDuringPlayback(outputFramerate);
+      }
+      if (forceTime) {
+        luaApi.sessionRecording.startPlayback(filename, loopPlayback);
+      } else {
+        luaApi.sessionRecording.startPlaybackRecordedTime(filename, loopPlayback);   
+      }
     },
     stopPlayback: () => {
       luaApi.sessionRecording.stopPlayback();
+    },
+    pausePlayback: () => {
+      luaApi.sessionRecording.togglePlaybackPause();
     }
   };
 };
