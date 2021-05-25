@@ -63,7 +63,7 @@ class SessionRec extends Component {
   get picker() {
     const classes = [];
     let onClick = this.togglePopover;
-    console.log("SAtat",this.props.recordingState,sessionStatePaused)
+
     if (this.props.recordingState === sessionStateRecording) {
       classes.push(styles.recordingPicker);
       onClick = this.toggleRecording;
