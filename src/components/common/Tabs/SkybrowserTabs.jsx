@@ -108,7 +108,6 @@ class SkybrowserTabs extends Component {
                                 {...entry}
                                 {...this.props.viewComponentProps}
                                 key={entry.identifier}
-                                onSelect={this.props.onSelect}
                                 //active={this.props.active}
                                 />
                             ))}
@@ -129,7 +128,6 @@ SkybrowserTabs.propTypes = {
     data: PropTypes.array.isRequired,
     viewComponent: PropTypes.elementType,
     viewComponentProps: PropTypes.object,
-    onSelect: PropTypes.func,
     //active: PropTypes.any,
 
 };
@@ -138,7 +136,6 @@ SkybrowserTabs.defaultProps = {
     children: '',
     viewComponent: (props) => (<li>{ JSON.stringify(props) }</li>),
     viewComponentProps: {},
-    onSelect: () => {},
     //active: null,
 };
 

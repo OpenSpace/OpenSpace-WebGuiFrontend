@@ -19,12 +19,12 @@ $border-width: 1px;
   border-radius: $popover-corner-radius;
   box-shadow: $box-shadow;
   color: $text-color-focus;
-  max-width: none;    
+  max-width: none;
   left: 50%;
   position: absolute;
   transform: translateX(-50%);
   z-index: 10;
-  width: auto;       
+  width: auto;
   bottom: calc(100% + #{$popover-arrow-size});
   &.small {
     max-width: 150px;
@@ -42,7 +42,7 @@ $border-width: 1px;
 }
 
 .popover p, .content {
-  height: calc(100% - 196px);
+  height: calc(100% - 235px);
   margin-top: 2px;
 
   :global(.scroll-content) {
@@ -51,8 +51,8 @@ $border-width: 1px;
      &::after {
       background: transparent;
     }
- 
-  } 
+
+  }
   ul {
     margin-left: 6px;
     display: flex;
@@ -177,10 +177,3 @@ $border-width: 1px;
     background: $ui-background-solid;
   }
 }
-
-
-
-
-
-
-
