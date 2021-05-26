@@ -1,0 +1,18 @@
+@import "../../styles/all.scss";
+
+.propertyItemGroup {
+  margin-left: 0.3rem;
+  padding: 0.2rem;
+  padding-bottom: 0.35rem;
+
+  p {
+    font-size: 0.9rem;
+    color: darken($text-color-focus, 30%);
+
+    // Little ugly hack to reduce the top padding of the related setting
+    // and hence put it closer to the text
+    & + div {
+      padding-top: 3px !important;
+    }
+  }
+}
