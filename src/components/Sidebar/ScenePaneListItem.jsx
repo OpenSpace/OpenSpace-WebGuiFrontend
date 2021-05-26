@@ -29,8 +29,6 @@ class ScenePaneListItem extends Component {
     }
     return null;
   }
-
-
 }
 
 export default ScenePaneListItem;
