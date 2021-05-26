@@ -6,6 +6,7 @@ import LoadingBlocks from '../common/LoadingBlock/LoadingBlocks';
 import FilterList from '../common/FilterList/FilterList';
 import PropertyOwner from './Properties/PropertyOwner';
 import { SceneKey } from '../../api/keys';
+import subStateToProps from '../../utils/subStateToProps';
 
 import styles from './SettingsPane.scss';
 
@@ -43,28 +44,29 @@ SettingsPane.defaultProps = {
   closeCallback: null,
 };
 
-const mapStateToProps = (state) => {
+const mapStateToSubState = (state) => ({
+  properties: state.propertyTree.properties,
+  propertyOwners: state.propertyTree.propertyOwners
+});
 
-  if (!state.propertyTree) {
+const mapSubStateToProps = ({ properties, propertyOwners }) => {
+  if (!propertyOwners || !properties) {
     return { entries: [] };
   }
-  if (!state.propertyTree.propertyOwners) {
-    return { entries: [] };
-  }
 
-  const allUris = Object.keys(state.propertyTree.propertyOwners || {});
+  const allUris = Object.keys(propertyOwners || {});
 
-  const propertyOwners = allUris.filter(uri => {
+  const propertyOwnerUris = allUris.filter(uri => {
     return uri !== SceneKey && uri.indexOf('.') === -1;
   });
 
   return {
-    propertyOwners,
+    propertyOwners: propertyOwnerUris,
   };
 };
 
 SettingsPane = connect(
-  mapStateToProps,
+  subStateToProps(mapSubStateToProps, mapStateToSubState)
 )(SettingsPane);
 
 export default SettingsPane;
