@@ -15,7 +15,6 @@ import PopoverSkybrowser from '../common/Popover/PopoverSkybrowser';
 
 import {
   setPopoverVisibility,
-  selectImgSkyBrowser,
 } from '../../api/Actions';
 
 import {
@@ -38,7 +37,7 @@ class WWTPanel extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      imageName: undefined,
+      imageName: "",
       showOnlyNearest: true,
       targetIsLocked: true,
       targetData: [{ra: 0, dec: 0}],
@@ -48,7 +47,7 @@ class WWTPanel extends Component {
       currentPopoverHeight: 440,
     };
     this.togglePopover = this.togglePopover.bind(this);
-    this.onSelect = this.onSelect.bind(this);
+    this.selectImage = this.selectImage.bind(this);
     this.hoverOnImage = this.hoverOnImage.bind(this);
     this.getAllImages = this.getAllImages.bind(this);
     this.getNearestImages = this.getNearestImages.bind(this);
@@ -66,7 +65,7 @@ class WWTPanel extends Component {
     this.getSelectedTargetImages = this.getSelectedTargetImages.bind(this);
     this.setCurrentTabHeight = this.setCurrentTabHeight.bind(this);
     this.setCurrentPopoverHeight = this.setCurrentPopoverHeight.bind(this);
- 
+    this.setOpacityOfImage = this.setOpacityOfImage.bind(this);
   }
 
   async componentDidMount(){
@@ -82,22 +81,21 @@ class WWTPanel extends Component {
     this.props.setPopoverVisibility(!this.props.popoverVisible)
   }
 
-  updateimageName(evt) {
-    this.setState({
-      imageName: evt.target.value
-    });
-  }
-
-  onSelect(identifier, evt) {
-    this.setState({
-      imageName: identifier,
-    });
-    this.props.luaApi.skybrowser.selectImage(Number(identifier));
+  selectImage(identifier) {
+    if(identifier) {
+      this.setState({
+        imageName: identifier,
+      });
+      this.props.luaApi.skybrowser.selectImage(Number(identifier));
+    }
     //this.props.luaApi.skybrowser.lockTarget(this.state.selectedTarget);
   }
 
   hoverOnImage(identifier) {
-    this.props.luaApi.skybrowser.moveCircleToHoverImage(Number(identifier));
+    if(identifier) {
+      this.props.luaApi.skybrowser.moveCircleToHoverImage(Number(identifier));
+    }
+
   }
 
   hoverLeavesImage() {
@@ -111,6 +109,11 @@ class WWTPanel extends Component {
   removeImageSelection(identifier) {
     this.props.luaApi.skybrowser.removeSelectedImageInBrowser(Number(identifier), this.state.selectedTarget);
   }
+
+  setOpacityOfImage(identifier, opacity) {
+    this.props.luaApi.skybrowser.setOpacityOfImageLayer(this.state.selectedTarget, Number(identifier), opacity);
+  }
+
 
   async getTargetData() {
     try {
@@ -133,14 +136,16 @@ class WWTPanel extends Component {
   }
 
   getSelectedTargetImages() {
-    let selectedImagesIndices = this.state.targetData[this.state.selectedTarget].selectedImages;
+    let selectedImagesIndices = this.state.targetData[this.state.selectedTarget];
 
     if(!selectedImagesIndices) {
       return [];
     }
     else {
       // For some reason, ghoul sends this vector as an object. Convert to array
-      let indices = Object.values(selectedImagesIndices);
+      let images = selectedImagesIndices.selectedImages;
+      if(!images) return [];
+      let indices = Object.values(images);
       return indices.map((index) => this.props.systemList[index.toString()]);
     }
   }
@@ -198,6 +203,8 @@ class WWTPanel extends Component {
 
   getNearestImages() {
     let targetPoint = this.state.targetData[this.state.selectedTarget];
+    if(!targetPoint) return [];
+
     let searchRadius = targetPoint.FOV / 2;
 
     let isWithinFOV = function (coord, target, FOV) {
@@ -243,10 +250,6 @@ class WWTPanel extends Component {
 
   get popover() {
 
-    const imageNameLabel = <span>Image name</span>;
-
-    console.log("curr height: " + this.state.currentPopoverHeight);
-    
     let imageList = this.state.showOnlyNearest ? this.getNearestImages() : this.getAllImages();
     //let imageList = this.state.showOnlyNearest ? this.getImagesWith3Dcoord() : this.getAllImages();
 
@@ -257,7 +260,7 @@ class WWTPanel extends Component {
       viewComponent={SkybrowserFocusEntry}
       viewComponentProps={{"hoverFunc" : this.hoverOnImage, "hoverLeavesImage" : this.hoverLeavesImage,
         "currentTargetColor" : this.getCurrentTargetColor, "add3dImage" : this.add3dImage}}
-      onSelect={this.onSelect}
+      onSelect={this.selectImage}
       active={this.state.imageName}
       searchAutoFocus
       />;
@@ -273,12 +276,11 @@ class WWTPanel extends Component {
       targetIsLocked={this.state.targetIsLocked}
       currentPopoverHeight={currentPopoverHeight}
       data={thisTabsImages}
-      onSelect={this.onSelect}
       viewComponent={SkybrowserFocusEntry}
-      viewComponentProps={{"hoverFunc" : this.hoverOnImage, "hoverLeavesImage" : this.hoverLeavesImage, 
+      viewComponentProps={{"hoverFunc" : this.hoverOnImage, "hoverLeavesImage" : this.hoverLeavesImage,
       "lockTarget" : this.lockTarget , "unlockTarget" : this.unlockTarget, "createTargetBrowserPair" : this.createTargetBrowserPair,
       "adjustCameraToTarget" : this.adjustCameraToTarget, "add3dImage" : this.add3dImage, "removeImageSelection" : this.removeImageSelection,
-      "setCurrentTabHeight" : this.setCurrentTabHeight }}
+      "setCurrentTabHeight" : this.setCurrentTabHeight, "setOpacity": this.setOpacityOfImage, "onSelect":this.selectImage }}
       onSelect={this.onSelect}
       //active={this.state.imageName}
       />;
@@ -362,11 +364,6 @@ const mapDispatchToProps = dispatch => ({
     dispatch(setPopoverVisibility({
       popover: 'skybrowser',
       visible
-    }));
-  },
-  selectImage: (imgName) => {
-    dispatch(selectImgSkyBrowser({
-      imgName
     }));
   },
 })

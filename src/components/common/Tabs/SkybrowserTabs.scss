@@ -13,7 +13,7 @@ $tabs-background-content: rgba(55,55,55,1);
 }
 
 .tabHeader {
-    display: flex; 
+    display: flex;
 }
 
 .tab {
@@ -66,6 +66,7 @@ $tabs-background-content: rgba(55,55,55,1);
     border-radius: 6px;
     padding: 3px 5px 3px 5px;
 }
+
 .lockTargetActive {
     background-color: $tabs-background; 
     border-radius: 6px;
