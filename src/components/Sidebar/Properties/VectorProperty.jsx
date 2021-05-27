@@ -3,9 +3,9 @@ import NumericInput from '../../common/Input/NumericInput/NumericInput';
 import MinMaxRangeInput from '../../common/Input/MinMaxRangeInput/MinMaxRangeInput';
 import Row from '../../common/Row/Row';
 import InfoBox from '../../common/InfoBox/InfoBox';
-import styles from './Property.scss';
 import { copyTextToClipboard } from '../../../utils/helpers';
 import ColorPickerPopup from '../../common/ColorPicker/ColorPickerPopup';
+import styles from './Property.scss';
 
 class VectorProperty extends Component {
   constructor(props) {
@@ -105,7 +105,7 @@ class VectorProperty extends Component {
     const stepSize = Math.min(...SteppingValue);
 
     return (
-      <Row className={styles.vectorProperty}>
+      <Row className={`${styles.vectorProperty} ${this.disabled ? styles.disabled : ''}`}>
         <MinMaxRangeInput
           valueMin={values[0]}
           valueMax={values[1]}
@@ -138,7 +138,7 @@ class VectorProperty extends Component {
     }
 
     return (
-      <Row className={styles.vectorProperty}>
+      <Row className={`${styles.vectorProperty} ${this.disabled ? styles.disabled : ''}`}>        
         { values.map((component, index) => (
           <NumericInput
             key={component.key}

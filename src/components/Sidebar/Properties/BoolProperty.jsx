@@ -3,6 +3,7 @@ import Checkbox from '../../common/Input/Checkbox/Checkbox';
 import { connectProperty } from './connectProperty';
 import InfoBox from '../../common/InfoBox/InfoBox';
 import { copyTextToClipboard } from '../../../utils/helpers';
+import styles from './Property.scss';
 
 class BoolProperty extends Component {
   constructor(props) {
@@ -44,13 +45,15 @@ class BoolProperty extends Component {
     const showText = !this.props.checkBoxOnly;
 
     return (
-      <Checkbox
-        wide={!this.props.checkBoxOnly}
-        checked={value}
-        label={showText ? (<span>{description.Name} {this.descriptionPopup}</span>) : null}
-        setChecked={this.onChange}
-        disabled={this.disabled}
-      />
+      <div className={`${this.disabled ? styles.disabled : ''}`}>
+        <Checkbox
+          wide={!this.props.checkBoxOnly}
+          checked={value}
+          label={showText ? (<span>{description.Name} {this.descriptionPopup}</span>) : null}
+          setChecked={this.onChange}
+          disabled={this.disabled}
+        />
+      </div>
     );
   }
 }

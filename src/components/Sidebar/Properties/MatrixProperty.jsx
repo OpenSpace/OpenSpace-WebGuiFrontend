@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import NumericInput from '../../common/Input/NumericInput/NumericInput';
 import Row from '../../common/Row/Row';
 import InfoBox from '../../common/InfoBox/InfoBox';
-import styles from './Property.scss';
 import { connectProperty } from './connectProperty';
 import { copyTextToClipboard } from '../../../utils/helpers';
+import styles from './Property.scss';
 
 class MatrixProperty extends Component {
   constructor(props) {
@@ -63,7 +63,7 @@ class MatrixProperty extends Component {
 
     // eslint-disable react/no-array-index-key
     return (
-      <div className={styles.matrixProperty}>
+      <div className={`${styles.matrixProperty} ${this.disabled ? styles.disabled : ''}`}>>
         { groups.map((group, index) => (
           <Row key={`row-${index}`}>
             { group.map(comp => (

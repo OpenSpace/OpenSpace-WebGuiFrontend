@@ -39,7 +39,7 @@ const selectStyles = {
   }),
   singleValue: (provided, state) => ({
     ...provided,
-    color: '#fff',
+    color: 'inherited',
     paddingTop: 10,
     marginLeft: 0
   })
