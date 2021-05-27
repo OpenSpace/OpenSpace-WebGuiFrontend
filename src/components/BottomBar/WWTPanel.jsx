@@ -44,6 +44,8 @@ class WWTPanel extends Component {
       targetData: [{ra: 0, dec: 0}],
       selectedTarget: 0,
       cameraData: {FOV : 70, RA: 0, Dec: 0},
+      currentTabHeight: 120,
+      currentPopoverHeight: 440,
     };
     this.togglePopover = this.togglePopover.bind(this);
     this.onSelect = this.onSelect.bind(this);
@@ -62,6 +64,9 @@ class WWTPanel extends Component {
     this.createTargetBrowserPair = this.createTargetBrowserPair.bind(this);
     this.adjustCameraToTarget = this.adjustCameraToTarget.bind(this);
     this.getSelectedTargetImages = this.getSelectedTargetImages.bind(this);
+    this.setCurrentTabHeight = this.setCurrentTabHeight.bind(this);
+    this.setCurrentPopoverHeight = this.setCurrentPopoverHeight.bind(this);
+ 
   }
 
   async componentDidMount(){
@@ -71,7 +76,7 @@ class WWTPanel extends Component {
     catch(e) {
       console.log(e);
     }
-   }
+  }
 
   togglePopover() {
     this.props.setPopoverVisibility(!this.props.popoverVisible)
@@ -164,9 +169,16 @@ class WWTPanel extends Component {
     this.props.luaApi.skybrowser.adjustCamera(this.state.selectedTarget);
   }
 
-
   getCurrentTargetColor() {
     return this.state.targetData[this.state.selectedTarget].color;
+  }
+
+  setCurrentTabHeight(height) {
+    this.setState({ currentTabHeight : height })
+  }
+
+  setCurrentPopoverHeight(height) {
+    this.setState({ currentPopoverHeight : height })
   }
 
   onToggleWWT() {
@@ -233,6 +245,8 @@ class WWTPanel extends Component {
 
     const imageNameLabel = <span>Image name</span>;
 
+    console.log("curr height: " + this.state.currentPopoverHeight);
+    
     let imageList = this.state.showOnlyNearest ? this.getNearestImages() : this.getAllImages();
     //let imageList = this.state.showOnlyNearest ? this.getImagesWith3Dcoord() : this.getAllImages();
 
@@ -250,17 +264,21 @@ class WWTPanel extends Component {
 
     let thisTabsImages = this.getSelectedTargetImages();
     thisTabsImages = thisTabsImages ? thisTabsImages : [];
+    let currentPopoverHeight = this.state.currentPopoverHeight - 120; // 
 
-    let skybrowserTabs = <SkybrowserTabs
+    let skybrowserTabs =   
+    <SkybrowserTabs
       targets={this.state.targetData}
       currentTarget={this.state.selectedTarget.toString()}
       targetIsLocked={this.state.targetIsLocked}
+      currentPopoverHeight={currentPopoverHeight}
       data={thisTabsImages}
       onSelect={this.onSelect}
       viewComponent={SkybrowserFocusEntry}
       viewComponentProps={{"hoverFunc" : this.hoverOnImage, "hoverLeavesImage" : this.hoverLeavesImage, 
       "lockTarget" : this.lockTarget , "unlockTarget" : this.unlockTarget, "createTargetBrowserPair" : this.createTargetBrowserPair,
-      "adjustCameraToTarget" : this.adjustCameraToTarget, "add3dImage" : this.add3dImage,  "removeImageSelection" : this.removeImageSelection }}
+      "adjustCameraToTarget" : this.adjustCameraToTarget, "add3dImage" : this.add3dImage, "removeImageSelection" : this.removeImageSelection,
+      "setCurrentTabHeight" : this.setCurrentTabHeight }}
       onSelect={this.onSelect}
       //active={this.state.imageName}
       />;
@@ -273,9 +291,10 @@ class WWTPanel extends Component {
         detachable
         attached={true}
         sideview = {true}
-      >
-        <div className={PopoverSkybrowser.styles.content}>
-          <div className={styles.row}>
+        heightCallback={this.setCurrentPopoverHeight}
+        >
+       
+        <div className={styles.row}>
             <Picker
               className={`${styles.picker} ${this.state.showOnlyNearest ? styles.unselected: styles.selected}`}
               onClick={() => this.setState({ showOnlyNearest: false })}>
@@ -286,21 +305,14 @@ class WWTPanel extends Component {
               onClick={() => this.setState({ showOnlyNearest: true })}>
                 <span>Images within view</span> {/*<MaterialIcon className={styles.photoIcon} icon="my_location" />*/}
             </Picker>
-            {/*
-            <Button onClick={() => this.props.luaApi.skybrowser.adjustCamera(this.state.selectedTarget)}>
-            Camera look at target
-            </Button>
-            <Button onClick={() => this.lockTarget(this.state.selectedTarget)}>
-            Lock target
-            </Button>
-            <Button onClick={() => this.unlockTarget(this.state.selectedTarget)}>
-            Unlock target
-            </Button>
-            */ }
           </div>
-          {filterList}
-        </div>
-        {skybrowserTabs}
+          <div className={PopoverSkybrowser.styles.content}>
+            <div className={PopoverSkybrowser.styles.scrollArea} 
+            style={{height: 'calc(100% - ' + (this.state.currentTabHeight) + 'px)'}}>
+            {filterList}
+            </div>
+            {skybrowserTabs}
+          </div>
       </PopoverSkybrowser>
 
     );

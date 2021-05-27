@@ -20,13 +20,21 @@ const findStyles = arr => arr.split(' ')
 class PopoverSkybrowser extends Component {
   constructor(props) {
     super(props);
-    this.state = { isDetached: !props.attached, isSideview: !props.sideview };
+    this.state = { 
+      isDetached: !props.attached, 
+      isSideview: !props.sideview, 
+      height: 440,
+    };
     this.toggleDetach = this.toggleDetach.bind(this);
     this.toggleSideview = this.toggleSideview.bind(this);
     this.onResizeStop = this.onResizeStop.bind(this);
   }
 
   onResizeStop(e, direction, ref, delta) {
+    this.setState({
+      height : this.state.height + delta.height
+    })
+    this.props.heightCallback(this.state.height);
   }
 
   get arrowStyle() {
@@ -68,10 +76,11 @@ class PopoverSkybrowser extends Component {
             topLeft: false,
           }}
           defaultSize={{
-            width:290,
-            height:400,
+            width: 290,
+            height: this.state.height,
           }}
           minHeight={280}
+          maxHeight={900}
           handleClasses={{
             top: styles.topHandle,
             right: styles.rightHandle,
@@ -113,7 +122,7 @@ class PopoverSkybrowser extends Component {
 
   get asWindow() {  
     return ( 
-        <WindowSkybrowser {...this.windowInheritedProps}>
+        <WindowSkybrowser {...this.windowInheritedProps} onResizeStop={this.onResizeStop} size={{height: this.state.height, width: 'auto'}}>
           { this.props.children } 
         </WindowSkybrowser>
     );
@@ -121,7 +130,6 @@ class PopoverSkybrowser extends Component {
 
   get asSideview() {
     return ( 
-
       <PaneSkybrowser {...this.sideviewInheritedProps}>
         { this.props.children } 
       </PaneSkybrowser>
@@ -132,10 +140,12 @@ class PopoverSkybrowser extends Component {
 
   toggleDetach() {
     this.setState({ isDetached: !this.state.isDetached });
+    //this.props.heightCallback(this.state.height);
   }
 
   toggleSideview() {
     this.setState({ isSideview: !this.state.isSideview });
+    this.props.heightCallback(window.innerHeight);
   }
 
   render() {

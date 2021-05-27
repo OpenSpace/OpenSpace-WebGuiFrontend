@@ -1,19 +1,15 @@
 @import "../../../styles/all";
 
 
-.imageList {
-    width:100%;
+$tabs-header-height: 26px;
+$tabs-background: rgba(37,37,37,1);
+$tabs-background-content: rgba(55,55,55,1);
 
-    :global(.scroll-content) {
-        height: calc(100% - 30px);
-      &::before, &::after {
-        background: transparent;
-      }
-    }
-  }
-
-.well {
-    background:rgba(37, 37, 37, 1); 
+.tabContainer {
+    background: $tabs-background;   
+    position: absolute;
+    width: 100%;
+    bottom: $popover-arrow-size;
 }
 
 .tabHeader {
@@ -21,32 +17,37 @@
 }
 
 .tab {
-    background: rgba(37, 37, 37, 1); 
-    padding: 4px;
+    background: $tabs-background; 
     text-indent: 10px; 
     font-size: 16px;
+    padding: 2px;
     &:hover {
-        background: rgba(55,55,55, 1);
+        background: $tabs-background-content;
     }
 }
 
 .tabContent {
-    padding: 4px;
-    background: rgba(55,55,55, 1);
-    width: 100%;
-    height: 130px;
-
+    width: 100%;  
+    :global(.scroll-content) {
+        height: calc(100% - #{$tabs-header-height}); 
+        //width: 100%;
+        background: $tabs-background-content;
+        
+        &::after, &::before {
+          background: transparent;
+        }
+    } 
 }
 
 .tabActive {
-    background: rgba(55,55,55, 1);
-    padding: 4px;
+    background: $tabs-background-content;
     text-indent: 10px;
+    padding: 2px;
     font-size: 16px;
 }
 
 .navTabs {
-    display:flex;
+    display: flex;
     ul {
         white-space: nowrap;
         overflow: hidden;
@@ -59,7 +60,6 @@
     border: none;
     font-size: 13px;
     padding: 6px;
-   
 }
 
 .lockTarget {
@@ -67,11 +67,17 @@
     padding: 3px 5px 3px 5px;
 }
 .lockTargetActive {
-    background-color:  rgba(37, 37, 37, 1); 
+    background-color: $tabs-background; 
     border-radius: 6px;
     padding: 3px 5px 3px 5px;
-
 }
 
+.topHandle {
+    height: 1px;
+    &:hover, &:active{
+      background: $tabs-background;
+    }
+  }
+  
 
 

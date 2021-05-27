@@ -13,11 +13,18 @@ import uuid from "uuid";
 class SkybrowserTabs extends Component {
     constructor(props) {
         super(props);
+        this.state = {
+            height: 120,
+            currentHeight: 120,
+        }
         this.createTabs = this.createTabs.bind(this);
+        this.onResizeStop = this.onResizeStop.bind(this);
+        this.onResize = this.onResize.bind(this);
         this.handleAddTab = this.handleAddTab.bind(this);
         this.handleSelectTab = this.handleSelectTab.bind(this);
         this.handleDeleteTab = this.handleDeleteTab.bind(this);
         this.setLockTargetMode = this.setLockTargetMode.bind(this);
+
     }
 
     get inheritedProps() {
@@ -25,12 +32,9 @@ class SkybrowserTabs extends Component {
         return excludeKeys(this.props, doNotInclude);
     }
 
-    onResizeStop(e, direction, ref, delta) {
-    }
-
     createTabs() {
         const { targets, currentTarget} = this.props;
-        const { lockTarget, unlockTarget, createTargetBrowserPair, adjustCameraToTarget} = this.props.viewComponentProps;
+        const { lockTarget, unlockTarget, createTargetBrowserPair, adjustCameraToTarget } = this.props.viewComponentProps;
    
         const allTabs = Object.keys(targets).map((target, index) => {
 
@@ -84,17 +88,40 @@ class SkybrowserTabs extends Component {
         // Call function handle from WWTPanel that is sent as a prop, to call Lua function lock or unlock
     };
 
+    onResizeStop(e, direction, ref, delta) {
+        this.setState({
+            height: this.state.height + delta.height
+        })  
+
+    }
+
+    onResize(e, direction, ref, delta) {
+        this.setState({
+            currentHeight: this.state.height + delta.height
+        })
+        this.props.viewComponentProps.setCurrentTabHeight(this.state.currentHeight);  
+    }
+
     render() {
-        const {data} = this.props;
+        const {data, currentPopoverHeight} = this.props;
         const EntryComponent = this.props.viewComponent;
 
         return(
-            <section {...this.inheritedProps} className={styles.imageList}>
-                <div className={styles.well}>
+            <section {...this.inheritedProps} className={styles.tabContainer}>
+                <Resizable 
+                enable={{ top: true, bottom: false }} 
+                handleClasses={{ top: styles.topHandle }}
+                size={{ height: this.state.currentHeight }}
+                minHeight={120}
+                maxHeight={currentPopoverHeight}
+                onResizeStop={this.onResizeStop}
+                onResize={this.onResize}
+                >
+              
                 {this.createTabs()}
                     {/*<Button className={styles.addTabButton} onClick={this.handleAddTab}>Add Skybrowser</Button>*/}
-                <div className={styles.tabContent}>
-
+                  
+                <div className={styles.tabContent} style={{ height: this.state.currentHeight }}>
                     <ScrollOverlay>
                         { data.length === 0 ? (
                             <CenteredLabel>
@@ -102,7 +129,7 @@ class SkybrowserTabs extends Component {
                             </CenteredLabel>
 
                         ) : (
-                        <ul>
+                        <ul>  
                             { data.map(entry => (
                                 <EntryComponent
                                 {...entry}
@@ -116,7 +143,7 @@ class SkybrowserTabs extends Component {
                         )}
                     </ScrollOverlay>
                 </div>
-                </div>
+            </Resizable> 
             </section>
         )
 
