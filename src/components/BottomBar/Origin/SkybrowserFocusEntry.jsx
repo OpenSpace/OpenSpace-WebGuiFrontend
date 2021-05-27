@@ -10,7 +10,24 @@ import { jsonToLuaString } from '../../../utils/propertyTreeHelpers';
 import SkybrowserTabs from '../../common/Tabs/SkybrowserTabs';
 
 //import { clamp } from 'lodash/number';
+class OpacitySlider extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      value: 100
+    };
+    this.handleChange = this.handleChange.bind(this);
+  }
 
+  handleChange(event) {
+    this.setState({value: event.target.value});
+    this.props.setOpacity(Number(this.props.identifier), Number(this.state.value/100));
+  }
+
+  render() {
+    return   <div className={styles.slidecontainer}><input type="range" min="0" max="100" value={this.state.value}  className={styles.slider} onChange={this.handleChange} /> </div>;
+  }
+}
 
 class SkybrowserFocusEntry extends Component {
   constructor(props) {
@@ -27,14 +44,11 @@ class SkybrowserFocusEntry extends Component {
 
   select(evt) {
     const { identifier } = this.props;
-    if (this.props.onSelect) {
+    if (this.props.onSelect && identifier) {
       this.props.onSelect(identifier, evt);
     }
-
     this.props.currentTargetColor ? this.setBorderColor() : null;
-
   }
-
 
   get isActive() {
     return this.props.identifier === this.props.active;
@@ -53,12 +67,15 @@ class SkybrowserFocusEntry extends Component {
       onClick={() => {this.props.removeImageSelection(identifier)}}>
       </MaterialIcon> : "";
 
+    const opacitySlider = this.props.setOpacity ? <OpacitySlider setOpacity={this.props.setOpacity} identifier={identifier}/>: "";
+
     return (
 
       <li className={`${styles.entry} ${this.isActive && styles.active}`}
           style={{ borderLeftColor: this.state.selectedImageBorderColor }}
           onMouseEnter={() => {this.props.hoverFunc(this.props.identifier)} }
           onMouseLeave={() => {this.props.hoverLeavesImage()}}>
+          {imageRemoveButton}
           <div className={styles.image}>
             <img src={thumbnail} alt={name} onClick={this.select}/>
           </div>
@@ -74,7 +91,7 @@ class SkybrowserFocusEntry extends Component {
             </InfoBoxSkybrowser>
           </div>
           {image3dbutton}
-          {imageRemoveButton}
+          {opacitySlider}
       </li>
     );
   }
@@ -88,8 +105,8 @@ SkybrowserFocusEntry.propTypes = {
 };
 
 SkybrowserFocusEntry.defaultProps = {
-  onSelect: null,
   active: '',
+  onSelect: null
 };
 
 export default SkybrowserFocusEntry;

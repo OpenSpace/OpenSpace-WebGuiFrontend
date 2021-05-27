@@ -15,19 +15,20 @@ $border-width: 1px;
 
 //skybrowser styles
 $image-card-height: 120px;
-$image-selection-header-height: $header-height + 52px;
+$image-selection-header-height: $header-height + 60px;
+$imagelist-margin: 4px;
 
 .popover {
   background: $background;
   border-radius: $popover-corner-radius;
   box-shadow: $box-shadow;
   color: $text-color-focus;
-  max-width: none;    
+  max-width: none;
   left: 50%;
   position: absolute;
   transform: translateX(-50%);
   z-index: 10;
-  width: auto;       
+  width: auto;
   bottom: calc(100% + #{$popover-arrow-size});
   &.small {
     max-width: 150px;
@@ -50,21 +51,18 @@ $image-selection-header-height: $header-height + 52px;
 
 .content {
   height: calc(100% - #{$image-selection-header-height}); 
-  
+
   ul {
     display: flex;
     flex-wrap: wrap;
-  }
-  
+  } 
   :global(.scroll-content) {
+    width : calc(100% - #{$imagelist-margin});
     &::after, &::before {
       background: transparent;
     }
-
   }
-
 }
-
 
 .popover header {
   display: flex;
@@ -86,7 +84,6 @@ $image-selection-header-height: $header-height + 52px;
   text-transform: uppercase;
   vertical-align: top;
 }
-
 
 .delimiter {
   margin: ($base-padding / 3) 0;
@@ -140,10 +137,3 @@ $image-selection-header-height: $header-height + 52px;
     background: $ui-background-solid;
   }
 }
-
-
-
-
-
-
-

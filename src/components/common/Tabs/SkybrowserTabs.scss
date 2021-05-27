@@ -4,16 +4,19 @@
 $tabs-header-height: 26px;
 $tabs-background: rgba(37,37,37,1);
 $tabs-background-content: rgba(55,55,55,1);
+$tabs-margin-horizontal: 8px;
 
 .tabContainer {
     background: $tabs-background;   
     position: absolute;
-    width: 100%;
+    width: calc(100% - #{$tabs-margin-horizontal});
+    margin-left: $tabs-margin-horizontal / 2;
+
     bottom: $popover-arrow-size;
 }
 
 .tabHeader {
-    display: flex; 
+    display: flex;
 }
 
 .tab {
@@ -66,6 +69,7 @@ $tabs-background-content: rgba(55,55,55,1);
     border-radius: 6px;
     padding: 3px 5px 3px 5px;
 }
+
 .lockTargetActive {
     background-color: $tabs-background; 
     border-radius: 6px;
