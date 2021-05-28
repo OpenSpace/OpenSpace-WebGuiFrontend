@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Input from '../../common/Input/Input/Input';
 import InfoBox from '../../common/InfoBox/InfoBox';
 import { copyTextToClipboard } from '../../../utils/helpers';
+import styles from './Property.scss';
 
 class ListProperty extends Component {
   constructor(props) {
@@ -43,13 +44,15 @@ class ListProperty extends Component {
       { description.Name } { this.descriptionPopup }
     </span>);
     return (
-      <Input
-        value={value.join(',')}
-        label={label}
-        placeholder={description.Name}
-        onEnter={this.onChange}
-        disabled={this.disabled}
-      />
+      <div className={`${this.disabled ? styles.disabled : ''}`}>
+        <Input
+          value={value.join(',')}
+          label={label}
+          placeholder={description.Name}
+          onEnter={this.onChange}
+          disabled={this.disabled}
+        />
+      </div>
     );
   }
 }

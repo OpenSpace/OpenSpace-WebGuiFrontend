@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { excludeKeys } from '../../../../utils/helpers';
 import styles from './Checkbox.scss';
 import MaterialIcon from '../../MaterialIcon/MaterialIcon';
-import Input from '../Input/Input';
 
 class Checkbox extends Component {
   constructor(props) {
@@ -12,6 +11,9 @@ class Checkbox extends Component {
   }
 
   onClick(evt) {
+    if(this.props.disabled) {
+      return;
+    }
     this.props.setChecked(!this.props.checked);
     evt.stopPropagation();
   }
@@ -30,6 +32,7 @@ class Checkbox extends Component {
 
 Checkbox.propTypes = {
   checked: PropTypes.bool,
+  disabled: PropTypes.bool,
   setChecked: PropTypes.func,
   label: PropTypes.node,
   left: PropTypes.bool,

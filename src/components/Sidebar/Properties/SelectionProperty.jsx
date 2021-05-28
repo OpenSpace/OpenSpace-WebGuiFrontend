@@ -5,6 +5,7 @@ import { copyTextToClipboard } from '../../../utils/helpers';
 import ToggleContent from '../../common/ToggleContent/ToggleContent';
 import Checkbox from '../../common/Input/Checkbox/Checkbox';
 import Button from '../../common/Input/Button/Button';
+import styles from './Property.scss';
 
 class SelectionProperty extends Component {
   constructor(props) {
@@ -98,26 +99,29 @@ class SelectionProperty extends Component {
       </span>
     )
 
+      console.log(this.disabled);
+
     return (
       <ToggleContent
         title={label}
         expanded={this.state.expanded}
         setExpanded={this.setExpanded}
       >
-        {
-          (options.length > 10) && helperButtons
-        }
-        {
-          options.map(opt => 
-            <Checkbox
-              key={opt}
-              label={opt}
-              checked={this.isSelected(opt)}
-              setChecked={(checked) => { this.onCheckboxChange(checked, opt); }}
-              disabled={this.disabled}
-            />
-          )
-        }
+        {/* @TODO (emmbr, 2021-05-27): this property type cannot be disabled */}
+        {/* <div className={`${this.disabled ? styles.disabled : ''}`}> */}
+          { (options.length > 10) && helperButtons }
+          {
+            options.map(opt => 
+              <Checkbox
+                key={opt}
+                label={opt}
+                checked={this.isSelected(opt)}
+                setChecked={(checked) => { this.onCheckboxChange(checked, opt); }}
+                disabled={this.disabled}
+              />
+            )
+          }
+        {/* </div> */}
       </ToggleContent>
     );
   }
