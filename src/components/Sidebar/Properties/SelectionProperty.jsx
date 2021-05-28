@@ -107,6 +107,7 @@ class SelectionProperty extends Component {
         expanded={this.state.expanded}
         setExpanded={this.setExpanded}
       >
+        {/* @TODO (emmbr, 2021-05-27): this property type cannot be disabled */}
         {/* <div className={`${this.disabled ? styles.disabled : ''}`}> */}
           { (options.length > 10) && helperButtons }
           {
