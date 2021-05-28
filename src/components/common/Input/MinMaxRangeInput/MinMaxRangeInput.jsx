@@ -109,11 +109,27 @@ class MinMaxRangeInput extends Component {
   }
 
   updateMinValue(newValue) {
+    const { max, min } = this.props;
+
+    if (newValue > max || newValue < min) return;
+
+    if (newValue > this.state.maxValue) {
+      this.updateMaxValue(newValue);
+    }
+
     this.setState({ minValue: newValue });
     this.props.onMinValueChanged(newValue);
   }
 
   updateMaxValue(newValue) {
+    const { max, min } = this.props;
+
+    if (newValue > max || newValue < min) return;
+
+    if (newValue < this.state.minValue) {
+      this.updateMinValue(newValue);
+    }
+
     this.setState({ maxValue: newValue });
     this.props.onMaxValueChanged(newValue);
   }
