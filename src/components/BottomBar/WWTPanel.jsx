@@ -43,7 +43,7 @@ class WWTPanel extends Component {
       targetData: [{ra: 0, dec: 0}],
       selectedTarget: 0,
       cameraData: {FOV : 70, RA: 0, Dec: 0},
-      currentTabHeight: 120,
+      currentTabHeight: 160,
       currentPopoverHeight: 440,
     };
     this.togglePopover = this.togglePopover.bind(this);
@@ -267,10 +267,11 @@ class WWTPanel extends Component {
 
     let thisTabsImages = this.getSelectedTargetImages();
     thisTabsImages = thisTabsImages ? thisTabsImages : [];
-    let currentPopoverHeight = this.state.currentPopoverHeight - 120; // 
+    
+    const selectionButtonsAndSearchHeight = 120; // Height of the image selection buttons and search image field
+    let currentPopoverHeight = this.state.currentPopoverHeight - selectionButtonsAndSearchHeight; 
 
-    let skybrowserTabs =   
-    <SkybrowserTabs
+    let skybrowserTabs = <SkybrowserTabs
       targets={this.state.targetData}
       currentTarget={this.state.selectedTarget.toString()}
       targetIsLocked={this.state.targetIsLocked}

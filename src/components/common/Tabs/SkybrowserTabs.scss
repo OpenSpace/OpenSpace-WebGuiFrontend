@@ -1,7 +1,7 @@
 @import "../../../styles/all";
 
 
-$tabs-header-height: 26px;
+$tabs-header-height: 30px;
 $tabs-background: rgba(37,37,37,1);
 $tabs-background-content: rgba(55,55,55,1);
 $tabs-margin-horizontal: 8px;
@@ -11,8 +11,8 @@ $tabs-margin-horizontal: 8px;
     position: absolute;
     width: calc(100% - #{$tabs-margin-horizontal});
     margin-left: $tabs-margin-horizontal / 2;
-
     bottom: $popover-arrow-size;
+    z-index: 10;
 }
 
 .tabHeader {
@@ -30,10 +30,9 @@ $tabs-margin-horizontal: 8px;
 }
 
 .tabContent {
-    width: 100%;  
+      
     :global(.scroll-content) {
         height: calc(100% - #{$tabs-header-height}); 
-        //width: 100%;
         background: $tabs-background-content;
         
         &::after, &::before {
@@ -51,6 +50,7 @@ $tabs-margin-horizontal: 8px;
 
 .navTabs {
     display: flex;
+
     ul {
         white-space: nowrap;
         overflow: hidden;
@@ -59,20 +59,24 @@ $tabs-margin-horizontal: 8px;
 }
 
 .addTabButton {
-    background: none;
-    border: none;
     font-size: 13px;
-    padding: 6px;
+    padding: 9px 6px 3px 6px;
+    border-top-right-radius: 4px;
 }
 
-.lockTarget {
-    border-radius: 6px;
+.closeTabButton {
+    border-radius: 4px;
+    padding: 3px 4px 3px 4px;
+}
+
+.tabButton {
+    border-radius: 4px;
     padding: 3px 5px 3px 5px;
 }
 
-.lockTargetActive {
+.tabButtonActive {
     background-color: $tabs-background; 
-    border-radius: 6px;
+    border-radius: 4px;
     padding: 3px 5px 3px 5px;
 }
 

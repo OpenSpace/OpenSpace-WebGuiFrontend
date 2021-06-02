@@ -57,7 +57,7 @@ $imagelist-margin: 4px;
     flex-wrap: wrap;
   } 
   :global(.scroll-content) {
-    width : calc(100% - #{$imagelist-margin});
+    width : 100%;
     &::after, &::before {
       background: transparent;
     }

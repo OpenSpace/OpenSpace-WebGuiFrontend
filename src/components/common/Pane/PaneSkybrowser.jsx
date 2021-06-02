@@ -27,7 +27,7 @@ class PaneSkybrowser extends Component {
             topLeft: false,
         }}
         defaultSize={{
-          width: 'auto',
+          width: '350',
           height: '100%'
         }}
         minWidth={250}

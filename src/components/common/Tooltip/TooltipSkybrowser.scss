@@ -2,7 +2,6 @@
 
 $arrow-size: 4px;
 $background: $ui-background-solid;
-$tooltip-color-light: rgba(255,255,255,0.12);
 $tooltip-color-dark: rgba(15,15,15,0.9); //rgba(60,60,60,0.95);
 
 .tooltip {
@@ -23,9 +22,9 @@ $tooltip-color-dark: rgba(15,15,15,0.9); //rgba(60,60,60,0.95);
   overflow: auto;
   text-overflow: ellipsis;
   z-index: 10;
-
 }
 
+ // infoboxskybrowser styles
 .tooltipTitle {
   display: block;
   font-size: 16px; 
@@ -33,25 +32,19 @@ $tooltip-color-dark: rgba(15,15,15,0.9); //rgba(60,60,60,0.95);
 }
 
 .tooltipButton {
-font-size: 11px;
-padding: 4px;
-border-radius: 4px;
-margin-top: 6px;
-background-color: rgba(70,70,70,0.8);
+  font-size: 11px;
+  padding: 4px;
+  border-radius: 4px;
+  margin-top: 6px;
+  background-color: rgba(70,70,70,0.8);
 }
-
 
 // placement
-.bottom-right {
- max-width: 100px;
- background-color: $tooltip-color-light;
- transform: translate(0, 25px);
-}
-
 .bottom-left {
   width: 120px;
   background-color: $tooltip-color-dark;
   transform: translate(-80px, 2px);
+  z-index: 10;
  }
 
 .fixed {
@@ -74,12 +67,6 @@ background-color: rgba(70,70,70,0.8);
   pointer-events: none;
 }
 
-// arrow placement
-.bottom-right::after {
-  border-bottom-color:$tooltip-color-light; //rgba(255,255,255,0.3);
-  top: -2*$arrow-size;
-  left: 1.5*$arrow-size;
-}
 
 .bottom-left::after {
   border-bottom-color: $tooltip-color-dark; //rgba(255,255,255,0.3);

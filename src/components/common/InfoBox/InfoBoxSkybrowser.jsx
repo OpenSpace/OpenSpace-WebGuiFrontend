@@ -10,7 +10,6 @@ import { times } from 'lodash';
 class InfoBoxSkybrowser extends Component {
   constructor(props) {
     super(props);
-
     this.state = { showPopup: false, tooltipActive: false};
     this.setRef = this.setRef.bind(this);
     this.tooltipActive = this.tooltipActive.bind(this);

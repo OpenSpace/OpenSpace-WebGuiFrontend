@@ -21,11 +21,22 @@ $slider-line: rgba(22,22,22,1);
 
 }
 
+.tabEntry {
+  height: 130px;
+  margin-top: 4px;
+
+}
+
 .imageHeader {
   display: flex;
   justify-content: space-between;
   margin-top: 1px;
 
+}
+
+.removeImageButton {
+  padding: 3px 4px 3px 4px;
+  border-radius: 4px;
 }
 
 .imageTitle {
@@ -72,8 +83,8 @@ $slider-line: rgba(22,22,22,1);
 .slider::-webkit-slider-thumb {
   -webkit-appearance: none; /* Override default look */
   appearance: none;
-  width: 15px; /* Set a specific slider handle width */
-  height: 15px; /* Slider handle height */
+  width: 14px; /* Set a specific slider handle width */
+  height: 14px; /* Slider handle height */
   border-radius: 50%;
   background: $slider-button;
   cursor: pointer; /* Cursor on hover */
