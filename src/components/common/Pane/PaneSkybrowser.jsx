@@ -5,12 +5,13 @@ import { Resizable } from 're-resizable';
 import styles from './PaneSkybrowser.scss';
 import Pane from '../../Sidebar/Pane';
 import { excludeKeys } from '../../../utils/helpers';
+import { size } from 'lodash';
 
 
 class PaneSkybrowser extends Component {
  
   render() {
-    const { children, title, closeCallback } = this.props;
+    const { children, title, size, closeCallback } = this.props;
 
     return (
       <section className={styles.pane}>
@@ -26,7 +27,7 @@ class PaneSkybrowser extends Component {
             topLeft: false,
         }}
         defaultSize={{
-          width:360,
+          width: 'auto',
           height: '100%'
         }}
         minWidth={250}

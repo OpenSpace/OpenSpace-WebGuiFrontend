@@ -81,7 +81,7 @@ class InfoBoxSkybrowser extends Component {
                 <span className={styles.tooltipTitle}> { title } </span>
                 { text }
                 { text && (
-                    <Button className={styles.tooltipButton} onClick={ () =>this.openImageUrl(textUrl) }>
+                    <Button className={styles.tooltipButton} onClick={ () => this.openImageUrl(textUrl) }>
                     Discover more
                     </Button>
                 )}

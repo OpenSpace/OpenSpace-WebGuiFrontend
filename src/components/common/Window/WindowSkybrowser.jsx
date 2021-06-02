@@ -8,13 +8,10 @@ import { excludeKeys } from '../../../utils/helpers';
 import { Resizable } from 're-resizable';
 import SkybrowserTabs from '../../common/Tabs/SkybrowserTabs';
 
-const onResizeStop = (e, direction, ref, delta) => {
-};
-
 
 const WindowSkybrowser = (props) => {
 
-  const { children, title, closeCallback, size, position } = props;
+  const { children, title, closeCallback, size, position, onResizeStop} = props;
 
   return (
 
@@ -28,24 +25,18 @@ const WindowSkybrowser = (props) => {
           width: size.width,
           height: size.height,
         }}
-        {...excludeKeys(props, 'children title callback className closeCallback')}
+        {...excludeKeys(props, 'children title callback className closeCallback onResizeStop')}
       >         
         <Resizable
-        enable={{
-          top: false,
+        enable={{    
           right: true,
-          left: false,
           bottom: true,
-          topRight: false,
-          bottomRight: false,
-          bottomLeft: false,
-          topLeft: false,
         }}
         defaultSize={{
-          width:360,
-          height:400,
+          width: size.width,
+          height: size.height,
         }}
-        minWidth={250}
+        minWidth={280}
         minHeight={280}
         handleClasses={{
           top: styles.topHandle,
@@ -71,7 +62,6 @@ const WindowSkybrowser = (props) => {
             { children }         
           </section>
           <section>
-            {/*<SkybrowserTabs> </SkybrowserTabs>*/}
           </section>
           </div>  
         </Resizable>
@@ -99,7 +89,7 @@ WindowSkybrowser.defaultProps = {
   children: '',
   closeCallback: null,
   className: '',
-  position: { x: -50, y: -470 }, // position: { x: 10, y: 10 }, 
+  position: { x: 10, y: -800 },
   size: { height: 'auto', width: 'auto' },
   title: 'WindowSkybrowser',
 };

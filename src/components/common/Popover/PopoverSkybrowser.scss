@@ -8,11 +8,14 @@ $padding-horizontal: 0.3rem;
 $padding-vertical: 0.5rem;
 $padding: $padding-horizontal $padding-vertical;
 
-
 $font-size: 1rem;
 $icon-size: 18px;
-$header-height: 35px;
+$header-height: 26px;
 $border-width: 1px;
+
+//skybrowser styles
+$image-card-height: 120px;
+$image-selection-header-height: $header-height + 52px;
 
 .popover {
   background: $background;
@@ -36,34 +39,25 @@ $border-width: 1px;
     justify-content: space-around;
     &:last-child:after {
       content: "";
-      flex-basis: 120px;
+      flex-basis: $image-card-height;
     }
   }
 }
 
-.popover p, .content {
-  height: calc(100% - 235px);
-  margin-top: 2px;
+.scrollArea {
+  height : 100%;
+}
 
-  :global(.scroll-content) {
-    height: calc(100% - 86px);
-    width: 100%;
-     &::after {
-      background: transparent;
-    }
-
-  }
+.content {
+  height: calc(100% - #{$image-selection-header-height}); 
   ul {
-    margin-left: 6px;
     display: flex;
     flex-wrap: wrap;
-    //justify-content: space-around;
-    /*
-    &:last-child:after {
-      content: "";
-      flex-basis: 120px;
+  } 
+  :global(.scroll-content) {
+    &::after, &::before {
+      background: transparent;
     }
-    */
   }
 }
 
@@ -87,7 +81,6 @@ $border-width: 1px;
   text-transform: uppercase;
   vertical-align: top;
 }
-
 
 .delimiter {
   margin: ($base-padding / 3) 0;
@@ -128,42 +121,6 @@ $border-width: 1px;
   &.bottom.rightside:after {
     left: auto;
     right: $arrow-size * 2;
-  }
-}
-
-.rightHandle {
-  background: transparent;
-  border-radius: 2px;
-  height: 100%;
-  width: 100%;
-  padding: 0;
-  margin-left: 5px;
-  &:hover, &:active{
-    background: $ui-background-solid;
-  }
-}
-
-.leftHandle {
-  background: transparent;
-  border-radius: 2px;
-  height: 100%;
-  width: 100%;
-  padding: 0;
-  margin-right: 5px;
-
-  &:hover, &:active{
-    background: $ui-background-solid;
-  }
-}
-
-.bottomHandle {
-  background: transparent;
-  border-radius: 2px;
-  height: 100%;
-  width: 100%;
-  padding: 0;
-  &:hover, &:active{
-    background: $ui-background-solid;
   }
 }
 
