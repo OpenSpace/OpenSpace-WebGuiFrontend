@@ -168,6 +168,7 @@ class WWTPanel extends Component {
   }
 
   adjustCameraToTarget() {
+    this.props.luaApi.skybrowser.lockTarget(this.state.selectedTarget);
     this.props.luaApi.skybrowser.adjustCamera(this.state.selectedTarget);
   }
 
