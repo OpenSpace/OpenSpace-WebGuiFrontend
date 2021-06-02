@@ -34,12 +34,12 @@ class SkybrowserTabs extends Component {
 
     createTabs() {
         const { targets, currentTarget} = this.props;
-        const { lockTarget, unlockTarget, createTargetBrowserPair, adjustCameraToTarget } = this.props.viewComponentProps;
-   
+        const { lockTarget, unlockTarget, createTargetBrowserPair, adjustCameraToTarget, select2dImagesAs3d} = this.props.viewComponentProps;
+
         const allTabs = Object.keys(targets).map((target, index) => {
 
-            let targetColor = 'rgb(' + targets[target].color + ')'; 
-     
+            let targetColor = 'rgb(' + targets[target].color + ')';
+
             return(
                 <ul className={styles.tabHeader}  key={index}
                 style={currentTarget === target ? {borderTopRightRadius: '4px', borderTop:  "3px solid " + targetColor} : {}}>
@@ -55,9 +55,11 @@ class SkybrowserTabs extends Component {
                     className={this.props.targetIsLocked ? styles.tabButtonActive : styles.tabButton } 
                     onClick={this.props.targetIsLocked ? () => unlockTarget() : () => lockTarget() } transparent small>
                         <MaterialIcon icon="lock" className="small" />
-                    </Button>              
+                    </Button>  
+                    <Button onClick={() => select2dImagesAs3d(currentTarget)} transparent small style={{ borderRadius: '6px', padding: '3px 4px 3px 4px'}}>
+                        <MaterialIcon icon="cached" className="small"/>
+                    </Button>            
                     <Button onClick={() => this.handleDeleteTab(currentTarget)} className={styles.closeTabButton} transparent small>
-                        <MaterialIcon icon="close" className="small"/>
                     </Button>
                    </div>
                 </ul>
@@ -92,7 +94,7 @@ class SkybrowserTabs extends Component {
     onResizeStop(e, direction, ref, delta) {
         this.setState({
             height: this.state.height + delta.height
-        })  
+        })
 
     }
 
@@ -100,7 +102,7 @@ class SkybrowserTabs extends Component {
         this.setState({
             currentHeight: this.state.height + delta.height
         })
-        this.props.viewComponentProps.setCurrentTabHeight(this.state.currentHeight);  
+        this.props.viewComponentProps.setCurrentTabHeight(this.state.currentHeight);
     }
 
     render() {
@@ -109,8 +111,8 @@ class SkybrowserTabs extends Component {
 
         return(
             <section {...this.inheritedProps} className={styles.tabContainer}>
-                <Resizable 
-                enable={{ top: true, bottom: false }} 
+                <Resizable
+                enable={{ top: true, bottom: false }}
                 handleClasses={{ top: styles.topHandle }}
                 size={{ height: this.state.currentHeight }}
                 minHeight={130}
@@ -118,10 +120,10 @@ class SkybrowserTabs extends Component {
                 onResizeStop={this.onResizeStop}
                 onResize={this.onResize}
                 >
-              
+
                 {this.createTabs()}
                     {/*<Button className={styles.addTabButton} onClick={this.handleAddTab}>Add Skybrowser</Button>*/}
-                  
+
                 <div className={styles.tabContent} style={{ height: this.state.currentHeight }}>
                     <ScrollOverlay>
                         { data.length === 0 ? (
@@ -130,7 +132,7 @@ class SkybrowserTabs extends Component {
                             </CenteredLabel>
 
                         ) : (
-                        <ul>  
+                        <ul>
                             { data.map(entry => (
                             
                                 <EntryComponent
@@ -145,7 +147,7 @@ class SkybrowserTabs extends Component {
                         )}
                     </ScrollOverlay>
                 </div>
-            </Resizable> 
+            </Resizable>
             </section>
         )
 

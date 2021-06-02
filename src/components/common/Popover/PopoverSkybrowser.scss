@@ -51,7 +51,6 @@ $imagelist-margin: 4px;
 
 .content {
   height: calc(100% - #{$image-selection-header-height}); 
-
   ul {
     display: flex;
     flex-wrap: wrap;

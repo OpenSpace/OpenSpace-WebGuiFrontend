@@ -66,6 +66,7 @@ class WWTPanel extends Component {
     this.setCurrentTabHeight = this.setCurrentTabHeight.bind(this);
     this.setCurrentPopoverHeight = this.setCurrentPopoverHeight.bind(this);
     this.setOpacityOfImage = this.setOpacityOfImage.bind(this);
+    this.set2dSelectionAs3dSelection = this.set2dSelectionAs3dSelection.bind(this);
   }
 
   async componentDidMount(){
@@ -171,7 +172,12 @@ class WWTPanel extends Component {
   }
 
   adjustCameraToTarget() {
+    this.props.luaApi.skybrowser.lockTarget(this.state.selectedTarget);
     this.props.luaApi.skybrowser.adjustCamera(this.state.selectedTarget);
+  }
+
+  set2dSelectionAs3dSelection() {
+    this.props.luaApi.skybrowser.set3dSelectedImagesAs2dSelection(this.state.selectedTarget);
   }
 
   getCurrentTargetColor() {
@@ -188,7 +194,6 @@ class WWTPanel extends Component {
 
   onToggleWWT() {
     this.togglePopover();
-    this.props.luaApi.skybrowser.loadImagesToWWT();
   }
 
   getImagesWith3Dcoord() {
@@ -280,8 +285,9 @@ class WWTPanel extends Component {
       viewComponent={SkybrowserFocusEntry}
       viewComponentProps={{"hoverFunc" : this.hoverOnImage, "hoverLeavesImage" : this.hoverLeavesImage,
       "lockTarget" : this.lockTarget , "unlockTarget" : this.unlockTarget, "createTargetBrowserPair" : this.createTargetBrowserPair,
-      "adjustCameraToTarget" : this.adjustCameraToTarget, "add3dImage" : this.add3dImage, "removeImageSelection" : this.removeImageSelection,
-      "setCurrentTabHeight" : this.setCurrentTabHeight, "setOpacity": this.setOpacityOfImage, "onSelect":this.selectImage }}
+      "add3dImage" : this.add3dImage,  "removeImageSelection" : this.removeImageSelection, "setOpacity": this.setOpacityOfImage, "onSelect":this.selectImage,
+      "adjustCameraToTarget" : this.adjustCameraToTarget, "add3dImage" : this.add3dImage,  "removeImageSelection" : this.removeImageSelection,
+      "select2dImagesAs3d" : this.set2dSelectionAs3dSelection, "setCurrentTabHeight" : this.setCurrentTabHeight}}
       onSelect={this.onSelect}
       //active={this.state.imageName}
       />;
@@ -296,7 +302,7 @@ class WWTPanel extends Component {
         sideview = {true}
         heightCallback={this.setCurrentPopoverHeight}
         >
-       
+
         <div className={styles.row}>
             <Picker
               className={`${styles.picker} ${this.state.showOnlyNearest ? styles.unselected: styles.selected}`}
@@ -310,7 +316,7 @@ class WWTPanel extends Component {
             </Picker>
           </div>
           <div className={PopoverSkybrowser.styles.content}>
-            <div className={PopoverSkybrowser.styles.scrollArea} 
+            <div className={PopoverSkybrowser.styles.scrollArea}
             style={{height: 'calc(100% - ' + (this.state.currentTabHeight) + 'px)'}}>
             {filterList}
             </div>
