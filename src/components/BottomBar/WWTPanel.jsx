@@ -62,6 +62,7 @@ class WWTPanel extends Component {
     this.adjustCameraToTarget = this.adjustCameraToTarget.bind(this);
     this.getSelectedTargetImages = this.getSelectedTargetImages.bind(this);
     this.setOpacityOfImage = this.setOpacityOfImage.bind(this);
+    this.set2dSelectionAs3dSelection = this.set2dSelectionAs3dSelection.bind(this);
   }
 
   async componentDidMount(){
@@ -170,6 +171,9 @@ class WWTPanel extends Component {
     this.props.luaApi.skybrowser.adjustCamera(this.state.selectedTarget);
   }
 
+  set2dSelectionAs3dSelection() {
+    this.props.luaApi.skybrowser.set3dSelectedImagesAs2dSelection(this.state.selectedTarget);
+  }
 
   getCurrentTargetColor() {
     return this.state.targetData[this.state.selectedTarget].color;
@@ -177,7 +181,6 @@ class WWTPanel extends Component {
 
   onToggleWWT() {
     this.togglePopover();
-    this.props.luaApi.skybrowser.loadImagesToWWT();
   }
 
   getImagesWith3Dcoord() {
@@ -268,7 +271,8 @@ class WWTPanel extends Component {
       viewComponentProps={{"hoverFunc" : this.hoverOnImage, "hoverLeavesImage" : this.hoverLeavesImage,
       "lockTarget" : this.lockTarget , "unlockTarget" : this.unlockTarget, "createTargetBrowserPair" : this.createTargetBrowserPair,
       "add3dImage" : this.add3dImage,  "removeImageSelection" : this.removeImageSelection, "setOpacity": this.setOpacityOfImage, "onSelect":this.selectImage,
-      "adjustCameraToTarget" : this.adjustCameraToTarget, "add3dImage" : this.add3dImage,  "removeImageSelection" : this.removeImageSelection }}
+      "adjustCameraToTarget" : this.adjustCameraToTarget, "add3dImage" : this.add3dImage,  "removeImageSelection" : this.removeImageSelection,
+      "select2dImagesAs3d" : this.set2dSelectionAs3dSelection}}
       onSelect={this.onSelect}
       //active={this.state.imageName}
       />;
