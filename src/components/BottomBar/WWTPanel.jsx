@@ -67,6 +67,7 @@ class WWTPanel extends Component {
     this.setCurrentPopoverHeight = this.setCurrentPopoverHeight.bind(this);
     this.setOpacityOfImage = this.setOpacityOfImage.bind(this);
     this.set2dSelectionAs3dSelection = this.set2dSelectionAs3dSelection.bind(this);
+    this.centerTargetOnScreen = this.centerTargetOnScreen.bind(this);
   }
 
   async componentDidMount(){
@@ -159,6 +160,10 @@ class WWTPanel extends Component {
 
   lockTarget(target) {
     this.props.luaApi.skybrowser.lockTarget(target);
+  }
+
+  centerTargetOnScreen(target) {
+    this.props.luaApi.skybrowser.centerTargetOnScreen(target);
   }
 
   unlockTarget(target) {
@@ -288,7 +293,7 @@ class WWTPanel extends Component {
       "lockTarget" : this.lockTarget , "unlockTarget" : this.unlockTarget, "createTargetBrowserPair" : this.createTargetBrowserPair,
       "add3dImage" : this.add3dImage,  "removeImageSelection" : this.removeImageSelection, "setOpacity": this.setOpacityOfImage, "onImageSelect":this.selectImage,
       "adjustCameraToTarget" : this.adjustCameraToTarget, "add3dImage" : this.add3dImage,  "removeImageSelection" : this.removeImageSelection,
-      "select2dImagesAs3d" : this.set2dSelectionAs3dSelection, "setCurrentTabHeight" : this.setCurrentTabHeight,}}
+      "select2dImagesAs3d" : this.set2dSelectionAs3dSelection, "setCurrentTabHeight" : this.setCurrentTabHeight, "centerTarget" : this.centerTargetOnScreen}}
       onSelect={this.onSelect}
       //active={this.state.imageName}
       />;

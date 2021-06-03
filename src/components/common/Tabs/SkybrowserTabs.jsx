@@ -34,7 +34,7 @@ class SkybrowserTabs extends Component {
 
     createTabs() {
         const { targets, currentTarget} = this.props;
-        const { lockTarget, unlockTarget, createTargetBrowserPair, adjustCameraToTarget, select2dImagesAs3d} = this.props.viewComponentProps;
+        const { lockTarget, unlockTarget, createTargetBrowserPair, adjustCameraToTarget, select2dImagesAs3d, centerTarget} = this.props.viewComponentProps;
 
         const allTabs = Object.keys(targets).map((target, index) => {
 
@@ -60,6 +60,9 @@ class SkybrowserTabs extends Component {
                     </Button>
                     <Button onClick={() => this.handleDeleteTab(target)} transparent small style={{ borderRadius: '6px', padding: '3px 4px 3px 4px'}}>
                         <MaterialIcon icon="close" className="small"/>
+                    </Button>
+                    <Button onClick={() => centerTarget(target)} transparent small style={{ borderRadius: '6px', padding: '3px 4px 3px 4px'}}>
+                        <MaterialIcon icon="adjust" className="small"/>
                     </Button>
                    </div>
                 </ul>
