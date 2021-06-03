@@ -52,7 +52,7 @@ class WWTPanel extends Component {
     this.getAllImages = this.getAllImages.bind(this);
     this.getNearestImages = this.getNearestImages.bind(this);
     this.getTargetData = this.getTargetData.bind(this);
-    this.add3dImage = this.add3dImage.bind(this);
+    this.place3dImage = this.place3dImage.bind(this);
     this.removeImageSelection = this.removeImageSelection.bind(this);
     this.hoverLeavesImage = this.hoverLeavesImage.bind(this);
     this.lockTarget = this.lockTarget.bind(this);
@@ -108,8 +108,8 @@ class WWTPanel extends Component {
     this.props.luaApi.skybrowser.disableHoverCircle();
   }
 
-  add3dImage(identifier) {
-    this.props.luaApi.skybrowser.create3dSkyBrowser(Number(identifier));
+  place3dImage(identifier) {
+    this.props.luaApi.skybrowser.place3dSkyBrowser(Number(identifier));
   }
 
   removeImageSelection(identifier) {
@@ -276,7 +276,7 @@ class WWTPanel extends Component {
       searchText={"Search from " + imageList.length.toString() + " images..."}
       viewComponent={SkybrowserFocusEntry}
       viewComponentProps={{"hoverFunc" : this.hoverOnImage, "hoverLeavesImage" : this.hoverLeavesImage,
-        "currentTargetColor" : this.getCurrentTargetColor, "add3dImage" : this.add3dImage}}
+        "currentTargetColor" : this.getCurrentTargetColor, "place3dImage" : this.place3dImage}}
       onSelect={this.selectImage}
       active={this.state.imageName}
       searchAutoFocus
@@ -297,9 +297,9 @@ class WWTPanel extends Component {
       viewComponent={SkybrowserFocusEntry}
       viewComponentProps={{"hoverFunc" : this.hoverOnImage, "hoverLeavesImage" : this.hoverLeavesImage,
       "lockTarget" : this.lockTarget , "unlockTarget" : this.unlockTarget, "createTargetBrowserPair" : this.createTargetBrowserPair,
-      "add3dImage" : this.add3dImage,  "removeImageSelection" : this.removeImageSelection, "setOpacity": this.setOpacityOfImage, "selectTab":this.selectTab,
-      "adjustCameraToTarget" : this.adjustCameraToTarget, "add3dImage" : this.add3dImage,  "removeImageSelection" : this.removeImageSelection,
-      "select2dImagesAs3d" : this.set2dSelectionAs3dSelection, "setCurrentTabHeight" : this.setCurrentTabHeight, "centerTarget" : this.centerTargetOnScreen}}
+      "place3dImage" : this.place3dImage,  "removeImageSelection" : this.removeImageSelection, "setOpacity": this.setOpacityOfImage, "selectTab":this.selectTab,
+      "adjustCameraToTarget" : this.adjustCameraToTarget, "select2dImagesAs3d" : this.set2dSelectionAs3dSelection,
+      "setCurrentTabHeight" : this.setCurrentTabHeight, "centerTarget" : this.centerTargetOnScreen}}
       onSelect={this.selectImage}
       //active={this.state.imageName}
       />;

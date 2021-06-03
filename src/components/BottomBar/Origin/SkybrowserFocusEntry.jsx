@@ -62,11 +62,11 @@ class SkybrowserFocusEntry extends Component {
   }
 
   render() {
-    const { name, identifier, thumbnail, credits, creditsUrl, has3dCoords, setOpacity, removeImageSelection, add3dImage} = this.props;
+    const { name, identifier, thumbnail, credits, creditsUrl, has3dCoords, setOpacity, removeImageSelection, place3dImage} = this.props;
     const image3dbutton = has3dCoords ? <MaterialIcon
       icon={'add_circle'}
       className={'small'}
-      onClick={() => {add3dImage(identifier)}}>
+      onClick={() => {place3dImage(identifier)}}>
       </MaterialIcon> : "";
     const imageRemoveButton = removeImageSelection ? <div style={{display: 'flex', justifyContent: 'flex-end'}}>
     <Button onClick={() => {removeImageSelection(identifier)}} className={styles.removeImageButton} transparent small>
