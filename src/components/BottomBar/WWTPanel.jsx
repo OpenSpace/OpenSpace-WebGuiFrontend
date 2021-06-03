@@ -159,12 +159,10 @@ class WWTPanel extends Component {
 
   lockTarget() {
     this.props.luaApi.skybrowser.lockTarget(this.state.selectedTarget);
-    this.setState({ targetIsLocked: true });
   }
 
   unlockTarget() {
     this.props.luaApi.skybrowser.unlockTarget(this.state.selectedTarget);
-    this.setState({ targetIsLocked: false });
   }
 
   createTargetBrowserPair() {
@@ -256,6 +254,10 @@ class WWTPanel extends Component {
   get popover() {
 
     let imageList = this.state.showOnlyNearest ? this.getNearestImages() : this.getAllImages();
+    let targetIsLocked = false;
+    if(this.state.targetData[this.state.selectedTarget]) {
+      targetIsLocked = this.state.targetData[this.state.selectedTarget].isLocked;
+    }
     //let imageList = this.state.showOnlyNearest ? this.getImagesWith3Dcoord() : this.getAllImages();
 
     let filterList = <FilterList
@@ -278,13 +280,13 @@ class WWTPanel extends Component {
     <SkybrowserTabs
       targets={this.state.targetData}
       currentTarget={this.state.selectedTarget.toString()}
-      targetIsLocked={this.state.targetIsLocked}
+      targetIsLocked={targetIsLocked}
       currentPopoverHeight={currentPopoverHeight}
       data={thisTabsImages}
       viewComponent={SkybrowserFocusEntry}
       viewComponentProps={{"hoverFunc" : this.hoverOnImage, "hoverLeavesImage" : this.hoverLeavesImage,
       "lockTarget" : this.lockTarget , "unlockTarget" : this.unlockTarget, "createTargetBrowserPair" : this.createTargetBrowserPair,
-      "add3dImage" : this.add3dImage,  "removeImageSelection" : this.removeImageSelection, "setOpacity": this.setOpacityOfImage, "onSelect":this.selectImage,
+      "add3dImage" : this.add3dImage,  "removeImageSelection" : this.removeImageSelection, "setOpacity": this.setOpacityOfImage, "onImageSelect":this.selectImage,
       "adjustCameraToTarget" : this.adjustCameraToTarget, "add3dImage" : this.add3dImage,  "removeImageSelection" : this.removeImageSelection,
       "select2dImagesAs3d" : this.set2dSelectionAs3dSelection, "setCurrentTabHeight" : this.setCurrentTabHeight,}}
       onSelect={this.onSelect}
