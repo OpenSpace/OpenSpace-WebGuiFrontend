@@ -33,7 +33,7 @@ class SkybrowserTabs extends Component {
     }
 
     createTabs() {
-        const { targets, currentTarget} = this.props;
+        const { targets, currentTarget, targetIsLocked} = this.props;
         const { lockTarget, unlockTarget, createTargetBrowserPair, adjustCameraToTarget, select2dImagesAs3d} = this.props.viewComponentProps;
 
         const allTabs = Object.keys(targets).map((target, index) => {
@@ -41,25 +41,21 @@ class SkybrowserTabs extends Component {
             let targetColor = 'rgb(' + targets[target].color + ')';
 
             return(
-                <ul className={styles.tabHeader}  key={index}
-                style={currentTarget === target ? {borderTopRightRadius: '4px', borderTop:  "3px solid " + targetColor} : {}}>
-                    <div     
-                     className={ currentTarget === target ? styles.tabActive : styles.tab }
-                     onClick={() => this.handleSelectTab(target)}
-                     >
+                <ul key={index} style={currentTarget === target ? {borderTopRightRadius: '4px', borderTop:  "3px solid " + targetColor} : {}}>
+                    <div className={ currentTarget === target ? styles.tabActive : styles.tab } onClick={() => this.handleSelectTab(target)}>
                     <span> { targets[target].name } </span>
                     <Button onClick={() => adjustCameraToTarget()} className={styles.tabButton} transparent small >
                         <MaterialIcon icon="filter_center_focus" className="small" />
                     </Button>   
-                    <Button 
-                    className={this.props.targetIsLocked ? styles.tabButtonActive : styles.tabButton } 
-                    onClick={this.props.targetIsLocked ? () => unlockTarget() : () => lockTarget() } transparent small>
+                    <Button onClick={targetIsLocked ? () => unlockTarget() : () => lockTarget()} 
+                    className={targetIsLocked ? styles.tabButtonActive : styles.tabButton } transparent small>
                         <MaterialIcon icon="lock" className="small" />
                     </Button>  
-                    <Button onClick={() => select2dImagesAs3d(currentTarget)} transparent small style={{ borderRadius: '6px', padding: '3px 4px 3px 4px'}}>
+                    <Button onClick={() => select2dImagesAs3d(currentTarget)} className={styles.tabButton} transparent small>
                         <MaterialIcon icon="cached" className="small"/>
                     </Button>            
                     <Button onClick={() => this.handleDeleteTab(currentTarget)} className={styles.closeTabButton} transparent small>
+                        <MaterialIcon icon="close" className="small"/>
                     </Button>
                    </div>
                 </ul>
