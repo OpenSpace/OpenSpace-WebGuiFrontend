@@ -43,9 +43,9 @@ class SkybrowserFocusEntry extends Component {
   }
 
   select(evt) {
-    const { identifier } = this.props;
-    if (this.props.onSelect && identifier) {
-      this.props.onSelect(identifier, evt);
+    const { identifier, onSelect } = this.props;
+    if (onSelect && identifier) {
+      onSelect(identifier, evt);
     }
     this.props.currentTargetColor ? this.setBorderColor() : null;
   }
@@ -54,26 +54,35 @@ class SkybrowserFocusEntry extends Component {
     return this.props.identifier === this.props.active;
   }
 
+  get isTabEntry() {
+    return this.props.setOpacity;
+  }
+
   render() {
-    const { name, identifier, thumbnail, credits, creditsUrl, has3dCoords } = this.props;
+    const { name, identifier, thumbnail, credits, creditsUrl, has3dCoords, setOpacity, removeImageSelection, add3dImage} = this.props;
     const image3dbutton = has3dCoords ? <MaterialIcon
       icon={'add_circle'}
-      style={{fontSize: '15px'}}
-      onClick={() => {this.props.add3dImage(identifier)}}>
+      className={'small'}
+      onClick={() => {add3dImage(identifier)}}>
       </MaterialIcon> : "";
-    const imageRemoveButton = this.props.removeImageSelection ? <MaterialIcon
+    const imageRemoveButton = removeImageSelection ? <div style={{display: 'flex', justifyContent: 'flex-end'}}>
+    <Button onClick={() => {removeImageSelection(identifier)}} className={styles.removeImageButton} transparent small>
+      <MaterialIcon icon="close" className="small" />
+    </Button></div> : "";
+    /*
+    <MaterialIcon
       icon={'highlight_off'}
       style={{fontSize: '15px'}}
       onClick={() => {this.props.removeImageSelection(identifier)}}>
-      </MaterialIcon> : "";
+      </MaterialIcon> : "";*/
 
-    const opacitySlider = this.props.setOpacity ? <OpacitySlider setOpacity={this.props.setOpacity} identifier={identifier}/>: "";
+    const opacitySlider = setOpacity ? <OpacitySlider setOpacity={setOpacity} identifier={identifier}/> : "";
 
     return (
 
-      <li className={`${styles.entry} ${this.isActive && styles.active}`}
+      <li className={`${styles.entry} ${this.isTabEntry && styles.tabEntry} ${this.isActive && styles.active}`}
           style={{ borderLeftColor: this.state.selectedImageBorderColor }}
-          onMouseEnter={() => {this.props.hoverFunc(this.props.identifier)} }
+          onMouseEnter={() => {this.props.hoverFunc(identifier)} }
           onMouseLeave={() => {this.props.hoverLeavesImage()}}>
           {imageRemoveButton}
           <div className={styles.image}>
@@ -87,7 +96,8 @@ class SkybrowserFocusEntry extends Component {
             <InfoBoxSkybrowser
               title={(name || identifier)}
               text={credits}
-              textUrl={creditsUrl}>
+              textUrl={creditsUrl}
+              isTabEntry={this.isTabEntry}>
             </InfoBoxSkybrowser>
           </div>
           {image3dbutton}

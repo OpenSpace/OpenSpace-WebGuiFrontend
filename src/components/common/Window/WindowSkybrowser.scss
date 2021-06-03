@@ -9,7 +9,7 @@
   max-width: none;
   position: absolute;
   z-index: 10;
-  //before tabs -  height: calc(100% - 44px);
+  
   &.small {
     max-width: 150px;
   }
@@ -28,12 +28,9 @@
   width: auto;
   display: inline-flexbox;
   padding: 0px;
+
   //justify-content: space-between;
   //max-height: calc(100% - 160px);
-}
-
-.resizable {
-  bottom: 10%;
 }
 
 .window header {

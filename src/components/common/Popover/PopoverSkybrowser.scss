@@ -15,7 +15,8 @@ $border-width: 1px;
 
 //skybrowser styles
 $image-card-height: 120px;
-$image-selection-header-height: $header-height + 52px;
+$image-selection-header-height: $header-height + 60px;
+$imagelist-margin: 4px;
 
 .popover {
   background: $background;
@@ -55,6 +56,7 @@ $image-selection-header-height: $header-height + 52px;
     flex-wrap: wrap;
   } 
   :global(.scroll-content) {
+    width : 100%;
     &::after, &::before {
       background: transparent;
     }

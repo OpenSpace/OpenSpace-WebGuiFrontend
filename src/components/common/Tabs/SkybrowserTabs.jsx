@@ -14,8 +14,8 @@ class SkybrowserTabs extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            height: 120,
-            currentHeight: 120,
+            height: 160,
+            currentHeight: 160,
         }
         this.createTabs = this.createTabs.bind(this);
         this.onResizeStop = this.onResizeStop.bind(this);
@@ -41,10 +41,11 @@ class SkybrowserTabs extends Component {
             let targetColor = 'rgb(' + targets[target].color + ')';
 
             return(
-                <ul className={styles.tabHeader} style={currentTarget === target ? {borderTop:  "3px solid " + targetColor} : {}}  key={index}>
+                <ul className={styles.tabHeader}  key={index}
+                style={currentTarget === target ? {borderTopRightRadius: '4px', borderTop:  "3px solid " + targetColor} : {}}>
                     <div
                      className={ currentTarget === target ? styles.tabActive : styles.tab }
-                     onClick={() => this.handleSelectTab(target)}
+                     onClick={() =>  this.handleSelectTab(target)}
                      >
                     <span> { targets[target].name } </span>
                     <Button onClick={() => adjustCameraToTarget(target)} style={{ borderRadius: '6px', padding: '3px 4px 3px 4px'}} transparent small >
@@ -71,7 +72,7 @@ class SkybrowserTabs extends Component {
         return (
             <div className={styles.navTabs}>
                 {allTabs}
-                <Button onClick={() => createTargetBrowserPair()} transparent small >
+                <Button onClick={() => createTargetBrowserPair()} className={styles.addTabButton} transparent>
                     <MaterialIcon icon="add" />
                 </Button>
             </div>
@@ -118,7 +119,7 @@ class SkybrowserTabs extends Component {
                 enable={{ top: true, bottom: false }}
                 handleClasses={{ top: styles.topHandle }}
                 size={{ height: this.state.currentHeight }}
-                minHeight={120}
+                minHeight={130}
                 maxHeight={currentPopoverHeight}
                 onResizeStop={this.onResizeStop}
                 onResize={this.onResize}
@@ -137,12 +138,14 @@ class SkybrowserTabs extends Component {
                         ) : (
                         <ul>
                             { data.map(entry => (
+
                                 <EntryComponent
                                 {...entry}
                                 {...this.props.viewComponentProps}
                                 key={entry.identifier}
                                 //active={this.props.active}
                                 />
+
                             ))}
                         </ul>
                         )}

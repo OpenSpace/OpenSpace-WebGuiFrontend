@@ -33,7 +33,7 @@ const WindowSkybrowser = (props) => {
           bottom: true,
         }}
         defaultSize={{
-          width: size.width,
+          width: '350px',
           height: size.height,
         }}
         minWidth={280}

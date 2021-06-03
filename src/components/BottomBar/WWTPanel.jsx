@@ -43,7 +43,7 @@ class WWTPanel extends Component {
       targetData: [{ra: 0, dec: 0}],
       selectedTarget: 0,
       cameraData: {FOV : 70, RA: 0, Dec: 0},
-      currentTabHeight: 120,
+      currentTabHeight: 160,
       currentPopoverHeight: 440,
     };
     this.togglePopover = this.togglePopover.bind(this);
@@ -97,7 +97,6 @@ class WWTPanel extends Component {
     if(identifier) {
       this.props.luaApi.skybrowser.moveCircleToHoverImage(Number(identifier));
     }
-
   }
 
   hoverLeavesImage() {
@@ -178,6 +177,7 @@ class WWTPanel extends Component {
     this.props.luaApi.skybrowser.lockTarget(target);
     this.props.luaApi.skybrowser.adjustCamera(target);
   }
+
 
   set2dSelectionAs3dSelection() {
     this.props.luaApi.skybrowser.set3dSelectedImagesAs2dSelection(this.state.selectedTarget);
@@ -279,10 +279,11 @@ class WWTPanel extends Component {
 
     let thisTabsImages = this.getSelectedTargetImages();
     thisTabsImages = thisTabsImages ? thisTabsImages : [];
-    let currentPopoverHeight = this.state.currentPopoverHeight - 120; //
 
-    let skybrowserTabs =
-    <SkybrowserTabs
+    const selectionButtonsAndSearchHeight = 120; // Height of the image selection buttons and search image field
+    let currentPopoverHeight = this.state.currentPopoverHeight - selectionButtonsAndSearchHeight;
+
+    let skybrowserTabs = <SkybrowserTabs
       targets={this.state.targetData}
       currentTarget={this.state.selectedTarget.toString()}
       targetIsLocked={targetIsLocked}
