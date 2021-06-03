@@ -34,7 +34,7 @@ class SkybrowserTabs extends Component {
 
     createTabs() {
         const { targets, currentTarget} = this.props;
-        const { lockTarget, unlockTarget, createTargetBrowserPair, adjustCameraToTarget, select2dImagesAs3d, centerTarget} = this.props.viewComponentProps;
+        const { lockTarget, unlockTarget, createTargetBrowserPair, adjustCameraToTarget, select2dImagesAs3d, centerTarget, selectTab} = this.props.viewComponentProps;
 
         const allTabs = Object.keys(targets).map((target, index) => {
 
@@ -45,7 +45,7 @@ class SkybrowserTabs extends Component {
                 style={currentTarget === target ? {borderTopRightRadius: '4px', borderTop:  "3px solid " + targetColor} : {}}>
                     <div
                      className={ currentTarget === target ? styles.tabActive : styles.tab }
-                     onClick={() =>  this.handleSelectTab(target)}
+                     onClick={() =>  selectTab(target)}
                      >
                     <span> { targets[target].name } </span>
                     <Button onClick={() => adjustCameraToTarget(target)} style={{ borderRadius: '6px', padding: '3px 4px 3px 4px'}} transparent small >
@@ -143,6 +143,7 @@ class SkybrowserTabs extends Component {
                                 {...entry}
                                 {...this.props.viewComponentProps}
                                 key={entry.identifier}
+                                onSelect={this.props.onSelect}
                                 //active={this.props.active}
                                 />
 

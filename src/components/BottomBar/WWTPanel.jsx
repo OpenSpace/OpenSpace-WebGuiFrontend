@@ -68,6 +68,7 @@ class WWTPanel extends Component {
     this.setOpacityOfImage = this.setOpacityOfImage.bind(this);
     this.set2dSelectionAs3dSelection = this.set2dSelectionAs3dSelection.bind(this);
     this.centerTargetOnScreen = this.centerTargetOnScreen.bind(this);
+    this.selectTab = this.selectTab.bind(this);
   }
 
   async componentDidMount(){
@@ -91,6 +92,10 @@ class WWTPanel extends Component {
       this.props.luaApi.skybrowser.selectImage(Number(identifier));
     }
     //this.props.luaApi.skybrowser.lockTarget(this.state.selectedTarget);
+  }
+
+  selectTab(target) {
+   this.props.luaApi.skybrowser.setSelectedBrowser(target);
   }
 
   hoverOnImage(identifier) {
@@ -292,10 +297,10 @@ class WWTPanel extends Component {
       viewComponent={SkybrowserFocusEntry}
       viewComponentProps={{"hoverFunc" : this.hoverOnImage, "hoverLeavesImage" : this.hoverLeavesImage,
       "lockTarget" : this.lockTarget , "unlockTarget" : this.unlockTarget, "createTargetBrowserPair" : this.createTargetBrowserPair,
-      "add3dImage" : this.add3dImage,  "removeImageSelection" : this.removeImageSelection, "setOpacity": this.setOpacityOfImage, "onImageSelect":this.selectImage,
+      "add3dImage" : this.add3dImage,  "removeImageSelection" : this.removeImageSelection, "setOpacity": this.setOpacityOfImage, "selectTab":this.selectTab,
       "adjustCameraToTarget" : this.adjustCameraToTarget, "add3dImage" : this.add3dImage,  "removeImageSelection" : this.removeImageSelection,
       "select2dImagesAs3d" : this.set2dSelectionAs3dSelection, "setCurrentTabHeight" : this.setCurrentTabHeight, "centerTarget" : this.centerTargetOnScreen}}
-      onSelect={this.onSelect}
+      onSelect={this.selectImage}
       //active={this.state.imageName}
       />;
 

@@ -21,7 +21,10 @@ class OpacitySlider extends Component {
 
   handleChange(event) {
     this.setState({value: event.target.value});
-    this.props.setOpacity(Number(this.props.identifier), Number(this.state.value/100));
+    // Ensure the image has an id
+    if(this.props.identifier) {
+      this.props.setOpacity(Number(this.props.identifier), Number(this.state.value/100));
+    }
   }
 
   render() {
@@ -55,7 +58,7 @@ class SkybrowserFocusEntry extends Component {
   }
 
   get isTabEntry() {
-    return this.props.setOpacity;
+    return this.props.setOpacity ? true : false;
   }
 
   render() {
