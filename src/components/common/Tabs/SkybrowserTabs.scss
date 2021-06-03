@@ -15,13 +15,11 @@ $tabs-margin-horizontal: 8px;
     z-index: 10;
 }
 
-.tabHeader {
-    display: flex;
-}
-
 .tab {
+    display:flex;
+    flex-wrap: wrap;
     background: $tabs-background; 
-    text-indent: 10px; 
+    text-indent: 4px; 
     font-size: 16px;
     padding: 2px;
     &:hover {
@@ -42,20 +40,24 @@ $tabs-margin-horizontal: 8px;
 }
 
 .tabActive {
+    display:flex;
+    flex-wrap: wrap;
     background: $tabs-background-content;
-    text-indent: 10px;
+    text-indent: 4px;
     padding: 2px;
     font-size: 16px;
+
 }
 
 .navTabs {
     display: flex;
-
-    ul {
+    span {
+        width: calc(100% - 82px);
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
     }
+    
 }
 
 .addTabButton {

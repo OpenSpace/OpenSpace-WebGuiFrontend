@@ -39,7 +39,6 @@ class WWTPanel extends Component {
     this.state = {
       imageName: "",
       showOnlyNearest: true,
-      targetIsLocked: true,
       targetData: [{ra: 0, dec: 0}],
       selectedTarget: 0,
       cameraData: {FOV : 70, RA: 0, Dec: 0},
@@ -264,10 +263,6 @@ class WWTPanel extends Component {
   get popover() {
 
     let imageList = this.state.showOnlyNearest ? this.getNearestImages() : this.getAllImages();
-    let targetIsLocked = false;
-    if(this.state.targetData[this.state.selectedTarget]) {
-      targetIsLocked = this.state.targetData[this.state.selectedTarget].isLocked;
-    }
     //let imageList = this.state.showOnlyNearest ? this.getImagesWith3Dcoord() : this.getAllImages();
 
     let filterList = <FilterList
@@ -291,7 +286,6 @@ class WWTPanel extends Component {
     let skybrowserTabs = <SkybrowserTabs
       targets={this.state.targetData}
       currentTarget={this.state.selectedTarget.toString()}
-      targetIsLocked={targetIsLocked}
       currentPopoverHeight={currentPopoverHeight}
       data={thisTabsImages}
       viewComponent={SkybrowserFocusEntry}
