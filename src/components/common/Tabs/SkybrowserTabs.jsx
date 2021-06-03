@@ -47,18 +47,18 @@ class SkybrowserTabs extends Component {
                      onClick={() => this.handleSelectTab(target)}
                      >
                     <span> { targets[target].name } </span>
-                    <Button onClick={() => adjustCameraToTarget()} style={{ borderRadius: '6px', padding: '3px 4px 3px 4px'}} transparent small >
+                    <Button onClick={() => adjustCameraToTarget(target)} style={{ borderRadius: '6px', padding: '3px 4px 3px 4px'}} transparent small >
                         <MaterialIcon icon="filter_center_focus" className="small" />
                     </Button>
                     <Button
                     className={this.props.targetIsLocked ? styles.lockTargetActive : styles.lockTarget }
-                    onClick={this.props.targetIsLocked ? () => unlockTarget() : () => lockTarget() } transparent small >
+                    onClick={this.props.targetIsLocked ? () => unlockTarget(target) : () => lockTarget(target) } transparent small >
                         <MaterialIcon icon="lock" className="small" />
                     </Button>
-                    <Button onClick={() => select2dImagesAs3d(currentTarget)} transparent small style={{ borderRadius: '6px', padding: '3px 4px 3px 4px'}}>
+                    <Button onClick={() => select2dImagesAs3d(target)} transparent small style={{ borderRadius: '6px', padding: '3px 4px 3px 4px'}}>
                         <MaterialIcon icon="cached" className="small"/>
                     </Button>
-                    <Button onClick={() => this.handleDeleteTab(currentTarget)} transparent small style={{ borderRadius: '6px', padding: '3px 4px 3px 4px'}}>
+                    <Button onClick={() => this.handleDeleteTab(target)} transparent small style={{ borderRadius: '6px', padding: '3px 4px 3px 4px'}}>
                         <MaterialIcon icon="close" className="small"/>
                     </Button>
                    </div>

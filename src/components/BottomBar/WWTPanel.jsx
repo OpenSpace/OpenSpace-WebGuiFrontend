@@ -157,21 +157,21 @@ class WWTPanel extends Component {
     return images;
   }
 
-  lockTarget() {
-    this.props.luaApi.skybrowser.lockTarget(this.state.selectedTarget);
+  lockTarget(target) {
+    this.props.luaApi.skybrowser.lockTarget(target);
   }
 
-  unlockTarget() {
-    this.props.luaApi.skybrowser.unlockTarget(this.state.selectedTarget);
+  unlockTarget(target) {
+    this.props.luaApi.skybrowser.unlockTarget(target);
   }
 
   createTargetBrowserPair() {
     this.props.luaApi.skybrowser.createTargetBrowserPair();
   }
 
-  adjustCameraToTarget() {
-    this.props.luaApi.skybrowser.lockTarget(this.state.selectedTarget);
-    this.props.luaApi.skybrowser.adjustCamera(this.state.selectedTarget);
+  adjustCameraToTarget(target) {
+    this.props.luaApi.skybrowser.lockTarget(target);
+    this.props.luaApi.skybrowser.adjustCamera(target);
   }
 
   set2dSelectionAs3dSelection() {
