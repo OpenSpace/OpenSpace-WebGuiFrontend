@@ -34,7 +34,13 @@ class ListProperty extends Component {
   }
 
   onChange(evt) {
-    const value = evt.target.value;
+    const value = evt.target.value.trim();
+
+    if (value === "") {
+      this.props.dispatcher.set({});
+      return;
+    }
+
     this.props.dispatcher.set(value.split(','));
   }
 
