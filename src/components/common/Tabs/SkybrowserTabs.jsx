@@ -7,8 +7,7 @@ import PropTypes from 'prop-types';
 import ScrollOverlay from '../../common/ScrollOverlay/ScrollOverlay';
 import CenteredLabel from '../../common/CenteredLabel/CenteredLabel';
 import { Resizable } from 're-resizable';
-import uuid from "uuid";
-
+import TooltipSkybrowser from '../../common/Tooltip/TooltipSkybrowser';
 
 class SkybrowserTabs extends Component {
     constructor(props) {
@@ -16,15 +15,17 @@ class SkybrowserTabs extends Component {
         this.state = {
             height: 160,
             currentHeight: 160,
+            showButtonInfo1: false,
+            showButtonInfo2: false,
+            showButtonInfo3: false,
+            showButtonInfo4: false,
         }
         this.createTabs = this.createTabs.bind(this);
         this.onResizeStop = this.onResizeStop.bind(this);
         this.onResize = this.onResize.bind(this);
-        this.handleAddTab = this.handleAddTab.bind(this);
-        this.handleSelectTab = this.handleSelectTab.bind(this);
-        this.handleDeleteTab = this.handleDeleteTab.bind(this);
-        this.setLockTargetMode = this.setLockTargetMode.bind(this);
-
+        this.setRef = this.setRef.bind(this);
+        this.showTooltip = this.showTooltip.bind(this);
+        this.hideTooltip = this.hideTooltip.bind(this);
     }
 
     get inheritedProps() {
@@ -32,7 +33,36 @@ class SkybrowserTabs extends Component {
         return excludeKeys(this.props, doNotInclude);
     }
 
+    get position() {
+        if (!this.wrapper) return { top: '0px', left: '0px' };
+        const { top, right} = this.wrapper.getBoundingClientRect();
+        return { top: `${top}`, left: `${right}`};
+    }
+
+    setRef(what) {
+        return (element) => {
+          this[what] = element;
+        };
+    }
+
+    showTooltip(buttonNumber) {
+        if(buttonNumber == 1) this.setState({showButtonInfo1 : !this.state.showButtonInfo1});
+        else if(buttonNumber == 2) this.setState({showButtonInfo2 : !this.state.showButtonInfo2});
+        else if(buttonNumber == 3) this.setState({showButtonInfo3 : !this.state.showButtonInfop3});
+        else this.setState({showButtonInfo4 : !this.state.showButtonInfo4})
+       
+    }
+ 
+    hideTooltip(buttonNumber) {
+        if(buttonNumber == 1) this.setState({showButtonInfo1 : false});
+        else if(buttonNumber == 2) this.setState({showButtonInfo2 : false});
+        else if(buttonNumber == 3) this.setState({showButtonInfo3 : false});
+        else this.setState({showButtonInfo4 : false})
+    }
+
     createTabs() {
+
+        const { showButtonInfo1, showButtonInfo2, showButtonInfo3, showButtonInfo4 } = this.state;
         const { targets, currentTarget} = this.props;
         const { lockTarget, unlockTarget, createTargetBrowserPair, adjustCameraToTarget, select2dImagesAs3d, centerTarget, selectTab} = this.props.viewComponentProps;
 
@@ -42,28 +72,62 @@ class SkybrowserTabs extends Component {
             let targetIsLocked = targets[target].isLocked;
 
             return(
-                <ul key={index} style={currentTarget === target ? {borderTopRightRadius: '4px', borderTop:  "3px solid " + targetColor} : {}}>
+                <div key={index} 
+                style={currentTarget === target ? {borderTopRightRadius: "4px", borderTop:  "3px solid " + targetColor}:{}}>
                     <div className={ currentTarget === target ? styles.tabActive : styles.tab } onClick={() => selectTab(target)}>
-                    <span> { targets[target].name } </span>
-                    <Button onClick={() => adjustCameraToTarget(target)} style={{ borderRadius: '6px', padding: '3px 4px 3px 4px'}} transparent small >
-                        <MaterialIcon icon="filter_center_focus" className="small" />
+                    <span className={styles.tabHeader}>
+                    <span className={styles.tabTitle}> { targets[target].name } </span>
+                    { currentTarget === target ? ( 
+                   <span className={styles.tabButtons} ref={this.setRef('wrapper')}>
+                    <Button onClick={() => adjustCameraToTarget(target)} onMouseLeave={() => this.hideTooltip(1)} className={styles.tabButton} transparent small>
+                        <MaterialIcon icon="filter_center_focus" className="small" onMouseEnter={() => this.showTooltip(1)} />
+                        { showButtonInfo1 && <TooltipSkybrowser
+                            placement="bottom-right"
+                            style={this.position}>
+                            {"Center focus on target"}
+                            </TooltipSkybrowser>
+                        }
                     </Button>
-                    <Button onClick={() => centerTarget(target)} className={styles.tabButton} transparent small >
-                        <MaterialIcon icon="adjust" className="small"/>
+                    <Button onClick={() => centerTarget(target)} onMouseLeave={() => this.hideTooltip(2)} className={styles.tabButton} transparent small >
+                        <MaterialIcon onMouseEnter={() => this.showTooltip(2)} icon="adjust" className="small"/>
+                        { showButtonInfo2 && <TooltipSkybrowser
+                            placement="bottom-right"
+                            style={this.position}>
+                            {"Center target"}
+                            </TooltipSkybrowser>
+                        }
                     </Button>
-                    <Button onClick={targetIsLocked ? () => unlockTarget(target) : () => lockTarget(target) }
+                    <Button onClick={targetIsLocked ? () => unlockTarget(target) : () => lockTarget(target) } onMouseLeave={() => this.hideTooltip(3)}
                     className={targetIsLocked ? styles.tabButtonActive : styles.tabButton } transparent small>
-                        <MaterialIcon icon="lock" className="small" />
+                        <MaterialIcon onMouseEnter={() => this.showTooltip(3)} icon="lock" className="small"/>
+                        { showButtonInfo3 && <TooltipSkybrowser
+                            placement="bottom-right"
+                            style={this.position}>
+                            {"Lock target's position"}
+                            </TooltipSkybrowser>
+                        }   
                     </Button>
-                    <Button onClick={() => select2dImagesAs3d(target)} className={styles.tabButton} transparent small>
-                        <MaterialIcon icon="cached" className="small"/>
+                    <Button onClick={() => select2dImagesAs3d(target)} onMouseLeave={() => this.hideTooltip(4)} className={styles.tabButton} transparent small>
+                        <MaterialIcon onMouseEnter={() => this.showTooltip(4)} icon="get_app" className="small"/>
+                        { showButtonInfo4 && <TooltipSkybrowser
+                            placement="bottom-right"
+                            style={this.position}>
+                            {"Add images to 3D space"}
+                            </TooltipSkybrowser>
+                        }  
                     </Button>
+                    <Button onClick={() => this.handleDeleteTab(target)} className={styles.closeTabButton} transparent small>
+                        <MaterialIcon icon="close" className="small" />
+                    </Button>
+                    </span>
+                    ) : (
                     <Button onClick={() => this.handleDeleteTab(target)} className={styles.closeTabButton} transparent small>
                         <MaterialIcon icon="close" className="small"/>
                     </Button>
-
+                    )}
+                    </span>
                    </div>
-                </ul>
+                </div>
             );
         });
         return (
@@ -75,23 +139,6 @@ class SkybrowserTabs extends Component {
             </div>
         );
     }
-
-    handleSelectTab(tab) {
-        // Call function handle from WWTPanel that is sent as a prop, to call Lua function Select Browser
-    };
-
-    handleAddTab() {
-        // Call function handle from WWTPanel that is sent as a prop, to call Lua function createTargetBrowserPair
-    };
-
-    handleDeleteTab(tabToDelete) {
-        // Call function handle from WWTPanel that is sent as a prop, to call Lua function removeTargetBrowserPair
-    };
-
-    setLockTargetMode() {
-        // Call function handle from WWTPanel that is sent as a prop, to call Lua function lock or unlock
-    };
-
     onResizeStop(e, direction, ref, delta) {
         this.setState({
             height: this.state.height + delta.height
@@ -119,31 +166,21 @@ class SkybrowserTabs extends Component {
                 minHeight={130}
                 maxHeight={currentPopoverHeight}
                 onResizeStop={this.onResizeStop}
-                onResize={this.onResize}
-                >
-
+                onResize={this.onResize}>
                 {this.createTabs()}
-                    {/*<Button className={styles.addTabButton} onClick={this.handleAddTab}>Add Skybrowser</Button>*/}
-
                 <div className={styles.tabContent} style={{ height: this.state.currentHeight }}>
                     <ScrollOverlay>
-                        { data.length === 0 ? (
-                            <CenteredLabel>
-                                There are no loaded images in this Skybrowser.
-                            </CenteredLabel>
-
+                        { data.length === 0 ? ( 
+                        <CenteredLabel>There are no loaded images in this Skybrowser.</CenteredLabel>
                         ) : (
                         <ul>
                             { data.map(entry => (
-
                                 <EntryComponent
                                 {...entry}
                                 {...this.props.viewComponentProps}
                                 key={entry.identifier}
                                 onSelect={this.props.onSelect}
-                                //active={this.props.active}
                                 />
-
                             ))}
                         </ul>
                         )}
@@ -162,7 +199,6 @@ SkybrowserTabs.propTypes = {
     data: PropTypes.array.isRequired,
     viewComponent: PropTypes.elementType,
     viewComponentProps: PropTypes.object,
-    //active: PropTypes.any,
 
 };
 
@@ -170,7 +206,6 @@ SkybrowserTabs.defaultProps = {
     children: '',
     viewComponent: (props) => (<li>{ JSON.stringify(props) }</li>),
     viewComponentProps: {},
-    //active: null,
 };
 
 export default SkybrowserTabs;

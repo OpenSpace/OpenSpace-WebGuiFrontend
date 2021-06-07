@@ -1,13 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styles from './SkybrowserFocusEntry.scss';
-import Picker from '../Picker';
 import Button from '../../common/Input/Button/Button';
 import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
 import InfoBoxSkybrowser from '../../common/InfoBox/InfoBoxSkybrowser';
-import TooltipSkybrowser from '../../common/Tooltip/TooltipSkybrowser';
-import { jsonToLuaString } from '../../../utils/propertyTreeHelpers';
-import SkybrowserTabs from '../../common/Tabs/SkybrowserTabs';
 
 //import { clamp } from 'lodash/number';
 class OpacitySlider extends Component {

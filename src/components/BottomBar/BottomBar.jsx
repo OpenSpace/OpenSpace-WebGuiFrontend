@@ -6,7 +6,6 @@ import TfEditor from './TfEditor/containers/TfEditor';
 import SessionRec from './SessionRec';
 import ScreenSpaceRenderablePanel from './ScreenSpaceRenderablePanel';
 import styles from './BottomBar.scss';
-import FlightControlPanel from './FlightControlPanel';
 import ExoplanetsPanel from './ExoplanetsPanel';
 import WWTPanel from './WWTPanel';
 
@@ -18,7 +17,6 @@ const BottomBar = (props) => (
     <ScreenSpaceRenderablePanel />
     <ExoplanetsPanel />
     <WWTPanel />
-    {props.showFlightController && <FlightControlPanel />}
   </div>
 );
 

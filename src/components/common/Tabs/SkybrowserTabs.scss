@@ -1,10 +1,11 @@
 @import "../../../styles/all";
 
 
-$tabs-header-height: 30px;
+$tabs-header-height: 48px;
 $tabs-background: rgba(37,37,37,1);
 $tabs-background-content: rgba(55,55,55,1);
 $tabs-margin-horizontal: 8px;
+$tabs-title-width: 78px;
 
 .tabContainer {
     background: $tabs-background;   
@@ -12,19 +13,40 @@ $tabs-margin-horizontal: 8px;
     width: calc(100% - #{$tabs-margin-horizontal});
     margin-left: $tabs-margin-horizontal / 2;
     bottom: $popover-arrow-size;
-    z-index: 10;
 }
 
 .tab {
-    display:flex;
-    flex-wrap: wrap;
+    height: 48px;
     background: $tabs-background; 
-    text-indent: 4px; 
+    border-top: 3px solid $tabs-background;
+    border-top-right-radius: 4px;
     font-size: 16px;
-    padding: 2px;
+    padding-left: 4px;
+    padding-right: 4px;
     &:hover {
         background: $tabs-background-content;
+        border-top: 3px solid $tabs-background-content;
     }
+}
+.tabActive {
+    padding-left: 4px;
+    padding-right: 4px;
+    height: 45px;
+    background: $tabs-background-content;
+    font-size: 16px;
+}
+.tabHeader {
+    display: grid;
+
+}
+.tabButtons {
+    display: flex;
+}
+
+.tabTitle {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .tabContent {
@@ -39,25 +61,9 @@ $tabs-margin-horizontal: 8px;
     } 
 }
 
-.tabActive {
-    display:flex;
-    flex-wrap: wrap;
-    background: $tabs-background-content;
-    text-indent: 4px;
-    padding: 2px;
-    font-size: 16px;
-
-}
 
 .navTabs {
     display: flex;
-    span {
-        width: calc(100% - 82px);
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-    
 }
 
 .addTabButton {
@@ -69,6 +75,7 @@ $tabs-margin-horizontal: 8px;
 .closeTabButton {
     border-radius: 4px;
     padding: 3px 4px 3px 4px;
+
 }
 
 .tabButton {

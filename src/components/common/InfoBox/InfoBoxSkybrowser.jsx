@@ -47,11 +47,13 @@ class InfoBoxSkybrowser extends Component {
   tooltipActive() {
     this.setState({ tooltipActive: !this.state.tooltipActive });
   }
+
   checkIfTooltipActive() {
     if(!this.state.tooltipActive) {
         this.hidePopup();
     }
   }
+  
   showPopup() {
     this.setState({ showPopup: !this.state.showPopup });
   }

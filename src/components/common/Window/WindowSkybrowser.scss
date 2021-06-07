@@ -28,9 +28,6 @@
   width: auto;
   display: inline-flexbox;
   padding: 0px;
-
-  //justify-content: space-between;
-  //max-height: calc(100% - 160px);
 }
 
 .window header {
@@ -52,23 +49,10 @@
     margin-left: 5px;
     &:hover, &:active{
       background: $ui-background-solid;
-    }
   }
+}
   
-  .leftHandle {
-    background: transparent;
-    border-radius: 2px;
-    height: 100%;
-    width: 100%;
-    padding: 0;
-    margin-right: 5px;
-  
-    &:hover, &:active{
-      background: $ui-background-solid;
-    }
-  }
-  
-  .bottomHandle {
+.bottomHandle {
     background: transparent;
     border-radius: 2px;
     height: 100%;
@@ -76,16 +60,5 @@
     padding: 0;
     &:hover, &:active{
       background: $ui-background-solid;
-    }
   }
-  
-  .topHandle {
-    background: transparent;
-    border-radius: 2px;
-    height: 100%;
-    width: 100%;
-    padding: 0;
-    &:hover, &:active{
-      background: $ui-background-solid;
-    }
-  }
+}

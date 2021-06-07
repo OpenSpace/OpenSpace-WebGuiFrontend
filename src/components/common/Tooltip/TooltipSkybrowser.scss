@@ -2,7 +2,7 @@
 
 $arrow-size: 4px;
 $background: $ui-background-solid;
-$tooltip-color-dark: rgba(15,15,15,0.9); //rgba(60,60,60,0.95);
+$tooltip-color: rgba(15,15,15,0.9); //rgba(60,60,60,0.95);
 
 .tooltip {
   position: absolute;
@@ -21,7 +21,6 @@ $tooltip-color-dark: rgba(15,15,15,0.9); //rgba(60,60,60,0.95);
   white-space: normal;
   overflow: auto;
   text-overflow: ellipsis;
-  z-index: 10;
 }
 
  // infoboxskybrowser styles
@@ -42,9 +41,16 @@ $tooltip-color-dark: rgba(15,15,15,0.9); //rgba(60,60,60,0.95);
 // placement
 .bottom-left {
   width: 120px;
-  background-color: $tooltip-color-dark;
+  background-color: $tooltip-color;
   transform: translate(-80px, 2px);
   z-index: 10;
+ }
+
+ .bottom-right {
+  width: 100px;
+  background-color: $tooltip-color;
+  z-index: 10;
+  font-size: 10px;
  }
 
 .fixed {
@@ -67,11 +73,11 @@ $tooltip-color-dark: rgba(15,15,15,0.9); //rgba(60,60,60,0.95);
   pointer-events: none;
 }
 
-
 .bottom-left::after {
-  border-bottom-color: $tooltip-color-dark; //rgba(255,255,255,0.3);
+  border-bottom-color: $tooltip-color; //rgba(255,255,255,0.3);
   top: -2*$arrow-size;
   left: 88px;
 }
+
 
 

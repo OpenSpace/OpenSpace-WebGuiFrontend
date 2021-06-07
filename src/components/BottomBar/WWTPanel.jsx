@@ -192,10 +192,12 @@ class WWTPanel extends Component {
   }
 
   setCurrentTabHeight(height) {
+    console.log("curr tab: " + height);
     this.setState({ currentTabHeight : height })
   }
 
   setCurrentPopoverHeight(height) {
+    console.log("curr popover: " + height);
     this.setState({ currentPopoverHeight : height })
   }
 

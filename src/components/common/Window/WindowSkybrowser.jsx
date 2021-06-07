@@ -17,36 +17,17 @@ const WindowSkybrowser = (props) => {
 
     <Draggable 
     defaultPosition={position} 
-    handle=".header"
-    >      
-      <section
-        className={styles.window}
-        style={{
-          width: size.width,
-          height: size.height,
-        }}
-        {...excludeKeys(props, 'children title callback className closeCallback onResizeStop')}
-      >         
+    handle=".header">      
+      <section 
+      className={styles.window}
+      {...excludeKeys(props, 'children title callback className closeCallback onResizeStop')}>         
         <Resizable
-        enable={{    
-          right: true,
-          bottom: true,
-        }}
-        defaultSize={{
-          width: '350px',
-          height: size.height,
-        }}
+        enable={{ right: true,bottom: true,}}
+        defaultSize={{width: size.width, height: size.height }}
         minWidth={280}
         minHeight={280}
-        handleClasses={{
-          top: styles.topHandle,
-          right: styles.rightHandle,
-          left: styles.leftHandle,
-          bottom: styles.bottomHandle,
-        }}
-     
-        onResizeStop={onResizeStop}
-        >
+        handleClasses={{ right: styles.rightHandle, bottom: styles.bottomHandle }}
+        onResizeStop={onResizeStop}>
           <header className="header">
           <div className={styles.title}>
             { title }
@@ -60,8 +41,6 @@ const WindowSkybrowser = (props) => {
           <div className={styles.content}>
           <section className={styles.imageContent}>   
             { children }         
-          </section>
-          <section>
           </section>
           </div>  
         </Resizable>
@@ -89,7 +68,7 @@ WindowSkybrowser.defaultProps = {
   children: '',
   closeCallback: null,
   className: '',
-  position: { x: 10, y: -800 },
+  position: { x: 10, y: -600 },
   size: { height: 'auto', width: 'auto' },
   title: 'WindowSkybrowser',
 };
