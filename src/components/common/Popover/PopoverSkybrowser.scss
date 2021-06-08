@@ -14,7 +14,7 @@ $header-height: 26px;
 $border-width: 1px;
 
 //skybrowser styles
-$image-card-height: 120px;
+$image-card-width: 110px;
 $image-selection-header-height: $header-height + 60px;
 $imagelist-margin: 4px;
 
@@ -40,7 +40,7 @@ $imagelist-margin: 4px;
     justify-content: space-around;
     &:last-child:after {
       content: "";
-      flex-basis: $image-card-height;
+      flex-basis: $image-card-width;
     }
   }
 }

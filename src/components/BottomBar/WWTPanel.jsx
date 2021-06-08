@@ -42,7 +42,7 @@ class WWTPanel extends Component {
       targetData: [{ra: 0, dec: 0}],
       selectedTarget: 0,
       cameraData: {FOV : 70, RA: 0, Dec: 0},
-      currentTabHeight: 160,
+      currentTabHeight: 185,
       currentPopoverHeight: 440,
     };
     this.togglePopover = this.togglePopover.bind(this);
@@ -297,7 +297,6 @@ class WWTPanel extends Component {
       "adjustCameraToTarget" : this.adjustCameraToTarget, "select2dImagesAs3d" : this.set2dSelectionAs3dSelection,
       "setCurrentTabHeight" : this.setCurrentTabHeight, "centerTarget" : this.centerTargetOnScreen}}
       onSelect={this.selectImage}
-      //active={this.state.imageName}
       />;
 
   return (

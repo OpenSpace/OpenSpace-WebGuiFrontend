@@ -11,7 +11,7 @@ import { size } from 'lodash';
 class PaneSkybrowser extends Component {
  
   render() {
-    const { children, title, size, closeCallback } = this.props;
+    const { children, title, closeCallback } = this.props;
 
     return (
       <section className={styles.pane}>
@@ -27,7 +27,7 @@ class PaneSkybrowser extends Component {
             topLeft: false,
         }}
         defaultSize={{
-          width: '350',
+          width: '350px',
           height: '100%'
         }}
         minWidth={250}
