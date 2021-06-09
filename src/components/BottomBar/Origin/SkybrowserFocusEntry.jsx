@@ -4,6 +4,7 @@ import styles from './SkybrowserFocusEntry.scss';
 import Button from '../../common/Input/Button/Button';
 import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
 import InfoBoxSkybrowser from '../../common/InfoBox/InfoBoxSkybrowser';
+import TooltipSkybrowser from '../../common/Tooltip/TooltipSkybrowser';
 
 //import { clamp } from 'lodash/number';
 class OpacitySlider extends Component {
@@ -31,9 +32,14 @@ class OpacitySlider extends Component {
 class SkybrowserFocusEntry extends Component {
   constructor(props) {
     super(props);
-    this.state = {selectedImageBorderColor: ''}
+    this.state = {
+      selectedImageBorderColor: '',
+      showButtonInfo: false
+    }
     this.select = this.select.bind(this);
     this.setBorderColor = this.setBorderColor.bind(this);
+    this.showTooltip = this.showTooltip.bind(this);
+    this.hideTooltip = this.hideTooltip.bind(this);
   }
 
   setBorderColor() {
@@ -57,14 +63,27 @@ class SkybrowserFocusEntry extends Component {
     return this.props.setOpacity ? true : false;
   }
 
+  showTooltip() {
+    this.setState({showButtonInfo : !this.state.showButtonInfo});
+  }
+
+  hideTooltip() {
+    this.setState({showButtonInfo : false});
+  }
+
   render() {
     const { name, identifier, thumbnail, credits, creditsUrl, has3dCoords, setOpacity, removeImageSelection, place3dImage} = this.props;
-    const image3dbutton = has3dCoords ? <MaterialIcon
-      icon={'add_circle'}
-      className={'small'}
-      onClick={() => {place3dImage(identifier)}}>
-      </MaterialIcon> : "";
-    const imageRemoveButton = removeImageSelection ? <div style={{display: 'flex', justifyContent: 'flex-end'}}>
+    const image3dbutton = has3dCoords ? <Button onClick={() => {place3dImage(identifier)}} className={styles.addTo3DButton} transparent small>
+    <MaterialIcon  icon="add_circle" 
+    onMouseLeave={() => this.hideTooltip()} onMouseEnter={() => this.showTooltip()}/>
+    { this.state.showButtonInfo && <TooltipSkybrowser
+        placement="bottom-right"
+        style={this.position}>
+        {"Display in 3D Browser at image object position"}
+        </TooltipSkybrowser>
+    } </Button>
+     : "";
+    const imageRemoveButton = removeImageSelection ? <div style={{display: 'flex'}}>
     <Button onClick={() => {removeImageSelection(identifier)}} className={styles.removeImageButton} transparent small>
       <MaterialIcon icon="close" className="small" />
     </Button></div> : "";
@@ -88,10 +107,10 @@ class SkybrowserFocusEntry extends Component {
             <img src={thumbnail} alt={name} onClick={this.select}/>
           </div>
           <div className={styles.imageHeader}>
-            <span
-            className={styles.imageTitle}>
+            <span className={styles.imageTitle}>
               { name || identifier }
             </span>
+            {image3dbutton}
             <InfoBoxSkybrowser
               title={(name || identifier)}
               text={credits}
@@ -99,7 +118,7 @@ class SkybrowserFocusEntry extends Component {
               isTabEntry={this.isTabEntry}>
             </InfoBoxSkybrowser>
           </div>
-          {image3dbutton}
+        
           {opacitySlider}
       </li>
     );
