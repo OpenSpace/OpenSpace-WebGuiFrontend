@@ -34,6 +34,7 @@ class SkybrowserFocusEntry extends Component {
     this.state = {selectedImageBorderColor: ''}
     this.select = this.select.bind(this);
     this.setBorderColor = this.setBorderColor.bind(this);
+
   }
 
   setBorderColor() {
@@ -57,8 +58,10 @@ class SkybrowserFocusEntry extends Component {
     return this.props.setOpacity ? true : false;
   }
 
+
+
   render() {
-    const { name, identifier, thumbnail, credits, creditsUrl, has3dCoords, setOpacity, removeImageSelection, place3dImage} = this.props;
+    const { name, identifier, thumbnail, credits, creditsUrl, has3dCoords, setOpacity, removeImageSelection, place3dImage, ra, dec, fov} = this.props;
     const image3dbutton = has3dCoords ? <MaterialIcon
       icon={'add_circle'}
       className={'small'}
@@ -68,6 +71,7 @@ class SkybrowserFocusEntry extends Component {
     <Button onClick={() => {removeImageSelection(identifier)}} className={styles.removeImageButton} transparent small>
       <MaterialIcon icon="close" className="small" />
     </Button></div> : "";
+
     /*
     <MaterialIcon
       icon={'highlight_off'}
@@ -96,6 +100,9 @@ class SkybrowserFocusEntry extends Component {
               title={(name || identifier)}
               text={credits}
               textUrl={creditsUrl}
+              ra={ra}
+              dec={dec}
+              fov={fov}
               isTabEntry={this.isTabEntry}>
             </InfoBoxSkybrowser>
           </div>
