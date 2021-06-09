@@ -5,6 +5,7 @@ import TooltipSkybrowser from '../Tooltip/TooltipSkybrowser';
 import styles from '../Tooltip/TooltipSkybrowser.scss';
 import Button from '../../common/Input/Button/Button';
 import { times } from 'lodash';
+import esaSkyLogo from './ESASKY.png';
 
 
 class InfoBoxSkybrowser extends Component {
@@ -18,6 +19,7 @@ class InfoBoxSkybrowser extends Component {
     this.hidePopup = this.hidePopup.bind(this);
     this.openImageUrl = this.openImageUrl.bind(this);
     this.handleOutsideClick = this.handleOutsideClick.bind(this);
+    this.openEsaSky = this.openEsaSky.bind(this);
   }
 
 
@@ -53,7 +55,7 @@ class InfoBoxSkybrowser extends Component {
         this.hidePopup();
     }
   }
-  
+
   showPopup() {
     this.setState({ showPopup: !this.state.showPopup });
   }
@@ -62,9 +64,18 @@ class InfoBoxSkybrowser extends Component {
     this.setState({ showPopup: false, tooltipActive: false});
   }
 
+  openEsaSky(ra, dec, fov) {
+    let esaSkyUrl = "http://sky.esa.int/?target="+ra+"%"+dec+"&hips=DSS2+color&fov=" + fov + "&cooframe=J2000&sci=true&lang=en";
+    const newWindow = window.open(esaSkyUrl, "EsaSky");
+  }
+
   render() {
-    const { icon, text, title, textUrl} = this.props;
+    const { icon, text, title, textUrl, ra, dec, fov} = this.props;
     const { showPopup } = this.state;
+    const esaSkyButton =   <Button onClick={() => {this.openEsaSky(ra,dec,fov)}} className={styles.tooltipButton}  transparent small>
+        <img src={esaSkyLogo} alt="EsaSky" style={{width:'100%'}} />
+      </Button>;
+
     return (
       <span ref={this.setRef('wrapper')}>
         <MaterialIcon
@@ -83,9 +94,10 @@ class InfoBoxSkybrowser extends Component {
                 { text }
                 { text && (
                     <Button className={styles.tooltipButton} onClick={ () => this.openImageUrl(textUrl) }>
-                    Discover more
+                    Read more
                     </Button>
                 )}
+                {esaSkyButton}
                 </TooltipSkybrowser>
             )}
       </span>

@@ -72,7 +72,7 @@ class SkybrowserFocusEntry extends Component {
   }
 
   render() {
-    const { name, identifier, thumbnail, credits, creditsUrl, has3dCoords, setOpacity, removeImageSelection, place3dImage} = this.props;
+    const { name, identifier, thumbnail, credits, creditsUrl, has3dCoords, setOpacity, removeImageSelection, place3dImage, ra, dec, fov} = this.props;
     const image3dbutton = has3dCoords ? <Button onClick={() => {place3dImage(identifier)}} className={styles.addTo3DButton} transparent small>
     <MaterialIcon  icon="add_circle" 
     onMouseLeave={() => this.hideTooltip()} onMouseEnter={() => this.showTooltip()}/>
@@ -87,6 +87,7 @@ class SkybrowserFocusEntry extends Component {
     <Button onClick={() => {removeImageSelection(identifier)}} className={styles.removeImageButton} transparent small>
       <MaterialIcon icon="close" className="small" />
     </Button></div> : "";
+
     /*
     <MaterialIcon
       icon={'highlight_off'}
@@ -115,6 +116,9 @@ class SkybrowserFocusEntry extends Component {
               title={(name || identifier)}
               text={credits}
               textUrl={creditsUrl}
+              ra={ra}
+              dec={dec}
+              fov={fov}
               isTabEntry={this.isTabEntry}>
             </InfoBoxSkybrowser>
           </div>
