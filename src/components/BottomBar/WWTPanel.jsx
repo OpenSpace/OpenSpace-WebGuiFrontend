@@ -12,6 +12,7 @@ import propertyDispatcher from '../../api/propertyDispatcher';
 
 import { Resizable } from 're-resizable';
 import PopoverSkybrowser from '../common/Popover/PopoverSkybrowser';
+import wwtLogo from './wwtlogo.png';
 
 import {
   setPopoverVisibility,
@@ -352,9 +353,9 @@ class WWTPanel extends Component {
 
       <div className={Picker.Wrapper}>
         {
-          <Picker onClick={this.onToggleWWT}>
-            <div>
-              <MaterialIcon className={styles.photoIcon} icon="picture_in_picture" />
+          <Picker onClick={this.onToggleWWT} style={{padding: 0}}>
+            <div style={{textAlign: 'center', display: 'block'}}>
+              <img src={wwtLogo} alt="WWT"  style={{width:'50%', height: '50%'}} />
             </div>
           </Picker>
         }
