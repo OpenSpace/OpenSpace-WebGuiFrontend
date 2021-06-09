@@ -76,7 +76,7 @@ class PopoverSkybrowser extends Component {
             topLeft: false,
           }}
           defaultSize={{
-            width: 290,
+            width: 300,
             height: this.state.height,
           }}
           minHeight={280}
@@ -122,7 +122,7 @@ class PopoverSkybrowser extends Component {
 
   get asWindow() {  
     return ( 
-        <WindowSkybrowser {...this.windowInheritedProps} onResizeStop={this.onResizeStop} size={{height: this.state.height, width: 'auto'}}>
+        <WindowSkybrowser {...this.windowInheritedProps} onResizeStop={this.onResizeStop} size={{height: this.state.height, width: '300px'}}>
           { this.props.children } 
         </WindowSkybrowser>
     );

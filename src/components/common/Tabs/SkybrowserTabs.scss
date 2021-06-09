@@ -8,6 +8,7 @@ $tabs-background-content: rgba(55,55,55,1);
 $tabs-margin-horizontal: 8px;
 $tabs-close-button-width: 14px;
 $tabs-buttons-margin: 32px;
+$tabs-arrowbutton-width: 13.34px;
 
 .tabContainer {
     background: $tabs-background;   
@@ -51,7 +52,7 @@ $tabs-buttons-margin: 32px;
     text-overflow: ellipsis;
 }
 
-.tabButtons {
+.tabButtonContainer {
     display: flex;
     margin-right: $tabs-buttons-margin;
 }
@@ -73,12 +74,19 @@ $tabs-buttons-margin: 32px;
     display: flex;
 }
 
+.topHandle {
+    height: 1px;
+    &:hover, &:active{
+      background: $tabs-background;
+    }
+}
+
+//buttons
 .addTabButton {
     font-size: 13px;
     padding: 9px 6px 3px 6px;
     border-top-right-radius: 4px;
 }
-
 .closeTabButton {
     border-radius: 4px;
     padding: 3px 4px 3px 4px;
@@ -86,24 +94,30 @@ $tabs-buttons-margin: 32px;
     right: -2px;
 
 }
-
 .tabButton {
     border-radius: 4px;
     padding: 3px 5px 3px 5px;
 }
-
 .tabButtonActive {
     background-color: $tabs-background; 
     border-radius: 4px;
     padding: 3px 5px 3px 5px;
 }
-
-.topHandle {
-    height: 1px;
-    &:hover, &:active{
-      background: $tabs-background;
+.arrowButton {
+    display: inline-flex;
+    position: relative;
+    top: 38px;
+    padding: 10px 0 10px 0;
+    &Empty {
+        display: inline-flex;
+        width: $tabs-arrowbutton-width;
+        padding: 10px 0 10px 0;
+        position: relative;
+        top: 38px;
     }
-  }
+}
+
+
   
 
 
