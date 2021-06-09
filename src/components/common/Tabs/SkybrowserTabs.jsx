@@ -83,7 +83,7 @@ class SkybrowserTabs extends Component {
                             </Button>
                         </span>
                             { currentTarget === target &&
-                            <span className={styles.tabButtons} ref={this.setRef('wrapper')}>
+                            <span className={styles.tabButtonContainer} ref={this.setRef('wrapper')}>
                                 <Button onClick={() => adjustCameraToTarget(target)} onMouseLeave={() => this.hideTooltip(1)}
                                 className={styles.tabButton} transparent small>
                                     <MaterialIcon icon="visibility" className={"small"} onMouseEnter={() => this.showTooltip(1)}/>
@@ -184,10 +184,10 @@ class SkybrowserTabs extends Component {
                         <ul>
                             { data.map((entry, index) => (
                                  <div>
-                                 {
-                                   (index == 0) ? "" : <Button onClick={() => props.setImageOrder(entry.identifier , index + 1)} className={styles.addTabButton} transparent>
-                                  <MaterialIcon icon="keyboard_arrow_left" />
-                                  </Button>
+                                {(index == 0) ? <span className={styles.arrowButtonEmpty} transparent></span> : 
+                                    <Button onClick={() => props.setImageOrder(entry.identifier , index + 1)} className={styles.arrowButton} transparent>
+                                    <MaterialIcon icon="keyboard_arrow_left" />
+                                    </Button>
                                 }
                                 <EntryComponent
                                 {...entry}
@@ -196,9 +196,10 @@ class SkybrowserTabs extends Component {
                                 onSelect={this.props.onSelect}
                                 />
                                 {
-                                (index == noOfSelectedImages -1) ? "" : <Button onClick={() => props.setImageOrder(entry.identifier, index - 1)} className={styles.addTabButton} transparent>
-                                      <MaterialIcon icon="keyboard_arrow_right" />
-                                  </Button>
+                                (index == noOfSelectedImages -1) ? <span className={styles.arrowButtonEmpty} transparent></span> : 
+                                    <Button onClick={() => props.setImageOrder(entry.identifier, index - 1)} className={styles.arrowButton} transparent>
+                                    <MaterialIcon icon="keyboard_arrow_right" />
+                                    </Button>
                                   }
                               </div>
                             ))}
