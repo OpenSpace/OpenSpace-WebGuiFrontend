@@ -185,7 +185,7 @@ class SkybrowserTabs extends Component {
                             { data.map((entry, index) => (
                                  <div>
                                  {
-                                   (index == 0) ? "" : <Button onClick={() => props.setImageOrder(entry.identifier , index + 1)} className={styles.addTabButton} transparent>
+                                   (index == 0) ? "" : <Button onClick={() => props.setImageOrder(entry.identifier , index - 1)} className={styles.addTabButton} transparent>
                                   <MaterialIcon icon="keyboard_arrow_left" />
                                   </Button>
                                 }
@@ -196,7 +196,7 @@ class SkybrowserTabs extends Component {
                                 onSelect={this.props.onSelect}
                                 />
                                 {
-                                (index == noOfSelectedImages -1) ? "" : <Button onClick={() => props.setImageOrder(entry.identifier, index - 1)} className={styles.addTabButton} transparent>
+                                (index == noOfSelectedImages -1) ? "" : <Button onClick={() => props.setImageOrder(entry.identifier, index + 1)} className={styles.addTabButton} transparent>
                                       <MaterialIcon icon="keyboard_arrow_right" />
                                   </Button>
                                   }
