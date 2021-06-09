@@ -105,7 +105,7 @@ class SkybrowserFocusEntry extends Component {
           onMouseLeave={() => {this.props.hoverLeavesImage()}}>
           {imageRemoveButton}
           <div className={styles.image}>
-            <img src={thumbnail} alt={name} onClick={this.select}/>
+            <img src={thumbnail} alt={name} onClick={this.select} className={styles.imageText}/>
           </div>
           <div className={styles.imageHeader}>
             <span className={styles.imageTitle}>
