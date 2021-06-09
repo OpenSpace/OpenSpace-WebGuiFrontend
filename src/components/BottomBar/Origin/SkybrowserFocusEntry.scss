@@ -3,10 +3,11 @@
 $arrow-size: 4px;
 $slider-button: rgba(125,125,125,1);
 $slider-line: rgba(22,22,22,1);
+$image-width: 96px;
 
 .entry {
   padding: $popover-horizontal-padding;
-  height: 120px;
+  height: 110px;
   width: 110px;
   display: inline-grid;
   align-content: flex-start;
@@ -24,6 +25,7 @@ $slider-line: rgba(22,22,22,1);
 .tabEntry {
   height: 130px;
   margin-top: 4px;
+  width: inherit;
 
 }
 
@@ -31,17 +33,24 @@ $slider-line: rgba(22,22,22,1);
   display: flex;
   justify-content: space-between;
   margin-top: 1px;
+  width: $image-width;
 
 }
 
 .removeImageButton {
   padding: 3px 4px 3px 4px;
   border-radius: 4px;
+  position: relative;
+  left: 77px;
+}
+.addTo3DButton {
+  padding: 3px 3px 2px 3px;
+  border-radius: 4px;
+
 }
 
 .imageTitle {
   width: 80px;
-  padding-right: 5px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
