@@ -51,20 +51,20 @@ class SkybrowserTabs extends Component {
         else if(buttonNumber == 2) this.setState({showButtonInfo2 : !this.state.showButtonInfo2});
         else if(buttonNumber == 3) this.setState({showButtonInfo3 : !this.state.showButtonInfop3});
         else this.setState({showButtonInfo4 : !this.state.showButtonInfo4})
-       
+
     }
- 
+
     hideTooltip(buttonNumber) {
         if(buttonNumber == 1) this.setState({showButtonInfo1 : false});
         else if(buttonNumber == 2) this.setState({showButtonInfo2 : false});
         else if(buttonNumber == 3) this.setState({showButtonInfo3 : false});
         else this.setState({showButtonInfo4 : false})
     }
-    
+
     createTabs() {
 
         const { showButtonInfo1, showButtonInfo2, showButtonInfo3, showButtonInfo4 } = this.state;
-        const { targets, currentTarget} = this.props;
+        const { targets, currentTarget, removeBrowser} = this.props;
         const { lockTarget, unlockTarget, createTargetBrowserPair, adjustCameraToTarget, select2dImagesAs3d, centerTarget, selectTab} = this.props.viewComponentProps;
 
         const allTabs = Object.keys(targets).map((target, index) => {
@@ -73,18 +73,18 @@ class SkybrowserTabs extends Component {
             let targetIsLocked = targets[target].isLocked;
 
             return(
-                <div key={index} 
+                <div key={index}
                 style={currentTarget === target ? {borderTopRightRadius: "4px", borderTop:  "3px solid " + targetColor}:{}}>
                     <div className={ currentTarget === target ? styles.tabActive : styles.tab } onClick={() => selectTab(target)}>
                         <span className={styles.tabHeader}>
                             <span className={styles.tabTitle}>{ targets[target].name }</span>
-                            <Button onClick={() => this.handleDeleteTab(target)} className={styles.closeTabButton} transparent small>
+                            <Button onClick={() => removeBrowser(target)} className={styles.closeTabButton} transparent small>
                                 <MaterialIcon icon="close" className="small"/>
                             </Button>
                         </span>
-                            { currentTarget === target &&  
+                            { currentTarget === target &&
                             <span className={styles.tabButtons} ref={this.setRef('wrapper')}>
-                                <Button onClick={() => adjustCameraToTarget(target)} onMouseLeave={() => this.hideTooltip(1)} 
+                                <Button onClick={() => adjustCameraToTarget(target)} onMouseLeave={() => this.hideTooltip(1)}
                                 className={styles.tabButton} transparent small>
                                     <MaterialIcon icon="visibility" className={"small"} onMouseEnter={() => this.showTooltip(1)}/>
                                     { showButtonInfo1 && <TooltipSkybrowser
@@ -94,7 +94,7 @@ class SkybrowserTabs extends Component {
                                         </TooltipSkybrowser>
                                     }
                                 </Button>
-                                <Button onClick={() => centerTarget(target)} onMouseLeave={() => this.hideTooltip(2)} 
+                                <Button onClick={() => centerTarget(target)} onMouseLeave={() => this.hideTooltip(2)}
                                 className={styles.tabButton} transparent small >
                                     <MaterialIcon onMouseEnter={() => this.showTooltip(2)} icon="filter_center_focus" className="small"/>
                                     { showButtonInfo2 && <TooltipSkybrowser
@@ -104,8 +104,8 @@ class SkybrowserTabs extends Component {
                                         </TooltipSkybrowser>
                                     }
                                 </Button>
-                                <Button onClick={targetIsLocked ? () => unlockTarget(target) : () => lockTarget(target)} 
-                                onMouseLeave={() => this.hideTooltip(3)} className={targetIsLocked ? styles.tabButtonActive : styles.tabButton} 
+                                <Button onClick={targetIsLocked ? () => unlockTarget(target) : () => lockTarget(target)}
+                                onMouseLeave={() => this.hideTooltip(3)} className={targetIsLocked ? styles.tabButtonActive : styles.tabButton}
                                 transparent small>
                                     <MaterialIcon onMouseEnter={() => this.showTooltip(3)} icon="lock" className="small"/>
                                     { showButtonInfo3 && <TooltipSkybrowser
@@ -113,9 +113,9 @@ class SkybrowserTabs extends Component {
                                         style={this.position}>
                                         {"Lock aim of target"}
                                         </TooltipSkybrowser>
-                                    }   
+                                    }
                                 </Button>
-                                <Button onClick={() => select2dImagesAs3d(target)} onMouseLeave={() => this.hideTooltip(4)} 
+                                <Button onClick={() => select2dImagesAs3d(target)} onMouseLeave={() => this.hideTooltip(4)}
                                 className={styles.tabButton} transparent small>
                                     <MaterialIcon onMouseEnter={() => this.showTooltip(4)} icon="get_app" className="small"/>
                                     { showButtonInfo4 && <TooltipSkybrowser
@@ -123,7 +123,7 @@ class SkybrowserTabs extends Component {
                                         style={this.position}>
                                         {"Add images to 3D Browser"}
                                         </TooltipSkybrowser>
-                                    }  
+                                    }
                                 </Button>
                             </span>
                             }
@@ -144,7 +144,7 @@ class SkybrowserTabs extends Component {
     handleDeleteTab(tabToDelete) {
         // Call function handle from WWTPanel that is sent as a prop, to call Lua function removeTargetBrowserPair
     }
-    
+
     onResizeStop(e, direction, ref, delta) {
         this.setState({
             height: this.state.height + delta.height
@@ -161,7 +161,9 @@ class SkybrowserTabs extends Component {
 
     render() {
         const {data, currentPopoverHeight} = this.props;
+        var props = this.props;
         const EntryComponent = this.props.viewComponent;
+        var noOfSelectedImages = data.length;
 
         return(
             <section {...this.inheritedProps} className={styles.tabContainer}>
@@ -176,17 +178,29 @@ class SkybrowserTabs extends Component {
                 {this.createTabs()}
                 <div className={styles.tabContent} style={{ height: this.state.currentHeight }}>
                     <ScrollOverlay>
-                        { data.length === 0 ? ( 
+                        { data.length === 0 ? (
                         <CenteredLabel>There are no loaded images in this Sky Browser.</CenteredLabel>
                         ) : (
                         <ul>
-                            { data.map(entry => (
+                            { data.map((entry, index) => (
+                                 <div>
+                                 {
+                                   (index == 0) ? "" : <Button onClick={() => props.setImageOrder(entry.identifier , index + 1)} className={styles.addTabButton} transparent>
+                                  <MaterialIcon icon="keyboard_arrow_left" />
+                                  </Button>
+                                }
                                 <EntryComponent
                                 {...entry}
-                                {...this.props.viewComponentProps}
+                                {...props.viewComponentProps}
                                 key={entry.identifier}
                                 onSelect={this.props.onSelect}
                                 />
+                                {
+                                (index == noOfSelectedImages -1) ? "" : <Button onClick={() => props.setImageOrder(entry.identifier, index - 1)} className={styles.addTabButton} transparent>
+                                      <MaterialIcon icon="keyboard_arrow_right" />
+                                  </Button>
+                                  }
+                              </div>
                             ))}
                         </ul>
                         )}

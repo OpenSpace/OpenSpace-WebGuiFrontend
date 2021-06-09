@@ -68,6 +68,8 @@ class WWTPanel extends Component {
     this.set2dSelectionAs3dSelection = this.set2dSelectionAs3dSelection.bind(this);
     this.centerTargetOnScreen = this.centerTargetOnScreen.bind(this);
     this.selectTab = this.selectTab.bind(this);
+    this.setImageOrder = this.setImageOrder.bind(this);
+    this.removeTargetBrowserPair = this.removeTargetBrowserPair.bind(this);
   }
 
   async componentDidMount(){
@@ -113,6 +115,10 @@ class WWTPanel extends Component {
 
   removeImageSelection(identifier) {
     this.props.luaApi.skybrowser.removeSelectedImageInBrowser(Number(identifier), this.state.selectedTarget);
+  }
+
+  removeTargetBrowserPair(target) {
+    this.props.luaApi.skybrowser.removeTargetBrowserPair(target);
   }
 
   setOpacityOfImage(identifier, opacity) {
@@ -192,17 +198,19 @@ class WWTPanel extends Component {
   }
 
   setCurrentTabHeight(height) {
-    console.log("curr tab: " + height);
     this.setState({ currentTabHeight : height })
   }
 
   setCurrentPopoverHeight(height) {
-    console.log("curr popover: " + height);
     this.setState({ currentPopoverHeight : height })
   }
 
   onToggleWWT() {
     this.togglePopover();
+  }
+
+  setImageOrder(id, order) {
+    this.props.luaApi.skybrowser.setImageLayerOrder(this.state.selectedTarget, Number(id), order);
   }
 
   getImagesWith3Dcoord() {
@@ -288,8 +296,10 @@ class WWTPanel extends Component {
     let skybrowserTabs = <SkybrowserTabs
       targets={this.state.targetData}
       currentTarget={this.state.selectedTarget.toString()}
+      removeBrowser = {this.removeTargetBrowserPair}
       currentPopoverHeight={currentPopoverHeight}
       data={thisTabsImages}
+      setImageOrder={this.setImageOrder}
       viewComponent={SkybrowserFocusEntry}
       viewComponentProps={{"hoverFunc" : this.hoverOnImage, "hoverLeavesImage" : this.hoverLeavesImage,
       "lockTarget" : this.lockTarget , "unlockTarget" : this.unlockTarget, "createTargetBrowserPair" : this.createTargetBrowserPair,
