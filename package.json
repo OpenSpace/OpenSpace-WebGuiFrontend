@@ -11,7 +11,7 @@
     "start": "copyfiles index.html environment.js dist && webpack-dev-server --progress --colors --host 0.0.0.0 --port 4690",
     "prebuild": "npm install && rimraf dist",
     "build": "cross-env NODE_ENV=production webpack -p --config webpack.config.production.js",
-    "postbuild": "copyfiles index.html dist",
+    "postbuild": "copyfiles index.html environment.js dist",
     "flow": "flow"
   },
   "repository": {
