@@ -325,7 +325,7 @@ const mapSubStateToProps = ({sessionRecording, sessionRecordingPopover, luaApi})
     },
     startPlaybackLua: (filename, forceTime, shouldOutputFrames, outputFramerate, loopPlayback) => {
       if (shouldOutputFrames) {
-        luaApi.sessionRecording.enableTakeScreenShotDuringPlayback(outputFramerate);
+        luaApi.sessionRecording.enableTakeScreenShotDuringPlayback(parseInt(outputFramerate));
       }
       if (forceTime) {
         luaApi.sessionRecording.startPlayback(filename, loopPlayback);
