@@ -8,6 +8,7 @@ import subStateToProps from '../../utils/subStateToProps';
 import { connect } from 'react-redux';
 import { setShowAbout } from '../../api/Actions'
 import environment from '../../api/Environment';
+import api from '../../api/api';
 
 class SystemMenu extends Component {
   constructor(props) {
@@ -29,6 +30,9 @@ class SystemMenu extends Component {
 
               <button onClick={this.props.showAbout}>
                 About OpenSpace
+              </button>
+              <button onClick={this.props.openTutorials}>
+                Open Tutorials
               </button>
               {
                 environment.developmentMode ?
@@ -88,6 +92,13 @@ const mapSubStateToProps = ({ luaApi }) => {
       const data = await luaApi.getPropertyValue("Modules.ImGUI.Main.Enabled");
       const visible = data[1] || false;
       luaApi.setPropertyValue("Modules.ImGUI.Main.Enabled", !visible);
+    },
+    openTutorials: () => {
+      var startString = "open";
+      if (navigator.platform == 'Win32') {
+        startString = 'start'
+      }
+      api.executeLuaScript("os.execute('" + startString + " http://wiki.openspaceproject.com/docs/tutorials/users/')")
     },
     saveChange: async () => {
       luaApi.saveSettingsToProfile();
