@@ -32,6 +32,9 @@ class ActionsPanel extends Component {
     this.sendAction = this.sendAction.bind(this);
     this.addNavPath = this.addNavPath.bind(this);
     this.goBack = this.goBack.bind(this);
+    this.getActionContent = this.getActionContent.bind(this);
+    this.getChildrenContent = this.getChildrenContent.bind(this);
+    this.getBackButton = this.getBackButton.bind(this);
   }
 
   togglePopover() {
@@ -63,22 +66,8 @@ class ActionsPanel extends Component {
     this.props.luaApi.action.triggerAction(actionId);
   }
 
-
-  get popover() {
-
-    var actionsContent;
-    var childrenContent;
-    var backButton;
-    if (this.props.actionLevel.length == 0) {
-      actionsContent = <div>No Actions</div>;
-      childrenContent = <div>No Children</div>;
-    } else {
-      var level = this.props.actionLevel;
-      console.log("Level", level);
-      if (this.props.navigationPath != '/') {
-        backButton = <Button block smalltext className={styles.backButton} onClick={this.goBack} key='backbtn' >&lt;- Back</Button>;
-      }
-      actionsContent = level.actions.map(action =>
+  getActionContent(level) {
+    return level.actions.map(action =>
         <Button 
           block 
           smalltext 
@@ -91,7 +80,10 @@ class ActionsPanel extends Component {
           {action.name}
         </Button>
       );
-      childrenContent = Object.keys(level.children).map(key =>
+  }
+
+  getChildrenContent(level) {
+    return Object.keys(level.children).map(key =>
         <Button 
           block 
           smalltext 
@@ -104,7 +96,53 @@ class ActionsPanel extends Component {
           {key}
         </Button>
       );
+  }
 
+  getBackButton() {
+    if (this.props.navigationPath != '/') {
+        return <Button block smalltext className={styles.backButton} onClick={this.goBack} key='backbtn' >&lt;- Back</Button>;
+    }
+  }
+
+  get windowContent() {
+   var level = this.props.actionLevel;
+
+   if (level == undefined) {
+     return <div>Loading</div>
+   }
+   var actionsContent = this.getActionContent(level);
+   var childrenContent = this.getChildrenContent(level);
+   var backButton = this.getBackButton();
+   return (
+    <div className={styles.windowContainer}>
+      <hr className={Popover.styles.delimiter} />
+      <Row>
+        <div>{this.props.navigationPath} </div>
+      </Row>
+      <hr className={Popover.styles.delimiter} />
+      <div className={styles.Grid}>
+            {backButton}
+            {actionsContent}
+            {childrenContent}
+       </div>
+      </div>
+    );
+  }
+
+  get popover() {
+
+    var actionsContent;
+    var childrenContent;
+    var backButton;
+
+    if (this.props.actionLevel.length == 0) {
+      actionsContent = <div>No Actions</div>;
+      childrenContent = <div>No Children</div>;
+    } else {
+      var level = this.props.actionLevel;
+      actionsContent = this.getActionContent(level);
+      childrenContent = this.getChildrenContent(level);
+      backButton = this.getBackButton();
     }
 
     var navPathString = this.props.navigationPath;
@@ -134,20 +172,29 @@ class ActionsPanel extends Component {
   }
 
   render() {
-    const { popoverVisible, actionLevel, navigationPath } = this.props;
-    return (
-      <div className={Picker.Wrapper}>
-        <Picker 
-          className={`${popoverVisible && Picker.Active}`} 
-          onClick={this.togglePopover}
-        >
-          <div>
-            <MaterialIcon className={styles.photoIcon} icon="code" />
-          </div>
-        </Picker>
-        { popoverVisible && this.popover }
-      </div>
-    );
+    const { popoverVisible, actionLevel, navigationPath, singlewindow } = this.props;
+    if (singlewindow) {
+      return (
+        <div>
+        { this.windowContent }
+        </div>
+      );
+    } else {
+      return (
+        <div className={Picker.Wrapper}>
+          <Picker 
+            className={`${popoverVisible && Picker.Active}`} 
+            onClick={this.togglePopover}
+          >
+            <div>
+              <MaterialIcon className={styles.photoIcon} icon="code" />
+            </div>
+          </Picker>
+          { popoverVisible && this.popover }
+        </div>
+      );
+
+    }
   }
 }
 
@@ -155,7 +202,6 @@ class ActionsPanel extends Component {
 const mapSubStateToProps = ({popoverVisible, luaApi, actions}) => {
 
   var actionsMapped = {"/": {actions:[], children:{}}};
-  console.log("Actions",actions)
   if (!actions.isInitialized) {
     return {
       actions: actionsMapped,
@@ -185,7 +231,7 @@ const mapSubStateToProps = ({popoverVisible, luaApi, actions}) => {
       }
     }
   }
-  console.log("Mapped",actionsMapped);
+
   var navPath = actions.navigationPath;
   var actionsForPath = actionsMapped['/'];
   if (navPath.length > 1) {
@@ -196,7 +242,6 @@ const mapSubStateToProps = ({popoverVisible, luaApi, actions}) => {
       actionsForPath = actionsForPath.children[index];
     }
   }
-  console.log("Mapped for path",actionsForPath);
 
   return {
     actionLevel: actionsForPath,

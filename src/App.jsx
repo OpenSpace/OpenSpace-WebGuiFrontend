@@ -4,6 +4,7 @@ import OnScreenGui from './views/OnScreenGui';
 import RemoteGui from './views/RemoteGui';
 import BrowserGui from './views/BrowserGui';
 import OnTouchGui from './views/OnTouchGui';
+import ActionsGui from './views/ActionsGui';
 import NotFound from './views/NotFound';
 
 const App = () => (
@@ -12,6 +13,7 @@ const App = () => (
       <Route path="/onscreen" component={OnScreenGui} />
       <Route path="/remote" component={RemoteGui} />
       <Route path="/ontouch" component={OnTouchGui} />
+      <Route path="/actions" component={ActionsGui} />
       {/* Here, more GUI variations can be added. */}
       {/* <Route path="/tablet" component={TabletGui} /> */}
       <Route path="/" component={BrowserGui} />
