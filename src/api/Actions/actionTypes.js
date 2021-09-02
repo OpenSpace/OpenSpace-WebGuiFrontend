@@ -42,11 +42,13 @@ export const actionTypes = {
   addExoplanets: 'EXOPLANETS_ADD',
   removeExoplanets: 'EXOPLANETS_REMOVE',
 
+
   // action types for shortcuts
   subscribeToShortcuts: 'SHORTCUTS_SUBSCRIBE',
   unsubscribeToShortcuts: 'SHORTCUTS_UNSUBSCRIBE',
   initializeShortcuts: 'SHORTCUTS_INITIALIZE',
-  executeShortcut: 'SHORTCUT_EXECUTE',
+  triggerAction: 'TRIGGER_ACTION',
+  setActionsPath: 'SET_ACTIONS_PATH',
 
   // action types for session recording
   subscribeToSessionRecording: 'SESSION_RECORDING_SUBSCRIBE',

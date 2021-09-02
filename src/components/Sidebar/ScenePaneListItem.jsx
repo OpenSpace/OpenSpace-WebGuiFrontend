@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropertyOwner from './Properties/PropertyOwner';
-import Shortcut from './Shortcut';
 import Group from './Group';
 import ContextSection from './ContextSection';
 
@@ -23,9 +22,6 @@ class ScenePaneListItem extends Component {
       return <PropertyOwner
               uri={this.props.uri}
               expansionIdentifier={'scene-search/' + this.props.uri} />
-    }
-    if (props.type === 'shortcut') {
-      return <Shortcut index={this.props.index}/>
     }
     return null;
   }

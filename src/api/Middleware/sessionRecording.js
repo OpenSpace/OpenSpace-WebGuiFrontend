@@ -1,4 +1,3 @@
-import { initializeShortcuts } from '../Actions';
 import { actionTypes } from '../Actions/actionTypes';
 
 import {

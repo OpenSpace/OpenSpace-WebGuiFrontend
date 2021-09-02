@@ -3,10 +3,9 @@ import { actionTypes } from '../Actions/actionTypes';
 const emptyGroup = () => ({
   subgroups: [],
   propertyOwners: [],
-  shortcuts: []
 })
 
-const computeGroups = (propertyTree, shortcuts) => {
+const computeGroups = (propertyTree) => {
   const { propertyOwners, properties } = propertyTree;
   const groups = {};
 
@@ -25,13 +24,6 @@ const computeGroups = (propertyTree, shortcuts) => {
     group.propertyOwners.push(uri);
   });
 
-  const shortcutList = shortcuts.data.shortcuts || [];
-  shortcutList.forEach((shortcut, index) => {
-    const guiPath = '/Shortcuts' + shortcut.guiPath;
-    const group = groups[guiPath] = groups[guiPath] || emptyGroup();
-    group.shortcuts.push(index);
-  });
-
   // Create links from parent groups to subgroups.
   Object.keys(groups).forEach(group => {
     const path = group.split('/');
@@ -48,10 +40,10 @@ const computeGroups = (propertyTree, shortcuts) => {
   return groups;
 }
 
-export const groups = (state = {}, action, propertyTree, shortcuts) => {
+export const groups = (state = {}, action, propertyTree) => {
   switch (action.type) {
     case actionTypes.refreshGroups:
-      return computeGroups(propertyTree, shortcuts);
+      return computeGroups(propertyTree);
     default:
       return state;
   }

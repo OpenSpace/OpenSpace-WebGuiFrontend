@@ -199,7 +199,6 @@ export const removeExoplanets = data => ({
   payload: data
 });
 
-
 export const subscribeToShortcuts = () => ({
   type: actionTypes.subscribeToShortcuts,
   payload: {},
@@ -215,10 +214,16 @@ export const initializeShortcuts = data => ({
   payload: data
 });
 
-export const executeShortcut = index => ({
-  type: actionTypes.executeShortcut,
-  payload: index
+export const triggerAction = data => ({
+  type: actionTypes.triggerAction,
+  payload: data
 });
+
+export const setActionsPath = data => ({
+  type: actionTypes.setActionsPath,
+  payload: data
+});
+
 
 export const setNavigationAction = data => ({
   type: actionTypes.setNavigationAction,

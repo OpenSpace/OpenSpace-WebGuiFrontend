@@ -75,6 +75,7 @@ const defaultPopovers = {
   sessionRecording: popover(),
   screenSpaceRenderables: popover(),
   exoplanets: popover(),
+  actions: popover(),
   focusNodePropertiesPanel: popover({ attached: false }),
   activeNodePropertyPanels: {},
   activeNodeMetaPanels: {},

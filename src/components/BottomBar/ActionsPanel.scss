@@ -1,0 +1,45 @@
+@import "../../styles/all";
+
+
+.Grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  &:before,
+    &:after {
+      display: none;
+    }
+
+}
+
+.scroller {
+    overflow: scroll;
+    height: 92%;
+     overflow-x: hidden;
+}
+
+.buttonIcon {
+    font-size: 1em;
+}
+
+.backButton {
+  margin-bottom: 10px;
+}
+
+.actionButton {
+  width: 120px;
+  margin-bottom: 5px;
+  margin: 2px;
+}
+
+.folderButton {
+ background-color: $ui-background-slider-input;
+}
+
+.actionsPanel {
+  min-width: 392px;
+  max-width: 392px;
+  height: 400px;
+  max-height: 400px;
+  min-height: 400px;
+}

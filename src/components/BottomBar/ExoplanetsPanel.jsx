@@ -85,7 +85,7 @@ class ExoplanetsPanel extends Component {
 
   get popover() {
 
- const starNameLabel = <span>Star name</span>;
+    const starNameLabel = <span>Star name</span>;
     const noContentLabel = <CenteredLabel>No active systems</CenteredLabel>;
     const renderables = this.props.exoplanetSystems; 
     let panelContent;
