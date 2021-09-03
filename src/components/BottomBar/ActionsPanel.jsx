@@ -189,7 +189,7 @@ class ActionsPanel extends Component {
             onClick={this.togglePopover}
           >
             <div>
-              <MaterialIcon className={styles.photoIcon} icon="code" />
+              <MaterialIcon className={styles.bottomBarIcon} icon="dashboard" />
             </div>
           </Picker>
           { popoverVisible && this.popover }
