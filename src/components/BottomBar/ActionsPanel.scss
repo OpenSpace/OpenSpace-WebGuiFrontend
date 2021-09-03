@@ -1,6 +1,5 @@
 @import "../../styles/all";
 
-
 .Grid {
     display: flex;
     flex-wrap: wrap;
@@ -9,13 +8,12 @@
     &:after {
       display: none;
     }
-
 }
 
 .scroller {
-    overflow: scroll;
-    height: 92%;
-     overflow-x: hidden;
+  overflow: scroll;
+  height: 92%;
+  overflow-x: hidden;
 }
 
 .buttonIcon {
@@ -32,22 +30,20 @@
   margin: 2px;
 }
 
-
 .windowContainer {
  .actionButton {
     min-width: 310px;
     min-height: 100px;
-    }
-    font-size: 3.4em;
-    overflow: scroll;
-    overflow-y: auto;
-    height: 100%;
-    overflow-x: hidden;
-
+  }
+  font-size: 3.4em;
+  overflow: scroll;
+  overflow-y: auto;
+  height: 100%;
+  overflow-x: hidden;
 }
 
 .folderButton {
- background-color: $ui-background-slider-input;
+  background-color: $ui-background-slider-input;
 }
 
 .actionsPanel {

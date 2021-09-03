@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Popover from '../common/Popover/Popover';
 import Button from '../common/Input/Button/Button';
+import InfoBox from '../common/InfoBox/InfoBox';
 import Picker from './Picker';
 import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import Input from '../common/Input/Input/Input';
@@ -78,6 +79,7 @@ class ActionsPanel extends Component {
         >
           <p><MaterialIcon className={styles.buttonIcon} icon="launch" /></p>
           {action.name}
+          <InfoBox inpanel panelscroll='actionscroller' text={action.documentation} />
         </Button>
       );
   }
@@ -114,7 +116,7 @@ class ActionsPanel extends Component {
    var childrenContent = this.getChildrenContent(level);
    var backButton = this.getBackButton();
    return (
-    <div className={styles.windowContainer}>
+    <div id='actionscroller' className={styles.windowContainer}>
       <hr className={Popover.styles.delimiter} />
       <Row>
         <div>{this.props.navigationPath} </div>
@@ -155,7 +157,7 @@ class ActionsPanel extends Component {
         detachable
         attached={true}
       >        
-        <div className={`${Popover.styles.content} ${styles.scroller}` }>
+        <div id='actionscroller' className={`${Popover.styles.content} ${styles.scroller}` }>
           <hr className={Popover.styles.delimiter} />
           <Row>
             <div className={Popover.styles.title}>{navPathString} </div>
@@ -256,7 +258,6 @@ const mapStateToSubState = (state) => ({
   luaApi: state.luaApi,
   actions: state.shortcuts,
 });
-
 
 const mapDispatchToProps = dispatch => ({
   setPopoverVisibility: visible => {
