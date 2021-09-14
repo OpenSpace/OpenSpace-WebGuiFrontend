@@ -8,6 +8,7 @@ import BottomBar from '../components/BottomBar/BottomBar';
 import Button from '../components/common/Input/Button/Button';
 import Error from '../components/common/Error/Error';
 import Overlay from '../components/common/Overlay/Overlay';
+import KeybindingPanel from '../components/BottomBar/KeybindingPanel';
 import About from './About/About';
 import Stack from '../components/common/Stack/Stack';
 import NodePopOverContainer from '../components/NodePropertiesPanel/NodePopOverContainer';
@@ -91,6 +92,7 @@ class OnScreenGui extends Component {
           <NodePopOverContainer />
           <NodeMetaContainer />
           <BottomBar showFlightController={this.props.showFlightController}/>
+          <KeybindingPanel />
         </section>
       </div>
     );

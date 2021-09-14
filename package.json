@@ -40,8 +40,10 @@
     "react-redux": "^7.2.4",
     "react-router-dom": "^5.2.0",
     "react-select": "^3.2.0",
+    "react-simple-keyboard": "^3.2.72",
     "redux": "^4.1.0",
     "shallow-equal": "^1.2.1",
+    "simple-keyboard-layouts": "^3.0.176",
     "svg-react-loader": "^0.4.6"
   },
   "devDependencies": {

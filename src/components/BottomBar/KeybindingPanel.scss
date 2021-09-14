@@ -1,0 +1,25 @@
+@import "../../styles/all";
+
+.keybindingPopover {
+  min-width: 1050px;
+  width: 100%;
+}
+
+.textContainer {
+  background-color: rgba(0, 0, 0, 0.1);
+  justify-content: center;
+  width: 1024px;
+  margin: 0 auto;
+  padding-left: 8px;
+  border-radius: 5px;
+  min-height: 6.0em;
+  font-size: 0.8rem;
+}
+
+.actionLabel {
+  color: $text-color-blur;
+  pointer-events: none;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}

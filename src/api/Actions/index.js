@@ -224,6 +224,11 @@ export const setActionsPath = data => ({
   payload: data
 });
 
+export const toggleKeybindViewer = data => ({
+  type: actionTypes.toggleKeybindViewer,
+  payload: data
+});
+
 
 export const setNavigationAction = data => ({
   type: actionTypes.setNavigationAction,

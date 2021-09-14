@@ -16,6 +16,7 @@ import {
   setPopoverVisibility,
   triggerAction,
   setActionsPath,
+  toggleKeybindViewer
 } from '../../api/Actions';
 
 import { connect } from 'react-redux';
@@ -69,12 +70,12 @@ class ActionsPanel extends Component {
 
   getActionContent(level) {
     return level.actions.map(action =>
-        <Button 
-          block 
-          smalltext 
-          onClick={this.sendAction} 
-          key={action.identifier} 
-          className={styles.actionButton} 
+        <Button
+          block
+          smalltext
+          onClick={this.sendAction}
+          key={action.identifier}
+          className={styles.actionButton}
           actionid={action.identifier}
         >
           <p><MaterialIcon className={styles.buttonIcon} icon="launch" /></p>
@@ -86,11 +87,11 @@ class ActionsPanel extends Component {
 
   getChildrenContent(level) {
     return Object.keys(level.children).map(key =>
-        <Button 
-          block 
-          smalltext 
-          onClick={this.addNavPath} 
-          key={key} 
+        <Button
+          block
+          smalltext
+          onClick={this.addNavPath}
+          key={key}
           foldername={key}
           className={`${styles.actionButton} ${styles.folderButton}`}
         >
@@ -136,6 +137,7 @@ class ActionsPanel extends Component {
     var actionsContent;
     var childrenContent;
     var backButton;
+    var keybindsContent;
 
     if (this.props.actionLevel.length == 0) {
       actionsContent = <div>No Actions</div>;
@@ -148,6 +150,20 @@ class ActionsPanel extends Component {
     }
 
     var navPathString = this.props.navigationPath;
+
+    if (navPathString == '/') {
+      keybindsContent = <Button
+          block
+          smalltext
+          onClick={this.props.toggleKeybinds}
+          key="showKeybinds"
+          className={styles.actionButton}
+        >
+          <p><MaterialIcon className={styles.buttonIcon} icon="launch" /></p>
+          Show Keybindings
+          <InfoBox inpanel panelscroll='actionscroller' text="Shows the keybinding vieiwer" />
+        </Button>;
+    }
 
     return (
       <Popover
@@ -167,6 +183,7 @@ class ActionsPanel extends Component {
             {backButton}
             {actionsContent}
             {childrenContent}
+            {keybindsContent}
           </div>
         </div>
       </Popover>
@@ -272,6 +289,12 @@ const mapDispatchToProps = dispatch => ({
   actionPath: (action) => {
     dispatch(setActionsPath(action));
   },
+  toggleKeybinds: (action) => {
+    dispatch(setPopoverVisibility({
+      popover: 'keybinds',
+      visible: true
+    }));
+  }
 })
 
 ActionsPanel = connect(

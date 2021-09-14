@@ -49,6 +49,7 @@ export const actionTypes = {
   initializeShortcuts: 'SHORTCUTS_INITIALIZE',
   triggerAction: 'TRIGGER_ACTION',
   setActionsPath: 'SET_ACTIONS_PATH',
+  toggleKeybindViewer: 'TOGGLE_KEYBIND_VIEWER',
 
   // action types for session recording
   subscribeToSessionRecording: 'SESSION_RECORDING_SUBSCRIBE',

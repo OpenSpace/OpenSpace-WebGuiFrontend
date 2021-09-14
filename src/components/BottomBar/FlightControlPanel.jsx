@@ -147,7 +147,7 @@ class FlightControlPanel extends Component {
       this.props.sendFlightControl({
         "type": "inputState",
         "inputState": inputState
-      })      
+      })
     }
   }
 
