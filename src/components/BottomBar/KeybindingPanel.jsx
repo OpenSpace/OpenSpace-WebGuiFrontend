@@ -332,7 +332,7 @@ class KeybindingPanel extends Component {
         title="Keybinding Viewer"
         closeCallback={this.togglePopover}
         detachable
-        position={{x: -250, y: -350}}
+        position={{x: -450, y: -150}}
         attached={false}
       >        
         <hr className={Popover.styles.delimiter} />
