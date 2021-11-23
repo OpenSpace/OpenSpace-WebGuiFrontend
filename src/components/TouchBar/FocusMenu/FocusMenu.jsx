@@ -6,7 +6,6 @@ import FocusButton from './FocusButton';
 import {
   ScenePrefixKey,
   ValuePlaceholder,
-  BoundingSphereKey,
   NavigationAnchorKey,
   RetargetAnchorKey,
   ApplyFlyToKey,
@@ -65,14 +64,15 @@ class FocusMenu extends Component {
     this.applyFlyTo(origin.origin);
   }
 
-  applyFlyTo(flyToNode) {
-    // TODO: Implement user overriding automatic node distance in json
-    let distanceNode = this.props.focusDistances.find(function(node){
-        return node.name === flyToNode
-    });
+  async applyFlyTo(flyToNode) {
+    const radius = await this.props.luaApi.boundingSphere(flyToNode);
+    // Little ugly, but the [1] is needed since we use the version of the Lua API 
+    // that returns an object instead of a single value
+    const distance = radius[1] * DISTANCE_FACTOR; 
 
-    this.props.changePropertyValue(FlightDestinationDistanceKey, distanceNode.focusDistance)
+    this.props.changePropertyValue(FlightDestinationDistanceKey, distance);
     this.props.changePropertyValue(ApplyFlyToKey, true);
+    // TODO: use camera paths instead
   }
 
   applyOverview() {
@@ -110,7 +110,6 @@ class FocusMenu extends Component {
 const mapStateToProps = (state) => {
   let anchor = [];
   let focusNodes = [];
-  let focusDistances = [];
 
   const overviewLimit = state.storyTree.story.overviewlimit;
 
@@ -123,23 +122,11 @@ const mapStateToProps = (state) => {
     }
 
     anchor = state.propertyTree.properties[NavigationAnchorKey];
-    // TODO: Implement user overriding automatic node distance in json
-    focusNodes.forEach(node => {
-        const radius = state.propertyTree.properties
-                    [BoundingSphereKey.replace(ValuePlaceholder, `${node.name}`)].value;
-        if (radius) {
-          const focusDistance = radius * DISTANCE_FACTOR; 
-          const focusDistanceNode = {'name': node.name, 'focusDistance': focusDistance};
-
-          focusDistances.push(focusDistanceNode);
-        }
-      });
   }
 
   return {
     overviewLimit,
     focusNodes,
-    focusDistances,
     anchor,
     luaApi: state.luaApi
   };
