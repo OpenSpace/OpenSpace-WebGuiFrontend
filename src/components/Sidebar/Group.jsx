@@ -4,7 +4,6 @@ import ToggleContent from '../common/ToggleContent/ToggleContent';
 import PropertyOwner,
        { displayName as propertyOwnerName,
          nodeExpansionIdentifier as propertyOwnerNodeExpansionIdentifier }  from './Properties/PropertyOwner'
-import Shortcut from './Shortcut';
 
 import { setPropertyTreeExpansion } from '../../api/Actions';
 import { sortGroups } from '../../api/keys';
@@ -77,10 +76,6 @@ let Group = ({ path, expansionIdentifier, entries, isExpanded, setExpanded, sort
                                   uri={entry.payload}
                                   expansionIdentifier={childNodeIdentifier} />
             }
-          case 'shortcut': {
-            return <Shortcut key={entry.payload}
-                             index={entry.payload} />
-          }
           default:
             return null;
         }
@@ -91,13 +86,12 @@ let Group = ({ path, expansionIdentifier, entries, isExpanded, setExpanded, sort
 
 
 const mapSubStateToProps = (
-  { groups, propertyOwners, properties, propertyTreeExpansion, shortcuts },
+  { groups, propertyOwners, properties, propertyTreeExpansion },
   { path, expansionIdentifier, autoExpand }
 ) => {
   const data = groups[path] || {};
   const subGroups = data.subgroups || [];
   const owners = data.propertyOwners || [];
-  const subShortcuts = data.shortcuts || [];
   let isExpanded = propertyTreeExpansion[expansionIdentifier];
 
   if (isExpanded === undefined) {
@@ -112,10 +106,6 @@ const mapSubStateToProps = (
     type: 'propertyOwner',
     payload: o,
     name: propertyOwnerName(propertyOwners, properties, o)
-  }))).concat(subShortcuts.map(i => ({
-    type: 'shortcut',
-    payload: i,
-    name: shortcuts[i].name || ''
   })));
 
   const pathFragments = path.split('/');
@@ -134,7 +124,6 @@ const mapStateToSubState = state => ({
   propertyOwners: state.propertyTree.propertyOwners,
   properties: state.propertyTree.properties,
   propertyTreeExpansion: state.local.propertyTreeExpansion,
-  shortcuts: state.shortcuts.data.shortcuts || []
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => {

@@ -20,7 +20,10 @@ ToggleHeader.propTypes = {
   offIcon: PropTypes.string,
   onClick: PropTypes.func.isRequired,
   onIcon: PropTypes.string,
-  title: PropTypes.string.isRequired,
+  title: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.object
+  ]).isRequired,
   showEnabled: PropTypes.bool,
   expanded: PropTypes.bool.isRequired,
 };

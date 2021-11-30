@@ -16,7 +16,8 @@ const selectStyles = {
   menu: (provided) => ({
     ...provided,
     backgroundColor: '#222',
-    margin: 0
+    margin: 0,
+    zIndex: 10
   }),
   placeholder: (provided) => ({
     ...provided,
@@ -39,7 +40,7 @@ const selectStyles = {
   }),
   singleValue: (provided, state) => ({
     ...provided,
-    color: '#fff',
+    color: 'inherited',
     paddingTop: 10,
     marginLeft: 0
   })

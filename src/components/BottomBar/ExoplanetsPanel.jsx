@@ -85,7 +85,7 @@ class ExoplanetsPanel extends Component {
 
   get popover() {
 
- const starNameLabel = <span>Star name</span>;
+    const starNameLabel = <span>Star name</span>;
     const noContentLabel = <CenteredLabel>No active systems</CenteredLabel>;
     const renderables = this.props.exoplanetSystems; 
     let panelContent;
@@ -148,7 +148,11 @@ class ExoplanetsPanel extends Component {
 
     return (
       <div className={Picker.Wrapper}>
-        {hasSystems && <Picker onClick={this.togglePopover}>
+        {hasSystems && 
+          <Picker 
+            className={`${popoverVisible && Picker.Active}`} 
+            onClick={this.togglePopover}
+          >
             <div>
               <MaterialIcon className={styles.photoIcon} icon="hdr_strong" />
             </div>

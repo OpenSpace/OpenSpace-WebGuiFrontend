@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
-import Checkbox from '../../common/Input/Checkbox/Checkbox';
 import { connectProperty } from './connectProperty';
 
 import BoolProperty from './BoolProperty';
+import ListProperty from './ListProperty';
+import MatrixProperty from './MatrixProperty';
 import NumericProperty from './NumericProperty';
 import OptionProperty from './OptionProperty';
+import SelectionProperty from './SelectionProperty';
+import StringProperty from './StringProperty';
 import TriggerProperty from './TriggerProperty';
 import VecProperty from './VectorProperty';
-import MatrixProperty from './MatrixProperty';
-import StringProperty from './StringProperty';
-import StringListProperty from './StringListProperty';
 
 
 const concreteProperties = {
@@ -17,21 +17,21 @@ const concreteProperties = {
   OptionProperty,
   TriggerProperty,
   StringProperty: StringProperty,
-  StringListProperty: StringListProperty,
+
+  DoubleListProperty: ListProperty,
+  IntListProperty: ListProperty,
+  StringListProperty: ListProperty,
+
+  SelectionProperty: SelectionProperty,
 
   FloatProperty: NumericProperty,
   DoubleProperty: NumericProperty,
-  LongDoubleProperty: NumericProperty,
-  LongLongProperty: NumericProperty,
-  ULongLongProperty: NumericProperty,
   LongProperty: NumericProperty,
   ULongProperty: NumericProperty,
   IntProperty: NumericProperty,
   UIntProperty: NumericProperty,
   ShortProperty: NumericProperty,
   UShortProperty: NumericProperty,
-  SignedCharProperty: NumericProperty,
-  UCharProperty: NumericProperty,
 
   Vec2Property: VecProperty,
   Vec3Property: VecProperty,
@@ -48,32 +48,13 @@ const concreteProperties = {
   DVec2Property: VecProperty,
   DVec3Property: VecProperty,
   DVec4Property: VecProperty,
-
-  // Only square matrices are displayed property
-  // at this point. --emiax
-
+  
   Mat2Property: MatrixProperty,
-  //Mat2x3Property: MatrixProperty,
-  //Mat2x4Property: MatrixProperty,
-
-  //Mat3x2Property: MatrixProperty,
   Mat3Property: MatrixProperty,
-  //Mat3x4Property: MatrixProperty,
-
-  //Mat4x2Property: MatrixProperty,
-  //Mat4x3Property: MatrixProperty,
   Mat4Property: MatrixProperty,
 
   DMat2Property: MatrixProperty,
-  //DMat2x3Property: MatrixProperty,
-  //DMat2x4Property: MatrixProperty,
-
-  //DMat3x2Property: MatrixProperty,
   DMat3Property: MatrixProperty,
-  //DMat3x4Property: MatrixProperty,
-
-  //DMat4x2Property: MatrixProperty,
-  //DMat4x3Property: MatrixProperty,
   DMat4Property: MatrixProperty,
 };
 

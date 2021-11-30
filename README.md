@@ -1,7 +1,7 @@
 # OpenSpace WebGUI Module
 ## Develop
 
-First, go get [Node.js](https://nodejs.org/en/)!
+First, go get [Node.js](https://nodejs.org/en/)
 
 ```sh
 # install dependencies
@@ -42,6 +42,7 @@ To make this a bit easier for y'all, this web app has support for types using th
 // @flow
 ```
 
+
 This tells our transpiler Babel (that makes our modern JavaScript readable for all browsers) that this file should be type checked! 
 A type declaration looks like
 
@@ -61,3 +62,4 @@ In the main OpenSpace repository, go to `data/assets/util/webgui.asset` and chan
 
 The production gui is served at http://localhost:4680.
 To run the production gui in a browser, go to `http://localhost:4680/frontend/#/onscreen`.
+

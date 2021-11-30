@@ -9,6 +9,12 @@
 export const SimpleSubstring = (test: string, search: string): bool =>
   test.includes(search);
 
+export const CaseInsensitiveSubstring = (test: string, search: string): bool => {
+  const lowerCaseTest = test.toLowerCase();
+  const lowerCaseSearch = search.toLowerCase();
+  return lowerCaseTest.includes(lowerCaseSearch);
+};
+
 export const WordBeginningSubstring = (test: string, search: string): bool => {
   const searchWords = search.split(" ");
   const testWords = test.split(" ");
@@ -37,4 +43,16 @@ export const ObjectWordBeginningSubstring = (test: object, search: string): bool
     .map(t => t.toString())
     .map(t => t.toLowerCase());
   return valuesAsStrings.some(test => WordBeginningSubstring(test, search));
+};
+
+/**
+ * Check if search is a substring of any of the strings in the list
+ * @param test - string list to match against
+ * @param search - string to match with
+ * @constructor
+ */
+export const ListCaseInsensitiveSubstring = (test: string[], search: string): bool => {
+  const lowerCaseTest = test.map(t => t.toLowerCase());
+  const lowerCaseSearch = search.toLowerCase();
+  return lowerCaseTest.some(t => t.includes(lowerCaseSearch));
 };

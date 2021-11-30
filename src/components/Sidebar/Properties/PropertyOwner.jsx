@@ -2,15 +2,11 @@ import React, { Component, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import ToggleContent from '../../common/ToggleContent/ToggleContent';
 import Property from './Property';
-import Button from '../../common/Input/Button/Button';
-import { NavigationAnchorKey, NavigationAimKey, RetargetAnchorKey, LayerGroupKeys } from '../../../api/keys';
-import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
-import SvgIcon from '../../common/SvgIcon/SvgIcon';
-import FocusIcon from 'svg-react-loader?name=Focus!../../../icons/focus.svg';
-import Shortcut from './../Shortcut';
+import { LayerGroupKeys } from '../../../api/keys';
 import PropertyOwnerHeader from './PropertyOwnerHeader';
 import { setPropertyTreeExpansion, addNodePropertyPopover, addNodeMetaPopover } from '../../../api/Actions';
 import subStateToProps from '../../../utils/subStateToProps';
+import { isPropertyVisible, isPropertyOwnerHidden, isDeadEnd } from './../../../utils/propertyTreeHelpers'
 
 import { connect } from 'react-redux';
 import shallowEqualObjects from 'shallow-equal/objects';
@@ -101,44 +97,6 @@ class PropertyOwnerComponent extends Component {
       }
     </ToggleContent>
   };
-}
-
-const isPropertyOwnerHidden = (properties, uri) => {
-  const prop = properties[uri + '.GuiHidden'];
-  return prop && prop.value;
-}
-
-const isPropertyVisible = (properties, uri) => {
-  const property = properties[uri];
-
-  const splitUri = uri.split('.');
-  if (splitUri.length > 1) {
-    if (splitUri[splitUri.length - 1] === 'Enabled')
-      return false;
-  }
-
-  return property &&
-         property.description &&
-         property.description.MetaData &&
-         property.description.MetaData.Visibility !== 'Hidden';
-}
-
-const isDeadEnd = (propertyOwners, properties, uri) => {
-  const node = propertyOwners[uri];
-  const subowners = node.subowners || [];
-  const subproperties = node.properties || [];
-
-  const visibleProperties = subproperties.filter(
-    childUri => isPropertyVisible(properties, childUri)
-  );
-  if (visibleProperties.length > 0) {
-    return false;
-  }
-
-  const nonDeadEndSubowners = subowners.filter(childUri => {
-    return !isPropertyOwnerHidden(properties, childUri) && !isDeadEnd(propertyOwners, properties, childUri);
-  });
-  return nonDeadEndSubowners.length === 0;
 }
 
 const shouldSortAlphabetically = uri => {

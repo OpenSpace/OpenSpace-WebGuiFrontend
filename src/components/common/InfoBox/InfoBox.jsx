@@ -22,8 +22,15 @@ class InfoBox extends Component {
 
   get position() {
     if (!this.wrapper) return { top: '0px', left: '0px' };
-    const { top, right } = this.wrapper.getBoundingClientRect();
-    return { top: `${top}px`, left: `${right}px` };
+    if (this.props.inpanel) {
+      var scrollParent = document.getElementById(this.props.panelscroll);
+      var buttonScroll = scrollParent.scrollTop;
+      var rect = this.wrapper.getBoundingClientRect();
+      return { top: `${this.wrapper.offsetTop - buttonScroll}px`, left: `${this.wrapper.offsetLeft + rect.width}px` };
+    } else {
+      const { top, right } = this.wrapper.getBoundingClientRect();
+      return { position: "fixed", top: `${top}px`, left: `${right}px` };
+    }
   }
 
   showPopup() {
@@ -35,7 +42,7 @@ class InfoBox extends Component {
   }
 
   render() {
-    const { icon, text } = this.props;
+    const { icon, text, inpanel } = this.props;
     const { showPopup } = this.state;
     return (
       <span

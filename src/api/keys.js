@@ -9,6 +9,7 @@ export const ZoomFrictionKey = "NavigationHandler.OrbitalNavigator.Friction.Zoom
 export const RollFrictionKey = "NavigationHandler.OrbitalNavigator.Friction.RollFriction";
 //To get any scene graph node you need ScenePrefix+NodeIdentifier
 export const ScenePrefixKey = 'Scene.';
+export const SceneKey = 'Scene';
 
 // key to get all scene graph nodes
 // export const SceneGraphKey = '__allNodes';
@@ -60,6 +61,7 @@ export const FastForward = 'fast_forward';
 export const sessionStateIdle = 'idle';
 export const sessionStateRecording = 'recording'
 export const sessionStatePlaying = 'playing';
+export const sessionStatePaused = 'playing-paused';
 
 //renderableTypes
 export const RenderableTypes = {

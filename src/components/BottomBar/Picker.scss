@@ -16,6 +16,10 @@
 
   &.Active {
     background: $ui-background;
+
+    &:hover {
+      background: $ui-background-hover;
+    }
   }
 }
 

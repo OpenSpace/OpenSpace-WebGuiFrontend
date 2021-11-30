@@ -51,7 +51,7 @@ class ScreenSpaceRenderablePanel extends Component {
   }
 
   addSlide() {
-    const renderable = {        
+    const renderable = {
       Identifier: this.state.slideName,
       Name: this.state.slideName 
     };
@@ -137,7 +137,10 @@ class ScreenSpaceRenderablePanel extends Component {
     const { popoverVisible } = this.props;
     return (
       <div className={Picker.Wrapper}>
-        <Picker onClick={this.togglePopover}>
+        <Picker
+          className={`${popoverVisible && Picker.Active}`}
+          onClick={this.togglePopover}
+        >
           <div>
             <MaterialIcon className={styles.photoIcon} icon="insert_photo" />
           </div>

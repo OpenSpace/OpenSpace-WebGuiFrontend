@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 import Input from '../../common/Input/Input/Input';
 import InfoBox from '../../common/InfoBox/InfoBox';
 import { copyTextToClipboard } from '../../../utils/helpers';
+import styles from './Property.scss';
 
-class StringListProperty extends Component {
+class ListProperty extends Component {
   constructor(props) {
     super(props);
     this.onChange = this.onChange.bind(this);
@@ -33,7 +34,13 @@ class StringListProperty extends Component {
   }
 
   onChange(evt) {
-    const value = evt.target.value;
+    const value = evt.target.value.trim();
+
+    if (value === "") {
+      this.props.dispatcher.set({});
+      return;
+    }
+
     this.props.dispatcher.set(value.split(','));
   }
 
@@ -43,18 +50,20 @@ class StringListProperty extends Component {
       { description.Name } { this.descriptionPopup }
     </span>);
     return (
-      <Input
-        value={value.join(',')}
-        label={label}
-        placeholder={description.Name}
-        onEnter={this.onChange}
-        disabled={this.disabled}
-      />
+      <div className={`${this.disabled ? styles.disabled : ''}`}>
+        <Input
+          value={value.join(',')}
+          label={label}
+          placeholder={description.Name}
+          onEnter={this.onChange}
+          disabled={this.disabled}
+        />
+      </div>
     );
   }
 }
 
-StringListProperty.propTypes = {
+ListProperty.propTypes = {
   description: PropTypes.shape({
     Identifier: PropTypes.string,
     Name: PropTypes.string,
@@ -66,4 +75,4 @@ StringListProperty.propTypes = {
   value: PropTypes.any
 };
 
-export default StringListProperty;
+export default ListProperty;

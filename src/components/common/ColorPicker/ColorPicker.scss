@@ -1,0 +1,16 @@
+@import '../../../styles/all';
+
+.OpenSpaceColorPicker {
+  background: $ui-background-solid !important; // TODO: option as transparent
+  font-family: $font-family !important;
+
+  span {
+    color: $text-color-blur !important;
+  }
+  
+  input {
+    color: $text-color-focus !important;
+    box-shadow: none !important;
+    background-color: $ui-background-hover !important;
+  }
+}

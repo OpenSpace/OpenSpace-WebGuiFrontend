@@ -56,7 +56,7 @@ Window.defaultProps = {
   closeCallback: null,
   className: '',
   position: { x: 10, y: 10 },
-  size: { height: 'auto', width: '300px' },
+  size: {width: '300px' },
   title: 'Window',
 };
 

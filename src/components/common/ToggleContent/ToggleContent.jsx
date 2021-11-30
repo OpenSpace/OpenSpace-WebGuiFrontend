@@ -58,7 +58,10 @@ ToggleContent.propTypes = {
   setExpanded: PropTypes.func.isRequired,
   expanded: PropTypes.bool.isRequired,
   showEnabled: PropTypes.bool,
-  title: PropTypes.string,
+  title: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.object
+  ])
 };
 
 ToggleContent.defaultProps = {

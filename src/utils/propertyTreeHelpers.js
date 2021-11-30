@@ -104,3 +104,56 @@ export const convertEnvelopes = (envelopes) => {
   );
   return JSON.stringify(convertedEnvelopes);
 };
+
+// Get the word after the last dot in the uri, or the full uri if it has no dot
+export const getLastWordOfUri = (uri) => {
+  const index = uri.lastIndexOf('.');
+  return (index === -1) ? uri : uri.substring(index + 1);
+}
+
+// Get the uri without the last word, or the full uri if it has no dot
+export const removeLastWordFromUri = (uri) => {
+  const index = uri.lastIndexOf('.');
+  return (index === -1) ? uri : uri.substring(0, index);
+}
+
+// Returns whether a property should be visible in the gui
+export const isPropertyVisible = (properties, uri) => {
+  const property = properties[uri];
+
+  const splitUri = uri.split('.');
+  if (splitUri.length > 1) {
+    if (splitUri[splitUri.length - 1] === 'Enabled')
+      return false;
+  }
+
+  return property &&
+         property.description &&
+         property.description.MetaData &&
+         property.description.MetaData.Visibility !== 'Hidden';
+}
+
+// Returns whether a property owner should be hidden in the gui
+export const isPropertyOwnerHidden = (properties, uri) => {
+  const prop = properties[uri + '.GuiHidden'];
+  return prop && prop.value;
+}
+
+// Returns true if a property owner has no visible children
+export const isDeadEnd = (propertyOwners, properties, uri) => {
+  const node = propertyOwners[uri];
+  const subowners = node.subowners || [];
+  const subproperties = node.properties || [];
+
+  const visibleProperties = subproperties.filter(
+    childUri => isPropertyVisible(properties, childUri)
+  );
+  if (visibleProperties.length > 0) {
+    return false;
+  }
+
+  const nonDeadEndSubowners = subowners.filter(childUri => {
+    return !isPropertyOwnerHidden(properties, childUri) && !isDeadEnd(propertyOwners, properties, childUri);
+  });
+  return nonDeadEndSubowners.length === 0;
+}

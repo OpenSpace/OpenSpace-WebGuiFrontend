@@ -76,6 +76,8 @@ const defaultPopovers = {
   screenSpaceRenderables: popover(),
   exoplanets: popover(),
   skybrowser: popover(),
+  actions: popover(),
+  keybinds: popover(),
   focusNodePropertiesPanel: popover({ attached: false }),
   activeNodePropertyPanels: {},
   activeNodeMetaPanels: {},

@@ -27,12 +27,15 @@ class ScrollOverlay extends Component {
     this.updateScrollIndicators = this.updateScrollIndicators.bind(this);
   }
 
-  componentWillReceiveProps() {
-    // defer this call so that the dom actually renders and the
-    // properties in `this.node` used in `updateScrollIndicators` are
-    // updated with the new props.
-    defer(this.updateScrollIndicators, this.node);
-  }
+  // @TODO (emmbr 2021-05-06): This function is deprecated and should be replaced with 
+  // something else. Although, I fail to see how this call is actually needed so just
+  // comment it out for now. Should be removed if it's actually not needed
+  // componentWillReceiveProps() {
+  //   // defer this call so that the dom actually renders and the
+  //   // properties in `this.node` used in `updateScrollIndicators` are
+  //   // updated with the new props.
+  //   defer(this.updateScrollIndicators, this.node);
+  // }
 
   setDomNode(node) {
     if (node) {

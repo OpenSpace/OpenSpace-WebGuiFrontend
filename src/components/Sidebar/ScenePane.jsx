@@ -19,11 +19,7 @@ class ScenePane extends Component {
       key: uri,
       type: 'propertyOwner',
       uri: uri
-    })).concat(this.props.shortcuts.map((shortcut, index) => ({
-      key: 'shortcut: ' + index,
-      type: 'shortcut',
-      index
-    })));
+    }));
 
     favorites.push({
       key: 'context',
@@ -66,10 +62,9 @@ const mapStateToSubState = (state) => ({
   properties: state.propertyTree.properties,
   propertyOwners: state.propertyTree.propertyOwners,
   groups: state.groups,
-  shortcuts: state.shortcuts.data.shortcuts
 });
 
-const mapSubStateToProps = ({ groups, properties, propertyOwners, shortcuts }) => {
+const mapSubStateToProps = ({ groups, properties, propertyOwners }) => {
   const topLevelGroups = Object.keys(groups).filter(path => {
     // Get the number of slashes in the path
     const depth = (path.match(/\//g) || []).length;
@@ -105,9 +100,6 @@ const mapSubStateToProps = ({ groups, properties, propertyOwners, shortcuts }) =
       const node = propertyOwners[test.uri] || {};
       const guiHidden = properties[test.uri + ".GuiHidden"];
       return ObjectWordBeginningSubstring(node, search) && !guiHidden;
-    } else if (test.type === 'shortcut') {
-      const shortcut = shortcuts[test.index];
-      return ObjectWordBeginningSubstring(shortcut, search)
     }
     return false;
   };
@@ -117,7 +109,6 @@ const mapSubStateToProps = ({ groups, properties, propertyOwners, shortcuts }) =
   return {
     groups: sortedGroups,
     propertyOwners: sceneOwner.subowners || [],
-    shortcuts: shortcuts || [],
     matcher
   };
 };

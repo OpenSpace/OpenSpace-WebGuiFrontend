@@ -7,7 +7,7 @@ import Button from '../common/Input/Button/Button';
 import Calendar from '../common/Calendar/Calendar';
 import Picker from './Picker';
 import Time from '../common/Input/Time/Time';
-import { sessionStatePlaying } from '../../api/keys';
+import { sessionStatePlaying, sessionStatePaused } from '../../api/keys';
 import {
   subscribeToTime,
   unsubscribeToTime,
@@ -305,19 +305,22 @@ class TimePicker extends Component {
 
   render() {
     const { popoverVisible, sessionRecordingState } = this.props;
-    const enabled = sessionRecordingState !== sessionStatePlaying;
-
+    const enabled =
+      (sessionRecordingState !== sessionStatePlaying) &&
+      (sessionRecordingState !== sessionStatePaused);
     const popoverEnabledAndVisible = popoverVisible && enabled;
-
+    const disableClass =
+      (sessionRecordingState == sessionStatePaused) ?
+        styles.disabledBySessionPause : styles.disabledBySessionPlayback;
     const pickerClasses = [
       styles.timePicker,
       popoverEnabledAndVisible ? Picker.Active : '',
-      enabled ? '' : styles.disabledBySessionPlayback
+      enabled ? '' : disableClass
     ].join(' ');
 
     return (
       <div className={Picker.Wrapper}>
-        <Picker onClick={enabled && this.togglePopover} className={pickerClasses}>
+        <Picker onClick={enabled ? this.togglePopover: undefined} className={pickerClasses}>
           <div className={Picker.Title}>
             <span className={Picker.Name}>
               <LoadingString loading={this.props.time === undefined}>

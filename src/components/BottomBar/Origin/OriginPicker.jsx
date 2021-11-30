@@ -13,7 +13,8 @@ import {
   RetargetAnchorKey,
   RetargetAimKey,
   ScenePrefixKey,
-  sessionStatePlaying
+  sessionStatePlaying,
+  sessionStatePaused,
 } from '../../../api/keys';
 import FocusEntry from './FocusEntry';
 
@@ -225,13 +226,19 @@ class OriginPicker extends Component {
     const setNavigationActionToAnchor = () => { setNavigationAction(NavigationActions.Anchor); };
     const setNavigationActionToAim = () => { setNavigationAction(NavigationActions.Aim); };
 
-    const enabled = sessionRecordingState !== sessionStatePlaying;
+    const enabled =
+      (sessionRecordingState !== sessionStatePlaying) &&
+      (sessionRecordingState !== sessionStatePaused);
+    const disableClass =
+      (sessionRecordingState == sessionStatePaused) ?
+        styles.disabledBySessionPause : styles.disabledBySessionPlayback;
+
     const popoverEnabledAndVisible = popoverVisible && enabled;
 
     const pickerClasses = [
       styles.originPicker,
       popoverEnabledAndVisible ? Picker.Active : '',
-      enabled ? '' : styles.disabledBySessionPlayback
+      enabled ? '' : disableClass
     ].join(' ');
 
     return (
@@ -243,6 +250,7 @@ class OriginPicker extends Component {
           <Popover closeCallback={enabled && this.togglePopover}
                    title="Navigation"
                    className={Picker.Popover}
+                   detachable
                    attached={true}>
             <div>
               <Button className={styles.NavigationButton}

@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import NumericInput from '../../common/Input/NumericInput/NumericInput';
 import Row from '../../common/Row/Row';
 import InfoBox from '../../common/InfoBox/InfoBox';
-import styles from './Property.scss';
 import { connectProperty } from './connectProperty';
 import { copyTextToClipboard } from '../../../utils/helpers';
+import styles from './Property.scss';
 
 class MatrixProperty extends Component {
   constructor(props) {
@@ -35,17 +35,16 @@ class MatrixProperty extends Component {
   }
 
   onChange(index) {
-    return (event) => {
+    return (newValue) => {
       const stateValue = this.props.value;
-      const { value } = event.currentTarget;
-      stateValue[index] = parseFloat(value);
+      stateValue[index] = parseFloat(newValue);
       this.props.dispatcher.set(stateValue);
     };
   }
 
   render() {
     const { description, value } = this.props;
-    const { SteppingValue, MaximumValue, MinimumValue } = description.AdditionalData;
+    const { SteppingValue, MaximumValue, MinimumValue, Exponent } = description.AdditionalData;
     const firstLabel = (
       <span onClick={this.copyUri}>
         { description.Name } { this.descriptionPopup }
@@ -64,7 +63,7 @@ class MatrixProperty extends Component {
 
     // eslint-disable react/no-array-index-key
     return (
-      <div className={styles.matrixProperty}>
+      <div className={`${styles.matrixProperty} ${this.disabled ? styles.disabled : ''}`}>>
         { groups.map((group, index) => (
           <Row key={`row-${index}`}>
             { group.map(comp => (
@@ -74,7 +73,8 @@ class MatrixProperty extends Component {
                 value={comp.value}
                 label={comp.index === 0 ? firstLabel : ' '}
                 placeholder={`value ${comp.index}`}
-                onChange={this.onChange(comp.index)}
+                onValueChanged={this.onChange(comp.index)}
+                exponent={Exponent}
                 step={SteppingValue[comp.index] || 0.01}
                 max={MaximumValue[comp.index] || 100}
                 min={MinimumValue[comp.index] || -100}

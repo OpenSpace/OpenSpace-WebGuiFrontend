@@ -65,7 +65,7 @@ class Popover extends Component {
   }
 
   get asWindow() {
-    return (<Window {...this.windowInheritedProps}>{ this.props.children }</Window>);
+    return (<Window {...this.windowInheritedProps} className={`${this.styles}`}>{ this.props.children }</Window>);
   }
 
   toggleDetach() {

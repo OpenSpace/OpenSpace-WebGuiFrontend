@@ -37,11 +37,10 @@ export const shortcuts = store => next => (action) => {
     case actionTypes.onCloseConnection:
       unsubscribeToShortcuts();
       break;
-    case actionTypes.executeShortcut:
-      const index = action.payload;
-      const shortcut = store.getState().shortcuts.data.shortcuts[index];
-      const script = shortcut.script;
-      api.executeLuaScript(script, false);
+    case actionTypes.triggerAction:
+      const actionName = action.payload;
+      console.log(api);
+      store.getState().luaApi.action.triggerAction(actionName);
       break;
     break;
     default:
