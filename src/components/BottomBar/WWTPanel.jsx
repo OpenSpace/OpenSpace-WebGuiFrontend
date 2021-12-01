@@ -313,7 +313,7 @@ class WWTPanel extends Component {
   return (
 
       <PopoverSkybrowser
-        title="WorldWide Telescope"
+        title="AAS WorldWide Telescope"
         closeCallback={this.togglePopover}
         detachable
         attached={true}
