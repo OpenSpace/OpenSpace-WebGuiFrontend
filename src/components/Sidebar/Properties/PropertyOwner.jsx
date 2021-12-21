@@ -11,6 +11,7 @@ import { isPropertyVisible, isPropertyOwnerHidden, isDeadEnd } from './../../../
 import { connect } from 'react-redux';
 import shallowEqualObjects from 'shallow-equal/objects';
 import shallowEqualArrays from 'shallow-equal/arrays';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 /**
  * Return an identifier for the tree expansion state.
@@ -30,6 +31,7 @@ class PropertyOwnerComponent extends Component {
     return !(
       this.props.uri === nextProps.uri &&
       this.props.name === nextProps.name &&
+      shallowEqualArrays(this.props.layers, nextProps.layers) &&
       shallowEqualArrays(this.props.properties, nextProps.properties) &&
       shallowEqualArrays(this.props.subowners, nextProps.subowners) &&
       shallowEqualObjects(this.props.subownerNames, nextProps.subownerNames) &&
@@ -44,6 +46,7 @@ class PropertyOwnerComponent extends Component {
     const {
       uri,
       name,
+      layers,
       properties,
       subowners,
       subownerNames,
@@ -74,11 +77,46 @@ class PropertyOwnerComponent extends Component {
                                         trashAction={trashAction}
                                         metaAction={hasMetaAction} />
 
+    function handleOnDragEnd(result) {
+      if (!result.destination) return;
+      // TODO: handle reordering of the layers using the indices from beautiful DnD
+      //https://www.youtube.com/watch?v=aYZRRyukuIw&ab_channel=ColbyFayock
+    }
+
+    // Draggable list with layers
+    let reorderableLayersList = <>
+      <DragDropContext onDragEnd={handleOnDragEnd}>
+          <Droppable droppableId="layers">
+            { (provided) => (
+              <div {...provided.droppableProps} ref={provided.innerRef}>
+                {layers.map((uri, index) => {
+                  return (
+                    <Draggable key={uri} draggableId={uri} index={index}>
+                      {(provided) => {
+                        return <div {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
+                          <PropertyOwner
+                          uri={uri}
+                          expansionIdentifier={expansionIdentifier + '/' + nodeExpansionIdentifier(uri)}
+                          autoExpand={false}
+                        />
+                        </div>
+                      }}
+                    </Draggable>
+                  );
+                })}
+              {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+      </DragDropContext>
+    </>
+
     return <ToggleContent
       header={header}
       expanded={isExpanded}
       setExpanded={setExpanded}
     >
+      { reorderableLayersList }
       {
         sortedSubowners.map(uri => {
           let autoExpand = sortedSubowners.length + properties.length === 1 ? true : undefined;
@@ -154,8 +192,10 @@ const mapSubStateToProps = (
   let subowners = data ? data.subowners : [];
   let subProperties = data ? data.properties : [];
 
+  let layers = subowners.filter(uri => (isGlobeBrowsingLayer(uri)));
+
   subowners = subowners.filter(uri => (
-    !isPropertyOwnerHidden(properties, uri) && !isDeadEnd(propertyOwners, properties, uri)
+    !isPropertyOwnerHidden(properties, uri) && !isDeadEnd(propertyOwners, properties, uri) && !isGlobeBrowsingLayer(uri)
   ));
 
   const subownerNames = {};
@@ -182,6 +222,7 @@ const mapSubStateToProps = (
 
   return {
     name,
+    layers,
     subowners,
     subownerNames,
     properties: subProperties,
@@ -239,8 +280,9 @@ PropertyOwner.propTypes = {
 };
 
 PropertyOwner.defaultProps = {
+  layers: [],
   properties: [],
-  subowners: [],
+  subowners: []
 };
 
 export default PropertyOwner;
