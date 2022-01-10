@@ -4,7 +4,12 @@ import ToggleContent from '../../common/ToggleContent/ToggleContent';
 import Property from './Property';
 import { LayerGroupKeys } from '../../../api/keys';
 import PropertyOwnerHeader from './PropertyOwnerHeader';
-import { setPropertyTreeExpansion, addNodePropertyPopover, addNodeMetaPopover } from '../../../api/Actions';
+import { 
+  setPropertyTreeExpansion,
+  addNodePropertyPopover,
+  addNodeMetaPopover,
+  reloadPropertyTree,
+} from '../../../api/Actions';
 import subStateToProps from '../../../utils/subStateToProps';
 import { isPropertyVisible, isPropertyOwnerHidden, isDeadEnd } from './../../../utils/propertyTreeHelpers'
 
@@ -26,6 +31,12 @@ const nodeExpansionIdentifier = uri => {
 }
 
 class PropertyOwnerComponent extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      shownLayers: props.layers
+    };
+  }
 
   shouldComponentUpdate(nextProps) {
     return !(
@@ -42,11 +53,15 @@ class PropertyOwnerComponent extends Component {
       this.props.sort === nextProps.sort);
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    // Update state value variable when we get new props
+    this.setState({ shownLayers: this.props.layers });
+  }
+
   render() {
     const {
       uri,
       name,
-      layers,
       properties,
       subowners,
       subownerNames,
@@ -77,28 +92,40 @@ class PropertyOwnerComponent extends Component {
                                         trashAction={trashAction}
                                         metaAction={hasMetaAction} />
 
-    function handleOnDragEnd(result) {
+    const handleOnDragEnd = async (result) => {
       if (!result.destination) return;
-      // TODO: handle reordering of the layers using the indices from beautiful DnD
-      //https://www.youtube.com/watch?v=aYZRRyukuIw&ab_channel=ColbyFayock
+
+      // First update the order manually, so we keep it while the properties
+      // are being refreshed below
+      const tempLayers = this.state.shownLayers;
+      const [reorderedItem] = tempLayers.splice(result.source.index, 1);
+      tempLayers.splice(result.destination.index, 0, reorderedItem);
+      this.setState({ shownLayers: tempLayers });
+
+      await this.props.luaApi.globebrowsing.moveLayer("Earth", "ColorLayers", result.source.index, result.destination.index);
+
+      // TODO: Once we have a proper way to subscribe to reordering, additions and removals
+      // of property owners, this 'hard' refresh should be removed
+      this.props.refresh();
     }
 
-    // Draggable list with layers
+    // Draggable list with layers, using Beautinful DnD
+    // Based on video tutorial: https://www.youtube.com/watch?v=aYZRRyukuIw&ab_channel=ColbyFayock
     let reorderableLayersList = <>
       <DragDropContext onDragEnd={handleOnDragEnd}>
           <Droppable droppableId="layers">
             { (provided) => (
               <div {...provided.droppableProps} ref={provided.innerRef}>
-                {layers.map((uri, index) => {
+                {this.state.shownLayers.map((uri, index) => {
                   return (
                     <Draggable key={uri} draggableId={uri} index={index}>
                       {(provided) => {
                         return <div {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
                           <PropertyOwner
-                          uri={uri}
-                          expansionIdentifier={expansionIdentifier + '/' + nodeExpansionIdentifier(uri)}
-                          autoExpand={false}
-                        />
+                            uri={uri}
+                            expansionIdentifier={expansionIdentifier + '/' + nodeExpansionIdentifier(uri)}
+                            autoExpand={false}
+                          />
                         </div>
                       }}
                     </Draggable>
@@ -173,7 +200,6 @@ const isGlobeBrowsingLayer = (uri) => {
 }
 
 const displayName = (propertyOwners, properties, uri) => {
-
   var property = properties[uri + ".GuiName"];
   if (!property && isGlobeBrowsingLayer(uri) && propertyOwners[uri] && propertyOwners[uri].name) {
     property = {value: propertyOwners[uri].name};
@@ -185,15 +211,14 @@ const displayName = (propertyOwners, properties, uri) => {
 }
 
 const mapSubStateToProps = (
-  {propertyOwners, properties, propertyTreeExpansion},
-  {uri, name, autoExpand, expansionIdentifier}
+  { luaApi, propertyOwners, properties, propertyTreeExpansion },
+  { uri, name, autoExpand, expansionIdentifier }
 ) => {
   const data = propertyOwners[uri];
   let subowners = data ? data.subowners : [];
   let subProperties = data ? data.properties : [];
 
   let layers = subowners.filter(uri => (isGlobeBrowsingLayer(uri)));
-
   subowners = subowners.filter(uri => (
     !isPropertyOwnerHidden(properties, uri) && !isDeadEnd(propertyOwners, properties, uri) && !isGlobeBrowsingLayer(uri)
   ));
@@ -223,6 +248,7 @@ const mapSubStateToProps = (
   return {
     name,
     layers,
+    luaApi,
     subowners,
     subownerNames,
     properties: subProperties,
@@ -234,6 +260,7 @@ const mapSubStateToProps = (
 }
 
 const mapStateToSubState = state => ({
+  luaApi: state.luaApi,
   propertyOwners: state.propertyTree.propertyOwners,
   properties: state.propertyTree.properties,
   propertyTreeExpansion: state.local.propertyTreeExpansion
@@ -261,10 +288,15 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     }));
   };
 
+  const refresh = () => {
+    dispatch(reloadPropertyTree());
+  };
+
   return {
     setExpanded,
     popOut,
-    metaAction
+    metaAction,
+    refresh
   };
 }
 
@@ -280,7 +312,6 @@ PropertyOwner.propTypes = {
 };
 
 PropertyOwner.defaultProps = {
-  layers: [],
   properties: [],
   subowners: []
 };
