@@ -41,13 +41,17 @@ class PropertyOwnerComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      shownLayers: props.layers
+      shownLayers: props.layers,
+      isDragging: false
     };
 
     this.renderLayersList = this.renderLayersList.bind(this);
   }
 
-  shouldComponentUpdate(nextProps) {
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.state.isDragging !== nextState.isDragging) {
+      return true;
+    }
     return !(
       this.props.uri === nextProps.uri &&
       this.props.name === nextProps.name &&
@@ -64,7 +68,9 @@ class PropertyOwnerComponent extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     // Update state value variable when we get new props
-    this.setState({ shownLayers: this.props.layers });
+    if (prevProps.layers !== this.props.layers) {
+      this.setState({ shownLayers: this.props.layers });
+    }
   }
 
   // Render draggable and reorderable list with layers, using Beautinful DnD
@@ -77,8 +83,13 @@ class PropertyOwnerComponent extends Component {
       return <></>;
     }
 
-    const handleOnDragEnd = async (result) => {
+    const onDragStart = () => {
+      this.setState({isDragging: true});
+    }
+
+    const onDragEnd = async (result) => {
       if (!result.destination || result.source.index === result.destination.index) {
+        this.setState({ isDragging: false });
         return; // no change => do nothing
       }
 
@@ -87,7 +98,8 @@ class PropertyOwnerComponent extends Component {
       const tempLayers = shownLayers;
       const [reorderedItem] = tempLayers.splice(result.source.index, 1);
       tempLayers.splice(result.destination.index, 0, reorderedItem);
-      this.setState({ shownLayers: tempLayers });
+
+      this.setState({ isDragging: false, shownLayers: tempLayers });
 
       const uri = result.draggableId;
       const globe = getSceneGraphNodeFromUri(uri);
@@ -105,32 +117,37 @@ class PropertyOwnerComponent extends Component {
       this.props.refresh();
     }
 
-    return <>
-      <DragDropContext onDragEnd={handleOnDragEnd}>
-          <Droppable droppableId="layers">
-            { (provided) => (
-              <div {...provided.droppableProps} ref={provided.innerRef}>
-                { shownLayers.map((uri, index) => {
-                  return (
-                    <Draggable key={uri} draggableId={uri} index={index}>
-                      {(provided) => {
-                        return <div {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
-                          <PropertyOwner
-                            uri={uri}
-                            expansionIdentifier={expansionIdentifier + '/' + nodeExpansionIdentifier(uri)}
-                            autoExpand={false}
-                          />
-                        </div>
-                      }}
-                    </Draggable>
-                  );
-                })}
-              { provided.placeholder }
-              </div>
-            )}
-          </Droppable>
+    // Invisible overlay that covers the entire body and prevents other hover effects
+    // from being triggered while dragging
+    const overlay = <div style ={{ position: "fixed", top: 0, right: 0, bottom: 0, left: 0, zIndex: 100}}></div>;
+
+    return (
+      <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
+        { this.state.isDragging && overlay }
+        <Droppable droppableId="layers">
+          { (provided) => (
+            <div {...provided.droppableProps} ref={provided.innerRef}>
+              { shownLayers.map((uri, index) => {
+                return (
+                  <Draggable key={uri} draggableId={uri} index={index}>
+                    {(provided) => {
+                      return <div {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
+                        <PropertyOwner
+                          uri={uri}
+                          expansionIdentifier={expansionIdentifier + '/' + nodeExpansionIdentifier(uri)}
+                          autoExpand={false}
+                        />
+                      </div>
+                    }}
+                  </Draggable>
+                );
+              })}
+            { provided.placeholder }
+            </div>
+          )}
+        </Droppable>
       </DragDropContext>
-    </>
+    )
   }
 
   render() {
