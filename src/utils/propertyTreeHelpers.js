@@ -1,17 +1,7 @@
 // TODO: Revisit these functions and determine if any should be
 // kept since most of this functionality is now more easily handled
 // by the lua API
-
-export const splitUri = (uri) => {
-  if (typeof uri == 'string') {
-    if (uri === '') {
-      return [];
-    }
-    return uri.split('.');
-  } else {
-    return uri;
-  }
-};
+import { LayerGroupKeys } from '../api/keys';
 
 export const getIdOfProperty = (uri) => {
   const a = splitUri(uri);
@@ -33,7 +23,7 @@ export const keepCloning = (objectpassed) => {
 
 
 // TODO: Delete unused function
-export const findSubtree = (node, uri) => {
+export function findSubtree(node, uri) {
   const splittedUri = splitUri(uri);
   if (splittedUri.length === 0) {
     return node;
@@ -59,10 +49,7 @@ export const findSubtree = (node, uri) => {
 };
 
 // TODO: Delete unused function
-export const jsonToLuaString = json => `"${json}"`;
-
-// TODO: Delete unused function
-export const traverseTreeForTag = (node, tag) => {
+export function traverseTreeForTag(node, tag) {
   let data;
   node.subowners.map(element => {
     data = traverseTreeForTag(element, tag);
@@ -73,7 +60,7 @@ export const traverseTreeForTag = (node, tag) => {
   return data;
 };
 
-export const findAllNodesWithTag = (state, tag) => {
+export function findAllNodesWithTag(state, tag) {
   let nodes = [];
   state.map(element => {
       const data = traverseTreeForTag(element, tag);
@@ -89,7 +76,7 @@ export const findAllNodesWithTag = (state, tag) => {
 };
 
 // Convert envelopes in transfer function property to back end compatible format
-export const convertEnvelopes = (envelopes) => {
+export function convertEnvelopes(envelopes) {
   let convertedEnvelopes = keepCloning(envelopes);
   convertedEnvelopes = convertedEnvelopes.map(envelope =>
     Object.assign({},
@@ -106,19 +93,19 @@ export const convertEnvelopes = (envelopes) => {
 };
 
 // Get the word after the last dot in the uri, or the full uri if it has no dot
-export const getLastWordOfUri = (uri) => {
+export function getLastWordOfUri(uri) {
   const index = uri.lastIndexOf('.');
   return (index === -1) ? uri : uri.substring(index + 1);
 }
 
 // Get the uri without the last word, or the full uri if it has no dot
-export const removeLastWordFromUri = (uri) => {
+export function removeLastWordFromUri(uri) {
   const index = uri.lastIndexOf('.');
   return (index === -1) ? uri : uri.substring(0, index);
 }
 
 // Returns whether a property should be visible in the gui
-export const isPropertyVisible = (properties, uri) => {
+export function isPropertyVisible(properties, uri) {
   const property = properties[uri];
 
   const splitUri = uri.split('.');
@@ -134,13 +121,13 @@ export const isPropertyVisible = (properties, uri) => {
 }
 
 // Returns whether a property owner should be hidden in the gui
-export const isPropertyOwnerHidden = (properties, uri) => {
+export function isPropertyOwnerHidden(properties, uri) {
   const prop = properties[uri + '.GuiHidden'];
   return prop && prop.value;
 }
 
 // Returns true if a property owner has no visible children
-export const isDeadEnd = (propertyOwners, properties, uri) => {
+export function isDeadEnd(propertyOwners, properties, uri) {
   const node = propertyOwners[uri];
   const subowners = node.subowners || [];
   const subproperties = node.properties || [];
@@ -156,4 +143,52 @@ export const isDeadEnd = (propertyOwners, properties, uri) => {
     return !isPropertyOwnerHidden(properties, childUri) && !isDeadEnd(propertyOwners, properties, childUri);
   });
   return nonDeadEndSubowners.length === 0;
+}
+
+// Returns true if the URI has the correct format of a scene graph node.
+// OBS! Does not actually check if the SGN exists
+export function isSceneGraphNode(uri) {
+  if (!uri) return false;
+
+  const splitUri = uri.split('.');
+  // A scene graph node URI har the format 'Scene.<NodeIdentifier>'
+  return (splitUri.length == 2);
+}
+
+// Returns true if the URI has the correct format of a globe browsing layer
+export function isGlobeBrowsingLayer(uri) {
+  if (!uri) return false;
+
+  const splitUri = uri.split('.');
+
+  var found = false;
+  LayerGroupKeys.forEach( layerGroup => {
+    if ((uri.indexOf(layerGroup) > -1) && !(uri.endsWith(layerGroup))) {
+      found = true;
+    }
+  });
+
+  return found && (splitUri.length == 6);
+}
+
+// Returns the name of the layer group from a URI corresponding to a
+// globe browsing layer
+export function getLayerGroupFromUri(uri) {
+  if (!isGlobeBrowsingLayer(uri)) {
+    return undefined;
+  }
+  const splitUri = uri.split('.');
+  // The layer group comes after "Layers" in the uri
+  let index = splitUri.indexOf('Layers') + 1;
+  return splitUri[index];
+}
+
+// Returns the name of the scene graph node from any URI
+export function getSceneGraphNodeFromUri(uri) {
+  const splitUri = uri.split('.');
+  // The name of the scene graph node is always the second string. E.g 'Scene.Earth'
+  if (splitUri.length < 2) {
+    return undefined;
+  }
+  return splitUri[1];
 }

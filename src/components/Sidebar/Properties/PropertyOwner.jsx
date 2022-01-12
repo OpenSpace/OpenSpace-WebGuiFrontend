@@ -1,8 +1,7 @@
-import React, { Component, PureComponent } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ToggleContent from '../../common/ToggleContent/ToggleContent';
 import Property from './Property';
-import { LayerGroupKeys } from '../../../api/keys';
 import PropertyOwnerHeader from './PropertyOwnerHeader';
 import { 
   setPropertyTreeExpansion,
@@ -11,7 +10,15 @@ import {
   reloadPropertyTree,
 } from '../../../api/Actions';
 import subStateToProps from '../../../utils/subStateToProps';
-import { isPropertyVisible, isPropertyOwnerHidden, isDeadEnd } from './../../../utils/propertyTreeHelpers'
+import { 
+  isPropertyVisible,
+  isPropertyOwnerHidden,
+  isDeadEnd,
+  isSceneGraphNode,
+  isGlobeBrowsingLayer,
+  getLayerGroupFromUri,
+  getSceneGraphNodeFromUri
+} from './../../../utils/propertyTreeHelpers'
 
 import { connect } from 'react-redux';
 import shallowEqualObjects from 'shallow-equal/objects';
@@ -36,6 +43,8 @@ class PropertyOwnerComponent extends Component {
     this.state = {
       shownLayers: props.layers
     };
+
+    this.renderLayersList = this.renderLayersList.bind(this);
   }
 
   shouldComponentUpdate(nextProps) {
@@ -56,6 +65,72 @@ class PropertyOwnerComponent extends Component {
   componentDidUpdate(prevProps, prevState) {
     // Update state value variable when we get new props
     this.setState({ shownLayers: this.props.layers });
+  }
+
+  // Render draggable and reorderable list with layers, using Beautinful DnD
+  // Based on video tutorial: https://www.youtube.com/watch?v=aYZRRyukuIw&ab_channel=ColbyFayock
+  renderLayersList() {
+    const { expansionIdentifier } = this.props;
+    const { shownLayers } = this.state;
+
+    if (!shownLayers || shownLayers.length === 0) {
+      return <></>;
+    }
+
+    const handleOnDragEnd = async (result) => {
+      if (!result.destination || result.source.index === result.destination.index) {
+        return; // no change => do nothing
+      }
+
+      // First update the order manually, so we keep it while the properties
+      // are being refreshed below
+      const tempLayers = shownLayers;
+      const [reorderedItem] = tempLayers.splice(result.source.index, 1);
+      tempLayers.splice(result.destination.index, 0, reorderedItem);
+      this.setState({ shownLayers: tempLayers });
+
+      const uri = result.draggableId;
+      const globe = getSceneGraphNodeFromUri(uri);
+      const layerGroup = getLayerGroupFromUri(uri);
+
+      await this.props.luaApi.globebrowsing.moveLayer(
+        globe,
+        layerGroup,
+        result.source.index,
+        result.destination.index
+      );
+
+      // TODO: Once we have a proper way to subscribe to reordering, additions and removals
+      // of property owners, this 'hard' refresh should be removed
+      this.props.refresh();
+    }
+
+    return <>
+      <DragDropContext onDragEnd={handleOnDragEnd}>
+          <Droppable droppableId="layers">
+            { (provided) => (
+              <div {...provided.droppableProps} ref={provided.innerRef}>
+                { shownLayers.map((uri, index) => {
+                  return (
+                    <Draggable key={uri} draggableId={uri} index={index}>
+                      {(provided) => {
+                        return <div {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
+                          <PropertyOwner
+                            uri={uri}
+                            expansionIdentifier={expansionIdentifier + '/' + nodeExpansionIdentifier(uri)}
+                            autoExpand={false}
+                          />
+                        </div>
+                      }}
+                    </Draggable>
+                  );
+                })}
+              { provided.placeholder }
+              </div>
+            )}
+          </Droppable>
+      </DragDropContext>
+    </>
   }
 
   render() {
@@ -92,58 +167,14 @@ class PropertyOwnerComponent extends Component {
                                         trashAction={trashAction}
                                         metaAction={hasMetaAction} />
 
-    const handleOnDragEnd = async (result) => {
-      if (!result.destination) return;
-
-      // First update the order manually, so we keep it while the properties
-      // are being refreshed below
-      const tempLayers = this.state.shownLayers;
-      const [reorderedItem] = tempLayers.splice(result.source.index, 1);
-      tempLayers.splice(result.destination.index, 0, reorderedItem);
-      this.setState({ shownLayers: tempLayers });
-
-      await this.props.luaApi.globebrowsing.moveLayer("Earth", "ColorLayers", result.source.index, result.destination.index);
-
-      // TODO: Once we have a proper way to subscribe to reordering, additions and removals
-      // of property owners, this 'hard' refresh should be removed
-      this.props.refresh();
-    }
-
-    // Draggable list with layers, using Beautinful DnD
-    // Based on video tutorial: https://www.youtube.com/watch?v=aYZRRyukuIw&ab_channel=ColbyFayock
-    let reorderableLayersList = <>
-      <DragDropContext onDragEnd={handleOnDragEnd}>
-          <Droppable droppableId="layers">
-            { (provided) => (
-              <div {...provided.droppableProps} ref={provided.innerRef}>
-                {this.state.shownLayers.map((uri, index) => {
-                  return (
-                    <Draggable key={uri} draggableId={uri} index={index}>
-                      {(provided) => {
-                        return <div {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
-                          <PropertyOwner
-                            uri={uri}
-                            expansionIdentifier={expansionIdentifier + '/' + nodeExpansionIdentifier(uri)}
-                            autoExpand={false}
-                          />
-                        </div>
-                      }}
-                    </Draggable>
-                  );
-                })}
-              {provided.placeholder}
-              </div>
-            )}
-          </Droppable>
-      </DragDropContext>
-    </>
-
     return <ToggleContent
       header={header}
       expanded={isExpanded}
       setExpanded={setExpanded}
     >
-      { reorderableLayersList }
+      { 
+        this.renderLayersList()
+      }
       {
         sortedSubowners.map(uri => {
           let autoExpand = sortedSubowners.length + properties.length === 1 ? true : undefined;
@@ -175,39 +206,13 @@ const shouldSortAlphabetically = uri => {
   return splitUri.indexOf('Layers') !== (splitUri.length - 2);
 }
 
-const isSceneGraphNode = (uri) => {
-   if (uri == undefined) {
-      return false;
-    }
-    const splitUri = uri.split('.');
-    return (splitUri.length == 2);
-}
-
-const isGlobeBrowsingLayer = (uri) => {
-    if (uri == undefined) {
-      return false;
-    }
-    const splitUri = uri.split('.');
-
-    var found = false;
-    LayerGroupKeys.forEach( (layerGroup) => {
-      if ( (uri.indexOf(layerGroup) > -1) && !(uri.endsWith(layerGroup)) ) {
-        found = true;
-      }
-    });
-
-    return found && (splitUri.length == 6);
-}
-
 const displayName = (propertyOwners, properties, uri) => {
   var property = properties[uri + ".GuiName"];
   if (!property && isGlobeBrowsingLayer(uri) && propertyOwners[uri] && propertyOwners[uri].name) {
     property = {value: propertyOwners[uri].name};
   }
 
-  return property ?
-    property.value :
-    propertyOwners[uri].identifier;
+  return property ? property.value : propertyOwners[uri].identifier;
 }
 
 const mapSubStateToProps = (
@@ -241,7 +246,7 @@ const mapSubStateToProps = (
   var property = properties[uri + ".GuiName"];
   var hasDescription = properties[uri + ".GuiDescription"];
   var showMeta = false;
-  if ( (isSceneGraphNode(uri) || isGlobeBrowsingLayer(uri)) && hasDescription) {
+  if ((isSceneGraphNode(uri) || isGlobeBrowsingLayer(uri)) && hasDescription) {
     showMeta = hasDescription;
   }
 
