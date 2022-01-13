@@ -152,7 +152,7 @@ export function isSceneGraphNode(uri) {
 
   const splitUri = uri.split('.');
   // A scene graph node URI har the format 'Scene.<NodeIdentifier>'
-  return (splitUri.length == 2);
+  return (splitUri.length == 2 && splitUri[0] === 'Scene');
 }
 
 // Returns true if the URI has the correct format of a globe browsing layer
@@ -187,7 +187,7 @@ export function getLayerGroupFromUri(uri) {
 export function getSceneGraphNodeFromUri(uri) {
   const splitUri = uri.split('.');
   // The name of the scene graph node is always the second string. E.g 'Scene.Earth'
-  if (splitUri.length < 2) {
+  if (splitUri.length < 2 || splitUri[0] !== 'Scene') {
     return undefined;
   }
   return splitUri[1];
