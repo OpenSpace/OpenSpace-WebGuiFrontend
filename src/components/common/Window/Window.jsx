@@ -1,10 +1,10 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 import Draggable from 'react-draggable';
-import styles from './Window.scss';
-import MaterialIcon from '../MaterialIcon/MaterialIcon';
-import Button from '../Input/Button/Button';
 import { excludeKeys } from '../../../utils/helpers';
+import Button from '../Input/Button/Button';
+import MaterialIcon from '../MaterialIcon/MaterialIcon';
+import styles from './Window.scss';
 
 const Window = (props) => {
   const { children, title, closeCallback, className, size, position } = props;

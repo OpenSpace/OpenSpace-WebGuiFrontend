@@ -1,29 +1,29 @@
-import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import ToggleContent from '../../common/ToggleContent/ToggleContent';
-import Property from './Property';
-import PropertyOwnerHeader from './PropertyOwnerHeader';
+import React, { Component } from 'react';
+import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
+import { connect } from 'react-redux';
+import shallowEqualArrays from 'shallow-equal/arrays';
+import shallowEqualObjects from 'shallow-equal/objects';
 import { 
-  setPropertyTreeExpansion,
-  addNodePropertyPopover,
   addNodeMetaPopover,
+  addNodePropertyPopover,
   reloadPropertyTree,
+  setPropertyTreeExpansion
 } from '../../../api/Actions';
 import subStateToProps from '../../../utils/subStateToProps';
+import ToggleContent from '../../common/ToggleContent/ToggleContent';
 import { 
-  isPropertyVisible,
-  isPropertyOwnerHidden,
-  isDeadEnd,
-  isSceneGraphNode,
-  isGlobeBrowsingLayer,
   getLayerGroupFromUri,
-  getSceneGraphNodeFromUri
-} from './../../../utils/propertyTreeHelpers'
+  getSceneGraphNodeFromUri,
+  isDeadEnd,
+  isGlobeBrowsingLayer,
+  isPropertyOwnerHidden,
+  isPropertyVisible,
+  isSceneGraphNode
+} from './../../../utils/propertyTreeHelpers';
+import Property from './Property';
+import PropertyOwnerHeader from './PropertyOwnerHeader';
 
-import { connect } from 'react-redux';
-import shallowEqualObjects from 'shallow-equal/objects';
-import shallowEqualArrays from 'shallow-equal/arrays';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 /**
  * Return an identifier for the tree expansion state.
@@ -339,7 +339,5 @@ PropertyOwner.defaultProps = {
 };
 
 export default PropertyOwner;
-export {
-  displayName,
-  nodeExpansionIdentifier
-};
+export { displayName, nodeExpansionIdentifier };
+

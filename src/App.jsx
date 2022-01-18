@@ -1,11 +1,11 @@
 import React from 'react';
-import { HashRouter as Router, Switch, Route } from 'react-router-dom';
-import OnScreenGui from './views/OnScreenGui';
-import RemoteGui from './views/RemoteGui';
-import BrowserGui from './views/BrowserGui';
-import OnTouchGui from './views/OnTouchGui';
+import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import ActionsGui from './views/ActionsGui';
+import BrowserGui from './views/BrowserGui';
 import NotFound from './views/NotFound';
+import OnScreenGui from './views/OnScreenGui';
+import OnTouchGui from './views/OnTouchGui';
+import RemoteGui from './views/RemoteGui';
 
 const App = () => (
   <Router>

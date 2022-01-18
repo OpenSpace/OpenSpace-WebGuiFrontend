@@ -5,7 +5,6 @@ import NodePropertiesPanel from './NodePropertiesPanel';
 import styles from './NodePopOverContainer.scss';
 
 class NodePopOverContainer extends Component {
-
   constructor(props) {
     super(props);
   }
@@ -14,13 +13,10 @@ class NodePopOverContainer extends Component {
     const { activeNodePropertyPanels } = this.props;
     return (
       <div className={styles.nodePopOverContainer}>
-      <FocusNodePropertiesPanel />
-      { activeNodePropertyPanels.map(uri => (
-              <NodePropertiesPanel
-                uri={uri}
-                key={uri}
-              />)) }
-
+        <FocusNodePropertiesPanel />
+        { 
+          activeNodePropertyPanels.map(uri => <NodePropertiesPanel uri={uri} key={uri}/>) 
+        }
       </div>
     );
   }

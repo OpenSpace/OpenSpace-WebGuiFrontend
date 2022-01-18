@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Input from '../Input/Input/Input';
+import React, { Component } from 'react';
+import { ObjectWordBeginningSubstring, WordBeginningSubstring } from '../../../utils/StringMatchers';
 import CenteredLabel from '../CenteredLabel/CenteredLabel';
+import Input from '../Input/Input/Input';
 import ScrollOverlay from '../ScrollOverlay/ScrollOverlay';
-import { WordBeginningSubstring, ObjectWordBeginningSubstring } from '../../../utils/StringMatchers';
 import styles from './FilterList.scss';
 
 class FilterList extends Component {

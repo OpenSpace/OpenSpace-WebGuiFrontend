@@ -1,26 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-
+import { setPropertyValue } from '../../../api/Actions';
+import { ApplyFlyToKey, FlightDestinationDistanceKey, NavigationAnchorKey, RetargetAnchorKey, ScenePrefixKey } from '../../../api/keys';
+import propertyDispatcher from '../../../api/propertyDispatcher';
+import { UpdateDeltaTimeNow } from '../../../utils/timeHelpers';
 import FocusButton from './FocusButton';
-import {
-  ScenePrefixKey,
-  ValuePlaceholder,
-  NavigationAnchorKey,
-  RetargetAnchorKey,
-  ApplyFlyToKey,
-  FlightDestinationDistanceKey,
-  globeBrowsingLocationDefaultLatLon
-} from '../../../api/keys';
-import {
-  setPropertyValue,
-  subscribeToProperty,
-  unsubscribeToProperty
-} from '../../../api/Actions';
 import styles from './FocusMenu.scss';
 import OverViewButton from './OverViewButton';
-import { UpdateDeltaTimeNow } from '../../../utils/timeHelpers';
-import propertyDispatcher from '../../../api/propertyDispatcher';
 
 const DISTANCE_FACTOR = 4.0;
 
@@ -86,13 +72,15 @@ class FocusMenu extends Component {
     const { focusNodes } = this.props;
     const focusPicker = focusNodes
       .map(node =>
-        (<FocusButton
+        <FocusButton
           key={node.identifier}
           identifier={node.identifier}
           active={this.props.anchor.value}
           onChangeFocus={origin => this.onChangeFocus({ origin })}
-        />));
-    return (focusPicker);
+        />
+      );
+
+    return focusPicker;
   }
 
   render() {

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { connectProperty } from './connectProperty';
-
 import BoolProperty from './BoolProperty';
+import { connectProperty } from './connectProperty';
 import ListProperty from './ListProperty';
 import MatrixProperty from './MatrixProperty';
 import NumericProperty from './NumericProperty';
@@ -10,7 +9,6 @@ import SelectionProperty from './SelectionProperty';
 import StringProperty from './StringProperty';
 import TriggerProperty from './TriggerProperty';
 import VecProperty from './VectorProperty';
-
 
 const concreteProperties = {
   BoolProperty,

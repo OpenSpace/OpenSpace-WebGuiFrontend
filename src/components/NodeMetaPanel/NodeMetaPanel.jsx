@@ -1,20 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-
-import Popover from '../common/Popover/Popover';
+import { removeNodeMetaPopover, setPopoverActiveTab, setPopoverVisibility } from '../../api/Actions';
+import { RenderableTypes } from '../../api/keys';
 import Picker from '../BottomBar/Picker';
-import styles from './NodeMetaPanel.scss';
 import Button from '../common/Input/Button/Button';
-import SmallLabel from '../common/SmallLabel/SmallLabel';
-import Property from '../Sidebar/Properties/Property'
-import PropertyOwner from '../Sidebar/Properties/PropertyOwner'
 import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
+import Popover from '../common/Popover/Popover';
 import Row from '../common/Row/Row';
-
-import { NavigationAnchorKey, ScenePrefixKey, RenderableTypes } from '../../api/keys';
-import { setPopoverVisibility, 
-          removeNodeMetaPopover,
-          setPopoverActiveTab} from '../../api/Actions';
+import PropertyOwner from '../Sidebar/Properties/PropertyOwner';
+import styles from './NodeMetaPanel.scss';
 
 class NodeMetaPanel extends Component {
   constructor(props) {
@@ -41,12 +35,10 @@ class NodeMetaPanel extends Component {
   }
 
   propertyOwnerForUri(activeTab, uri) {
-    return (
-                <PropertyOwner  autoExpand={true}
-                                key={activeTab}
-                                uri={uri}
-                                expansionIdentifier={"P:"+uri} />
-              );
+    return <PropertyOwner autoExpand={true}
+                          key={activeTab}
+                          uri={uri}
+                          expansionIdentifier={"P:"+uri} />;
   }
 
   copyURL() {
@@ -63,11 +55,9 @@ class NodeMetaPanel extends Component {
   }
 
   contentForTab(activeTab) {
-
     let uriSplit = this.props.nodeURI.split('.');
     let identifier = uriSplit[uriSplit.length-1];
     var description = "";
-    var info = "";
     var docs = Object.entries(this.props.documentation);
     var foundDoc = null;
     for (var i = 0; i < docs.length; ++i) {
@@ -80,10 +70,11 @@ class NodeMetaPanel extends Component {
     if (!foundDoc && !this.props.description) {
       return (
         <Row>
-        <div className={styles.description_container}>No meta info found.</div>
+          <div className={styles.description_container}>No meta info found.</div>
         </Row>
-      )
+      );
     }
+
     var rawDescription = "";
     if (this.props.description) {
       rawDescription = this.props.description;
@@ -91,42 +82,44 @@ class NodeMetaPanel extends Component {
       rawDescription = foundDoc.description;
     }
     description = rawDescription.replace(/\\n/g,"");
+
     if (foundDoc) {
       foundDoc.license = foundDoc.license.replace(/\\n/g,"");
     }
+
     if (activeTab == 0) {
       return (
         <Row>
-        <div className={styles.description_container} dangerouslySetInnerHTML={{__html: description}}/>
+          <div className={styles.description_container} dangerouslySetInnerHTML={{__html: description}}/>
         </Row>
-      )
-    } else {
-      if (foundDoc) {
-        return (
-          <div>
+      );
+    } 
+    else if (foundDoc) {
+      return (
+        <div>
           <Row>Author: {foundDoc.author}</Row>
           <Row>Version: {foundDoc.version}</Row>
-            <Row>License: <span className={styles.pad_span} dangerouslySetInnerHTML={{__html: foundDoc.license}} /></Row>
-            <Row>
-              URL: <span className={styles.pad_span} id='docurl'>{foundDoc.url}</span>
-              <span className={styles.copyButton} onClick={this.copyURL}>
-                <MaterialIcon icon="content_cut" />
-              </span>
-            </Row></div>
-        )
-      } else {
-        return (
+          <Row>License: <span className={styles.pad_span} dangerouslySetInnerHTML={{__html: foundDoc.license}} /></Row>
           <Row>
-          <div className={styles.description_container}>No meta info found.</div>
+            URL: <span className={styles.pad_span} id='docurl'>{foundDoc.url}</span>
+            <span className={styles.copyButton} onClick={this.copyURL}>
+              <MaterialIcon icon="content_cut" />
+            </span>
           </Row>
-        )
-      }
+        </div>
+      );
+    } 
+    else {
+      return (
+        <Row>
+          <div className={styles.description_container}>No meta info found.</div>
+        </Row>
+      );
     }
-        
   }
 
   get popover() {
-    const { nodeURI, activeTab, isFocusNodePanel, attached, nodeName, renderableType, subowners} = this.props;
+    const { activeTab, attached, nodeName } = this.props;
     const windowTitle = nodeName + "- Asset Infomation";
     return (
       <Popover
@@ -137,7 +130,7 @@ class NodeMetaPanel extends Component {
         detachable
       >
         <div className={`${Popover.styles.content} ${styles.contentContainer}`}>
-          {this.contentForTab(activeTab)}  
+          { this.contentForTab(activeTab) }
         </div>
         <hr className={Popover.styles.delimiter} />
 
@@ -160,7 +153,7 @@ class NodeMetaPanel extends Component {
   }
 
   render() {
-    const { nodeName, showPopover } = this.props;
+    const { showPopover } = this.props;
     return (
       <div className={Picker.Wrapper} >
         { showPopover && this.popover }

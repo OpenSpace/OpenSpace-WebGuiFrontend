@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import NodePropertiesPanel from './NodePropertiesPanel';
 import { NavigationAnchorKey, ScenePrefixKey } from '../../api/keys';
+import NodePropertiesPanel from './NodePropertiesPanel';
 
 class FocusNodePropertiesPanel extends Component {
-
   constructor(props) {
     super(props);
   }

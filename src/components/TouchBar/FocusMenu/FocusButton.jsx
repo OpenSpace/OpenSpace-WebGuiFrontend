@@ -1,10 +1,9 @@
-import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { icons } from '../../../api/resources';
 import Icon from '../../common/MaterialIcon/MaterialIcon';
 import SmallLabel from '../../common/SmallLabel/SmallLabel';
 import styles from './FocusButton.scss';
-
-import { icons } from '../../../api/resources'
 
 class FocusButton extends Component {
   constructor(props) {
@@ -19,11 +18,9 @@ class FocusButton extends Component {
   get icon() {
     const icon = icons[this.props.identifier];
     if (icon) {
-      return (
-        <img src={icon} className={styles.iconImage} alt={this.props.identifier} />
-      );
+      return <img src={icon} className={styles.iconImage} alt={this.props.identifier} />;
     }
-    return (<Icon icon="language" className={styles.Icon} />);
+    return <Icon icon="language" className={styles.Icon} />;
   }
 
   select() {

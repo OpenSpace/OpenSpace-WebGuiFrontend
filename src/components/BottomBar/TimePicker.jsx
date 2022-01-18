@@ -1,25 +1,17 @@
 import React, { Component } from 'react';
-import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
+import { connect } from 'react-redux';
+import { setPopoverVisibility, subscribeToSessionRecording, subscribeToTime, unsubscribeToSessionRecording, unsubscribeToTime } from '../../api/Actions';
+import { sessionStatePaused, sessionStatePlaying } from '../../api/keys';
+import Calendar from '../common/Calendar/Calendar';
+import Button from '../common/Input/Button/Button';
+import Time from '../common/Input/Time/Time';
 import LoadingString from '../common/LoadingString/LoadingString';
+import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import Popover from '../common/Popover/Popover';
 import SmallLabel from '../common/SmallLabel/SmallLabel';
-import Button from '../common/Input/Button/Button';
-import Calendar from '../common/Calendar/Calendar';
 import Picker from './Picker';
-import Time from '../common/Input/Time/Time';
-import { sessionStatePlaying, sessionStatePaused } from '../../api/keys';
-import {
-  subscribeToTime,
-  unsubscribeToTime,
-  setPopoverVisibility,
-  subscribeToSessionRecording,
-  unsubscribeToSessionRecording
-} from '../../api/Actions';
-import { connect } from 'react-redux';
-
 import SimulationIncrement from './SimulationIncrement';
 import styles from './TimePicker.scss';
-import * as timeHelpers from '../../utils/timeHelpers';
 
 class TimePicker extends Component {
   constructor(props) {

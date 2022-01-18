@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Icon from '../../../common/MaterialIcon/MaterialIcon';
-import SmallLabel from '../../../common/SmallLabel/SmallLabel';
+import React, { Component } from 'react';
 import Picker from '../../../BottomBar/Picker';
+import Icon from '../../../common/MaterialIcon/MaterialIcon';
 import Popover from '../../../common/Popover/Popover';
+import SmallLabel from '../../../common/SmallLabel/SmallLabel';
 import buttonStyle from './../style/UtilitiesButtons.scss';
 
 class InfoButton extends Component {

@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Slide from './Slide';
-import RightArrow from './Arrows/RightArrow';
-import LeftArrow from './Arrows/LeftArrow';
-import Dots from './Dots/Dots';
-import styles from './Slider.scss';
-import { storyImages } from '../../api/resources'
+import React, { Component } from 'react';
+import { storyImages } from '../../api/resources';
 import stories from '../../stories/stories.json';
+import LeftArrow from './Arrows/LeftArrow';
+import RightArrow from './Arrows/RightArrow';
+import Dots from './Dots/Dots';
+import Slide from './Slide';
+import styles from './Slider.scss';
 
 class Slider extends Component {
   constructor(props) {

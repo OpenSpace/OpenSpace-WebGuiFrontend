@@ -1,16 +1,11 @@
 import React, { Component } from 'react';
-import { withRouter, HashRouter as Router, Route, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
+import { startConnection } from '../api/Actions';
+import { formatVersion, isCompatible, RequiredOpenSpaceVersion, RequiredSocketApiVersion } from '../api/Version';
+import ActionsPanel from '../components/BottomBar/ActionsPanel';
 import '../styles/base.scss';
 import styles from './ActionsGui.scss';
-import { startConnection } from '../api/Actions';
-import { isCompatible,
-         formatVersion,
-         RequiredSocketApiVersion,
-         RequiredOpenSpaceVersion } from '../api/Version';
-
-import ActionsPanel from '../components/BottomBar/ActionsPanel';
-
 
 class ActionsGui extends Component {
   constructor(props) {

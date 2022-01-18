@@ -1,26 +1,21 @@
 import React, { Component } from 'react';
-import Popover from '../common/Popover/Popover';
-import Button from '../common/Input/Button/Button';
-import Picker from './Picker';
-import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
-import Input from '../common/Input/Input/Input';
-import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
-import Row from '../common/Row/Row';
-
-import ScrollOverlay from '../common/ScrollOverlay/ScrollOverlay';
-
-import { setPopoverVisibility, connectFlightController, sendFlightControl } from '../../api/Actions';
 import { connect } from 'react-redux';
-import { subscribeToProperty, unsubscribeToProperty } from '../../api/Actions';
-
+import { 
+  connectFlightController,
+  sendFlightControl,
+  setPopoverVisibility,
+  subscribeToProperty,
+  unsubscribeToProperty
+} from '../../api/Actions';
+import { RollFrictionKey, RotationalFrictionKey, ZoomFrictionKey } from '../../api/keys';
+import Button from '../common/Input/Button/Button';
+import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
+import Popover from '../common/Popover/Popover';
+import Row from '../common/Row/Row';
 import styles from './FlightControlPanel.scss';
-
-import PropertyOwner from '../Sidebar/Properties/PropertyOwner'
-
-import { RotationalFrictionKey, ZoomFrictionKey, RollFrictionKey } from '../../api/keys';
+import Picker from './Picker';
 
 class FlightControlPanel extends Component {
-
   constructor(props) {
     super(props);
     this.togglePopover = this.togglePopover.bind(this);
@@ -223,7 +218,6 @@ class FlightControlPanel extends Component {
 }
 
 const mapStateToProps = state => {
-
   const visible = state.local.popovers.flightController.visible;
 
   const rotationFrictionProp = state.propertyTree.properties[RotationalFrictionKey];

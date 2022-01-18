@@ -1,12 +1,12 @@
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import Pane from './Pane';
-import FilterList from '../common/FilterList/FilterList';
-import LoadingBlocks from '../common/LoadingBlock/LoadingBlocks';
-import ScenePaneListItem from './ScenePaneListItem';
 import { ObjectWordBeginningSubstring } from '../../utils/StringMatchers';
 import subStateToProps from '../../utils/subStateToProps';
+import FilterList from '../common/FilterList/FilterList';
+import LoadingBlocks from '../common/LoadingBlock/LoadingBlocks';
+import Pane from './Pane';
+import ScenePaneListItem from './ScenePaneListItem';
 
 class ScenePane extends Component {
   constructor(props) {

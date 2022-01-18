@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
-import Button from '../common/Input/Button/Button';
-import styles from './SystemMenu.scss';
-import Popover from '../common/Popover/Popover';
-import subStateToProps from '../../utils/subStateToProps';
 import { connect } from 'react-redux';
-import { setShowAbout } from '../../api/Actions'
-import environment from '../../api/Environment';
+import { setShowAbout } from '../../api/Actions';
 import api from '../../api/api';
+import environment from '../../api/Environment';
+import subStateToProps from '../../utils/subStateToProps';
+import Button from '../common/Input/Button/Button';
+import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
+import Popover from '../common/Popover/Popover';
+import styles from './SystemMenu.scss';
 
 class SystemMenu extends Component {
   constructor(props) {

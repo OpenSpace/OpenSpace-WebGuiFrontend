@@ -1,29 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-
+import { refreshSessionRecording, subscribeToSessionRecording, unsubscribeToSessionRecording } from '../../api/Actions';
+import { sessionStateIdle, sessionStatePaused, sessionStatePlaying, sessionStateRecording } from '../../api/keys';
+import subStateToProps from '../../utils/subStateToProps';
+import Button from '../common/Input/Button/Button';
+import Checkbox from '../common/Input/Checkbox/Checkbox';
+import Input from '../common/Input/Input/Input';
+import Select from '../common/Input/Select/Select';
 import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import Popover from '../common/Popover/Popover';
-import Button from '../common/Input/Button/Button';
-import Picker from './Picker';
-import Input from '../common/Input/Input/Input';
 import Row from '../common/Row/Row';
-import Select from '../common/Input/Select/Select';
-import Checkbox from '../common/Input/Checkbox/Checkbox';
-import subStateToProps from '../../utils/subStateToProps';
-
-import {
-  sessionStateIdle,
-  sessionStateRecording,
-  sessionStatePlaying,
-  sessionStatePaused,
-} from '../../api/keys';
-
-import {
-  subscribeToSessionRecording,
-  unsubscribeToSessionRecording,
-  refreshSessionRecording
-} from '../../api/Actions'
-
+import Picker from './Picker';
 import styles from './SessionRec.scss';
 
 class SessionRec extends Component {

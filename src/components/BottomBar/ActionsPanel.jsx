@@ -1,33 +1,16 @@
 import React, { Component } from 'react';
-import Popover from '../common/Popover/Popover';
-import Button from '../common/Input/Button/Button';
-import InfoBox from '../common/InfoBox/InfoBox';
-import Picker from './Picker';
-import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
-import Input from '../common/Input/Input/Input';
-import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
-import Row from '../common/Row/Row';
-import ScrollOverlay from '../common/ScrollOverlay/ScrollOverlay';
-import FilterList from '../common/FilterList/FilterList';
-import propertyDispatcher from '../../api/propertyDispatcher';
-import { Resizable } from 're-resizable';
-
-import { 
-  setPopoverVisibility,
-  triggerAction,
-  setActionsPath,
-  toggleKeybindViewer
-} from '../../api/Actions';
-
 import { connect } from 'react-redux';
-
-import styles from './ActionsPanel.scss';
-
-import PropertyOwner from '../Sidebar/Properties/PropertyOwner'
+import { setActionsPath, setPopoverVisibility, triggerAction } from '../../api/Actions';
 import subStateToProps from '../../utils/subStateToProps';
+import InfoBox from '../common/InfoBox/InfoBox';
+import Button from '../common/Input/Button/Button';
+import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
+import Popover from '../common/Popover/Popover';
+import Row from '../common/Row/Row';
+import styles from './ActionsPanel.scss';
+import Picker from './Picker';
 
 class ActionsPanel extends Component {
-
   constructor(props) {
     super(props);
     this.togglePopover = this.togglePopover.bind(this);
@@ -44,7 +27,6 @@ class ActionsPanel extends Component {
   }
 
   addNavPath(e) {
-
     var navString = this.props.navigationPath;
     if (this.props.navigationPath == '/') {
       navString += e.currentTarget.getAttribute('foldername');
@@ -133,7 +115,6 @@ class ActionsPanel extends Component {
   }
 
   get popover() {
-
     var actionsContent;
     var childrenContent;
     var backButton;
@@ -219,7 +200,6 @@ class ActionsPanel extends Component {
 
 
 const mapSubStateToProps = ({popoverVisible, luaApi, actions}) => {
-
   var actionsMapped = {"/": {actions:[], children:{}}};
   if (!actions.isInitialized) {
     return {

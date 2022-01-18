@@ -1,17 +1,14 @@
-import React from 'react';
 import PropTypes from 'prop-types';
-import ToggleContent from '../common/ToggleContent/ToggleContent';
-import PropertyOwner,
-       { displayName as propertyOwnerName,
-         nodeExpansionIdentifier as propertyOwnerNodeExpansionIdentifier }  from './Properties/PropertyOwner'
-
+import React from 'react';
+import { connect } from 'react-redux';
 import { setPropertyTreeExpansion } from '../../api/Actions';
 import { sortGroups } from '../../api/keys';
-
-import { connect } from 'react-redux';
-
 import subStateToProps from '../../utils/subStateToProps';
-
+import ToggleContent from '../common/ToggleContent/ToggleContent';
+import PropertyOwner, { 
+  displayName as propertyOwnerName, 
+  nodeExpansionIdentifier as propertyOwnerNodeExpansionIdentifier 
+} from './Properties/PropertyOwner';
 
 const displayName = path => {
   const splitPath = path.split('/');
@@ -151,8 +148,6 @@ Group.propTypes = {
 
 Group.defaultProps = {
 };
-
-
 
 export default Group;
 export { nodeExpansionIdentifier };

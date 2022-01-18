@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { excludeKeys } from '../../../../utils/helpers';
 import MaterialIcon from '../../MaterialIcon/MaterialIcon';
 import styles from './Input.scss';

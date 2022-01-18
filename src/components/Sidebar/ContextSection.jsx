@@ -1,11 +1,7 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import ToggleContent from '../common/ToggleContent/ToggleContent';
-import PropertyOwner from './Properties/PropertyOwner'
-
-import { setPropertyTreeExpansion } from '../../api/Actions';
-import { NavigationAnchorKey, NavigationAimKey, ScenePrefixKey } from '../../api/keys'
 import { connect } from 'react-redux';
+import { NavigationAimKey, NavigationAnchorKey, ScenePrefixKey } from '../../api/keys';
+import PropertyOwner from './Properties/PropertyOwner';
 
 class ContextSection extends Component {
   render() {

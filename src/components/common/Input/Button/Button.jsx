@@ -1,5 +1,5 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 import { excludeKeys } from '../../../../utils/helpers';
 import styles from './Button.scss';
 

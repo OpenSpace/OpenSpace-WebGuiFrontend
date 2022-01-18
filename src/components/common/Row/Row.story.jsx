@@ -1,8 +1,8 @@
 /* eslint import/no-extraneous-dependencies: 0 */
 /* eslint react/prop-types: 0 */
 /* globals module */
-import React from 'react';
 import { storiesOf } from '@storybook/react';
+import React from 'react';
 import Row from './Row';
 
 const Block = ({ children }) => (<div style={{ background: 'lightgray' }}>{ children }</div>);

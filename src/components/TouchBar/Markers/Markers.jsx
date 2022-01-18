@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { setPropertyValue, subscribeToProperty, unsubscribeToProperty } from '../../../api/Actions/index';
 import MarkerInfo from './MarkerInfo';
-import { subscribeToProperty, unsubscribeToProperty, setPropertyValue } from '../../../api/Actions/index';
 
 class Markers extends Component {
   constructor(props) {
@@ -14,8 +14,8 @@ class Markers extends Component {
     return (squareDist > r ** 2);
   }
 
-  componentDidMount(){
-    if(!this.props.trackingNodes)
+  componentDidMount() {
+    if (!this.props.trackingNodes)
       return;
 
     this.props.trackingNodes.map(node => {
@@ -27,9 +27,8 @@ class Markers extends Component {
     })
   }
 
-  componentWillUnMount(){
-
-    if(!this.props.trackingNodes)
+  componentWillUnMount() {
+    if (!this.props.trackingNodes)
       return;
 
     this.props.trackingNodes.map(node => {
@@ -41,12 +40,10 @@ class Markers extends Component {
     })
   }
 
-  createInfoMarkers(){
-
+  createInfoMarkers() {
     const markers = []
 
     for (const [index, node] of this.props.markerNodes.entries()) {
-
       if (!node.visibility) {
         continue;
       }
@@ -68,8 +65,7 @@ class Markers extends Component {
   }
 
   // Determines size of the marker
-  static determineSize(nodeRadius){
-
+  static determineSize(nodeRadius) {
     // Factor controlling size of a marker in
     // relation to screen space radius of a node
     const radiusFactor = 0.1;
@@ -87,8 +83,7 @@ class Markers extends Component {
   }
 
   // Returns info text for the node if it exists, otherwise warn
-  static getInfoText(node, infoNodes){
-
+  static getInfoText(node, infoNodes) {
     if(infoNodes){ //else get infotext for the icon
       for (let i = 0; i < infoNodes.length; i++) {
         if (node === infoNodes[i].name) {
@@ -102,12 +97,11 @@ class Markers extends Component {
 
   // Determines whether this marker is visible by checking possible
   // occlusion by all nodes that are currently visible on the screen
-  static updateVisibility(markerNodes){
-
+  static updateVisibility(markerNodes) {
     for (let index = 0; index < markerNodes.length; index++) {
       let node = markerNodes[index];
 
-      if(!node.visibility){
+      if (!node.visibility) {
         continue;
       }
       const nodeCenterX = node.screenSpacePos[0];
@@ -115,10 +109,9 @@ class Markers extends Component {
       const occlusionMarginFactor = 1.3;
         
       for (let compareIndex = 0; compareIndex < markerNodes.length; compareIndex++) {
-
         const compareNode = markerNodes[compareIndex];
 
-        if(!compareNode.visibility || compareNode.name === node.name){
+        if (!compareNode.visibility || compareNode.name === node.name) {
           continue;
         }
         
@@ -134,7 +127,7 @@ class Markers extends Component {
 
         const compareIsInfront = (node.distanceFromCamera > compareNode.distanceFromCamera);
 
-        if(!thisMarkerOutsideCircle && compareIsInfront){
+        if (!thisMarkerOutsideCircle && compareIsInfront) {
           node.visibility = false;
         }
       }

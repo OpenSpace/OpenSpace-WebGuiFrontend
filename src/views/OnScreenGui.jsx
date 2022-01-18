@@ -1,23 +1,20 @@
 import React, { Component } from 'react';
-import { withRouter, HashRouter as Router, Route, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import '../styles/base.scss';
-import styles from './OnScreenGui.scss';
-import Sidebar from '../components/Sidebar/Sidebar';
+import { withRouter } from 'react-router-dom';
+import { setShowAbout, startConnection } from '../api/Actions';
+import { formatVersion, isCompatible, RequiredOpenSpaceVersion, RequiredSocketApiVersion } from '../api/Version';
 import BottomBar from '../components/BottomBar/BottomBar';
-import Button from '../components/common/Input/Button/Button';
-import Error from '../components/common/Error/Error';
-import Overlay from '../components/common/Overlay/Overlay';
 import KeybindingPanel from '../components/BottomBar/KeybindingPanel';
-import About from './About/About';
+import Error from '../components/common/Error/Error';
+import Button from '../components/common/Input/Button/Button';
+import Overlay from '../components/common/Overlay/Overlay';
 import Stack from '../components/common/Stack/Stack';
-import NodePopOverContainer from '../components/NodePropertiesPanel/NodePopOverContainer';
 import NodeMetaContainer from '../components/NodeMetaPanel/NodeMetaContainer';
-import { startConnection, setShowAbout } from '../api/Actions';
-import { isCompatible,
-         formatVersion,
-         RequiredSocketApiVersion,
-         RequiredOpenSpaceVersion } from '../api/Version';
+import NodePopOverContainer from '../components/NodePropertiesPanel/NodePopOverContainer';
+import Sidebar from '../components/Sidebar/Sidebar';
+import '../styles/base.scss';
+import About from './About/About';
+import styles from './OnScreenGui.scss';
 
 class OnScreenGui extends Component {
   constructor(props) {
@@ -33,9 +30,7 @@ class OnScreenGui extends Component {
   checkVersion() {
     if (!this.checkedVersion && this.props.version.isInitialized) {
       const versionData = this.props.version.data;
-      if (!isCompatible(
-        versionData.openSpaceVersion, RequiredOpenSpaceVersion))
-      {
+      if (!isCompatible(versionData.openSpaceVersion, RequiredOpenSpaceVersion)) {
         console.warn(
           'Possible incompatibility: \nRequired OpenSpace version: ' +
           formatVersion(RequiredOpenSpaceVersion) +
@@ -43,9 +38,7 @@ class OnScreenGui extends Component {
           formatVersion(versionData.openSpaceVersion) + '.'
         );
       }
-      if (!isCompatible(
-        versionData.socketApiVersion, RequiredSocketApiVersion))
-      {
+      if (!isCompatible(versionData.socketApiVersion, RequiredSocketApiVersion)) {
         console.warn(
           "Possible incompatibility: \nRequired Socket API version: " +
           formatVersion(RequiredSocketApiVersion) +

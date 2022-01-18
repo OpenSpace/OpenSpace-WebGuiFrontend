@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { excludeKeys } from '../../../../utils/helpers';
-import styles from './NumericInput.scss';
-import Input from '../Input/Input';
-import Tooltip from '../../Tooltip/Tooltip';
-import { roundValueToStepSize } from '../../../../utils/rounding';
 import { clamp } from 'lodash/number';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { excludeKeys } from '../../../../utils/helpers';
+import { roundValueToStepSize } from '../../../../utils/rounding';
+import Tooltip from '../../Tooltip/Tooltip';
+import Input from '../Input/Input';
+import styles from './NumericInput.scss';
 
 const Scale = require('d3-scale');
 

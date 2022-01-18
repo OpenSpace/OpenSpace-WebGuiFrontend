@@ -1,18 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Popover from '../common/Popover/Popover';
-import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
-import Row from '../common/Row/Row';
-import Picker from './Picker';
 import Keyboard from 'react-simple-keyboard';
 import 'react-simple-keyboard/build/css/index.css';
-import './KeybindingPanelKeyboard.css';
-
-import styles from './KeybindingPanel.scss';
-
 import { setPopoverVisibility } from '../../api/Actions';
+import Popover from '../common/Popover/Popover';
+import Row from '../common/Row/Row';
+import styles from './KeybindingPanel.scss';
+import './KeybindingPanelKeyboard.css';
+import Picker from './Picker';
 
-import englishLayout from "simple-keyboard-layouts/build/layouts/english";
+// Cleaned up the imports a but and removed unused ones. Wasn't sure if this 
+// would be useful to keep around, but did so just in case // Emma
+// import englishLayout from "simple-keyboard-layouts/build/layouts/english";
 
 class KeybindingPanel extends Component {
   constructor(props) {
@@ -38,7 +37,6 @@ class KeybindingPanel extends Component {
   }
 
   onKeyPress = (button) => {
-
     var action;
     var hadModifier = false;
     if ( (button === "{shift}") || (button === "{alt}") || (button === "{control}") || (button === "{super}") ) {
@@ -197,7 +195,6 @@ class KeybindingPanel extends Component {
   }
 
   handleModifier = (modifier) => {
-
     var modifiers = this.state.activeModifiers;
     if (modifiers.includes(modifier)) {
       modifiers = modifiers.filter(e => e != modifier);
@@ -403,7 +400,6 @@ class KeybindingPanel extends Component {
 }
 
 const mapStateToProps = state => {
-
   const visible = state.local.popovers.keybinds.visible;
   return {
     popoverVisible: visible,

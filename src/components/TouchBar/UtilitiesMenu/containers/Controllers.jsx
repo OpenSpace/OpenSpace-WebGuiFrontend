@@ -1,15 +1,15 @@
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-
-import { NavigationAnchorKey, ValuePlaceholder, ScaleKey } from '../../../../api/keys';
 import { setPropertyValue, subscribeToProperty, unsubscribeToProperty } from '../../../../api/Actions';
-import DateController from './../presentational/DateController';
-import TimePlayerController from './../presentational/TimePlayerController';
-import SightsController from './../presentational/SightsController';
-import ScaleController from './../presentational/ScaleController';
-import ToggleBoolButtons from './../presentational/ToggleBoolButtons';
+import { NavigationAnchorKey, ScaleKey, ValuePlaceholder } from '../../../../api/keys';
 import { UpdateDeltaTimeNow } from '../../../../utils/timeHelpers';
+import DateController from './../presentational/DateController';
+import ScaleController from './../presentational/ScaleController';
+import SightsController from './../presentational/SightsController';
+import TimePlayerController from './../presentational/TimePlayerController';
+import ToggleBoolButtons from './../presentational/ToggleBoolButtons';
+
 
 class Controllers extends Component {
   constructor(props) {
@@ -19,8 +19,7 @@ class Controllers extends Component {
     this.onChangeScale = this.onChangeScale.bind(this);
   }
 
-  componentDidMount(){
-
+  componentDidMount() {
     if (this.props.scaleNodes.length !== 0) {
       this.props.scaleNodes.forEach(scaleNode =>
         this.props.startListening(scaleNode.description.Identifier),
@@ -37,7 +36,6 @@ class Controllers extends Component {
   }
 
   onChangeSight(selected) {
-
     UpdateDeltaTimeNow(this.props.luaApi, 1);
     // Check if the sight is on the current anchor, otherwise change anchor node
     if (this.props.originNode !== selected.planet) {

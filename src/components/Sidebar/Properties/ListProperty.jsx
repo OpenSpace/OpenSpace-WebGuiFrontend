@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Input from '../../common/Input/Input/Input';
-import InfoBox from '../../common/InfoBox/InfoBox';
+import React, { Component } from 'react';
 import { copyTextToClipboard } from '../../../utils/helpers';
+import InfoBox from '../../common/InfoBox/InfoBox';
+import Input from '../../common/Input/Input/Input';
 import styles from './Property.scss';
 
 class ListProperty extends Component {

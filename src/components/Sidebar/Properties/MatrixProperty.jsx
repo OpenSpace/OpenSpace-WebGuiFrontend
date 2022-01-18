@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import NumericInput from '../../common/Input/NumericInput/NumericInput';
 import Row from '../../common/Row/Row';
 import InfoBox from '../../common/InfoBox/InfoBox';
-import { connectProperty } from './connectProperty';
 import { copyTextToClipboard } from '../../../utils/helpers';
 import styles from './Property.scss';
 

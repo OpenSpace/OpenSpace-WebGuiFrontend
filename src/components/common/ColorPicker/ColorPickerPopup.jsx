@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
-import styles from './ColorPickerPopup.scss';
 import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import Button from '../Input/Button/Button';
 import Tooltip from '../Tooltip/Tooltip';
 import ColorPicker from './ColorPicker';
+import styles from './ColorPickerPopup.scss';
 var { Checkboard } = require('react-color/lib/components/common');
 
 class ColorPickerPopup extends Component {

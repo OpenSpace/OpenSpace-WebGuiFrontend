@@ -1,5 +1,5 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 import SmallLabel from '../../common/SmallLabel/SmallLabel';
 import styles from './MarkerInfo.scss';
 import MarkerInfoIcon from './MarkerInfoIcon';
@@ -27,13 +27,13 @@ const MarkerInfo = (props) => {
           identifier={identifier}
           positionStyles={positionStyles}
           infoText={infoText}
-        />}
+        />
+      }
       {showLabel &&
-        <SmallLabel
-          style={positionStyles.Text}
-        >
+        <SmallLabel style={positionStyles.Text}>
           {identifier}
-        </SmallLabel>}
+        </SmallLabel>
+      }
     </div>
   );
 };

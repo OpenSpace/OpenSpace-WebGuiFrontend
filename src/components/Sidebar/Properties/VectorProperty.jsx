@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import NumericInput from '../../common/Input/NumericInput/NumericInput';
-import MinMaxRangeInput from '../../common/Input/MinMaxRangeInput/MinMaxRangeInput';
-import Row from '../../common/Row/Row';
-import InfoBox from '../../common/InfoBox/InfoBox';
 import { copyTextToClipboard } from '../../../utils/helpers';
 import ColorPickerPopup from '../../common/ColorPicker/ColorPickerPopup';
+import InfoBox from '../../common/InfoBox/InfoBox';
+import MinMaxRangeInput from '../../common/Input/MinMaxRangeInput/MinMaxRangeInput';
+import NumericInput from '../../common/Input/NumericInput/NumericInput';
+import Row from '../../common/Row/Row';
 import styles from './Property.scss';
 
 class VectorProperty extends Component {

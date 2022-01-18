@@ -1,7 +1,7 @@
-import React from 'react';
 import PropTypes from 'prop-types';
-import styles from './Tooltip.scss';
+import React from 'react';
 import { excludeKeys } from '../../../utils/helpers';
+import styles from './Tooltip.scss';
 
 const Tooltip = (props) => {
   const { children, placement, fixed } = props;
