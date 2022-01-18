@@ -85,15 +85,17 @@ class FilterList extends Component {
             <CenteredLabel>
               Nothing found. Try another search!
             </CenteredLabel>
-          ) }
+          ) 
+          }
           <ul>
-            { entries.map(entry => (
+            { entries.map((entry, index) => (
               <EntryComponent
                 {...entry}
-                key={entry.key}
+                key={ entry.key || index }
                 onSelect={this.props.onSelect}
                 active={this.props.active}
-              />)) }
+              />))
+            }
           </ul>
         </ScrollOverlay>
       </section>
