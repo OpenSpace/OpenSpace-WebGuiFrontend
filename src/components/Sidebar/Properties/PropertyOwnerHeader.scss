@@ -16,7 +16,6 @@
   overflow: hidden;
 }
 
-
 .rightButton {
   padding-top: 4px;
   padding-left: 12px;
@@ -26,12 +25,29 @@
   }
 }
 
-.greenTitle {
-  color: #42f483;
-  opacity: 0.8;
+.heightLayerIcon {
+  opacity: 0.35;
+  vertical-align: middle;
+  padding-left: 8px;
 }
 
-.grayTitle {
+.layerDraggableIcon {
+  visibility: hidden;
+  opacity: 0.35;
+  vertical-align: middle;
+  padding-left: 8px;
+}
+
+/* SHow icon on hover */
+.layerHeader:hover .layerDraggableIcon,
+.layerHeader:active .layerDraggableIcon {
+  visibility: visible;
+}
+
+.enabledLayerTitle {
+  color: #42f483;
+}
+
+.disabledLayerTitle {
   color: #ddd;
-  opacity: 0.8;
 }

@@ -1,16 +1,29 @@
-import React, { Component, PureComponent } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ToggleContent from '../../common/ToggleContent/ToggleContent';
 import Property from './Property';
-import { LayerGroupKeys } from '../../../api/keys';
 import PropertyOwnerHeader from './PropertyOwnerHeader';
-import { setPropertyTreeExpansion, addNodePropertyPopover, addNodeMetaPopover } from '../../../api/Actions';
+import { 
+  setPropertyTreeExpansion,
+  addNodePropertyPopover,
+  addNodeMetaPopover,
+  reloadPropertyTree,
+} from '../../../api/Actions';
 import subStateToProps from '../../../utils/subStateToProps';
-import { isPropertyVisible, isPropertyOwnerHidden, isDeadEnd } from './../../../utils/propertyTreeHelpers'
+import { 
+  isPropertyVisible,
+  isPropertyOwnerHidden,
+  isDeadEnd,
+  isSceneGraphNode,
+  isGlobeBrowsingLayer,
+  getLayerGroupFromUri,
+  getSceneGraphNodeFromUri
+} from './../../../utils/propertyTreeHelpers'
 
 import { connect } from 'react-redux';
 import shallowEqualObjects from 'shallow-equal/objects';
 import shallowEqualArrays from 'shallow-equal/arrays';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 /**
  * Return an identifier for the tree expansion state.
@@ -25,11 +38,24 @@ const nodeExpansionIdentifier = uri => {
 }
 
 class PropertyOwnerComponent extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      shownLayers: props.layers,
+      isDragging: false
+    };
 
-  shouldComponentUpdate(nextProps) {
+    this.renderLayersList = this.renderLayersList.bind(this);
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.state.isDragging !== nextState.isDragging) {
+      return true;
+    }
     return !(
       this.props.uri === nextProps.uri &&
       this.props.name === nextProps.name &&
+      shallowEqualArrays(this.props.layers, nextProps.layers) &&
       shallowEqualArrays(this.props.properties, nextProps.properties) &&
       shallowEqualArrays(this.props.subowners, nextProps.subowners) &&
       shallowEqualObjects(this.props.subownerNames, nextProps.subownerNames) &&
@@ -38,6 +64,90 @@ class PropertyOwnerComponent extends Component {
       this.props.autoExpand === nextProps.autoExpand &&
       this.props.expansionIdentifier === nextProps.expansionIdentifier &&
       this.props.sort === nextProps.sort);
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    // Update state value variable when we get new props
+    if (prevProps.layers !== this.props.layers) {
+      this.setState({ shownLayers: this.props.layers });
+    }
+  }
+
+  // Render draggable and reorderable list with layers, using Beautinful DnD
+  // Based on video tutorial: https://www.youtube.com/watch?v=aYZRRyukuIw&ab_channel=ColbyFayock
+  renderLayersList() {
+    const { expansionIdentifier } = this.props;
+    const { shownLayers } = this.state;
+
+    if (!shownLayers || shownLayers.length === 0) {
+      return <></>;
+    }
+
+    const onDragStart = () => {
+      this.setState({isDragging: true});
+    }
+
+    const onDragEnd = async (result) => {
+      if (!result.destination || result.source.index === result.destination.index) {
+        this.setState({ isDragging: false });
+        return; // no change => do nothing
+      }
+
+      // First update the order manually, so we keep it while the properties
+      // are being refreshed below
+      const tempLayers = shownLayers;
+      const [reorderedItem] = tempLayers.splice(result.source.index, 1);
+      tempLayers.splice(result.destination.index, 0, reorderedItem);
+
+      this.setState({ isDragging: false, shownLayers: tempLayers });
+
+      const uri = result.draggableId;
+      const globe = getSceneGraphNodeFromUri(uri);
+      const layerGroup = getLayerGroupFromUri(uri);
+
+      await this.props.luaApi.globebrowsing.moveLayer(
+        globe,
+        layerGroup,
+        result.source.index,
+        result.destination.index
+      );
+
+      // TODO: Once we have a proper way to subscribe to reordering, additions and removals
+      // of property owners, this 'hard' refresh should be removed
+      this.props.refresh();
+    }
+
+    // Invisible overlay that covers the entire body and prevents other hover effects
+    // from being triggered while dragging
+    const overlay = <div style ={{ position: "fixed", top: 0, right: 0, bottom: 0, left: 0, zIndex: 100}}></div>;
+
+    return (
+      <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
+        { this.state.isDragging && overlay }
+        <Droppable droppableId="layers">
+          { (provided) => (
+            <div {...provided.droppableProps} ref={provided.innerRef}>
+              { shownLayers.map((uri, index) => {
+                return (
+                  <Draggable key={uri} draggableId={uri} index={index}>
+                    {(provided) => {
+                      return <div {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
+                        <PropertyOwner
+                          uri={uri}
+                          expansionIdentifier={expansionIdentifier + '/' + nodeExpansionIdentifier(uri)}
+                          autoExpand={false}
+                        />
+                      </div>
+                    }}
+                  </Draggable>
+                );
+              })}
+            { provided.placeholder }
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
+    )
   }
 
   render() {
@@ -79,6 +189,9 @@ class PropertyOwnerComponent extends Component {
       expanded={isExpanded}
       setExpanded={setExpanded}
     >
+      { 
+        this.renderLayersList()
+      }
       {
         sortedSubowners.map(uri => {
           let autoExpand = sortedSubowners.length + properties.length === 1 ? true : undefined;
@@ -110,52 +223,26 @@ const shouldSortAlphabetically = uri => {
   return splitUri.indexOf('Layers') !== (splitUri.length - 2);
 }
 
-const isSceneGraphNode = (uri) => {
-   if (uri == undefined) {
-      return false;
-    }
-    const splitUri = uri.split('.');
-    return (splitUri.length == 2);
-}
-
-const isGlobeBrowsingLayer = (uri) => {
-    if (uri == undefined) {
-      return false;
-    }
-    const splitUri = uri.split('.');
-
-    var found = false;
-    LayerGroupKeys.forEach( (layerGroup) => {
-      if ( (uri.indexOf(layerGroup) > -1) && !(uri.endsWith(layerGroup)) ) {
-        found = true;
-      }
-    });
-
-    return found && (splitUri.length == 6);
-}
-
 const displayName = (propertyOwners, properties, uri) => {
-
   var property = properties[uri + ".GuiName"];
   if (!property && isGlobeBrowsingLayer(uri) && propertyOwners[uri] && propertyOwners[uri].name) {
     property = {value: propertyOwners[uri].name};
   }
 
-  return property ?
-    property.value :
-    propertyOwners[uri].identifier;
+  return property ? property.value : propertyOwners[uri].identifier;
 }
 
 const mapSubStateToProps = (
-  {propertyOwners, properties, propertyTreeExpansion},
-  {uri, name, autoExpand, expansionIdentifier}
+  { luaApi, propertyOwners, properties, propertyTreeExpansion },
+  { uri, name, autoExpand, expansionIdentifier }
 ) => {
   const data = propertyOwners[uri];
   let subowners = data ? data.subowners : [];
   let subProperties = data ? data.properties : [];
 
+  let layers = subowners.filter(uri => (isGlobeBrowsingLayer(uri)));
   subowners = subowners.filter(uri => (
-    !isPropertyOwnerHidden(properties, uri) && !isDeadEnd(propertyOwners, properties, uri)
+    !isPropertyOwnerHidden(properties, uri) && !isDeadEnd(propertyOwners, properties, uri) && !isGlobeBrowsingLayer(uri)
   ));
 
   const subownerNames = {};
@@ -176,12 +263,14 @@ const mapSubStateToProps = (
   var property = properties[uri + ".GuiName"];
   var hasDescription = properties[uri + ".GuiDescription"];
   var showMeta = false;
-  if ( (isSceneGraphNode(uri) || isGlobeBrowsingLayer(uri)) && hasDescription) {
+  if ((isSceneGraphNode(uri) || isGlobeBrowsingLayer(uri)) && hasDescription) {
     showMeta = hasDescription;
   }
 
   return {
     name,
+    layers,
+    luaApi,
     subowners,
     subownerNames,
     properties: subProperties,
@@ -193,6 +282,7 @@ const mapSubStateToProps = (
 }
 
 const mapStateToSubState = state => ({
+  luaApi: state.luaApi,
   propertyOwners: state.propertyTree.propertyOwners,
   properties: state.propertyTree.properties,
   propertyTreeExpansion: state.local.propertyTreeExpansion
@@ -220,10 +310,15 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     }));
   };
 
+  const refresh = () => {
+    dispatch(reloadPropertyTree());
+  };
+
   return {
     setExpanded,
     popOut,
-    metaAction
+    metaAction,
+    refresh
   };
 }
 
@@ -240,7 +335,7 @@ PropertyOwner.propTypes = {
 
 PropertyOwner.defaultProps = {
   properties: [],
-  subowners: [],
+  subowners: []
 };
 
 export default PropertyOwner;
