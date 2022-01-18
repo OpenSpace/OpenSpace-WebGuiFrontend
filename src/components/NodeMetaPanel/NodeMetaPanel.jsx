@@ -170,7 +170,6 @@ class NodeMetaPanel extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-
   var nodeURI = ownProps.uri;
 
   let myPopover = state.local.popovers.activeNodeMetaPanels[ownProps.uri]
