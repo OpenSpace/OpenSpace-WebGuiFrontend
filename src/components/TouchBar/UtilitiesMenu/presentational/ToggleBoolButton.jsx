@@ -45,10 +45,12 @@ class ToggleBoolButton extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-
   let propertyNode = state.propertyTree.properties[ownProps.property.URI];
 
-  return{
+  // TODO (emmbr, 2022-01-18) Should check that the property node actually 
+  // exists as well, and handle the case when it doesn't
+
+  return {
     propertyNode
   };
 }

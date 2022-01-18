@@ -93,7 +93,6 @@ class OnTouchGui extends Component {
   }
 
   setStory(selectedStory) {
-
     const previousStory = this.props.storyIdentifier;
     this.setState({ currentStory: selectedStory });
 
@@ -233,12 +232,13 @@ class OnTouchGui extends Component {
           <DeveloperMenu
             changeStory={this.changeStory}
             storyIdentifier={this.props.storyIdentifier}
-          />}
+          />
+        }
         <p className={styles.storyTitle}> {this.props.story.title} </p>
         {(this.state.currentStory === DefaultStory)
           ? <Slider startSlider = {this.state.sliderStartStory} changeStory={this.setStory} />
           : <TouchBar resetStory={this.resetStory} />
-        }      
+        }
       </div>
     );
   }
@@ -250,20 +250,22 @@ const mapStateToProps = (state) => {
   const scaleNodes = [];
   const story = state.storyTree.story;
 
-  if (state.propertyTree !== undefined) {
+  // TODO (emmbr, 2022-01-18): For some reason, it takes a while for the property
+  // tree to load when showing this UI in a browser. If this happens, these 
+  // properties are not set up correctly, and the UI crashes when trying to create 
+  // select a new story. Not great, should be investigated :) 
 
-    storyIdentifier = story.identifier;
-    anchorNode = state.propertyTree.properties[NavigationAnchorKey];
+  storyIdentifier = story.identifier;
+  anchorNode = state.propertyTree.properties[NavigationAnchorKey];
 
-    if (story.scalenodes) {
-      story.scalenodes.nodes.forEach((node) => {
-        let foundScaleNode = state.propertyTree.properties[ScaleKey.replace(ValuePlaceholder, `${node}`)];
+  if (story.scalenodes) {
+    story.scalenodes.nodes.forEach((node) => {
+      let foundScaleNode = state.propertyTree.properties[ScaleKey.replace(ValuePlaceholder, `${node}`)];
 
-        if (foundScaleNode) {
-          scaleNodes.push(foundScaleNode);
-        }
-      });
-    }
+      if (foundScaleNode) {
+        scaleNodes.push(foundScaleNode);
+      }
+    });
   }
 
   return {

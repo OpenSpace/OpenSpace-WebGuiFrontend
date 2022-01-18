@@ -78,15 +78,17 @@ class Controllers extends Component {
           <TimePlayerController />
         }
         {(story && story.datecontroller) &&
-        <DateController
-          dateList={story.datecontroller}
-          onChangeSight={this.onChangeSight}
-        />}
+          <DateController
+            dateList={story.datecontroller}
+            onChangeSight={this.onChangeSight}
+          />
+        }
         {(story && story.sightscontroller) &&
-        <SightsController
-          sightsList={story.sightscontroller}
-          onChangeSight={this.onChangeSight}
-        />}
+          <SightsController
+            sightsList={story.sightscontroller}
+            onChangeSight={this.onChangeSight}
+          />
+        }
         {(story && story.scalenodes) &&
           <ScaleController
             info={story.scalenodes.info}
@@ -96,7 +98,7 @@ class Controllers extends Component {
           />
         }
         {(story && story.toggleboolproperties) &&
-        <ToggleBoolButtons/>
+          <ToggleBoolButtons/>
         }
       </div>
     );
@@ -108,18 +110,16 @@ const mapStateToProps = (state) => {
   const story = state.storyTree.story;
   const scaleNodes = [];
   
-  if (state.propertyTree !== undefined) {
-    originNode = state.propertyTree.properties[NavigationAnchorKey];
+  originNode = state.propertyTree.properties[NavigationAnchorKey];
 
-    if (story.scalenodes) {
-      story.scalenodes.nodes.forEach(node => {
-        const scaleNode =
-          state.propertyTree.properties[ScaleKey.replace(ValuePlaceholder, `${node}`)];
-        if (scaleNode) {
-          scaleNodes.push(scaleNode);
-        }
-      });
-    }
+  if (story.scalenodes) {
+    story.scalenodes.nodes.forEach(node => {
+      const scaleNode =
+        state.propertyTree.properties[ScaleKey.replace(ValuePlaceholder, `${node}`)];
+      if (scaleNode) {
+        scaleNodes.push(scaleNode);
+      }
+    });
   }
 
   return {

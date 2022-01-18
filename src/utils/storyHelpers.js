@@ -17,9 +17,9 @@ export const setStoryStart = (luaApi, startPosition, startTime) => {
 // TODO evaluate flyTo vs toggleZoomOut
 
 // activates flying linearly to a set distance from the anchor
-export const flyTo = (luaApi, value, velocity = 0.02) => {
-  luaApi.setPropertyValue(`NavigationHandler.OrbitalNavigator.VelocityZoomControl`, velocity);
-  luaApi.setPropertyValue(FlightDestinationDistanceKey, value);
+export const flyTo = (luaApi, distance, velocity = 3.5) => {
+  luaApi.setPropertyValue(`NavigationHandler.OrbitalNavigator.LinearFlight.VelocityZoomControl`, velocity);
+  luaApi.setPropertyValue(FlightDestinationDistanceKey, distance);
   luaApi.setPropertyValue(ApplyFlyToKey, true);
 }
 
