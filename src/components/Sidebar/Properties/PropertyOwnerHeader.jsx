@@ -71,6 +71,8 @@ let PropertyOwnerHeader = ({title, identifier, expanded, setExpanded, onIcon, of
   if (isLayer) {
     titleClass = enabled ? styles.enabledLayerTitle : styles.disabledLayerTitle;
   }
+  // And additionally for height layers
+  const isHeightLayer = isLayer && quickToggleUri.includes("Layers.HeightLayers.");
 
   return (
     <header 
@@ -90,6 +92,7 @@ let PropertyOwnerHeader = ({title, identifier, expanded, setExpanded, onIcon, of
       }
       <span className={`${toggleHeaderStyles.title} ${titleClass}`} >
         { title }
+        { isHeightLayer && <MaterialIcon className={styles.heightLayerIcon} icon="landscape" /> }
         { isLayer && <SvgIcon className={styles.layerDraggableIcon}><DraggableIcon/></SvgIcon> }
       </span>
       <span className={styles.rightButtonContainer}>
