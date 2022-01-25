@@ -62,7 +62,7 @@ class NodeMetaPanel extends Component {
     var foundDoc = null;
     for (var i = 0; i < docs.length; ++i) {
       var doc = docs[i][1];
-      if (doc.identifiers && doc.identifiers.includes(identifier) ) {
+      if (doc.identifiers && doc.identifiers.includes("\""+identifier+"\"")) {
         foundDoc = doc;
       }
     }
@@ -79,7 +79,7 @@ class NodeMetaPanel extends Component {
     if (this.props.description) {
       rawDescription = this.props.description;
     } else {
-      rawDescription = foundDoc.description;
+      rawDescription = "No description found";
     }
     description = rawDescription.replace(/\\n/g,"");
 

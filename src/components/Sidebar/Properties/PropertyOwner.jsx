@@ -261,10 +261,9 @@ const mapSubStateToProps = (
 
   let renderableTypeProp = properties[uri + ".Renderable.Type"];
   var property = properties[uri + ".GuiName"];
-  var hasDescription = properties[uri + ".GuiDescription"];
   var showMeta = false;
-  if ((isSceneGraphNode(uri) || isGlobeBrowsingLayer(uri)) && hasDescription) {
-    showMeta = hasDescription;
+  if ((isSceneGraphNode(uri) || isGlobeBrowsingLayer(uri))) {
+    showMeta = true;
   }
 
   return {
