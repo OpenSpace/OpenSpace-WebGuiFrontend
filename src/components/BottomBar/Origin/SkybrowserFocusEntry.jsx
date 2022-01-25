@@ -50,7 +50,7 @@ class SkybrowserFocusEntry extends Component {
   select(evt) {
     const { identifier, onSelect } = this.props;
     if (onSelect && identifier) {
-      onSelect(identifier, evt);
+      onSelect(identifier);
     }
     this.props.currentTargetColor ? this.setBorderColor() : null;
   }

@@ -8,6 +8,9 @@ import ScrollOverlay from '../../common/ScrollOverlay/ScrollOverlay';
 import CenteredLabel from '../../common/CenteredLabel/CenteredLabel';
 import { Resizable } from 're-resizable';
 import TooltipSkybrowser from '../../common/Tooltip/TooltipSkybrowser';
+import NumericInput from '../Input/NumericInput/NumericInput'
+import ColorPickerPopup from '../ColorPicker/ColorPickerPopup'
+import Row from '../Row/Row'
 
 class SkybrowserTabs extends Component {
     constructor(props) {
@@ -19,14 +22,20 @@ class SkybrowserTabs extends Component {
             showButtonInfo2: false,
             showButtonInfo3: false,
             showButtonInfo4: false,
+            showButtonInfo5: false,
+            showSettings: false
         }
         this.createTabs = this.createTabs.bind(this);
+        this.createImageList = this.createImageList.bind(this);
         this.onResizeStop = this.onResizeStop.bind(this);
         this.onResize = this.onResize.bind(this);
         this.setRef = this.setRef.bind(this);
         this.showTooltip = this.showTooltip.bind(this);
         this.hideTooltip = this.hideTooltip.bind(this);
         this.handleDeleteTab = this.handleDeleteTab.bind(this);
+        this.toggleShowSettings = this.toggleShowSettings.bind(this);
+        this.createSettings = this.createSettings.bind(this);
+        this.valueToColor = this.valueToColor.bind(this);
     }
 
     get inheritedProps() {
@@ -49,8 +58,9 @@ class SkybrowserTabs extends Component {
     showTooltip(buttonNumber) {
         if(buttonNumber == 1) this.setState({showButtonInfo1 : !this.state.showButtonInfo1});
         else if(buttonNumber == 2) this.setState({showButtonInfo2 : !this.state.showButtonInfo2});
-        else if(buttonNumber == 3) this.setState({showButtonInfo3 : !this.state.showButtonInfop3});
-        else this.setState({showButtonInfo4 : !this.state.showButtonInfo4})
+        else if(buttonNumber == 3) this.setState({showButtonInfo3 : !this.state.showButtonInfo3});
+        else if(buttonNumber == 4) this.setState({showButtonInfo4 : !this.state.showButtonInfo4});
+        else this.setState({showButtonInfo5 : !this.state.showButtonInfo5})
 
     }
 
@@ -58,12 +68,20 @@ class SkybrowserTabs extends Component {
         if(buttonNumber == 1) this.setState({showButtonInfo1 : false});
         else if(buttonNumber == 2) this.setState({showButtonInfo2 : false});
         else if(buttonNumber == 3) this.setState({showButtonInfo3 : false});
-        else this.setState({showButtonInfo4 : false})
+        else if(buttonNumber == 4) this.setState({showButtonInfo4 : false});
+        else this.setState({showButtonInfo5 : false})
+    }
+
+    toggleShowSettings() {
+      this.setState({
+          showSettings: !this.state.showSettings
+      })
+      console.log(this.state.showSettings);
     }
 
     createTabs() {
 
-        const { showButtonInfo1, showButtonInfo2, showButtonInfo3, showButtonInfo4 } = this.state;
+        const { showButtonInfo1, showButtonInfo2, showButtonInfo3, showButtonInfo4, showButtonInfo5 } = this.state;
         const { targets, currentTarget, removeBrowser} = this.props;
         const { lockTarget, unlockTarget, createTargetBrowserPair, adjustCameraToTarget, select2dImagesAs3d, centerTarget, selectTab} = this.props.viewComponentProps;
 
@@ -125,6 +143,16 @@ class SkybrowserTabs extends Component {
                                         </TooltipSkybrowser>
                                     }
                                 </Button>
+                                <Button onClick={() => this.toggleShowSettings()} onMouseLeave={() => this.hideTooltip(5)}
+                                className={this.state.showSettings ? styles.tabButtonActive : styles.tabButton} transparent small>
+                                    <MaterialIcon onMouseEnter={() => this.showTooltip(5)} icon="settings" className="small"/>
+                                    { showButtonInfo5 && <TooltipSkybrowser
+                                        placement="bottom-right"
+                                        style={this.position}>
+                                        {"Settings"}
+                                        </TooltipSkybrowser>
+                                    }
+                                </Button>
                             </span>
                             }
                     </div>
@@ -139,6 +167,138 @@ class SkybrowserTabs extends Component {
                 </Button>
             </div>
         );
+    }
+
+    createImageList(data, props) {
+      const EntryComponent = props.viewComponent;
+       return <ScrollOverlay>
+            { data.length === 0 ? (
+            <CenteredLabel>There are no loaded images in this Sky Browser.</CenteredLabel>
+            ) : (
+            <ul>
+                { data.map((entry, index) => (
+                     <div>
+                    {(index == 0) ? <span className={styles.arrowButtonEmpty} transparent></span> :
+                        <Button onClick={() => props.setImageOrder(entry.identifier , index - 1)} className={styles.arrowButton} transparent>
+                        <MaterialIcon icon="keyboard_arrow_left" />
+                        </Button>
+                    }
+                    <EntryComponent
+                    {...entry}
+                    {...props.viewComponentProps}
+                    key={entry.identifier}
+                    onSelect={this.props.viewComponentProps.selectImage}
+                    />
+                    {
+                    (index == data.length -1) ? <span className={styles.arrowButtonEmpty} transparent></span> :
+                        <Button onClick={() => props.setImageOrder(entry.identifier, index + 1)} className={styles.arrowButton} transparent>
+                        <MaterialIcon icon="keyboard_arrow_right" />
+                        </Button>
+                      }
+                  </div>
+                ))}
+            </ul>
+            )}
+        </ScrollOverlay>
+    }
+
+    valueToColor(color) {
+
+      return {
+          r: color[0],
+          g: color[1],
+          b: color[2],
+          a: 1.0
+      }
+    }
+
+    createSettings(target, setFov, setBorderColor, setEquatorialAim, setScreenSpaceSize) {
+      let size = target.size;
+      let colors = target.color;
+      let colorData = ['Border Color: Red', 'Green', 'Blue'];
+      let sizeData = ['Browser Width', 'Browser Height'];
+      let precision = 7;
+
+      // TODO: Fix color picker
+      let colorPicker = <ColorPickerPopup
+        disableAlpha={true}
+        color={this.valueToColor(target.color)}
+        onChange={(values) => { }}
+        placement="right"
+        disabled={false}
+      />;
+
+      return <ScrollOverlay>
+                <NumericInput className= 'Vertical Field Of View'
+                label = 'Vertical Field Of View'
+                max = {70}
+                min = {0.0000000001}
+                disabled={!setFov}
+                onValueChanged={setFov}
+                step = {1}
+                value = {parseFloat(target.FOV.toFixed(precision))}
+                placeholder={`value 0`}
+                >
+                </NumericInput>
+                <Row className={`${styles.vectorProperty} ${this.disabled ? styles.disabled : ''}`}>
+                   <NumericInput className= 'Right Ascension'
+                    label = 'Right Ascension'
+                    max = {360}
+                    min = {0}
+                    disabled={!setFov}
+                    onValueChanged={(value) => setEquatorialAim(value, target.dec)}
+                    step = {0.1}
+                    value = {parseFloat(target.ra.toFixed(precision))}
+                    placeholder={`value 1`}
+                    />
+                    <NumericInput className= 'Declination'
+                      label = 'Declination'
+                      max = {90}
+                      min = {-90}
+                      disabled={!setFov}
+                      onValueChanged={(value) => setEquatorialAim(target.ra, value)}
+                      step = {0.1}
+                      value = {parseFloat(target.dec.toFixed(precision))}
+                      placeholder={`value 2`}
+                      />
+                </Row>
+                <Row className={`${styles.vectorProperty} ${this.disabled ? styles.disabled : ''}`}>
+                  { colors.map((color, index) => (
+                    <NumericInput
+                      className= {colorData[index]}
+                      label = {colorData[index]}
+                      max = {255}
+                      min = {0}
+                      onValueChanged={(value) => {
+                        let newColor = colors;
+                        newColor[index] = value;
+                        setBorderColor(newColor);
+                      } }
+                      step = {1}
+                      value = {color}
+                      placeholder={`value ${index}`}
+                    />
+                  ))}
+                </Row>
+                <Row className={`${styles.vectorProperty} ${this.disabled ? styles.disabled : ''}`}>
+                  { size.map((value, index) => (
+                    <NumericInput
+                      className= {sizeData[index]}
+                      label = {sizeData[index]}
+                      max = {2}
+                      min = {0}
+                      onValueChanged={(value) => {
+                        let newSize = size;
+                        newSize[index] = value;
+                        setScreenSpaceSize(newSize);
+                      } }
+                      step = {0.1}
+                      value = {parseFloat(value.toFixed(precision))}
+                      placeholder={`value ${index}`}
+                    />
+                  ))}
+                </Row>
+      </ScrollOverlay>
     }
 
     handleDeleteTab(tabToDelete) {
@@ -160,10 +320,9 @@ class SkybrowserTabs extends Component {
     }
 
     render() {
-        const {data, currentPopoverHeight} = this.props;
-        var props = this.props;
-        const EntryComponent = this.props.viewComponent;
-        var noOfSelectedImages = data.length;
+        const {data, currentPopoverHeight, targets, currentTarget} = this.props;
+        let {setFov, setBorderColor, setEquatorialAim, setScreenSpaceSize} = this.props;
+        const currentlySelectedTarget = targets[currentTarget];
 
         return(
             <section {...this.inheritedProps} className={styles.tabContainer}>
@@ -177,42 +336,13 @@ class SkybrowserTabs extends Component {
                 onResize={this.onResize}>
                 {this.createTabs()}
                 <div className={styles.tabContent} style={{ height: this.state.currentHeight }}>
-                    <ScrollOverlay>
-                        { data.length === 0 ? (
-                        <CenteredLabel>There are no loaded images in this Sky Browser.</CenteredLabel>
-                        ) : (
-                        <ul>
-                            { data.map((entry, index) => (
-                                 <div>
-                                {(index == 0) ? <span className={styles.arrowButtonEmpty} transparent></span> :
-                                    <Button onClick={() => props.setImageOrder(entry.identifier , index - 1)} className={styles.arrowButton} transparent>
-                                    <MaterialIcon icon="keyboard_arrow_left" />
-                                    </Button>
-                                }
-                                <EntryComponent
-                                {...entry}
-                                {...props.viewComponentProps}
-                                key={entry.identifier}
-                                onSelect={this.props.onSelect}
-                                />
-                                {
-                                (index == noOfSelectedImages -1) ? <span className={styles.arrowButtonEmpty} transparent></span> :
-                                    <Button onClick={() => props.setImageOrder(entry.identifier, index + 1)} className={styles.arrowButton} transparent>
-                                    <MaterialIcon icon="keyboard_arrow_right" />
-                                    </Button>
-                                  }
-                              </div>
-                            ))}
-                        </ul>
-                        )}
-                    </ScrollOverlay>
+                  {this.state.showSettings ? this.createSettings(currentlySelectedTarget, setFov, setBorderColor, setEquatorialAim, setScreenSpaceSize)
+                    : this.createImageList(data, this.props)}
                 </div>
             </Resizable>
             </section>
         )
-
     };
-
 }
 
 SkybrowserTabs.propTypes = {
