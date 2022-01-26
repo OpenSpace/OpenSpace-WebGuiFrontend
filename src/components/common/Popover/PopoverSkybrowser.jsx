@@ -17,16 +17,22 @@ const findStyles = arr => arr.split(' ')
   .map(style => styles[style] || style)
   .join(' ');
 
+const WindowStyle = {
+  DETACHED : "DETACHED",
+  PANE : "PANE",
+  ATTACHED : "ATTACHED"
+}
+
 class PopoverSkybrowser extends Component {
   constructor(props) {
     super(props);
-    this.state = { 
-      isDetached: !props.attached, 
-      isSideview: !props.sideview, 
+    this.state = {
+      windowStyle: WindowStyle.ATTACHED,
       height: 440,
     };
-    this.toggleDetach = this.toggleDetach.bind(this);
-    this.toggleSideview = this.toggleSideview.bind(this);
+    this.setAsPane = this.setAsPane.bind(this);
+    this.setAsDetached = this.setAsDetached.bind(this);
+    this.setAsAttached = this.setAsAttached.bind(this);
     this.onResizeStop = this.onResizeStop.bind(this);
   }
 
@@ -62,7 +68,7 @@ class PopoverSkybrowser extends Component {
 
   get asPopup() {
     return (
-      
+
       <section {...this.inheritedProps} className={`${styles.popover} ${this.arrowStyle} ${this.styles}`}>
         <Resizable
           enable={{
@@ -95,64 +101,79 @@ class PopoverSkybrowser extends Component {
             </div>
 
             <div>
-              { this.props.detachable && (
-                <Button onClick={this.toggleDetach} transparent small>
+              { <Button onClick={this.setAsDetached} transparent small>
                   <MaterialIcon icon="filter_none" />
                 </Button>
-              )}
-               { this.props.sideview && (
-                <Button onClick={this.toggleSideview} transparent small>
+              }
+               {
+                <Button onClick={this.setAsPane} transparent small>
                   <MaterialIcon icon="exit_to_app" />
                 </Button>
-              )}
-              { this.props.closeCallback && (
+              }
+              {
                 <Button onClick={this.props.closeCallback} transparent small>
                   <MaterialIcon icon="close" className="small" />
                 </Button>
-              )}
+              }
             </div>
           </header>
         )}
         { this.props.children }
         </Resizable>
       </section>
-      
+
     );
   }
 
-  get asWindow() {  
-    return ( 
-        <WindowSkybrowser {...this.windowInheritedProps} onResizeStop={this.onResizeStop} size={{height: this.state.height, width: '300px'}}>
-          { this.props.children } 
+  get asWindow() {
+    return (
+        <WindowSkybrowser {...this.windowInheritedProps} onResizeStop={this.onResizeStop}
+          size={{height: this.state.height, width: '300px'}} setAsPane = {this.setAsPane} setAsAttached = {this.setAsAttached}>
+          { this.props.children }
         </WindowSkybrowser>
     );
   }
 
   get asSideview() {
-    return ( 
-      <PaneSkybrowser {...this.sideviewInheritedProps}>
-        { this.props.children } 
+    return (
+      <PaneSkybrowser
+        {...this.sideviewInheritedProps}
+        setAsAttached = {this.setAsAttached}
+        setAsDetached = {this.setAsDetached}
+      >
+        { this.props.children }
       </PaneSkybrowser>
-
   );
 
   }
 
-  toggleDetach() {
-    this.setState({ isDetached: !this.state.isDetached });
+  setAsDetached() {
+    this.setState({ windowStyle: WindowStyle.DETACHED });
     //this.props.heightCallback(this.state.height);
   }
 
-  toggleSideview() {
-    this.setState({ isSideview: !this.state.isSideview });
+  setAsPane() {
+    this.setState({ windowStyle: WindowStyle.PANE });
+    this.props.heightCallback(window.innerHeight);
+  }
+
+  setAsAttached() {
+    this.setState({ windowStyle: WindowStyle.ATTACHED });
     this.props.heightCallback(window.innerHeight);
   }
 
   render() {
 
-    if(this.state.isDetached) return this.asWindow
-    else if(this.state.isSideview) return this.asSideview 
-    else return this.asPopup
+    switch(this.state.windowStyle) {
+      case WindowStyle.ATTACHED:
+        return this.asPopup;
+      case WindowStyle.DETACHED:
+        return  this.asWindow;
+      case WindowStyle.PANE:
+        return this.asSideview;
+      default:
+        return WindowStyle.ATTACHED;
+    }
 
   }
 }

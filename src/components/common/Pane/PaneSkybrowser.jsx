@@ -4,14 +4,15 @@ import MaterialIcon from '../MaterialIcon/MaterialIcon';
 import { Resizable } from 're-resizable';
 import styles from './PaneSkybrowser.scss';
 import Pane from '../../Sidebar/Pane';
+import Button from '../Input/Button/Button';
 import { excludeKeys } from '../../../utils/helpers';
 import { size } from 'lodash';
 
 
 class PaneSkybrowser extends Component {
- 
+
   render() {
-    const { children, title, closeCallback } = this.props;
+    const { children, title, closeCallback, setAsAttached, setAsDetached } = this.props;
 
     return (
       <section className={styles.pane}>
@@ -39,14 +40,27 @@ class PaneSkybrowser extends Component {
               { title }
             </div>
             { closeCallback && (
-              <button onClick={closeCallback} className={styles.close}>
-                <MaterialIcon icon="close" className="small" />
-              </button>
-            ) }
+              <div>
+              {
+              <Button onClick={setAsDetached} transparent small>
+                <MaterialIcon icon="filter_none" />
+              </Button>
+              }
+              {
+              <Button onClick={setAsAttached} transparent small>
+                <MaterialIcon icon="open_in_browser" />
+              </Button>
+              }
+              {
+              <Button onClick={closeCallback} transparent small>
+                <MaterialIcon icon="close" />
+              </Button>
+              }
+            </div>) }
           </header>
           <div className={styles.content}>
             { children }
-          </div>   
+          </div>
         </Resizable>
       </section>
     );

@@ -342,8 +342,6 @@ class WWTPanel extends Component {
         title="AAS WorldWide Telescope"
         closeCallback={this.togglePopover}
         detachable
-        attached={true}
-        sideview = {true}
         heightCallback={this.setCurrentPopoverHeight}
         >
 

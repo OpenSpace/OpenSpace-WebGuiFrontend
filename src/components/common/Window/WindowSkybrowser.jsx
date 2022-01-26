@@ -11,16 +11,16 @@ import SkybrowserTabs from '../../common/Tabs/SkybrowserTabs';
 
 const WindowSkybrowser = (props) => {
 
-  const { children, title, closeCallback, size, position, onResizeStop} = props;
+  const { children, title, closeCallback, setAsPane, setAsAttached, size, position, onResizeStop} = props;
 
   return (
 
-    <Draggable 
-    defaultPosition={position} 
-    handle=".header">      
-      <section 
+    <Draggable
+    defaultPosition={position}
+    handle=".header">
+      <section
       className={styles.window}
-      {...excludeKeys(props, 'children title callback className closeCallback onResizeStop')}>         
+      {...excludeKeys(props, 'children title callback className closeCallback onResizeStop')}>
         <Resizable
         enable={{ right: true,bottom: true,}}
         defaultSize={{width: size.width, height: size.height }}
@@ -33,16 +33,30 @@ const WindowSkybrowser = (props) => {
             { title }
           </div>
           { closeCallback && (
-            <Button onClick={closeCallback} transparent small>
-              <MaterialIcon icon="close" className="small" />
-            </Button>
+            <div>
+              {
+                <Button onClick={setAsAttached} transparent small>
+                  <MaterialIcon icon="open_in_browser" />
+                </Button>
+              }
+               {
+                <Button onClick={setAsPane} transparent small>
+                  <MaterialIcon icon="exit_to_app" />
+                </Button>
+              }
+              {
+                <Button onClick={closeCallback} transparent small>
+                  <MaterialIcon icon="close" className="small" />
+                </Button>
+              }
+            </div>
           )}
-          </header>  
+          </header>
           <div className={styles.content}>
-          <section className={styles.imageContent}>   
-            { children }         
+          <section className={styles.imageContent}>
+            { children }
           </section>
-          </div>  
+          </div>
         </Resizable>
       </section>
     </Draggable>
