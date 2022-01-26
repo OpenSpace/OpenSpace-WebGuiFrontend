@@ -213,7 +213,8 @@ class SkybrowserTabs extends Component {
     }
 
     createSettings(target, setFov, setBorderColor, setEquatorialAim, setScreenSpaceSize) {
-      let size = target.size;
+      // Take half to display in ranges [0,1] instead of [0,2]
+      let size = target.size.map((value) => value * 0.5) ;
       let colors = target.color;
       let colorData = ['Border Color: Red', 'Green', 'Blue'];
       let sizeData = ['Browser Width', 'Browser Height'];
@@ -285,11 +286,11 @@ class SkybrowserTabs extends Component {
                     <NumericInput
                       className= {sizeData[index]}
                       label = {sizeData[index]}
-                      max = {2}
-                      min = {0}
+                      max = {1}
+                      min = {0.1}
                       onValueChanged={(value) => {
-                        let newSize = size;
-                        newSize[index] = value;
+                        let newSize = size.map((value) => value * 2);
+                        newSize[index] = value * 2;
                         setScreenSpaceSize(newSize);
                       } }
                       step = {0.1}
