@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import Button from '../common/Input/Button/Button';
+import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
+import InfoBoxSkybrowser from './InfoBoxSkybrowser';
+import TooltipSkybrowser from './TooltipSkybrowser';
 import styles from './SkybrowserFocusEntry.scss';
-import Button from '../../common/Input/Button/Button';
-import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
-import InfoBoxSkybrowser from '../../common/InfoBox/InfoBoxSkybrowser';
-import TooltipSkybrowser from '../../common/Tooltip/TooltipSkybrowser';
 
 //import { clamp } from 'lodash/number';
 class OpacitySlider extends Component {
@@ -74,7 +74,7 @@ class SkybrowserFocusEntry extends Component {
   render() {
     const { name, identifier, thumbnail, credits, creditsUrl, has3dCoords, setOpacity, removeImageSelection, place3dImage, ra, dec, fov} = this.props;
     const image3dbutton = has3dCoords ? <Button onClick={() => {place3dImage(identifier)}} className={styles.addTo3DButton} transparent small>
-    <MaterialIcon  icon="add_circle" 
+    <MaterialIcon  icon="add_circle"
     onMouseLeave={() => this.hideTooltip()} onMouseEnter={() => this.showTooltip()}/>
     { this.state.showButtonInfo && <TooltipSkybrowser
         placement="bottom-right"
@@ -122,7 +122,7 @@ class SkybrowserFocusEntry extends Component {
               isTabEntry={this.isTabEntry}>
             </InfoBoxSkybrowser>
           </div>
-        
+
           {opacitySlider}
       </li>
     );

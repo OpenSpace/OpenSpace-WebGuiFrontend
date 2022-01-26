@@ -1,16 +1,18 @@
 import React, { Component } from 'react';
-import styles from './SkybrowserTabs.scss';
-import Button from '../Input/Button/Button';
-import MaterialIcon from '../MaterialIcon/MaterialIcon';
-import { excludeKeys } from '../../../utils/helpers';
 import PropTypes from 'prop-types';
-import ScrollOverlay from '../../common/ScrollOverlay/ScrollOverlay';
-import CenteredLabel from '../../common/CenteredLabel/CenteredLabel';
+
+import Button from '../common/Input/Button/Button';
+import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
+import ScrollOverlay from '../common/ScrollOverlay/ScrollOverlay';
+import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
+import Row from '../common/Row/Row'
+import NumericInput from '../common/Input/NumericInput/NumericInput'
+import ColorPickerPopup from '../common/ColorPicker/ColorPickerPopup'
+
+import { excludeKeys } from '../../utils/helpers';
+import TooltipSkybrowser from './TooltipSkybrowser';
+import styles from './SkybrowserTabs.scss';
 import { Resizable } from 're-resizable';
-import TooltipSkybrowser from '../../common/Tooltip/TooltipSkybrowser';
-import NumericInput from '../Input/NumericInput/NumericInput'
-import ColorPickerPopup from '../ColorPicker/ColorPickerPopup'
-import Row from '../Row/Row'
 
 class SkybrowserTabs extends Component {
     constructor(props) {

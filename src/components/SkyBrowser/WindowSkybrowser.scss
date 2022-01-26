@@ -1,5 +1,5 @@
-@import "../../../styles/all";
-@import "../Popover/Popover";
+@import "../../styles/all";
+@import "../common/Popover/Popover";
 
 .window {
   background: $background;
@@ -9,22 +9,22 @@
   max-width: none;
   position: absolute;
   z-index: 10;
-  
+
   &.small {
     max-width: 150px;
   }
 
   > :last-child {
     padding-bottom: $popover-corner-radius;
-  } 
+  }
   :global(.scroll-content) {
-    max-height: auto;   
+    max-height: auto;
   }
 
 }
 
 .content {
-  height: 100%; 
+  height: 100%;
   width: auto;
   display: inline-flexbox;
   padding: 0px;
@@ -51,7 +51,7 @@
       background: $ui-background-solid;
   }
 }
-  
+
 .bottomHandle {
     background: transparent;
     border-radius: 2px;

@@ -2,12 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Draggable from 'react-draggable';
 import styles from './WindowSkybrowser.scss';
-import MaterialIcon from '../MaterialIcon/MaterialIcon';
-import Button from '../Input/Button/Button';
-import { excludeKeys } from '../../../utils/helpers';
+import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
+import Button from '../common/Input/Button/Button';
+import { excludeKeys } from '../../utils/helpers';
 import { Resizable } from 're-resizable';
-import SkybrowserTabs from '../../common/Tabs/SkybrowserTabs';
-
+import SkybrowserTabs from './SkybrowserTabs';
 
 const WindowSkybrowser = (props) => {
 

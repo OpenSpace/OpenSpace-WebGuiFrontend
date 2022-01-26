@@ -1,4 +1,4 @@
-@import "../../../styles/all";
+@import "../../styles/all";
 
 $arrow-size: 4px;
 $background: $ui-background-solid;
@@ -26,8 +26,8 @@ $tooltip-color: rgba(15,15,15,0.9); //rgba(60,60,60,0.95);
  // infoboxskybrowser styles
 .tooltipTitle {
   display: block;
-  font-size: 16px; 
-  color: rgba(255,255,255,0.6); 
+  font-size: 16px;
+  color: rgba(255,255,255,0.6);
 }
 
 .tooltipButton {
@@ -78,6 +78,3 @@ $tooltip-color: rgba(15,15,15,0.9); //rgba(60,60,60,0.95);
   top: -2*$arrow-size;
   left: 88px;
 }
-
-
-

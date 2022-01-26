@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import MaterialIcon from '../MaterialIcon/MaterialIcon';
-import TooltipSkybrowser from '../Tooltip/TooltipSkybrowser';
-import styles from '../Tooltip/TooltipSkybrowser.scss';
-import Button from '../../common/Input/Button/Button';
 import { times } from 'lodash';
+import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
+import Button from '../common/Input/Button/Button';
+import TooltipSkybrowser from './TooltipSkybrowser';
+import styles from './TooltipSkybrowser.scss';
 import esaSkyLogo from './ESASKY.png';
-
 
 class InfoBoxSkybrowser extends Component {
   constructor(props) {

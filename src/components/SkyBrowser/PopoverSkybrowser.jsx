@@ -1,17 +1,18 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-
-import { excludeKeys } from '../../../utils/helpers';
-import MaterialIcon from '../MaterialIcon/MaterialIcon';
-import styles from './PopoverSkybrowser.scss';
-import Button from '../Input/Button/Button';
-import Window from '../Window/Window';
 import { Resizable } from 're-resizable';
-import WindowSkybrowser from '../Window/WindowSkybrowser';
-import SmallLabel from '../../common/SmallLabel/SmallLabel';
-import TabMenu from '../../Sidebar/TabMenu/TabMenu';
-import PaneSkybrowser from '../Pane/PaneSkybrowser';
-import SkybrowserTabs from '../../common/Tabs/SkybrowserTabs';
+
+import { excludeKeys } from '../../utils/helpers';
+import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
+import Button from '../common/Input/Button/Button';
+import Window from '../common/Window/Window';
+import SmallLabel from '../common/SmallLabel/SmallLabel';
+import TabMenu from '../Sidebar/TabMenu/TabMenu';
+
+import styles from './PopoverSkybrowser.scss';
+import WindowSkybrowser from './WindowSkybrowser';
+import PaneSkybrowser from './PaneSkybrowser';
+import SkybrowserTabs from './SkybrowserTabs';
 
 const findStyles = arr => arr.split(' ')
   .map(style => styles[style] || style)

@@ -1,4 +1,4 @@
-@import '../../../styles/all.scss';
+@import '../../styles/all.scss';
 
 $font-size: 1rem;
 $icon-size: 18px;
@@ -11,8 +11,8 @@ $border-width: 1px;
   border-bottom: $border-width solid $ui-divider;
   position: fixed;
   top: 0;
-  right: 0; 
-  height: 100%; 
+  right: 0;
+  height: 100%;
   max-width: 50%;
 }
 
@@ -27,7 +27,7 @@ $border-width: 1px;
   > * {
     padding: 0 $sidebar-padding;
   }
-  
+
 }
 
 .pane .content {

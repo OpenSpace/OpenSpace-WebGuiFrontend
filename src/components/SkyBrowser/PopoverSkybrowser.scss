@@ -1,4 +1,4 @@
-@import '../../../styles/all';
+@import '../../styles/all';
 
 $background: $ui-background-solid;
 $arrow-size: $popover-arrow-size;
@@ -50,11 +50,11 @@ $imagelist-margin: 4px;
 }
 
 .content {
-  height: calc(100% - #{$image-selection-header-height}); 
+  height: calc(100% - #{$image-selection-header-height});
   ul {
     display: flex;
     flex-wrap: wrap;
-  } 
+  }
   :global(.scroll-content) {
     width : 100%;
     &::after, &::before {

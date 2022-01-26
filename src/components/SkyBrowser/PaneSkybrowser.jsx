@@ -1,13 +1,12 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import MaterialIcon from '../MaterialIcon/MaterialIcon';
 import { Resizable } from 're-resizable';
-import styles from './PaneSkybrowser.scss';
-import Pane from '../../Sidebar/Pane';
-import Button from '../Input/Button/Button';
-import { excludeKeys } from '../../../utils/helpers';
 import { size } from 'lodash';
-
+import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
+import styles from './PaneSkybrowser.scss';
+import Pane from '../Sidebar/Pane';
+import Button from '../common/Input/Button/Button';
+import { excludeKeys } from '../../utils/helpers';
 
 class PaneSkybrowser extends Component {
 

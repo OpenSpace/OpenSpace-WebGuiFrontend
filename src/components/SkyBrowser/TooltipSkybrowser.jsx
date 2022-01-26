@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styles from './TooltipSkybrowser.scss';
-import { excludeKeys } from '../../../utils/helpers';
+import { excludeKeys } from '../../utils/helpers';
 
 const TooltipSkybrowser = (props) => {
   const { children, placement, fixed } = props;

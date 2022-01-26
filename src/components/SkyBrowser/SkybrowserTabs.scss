@@ -1,4 +1,4 @@
-@import "../../../styles/all";
+@import "../../styles/all";
 
 
 $tabs-height: 48px;
@@ -11,7 +11,7 @@ $tabs-buttons-margin: 32px;
 $tabs-arrowbutton-width: 13.34px;
 
 .tabContainer {
-    background: $tabs-background;   
+    background: $tabs-background;
     position: absolute;
     width: calc(100% - #{$tabs-margin-horizontal});
     margin-left: $tabs-margin-horizontal / 2;
@@ -20,7 +20,7 @@ $tabs-arrowbutton-width: 13.34px;
 
 .tab {
     height: $tabs-height;
-    background: $tabs-background; 
+    background: $tabs-background;
     padding-left: 4px;
     padding-right: 4px;
     font-size: 16px;
@@ -45,7 +45,7 @@ $tabs-arrowbutton-width: 13.34px;
     position: relative;
 }
 
-.tabTitle {  
+.tabTitle {
     max-width: calc(100% - #{$tabs-close-button-width});
     white-space: nowrap;
     overflow: hidden;
@@ -58,15 +58,15 @@ $tabs-arrowbutton-width: 13.34px;
 }
 
 .tabContent {
-      
+
     :global(.scroll-content) {
-        height: calc(100% - #{$tabs-active-height}); 
+        height: calc(100% - #{$tabs-active-height});
         background: $tabs-background-content;
-        
+
         &::after, &::before {
           background: transparent;
         }
-    } 
+    }
 }
 
 
@@ -99,7 +99,7 @@ $tabs-arrowbutton-width: 13.34px;
     padding: 3px 5px 3px 5px;
 }
 .tabButtonActive {
-    background-color: $tabs-background; 
+    background-color: $tabs-background;
     border-radius: 4px;
     padding: 3px 5px 3px 5px;
 }
@@ -116,8 +116,3 @@ $tabs-arrowbutton-width: 13.34px;
         top: 38px;
     }
 }
-
-
-  
-
-

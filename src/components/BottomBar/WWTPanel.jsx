@@ -1,37 +1,25 @@
 import React, { Component } from 'react';
 import Popover from '../common/Popover/Popover';
 import Button from '../common/Input/Button/Button';
-import Picker from './Picker';
-import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import Input from '../common/Input/Input/Input';
+import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
 import Row from '../common/Row/Row';
 import FilterList from '../common/FilterList/FilterList';
-import SkybrowserFocusEntry from './Origin/SkybrowserFocusEntry';
+import Picker from './Picker';
 import propertyDispatcher from '../../api/propertyDispatcher';
-
 import { Resizable } from 're-resizable';
-import PopoverSkybrowser from '../common/Popover/PopoverSkybrowser';
-import wwtLogo from './wwtlogo.png';
-
-import {
-  setPopoverVisibility,
-} from '../../api/Actions';
-
-import {
-  NavigationAnchorKey,
-  NavigationAimKey,
-  RetargetAnchorKey,
-} from '../../api/keys';
-
-import { connect } from 'react-redux';
-
-import styles from './WWTPanel.scss';
-
 import PropertyOwner from '../Sidebar/Properties/PropertyOwner'
 import subStateToProps from '../../utils/subStateToProps';
-import SkybrowserTabs from '../common/Tabs/SkybrowserTabs';
-
+import { setPopoverVisibility } from '../../api/Actions';
+import { NavigationAnchorKey, NavigationAimKey, RetargetAnchorKey } from '../../api/keys';
+import { connect } from 'react-redux';
+// Sky  browser
+import SkybrowserFocusEntry from '../SkyBrowser/SkybrowserFocusEntry';
+import PopoverSkybrowser from '../SkyBrowser/PopoverSkybrowser';
+import SkybrowserTabs from '../SkyBrowser/SkybrowserTabs';
+import wwtLogo from './wwtlogo.png';
+import styles from './WWTPanel.scss';
 
 class WWTPanel extends Component {
 
