@@ -31,6 +31,8 @@ class WWTPanel extends Component {
       targetData: "",
       selectedTarget: "",
       cameraData: {FOV : 70, RA: 0, Dec: 0},
+      isUsingRae : false,
+      isFacingCamera : false,
       currentTabHeight: 185,
       currentPopoverHeight: 440,
     };
@@ -145,7 +147,10 @@ class WWTPanel extends Component {
       this.setState({
         targetData: target,
         cameraData: {FOV: camera.windowHFOV, cartesianDirection: camera.cartesianDirection, ra : camera.ra, dec: camera.dec},
-        selectedTarget: camera.selectedBrowserId
+        selectedTarget: camera.selectedTargetId,
+        selectedBrowser: camera.selectedBrowserId,
+        isUsingRae: camera.isUsingRadiusAzimuthElevation,
+        isFacingCamera: camera.isFacingCamera
       });
     }
     catch(e) {
@@ -284,7 +289,7 @@ class WWTPanel extends Component {
   get popover() {
 
     let imageList = this.state.showOnlyNearest ? this.getNearestImages() : this.getAllImages();
-    let api = this.props.luaApi.skybrowser;
+    let api = this.props.luaApi;
     //let imageList = this.state.showOnlyNearest ? this.getImagesWith3Dcoord() : this.getAllImages();
 
     let filterList = imageList.length == 0 ? "" : <FilterList
@@ -306,8 +311,13 @@ class WWTPanel extends Component {
     let currentPopoverHeight = this.state.currentPopoverHeight - selectionButtonsAndSearchHeight;
 
     let skybrowserTabs = <SkybrowserTabs
+      api = {api}
+      skybrowserApi = {api.skybrowser}
       targets={this.state.targetData}
-      currentTarget={this.state.selectedTarget.toString()}
+      selectedTarget={this.state.selectedTarget.toString()}
+      selectedBrowser={this.state.selectedBrowser.toString()}
+      isUsingRae = {this.state.isUsingRae}
+      isFacingCamera = {this.state.isFacingCamera}
       setFov={this.setFieldOfView}
       setBorderColor={this.setBorderColor}
       setEquatorialAim={this.setEquatorialAim}

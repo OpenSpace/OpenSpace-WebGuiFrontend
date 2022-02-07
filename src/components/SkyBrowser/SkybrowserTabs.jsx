@@ -8,6 +8,7 @@ import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
 import Row from '../common/Row/Row'
 import NumericInput from '../common/Input/NumericInput/NumericInput'
 import ColorPickerPopup from '../common/ColorPicker/ColorPickerPopup'
+import Checkbox from '../common/Input/Checkbox/Checkbox'
 
 import { excludeKeys } from '../../utils/helpers';
 import TooltipSkybrowser from './TooltipSkybrowser';
@@ -25,7 +26,7 @@ class SkybrowserTabs extends Component {
             showButtonInfo3: false,
             showButtonInfo4: false,
             showButtonInfo5: false,
-            showSettings: false
+            showSettings: false,
         }
         this.createTabs = this.createTabs.bind(this);
         this.createImageList = this.createImageList.bind(this);
@@ -38,6 +39,8 @@ class SkybrowserTabs extends Component {
         this.toggleShowSettings = this.toggleShowSettings.bind(this);
         this.createSettings = this.createSettings.bind(this);
         this.valueToColor = this.valueToColor.bind(this);
+        this.toggleFaceCamera = this.toggleFaceCamera.bind(this);
+        this.toggleRadiusAzimuthElevation = this.toggleRadiusAzimuthElevation.bind(this);
     }
 
     get inheritedProps() {
@@ -78,13 +81,28 @@ class SkybrowserTabs extends Component {
       this.setState({
           showSettings: !this.state.showSettings
       })
-      console.log(this.state.showSettings);
+    }
+
+    toggleFaceCamera() {
+      let uriBrowser = 'ScreenSpace.' + this.props.selectedBrowser + '.FaceCamera';
+      let uriTarget = 'ScreenSpace.' + this.props.selectedTarget + '.FaceCamera';
+
+      this.props.api.setPropertyValueSingle(uriBrowser, !this.props.isFacingCamera);
+      this.props.api.setPropertyValueSingle(uriTarget, !this.props.isFacingCamera);
+    }
+
+    toggleRadiusAzimuthElevation() {
+      let uriBrowser = 'ScreenSpace.' + this.props.selectedBrowser + '.UseRadiusAzimuthElevation';
+      let uriTarget = 'ScreenSpace.' + this.props.selectedTarget + '.UseRadiusAzimuthElevation';
+
+      this.props.api.setPropertyValueSingle(uriBrowser, !this.props.isUsingRae);
+      this.props.api.setPropertyValueSingle(uriTarget, !this.props.isUsingRae);
     }
 
     createTabs() {
 
         const { showButtonInfo1, showButtonInfo2, showButtonInfo3, showButtonInfo4, showButtonInfo5 } = this.state;
-        const { targets, currentTarget, removeBrowser} = this.props;
+        const { targets, selectedBrowser, removeBrowser} = this.props;
         const { lockTarget, unlockTarget, createTargetBrowserPair, adjustCameraToTarget, select2dImagesAs3d, centerTarget, selectTab} = this.props.viewComponentProps;
 
         const allTabs = Object.keys(targets).map((target, index) => {
@@ -94,15 +112,15 @@ class SkybrowserTabs extends Component {
 
             return(
                 <div key={index}
-                style={currentTarget === target ? {borderTopRightRadius: "4px", borderTop:  "3px solid " + targetColor}:{}}>
-                    <div className={ currentTarget === target ? styles.tabActive : styles.tab } onClick={() => selectTab(target)}>
+                style={selectedBrowser === target ? {borderTopRightRadius: "4px", borderTop:  "3px solid " + targetColor}:{}}>
+                    <div className={ selectedBrowser === target ? styles.tabActive : styles.tab } onClick={() => selectTab(target)}>
                         <span className={styles.tabHeader}>
                             <span className={styles.tabTitle}>{ targets[target].name }</span>
                             <Button onClick={() => removeBrowser(target)} className={styles.closeTabButton} transparent small>
                                 <MaterialIcon icon="close" className="small"/>
                             </Button>
                         </span>
-                            { currentTarget === target &&
+                            { selectedBrowser === target &&
                             <span className={styles.tabButtonContainer} ref={this.setRef('wrapper')}>
                                 <Button onClick={() => adjustCameraToTarget(target)} onMouseLeave={() => this.hideTooltip(1)}
                                 className={styles.tabButton} transparent small>
@@ -221,6 +239,8 @@ class SkybrowserTabs extends Component {
       let colorData = ['Border Color: Red', 'Green', 'Blue'];
       let sizeData = ['Browser Width', 'Browser Height'];
       let precision = 7;
+      let api = this.props.api;
+      let skybrowserApi = this.props.skybrowserApi;
 
       // TODO: Fix color picker
       let colorPicker = <ColorPickerPopup
@@ -265,6 +285,24 @@ class SkybrowserTabs extends Component {
                       placeholder={`value 2`}
                       />
                 </Row>
+                <Checkbox
+                label = 'Use Radius Azimuth Elevation'
+                checked = {this.props.isUsingRae}
+                left = {false}
+                disabled = {false}
+                setChecked = { this.toggleRadiusAzimuthElevation }
+                wide= {true}
+                >
+                </Checkbox>
+                <Checkbox
+                label = 'Face Camera'
+                checked = {this.props.isFacingCamera}
+                left = {false}
+                disabled = {false}
+                setChecked = { this.toggleFaceCamera }
+                wide= {true}
+                >
+                </Checkbox>
                 <Row className={`${styles.vectorProperty} ${this.disabled ? styles.disabled : ''}`}>
                   { colors.map((color, index) => (
                     <NumericInput
@@ -275,7 +313,7 @@ class SkybrowserTabs extends Component {
                       onValueChanged={(value) => {
                         let newColor = colors;
                         newColor[index] = value;
-                        setBorderColor(newColor);
+                        skybrowserApi.setBorderColor(this.props.selectedBrowser, newColor[0], newColor[1], newColor[2]);
                       } }
                       step = {1}
                       value = {color}
@@ -323,9 +361,9 @@ class SkybrowserTabs extends Component {
     }
 
     render() {
-        const {data, currentPopoverHeight, targets, currentTarget} = this.props;
+        const {data, currentPopoverHeight, targets, selectedBrowser} = this.props;
         let {setFov, setBorderColor, setEquatorialAim, setScreenSpaceSize} = this.props;
-        const currentlySelectedTarget = targets[currentTarget];
+        const currentlySelectedTarget = targets[selectedBrowser];
 
         return(
             <section {...this.inheritedProps} className={styles.tabContainer}>
