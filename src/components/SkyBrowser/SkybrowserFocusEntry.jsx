@@ -33,18 +33,11 @@ class SkybrowserFocusEntry extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedImageBorderColor: '',
       showButtonInfo: false
     }
     this.select = this.select.bind(this);
-    this.setBorderColor = this.setBorderColor.bind(this);
     this.showTooltip = this.showTooltip.bind(this);
     this.hideTooltip = this.hideTooltip.bind(this);
-  }
-
-  setBorderColor() {
-    const color = this.props.currentTargetColor();
-    this.setState({ selectedImageBorderColor: color == "" ? 'red' : 'rgb(' + color + ')' });
   }
 
   select(evt) {
@@ -52,7 +45,6 @@ class SkybrowserFocusEntry extends Component {
     if (onSelect && identifier) {
       onSelect(identifier);
     }
-    this.props.currentTargetColor ? this.setBorderColor() : null;
   }
 
   get isActive() {
@@ -72,8 +64,10 @@ class SkybrowserFocusEntry extends Component {
   }
 
   render() {
-    const { name, identifier, thumbnail, credits, creditsUrl, has3dCoords, setOpacity, removeImageSelection, place3dImage, ra, dec, fov} = this.props;
-    const image3dbutton = has3dCoords ? <Button onClick={() => {place3dImage(identifier)}} className={styles.addTo3DButton} transparent small>
+    const { name, identifier, thumbnail, credits, creditsUrl, has3dCoords, ra, dec, fov } = this.props;
+    const { skybrowserApi, setOpacity, removeImageSelection } = this.props;
+
+    const image3dbutton = has3dCoords ? <Button onClick={() => {skybrowserApi.place3dSkyBrowser(Number(identifier))}} className={styles.addTo3DButton} transparent small>
     <MaterialIcon  icon="add_circle"
     onMouseLeave={() => this.hideTooltip()} onMouseEnter={() => this.showTooltip()}/>
     { this.state.showButtonInfo && <TooltipSkybrowser
@@ -100,9 +94,9 @@ class SkybrowserFocusEntry extends Component {
     return (
 
       <li className={`${styles.entry} ${this.isTabEntry && styles.tabEntry} ${this.isActive && styles.active}`}
-          style={{ borderLeftColor: this.state.selectedImageBorderColor }}
-          onMouseEnter={() => {this.props.hoverFunc(identifier)} }
-          onMouseLeave={() => {this.props.hoverLeavesImage()}}>
+          style={{ borderLeftColor: this.props.currentTargetColor() }}
+          onMouseEnter={() => {skybrowserApi.moveCircleToHoverImage(Number(identifier))} }
+          onMouseLeave={() => {skybrowserApi.disableHoverCircle()}}>
           {imageRemoveButton}
           <div className={styles.image}>
             <img src={thumbnail} alt={name} onClick={this.select} className={styles.imageText}/>

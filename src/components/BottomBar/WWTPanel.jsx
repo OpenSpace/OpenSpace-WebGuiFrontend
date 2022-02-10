@@ -30,41 +30,21 @@ class WWTPanel extends Component {
       showOnlyNearest: true,
       targetData: "",
       selectedTarget: "",
-      cameraData: {FOV : 70, RA: 0, Dec: 0},
       isUsingRae : false,
       isFacingCamera : false,
       currentTabHeight: 185,
       currentPopoverHeight: 440,
     };
-    this.togglePopover = this.togglePopover.bind(this);
-    this.selectImage = this.selectImage.bind(this);
-    this.hoverOnImage = this.hoverOnImage.bind(this);
     this.getAllImages = this.getAllImages.bind(this);
     this.getNearestImages = this.getNearestImages.bind(this);
     this.getTargetData = this.getTargetData.bind(this);
-    this.place3dImage = this.place3dImage.bind(this);
-    this.removeImageSelection = this.removeImageSelection.bind(this);
-    this.hoverLeavesImage = this.hoverLeavesImage.bind(this);
-    this.lockTarget = this.lockTarget.bind(this);
-    this.unlockTarget = this.unlockTarget.bind(this);
     this.getCurrentTargetColor = this.getCurrentTargetColor.bind(this);
-    this.onToggleWWT = this.onToggleWWT.bind(this);
     this.getImagesWith3Dcoord = this.getImagesWith3Dcoord.bind(this);
-    this.createTargetBrowserPair = this.createTargetBrowserPair.bind(this);
-    this.adjustCameraToTarget = this.adjustCameraToTarget.bind(this);
     this.getSelectedTargetImages = this.getSelectedTargetImages.bind(this);
     this.setCurrentTabHeight = this.setCurrentTabHeight.bind(this);
     this.setCurrentPopoverHeight = this.setCurrentPopoverHeight.bind(this);
-    this.setOpacityOfImage = this.setOpacityOfImage.bind(this);
-    this.set2dSelectionAs3dSelection = this.set2dSelectionAs3dSelection.bind(this);
-    this.centerTargetOnScreen = this.centerTargetOnScreen.bind(this);
-    this.selectTab = this.selectTab.bind(this);
-    this.setImageOrder = this.setImageOrder.bind(this);
-    this.removeTargetBrowserPair = this.removeTargetBrowserPair.bind(this);
-    this.setFieldOfView = this.setFieldOfView.bind(this);
-    this.setBorderColor = this.setBorderColor.bind(this);
-    this.setEquatorialAim = this.setEquatorialAim.bind(this);
-    this.setScreenSpaceSize = this.setScreenSpaceSize.bind(this);
+    this.selectImage = this.selectImage.bind(this);
+    this.togglePopover = this.togglePopover.bind(this);
   }
 
   async componentDidMount(){
@@ -76,65 +56,7 @@ class WWTPanel extends Component {
     }
   }
 
-  togglePopover() {
-    this.props.setPopoverVisibility(!this.props.popoverVisible)
-  }
-
-  setBorderColor(color) {
-    this.props.luaApi.skybrowser.setBorderColor(this.state.selectedTarget, color[0], color[1], color[2]);
-  }
-
-  setEquatorialAim(ra, dec) {
-    this.props.luaApi.skybrowser.setEquatorialAim(this.state.selectedTarget, ra, dec);
-  }
-
-  setScreenSpaceSize(size) {
-    console.log(size);
-    this.props.luaApi.skybrowser.setScreenSpaceSize(this.state.selectedTarget, size[0], size[1]);
-  }
-
-  selectImage(identifier) {
-    console.log(identifier);
-    if(identifier) {
-      this.setState({
-        imageName: identifier,
-      });
-      this.props.luaApi.skybrowser.selectImage(Number(identifier));
-    }
-    //this.props.luaApi.skybrowser.lockTarget(this.state.selectedTarget);
-  }
-
-  selectTab(target) {
-   this.props.luaApi.skybrowser.setSelectedBrowser(target);
-  }
-
-  hoverOnImage(identifier) {
-    if(identifier) {
-      this.props.luaApi.skybrowser.moveCircleToHoverImage(Number(identifier));
-    }
-  }
-
-  hoverLeavesImage() {
-    this.props.luaApi.skybrowser.disableHoverCircle();
-  }
-
-  place3dImage(identifier) {
-    this.props.luaApi.skybrowser.place3dSkyBrowser(Number(identifier));
-  }
-
-  removeImageSelection(identifier) {
-    this.props.luaApi.skybrowser.removeSelectedImageInBrowser(Number(identifier), this.state.selectedTarget);
-  }
-
-  removeTargetBrowserPair(target) {
-    this.props.luaApi.skybrowser.removeTargetBrowserPair(target);
-  }
-
-  setOpacityOfImage(identifier, opacity) {
-    this.props.luaApi.skybrowser.setOpacityOfImageLayer(this.state.selectedTarget, Number(identifier), opacity);
-  }
-
-
+  // Getters
   async getTargetData() {
     try {
       let  target = await this.props.luaApi.skybrowser.getTargetData();
@@ -146,7 +68,6 @@ class WWTPanel extends Component {
 
       this.setState({
         targetData: target,
-        cameraData: {FOV: camera.windowHFOV, cartesianDirection: camera.cartesianDirection, ra : camera.ra, dec: camera.dec},
         selectedTarget: camera.selectedTargetId,
         selectedBrowser: camera.selectedBrowserId,
         isUsingRae: camera.isUsingRadiusAzimuthElevation,
@@ -159,7 +80,7 @@ class WWTPanel extends Component {
   }
 
   getSelectedTargetImages() {
-    let selectedImagesIndices = this.state.targetData[this.state.selectedTarget];
+    let selectedImagesIndices = this.state.targetData[this.state.selectedBrowser];
 
     if(!selectedImagesIndices) {
       return [];
@@ -179,54 +100,9 @@ class WWTPanel extends Component {
     return images;
   }
 
-  lockTarget(target) {
-    this.props.luaApi.skybrowser.lockTarget(target);
-  }
-
-  centerTargetOnScreen(target) {
-    this.props.luaApi.skybrowser.centerTargetOnScreen(target);
-  }
-
-  unlockTarget(target) {
-    this.props.luaApi.skybrowser.unlockTarget(target);
-  }
-
-  createTargetBrowserPair() {
-    this.props.luaApi.skybrowser.createTargetBrowserPair();
-  }
-
-  adjustCameraToTarget(target) {
-    this.props.luaApi.skybrowser.lockTarget(target);
-    this.props.luaApi.skybrowser.adjustCamera(target);
-  }
-
-  setFieldOfView(fov) {
-    this.props.luaApi.skybrowser.setVerticalFov(this.state.selectedTarget, fov);
-  }
-
-
-  set2dSelectionAs3dSelection() {
-    this.props.luaApi.skybrowser.set3dSelectedImagesAs2dSelection(this.state.selectedTarget);
-  }
-
   getCurrentTargetColor() {
-    return this.state.targetData[this.state.selectedTarget].color;
-  }
-
-  setCurrentTabHeight(height) {
-    this.setState({ currentTabHeight : height })
-  }
-
-  setCurrentPopoverHeight(height) {
-    this.setState({ currentPopoverHeight : height })
-  }
-
-  onToggleWWT() {
-    this.togglePopover();
-  }
-
-  setImageOrder(id, order) {
-    this.props.luaApi.skybrowser.setImageLayerOrder(this.state.selectedTarget, Number(id), order);
+    const color = this.state.targetData[this.state.selectedBrowser].color;
+    return 'rgb(' + color + ')';
   }
 
   getImagesWith3Dcoord() {
@@ -240,7 +116,7 @@ class WWTPanel extends Component {
   }
 
   getNearestImages() {
-    let targetPoint = this.state.targetData[this.state.selectedTarget];
+    let targetPoint = this.state.targetData[this.state.selectedBrowser];
     if(!targetPoint) return [];
 
     let searchRadius = targetPoint.FOV / 2;
@@ -278,18 +154,40 @@ class WWTPanel extends Component {
     };
 
     imgsWithinTarget.sort((a, b) => {
-      let targetPoint = this.state.targetData[this.state.selectedTarget];
+      let targetPoint = this.state.targetData[this.state.selectedBrowser];
       let result = euclidianDistance(a, targetPoint) > euclidianDistance(b, targetPoint);
       return result ? 1 : -1;
     }
     );
     return imgsWithinTarget;
   }
+  // Setters
+  setCurrentTabHeight(height) {
+    this.setState({ currentTabHeight : height })
+  }
+
+  setCurrentPopoverHeight(height) {
+    this.setState({ currentPopoverHeight : height })
+  }
+
+  selectImage(identifier) {
+    if(identifier) {
+      this.setState({
+        imageName: identifier,
+      });
+      this.props.luaApi.skybrowser.selectImage(Number(identifier));
+    }
+  }
+  // Popover
+  togglePopover() {
+    this.props.setPopoverVisibility(!this.props.popoverVisible)
+  }
 
   get popover() {
 
     let imageList = this.state.showOnlyNearest ? this.getNearestImages() : this.getAllImages();
     let api = this.props.luaApi;
+    let skybrowserApi = api.skybrowser;
     //let imageList = this.state.showOnlyNearest ? this.getImagesWith3Dcoord() : this.getAllImages();
 
     let filterList = imageList.length == 0 ? "" : <FilterList
@@ -297,8 +195,7 @@ class WWTPanel extends Component {
       data={imageList}
       searchText={"Search from " + imageList.length.toString() + " images..."}
       viewComponent={SkybrowserFocusEntry}
-      viewComponentProps={{"hoverFunc" : this.hoverOnImage, "hoverLeavesImage" : this.hoverLeavesImage,
-        "currentTargetColor" : this.getCurrentTargetColor, "place3dImage" : this.place3dImage}}
+      viewComponentProps={{"skybrowserApi" : skybrowserApi, "currentTargetColor" : this.getCurrentTargetColor}}
       onSelect={this.selectImage}
       active={this.state.imageName}
       searchAutoFocus
@@ -314,24 +211,15 @@ class WWTPanel extends Component {
       api = {api}
       skybrowserApi = {api.skybrowser}
       targets={this.state.targetData}
-      selectedTarget={this.state.selectedTarget.toString()}
-      selectedBrowser={this.state.selectedBrowser.toString()}
+      selectedTarget={this.state.selectedTarget}
+      selectedBrowser={this.state.selectedBrowser}
       isUsingRae = {this.state.isUsingRae}
       isFacingCamera = {this.state.isFacingCamera}
-      setFov={this.setFieldOfView}
-      setBorderColor={this.setBorderColor}
-      setEquatorialAim={this.setEquatorialAim}
-      setScreenSpaceSize={this.setScreenSpaceSize}
-      removeBrowser = {this.removeTargetBrowserPair}
       currentPopoverHeight={currentPopoverHeight}
+      setCurrentTabHeight= {this.setCurrentTabHeight}
       data={thisTabsImages}
-      setImageOrder={this.setImageOrder}
-      viewComponent={SkybrowserFocusEntry}
-      viewComponentProps={{"hoverFunc" : this.hoverOnImage, "hoverLeavesImage" : this.hoverLeavesImage,
-      "lockTarget" : this.lockTarget , "unlockTarget" : this.unlockTarget, "createTargetBrowserPair" : this.createTargetBrowserPair,
-      "place3dImage" : this.place3dImage,  "removeImageSelection" : this.removeImageSelection, "setOpacity": this.setOpacityOfImage, "selectTab":this.selectTab,
-      "adjustCameraToTarget" : this.adjustCameraToTarget, "select2dImagesAs3d" : this.set2dSelectionAs3dSelection,
-      "setCurrentTabHeight" : this.setCurrentTabHeight, "centerTarget" : this.centerTargetOnScreen, "selectImage" : this.selectImage}}
+      selectImage = {this.selectImage}
+      currentTargetColor = {this.getCurrentTargetColor}
       />;
 
   return (
@@ -370,12 +258,11 @@ class WWTPanel extends Component {
   render() {
     const { popoverVisible, hasSystems } = this.props;
 
-
     return (
 
       <div className={Picker.Wrapper}>
         {
-          <Picker onClick={this.onToggleWWT} style={{padding: 0}}>
+          <Picker onClick={this.togglePopover} style={{padding: 0}}>
             <div style={{textAlign: 'center', display: 'block'}}>
               <img src={wwtLogo} alt="WWT"  style={{width:'50%', height: '50%'}} />
             </div>
