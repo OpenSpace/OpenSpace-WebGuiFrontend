@@ -64,7 +64,7 @@
     "eslint-plugin-react": "^7.23.2",
     "file-loader": "^4.3.0",
     "flow-bin": "^0.101.1",
-    "node-sass": "^4.14.1",
+    "node-sass": "^7.0.0",
     "rimraf": "^2.7.1",
     "sass-loader": "^7.3.1",
     "style-loader": "^0.23.1",
