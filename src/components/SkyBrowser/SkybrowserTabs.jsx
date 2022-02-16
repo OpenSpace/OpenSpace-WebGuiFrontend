@@ -102,7 +102,7 @@ class SkybrowserTabs extends Component {
     }
 
     removeImageSelection(identifier) {
-      this.props.skybrowserApi.removeSelectedImageInBrowser(Number(identifier), this.props.selectedBrowser);
+      this.props.skybrowserApi.removeSelectedImageInBrowser(this.props.selectedBrowser, Number(identifier));
     }
 
     createButtons(target) {
@@ -131,7 +131,6 @@ class SkybrowserTabs extends Component {
        }};
       const showSettingsButton = { selected : this.state.showSettings, icon : "settings", text : "Settings", function : function(targetId){
          toggleSettings();
-         console.log(this.state.showSettings);
        }};
 
       const buttons = [lookButton, moveButton, lockButton, addTo3dButton, showSettingsButton];
