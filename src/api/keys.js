@@ -34,10 +34,6 @@ export const CurrentTimeKey = 'currentTime';
 export const DeltaTime = 'deltaTime';
 // value placeholder in scripts with parameter
 export const ValuePlaceholder = '___value___';
-// key  for apply fly to trigger property
-export const ApplyFlyToKey = 'NavigationHandler.OrbitalNavigator.LinearFlight.ApplyLinearFlight';
-// key for accessing the flight destination distance from the current anchor
-export const FlightDestinationDistanceKey = 'NavigationHandler.OrbitalNavigator.LinearFlight.FlightDestinationDistance';
 // key for json file with info for icons
 export const InfoIconKey = 'info_icons';
 // key for endpoint for json files

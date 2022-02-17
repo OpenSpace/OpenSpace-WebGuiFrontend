@@ -1,27 +1,35 @@
 import { setDate } from './timeHelpers';
-import { ApplyFlyToKey,
-        FlightDestinationDistanceKey } from './../api/keys'
-
-// Function to set the time and location for the start of a story
-export const setStoryStart = (luaApi, startPosition, startTime) => {
-  luaApi.globebrowsing.goToGeo( 
-    startPosition.latitude, 
-    startPosition.longitude,
-    startPosition.altitude
-  );
-
-  setDate(luaApi, startTime);
-  luaApi.setPropertyValue(ApplyFlyToKey, false);
-};
 
 // TODO evaluate flyTo vs toggleZoomOut
 
-// activates flying linearly to a set distance from the anchor
-export const flyTo = (luaApi, distance, velocity = 3.5) => {
-  luaApi.setPropertyValue(`NavigationHandler.OrbitalNavigator.LinearFlight.VelocityZoomControl`, velocity);
-  luaApi.setPropertyValue(FlightDestinationDistanceKey, distance);
-  luaApi.setPropertyValue(ApplyFlyToKey, true);
+// Activates flying linearly to a set distance from the anchor
+export const flyTo = (luaApi, distance, duration = undefined) => {
+  if (typeof duration === 'number') {
+    luaApi.pathnavigation.zoomToDistance(distance, duration);
+    return;
+  }
+  luaApi.pathnavigation.zoomToDistance(distance);
+};
+
+// Abort current flight, if active
+export async function abortFlight(luaApi) {
+  const isFlyingReturnTable = await luaApi.pathnavigation.isFlying();
+  const isFlying = isFlyingReturnTable[1]; // because of Lua table being returned
+  if (isFlying) {
+    luaApi.pathnavigation.stopPath();
+  }
 }
+
+// Function to set the time and location for the start of a story
+export const setStoryStart = (luaApi, startPosition, startTime) => {
+  luaApi.globebrowsing.goToGeo(
+    startPosition.latitude,
+    startPosition.longitude,
+    startPosition.altitude,
+  );
+
+  setDate(luaApi, startTime);
+};
 
 // Function to toggle the shading on a node, value = 'true' equals shading enabled
 export const toggleShading = (luaApi, node, value) => {

@@ -109,8 +109,8 @@ class OnTouchGui extends Component {
       json.inzoomlimit = 1.0;
       this.props.changePropertyValue(ZoomInLimitKey, 1.0);
     }
-    if (json.start.overviewzoom){
-      flyTo(this.props.luaApi, json.overviewlimit);
+    if (json.start.overviewzoom) {
+      flyTo(luaApi, json.overviewlimit, 5.0);
     }
 
     this.props.changePropertyValue(this.props.anchorNode.description.Identifier, json.start.planet);
