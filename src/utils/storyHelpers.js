@@ -11,17 +11,10 @@ export const flyTo = (luaApi, distance, duration = undefined) => {
   luaApi.pathnavigation.zoomToDistance(distance);
 };
 
-// Abort current flight, if active
-export async function abortFlight(luaApi) {
-  const isFlyingReturnTable = await luaApi.pathnavigation.isFlying();
-  const isFlying = isFlyingReturnTable[1]; // because of Lua table being returned
-  if (isFlying) {
-    luaApi.pathnavigation.stopPath();
-  }
-}
-
 // Function to set the time and location for the start of a story
 export const setStoryStart = (luaApi, startPosition, startTime) => {
+  luaApi.pathnavigation.stopPath();
+
   luaApi.globebrowsing.goToGeo(
     startPosition.latitude,
     startPosition.longitude,

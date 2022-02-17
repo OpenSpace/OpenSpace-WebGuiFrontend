@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { setPropertyValue } from '../../../api/Actions';
 import propertyDispatcher from '../../../api/propertyDispatcher';
 import { UpdateDeltaTimeNow } from '../../../utils/timeHelpers';
+import { abortFlight } from '../../../utils/storyHelpers';
 import FocusButton from './FocusButton';
 import {
   ScenePrefixKey, NavigationAnchorKey, RetargetAnchorKey,
@@ -54,11 +55,7 @@ class FocusMenu extends Component {
   async onChangeFocus(origin) {
     const { anchorDispatcher, luaApi, retargetAnchorDispatcher } = this.props;
 
-    const isFlyingReturnTable = await luaApi.pathnavigation.isFlying();
-    const isFlying = isFlyingReturnTable[1]; // bacuse of lua table being returned
-    if (isFlying) {
-      luaApi.pathnavigation.stopPath();
-    }
+    luaApi.pathnavigation.stopPath();
 
     // Reset time controls
     luaApi.time.setPause(false);
