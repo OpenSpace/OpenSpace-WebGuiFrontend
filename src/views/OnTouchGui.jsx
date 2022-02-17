@@ -1,30 +1,33 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import {
+  withRouter, HashRouter as Router, Route, Link,
+} from 'react-router-dom';
 import { connect } from 'react-redux';
-import { HashRouter as Router, Link, Route, withRouter } from 'react-router-dom';
-import { 
-  addStoryInfo, addStoryTree, fetchData, resetStoryInfo, setPropertyValue, 
-  startConnection, subscribeToProperty, unsubscribeToProperty 
-} from '../api/Actions';
-import { 
-  DefaultStory, InfoIconKey, NavigationAnchorKey, ScaleKey, 
-  ValuePlaceholder, ZoomInLimitKey, ZoomOutLimitKey 
-} from '../api/keys';
-import { formatVersion, isCompatible, RequiredOpenSpaceVersion, RequiredSocketApiVersion } from '../api/Version';
+import '../styles/base.scss';
 import Error from '../components/common/Error/Error';
 import Overlay from '../components/common/Overlay/Overlay';
 import Stack from '../components/common/Stack/Stack';
-import Slider from '../components/ImageSlider/Slider';
+import {
+  setPropertyValue, startConnection, fetchData, addStoryTree, subscribeToProperty,
+  unsubscribeToProperty, addStoryInfo, resetStoryInfo,
+} from '../api/Actions';
 import TouchBar from '../components/TouchBar/TouchBar';
 import DeveloperMenu from '../components/TouchBar/UtilitiesMenu/presentational/DeveloperMenu';
-import '../styles/base.scss';
 import {
-  flyTo, infoFileParser, setStoryStart, showDevInfoOnScreen, storyFileParser, 
-  toggleGalaxies, toggleHighResolution, toggleShading, toggleShowNode 
-} from '../utils/storyHelpers';
+  InfoIconKey, ValuePlaceholder, DefaultStory, ScaleKey,
+  NavigationAnchorKey, ZoomInLimitKey, ZoomOutLimitKey,
+} from '../api/keys';
+import Slider from '../components/ImageSlider/Slider';
 import { UpdateDeltaTimeNow } from '../utils/timeHelpers';
-import About from './About/About';
 import styles from './OnTouchGui.scss';
+import {
+  toggleShading, toggleHighResolution, toggleShowNode, toggleGalaxies,
+  setStoryStart, showDevInfoOnScreen, storyFileParser, infoFileParser, flyTo,
+} from '../utils/storyHelpers';
+import {
+  isCompatible, formatVersion, RequiredSocketApiVersion, RequiredOpenSpaceVersion,
+} from '../api/Version';
 
 const KEYCODE_D = 68;
 
@@ -35,9 +38,10 @@ class OnTouchGui extends Component {
     this.state = {
       developerMode: false,
       currentStory: DefaultStory,
-      sliderStartStory: DefaultStory
+      sliderStartStory: DefaultStory,
     };
 
+    this.addStoryTree = this.addStoryTree.bind(this);
     this.changeStory = this.changeStory.bind(this);
     this.setStory = this.setStory.bind(this);
     this.resetStory = this.resetStory.bind(this);
@@ -47,39 +51,12 @@ class OnTouchGui extends Component {
   }
 
   componentDidMount() {
-    this.props.StartConnection();
-    this.props.FetchData(InfoIconKey);
+    const { luaApi, FetchData, StartConnection } = this.props;
+    StartConnection();
+    FetchData(InfoIconKey);
 
     document.addEventListener('keydown', this.handleKeyPress);
-
-    showDevInfoOnScreen(this.props.luaApi, false);
-  }
-
-  checkVersion() {
-    if (!this.checkedVersion && this.props.version.isInitialized) {
-      const versionData = this.props.version.data;
-      if (!isCompatible(
-        versionData.openSpaceVersion, RequiredOpenSpaceVersion))
-      {
-        console.warn(
-          'Possible incompatibility: \nRequired OpenSpace version: ' +
-          formatVersion(RequiredOpenSpaceVersion) +
-          '. Currently controlling OpenSpace version ' +
-          formatVersion(versionData.openSpaceVersion) + '.'
-        );
-      }
-      if (!isCompatible(
-        versionData.socketApiVersion, RequiredSocketApiVersion))
-      {
-        console.warn(
-          "Possible incompatibility: \nRequired Socket API version: " +
-          formatVersion(RequiredSocketApiVersion) +
-          ". Currently operating over API version " +
-          formatVersion(versionData.socketApiVersion) + '.'
-        );
-      }
-      this.checkedVersion = true;
-    }
+    showDevInfoOnScreen(luaApi, false);
   }
 
   componentWillUnmount() {
@@ -87,89 +64,127 @@ class OnTouchGui extends Component {
   }
 
   setStory(selectedStory) {
-    const previousStory = this.props.storyIdentifier;
+    const {
+      anchorNode, changePropertyValue, luaApi, scaleNodes, story, storyIdentifier,
+    } = this.props;
+    const previousStory = storyIdentifier;
+
     this.setState({ currentStory: selectedStory });
 
     // Return if the selected story is the same as the OpenSpace property value
-    if (previousStory === selectedStory)
+    if (previousStory === selectedStory) {
       return;
+    }
 
     const json = this.addStoryTree(selectedStory);
 
     // Set all the story specific properties
-    this.props.changePropertyValue(this.props.anchorNode.description.Identifier, json.start.planet);
-    setStoryStart(this.props.luaApi, json.start.location, json.start.date);
+    changePropertyValue(anchorNode.description.Identifier, json.start.planet);
+    setStoryStart(luaApi, json.start.location, json.start.date);
 
-    if(json.overviewlimit){
-      this.props.changePropertyValue(ZoomOutLimitKey, json.overviewlimit);
+    if (json.overviewlimit) {
+      changePropertyValue(ZoomOutLimitKey, json.overviewlimit);
     }
-    if(json.inzoomlimit){
-      this.props.changePropertyValue(ZoomInLimitKey, json.inzoomlimit);
-    }else{
+    if (json.inzoomlimit) {
+      changePropertyValue(ZoomInLimitKey, json.inzoomlimit);
+    } else {
       json.inzoomlimit = 1.0;
-      this.props.changePropertyValue(ZoomInLimitKey, 1.0);
+      changePropertyValue(ZoomInLimitKey, 1.0);
     }
     if (json.start.overviewzoom) {
       flyTo(luaApi, json.overviewlimit, 5.0);
     }
 
-    this.props.changePropertyValue(this.props.anchorNode.description.Identifier, json.start.planet);
+    changePropertyValue(anchorNode.description.Identifier, json.start.planet);
 
     // Check settings of the previous story and reset values
-    this.checkStorySettings(this.props.story, true);
+    this.checkStorySettings(story, true);
     // Check and set the settings of the current story
     this.checkStorySettings(json, false);
 
     // If the previous story scaled planets reset value
-    if (this.props.story.scalenodes) {
-      this.props.scaleNodes.forEach((node) => {
-        this.props.changePropertyValue(node.description.Identifier, 1);
+    if (story.scalenodes) {
+      scaleNodes.forEach((node) => {
+        changePropertyValue(node.description.Identifier, 1);
       });
     }
     // If the previous story toggled bool properties reset them to default value
-    if (this.props.story.toggleboolproperties) {
-      this.props.story.toggleboolproperties.forEach((property) => {
-        const defaultValue = property.defaultvalue ? true : false;
-        this.props.changePropertyValue(property.URI, defaultValue);
+    if (story.toggleboolproperties) {
+      story.toggleboolproperties.forEach((property) => {
+        const defaultValue = property.defaultvalue;
+        changePropertyValue(property.URI, defaultValue);
       });
     }
   }
 
-  resetStory () {
-    this.state.sliderStartStory = this.state.currentStory;
-    UpdateDeltaTimeNow(this.props.luaApi, 1);
+  checkVersion() {
+    const { version } = this.props;
+
+    if (!this.checkedVersion && version.isInitialized) {
+      const versionData = version.data;
+      if (!isCompatible(
+        versionData.openSpaceVersion, RequiredOpenSpaceVersion
+      )) {
+        console.warn(
+          `Possible incompatibility: \nRequired OpenSpace version: ${
+            formatVersion(RequiredOpenSpaceVersion)
+          }. Currently controlling OpenSpace version ${
+            formatVersion(versionData.openSpaceVersion)
+          }.`
+        );
+      }
+      if (!isCompatible(versionData.socketApiVersion, RequiredSocketApiVersion)) {
+        console.warn(
+          `Possible incompatibility: \nRequired Socket API version: ${
+            formatVersion(RequiredSocketApiVersion)
+          }. Currently operating over API version ${
+            formatVersion(versionData.socketApiVersion)
+          }.`
+        );
+      }
+      this.checkedVersion = true;
+    }
+  }
+
+  resetStory() {
+    const { luaApi } = this.props;
+    const { currentStory } = this.state;
+
+    this.state.sliderStartStory = currentStory;
+    UpdateDeltaTimeNow(luaApi, 1);
     this.setStory(DefaultStory);
   }
 
   checkStorySettings(story, value) {
-    const oppositeValue = value ? false : true;
+    const { luaApi } = this.props;
+    
+    const oppositeValue = !value;
 
     if (story.hidenodes) {
-      story.hidenodes.forEach(node => toggleShowNode(this.props.luaApi, node, value));
+      story.hidenodes.forEach(node => toggleShowNode(luaApi, node, value));
     }
     if (story.highresplanets) {
-      story.highresplanets.forEach(node => toggleHighResolution(this.props.luaApi, node, oppositeValue));
+      story.highresplanets.forEach(node => toggleHighResolution(luaApi, node, oppositeValue));
     }
     if (story.noshadingplanets) {
-      story.noshadingplanets.forEach(node => toggleShading(this.props.luaApi, node, value));
+      story.noshadingplanets.forEach(node => toggleShading(luaApi, node, value));
     }
     if (story.galaxies) {
-      toggleGalaxies(this.props.luaApi, oppositeValue);
+      toggleGalaxies(luaApi, oppositeValue);
     }
   }
 
   // Read in json-file for new story and add it to redux
   addStoryTree(selectedStory) {
-
+    const { AddStoryTree, AddStoryInfo, ResetStoryInfo } = this.props;
     const storyFile = storyFileParser(selectedStory);
 
-    this.props.AddStoryTree(storyFile);
+    AddStoryTree(storyFile);
     if (storyFile.infoiconsfile) {
       const info = infoFileParser(storyFile.infoiconsfile);
-
-      this.props.AddStoryInfo(info);
+      AddStoryInfo(info);
     } else {
-      this.props.ResetStoryInfo();
+      ResetStoryInfo();
     }
 
     return storyFile;
@@ -186,51 +201,54 @@ class OnTouchGui extends Component {
   }
 
   toggleDeveloperMode() {
-    this.setState({ developerMode: !this.state.developerMode });
+    const { developerMode } = this.state;
+    const { luaApi } = this.props;
+    this.setState({ developerMode: !developerMode });
 
-    if (this.state.developerMode) {
-      showDevInfoOnScreen(this.props.luaApi, true);
-    } else {
-      showDevInfoOnScreen(this.props.luaApi, false);
-    }
+    showDevInfoOnScreen(luaApi, developerMode);
   }
 
   render() {
+    const { connectionLost, story, storyIdentifier } = this.props;
+    const { currentStory, developerMode, sliderStartStory } = this.state;
+
     return (
       <div className={styles.app}>
-
-        {<Router basename="/ontouch/">
-          <Route
-            path="/about"
-            render={() => (
-              <Overlay>
-                <Stack style={{ maxWidth: '500px' }}>
-                  <Link style={{ alignSelf: 'flex-end', color: 'white' }} to="/">
-                    Close
-                  </Link>
-                  <About />
-                </Stack>
-              </Overlay>
-            )}
-          />
-        </Router>}
-
-        { this.props.connectionLost && (
+        {
+          <Router basename="/ontouch/">
+            <Route
+              path="/about"
+              render={() => (
+                <Overlay>
+                  <Stack style={{ maxWidth: '500px' }}>
+                    <Link style={{ alignSelf: 'flex-end', color: 'white' }} to="/">
+                      Close
+                    </Link>
+                    <About />
+                  </Stack>
+                </Overlay>
+              )}
+            />
+          </Router>
+        }
+        { connectionLost && (
           <Overlay>
             <Error>
               Connection lost. Trying to reconnect again soon.
             </Error>
           </Overlay>
         )}
-        {this.state.developerMode &&
+        { developerMode && (
           <DeveloperMenu
             changeStory={this.changeStory}
-            storyIdentifier={this.props.storyIdentifier}
+            storyIdentifier={storyIdentifier}
           />
-        }
-        <p className={styles.storyTitle}> {this.props.story.title} </p>
-        {(this.state.currentStory === DefaultStory)
-          ? <Slider startSlider = {this.state.sliderStartStory} changeStory={this.setStory} />
+        )}
+        <p className={styles.storyTitle}>
+          {story.title}
+        </p>
+        {(currentStory === DefaultStory)
+          ? <Slider startSlider={sliderStartStory} changeStory={this.setStory} />
           : <TouchBar resetStory={this.resetStory} />
         }
       </div>
@@ -244,22 +262,20 @@ const mapStateToProps = (state) => {
   const scaleNodes = [];
   const story = state.storyTree.story;
 
-  // TODO (emmbr, 2022-01-18): For some reason, it takes a while for the property
-  // tree to load when showing this UI in a browser. If this happens, these 
-  // properties are not set up correctly, and the UI crashes when trying to create 
-  // select a new story. Not great, should be investigated :) 
+  if (state.propertyTree !== undefined) {
+    storyIdentifier = story.identifier;
+    anchorNode = state.propertyTree.properties[NavigationAnchorKey];
 
-  storyIdentifier = story.identifier;
-  anchorNode = state.propertyTree.properties[NavigationAnchorKey];
+    if (story.scalenodes) {
+      story.scalenodes.nodes.forEach((node) => {
+        const key = ScaleKey.replace(ValuePlaceholder, `${node}`);
+        const foundScaleNode = state.propertyTree.properties[key];
 
-  if (story.scalenodes) {
-    story.scalenodes.nodes.forEach((node) => {
-      let foundScaleNode = state.propertyTree.properties[ScaleKey.replace(ValuePlaceholder, `${node}`)];
-
-      if (foundScaleNode) {
-        scaleNodes.push(foundScaleNode);
-      }
-    });
+        if (foundScaleNode) {
+          scaleNodes.push(foundScaleNode);
+        }
+      });
+    }
   }
 
   return {
@@ -269,7 +285,7 @@ const mapStateToProps = (state) => {
     reset: state.storyTree.reset,
     anchorNode,
     scaleNodes,
-    luaApi: state.luaApi
+    luaApi: state.luaApi,
   };
 };
 
@@ -307,38 +323,37 @@ OnTouchGui = withRouter(connect(
 // luaApi has been connected
 class RequireLuaApi extends Component {
   componentDidMount() {
-    this.props.StartConnection();
+    const { StartConnection } = this.props;
+    StartConnection();
   }
 
   render() {
-    if (!this.props.luaApi) {
+    const { children, luaApi } = this.props;
+    if (!luaApi) {
       return null;
     }
-    return <>{this.props.children}</>;
+    return <>{children}</>;
   }
 }
 
-const mapState = state => {
-  return {
-    luaApi: state.luaApi,
-  }
-};
+const mapState = state => ({
+  luaApi: state.luaApi,
+});
 
 const mapDispatch = dispatch => ({
   StartConnection: () => {
     dispatch(startConnection());
-  }
-})
+  },
+});
 
 RequireLuaApi = connect(mapState, mapDispatch)(RequireLuaApi);
 
-const WrappedOnTouchGui = (props) => <RequireLuaApi><OnTouchGui {...props} /></RequireLuaApi>
+const WrappedOnTouchGui = props => <RequireLuaApi><OnTouchGui {...props} /></RequireLuaApi>;
 
 OnTouchGui.propTypes = {
   StartConnection: PropTypes.func,
   FetchData: PropTypes.func,
   changePropertyValue: PropTypes.func,
-  startListening: PropTypes.func,
   AddStoryTree: PropTypes.func,
   AddStoryInfo: PropTypes.func,
   ResetStoryInfo: PropTypes.func,
@@ -347,14 +362,12 @@ OnTouchGui.propTypes = {
   anchorNode: PropTypes.objectOf(PropTypes.shape({})),
   scaleNodes: PropTypes.objectOf(PropTypes.shape({})),
   connectionLost: PropTypes.bool,
-  reset: PropTypes.bool,
 };
 
 OnTouchGui.defaultProps = {
   StartConnection: () => {},
   FetchData: () => {},
   changePropertyValue: () => {},
-  startListening: () => {},
   AddStoryTree: () => {},
   AddStoryInfo: () => {},
   ResetStoryInfo: () => {},
@@ -362,8 +375,7 @@ OnTouchGui.defaultProps = {
   story: {},
   anchorNode: {},
   scaleNodes: {},
-  connectionLost: null,
-  reset: null,
+  connectionLost: null
 };
 
 export default WrappedOnTouchGui;

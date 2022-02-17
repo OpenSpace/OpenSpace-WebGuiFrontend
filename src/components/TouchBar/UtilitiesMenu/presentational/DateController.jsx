@@ -7,8 +7,8 @@ import Button from '../../../common/Input/Button/Button';
 import Icon from '../../../common/MaterialIcon/MaterialIcon';
 import Popover from '../../../common/Popover/Popover';
 import SmallLabel from '../../../common/SmallLabel/SmallLabel';
-import styles from './../style/DateController.scss';
-import buttonStyle from './../style/UtilitiesButtons.scss';
+import styles from '../style/DateController.scss';
+import buttonStyle from '../style/UtilitiesButtons.scss';
 
 class DateController extends Component {
   constructor(props) {
@@ -37,8 +37,9 @@ class DateController extends Component {
   }
 
   get dateButtons() {
-    timeHelpers.sortDates(this.props.dateList);
-    return (this.props.dateList.map(date => (
+    const { dateList } = this.props;
+    timeHelpers.sortDates(dateList);
+    return (dateList.map(date => (
       <Button
         className={styles.dateButton}
         id={date.date}
@@ -48,10 +49,10 @@ class DateController extends Component {
         onClick={this.pickDate}
       >
         <span className={styles.date} id={date.date}>
-          {new Date(date.date).toLocaleDateString('en-US', {year: 'numeric', month: 'numeric', day: 'numeric' })}
+          {new Date(date.date).toLocaleDateString('en-US', { year: 'numeric', month: 'numeric', day: 'numeric' })}
         </span>
         <SmallLabel className={styles.label} id={date.date}>
-          {date.planet},{date.info}
+          {`${date.planet},${date.info}`}
         </SmallLabel>
       </Button>
     ))
@@ -59,29 +60,32 @@ class DateController extends Component {
   }
 
   pickDate(e) {
+    const { dateList, luaApi, onChangeSight } = this.props;
     this.togglePopover();
     const timeString = timeHelpers.DateStringWithTimeZone(e.target.id);
-    timeHelpers.setDate(this.props.luaApi, new Date(timeString));
-    const selectedDate = this.props.dateList.find(date => date.date === e.target.id);
-    this.props.onChangeSight(selectedDate);
+    timeHelpers.setDate(luaApi, new Date(timeString));
+    const selectedDate = dateList.find(date => date.date === e.target.id);
+    onChangeSight(selectedDate);
   }
 
   togglePopover() {
-    this.setState({ showPopover: !this.state.showPopover });
+    const { showPopover } = this.state;
+    this.setState({ showPopover: !showPopover });
   }
 
   render() {
+    const { showPopover } = this.state;
     return (
       <div className={Picker.Wrapper}>
         <Picker
           onClick={this.togglePopover}
           className={`${styles.dateController}
-          ${this.state.showPopover && styles.active} ${this.state.showPopover && Picker.Active}`}
+          ${showPopover && styles.active} ${showPopover && Picker.Active}`}
         >
           <Icon icon="date_range" className={buttonStyle.Icon} />
           <SmallLabel>Select event</SmallLabel>
         </Picker>
-        { this.state.showPopover && this.popover }
+        { showPopover && this.popover }
       </div>
     );
   }
@@ -103,11 +107,9 @@ DateController.defaultProps = {
   dateList: [],
 };
 
-const mapStateToProps = (state) => {
-  return {
-    luaApi: state.luaApi
-  };
-};
+const mapStateToProps = state => ({
+  luaApi: state.luaApi
+});
 
 DateController = connect(mapStateToProps)(DateController);
 

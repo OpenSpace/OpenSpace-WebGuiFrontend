@@ -5,7 +5,7 @@ import { LayerGroupKeys } from '../api/keys';
 
 export const getIdOfProperty = (uri) => {
   const a = splitUri(uri);
-  return a[a.length-1];
+  return a[a.length - 1];
 };
 
 // Function to return a deep copy of an object

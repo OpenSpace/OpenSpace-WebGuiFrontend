@@ -20,29 +20,29 @@ class Controllers extends Component {
   }
 
   componentDidMount() {
-    if (this.props.scaleNodes.length !== 0) {
-      this.props.scaleNodes.forEach(scaleNode =>
-        this.props.startListening(scaleNode.description.Identifier),
-      );
+    const { scaleNodes, startListening } = this.props;
+    if (scaleNodes.length !== 0) {
+      scaleNodes.forEach(n => startListening(n.description.Identifier));
     }
   }
 
   componentWillUnmount() {
-    if (this.props.scaleNodes.length !== 0) {
-      this.props.scaleNodes.forEach(scaleNode =>
-        this.props.stopListening(scaleNode.description.Identifier),
-      );
+    const { scaleNodes, stopListening } = this.props;
+    if (scaleNodes.length !== 0) {
+      scaleNodes.forEach(n => stopListening(n.description.Identifier));
     }
   }
 
   onChangeSight(selected) {
-    UpdateDeltaTimeNow(this.props.luaApi, 1);
+    const { changePropertyValue, luaApi, originNode } = this.props;
+
+    UpdateDeltaTimeNow(luaApi, 1);
     // Check if the sight is on the current anchor, otherwise change anchor node
-    if (this.props.originNode !== selected.planet) {
-      this.props.changePropertyValue(this.props.originNode.description.Identifier, selected.planet);
+    if (originNode !== selected.planet) {
+      changePropertyValue(originNode.description.Identifier, selected.planet);
     }
 
-    this.props.luaApi.globebrowsing.goToGeo(
+    luaApi.globebrowsing.goToGeo(
       selected.location.latitude,
       selected.location.longitude,
       selected.location.altitude
@@ -50,54 +50,55 @@ class Controllers extends Component {
   }
 
   onChangeScale() {
-    const scale = this.props.story.scalenodes.scale;
-    const currentScale = this.props.scaleNodes[0].value;
+    const { changePropertyValue, scaleNodes, story } = this.props;
 
-    if(Number(currentScale) !== Number(scale)){
-      this.props.story.scalenodes.nodes.forEach((node, i) => {
-        this.props.changePropertyValue(this.props.scaleNodes[i].description.Identifier, scale);
-        this.props.scaleNodes[i].value = scale;
-      });   
+    const scale = story.scalenodes.scale;
+    const currentScale = scaleNodes[0].value;
+
+    if (Number(currentScale) !== Number(scale)) {
+      story.scalenodes.nodes.forEach((node, i) => {
+        changePropertyValue(scaleNodes[i].description.Identifier, scale);
+        scaleNodes[i].value = scale;
+      });
     } else {
-        this.props.story.scalenodes.nodes.forEach((node, i) => {
-          this.props.changePropertyValue(this.props.scaleNodes[i].description.Identifier, 1);
-          this.props.scaleNodes[i].value = 1;
-      }); 
+      story.scalenodes.nodes.forEach((node, i) => {
+        changePropertyValue(scaleNodes[i].description.Identifier, 1);
+        scaleNodes[i].value = 1;
+      });
     }
-
   }
 
   render() {
-    const { story } = this.props;
+    const { story, scaleNodes } = this.props;
 
     return (
       <div style={{ display: 'flex' }}>
-        { (story && story.timecontroller) &&
+        { (story && story.timecontroller) && (
           <TimePlayerController />
-        }
-        {(story && story.datecontroller) &&
+        )}
+        {(story && story.datecontroller) && (
           <DateController
             dateList={story.datecontroller}
             onChangeSight={this.onChangeSight}
           />
-        }
-        {(story && story.sightscontroller) &&
+        )}
+        {(story && story.sightscontroller) && (
           <SightsController
             sightsList={story.sightscontroller}
             onChangeSight={this.onChangeSight}
           />
-        }
-        {(story && story.scalenodes) &&
+        )}
+        {(story && story.scalenodes) && (
           <ScaleController
             info={story.scalenodes.info}
-            scale={(Number(this.props.scaleNodes[0].value) !== Number(story.scalenodes.scale))
+            scale={(Number(scaleNodes[0].value) !== Number(story.scalenodes.scale))
               ? 1 : Number(story.scalenodes.scale)}
             onChangeScale={this.onChangeScale}
           />
-        }
-        {(story && story.toggleboolproperties) &&
-          <ToggleBoolButtons/>
-        }
+        )}
+        {(story && story.toggleboolproperties) && (
+          <ToggleBoolButtons />
+        )}
       </div>
     );
   }
@@ -105,15 +106,15 @@ class Controllers extends Component {
 
 const mapStateToProps = (state) => {
   let originNode = [];
-  const story = state.storyTree.story;
+  const { story } = state.storyTree;
   const scaleNodes = [];
-  
+
   originNode = state.propertyTree.properties[NavigationAnchorKey];
 
   if (story.scalenodes) {
-    story.scalenodes.nodes.forEach(node => {
-      const scaleNode =
-        state.propertyTree.properties[ScaleKey.replace(ValuePlaceholder, `${node}`)];
+    story.scalenodes.nodes.forEach((node) => {
+      const key = ScaleKey.replace(ValuePlaceholder, `${node}`);
+      const scaleNode = state.propertyTree.properties[key];
       if (scaleNode) {
         scaleNodes.push(scaleNode);
       }
@@ -124,7 +125,7 @@ const mapStateToProps = (state) => {
     originNode,
     story,
     scaleNodes,
-    luaApi: state.luaApi
+    luaApi: state.luaApi,
   };
 };
 

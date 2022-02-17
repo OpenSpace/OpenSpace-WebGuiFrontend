@@ -4,7 +4,7 @@ import Picker from '../../../BottomBar/Picker';
 import Icon from '../../../common/MaterialIcon/MaterialIcon';
 import Popover from '../../../common/Popover/Popover';
 import SmallLabel from '../../../common/SmallLabel/SmallLabel';
-import buttonStyle from './../style/UtilitiesButtons.scss';
+import buttonStyle from '../style/UtilitiesButtons.scss';
 
 class InfoButton extends Component {
   constructor(props) {

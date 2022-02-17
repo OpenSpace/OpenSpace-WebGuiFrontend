@@ -45,10 +45,7 @@ class FocusMenu extends Component {
   }
 
   componentWillUnmount() {
-    const {
-      anchorDispatcher,
-      retargetAnchorDispatcher,
-    } = this.props;
+    const { anchorDispatcher, retargetAnchorDispatcher } = this.props;
 
     anchorDispatcher.unsubscribe();
     retargetAnchorDispatcher.unsubscribe();
