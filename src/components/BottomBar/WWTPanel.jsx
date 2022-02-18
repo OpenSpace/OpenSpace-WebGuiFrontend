@@ -32,6 +32,7 @@ class WWTPanel extends Component {
       selectedTarget: "",
       isUsingRae : false,
       isFacingCamera : false,
+      cameraInSolarSystem : true,
       currentTabHeight: 185,
       currentPopoverHeight: 440,
     };
@@ -39,7 +40,6 @@ class WWTPanel extends Component {
     this.getNearestImages = this.getNearestImages.bind(this);
     this.getTargetData = this.getTargetData.bind(this);
     this.getCurrentTargetColor = this.getCurrentTargetColor.bind(this);
-    this.getImagesWith3Dcoord = this.getImagesWith3Dcoord.bind(this);
     this.getSelectedTargetImages = this.getSelectedTargetImages.bind(this);
     this.setCurrentTabHeight = this.setCurrentTabHeight.bind(this);
     this.setCurrentPopoverHeight = this.setCurrentPopoverHeight.bind(this);
@@ -71,7 +71,8 @@ class WWTPanel extends Component {
         selectedTarget: camera.selectedTargetId,
         selectedBrowser: camera.selectedBrowserId,
         isUsingRae: camera.isUsingRadiusAzimuthElevation,
-        isFacingCamera: camera.isFacingCamera
+        isFacingCamera: camera.isFacingCamera,
+        cameraInSolarSystem: camera.cameraInSolarSystem
       });
     }
     catch(e) {
@@ -101,18 +102,13 @@ class WWTPanel extends Component {
   }
 
   getCurrentTargetColor() {
-    const color = this.state.targetData[this.state.selectedBrowser].color;
-    return 'rgb(' + color + ')';
-  }
-
-  getImagesWith3Dcoord() {
-    let imagesWith3DPosition = this.props.systemList.filter(function(img) {
-      if(img["has3dCoords"] == true) {
-        return true;
-      }
-      return false;
-    });
-    return imagesWith3DPosition;
+    if(this.state.targetData[this.state.selectedBrowser]) {
+      const color = this.state.targetData[this.state.selectedBrowser].color;
+      return 'rgb(' + color + ')';
+    }
+    else {
+      return 'gray';
+    }
   }
 
   getNearestImages() {
@@ -188,7 +184,6 @@ class WWTPanel extends Component {
     let imageList = this.state.showOnlyNearest ? this.getNearestImages() : this.getAllImages();
     let api = this.props.luaApi;
     let skybrowserApi = api.skybrowser;
-    //let imageList = this.state.showOnlyNearest ? this.getImagesWith3Dcoord() : this.getAllImages();
 
     let filterList = imageList.length == 0 ? "" : <FilterList
       className={styles.filterList}
@@ -210,6 +205,7 @@ class WWTPanel extends Component {
     let skybrowserTabs = <SkybrowserTabs
       api = {api}
       skybrowserApi = {api.skybrowser}
+      cameraInSolarSystem = {this.state.cameraInSolarSystem}
       targets={this.state.targetData}
       selectedTarget={this.state.selectedTarget}
       selectedBrowser={this.state.selectedBrowser}
@@ -222,6 +218,30 @@ class WWTPanel extends Component {
       currentTargetColor = {this.getCurrentTargetColor}
       />;
 
+      const skybrowser = <div><div className={styles.row}>
+          <Picker
+            className={`${styles.picker} ${this.state.showOnlyNearest ? styles.unselected: styles.selected}`}
+            onClick={() => this.setState({ showOnlyNearest: false })}>
+              <span>All images</span> {/*<MaterialIcon className={styles.photoIcon} icon="list_alt" />*/}
+          </Picker>
+          <Picker
+            className={`${styles.picker} ${this.state.showOnlyNearest ? styles.selected : styles.unselected}`}
+            onClick={() => this.setState({ showOnlyNearest: true })}>
+              <span>Images within view</span> {/*<MaterialIcon className={styles.photoIcon} icon="my_location" />*/}
+          </Picker>
+        </div>
+        <div className={PopoverSkybrowser.styles.content}>
+          <div className={PopoverSkybrowser.styles.scrollArea}
+          style={{height: 'calc(100% - ' + (this.state.currentTabHeight) + 'px)'}}>
+          {filterList}
+          </div>
+          {skybrowserTabs}
+        </div></div>;
+
+        const errorMessage = <div>
+                                <span> The camera has to be within the solar system for the sky browser to work. </span>
+                            </div>
+
   return (
 
       <PopoverSkybrowser
@@ -230,33 +250,15 @@ class WWTPanel extends Component {
         detachable
         heightCallback={this.setCurrentPopoverHeight}
         >
+        {this.state.cameraInSolarSystem ? skybrowser : errorMessage}
 
-        <div className={styles.row}>
-            <Picker
-              className={`${styles.picker} ${this.state.showOnlyNearest ? styles.unselected: styles.selected}`}
-              onClick={() => this.setState({ showOnlyNearest: false })}>
-                <span>All images</span> {/*<MaterialIcon className={styles.photoIcon} icon="list_alt" />*/}
-            </Picker>
-            <Picker
-              className={`${styles.picker} ${this.state.showOnlyNearest ? styles.selected : styles.unselected}`}
-              onClick={() => this.setState({ showOnlyNearest: true })}>
-                <span>Images within view</span> {/*<MaterialIcon className={styles.photoIcon} icon="my_location" />*/}
-            </Picker>
-          </div>
-          <div className={PopoverSkybrowser.styles.content}>
-            <div className={PopoverSkybrowser.styles.scrollArea}
-            style={{height: 'calc(100% - ' + (this.state.currentTabHeight) + 'px)'}}>
-            {filterList}
-            </div>
-            {skybrowserTabs}
-          </div>
       </PopoverSkybrowser>
 
     );
   }
 
   render() {
-    const { popoverVisible, hasSystems } = this.props;
+    const { popoverVisible } = this.props;
 
     return (
 
@@ -281,7 +283,6 @@ const mapSubStateToProps = ({propertyOwners, popoverVisible, luaApi, skybrowserD
     popoverVisible: popoverVisible,
     luaApi: luaApi,
     systemList: skybrowserData,
-    hasSystems: (skybrowserData && skybrowserData.length > 0)
   }
 };
 

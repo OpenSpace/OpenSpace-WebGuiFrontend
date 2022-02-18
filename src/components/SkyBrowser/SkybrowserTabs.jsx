@@ -126,14 +126,11 @@ class SkybrowserTabs extends Component {
           skybrowserApi.lockTarget(targetId);
         }
        }};
-      const addTo3dButton = { selected : false, icon : "get_app", text : "Add images to 3D Browser", function : function(targetId){
-         skybrowserApi.set3dSelectedImagesAs2dSelection(targetId);
-       }};
       const showSettingsButton = { selected : this.state.showSettings, icon : "settings", text : "Settings", function : function(targetId){
          toggleSettings();
        }};
 
-      const buttons = [lookButton, moveButton, lockButton, addTo3dButton, showSettingsButton];
+      const buttons = [lookButton, moveButton, lockButton, showSettingsButton];
 
       const Buttons = buttons.map((button, index) => {
         return(
