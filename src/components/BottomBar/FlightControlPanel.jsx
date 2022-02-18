@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import {
   connectFlightController,
+  disconnectFlightController,
   sendFlightControl,
   setPopoverVisibility,
   subscribeToProperty,
@@ -32,19 +34,86 @@ class FlightControlPanel extends Component {
   }
 
   componentDidMount() {
-    this.props.startListening(RotationalFrictionKey);
-    this.props.startListening(ZoomFrictionKey);
-    this.props.startListening(RollFrictionKey);
+    const { startListening } = this.props;
+    startListening(RotationalFrictionKey);
+    startListening(ZoomFrictionKey);
+    startListening(RollFrictionKey);
   }
 
   componentWillUnmount() {
-    this.props.stopListening(RotationalFrictionKey);
-    this.props.stopListening(ZoomFrictionKey);
-    this.props.stopListening(RollFrictionKey);
+    const { stopListening } = this.props;
+    stopListening(RotationalFrictionKey);
+    stopListening(ZoomFrictionKey);
+    stopListening(RollFrictionKey);
+  }
+
+  get popover() {
+    const { rotationFriction, rollFriction, zoomFriction } = this.props;
+    const rotationButtonColor = rotationFriction ? '#222' : '#888';
+    const zoomButtonColor = zoomFriction ? '#222' : '#888';
+    const rollButtonColor = rollFriction ? '#222' : '#888';
+
+    return (
+      <Popover
+        className={`${Picker.Popover} && ${styles.flightControlPopover}`}
+        title="Flight Control"
+        closeCallback={this.togglePopover}
+        detachable
+        position={{ x: -350, y: -50 }}
+        attached={false}
+      >
+        <div className={Popover.styles.content}>
+          <Row>
+            <Button
+              onClick={this.toggleRotation}
+              title="orbit"
+              style={{ width: 133, background: rotationButtonColor }}
+              disabled={false}
+            >
+              <span style={{ marginLeft: 5 }}>Rotation</span>
+            </Button>
+            <Button
+              onClick={this.toggleZoom}
+              title="orbit"
+              style={{ width: 133, background: zoomButtonColor }}
+              disabled={false}
+            >
+              <span style={{ marginLeft: 5 }}>Zoom</span>
+            </Button>
+            <Button
+              onClick={this.toggleRoll}
+              title="orbit"
+              style={{ width: 133, background: rollButtonColor }}
+              disabled={false}
+            >
+              <span style={{ marginLeft: 5 }}>Roll</span>
+            </Button>
+
+          </Row>
+        </div>
+        <hr className={Popover.styles.delimiter} />
+        <div className={Popover.styles.title}>Control Area </div>
+        <div
+          className={styles.control_area}
+          onPointerDown={this.mouseDown}
+          onPointerUp={this.touchUp}
+          onPointerCancel={this.touchUp}
+          onPointerLeave={this.touchUp}
+          onLostPointerCapture={this.touchUp}
+          onPointerMove={this.mouseMove}
+          onTouchStart={this.touchDown}
+          onTouchEnd={this.touchUp}
+          onTouchCancel={this.touchUp}
+          onTouchMove={this.touchMove}
+          id="controlArea"
+        />
+      </Popover>
+    );
   }
 
   togglePopover() {
-    this.props.setPopoverVisibility(!this.props.popoverVisible);
+    const { popoverVisible } = this.props;
+    this.props.setPopoverVisibility(!popoverVisible);
   }
 
   toggleRotation() {
@@ -144,69 +213,6 @@ class FlightControlPanel extends Component {
     }
   }
 
-  get popover() {
-    const rotationButtonColor = this.props.rotationFriction ? '#222' : '#888';
-    const zoomButtonColor = this.props.zoomFriction ? '#222' : '#888';
-    const rollButtonColor = this.props.rollFriction ? '#222' : '#888';
-
-    return (
-      <Popover
-        className={`${Picker.Popover} && ${styles.flightControlPopover}`}
-        title="Flight Control"
-        closeCallback={this.togglePopover}
-        detachable
-        position={{ x: -350, y: -50 }}
-        attached={false}
-      >
-        <div className={Popover.styles.content}>
-          <Row>
-            <Button
-              onClick={this.toggleRotation}
-              title="orbit"
-              style={{ width: 133, background: rotationButtonColor }}
-              disabled={false}
-            >
-              <span style={{ marginLeft: 5 }}>Rotation</span>
-            </Button>
-            <Button
-              onClick={this.toggleZoom}
-              title="orbit"
-              style={{ width: 133, background: zoomButtonColor }}
-              disabled={false}
-            >
-              <span style={{ marginLeft: 5 }}>Zoom</span>
-            </Button>
-            <Button
-              onClick={this.toggleRoll}
-              title="orbit"
-              style={{ width: 133, background: rollButtonColor }}
-              disabled={false}
-            >
-              <span style={{ marginLeft: 5 }}>Roll</span>
-            </Button>
-
-          </Row>
-        </div>
-        <hr className={Popover.styles.delimiter} />
-        <div className={Popover.styles.title}>Control Area </div>
-        <div
-          className={styles.control_area}
-          onPointerDown={this.mouseDown}
-          onPointerUp={this.touchUp}
-          onPointerCancel={this.touchUp}
-          onPointerLeave={this.touchUp}
-          onLostPointerCapture={this.touchUp}
-          onPointerMove={this.mouseMove}
-          onTouchStart={this.touchDown}
-          onTouchEnd={this.touchUp}
-          onTouchCancel={this.touchUp}
-          onTouchMove={this.touchMove}
-          id="controlArea"
-        />
-      </Popover>
-    );
-  }
-
   render() {
     const { popoverVisible } = this.props;
     return (
@@ -264,6 +270,27 @@ const mapDispatchToProps = dispatch => ({
     dispatch(unsubscribeToProperty(uri));
   },
 });
+
+FlightControlPanel.propTypes = {
+  popoverVisible: PropTypes.bool,
+  rotationFriction: PropTypes.bool.isRequired,
+  rollFriction: PropTypes.bool.isRequired,
+  zoomFriction: PropTypes.bool.isRequired,
+  luaApi: PropTypes.object,
+  // Functions
+  setPopoverVisibility: PropTypes.func.isRequired,
+  sendFlightControl: PropTypes.func.isRequired,
+  connectFlightController: PropTypes.func.isRequired,
+  disconnectFlightController: PropTypes.func.isRequired,
+  startListening: PropTypes.func.isRequired,
+  stopListening: PropTypes.func.isRequired,
+};
+
+FlightControlPanel.defaultProps = {
+  popoverVisible: false,
+  luaApi: undefined,
+};
+
 
 FlightControlPanel = connect(mapStateToProps, mapDispatchToProps)(FlightControlPanel);
 
