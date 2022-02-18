@@ -11,5 +11,7 @@
   "rules": {
     "linebreak-style": ["error", "unix"],
     "no-plusplus": "off"
+    "no-plusplus": "off",
+    "react/forbid-prop-types": [false, {}]
   }
 }

@@ -28,4 +28,3 @@ Picker.Wrapper = styles.Wrapper;
 Picker.Window = styles.Window;
 
 export default Picker;
-

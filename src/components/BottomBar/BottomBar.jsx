@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import ActionsPanel from './ActionsPanel';
 import styles from './BottomBar.scss';
 import ExoplanetsPanel from './ExoplanetsPanel';
@@ -8,7 +9,7 @@ import ScreenSpaceRenderablePanel from './ScreenSpaceRenderablePanel';
 import SessionRec from './SessionRec';
 import TimePicker from './TimePicker';
 
-const BottomBar = (props) => (
+const BottomBar = props => (
   <div className={styles.BottomBar}>
     <OriginPicker />
     <TimePicker />
@@ -19,5 +20,13 @@ const BottomBar = (props) => (
     {props.showFlightController && <FlightControlPanel />}
   </div>
 );
+
+BottomBar.propTypes = {
+  showFlightController: PropTypes.bool,
+};
+
+BottomBar.defaultProps = {
+  showFlightController: false,
+};
 
 export default BottomBar;

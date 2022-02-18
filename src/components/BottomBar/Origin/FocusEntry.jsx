@@ -8,15 +8,16 @@ class FocusEntry extends Component {
     this.select = this.select.bind(this);
   }
 
-  select(evt) {
-    const { identifier } = this.props;
-    if (this.props.onSelect) {
-      this.props.onSelect(identifier, evt);
-    }
+  get isActive() {
+    const { active, identifier } = this.props;
+    return identifier === active;
   }
 
-  get isActive() {
-    return this.props.identifier === this.props.active;
+  select(evt) {
+    const { identifier, onSelect } = this.props;
+    if (onSelect) {
+      onSelect(identifier, evt);
+    }
   }
 
   render() {
@@ -39,6 +40,7 @@ FocusEntry.propTypes = {
 };
 
 FocusEntry.defaultProps = {
+  name: undefined,
   onSelect: null,
   active: '',
 };
