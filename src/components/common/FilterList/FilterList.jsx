@@ -17,12 +17,10 @@ class FilterList extends Component {
     this.changeSearch = this.changeSearch.bind(this);
   }
 
-  changeSearch({ currentTarget }) {
-    this.setState({ search: currentTarget.value });
-  }
-
   get filtered() {
-    const { favorites, showFavorites, data, matcher, filterSubObjects} = this.props;
+    const {
+      favorites, showFavorites, data, matcher,
+    } = this.props;
 
     let { search } = this.state;
     if (search === '' && showFavorites) {
@@ -41,41 +39,52 @@ class FilterList extends Component {
     return data.filter(entry => matcherFunc(entry, search));
   }
 
+  changeSearch({ currentTarget }) {
+    this.setState({ search: currentTarget.value });
+  }
+
   render() {
-    const EntryComponent = this.props.viewComponent;
+    const {
+      active, className, onSelect, searchAutoFocus, searchText,
+      showFavorites, viewComponent,
+    } = this.props;
     const { search } = this.state;
     const entries = this.filtered;
 
+    const EntryComponent = viewComponent;
+
     let inputChildren = null;
 
-    if (this.props.setShowFavorites && this.state.search === '') {
-      if (this.props.showFavorites) {
-        inputChildren =
+    if (this.props.setShowFavorites && search === '') {
+      if (showFavorites) {
+        inputChildren = (
           <div
             className={styles.favoritesButton}
             onClick={() => this.props.setShowFavorites(false)}
           >
             More
           </div>
+        );
       } else {
-        inputChildren =
+        inputChildren = (
           <div
             className={styles.favoritesButton}
             onClick={() => this.props.setShowFavorites(true)}
           >
             Less
           </div>
+        );
       }
     }
 
     return (
-      <section className={`${this.props.className} ${styles.filterList}`}>
+      <section className={`${className} ${styles.filterList}`}>
         <Input
           value={search}
-          placeholder={this.props.searchText}
+          placeholder={searchText}
           onChange={this.changeSearch}
           clearable
-          autoFocus={this.props.searchAutoFocus}
+          autoFocus={searchAutoFocus}
         >
           {inputChildren}
         </Input>
@@ -85,17 +94,16 @@ class FilterList extends Component {
             <CenteredLabel>
               Nothing found. Try another search!
             </CenteredLabel>
-          ) 
-          }
+          ) }
           <ul>
             { entries.map((entry, index) => (
               <EntryComponent
                 {...entry}
-                key={ entry.key || index }
-                onSelect={this.props.onSelect}
-                active={this.props.active}
-              />))
-            }
+                key={entry.key || index}
+                onSelect={onSelect}
+                active={active}
+              />
+            ))}
           </ul>
         </ScrollOverlay>
       </section>
@@ -163,8 +171,11 @@ FilterList.propTypes = {
 FilterList.defaultProps = {
   active: null,
   className: '',
+  favorites: undefined,
+  matcher: undefined,
   onSelect: () => {},
   showFavorites: true,
+  setShowFavorites: undefined,
   searchText: 'Search...',
   searchAutoFocus: false,
   viewComponent: props => (<li>{ JSON.stringify(props) }</li>),
