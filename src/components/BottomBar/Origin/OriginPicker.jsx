@@ -32,6 +32,7 @@ import SmallLabel from '../../common/SmallLabel/SmallLabel';
 import SvgIcon from '../../common/SvgIcon/SvgIcon';
 import Picker from '../Picker';
 import FocusEntry from './FocusEntry';
+import FocusEntryWithNavigation from './FocusEntryWithNavigation';
 import styles from './OriginPicker.scss';
 
 // tag that each focusable node must have
@@ -235,6 +236,8 @@ class OriginPicker extends Component {
       enabled ? '' : disableClass,
     ].join(' ');
 
+    const isInFocusMode = navigationAction === NavigationActions.Focus;
+
     return (
       <div className={Picker.Wrapper}>
         <Picker onClick={this.togglePopover} className={pickerClasses}>
@@ -281,7 +284,7 @@ class OriginPicker extends Component {
               setShowFavorites={setShowFavorites}
               className={styles.list}
               searchText={searchPlaceholder}
-              viewComponent={FocusEntry}
+              viewComponent={isInFocusMode ? FocusEntryWithNavigation : FocusEntry}
               onSelect={this.onSelect}
               active={navigationAction === NavigationActions.Aim ? aim : anchor}
               searchAutoFocus

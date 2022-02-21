@@ -291,7 +291,6 @@ FlightControlPanel.defaultProps = {
   luaApi: undefined,
 };
 
-
 FlightControlPanel = connect(mapStateToProps, mapDispatchToProps)(FlightControlPanel);
 
 export default FlightControlPanel;
