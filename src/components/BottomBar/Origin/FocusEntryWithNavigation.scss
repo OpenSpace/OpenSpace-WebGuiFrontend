@@ -1,21 +1,28 @@
 @import "../../../styles/all";
 @import "./FocusEntry";
 
-$small-icon-size: 14px;
+$icon-size: 22px;
 
 .entryWithNavigation {
   @extend .entry; // From FocusEntry.scss
 
-  display: flex;
-  justify-content: space-between;
+  position: relative;
 }
 
 .buttonIcon {
-  font-size: $small-icon-size;
+  font-size: $icon-size;
+}
+
+.buttonContainer {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .zoomToButton, .flyToButton {
-  margin-left: 0.15em;
+  margin-left: 0.3em;
+  padding: 0.2em 0.5em 0.1em;
 }
 
 .flyToButton {

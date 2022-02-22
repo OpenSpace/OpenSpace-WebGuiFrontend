@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import FlyToIcon from 'svg-react-loader?name=FlyTo!../../../icons/paper-plane-solid.svg';
-import ZoomToIcon from 'svg-react-loader?name=ZoomTo!../../../icons/arrow-right-to-bracket-solid.svg';
 import styles from './FocusEntryWithNavigation.scss';
 import Button from '../../common/Input/Button/Button';
-import SvgIcon from '../../common/SvgIcon/SvgIcon';
+import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
 
 class FocusEntry extends Component {
   constructor(props) {
@@ -47,16 +45,15 @@ class FocusEntry extends Component {
           { name || identifier }
         </span>
         <div className={styles.buttonContainer}>
-          <Button className={styles.flyToButton} small onClick={flyTo} title="Fly to">
-            <SvgIcon className={styles.buttonIcon}><FlyToIcon /></SvgIcon>
+          <Button className={styles.flyToButton} onClick={flyTo} title="Fly to">
+            <MaterialIcon className={styles.buttonIcon} icon="flight" />
           </Button>
           { this.isActive && (
-            <Button className={styles.zoomToButton} small onClick={zoomToFocus} title="Zoom to">
-              <SvgIcon className={styles.buttonIcon}><ZoomToIcon /></SvgIcon>
+            <Button className={styles.zoomToButton} onClick={zoomToFocus} title="Zoom to">
+              <MaterialIcon className={styles.buttonIcon} icon="center_focus_strong" />
             </Button>
           )}
         </div>
-
       </li>
     );
   }
