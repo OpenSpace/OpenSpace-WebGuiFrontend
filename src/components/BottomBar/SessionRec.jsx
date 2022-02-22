@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { refreshSessionRecording, subscribeToSessionRecording, unsubscribeToSessionRecording } from '../../api/Actions';
-import { SessionStateIdle, SessionStatePaused, SessionStatePlaying, SessionStateRecording } from '../../api/keys';
+import {
+  SessionStateIdle, SessionStatePaused, SessionStatePlaying, SessionStateRecording,
+} from '../../api/keys';
 import subStateToProps from '../../utils/subStateToProps';
 import Button from '../common/Input/Button/Button';
 import Checkbox from '../common/Input/Checkbox/Checkbox';
@@ -24,7 +26,7 @@ class SessionRec extends Component {
       filenamePlayback: undefined,
       shouldOutputFrames: false,
       outputFramerate: 60,
-      loopPlayback: false
+      loopPlayback: false,
     };
 
     this.togglePopover = this.togglePopover.bind(this);
@@ -35,7 +37,7 @@ class SessionRec extends Component {
     this.setLoopPlayback = this.setLoopPlayback.bind(this);
     this.setUseTextFormat = this.setUseTextFormat.bind(this);
     this.setShouldOutputFrames = this.setShouldOutputFrames.bind(this);
-    this.pausePlayback = this.pausePlayback.bind(this);
+    this.togglePlaybackPaused = this.togglePlaybackPaused.bind(this);
     this.stopPlayback = this.stopPlayback.bind(this);
   }
 
@@ -44,62 +46,96 @@ class SessionRec extends Component {
   }
 
   componentWillUnmount() {
-   this.props.unsubscribe();
+    this.props.unsubscribe();
+  }
+
+  get isIdle() {
+    const { recordingState } = this.props;
+    return (recordingState === SessionStateIdle);
   }
 
   get picker() {
+    const { recordingState } = this.props;
+    const { showPopover } = this.state;
     const classes = [];
     let onClick = this.togglePopover;
 
-    if (this.props.recordingState === SessionStateRecording) {
+    if (recordingState === SessionStateRecording) {
       classes.push(styles.recordingPicker);
       onClick = this.toggleRecording;
-    } else if (this.props.recordingState === SessionStatePlaying) {
+    } else if (recordingState === SessionStatePlaying) {
       classes.push(styles.playingPicker);
       onClick = undefined;
-    } else if (this.props.recordingState === SessionStatePaused) {
+    } else if (recordingState === SessionStatePaused) {
       classes.push(styles.pausedPicker);
       onClick = undefined;
-    } else if (this.state.showPopover) {
-      classes.push(Picker.Active)
+    } else if (showPopover) {
+      classes.push(Picker.Active);
     }
-    return <Picker onClick={onClick}
-            className={classes.join(' ')}>
-          { this.pickerContent }
-    </Picker>
+
+    return (
+      <Picker
+        onClick={onClick}
+        className={classes.join(' ')}
+      >
+        { this.pickerContent }
+      </Picker>
+    );
   }
 
   get pickerContent() {
-    switch (this.props.recordingState) {
+    const { recordingState } = this.props;
+    switch (recordingState) {
       case SessionStateRecording:
-        return <div>
-          <MaterialIcon icon="videocam" /> Stop recording
-        </div>;
+        return (
+          <div>
+            <MaterialIcon icon="videocam" />
+            {' Stop recording'}
+          </div>
+        );
       case SessionStatePlaying:
-        return (<><div className={styles.playbackButton} onClick={this.pausePlayback}>
-          <MaterialIcon icon="pause" /> Pause
-        </div>
-        <div onClick={this.stopPlayback}>
-          <MaterialIcon icon="stop" /> Stop playback
-        </div></>);
+        return (
+          <>
+            <div className={styles.playbackButton} onClick={this.togglePlaybackPaused}>
+              <MaterialIcon icon="pause" />
+              {' Pause'}
+            </div>
+            <div onClick={this.stopPlayback}>
+              <MaterialIcon icon="stop" />
+              {' Stop playback'}
+            </div>
+          </>
+        );
       case SessionStatePaused:
-        return (<><div className={styles.playbackButton} onClick={this.pausePlayback}>
-          <MaterialIcon icon="play_arrow" /> Resume
-        </div>
-        <div onClick={this.stopPlayback}>
-          <MaterialIcon icon="stop" /> Stop playback
-        </div></>);
+        return (
+          <>
+            <div className={styles.playbackButton} onClick={this.togglePlaybackPaused}>
+              <MaterialIcon icon="play_arrow" />
+              {' Resume'}
+            </div>
+            <div onClick={this.stopPlayback}>
+              <MaterialIcon icon="stop" />
+              {' Stop playback'}
+            </div>
+          </>
+        );
       default:
-        return <div>
-          <MaterialIcon className={styles.cameraIcon} icon="videocam" />
-        </div>;
+        return (
+          <div>
+            <MaterialIcon className={styles.cameraIcon} icon="videocam" />
+          </div>
+        );
     }
   }
 
   get popover() {
-    const { filenamePlayback, shouldOutputFrames, outputFramerate } = this.state;
+    const { fileList } = this.props;
+    const {
+      filenamePlayback, filenameRecording, forceTime, shouldOutputFrames, loopPlayback,
+      useTextFormat, outputFramerate,
+    } = this.state;
 
-    const options = Object.values(this.props.fileList)
+    const options = Object.values(fileList)
       .map(fname => ({ value: fname, label: fname }));
 
     const fileNameLabel = <span>Name of recording</span>;
@@ -107,30 +143,36 @@ class SessionRec extends Component {
     const textFormatLabel = <span>Text file format</span>;
 
     return (
-      <Popover className={Picker.Popover}
-                 closeCallback={this.togglePopover}
-                 title="Record session"
-                 attached={true}
-                 detachable >
+      <Popover
+        className={Picker.Popover}
+        closeCallback={this.togglePopover}
+        title="Record session"
+        attached
+        detachable
+      >
         <div className={Popover.styles.content}>
           <Checkbox
-            checked={this.state.useTextFormat}
+            checked={useTextFormat}
             label={textFormatLabel}
             setChecked={this.setUseTextFormat}
           />
           <Row>
-            <Input value={this.state.filenameRecording}
-                   label={fileNameLabel}
-                   placeholder={"Enter recording filename..."}
-                   onChange={evt => this.updateRecordingFilename(evt)} />
+            <Input
+              value={filenameRecording}
+              label={fileNameLabel}
+              placeholder="Enter recording filename..."
+              onChange={evt => this.updateRecordingFilename(evt)}
+            />
 
             <div className={Popover.styles.row}>
-              <Button onClick={this.toggleRecording}
-                      title="Start Recording"
-                      style={{width: 90}}
-                      disabled={!this.state.filenameRecording}>
+              <Button
+                onClick={this.toggleRecording}
+                title="Start Recording"
+                style={{ width: 90 }}
+                disabled={!filenameRecording}
+              >
                 <MaterialIcon icon="fiber_manual_record" />
-                <span style={{marginLeft: 5}}>Record</span>
+                <span style={{ marginLeft: 5 }}>Record</span>
               </Button>
             </div>
           </Row>
@@ -139,33 +181,35 @@ class SessionRec extends Component {
         <div className={Popover.styles.title}>Play session</div>
         <div className={Popover.styles.content}>
           <Checkbox
-            checked={this.state.forceTime}
+            checked={forceTime}
             name="forceTimeInput"
             label="Force time change to recorded time"
             setChecked={this.setForceTiming}
           />
           <Checkbox
-            checked={this.state.loopPlayback}
+            checked={loopPlayback}
             name="loopPlaybackInput"
             label="Loop playback"
             setChecked={this.setLoopPlayback}
           />
           <Row>
-          <Checkbox
-            checked={shouldOutputFrames}
-            name="outputFramesInput"
-            label="Output frames"
-            className={styles.fpsCheckbox}
-            setChecked={this.setShouldOutputFrames}
-          />
-          { shouldOutputFrames ? <Input value={this.state.outputFramerate}
-                   label={fpsLabel}
-                   placeholder={"framerate"}
-                   className={styles.fpsInput}
-                   visible={shouldOutputFrames}
-                   onChange={evt => this.updateOutputFramerate(evt)} />
-            : null
-          }
+            <Checkbox
+              checked={shouldOutputFrames}
+              name="outputFramesInput"
+              label="Output frames"
+              className={styles.fpsCheckbox}
+              setChecked={this.setShouldOutputFrames}
+            />
+            { shouldOutputFrames && (
+              <Input
+                value={outputFramerate}
+                label={fpsLabel}
+                placeholder="framerate"
+                className={styles.fpsInput}
+                visible={shouldOutputFrames}
+                onChange={evt => this.updateOutputFramerate(evt)}
+              />
+            )}
           </Row>
           <Row>
             <Select
@@ -177,12 +221,17 @@ class SessionRec extends Component {
               value={filenamePlayback}
             />
             <div className={Popover.styles.row}>
-              <Button onClick={this.togglePlayback} title="Start Playback"
-                      block small transparent={false}
-                      style={{width: 90}}
-                      disabled={!this.state.filenamePlayback}>
+              <Button
+                onClick={this.togglePlayback}
+                title="Start Playback"
+                block
+                small
+                transparent={false}
+                style={{ width: 90 }}
+                disabled={!filenamePlayback}
+              >
                 <MaterialIcon icon="play_arrow" />
-                <span style={{marginLeft: 5}}>Play</span>
+                <span style={{ marginLeft: 5 }}>Play</span>
               </Button>
             </div>
           </Row>
@@ -196,26 +245,24 @@ class SessionRec extends Component {
   }
 
   updateRecordingFilename(evt) {
-    this.setState({
-      filenameRecording: evt.target.value
-    });
+    this.setState({ filenameRecording: evt.target.value });
   }
 
   updateOutputFramerate(evt) {
     this.setState({
-      outputFramerate: evt.target.value
+      outputFramerate: evt.target.value,
     });
   }
 
   toggleRecording() {
-    if (this.props.recordingState == SessionStateIdle) {
+    if (this.isIdle) {
       this.startRecording();
     } else {
       this.props.stopRecording();
     }
   }
 
-  startRecording () {
+  startRecording() {
     const { useTextFormat, filenameRecording } = this.state;
     if (useTextFormat) {
       this.props.startRecordingAscii(filenameRecording);
@@ -224,87 +271,89 @@ class SessionRec extends Component {
     }
   }
 
-  stopPlayback () {
-      this.props.stopPlayback();
+  stopPlayback() {
+    this.props.stopPlayback();
   }
 
-  pausePlayback () {
-      this.props.pausePlayback();
+  togglePlaybackPaused() {
+    this.props.togglePlaybackPaused();
   }
 
   togglePlayback() {
-    if (this.props.recordingState === SessionStateIdle) {
+    if (this.isIdle) {
       this.startPlayback();
     } else {
       this.props.stopPlayback();
     }
   }
 
-  startPlayback () {
-    const { forceTime,
+  startPlayback() {
+    const {
+      forceTime,
       filenamePlayback,
       shouldOutputFrames,
       outputFramerate,
-      loopPlayback } = this.state;
+      loopPlayback,
+    } = this.state;
 
     this.props.startPlaybackLua(filenamePlayback,
       forceTime, shouldOutputFrames, outputFramerate, loopPlayback);
   }
 
   setUseTextFormat(useTextFormat) {
-    this.setState({useTextFormat})
+    this.setState({ useTextFormat });
   }
 
   setForceTiming(forceTime) {
-    this.setState({forceTime});
+    this.setState({ forceTime });
   }
 
   setLoopPlayback(loopPlayback) {
     if (loopPlayback) {
-      this.setState({loopPlayback: true, shouldOutputFrames: false});
+      this.setState({ loopPlayback: true, shouldOutputFrames: false });
     } else {
-      this.setState({loopPlayback});
+      this.setState({ loopPlayback });
     }
   }
 
   setShouldOutputFrames(shouldOutputFrames) {
     if (shouldOutputFrames) {
-      this.setState({loopPlayback: false, shouldOutputFrames: true});
+      this.setState({ loopPlayback: false, shouldOutputFrames: true });
     } else {
-      this.setState({shouldOutputFrames});
+      this.setState({ shouldOutputFrames });
     }
   }
 
   togglePopover() {
-    if (!this.state.showPopover) {
+    const { showPopover } = this.state;
+    if (!showPopover) {
       this.props.refreshPlaybackFilesList();
-      this.setState({ showPopover: true})
-    } else {
-      this.setState({ showPopover: false})
     }
+    this.setState({ showPopover: !showPopover });
   }
 
   render() {
+    const { showPopover } = this.state;
     return (
       <div className={Picker.Wrapper}>
         { this.picker }
-        { this.state.showPopover && this.props.recordingState === SessionStateIdle && this.popover }
+        { showPopover && this.isIdle && this.popover }
       </div>
     );
   }
 }
 
-const mapSubStateToProps = ({sessionRecording, sessionRecordingPopover, luaApi}) => {
+const mapSubStateToProps = ({ sessionRecording, luaApi }) => {
   const fileList = sessionRecording.files || [];
   const recordingState = sessionRecording.recordingState || SessionStateIdle;
 
   return {
     fileList,
     recordingState,
-    startRecordingAscii: filename => {
+    startRecordingAscii: (filename) => {
       luaApi.sessionRecording.startRecordingAscii(filename);
     },
-    startRecordingBinary: filename => {
+    startRecordingBinary: (filename) => {
       luaApi.sessionRecording.startRecording(filename);
     },
     stopRecording: () => {
@@ -317,48 +366,40 @@ const mapSubStateToProps = ({sessionRecording, sessionRecordingPopover, luaApi})
       if (forceTime) {
         luaApi.sessionRecording.startPlayback(filename, loopPlayback);
       } else {
-        luaApi.sessionRecording.startPlaybackRecordedTime(filename, loopPlayback);   
+        luaApi.sessionRecording.startPlaybackRecordedTime(filename, loopPlayback);
       }
     },
     stopPlayback: () => {
       luaApi.sessionRecording.stopPlayback();
     },
-    pausePlayback: () => {
+    togglePlaybackPaused: () => {
       luaApi.sessionRecording.togglePlaybackPause();
-    }
+    },
   };
 };
 
-const mapStateToSubState = (state) => ({
+const mapStateToSubState = state => ({
   sessionRecording: state.sessionRecording,
   originPickerPopover: state.local.popovers.sessionRecording,
-  luaApi: state.luaApi
+  luaApi: state.luaApi,
 });
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    subscribe: () => {
-      dispatch(subscribeToSessionRecording());
-    },
-    unsubscribe: () => {
-      dispatch(unsubscribeToSessionRecording());
-    },
-    refreshPlaybackFilesList: () => {
-      dispatch(refreshSessionRecording());
-    },
-    setPopoverVisibility: (visible) => {
-      dispatch(setPopoverVisibility({
-        popover: 'sessionRecording',
-        visible
-      }));
-    },
-  }
-}
+const mapDispatchToProps = dispatch => ({
+  subscribe: () => {
+    dispatch(subscribeToSessionRecording());
+  },
+  unsubscribe: () => {
+    dispatch(unsubscribeToSessionRecording());
+  },
+  refreshPlaybackFilesList: () => {
+    dispatch(refreshSessionRecording());
+  },
+});
 
 
 SessionRec = connect(
   subStateToProps(mapSubStateToProps, mapStateToSubState),
-  mapDispatchToProps
+  mapDispatchToProps,
 )(SessionRec);
 
 export default SessionRec;
