@@ -37,7 +37,7 @@
       "altitude": 20000000
     }
   },
-  "enabledproperties": ["Scene.Earth.Renderable.Layers.ColorLayers.ERA5_Land_Monthly_2M_Temperature_Temporal_mean_81-10vs10-20_each_year.Enabled"],
+  "enabledproperties": ["Scene.Earth.Renderable.Layers.ColorLayers.ERA5_Land_Monthly_2M_Temperature_Temporal_mean_81-10vs10-20_each_year.Enabled, Climate_Mode"],
   "toggleboolproperties": [
     {
       "URI":"Scene.Earth.Renderable.Layers.ColorLayers.ERA5_Land_HighRes_Monthly_2M_Temperature_Temporal.Enabled",
@@ -57,7 +57,7 @@
 	  "isAction": true,
 	  "actionEnabled":"climate_mode_true",
 	  "actionDisabled":"climate_mode_false",
-      "defaultvalue": false
+      "defaultvalue": true
     }
   ]
 }

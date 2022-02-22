@@ -11,26 +11,39 @@ class ToggleBoolButton extends Component {
     super(props);
 	
 	this.state = {
-      checked: false
+      checked: this.props.property.isAction ? this.props.property.defaultvalue : this.props.propertyNode.value
     };
 
-    this.toggleProperty = this.toggleProperty.bind(this);
+	this.disableIfChecked = this.disableIfChecked.bind(this);
+    this.toggleChecked = this.toggleChecked.bind(this);
 	this.handleOnClick = this.handleOnClick.bind(this);
   }
 
   componentDidMount(){
-	if(this.props.property.isAction) {
+	if(!this.props.property.isAction) {
 		this.props.boolPropertyDispatcher.subscribe();
 	}
   }
 
   componentWillUnMount(){
-	if(this.props.property.isAction) {
+	if(!this.props.property.isAction) {
 		this.props.boolPropertyDispatcher.unsubscribe();
 	}
   }
+  
+  disableIfChecked() {
+	if(this.state.checked) {
+		if(this.props.property.isAction) {
+			this.props.triggerActionDispatcher(this.props.property.actionDisabled);
+		}
+		else {
+			this.props.boolPropertyDispatcher.set(false);
+		}
+		this.setState({ checked: false });
+	}
+  }
 
-  toggleProperty() {
+  toggleChecked() {
 	if(this.props.property.isAction) {
 		if(!this.state.checked) {
 			this.props.triggerActionDispatcher(this.props.property.actionEnabled);
@@ -42,14 +55,14 @@ class ToggleBoolButton extends Component {
 		}
 	}
 	else {
-		const value = this.props.propertyNode.value ? false : true;
+		const value = this.state.checked ? false : true;
 		this.setState({ checked: value });
 		this.props.boolPropertyDispatcher.set(value);
 	}
   }
   
   handleOnClick () {
-	  this.toggleProperty();
+	  this.toggleChecked();
 	  if(this.props.property.group){
 		this.props.handleGroup(this.props);
 	  }
@@ -85,7 +98,7 @@ const mapStateToProps = (state, ownProps) => {
 	  };
   }
   else
-	  return;
+	  return { propertyNode: null }; ;
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => ({

@@ -12,7 +12,7 @@ class ToggleBoolButtons extends Component {
   handleGroup (clickedProperty) {
 	  this.props.properties.map((property, i) => {
         if(clickedProperty.property.URI != property.URI && clickedProperty.property.group == property.group){
-			this.toggleButtons[property.URI].toggleProperty();
+			this.toggleButtons[property.URI].disableIfChecked();
 		}
       })
   }
