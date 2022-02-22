@@ -1,6 +1,5 @@
-import React from 'react';
 import PropTypes from 'prop-types';
-
+import React from 'react';
 import styles from './SmallLabel.scss';
 
 const SmallLabel = (props) => {

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import PropertyOwner from './Properties/PropertyOwner';
-import Group from './Group';
 import ContextSection from './ContextSection';
+import Group from './Group';
+import PropertyOwner from './Properties/PropertyOwner';
 
 class ScenePaneListItem extends Component {
   constructor(props) {

@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import Button from '../../common/Input/Button/Button';
-import InfoBox from '../../common/InfoBox/InfoBox';
-import { connectProperty } from './connectProperty';
 import { copyTextToClipboard } from '../../../utils/helpers';
+import InfoBox from '../../common/InfoBox/InfoBox';
+import Button from '../../common/Input/Button/Button';
 
 class TriggerProperty extends Component {
   constructor(props) {

@@ -1,10 +1,7 @@
 import React from 'react';
 import GraphBody from './GraphBody';
 
-const Graph = ({
-  points,
-  color,
-}) =>
+const Graph = ({ points, color }) =>
   (
     <div>
       <svg width={800} height={600}>

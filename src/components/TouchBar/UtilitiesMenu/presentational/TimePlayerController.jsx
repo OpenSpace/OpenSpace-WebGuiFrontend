@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { CurrentTimeKey, DeltaTime, FastRewind, Rewind, Play, Forward, FastForward } from '../../../../api/keys';
-import styles from './../style/TimeController.scss';
-import buttonStyles from './../style/UtilitiesButtons.scss';
+import { connect } from 'react-redux';
+import { subscribeToTime, unsubscribeToTime } from '../../../../api/Actions';
+import { FastForward, FastRewind, Forward, Play, Rewind } from '../../../../api/keys';
 import * as timeHelpers from '../../../../utils/timeHelpers';
 import Icon from '../../../common/MaterialIcon/MaterialIcon';
 import SmallLabel from '../../../common/SmallLabel/SmallLabel';
-import { subscribeToTime, unsubscribeToTime } from '../../../../api/Actions';
-import { connect } from 'react-redux';
+import styles from './../style/TimeController.scss';
+import buttonStyles from './../style/UtilitiesButtons.scss';
 
 const FastSpeed = 86400;
 const Speed = 3600;

@@ -1,8 +1,7 @@
-import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import ToggleHeader from './ToggleHeader';
-
+import React, { Component } from 'react';
 import styles from './ToggleContent.scss';
+import ToggleHeader from './ToggleHeader';
 
 class ToggleContent extends Component {
   constructor(props) {

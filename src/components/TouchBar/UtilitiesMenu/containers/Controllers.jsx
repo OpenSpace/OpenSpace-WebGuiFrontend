@@ -1,15 +1,15 @@
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-
-import { NavigationAnchorKey, ValuePlaceholder, ScaleKey } from '../../../../api/keys';
 import { setPropertyValue, subscribeToProperty, unsubscribeToProperty } from '../../../../api/Actions';
-import DateController from './../presentational/DateController';
-import TimePlayerController from './../presentational/TimePlayerController';
-import SightsController from './../presentational/SightsController';
-import ScaleController from './../presentational/ScaleController';
-import ToggleBoolButtons from './../presentational/ToggleBoolButtons';
+import { NavigationAnchorKey, ScaleKey, ValuePlaceholder } from '../../../../api/keys';
 import { UpdateDeltaTimeNow } from '../../../../utils/timeHelpers';
+import DateController from './../presentational/DateController';
+import ScaleController from './../presentational/ScaleController';
+import SightsController from './../presentational/SightsController';
+import TimePlayerController from './../presentational/TimePlayerController';
+import ToggleBoolButtons from './../presentational/ToggleBoolButtons';
+
 
 class Controllers extends Component {
   constructor(props) {
@@ -19,8 +19,7 @@ class Controllers extends Component {
     this.onChangeScale = this.onChangeScale.bind(this);
   }
 
-  componentDidMount(){
-
+  componentDidMount() {
     if (this.props.scaleNodes.length !== 0) {
       this.props.scaleNodes.forEach(scaleNode =>
         this.props.startListening(scaleNode.description.Identifier),
@@ -37,7 +36,6 @@ class Controllers extends Component {
   }
 
   onChangeSight(selected) {
-
     UpdateDeltaTimeNow(this.props.luaApi, 1);
     // Check if the sight is on the current anchor, otherwise change anchor node
     if (this.props.originNode !== selected.planet) {
@@ -78,15 +76,17 @@ class Controllers extends Component {
           <TimePlayerController />
         }
         {(story && story.datecontroller) &&
-        <DateController
-          dateList={story.datecontroller}
-          onChangeSight={this.onChangeSight}
-        />}
+          <DateController
+            dateList={story.datecontroller}
+            onChangeSight={this.onChangeSight}
+          />
+        }
         {(story && story.sightscontroller) &&
-        <SightsController
-          sightsList={story.sightscontroller}
-          onChangeSight={this.onChangeSight}
-        />}
+          <SightsController
+            sightsList={story.sightscontroller}
+            onChangeSight={this.onChangeSight}
+          />
+        }
         {(story && story.scalenodes) &&
           <ScaleController
             info={story.scalenodes.info}
@@ -96,7 +96,7 @@ class Controllers extends Component {
           />
         }
         {(story && story.toggleboolproperties) &&
-        <ToggleBoolButtons/>
+          <ToggleBoolButtons/>
         }
       </div>
     );
@@ -108,18 +108,16 @@ const mapStateToProps = (state) => {
   const story = state.storyTree.story;
   const scaleNodes = [];
   
-  if (state.propertyTree !== undefined) {
-    originNode = state.propertyTree.properties[NavigationAnchorKey];
+  originNode = state.propertyTree.properties[NavigationAnchorKey];
 
-    if (story.scalenodes) {
-      story.scalenodes.nodes.forEach(node => {
-        const scaleNode =
-          state.propertyTree.properties[ScaleKey.replace(ValuePlaceholder, `${node}`)];
-        if (scaleNode) {
-          scaleNodes.push(scaleNode);
-        }
-      });
-    }
+  if (story.scalenodes) {
+    story.scalenodes.nodes.forEach(node => {
+      const scaleNode =
+        state.propertyTree.properties[ScaleKey.replace(ValuePlaceholder, `${node}`)];
+      if (scaleNode) {
+        scaleNodes.push(scaleNode);
+      }
+    });
   }
 
   return {

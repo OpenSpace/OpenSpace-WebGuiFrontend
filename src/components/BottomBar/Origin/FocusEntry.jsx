@@ -1,7 +1,6 @@
-import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import styles from './FocusEntry.scss';
-import { jsonToLuaString } from '../../../utils/propertyTreeHelpers';
 
 class FocusEntry extends Component {
   constructor(props) {

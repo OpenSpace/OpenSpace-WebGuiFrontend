@@ -35,17 +35,15 @@ export const DeltaTime = 'deltaTime';
 // value placeholder in scripts with parameter
 export const ValuePlaceholder = '___value___';
 // key  for apply fly to trigger property
-export const ApplyFlyToKey = 'NavigationHandler.OrbitalNavigator.ApplyLinearFlight';
+export const ApplyFlyToKey = 'NavigationHandler.OrbitalNavigator.LinearFlight.ApplyLinearFlight';
 // key for accessing the flight destination distance from the current anchor
-export const FlightDestinationDistanceKey = 'NavigationHandler.OrbitalNavigator.FlightDestinationDistance';
+export const FlightDestinationDistanceKey = 'NavigationHandler.OrbitalNavigator.LinearFlight.FlightDestinationDistance';
 // key for json file with info for icons
 export const InfoIconKey = 'info_icons';
 // key for endpoint for json files
 export const DataEndpointKey = 'https://openspace.github.io/sci/mastertheses/2018/info/solarsystem/';
 // key for default story
 export const DefaultStory = 'default';
-// key for the bounding sphere radius of a renderable
-export const BoundingSphereKey = `Scene.${ValuePlaceholder}.Renderable.BoundingSphere`;
 // key for max zoom out limit in the touch module
 export const ZoomOutLimitKey = 'Modules.Touch.TouchInteraction.ZoomOutLimit';
 // key for zoom in limit in the touch module

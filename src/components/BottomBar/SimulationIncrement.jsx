@@ -1,17 +1,15 @@
-import React, { Component } from 'react';
 import { throttle } from 'lodash/function';
-import NumericInput from '../common/Input/NumericInput/NumericInput';
-import Row from '../common/Row/Row';
-import Select from '../common/Input/Select/Select';
-import { round10 } from '../../utils/rounding';
-import ScaleInput from '../common/Input/ScaleInput/ScaleInput';
-
-import { subscribeToTime, unsubscribeToTime } from '../../api/Actions';
-import { subscribeToDeltaTimes, unsubscribeToDeltaTimes } from '../../api/Actions';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { subscribeToTime, unsubscribeToTime } from '../../api/Actions';
+import { round10 } from '../../utils/rounding';
 import Button from '../common/Input/Button/Button';
-import styles from './SimulationIncrement.scss';
+import NumericInput from '../common/Input/NumericInput/NumericInput';
+import ScaleInput from '../common/Input/ScaleInput/ScaleInput';
+import Select from '../common/Input/Select/Select';
 import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
+import Row from '../common/Row/Row';
+import styles from './SimulationIncrement.scss';
 
 const updateDelayMs = 1000;
 // Throttle the delta time updating, so that we don't accidentally flood

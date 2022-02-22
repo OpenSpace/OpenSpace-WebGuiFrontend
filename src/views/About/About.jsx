@@ -1,33 +1,34 @@
 import React from 'react';
-import Row from '../../components/common/Row/Row';
-import styles from './About.scss';
-import logo from './logo.png';
-import { SCMInfoKey, VersionInfoKey } from '../../api/keys';
-import PropertyString from '../../components/common/PropertyString/PropertyString';
 import { connect } from 'react-redux';
 import { formatVersion, isOlder } from '../../api/Version';
 import LoadingString from '../../components/common/LoadingString/LoadingString';
+import Row from '../../components/common/Row/Row';
+import styles from './About.scss';
+import logo from './logo.png';
 
 const openSpaceVersion = (props) => {
-  const currentVersion = <p>OpenSpace version: {props.hasVersion ?
+  const currentVersion = <p>OpenSpace version: {
+    props.hasVersion ?
       formatVersion(props.version.openSpaceVersion) :
-      <LoadingString loading={true}/>}
+      <LoadingString loading={true}/>
+    }
   </p>
 
   let latestAvailableVersion = null;
 
-  if (props.hasVersion &&
-      props.version.latestOpenSpaceVersion &&
-      isOlder(props.version.openSpaceVersion, props.version.latestOpenSpaceVersion)
-  ) {
+  const newerExists = props.hasVersion &&
+                      props.version.latestOpenSpaceVersion &&
+                      isOlder(props.version.openSpaceVersion, props.version.latestOpenSpaceVersion);
+
+  if (newerExists) {
     latestAvailableVersion = <p className={styles.notification}>
       Version {formatVersion(props.version.latestOpenSpaceVersion)} is available at openspaceproject.com
     </p>;
   }
 
   return <>
-    {currentVersion}
-    {latestAvailableVersion}
+    { currentVersion }
+    { latestAvailableVersion }
   </>
 
 }

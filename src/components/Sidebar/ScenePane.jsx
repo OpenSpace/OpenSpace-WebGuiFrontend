@@ -1,12 +1,13 @@
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import Pane from './Pane';
-import FilterList from '../common/FilterList/FilterList';
-import LoadingBlocks from '../common/LoadingBlock/LoadingBlocks';
-import ScenePaneListItem from './ScenePaneListItem';
+import { isPropertyOwnerHidden } from './../../utils/propertyTreeHelpers';
 import { ObjectWordBeginningSubstring } from '../../utils/StringMatchers';
 import subStateToProps from '../../utils/subStateToProps';
+import FilterList from '../common/FilterList/FilterList';
+import LoadingBlocks from '../common/LoadingBlock/LoadingBlocks';
+import Pane from './Pane';
+import ScenePaneListItem from './ScenePaneListItem';
 
 class ScenePane extends Component {
   constructor(props) {
@@ -70,13 +71,13 @@ const mapSubStateToProps = ({ groups, properties, propertyOwners }) => {
     const depth = (path.match(/\//g) || []).length;
     return depth <= 1;
   }).map(path =>
-    path.slice(1) // Remove leading slash.
+    path.slice(1) // Remove leading slash
   ).reduce((obj, key) => ({ // Convert back to object
       ...obj,
       [key]: true
   }), {});
 
-  // Reorder properties based on SceneProperties ordering property.
+  // Reorder properties based on SceneProperties ordering property
   let sortedGroups = [];
   const ordering = properties['Modules.ImGUI.Main.SceneProperties.Ordering'];
   if (ordering && ordering.value) {
@@ -98,7 +99,7 @@ const mapSubStateToProps = ({ groups, properties, propertyOwners }) => {
   const matcher = (test, search) => {
     if (test.type === 'propertyOwner') {
       const node = propertyOwners[test.uri] || {};
-      const guiHidden = properties[test.uri + ".GuiHidden"];
+      const guiHidden = isPropertyOwnerHidden(properties, test.uri);
       return ObjectWordBeginningSubstring(node, search) && !guiHidden;
     }
     return false;

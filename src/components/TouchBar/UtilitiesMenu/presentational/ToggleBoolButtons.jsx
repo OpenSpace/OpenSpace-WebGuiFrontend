@@ -7,17 +7,10 @@ class ToggleBoolButtons extends Component {
     super(props);
   }
 
-  get propertiesButtons(){
-    return (
-      this.props.properties.map((property, i) => {
-        return(
-          <ToggleBoolButton
-              key={property.URI}
-              property={property}
-          />
-        );
-      })
-    );
+  get propertiesButtons() {
+    return (this.props.properties.map((property, i) => 
+      <ToggleBoolButton key={property.URI} property={property} />
+    ));
   }
 
 render() {

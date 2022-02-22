@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Slide from './Slide';
-import RightArrow from './Arrows/RightArrow';
-import LeftArrow from './Arrows/LeftArrow';
-import Dots from './Dots/Dots';
-import styles from './Slider.scss';
-import { storyImages } from '../../api/resources'
+import React, { Component } from 'react';
+import { storyImages } from '../../api/resources';
 import stories from '../../stories/stories.json';
+import LeftArrow from './Arrows/LeftArrow';
+import RightArrow from './Arrows/RightArrow';
+import Dots from './Dots/Dots';
+import Slide from './Slide';
+import styles from './Slider.scss';
 
 class Slider extends Component {
   constructor(props) {
@@ -15,12 +15,15 @@ class Slider extends Component {
     const { startSlider } = this.props;
 
     let startIndex = stories.stories.findIndex(
-      function (element){
+      function (element) {
         return startSlider === element.identifier;
       }
     )
-    //if startSlider was not in the listed stories, pick the first
-    if(startIndex < 0) { startIndex = 0};
+    
+    // if startSlider was not in the listed stories, pick the first
+    if (startIndex < 0) { 
+      startIndex = 0
+    };
 
     this.state = {
       index: startIndex,

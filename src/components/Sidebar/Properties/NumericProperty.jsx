@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import NumericInput from '../../common/Input/NumericInput/NumericInput';
-import InfoBox from '../../common/InfoBox/InfoBox';
-import { connectProperty } from './connectProperty';
 import { copyTextToClipboard } from '../../../utils/helpers';
+import InfoBox from '../../common/InfoBox/InfoBox';
+import NumericInput from '../../common/Input/NumericInput/NumericInput';
 import styles from './Property.scss';
 
 class NumericProperty extends Component {

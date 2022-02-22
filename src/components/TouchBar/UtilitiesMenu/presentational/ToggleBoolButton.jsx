@@ -1,10 +1,9 @@
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import styles from './../style/UtilitiesButtons.scss';
-import SmallLabel from '../../../common/SmallLabel/SmallLabel';
-
 import propertyDispatcher from '../../../../api/propertyDispatcher';
+import SmallLabel from '../../../common/SmallLabel/SmallLabel';
+import styles from './../style/UtilitiesButtons.scss';
 
 class ToggleBoolButton extends Component {
   constructor(props) {
@@ -45,10 +44,12 @@ class ToggleBoolButton extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-
   let propertyNode = state.propertyTree.properties[ownProps.property.URI];
 
-  return{
+  // TODO (emmbr, 2022-01-18) Should check that the property node actually 
+  // exists as well, and handle the case when it doesn't
+
+  return {
     propertyNode
   };
 }

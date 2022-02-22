@@ -1,36 +1,30 @@
-import React, { Component } from 'react';
-import { withRouter, HashRouter as Router, Route, Link } from 'react-router-dom';
-import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import '../styles/base.scss';
-import Sidebar from '../components/Sidebar/Sidebar';
-import BottomBar from '../components/BottomBar/BottomBar';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { HashRouter as Router, Link, Route, withRouter } from 'react-router-dom';
+import { 
+  addStoryInfo, addStoryTree, fetchData, resetStoryInfo, setPropertyValue, 
+  startConnection, subscribeToProperty, unsubscribeToProperty 
+} from '../api/Actions';
+import { 
+  DefaultStory, InfoIconKey, NavigationAnchorKey, ScaleKey, 
+  ValuePlaceholder, ZoomInLimitKey, ZoomOutLimitKey 
+} from '../api/keys';
+import { formatVersion, isCompatible, RequiredOpenSpaceVersion, RequiredSocketApiVersion } from '../api/Version';
 import Error from '../components/common/Error/Error';
 import Overlay from '../components/common/Overlay/Overlay';
-import About from './About/About';
 import Stack from '../components/common/Stack/Stack';
-
-import {
-  setPropertyValue, startConnection, fetchData, addStoryTree, subscribeToProperty,
-  unsubscribeToProperty, addStoryInfo, resetStoryInfo
-} from '../api/Actions';
-import TouchBar from '../components/TouchBar/TouchBar';
-import styles from './OnTouchGui.scss';
-import {
-  InfoIconKey, ValuePlaceholder, DefaultStory, ScaleKey,
-  NavigationAnchorKey, ZoomInLimitKey, ZoomOutLimitKey
-} from '../api/keys';
 import Slider from '../components/ImageSlider/Slider';
-import { UpdateDeltaTimeNow } from '../utils/timeHelpers';
-import { toggleShading, toggleHighResolution, toggleShowNode, toggleGalaxies,
-         toggleZoomOut, setStoryStart, showDevInfoOnScreen, storyFileParser,
-         infoFileParser, flyTo
-} from '../utils/storyHelpers';
+import TouchBar from '../components/TouchBar/TouchBar';
 import DeveloperMenu from '../components/TouchBar/UtilitiesMenu/presentational/DeveloperMenu';
-import { isCompatible,
-         formatVersion,
-         RequiredSocketApiVersion,
-         RequiredOpenSpaceVersion } from '../api/Version';
+import '../styles/base.scss';
+import {
+  flyTo, infoFileParser, setStoryStart, showDevInfoOnScreen, storyFileParser, 
+  toggleGalaxies, toggleHighResolution, toggleShading, toggleShowNode 
+} from '../utils/storyHelpers';
+import { UpdateDeltaTimeNow } from '../utils/timeHelpers';
+import About from './About/About';
+import styles from './OnTouchGui.scss';
 
 const KEYCODE_D = 68;
 
@@ -93,7 +87,6 @@ class OnTouchGui extends Component {
   }
 
   setStory(selectedStory) {
-
     const previousStory = this.props.storyIdentifier;
     this.setState({ currentStory: selectedStory });
 
@@ -233,12 +226,13 @@ class OnTouchGui extends Component {
           <DeveloperMenu
             changeStory={this.changeStory}
             storyIdentifier={this.props.storyIdentifier}
-          />}
+          />
+        }
         <p className={styles.storyTitle}> {this.props.story.title} </p>
         {(this.state.currentStory === DefaultStory)
           ? <Slider startSlider = {this.state.sliderStartStory} changeStory={this.setStory} />
           : <TouchBar resetStory={this.resetStory} />
-        }      
+        }
       </div>
     );
   }
@@ -250,20 +244,22 @@ const mapStateToProps = (state) => {
   const scaleNodes = [];
   const story = state.storyTree.story;
 
-  if (state.propertyTree !== undefined) {
+  // TODO (emmbr, 2022-01-18): For some reason, it takes a while for the property
+  // tree to load when showing this UI in a browser. If this happens, these 
+  // properties are not set up correctly, and the UI crashes when trying to create 
+  // select a new story. Not great, should be investigated :) 
 
-    storyIdentifier = story.identifier;
-    anchorNode = state.propertyTree.properties[NavigationAnchorKey];
+  storyIdentifier = story.identifier;
+  anchorNode = state.propertyTree.properties[NavigationAnchorKey];
 
-    if (story.scalenodes) {
-      story.scalenodes.nodes.forEach((node) => {
-        let foundScaleNode = state.propertyTree.properties[ScaleKey.replace(ValuePlaceholder, `${node}`)];
+  if (story.scalenodes) {
+    story.scalenodes.nodes.forEach((node) => {
+      let foundScaleNode = state.propertyTree.properties[ScaleKey.replace(ValuePlaceholder, `${node}`)];
 
-        if (foundScaleNode) {
-          scaleNodes.push(foundScaleNode);
-        }
-      });
-    }
+      if (foundScaleNode) {
+        scaleNodes.push(foundScaleNode);
+      }
+    });
   }
 
   return {

@@ -1,44 +1,37 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-
-import SmallLabel from '../../common/SmallLabel/SmallLabel';
-import LoadingString from '../../common/LoadingString/LoadingString';
-import Picker from '../Picker';
-import Popover from '../../common/Popover/Popover';
-import Button from '../../common/Input/Button/Button';
-import FilterList from '../../common/FilterList/FilterList';
-import {
-  NavigationAnchorKey,
-  NavigationAimKey,
-  RetargetAnchorKey,
-  RetargetAimKey,
-  ScenePrefixKey,
-  sessionStatePlaying,
-  sessionStatePaused,
-} from '../../../api/keys';
-import FocusEntry from './FocusEntry';
-
-import {
+import Aim from 'svg-react-loader?name=Aim!../../../icons/aim.svg';
+import Anchor from 'svg-react-loader?name=Anchor!../../../icons/anchor.svg';
+import Focus from 'svg-react-loader?name=Focus!../../../icons/focus.svg';
+import { 
+  connectFlightController,
+  sendFlightControl,
   setNavigationAction,
   setOriginPickerShowFavorites,
   setPopoverVisibility,
   subscribeToSessionRecording,
-  unsubscribeToSessionRecording,
-  connectFlightController,
-  sendFlightControl
+  unsubscribeToSessionRecording
 } from '../../../api/Actions';
-
-import styles from './OriginPicker.scss';
-
-import SvgIcon from '../../common/SvgIcon/SvgIcon';
-import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
-import Anchor from 'svg-react-loader?name=Anchor!../../../icons/anchor.svg';
-import Aim from 'svg-react-loader?name=Aim!../../../icons/aim.svg';
-import Focus from 'svg-react-loader?name=Focus!../../../icons/focus.svg';
-
+import { 
+  NavigationAimKey,
+  NavigationAnchorKey,
+  RetargetAimKey,
+  RetargetAnchorKey,
+  ScenePrefixKey,
+  sessionStatePaused,
+  sessionStatePlaying
+} from '../../../api/keys';
 import propertyDispatcher from '../../../api/propertyDispatcher';
 import subStateToProps from '../../../utils/subStateToProps';
-
+import FilterList from '../../common/FilterList/FilterList';
+import Button from '../../common/Input/Button/Button';
+import LoadingString from '../../common/LoadingString/LoadingString';
+import Popover from '../../common/Popover/Popover';
+import SmallLabel from '../../common/SmallLabel/SmallLabel';
+import SvgIcon from '../../common/SvgIcon/SvgIcon';
+import Picker from '../Picker';
+import FocusEntry from './FocusEntry';
+import styles from './OriginPicker.scss';
 
 // tag that each focusable node must have
 const REQUIRED_TAG = 'GUI.Interesting';

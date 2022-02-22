@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import PropertyOwner from './Properties/PropertyOwner';
+import { removeLastWordFromUri } from '../../utils/propertyTreeHelpers';
 import Property from './Properties/Property';
-import { removeLastWordFromUri } from '../../utils/propertyTreeHelpers'
-
+import PropertyOwner from './Properties/PropertyOwner';
 import styles from './SettingsPaneListItem.scss';
 
 class SettingsPaneListItem extends Component {

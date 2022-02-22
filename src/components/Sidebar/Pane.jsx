@@ -1,9 +1,7 @@
-import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
-
 import styles from './Pane.scss';
-
 
 class Pane extends Component {
   render() {
@@ -16,11 +14,11 @@ class Pane extends Component {
             { title }
           </div>
 
-          { closeCallback && (
+          { closeCallback && 
             <button onClick={closeCallback(false)} className={styles.close}>
               <MaterialIcon icon="close" className="small" />
             </button>
-          ) }
+          }
         </header>
         <div className={styles.content}>
           { children }
@@ -41,7 +39,6 @@ Pane.defaultProps = {
   closeCallback: null,
   title: null,
 };
-
 
 Pane.styles = styles;
 

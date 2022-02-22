@@ -2,14 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styles from './PropertyOwnerHeader.scss';
 import toggleHeaderStyles from './../../common/ToggleContent/ToggleHeader.scss';
-import Button from '../../common/Input/Button/Button';
 import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
 import SvgIcon from '../../common/SvgIcon/SvgIcon';
-import FocusIcon from 'svg-react-loader?name=Focus!../../../icons/focus.svg';
-import { LayerGroupKeys } from '../../../api/keys';
 import { displayName } from './PropertyOwner';
 import Property from './Property';
-
 import { connect } from 'react-redux';
 import propertyDispatcher from '../../../api/propertyDispatcher';
 import Focus from 'svg-react-loader?name=Focus!../../../icons/focus.svg';
@@ -18,8 +14,10 @@ import {
   NavigationAimKey,
   RetargetAnchorKey,
 } from '../../../api/keys';
+import { isGlobeBrowsingLayer } from './../../../utils/propertyTreeHelpers'
+import DraggableIcon from 'svg-react-loader?name=Aim!../../../icons/draggable_list.svg';
 
-let PropertyOwnerHeader = ({title, identifier, expanded, setExpanded, onIcon, offIcon, quickToggleUri, focusAction, shiftFocusAction, popOutAction, titleClass, metaAction, trashAction }) => {
+let PropertyOwnerHeader = ({title, identifier, expanded, setExpanded, onIcon, offIcon, quickToggleUri, enabled, isLayer, focusAction, shiftFocusAction, popOutAction, metaAction, trashAction }) => {
   const onClick = (evt) => {
     setExpanded(!expanded)
   }
@@ -51,53 +49,70 @@ let PropertyOwnerHeader = ({title, identifier, expanded, setExpanded, onIcon, of
 
 
   const popoutButton = (
-      <div className={styles.rightButton} onClick={popoutClick}>
-         <MaterialIcon icon="build"/>
-      </div>
+    <div className={styles.rightButton} onClick={popoutClick}>
+      <MaterialIcon icon="build"/>
+    </div>
   )
 
   const metaButton = (
-      <div className={styles.rightButton} onClick={metaClick}>
-         <MaterialIcon icon="help_outline"/>
-      </div>
+    <div className={styles.rightButton} onClick={metaClick}>
+      <MaterialIcon icon="help_outline"/>
+    </div>
   )
 
   const trashButton = (
-      <div className={styles.rightButton} onClick={trashClick}>
-         <MaterialIcon icon="delete"/>
-      </div>
+    <div className={styles.rightButton} onClick={trashClick}>
+      <MaterialIcon icon="delete"/>
+    </div>
   )
 
-  return <header className={toggleHeaderStyles.toggle} onClick={onClick} role="button" tabIndex={0}>
-    <MaterialIcon
-      icon={expanded ? onIcon : offIcon}
-      className={toggleHeaderStyles.icon}
-    />
-    { quickToggleUri &&
+  // Headers look slightly different for globe browsing layers
+  var titleClass = "";
+  if (isLayer) {
+    titleClass = enabled ? styles.enabledLayerTitle : styles.disabledLayerTitle;
+  }
+  // And additionally for height layers
+  const isHeightLayer = isLayer && quickToggleUri.includes("Layers.HeightLayers.");
+
+  return (
+    <header 
+      className={`${toggleHeaderStyles.toggle} ${isLayer && styles.layerHeader}`} 
+      onClick={onClick} 
+      role="button" 
+      tabIndex={0}
+    >
+      <MaterialIcon
+        icon={expanded ? onIcon : offIcon}
+        className={toggleHeaderStyles.icon}
+      />
+      { quickToggleUri &&
         <span className={styles.leftButtonContainer}>
           <Property uri={quickToggleUri} checkBoxOnly={true} />
         </span>
-    }
-    <span className={`${toggleHeaderStyles.title} ${titleClass}`} >
-      { title }
-    </span>
-    <span className={styles.rightButtonContainer}>
-      { focusAction &&
-        <div className={styles.rightButton} onClick={onClickFocus}>
-        <SvgIcon><Focus/></SvgIcon>
-        </div>
       }
-      {
-        popOutAction && popoutButton
-      }
-      {
-        metaAction && metaButton
-      }
-      {
-        trashAction && trashButton
-      }
-    </span>
-  </header>
+      <span className={`${toggleHeaderStyles.title} ${titleClass}`} >
+        { title }
+        { isHeightLayer && <MaterialIcon className={styles.heightLayerIcon} icon="landscape" /> }
+        { isLayer && <SvgIcon className={styles.layerDraggableIcon}><DraggableIcon/></SvgIcon> }
+      </span>
+      <span className={styles.rightButtonContainer}>
+        { focusAction &&
+          <div className={styles.rightButton} onClick={onClickFocus}>
+            <SvgIcon><Focus/></SvgIcon>
+          </div>
+        }
+        {
+          popOutAction && popoutButton
+        }
+        {
+          metaAction && metaButton
+        }
+        {
+          trashAction && trashButton
+        }
+      </span>
+    </header>
+  )
 }
 
 const mapStateToProps = (state, ownProps) => {
@@ -115,31 +130,19 @@ const mapStateToProps = (state, ownProps) => {
   } else if (state.propertyTree.properties[uri + '.Renderable.Enabled']) {
     quickToggleUri = uri + '.Renderable.Enabled';
   }
-  //check for layers so we can make the titles green
-  var isLayer = false;
-  LayerGroupKeys.forEach( (layerGroup) => {
-    if ( (uri.indexOf(layerGroup) > -1) && !(uri.endsWith(layerGroup)) ) {
-      isLayer = true;
-    }
-  });
-  let isHeightLayer = quickToggleUri && (quickToggleUri.lastIndexOf('HeightLayers') > 0);
-  var titleClass = "";
-  var enabled = quickToggleUri && state.propertyTree.properties[quickToggleUri].value;
-  if (isLayer) {
-      if (enabled) {
-        titleClass = styles.greenTitle;
-      } else if (isHeightLayer) {
-        //make height layers visually distinguishable from other layers
-        //specificlly color layers where they might have the same name
-        titleClass = styles.grayTitle;
-      }
-  }
+
+  const enabled = quickToggleUri && state.propertyTree.properties[quickToggleUri].value;
+
+  // Check for layers so we can change their visuals (e.g makes the titles of enabled
+  // layers green and have different behavior on hover)
+  const isLayer = isGlobeBrowsingLayer(uri);
 
   return {
     title: title || displayName(state, uri),
     quickToggleUri,
-    titleClass,
-    identifier: identifier
+    enabled,
+    isLayer,
+    identifier
   };
 }
 

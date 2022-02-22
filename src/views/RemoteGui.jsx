@@ -1,22 +1,19 @@
 import React, { Component } from 'react';
-import { withRouter, HashRouter as Router, Route, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import '../styles/base.scss';
-import styles from './RemoteGui.scss';
-import Sidebar from '../components/Sidebar/Sidebar';
+import { withRouter } from 'react-router-dom';
+import { setShowAbout, startConnection } from '../api/Actions';
+import { formatVersion, isCompatible, RequiredOpenSpaceVersion, RequiredSocketApiVersion } from '../api/Version';
 import BottomBar from '../components/BottomBar/BottomBar';
-import Button from '../components/common/Input/Button/Button';
 import Error from '../components/common/Error/Error';
+import Button from '../components/common/Input/Button/Button';
 import Overlay from '../components/common/Overlay/Overlay';
-import About from './About/About';
 import Stack from '../components/common/Stack/Stack';
-import NodePopOverContainer from '../components/NodePropertiesPanel/NodePopOverContainer';
 import NodeMetaContainer from '../components/NodeMetaPanel/NodeMetaContainer';
-import { startConnection, setShowAbout } from '../api/Actions';
-import { isCompatible,
-         formatVersion,
-         RequiredSocketApiVersion,
-         RequiredOpenSpaceVersion } from '../api/Version';
+import NodePopOverContainer from '../components/NodePropertiesPanel/NodePopOverContainer';
+import Sidebar from '../components/Sidebar/Sidebar';
+import '../styles/base.scss';
+import About from './About/About';
+import styles from './RemoteGui.scss';
 
 class RemoteGui extends Component {
   constructor(props) {

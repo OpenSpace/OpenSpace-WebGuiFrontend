@@ -1,9 +1,9 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 import ReactSelect from 'react-select';
+import { excludeKeys } from '../../../../utils/helpers';
 import Input from '../Input/Input';
 import styles from './Select.scss';
-import { excludeKeys } from '../../../../utils/helpers';
 
 const selectStyles = {
   control: (provided) => ({

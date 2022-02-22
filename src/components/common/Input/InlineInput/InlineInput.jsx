@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import AutosizeInput from 'react-input-autosize';
+import { excludeKeys } from '../../../../utils/helpers';
 import Input from '../Input/Input';
 import styles from './InlineInput.scss';
-import { excludeKeys } from '../../../../utils/helpers';
 
 class InlineInput extends Component {
   constructor(props) {

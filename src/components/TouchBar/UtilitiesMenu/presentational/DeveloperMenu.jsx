@@ -1,8 +1,8 @@
-import React from 'react';
 import PropTypes from 'prop-types';
-import styles from './../style/DeveloperMenu.scss';
+import React from 'react';
 import Button from '../../../../components/common/Input/Button/Button';
-import stories from '../../../../stories/stories.json'
+import stories from '../../../../stories/stories.json';
+import styles from './../style/DeveloperMenu.scss';
 
 const DeveloperMenu = (props) => {
   const buttons = stories.stories.map(story => (

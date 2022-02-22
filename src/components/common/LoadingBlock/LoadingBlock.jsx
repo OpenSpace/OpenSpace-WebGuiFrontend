@@ -1,7 +1,7 @@
-import React from 'react';
 import PropTypes from 'prop-types';
-import styles from './LoadingBlock.scss';
+import React from 'react';
 import { excludeKeys } from '../../../utils/helpers';
+import styles from './LoadingBlock.scss';
 
 const LoadingBlock = (props) => {
   const inherit = excludeKeys(props, 'loading');

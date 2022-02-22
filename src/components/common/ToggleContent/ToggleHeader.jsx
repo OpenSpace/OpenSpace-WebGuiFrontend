@@ -1,7 +1,6 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 import MaterialIcon from '../MaterialIcon/MaterialIcon';
-
 import styles from './ToggleHeader.scss';
 
 const ToggleHeader = ({ title, expanded, onClick, onIcon, offIcon, showEnabled }) => (

@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Input from '../Input/Input/Input';
+import React, { Component } from 'react';
+import { ObjectWordBeginningSubstring, WordBeginningSubstring } from '../../../utils/StringMatchers';
 import CenteredLabel from '../CenteredLabel/CenteredLabel';
+import Input from '../Input/Input/Input';
 import ScrollOverlay from '../ScrollOverlay/ScrollOverlay';
-import { WordBeginningSubstring, ObjectWordBeginningSubstring } from '../../../utils/StringMatchers';
 import styles from './FilterList.scss';
 
 class FilterList extends Component {
@@ -85,16 +85,18 @@ class FilterList extends Component {
             <CenteredLabel>
               Nothing found. Try another search!
             </CenteredLabel>
-          ) }
+          )
+          }
           <ul>
-            { entries.map(entry => (
+            { entries.map((entry, index) => (
               <EntryComponent
                 {...entry}
                 {...this.props.viewComponentProps}
-                key={entry.key}
+                key={ entry.key || index }
                 onSelect={this.props.onSelect}
                 active={this.props.active}
-              />)) }
+              />))
+            }
           </ul>
         </ScrollOverlay>
       </section>

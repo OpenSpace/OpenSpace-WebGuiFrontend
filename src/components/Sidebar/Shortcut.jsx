@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
-import SmallLabel from '../common/SmallLabel/SmallLabel';
-import styles from './Shortcut.scss';
+import { connect } from 'react-redux';
+import { executeShortcut } from '../../api/Actions';
+import subStateToProps from '../../utils/subStateToProps';
+import InfoBox from '../common/InfoBox/InfoBox';
 import Button from '../common/Input/Button/Button';
 import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
-import InfoBox from '../common/InfoBox/InfoBox';
-import subStateToProps from '../../utils/subStateToProps';
-import { connect } from 'react-redux';
-import { executeShortcut } from '../../api/Actions'
-
+import styles from './Shortcut.scss';
 
 const modifierStrings = {
   alt: 'ALT',
@@ -37,7 +35,7 @@ class Shortcut extends Component {
   }
 
   render() {
-    const { index, documentation, name, script } = this.props.data;
+    const { documentation, name } = this.props.data;
     const execute = this.props.execute;
 
     return (
@@ -45,7 +43,9 @@ class Shortcut extends Component {
         <Button transparent className={styles.executeButton} onClick={execute} >
           <MaterialIcon icon="play_arrow" />
           </Button>
-        <div className={styles.content}> {name} {this.keybinding} &nbsp; <InfoBox text={documentation} /></div>
+        <div className={styles.content}> 
+          {name} {this.keybinding} &nbsp; <InfoBox text={documentation} />
+        </div>
       </div>
     );
    }

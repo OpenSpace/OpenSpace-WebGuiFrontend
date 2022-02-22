@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import MaterialIcon from '../../MaterialIcon/MaterialIcon';
 import Button from '../Button/Button';
 import InlineInput from '../InlineInput/InlineInput';
 import styles from './Time.scss';
-import MaterialIcon from '../../MaterialIcon/MaterialIcon';
 
 const Elements = {
   FullYear: 'fullYear',

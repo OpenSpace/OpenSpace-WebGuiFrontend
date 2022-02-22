@@ -1,9 +1,7 @@
-import { updateTime, initializePropertyTree } from '../Actions';
+import { updateTime } from '../Actions';
 import { actionTypes } from '../Actions/actionTypes';
-import { rootOwnerKey } from '../keys';
 
 import api from '../api';
-import * as helperFunctions from '../../utils/propertyTreeHelpers';
 
 let timeTopic = undefined;
 let nSubscribers = 0;
