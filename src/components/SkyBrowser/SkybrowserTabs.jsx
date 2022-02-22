@@ -196,39 +196,36 @@ class SkybrowserTabs extends Component {
 
     createImageList(data, props) {
       const {selectedBrowser, skybrowserApi} = props;
+      const tabs = <ul>
+          { data.map((entry, index) => (
+               <div>
+              {(index == 0) ? <span className={styles.arrowButtonEmpty} transparent></span> :
+                  <Button onClick={() => skybrowserApi.setImageLayerOrder(selectedBrowser, Number(entry.identifier), index - 1)} className={styles.arrowButton} transparent>
+                  <MaterialIcon icon="keyboard_arrow_left" />
+                  </Button>
+              }
+              <SkybrowserFocusEntry
+              {...entry}
+              skybrowserApi = {skybrowserApi}
+              key={entry.identifier}
+              onSelect={this.props.selectImage}
+              removeImageSelection = {this.removeImageSelection}
+              setOpacity = {this.setOpacityOfImage}
+              currentTargetColor = {this.props.currentTargetColor}
+              />
+              {
+              (index == data.length -1) ? <span className={styles.arrowButtonEmpty} transparent></span> :
+                  <Button onClick={() => skybrowserApi.setImageLayerOrder(selectedBrowser, Number(entry.identifier), index + 1)} className={styles.arrowButton} transparent>
+                  <MaterialIcon icon="keyboard_arrow_right" />
+                  </Button>
+                }
+            </div>
+          ))}
+      </ul>;
 
        return <ScrollOverlay>
-            { data.length === 0 ? (
-            <CenteredLabel>There are no loaded images in this Sky Browser.</CenteredLabel>
-            ) : (
-            <ul>
-                { data.map((entry, index) => (
-                     <div>
-                    {(index == 0) ? <span className={styles.arrowButtonEmpty} transparent></span> :
-                        <Button onClick={() => skybrowserApi.setImageLayerOrder(selectedBrowser, Number(entry.identifier), index - 1)} className={styles.arrowButton} transparent>
-                        <MaterialIcon icon="keyboard_arrow_left" />
-                        </Button>
-                    }
-                    <SkybrowserFocusEntry
-                    {...entry}
-                    skybrowserApi = {skybrowserApi}
-                    key={entry.identifier}
-                    onSelect={this.props.selectImage}
-                    removeImageSelection = {this.removeImageSelection}
-                    setOpacity = {this.setOpacityOfImage}
-                    currentTargetColor = {this.props.currentTargetColor}
-                    />
-                    {
-                    (index == data.length -1) ? <span className={styles.arrowButtonEmpty} transparent></span> :
-                        <Button onClick={() => skybrowserApi.setImageLayerOrder(selectedBrowser, Number(entry.identifier), index + 1)} className={styles.arrowButton} transparent>
-                        <MaterialIcon icon="keyboard_arrow_right" />
-                        </Button>
-                      }
-                  </div>
-                ))}
-            </ul>
-            )}
-        </ScrollOverlay>
+              { data.length === 0 ? "" : tabs}
+              </ScrollOverlay>
     }
 
     valueToColor(color) {
@@ -372,6 +369,24 @@ class SkybrowserTabs extends Component {
     render() {
         const {data, currentPopoverHeight, targets, selectedBrowser} = this.props;
 
+        let tabDisplay;
+        if(Object.keys(targets).length === 0) {
+          tabDisplay = <ScrollOverlay>
+                       <CenteredLabel>There are no sky browsers. Press "+" to create one.</CenteredLabel>
+                       </ScrollOverlay>;
+        }
+        else if(this.state.showSettings) {
+          tabDisplay = this.createSettings(targets[selectedBrowser]);
+        }
+        else if(data.length === 0) {
+          tabDisplay =  <ScrollOverlay>
+                        <CenteredLabel>There are no selected images in this sky browser.</CenteredLabel>
+                        </ScrollOverlay>
+        }
+        else {
+          tabDisplay = this.createImageList(data, this.props);
+        }
+
         return(
             <section {...this.inheritedProps} className={styles.tabContainer}>
                 <Resizable
@@ -384,8 +399,7 @@ class SkybrowserTabs extends Component {
                 onResize={this.onResize}>
                 {this.createTabs()}
                 <div className={styles.tabContent} style={{ height: this.state.currentHeight }}>
-                  {this.state.showSettings ?  this.createSettings(targets[selectedBrowser])
-                    : this.createImageList(data, this.props)}
+                  {tabDisplay}
                 </div>
             </Resizable>
             </section>

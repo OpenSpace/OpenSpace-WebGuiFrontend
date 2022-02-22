@@ -5,6 +5,7 @@ $tabs-height: 48px;
 $tabs-active-height: 45px;
 $tabs-background: rgba(37,37,37,1);
 $tabs-background-content: rgba(55,55,55,1);
+$tabs-not-selected: rgba(40,40,40,1);
 $tabs-margin-horizontal: 8px;
 $tabs-close-button-width: 14px;
 $tabs-buttons-margin: 32px;
@@ -20,16 +21,15 @@ $tabs-arrowbutton-width: 13.34px;
 
 .tab {
     height: $tabs-height;
-    background: $tabs-background;
     padding-left: 4px;
     padding-right: 4px;
     font-size: 16px;
-    border-top: 3px solid $tabs-background;
     border-top-right-radius: 4px;
+    border: 3px solid $tabs-background;
+    background: $tabs-background;
     display: block;
     &:hover {
         background: $tabs-background-content;
-        border-top: 3px solid $tabs-background-content;
     }
 }
 .tabActive {
@@ -58,7 +58,6 @@ $tabs-arrowbutton-width: 13.34px;
 }
 
 .tabContent {
-
     :global(.scroll-content) {
         height: calc(100% - #{$tabs-active-height});
         background: $tabs-background-content;
@@ -86,6 +85,16 @@ $tabs-arrowbutton-width: 13.34px;
     font-size: 13px;
     padding: 9px 6px 3px 6px;
     border-top-right-radius: 4px;
+    height: $tabs-height;
+    background: $tabs-background;
+    border: 3px solid $tabs-background;
+    border-radius: 4px;
+
+    &:hover, &:active{
+      background: $tabs-background-content;
+      border: 3px solid $tabs-background;
+      border-radius: 4px;
+    }
 }
 .closeTabButton {
     border-radius: 4px;

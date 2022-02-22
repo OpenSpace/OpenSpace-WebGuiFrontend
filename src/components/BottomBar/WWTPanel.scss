@@ -1,8 +1,8 @@
 @import "../../styles/all";
 
 
-$list-header: rgba(255,255,255,0.12);  
-$list-header-hover: rgba(255,255,255,0.2); 
+$list-header: rgba(255,255,255,0.12);
+$list-header-hover: rgba(255,255,255,0.2);
 
 .photoIcon {
   font-size: 2em;
@@ -53,4 +53,3 @@ input[type="file"] {
     background: $list-header-hover;
   }
 }
-

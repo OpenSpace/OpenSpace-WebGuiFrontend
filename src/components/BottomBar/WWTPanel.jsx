@@ -218,42 +218,45 @@ class WWTPanel extends Component {
       currentTargetColor = {this.getCurrentTargetColor}
       />;
 
-      const skybrowser = <div><div className={styles.row}>
-          <Picker
-            className={`${styles.picker} ${this.state.showOnlyNearest ? styles.unselected: styles.selected}`}
-            onClick={() => this.setState({ showOnlyNearest: false })}>
-              <span>All images</span> {/*<MaterialIcon className={styles.photoIcon} icon="list_alt" />*/}
-          </Picker>
-          <Picker
-            className={`${styles.picker} ${this.state.showOnlyNearest ? styles.selected : styles.unselected}`}
-            onClick={() => this.setState({ showOnlyNearest: true })}>
-              <span>Images within view</span> {/*<MaterialIcon className={styles.photoIcon} icon="my_location" />*/}
-          </Picker>
-        </div>
-        <div className={PopoverSkybrowser.styles.content}>
-          <div className={PopoverSkybrowser.styles.scrollArea}
-          style={{height: 'calc(100% - ' + (this.state.currentTabHeight) + 'px)'}}>
-          {filterList}
-          </div>
-          {skybrowserTabs}
-        </div></div>;
-
-        const errorMessage = <div>
-                                <span> The camera has to be within the solar system for the sky browser to work. </span>
+    const skyBrowser = <PopoverSkybrowser
+                          title="AAS WorldWide Telescope"
+                          closeCallback={this.togglePopover}
+                          detachable
+                          heightCallback={this.setCurrentPopoverHeight}
+                          >
+                          <div className={styles.row}>
+                          <Picker
+                            className={`${styles.picker} ${this.state.showOnlyNearest ? styles.unselected: styles.selected}`}
+                            onClick={() => this.setState({ showOnlyNearest: false })}>
+                              <span>All images</span> {/*<MaterialIcon className={styles.photoIcon} icon="list_alt" />*/}
+                          </Picker>
+                          <Picker
+                            className={`${styles.picker} ${this.state.showOnlyNearest ? styles.selected : styles.unselected}`}
+                            onClick={() => this.setState({ showOnlyNearest: true })}>
+                              <span>Images within view</span> {/*<MaterialIcon className={styles.photoIcon} icon="my_location" />*/}
+                          </Picker>
+                          </div>
+                          <div className={PopoverSkybrowser.styles.content}>
+                            <div className={PopoverSkybrowser.styles.scrollArea}
+                            style={{height: 'calc(100% - ' + (this.state.currentTabHeight) + 'px)'}}>
+                            {filterList}
                             </div>
+                            {skybrowserTabs}
+                          </div>
+                          </PopoverSkybrowser>
 
+    const errorMessage =  <PopoverSkybrowser
+                          title="AAS WorldWide Telescope"
+                          closeCallback={this.togglePopover}
+                          detachable
+                          heightCallback={this.setCurrentPopoverHeight}
+                          >
+                          <CenteredLabel>
+                          The camera has to be within the solar system for the sky browser to work.
+                          </CenteredLabel>
+                          </PopoverSkybrowser>
   return (
-
-      <PopoverSkybrowser
-        title="AAS WorldWide Telescope"
-        closeCallback={this.togglePopover}
-        detachable
-        heightCallback={this.setCurrentPopoverHeight}
-        >
-        {this.state.cameraInSolarSystem ? skybrowser : errorMessage}
-
-      </PopoverSkybrowser>
-
+        this.state.cameraInSolarSystem ? skyBrowser : errorMessage
     );
   }
 

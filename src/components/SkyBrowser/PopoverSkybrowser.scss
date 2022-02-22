@@ -66,13 +66,13 @@ $imagelist-margin: 4px;
 .popover header {
   display: flex;
   justify-content: space-between;
+  font-size: $font-size;
 }
 
 .title {
   font-weight: 600;
   font-size: 0.8rem;
   letter-spacing: 0.1em;
-  padding: $padding;
   text-transform: uppercase;
 }
 
