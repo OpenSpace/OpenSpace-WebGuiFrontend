@@ -1,14 +1,14 @@
 import { actionTypes } from '../Actions/actionTypes';
 
 import {
-  sessionStateIdle,
-  sessionStateRecording,
-  sessionStatePlaying,
+  SessionStateIdle,
+  SessionStateRecording,
+  SessionStatePlaying,
 } from '../keys';
 
 const defaultState = {
   files: [],
-  recordingState: sessionStateIdle
+  recordingState: SessionStateIdle
 }
 
 export const sessionRecording = (state = defaultState, action) => { // state refers to version

@@ -5,7 +5,7 @@ import {
   setPopoverVisibility, subscribeToSessionRecording, subscribeToTime,
   unsubscribeToSessionRecording, unsubscribeToTime,
 } from '../../api/Actions';
-import { sessionStatePaused, sessionStatePlaying } from '../../api/keys';
+import { SessionStatePaused, SessionStatePlaying } from '../../api/keys';
 import Calendar from '../common/Calendar/Calendar';
 import Button from '../common/Input/Button/Button';
 import Time from '../common/Input/Time/Time';
@@ -288,12 +288,12 @@ class TimePicker extends Component {
       popoverVisible, sessionRecordingState, targetDeltaTime, time,
     } = this.props;
 
-    const enabled = (sessionRecordingState !== sessionStatePlaying)
-      && (sessionRecordingState !== sessionStatePaused);
+    const enabled = (sessionRecordingState !== SessionStatePlaying)
+      && (sessionRecordingState !== SessionStatePaused);
 
     const popoverEnabledAndVisible = popoverVisible && enabled;
 
-    const disableClass = (sessionRecordingState === sessionStatePaused)
+    const disableClass = (sessionRecordingState === SessionStatePaused)
       ? styles.disabledBySessionPause : styles.disabledBySessionPlayback;
 
     const pickerClasses = [

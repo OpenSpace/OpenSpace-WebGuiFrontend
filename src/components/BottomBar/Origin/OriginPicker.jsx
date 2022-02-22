@@ -19,8 +19,8 @@ import {
   RetargetAimKey,
   RetargetAnchorKey,
   ScenePrefixKey,
-  sessionStatePaused,
-  sessionStatePlaying,
+  SessionStatePaused,
+  SessionStatePlaying,
 } from '../../../api/keys';
 import propertyDispatcher from '../../../api/propertyDispatcher';
 import subStateToProps from '../../../utils/subStateToProps';
@@ -198,7 +198,7 @@ class OriginPicker extends Component {
       }
     }
 
-    // Make sure current aim is in the defualt list
+    // Make sure current aim is in the default list
     if (this.hasDistinctAim() && !defaultList.find(node => node.identifier === aim)) {
       const aimNode = nodes.find(node => node.identifier === aim);
       if (aimNode) {
@@ -219,13 +219,20 @@ class OriginPicker extends Component {
       Aim: 'Search for a new aim...',
     }[navigationAction];
 
-    const setNavigationActionToFocus = () => { this.props.setNavigationAction(NavigationActions.Focus); };
-    const setNavigationActionToAnchor = () => { this.props.setNavigationAction(NavigationActions.Anchor); };
-    const setNavigationActionToAim = () => { this.props.setNavigationAction(NavigationActions.Aim); };
+    const setNavigationActionToFocus = () => {
+      this.props.setNavigationAction(NavigationActions.Focus);
+    };
+    const setNavigationActionToAnchor = () => {
+      this.props.setNavigationAction(NavigationActions.Anchor);
+    };
+    const setNavigationActionToAim = () => {
+      this.props.setNavigationAction(NavigationActions.Aim);
+    };
 
-    const enabled = (sessionRecordingState !== sessionStatePlaying)
-      && (sessionRecordingState !== sessionStatePaused);
-    const disableClass = (sessionRecordingState === sessionStatePaused)
+    const enabled = (sessionRecordingState !== SessionStatePlaying)
+      && (sessionRecordingState !== SessionStatePaused);
+
+    const disableClass = (sessionRecordingState === SessionStatePaused)
       ? styles.disabledBySessionPause : styles.disabledBySessionPlayback;
 
     const popoverEnabledAndVisible = popoverVisible && enabled;

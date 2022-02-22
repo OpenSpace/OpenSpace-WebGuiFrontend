@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { refreshSessionRecording, subscribeToSessionRecording, unsubscribeToSessionRecording } from '../../api/Actions';
-import { sessionStateIdle, sessionStatePaused, sessionStatePlaying, sessionStateRecording } from '../../api/keys';
+import { SessionStateIdle, SessionStatePaused, SessionStatePlaying, SessionStateRecording } from '../../api/keys';
 import subStateToProps from '../../utils/subStateToProps';
 import Button from '../common/Input/Button/Button';
 import Checkbox from '../common/Input/Checkbox/Checkbox';
@@ -51,13 +51,13 @@ class SessionRec extends Component {
     const classes = [];
     let onClick = this.togglePopover;
 
-    if (this.props.recordingState === sessionStateRecording) {
+    if (this.props.recordingState === SessionStateRecording) {
       classes.push(styles.recordingPicker);
       onClick = this.toggleRecording;
-    } else if (this.props.recordingState === sessionStatePlaying) {
+    } else if (this.props.recordingState === SessionStatePlaying) {
       classes.push(styles.playingPicker);
       onClick = undefined;
-    } else if (this.props.recordingState === sessionStatePaused) {
+    } else if (this.props.recordingState === SessionStatePaused) {
       classes.push(styles.pausedPicker);
       onClick = undefined;
     } else if (this.state.showPopover) {
@@ -71,18 +71,18 @@ class SessionRec extends Component {
 
   get pickerContent() {
     switch (this.props.recordingState) {
-      case sessionStateRecording:
+      case SessionStateRecording:
         return <div>
           <MaterialIcon icon="videocam" /> Stop recording
         </div>;
-      case sessionStatePlaying:
+      case SessionStatePlaying:
         return (<><div className={styles.playbackButton} onClick={this.pausePlayback}>
           <MaterialIcon icon="pause" /> Pause
         </div>
         <div onClick={this.stopPlayback}>
           <MaterialIcon icon="stop" /> Stop playback
         </div></>);
-      case sessionStatePaused:
+      case SessionStatePaused:
         return (<><div className={styles.playbackButton} onClick={this.pausePlayback}>
           <MaterialIcon icon="play_arrow" /> Resume
         </div>
@@ -208,7 +208,7 @@ class SessionRec extends Component {
   }
 
   toggleRecording() {
-    if (this.props.recordingState == sessionStateIdle) {
+    if (this.props.recordingState == SessionStateIdle) {
       this.startRecording();
     } else {
       this.props.stopRecording();
@@ -233,7 +233,7 @@ class SessionRec extends Component {
   }
 
   togglePlayback() {
-    if (this.props.recordingState === sessionStateIdle) {
+    if (this.props.recordingState === SessionStateIdle) {
       this.startPlayback();
     } else {
       this.props.stopPlayback();
@@ -288,7 +288,7 @@ class SessionRec extends Component {
     return (
       <div className={Picker.Wrapper}>
         { this.picker }
-        { this.state.showPopover && this.props.recordingState === sessionStateIdle && this.popover }
+        { this.state.showPopover && this.props.recordingState === SessionStateIdle && this.popover }
       </div>
     );
   }
@@ -296,7 +296,7 @@ class SessionRec extends Component {
 
 const mapSubStateToProps = ({sessionRecording, sessionRecordingPopover, luaApi}) => {
   const fileList = sessionRecording.files || [];
-  const recordingState = sessionRecording.recordingState || sessionStateIdle;
+  const recordingState = sessionRecording.recordingState || SessionStateIdle;
 
   return {
     fileList,
