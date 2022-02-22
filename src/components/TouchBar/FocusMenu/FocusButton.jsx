@@ -12,22 +12,26 @@ class FocusButton extends Component {
   }
 
   get isActive() {
-    return this.props.identifier === this.props.active;
+    const { active, identifier } = this.props;
+    return identifier === active;
   }
 
   get icon() {
-    const icon = icons[this.props.identifier];
+    const { identifier } = this.props;
+    const icon = icons[identifier];
     if (icon) {
-      return <img src={icon} className={styles.iconImage} alt={this.props.identifier} />;
+      return <img src={icon} className={styles.iconImage} alt={identifier} />;
     }
     return <Icon icon="language" className={styles.Icon} />;
   }
 
   select() {
-    this.props.onChangeFocus(this.props.identifier);
+    const { identifier, onChangeFocus } = this.props;
+    onChangeFocus(identifier);
   }
 
   render() {
+    const { identifier } = this.props;
     return (
       <div 
         className={`${styles.FocusButton} ${this.isActive && styles.active}`} 
@@ -36,7 +40,7 @@ class FocusButton extends Component {
         tabIndex="0"
       >
         { this.icon }
-        <SmallLabel>{this.props.identifier}</SmallLabel>
+        <SmallLabel>{identifier}</SmallLabel>
       </div>
     );
   }

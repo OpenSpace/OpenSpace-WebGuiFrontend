@@ -3,34 +3,30 @@ import { connect } from 'react-redux';
 import ToggleBoolButton from './ToggleBoolButton';
 
 class ToggleBoolButtons extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   get propertiesButtons() {
     return (this.props.properties.map((property, i) => 
       <ToggleBoolButton key={property.URI} property={property} />
     ));
   }
 
-render() {
-  return (
-    <div style={{ display: 'flex' }}>
-      {this.propertiesButtons}
-    </div>
-  );
- };
+  render() {
+    return (
+      <div style={{ display: 'flex' }}>
+        {this.propertiesButtons}
+      </div>
+    );
+  }
 }
 
 const mapStateToProps = (state) => {
   const properties = state.storyTree.story.toggleboolproperties;
   return {
-    properties
+    properties,
   };
-}
+};
 
 ToggleBoolButtons = connect(
-  mapStateToProps
+  mapStateToProps,
 )(ToggleBoolButtons);
 
 export default ToggleBoolButtons;
