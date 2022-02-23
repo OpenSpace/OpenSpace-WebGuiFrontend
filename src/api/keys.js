@@ -49,6 +49,11 @@ export const Rewind = 'rewind';
 export const Play = 'play';
 export const Forward = 'forward';
 export const FastForward = 'fast_forward';
+// keys for engine mode
+export const EngineModeUserControl = 'user_control';
+export const EngineModeSessionRecordingPlayback = 'session_recording_playback';
+export const EngineModeCameraPath = 'camera_path';
+// keys for session recording
 export const SessionStateIdle = 'idle';
 export const SessionStateRecording = 'recording';
 export const SessionStatePlaying = 'playing';

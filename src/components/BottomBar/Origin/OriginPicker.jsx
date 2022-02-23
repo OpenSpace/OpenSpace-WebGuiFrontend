@@ -10,10 +10,15 @@ import {
   setNavigationAction,
   setOriginPickerShowFavorites,
   setPopoverVisibility,
+  subscribeToEngineMode,
   subscribeToSessionRecording,
+  unsubscribeToEngineMode,
   unsubscribeToSessionRecording,
 } from '../../../api/Actions';
 import {
+  EngineModeCameraPath,
+  EngineModeSessionRecordingPlayback,
+  EngineModeUserControl,
   NavigationAimKey,
   NavigationAnchorKey,
   RetargetAimKey,
@@ -34,6 +39,7 @@ import Picker from '../Picker';
 import FocusEntry from './FocusEntry';
 import FocusEntryWithNavigation from './FocusEntryWithNavigation';
 import styles from './OriginPicker.scss';
+import commonStyles from '../BottomBar.scss';
 
 // tag that each focusable node must have
 const REQUIRED_TAG = 'GUI.Interesting';
@@ -53,17 +59,17 @@ class OriginPicker extends Component {
   }
 
   componentDidMount() {
-    const { aimDispatcher, anchorDispatcher, startSessionRecordingSubscription } = this.props;
+    const { aimDispatcher, anchorDispatcher, startSubscriptions: startSubscriptions } = this.props;
     anchorDispatcher.subscribe();
     aimDispatcher.subscribe();
-    startSessionRecordingSubscription();
+    startSubscriptions();
   }
 
   componentWillUnmount() {
-    const { aimDispatcher, anchorDispatcher, stopSessionRecordingSubscription } = this.props;
+    const { aimDispatcher, anchorDispatcher, stopSubscriptions } = this.props;
     anchorDispatcher.unsubscribe();
     aimDispatcher.unsubscribe();
-    stopSessionRecordingSubscription();
+    stopSubscriptions();
   }
 
   onSelect(identifier, evt) {
@@ -162,6 +168,27 @@ class OriginPicker extends Component {
     );
   }
 
+  // OBS same as timepicker
+  get pickerStyle() {
+    const { engineMode, sessionRecordingState} = this.props;
+
+    const isSessionRecordingPlaying = (engineMode === EngineModeSessionRecordingPlayback) 
+      && (sessionRecordingState === SessionStatePlaying);
+
+    const isSessionRecordingPaused = (engineMode === EngineModeSessionRecordingPlayback) 
+      && (sessionRecordingState === SessionStatePaused);
+
+    const isCameraPathPlaying = (engineMode === EngineModeCameraPath);
+
+    if (isSessionRecordingPaused) {  // TODO: add camera path paused check
+      return commonStyles.pickerDisabledByPause;
+    }
+    if (isCameraPathPlaying || isSessionRecordingPlaying) {
+      return commonStyles.pickerDisabledByPlayback;
+    }
+    return '';
+  }
+
   hasDistinctAim() {
     const { aim, anchor } = this.props;
     return (aim !== '') && (aim !== anchor);
@@ -180,12 +207,12 @@ class OriginPicker extends Component {
       anchor,
       aim,
       nodes,
+      engineMode,
       favorites,
       showFavorites,
       setShowFavorites,
       navigationAction,
       popoverVisible,
-      sessionRecordingState,
     } = this.props;
 
     const defaultList = favorites.slice();
@@ -229,21 +256,19 @@ class OriginPicker extends Component {
       this.props.setNavigationAction(NavigationActions.Aim);
     };
 
-    const enabled = (sessionRecordingState !== SessionStatePlaying)
-      && (sessionRecordingState !== SessionStatePaused);
-
-    const disableClass = (sessionRecordingState === SessionStatePaused)
-      ? styles.disabledBySessionPause : styles.disabledBySessionPlayback;
-
+    const enabled = (engineMode === EngineModeUserControl);
     const popoverEnabledAndVisible = popoverVisible && enabled;
+    const disableClass = enabled ? '' : this.pickerStyle;
 
     const pickerClasses = [
       styles.originPicker,
       popoverEnabledAndVisible ? Picker.Active : '',
-      enabled ? '' : disableClass,
+      disableClass,
     ].join(' ');
 
     const isInFocusMode = navigationAction === NavigationActions.Focus;
+
+    // TODO: update so that camera path can be stopped if it is playing
 
     return (
       <div className={Picker.Wrapper}>
@@ -304,6 +329,7 @@ class OriginPicker extends Component {
 }
 
 const mapSubStateToProps = ({
+  engineMode,
   properties,
   propertyOwners,
   originPicker,
@@ -339,12 +365,15 @@ const mapSubStateToProps = ({
 
   const popoverVisible = originPickerPopover.visible;
 
+  const mode = engineMode.mode || EngineModeUserControl;
+
   return {
     nodes,
     anchor,
     aim,
     anchorName,
     aimName,
+    engineMode: mode,
     favorites,
     showFavorites,
     navigationAction,
@@ -354,6 +383,7 @@ const mapSubStateToProps = ({
 };
 
 const mapStateToSubState = state => ({
+  engineMode: state.engineMode,
   propertyOwners: state.propertyTree.propertyOwners,
   properties: state.propertyTree.properties,
   originPicker: state.local.originPicker,
@@ -370,11 +400,13 @@ const mapDispatchToProps = dispatch => ({
   },
   anchorDispatcher: propertyDispatcher(dispatch, NavigationAnchorKey),
   aimDispatcher: propertyDispatcher(dispatch, NavigationAimKey),
-  startSessionRecordingSubscription: () => {
+  startSubscriptions: () => {
     dispatch(subscribeToSessionRecording());
+    dispatch(subscribeToEngineMode());
   },
-  stopSessionRecordingSubscription: () => {
+  stopSubscriptions: () => {
     dispatch(unsubscribeToSessionRecording());
+    dispatch(unsubscribeToEngineMode());
   },
   retargetAnchorDispatcher: propertyDispatcher(dispatch, RetargetAnchorKey),
   retargetAimDispatcher: propertyDispatcher(dispatch, RetargetAimKey),
@@ -398,6 +430,7 @@ OriginPicker.propTypes = {
   aim: PropTypes.string,
   anchorName: PropTypes.string,
   aimName: PropTypes.string,
+  engineMode: PropTypes.string.isRequired,
   favorites: PropTypes.array.isRequired,
   showFavorites: PropTypes.bool.isRequired,
   navigationAction: PropTypes.string.isRequired,
@@ -410,10 +443,10 @@ OriginPicker.propTypes = {
   setNavigationAction: PropTypes.func.isRequired,
   setPopoverVisibility: PropTypes.func.isRequired,
   setShowFavorites: PropTypes.func.isRequired,
-  startSessionRecordingSubscription: PropTypes.func.isRequired,
-  stopSessionRecordingSubscription: PropTypes.func.isRequired,
+  startSubscriptions: PropTypes.func.isRequired,
+  stopSubscriptions: PropTypes.func.isRequired,
 
-  // Dispatchers
+  // Property dispatchers
   anchorDispatcher: PropTypes.object.isRequired,
   aimDispatcher: PropTypes.object.isRequired,
   retargetAimDispatcher: PropTypes.object.isRequired,

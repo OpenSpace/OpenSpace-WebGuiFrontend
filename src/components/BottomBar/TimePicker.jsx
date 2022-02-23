@@ -3,9 +3,16 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
   setPopoverVisibility, subscribeToSessionRecording, subscribeToTime,
-  unsubscribeToSessionRecording, unsubscribeToTime,
+  unsubscribeToSessionRecording, unsubscribeToTime, 
+  subscribeToEngineMode, unsubscribeToEngineMode
 } from '../../api/Actions';
-import { SessionStatePaused, SessionStatePlaying } from '../../api/keys';
+import {
+  EngineModeCameraPath,
+  EngineModeSessionRecordingPlayback,
+  EngineModeUserControl,
+  SessionStatePaused,
+  SessionStatePlaying
+} from '../../api/keys';
 import Calendar from '../common/Calendar/Calendar';
 import Button from '../common/Input/Button/Button';
 import Time from '../common/Input/Time/Time';
@@ -16,6 +23,7 @@ import SmallLabel from '../common/SmallLabel/SmallLabel';
 import Picker from './Picker';
 import SimulationIncrement from './SimulationIncrement';
 import styles from './TimePicker.scss';
+import commonStyles from './BottomBar.scss';
 
 class TimePicker extends Component {
   constructor(props) {
@@ -177,6 +185,27 @@ class TimePicker extends Component {
     );
   }
 
+  // OBS! same as origin picker
+  get pickerStyle() {
+    const { engineMode, sessionRecordingState} = this.props;
+
+    const isSessionRecordingPlaying = (engineMode === EngineModeSessionRecordingPlayback) 
+      && (sessionRecordingState === SessionStatePlaying);
+
+    const isSessionRecordingPaused = (engineMode === EngineModeSessionRecordingPlayback) 
+      && (sessionRecordingState === SessionStatePaused);
+
+    const isCameraPathPlaying = (engineMode === EngineModeCameraPath);
+
+    if (isSessionRecordingPaused) {  // TODO: add camera path paused check
+      return commonStyles.pickerDisabledByPause;
+    }
+    else if (isCameraPathPlaying || isSessionRecordingPlaying) {
+      return commonStyles.pickerDisabledByPlayback;
+    }
+    return '';
+  }
+
   setToPendingTime() {
     const { pendingTime } = this.state;
     this.setDate(pendingTime);
@@ -285,21 +314,17 @@ class TimePicker extends Component {
 
   render() {
     const {
-      popoverVisible, sessionRecordingState, targetDeltaTime, time,
+      popoverVisible, targetDeltaTime, time, engineMode
     } = this.props;
 
-    const enabled = (sessionRecordingState !== SessionStatePlaying)
-      && (sessionRecordingState !== SessionStatePaused);
-
+    const enabled = (engineMode === EngineModeUserControl);
     const popoverEnabledAndVisible = popoverVisible && enabled;
-
-    const disableClass = (sessionRecordingState === SessionStatePaused)
-      ? styles.disabledBySessionPause : styles.disabledBySessionPlayback;
+    const disableClass = enabled ? '' : this.pickerStyle;
 
     const pickerClasses = [
       styles.timePicker,
       popoverEnabledAndVisible ? Picker.Active : '',
-      enabled ? '' : disableClass,
+      disableClass,
     ].join(' ');
 
     return (
@@ -322,6 +347,7 @@ class TimePicker extends Component {
 }
 
 TimePicker.propTypes = {
+  engineMode: PropTypes.string.isRequired,
   isPaused: PropTypes.bool,
   luaApi: PropTypes.object,
   popoverVisible: PropTypes.bool,
@@ -339,6 +365,7 @@ TimePicker.defaultProps = {
 };
 
 const mapStateToProps = state => ({
+  engineMode: state.engineMode.mode,
   time: state.time.time,
   // deltaTime: state.time.deltaTime, // unused
   targetDeltaTime: state.time.targetDeltaTime,
@@ -352,10 +379,12 @@ const mapDispatchToProps = dispatch => ({
   startSubscriptions: () => {
     dispatch(subscribeToTime());
     dispatch(subscribeToSessionRecording());
+    dispatch(subscribeToEngineMode());
   },
   stopSubscriptions: () => {
     dispatch(unsubscribeToTime());
     dispatch(unsubscribeToSessionRecording());
+    dispatch(unsubscribeToEngineMode());
   },
   setPopoverVisibility: (visible) => {
     dispatch(setPopoverVisibility({

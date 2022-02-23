@@ -31,11 +31,3 @@ $small-icon-size: 16px;
 .Grid {
     display: flex;
 }
-
-.originPicker.disabledBySessionPlayback {
-  background-color: darken(rgba($blue, .7), 20%);
-}
-
-.originPicker.disabledBySessionPause {
-  background-color: rgba($orange, .7);
-}

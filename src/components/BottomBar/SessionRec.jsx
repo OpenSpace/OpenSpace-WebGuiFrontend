@@ -1,8 +1,20 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { refreshSessionRecording, subscribeToSessionRecording, unsubscribeToSessionRecording } from '../../api/Actions';
+import { 
+  refreshSessionRecording,
+  subscribeToEngineMode,
+  subscribeToSessionRecording,
+  unsubscribeToEngineMode,
+  unsubscribeToSessionRecording
+} from '../../api/Actions';
 import {
-  SessionStateIdle, SessionStatePaused, SessionStatePlaying, SessionStateRecording,
+  EngineModeCameraPath,
+  EngineModeSessionRecordingPlayback,
+  EngineModeUserControl,
+  SessionStateIdle,
+  SessionStatePaused,
+  SessionStatePlaying,
+  SessionStateRecording,
 } from '../../api/keys';
 import subStateToProps from '../../utils/subStateToProps';
 import Button from '../common/Input/Button/Button';
@@ -14,6 +26,7 @@ import Popover from '../common/Popover/Popover';
 import Row from '../common/Row/Row';
 import Picker from './Picker';
 import styles from './SessionRec.scss';
+import commonStyles from './BottomBar.scss';
 
 class SessionRec extends Component {
   constructor(props) {
@@ -55,21 +68,30 @@ class SessionRec extends Component {
   }
 
   get picker() {
-    const { recordingState } = this.props;
+    const { engineMode, recordingState } = this.props;
     const { showPopover } = this.state;
     const classes = [];
     let onClick = this.togglePopover;
 
-    if (recordingState === SessionStateRecording) {
+    // The picker works and looks differently depending on the 
+    // different states and modes
+    if (engineMode === EngineModeCameraPath) {
+      classes.push(commonStyles.pickerDisabledByPlayback);
+      onClick = undefined;
+    }
+    else if (recordingState === SessionStateRecording) {
       classes.push(styles.recordingPicker);
       onClick = this.toggleRecording;
-    } else if (recordingState === SessionStatePlaying) {
+    } 
+    else if (recordingState === SessionStatePlaying) {
       classes.push(styles.playingPicker);
       onClick = undefined;
-    } else if (recordingState === SessionStatePaused) {
+    } 
+    else if (recordingState === SessionStatePaused) {
       classes.push(styles.pausedPicker);
       onClick = undefined;
-    } else if (showPopover) {
+    } 
+    else if (showPopover) {
       classes.push(Picker.Active);
     }
 
@@ -333,21 +355,29 @@ class SessionRec extends Component {
   }
 
   render() {
+    const { engineMode } = this.props;
     const { showPopover } = this.state;
+
+    const enabled = (engineMode === EngineModeUserControl);
+
+    const shouldShowPopover = enabled && showPopover && this.isIdle;
+
     return (
       <div className={Picker.Wrapper}>
         { this.picker }
-        { showPopover && this.isIdle && this.popover }
+        { shouldShowPopover && this.popover }
       </div>
     );
   }
 }
 
-const mapSubStateToProps = ({ sessionRecording, luaApi }) => {
+const mapSubStateToProps = ({ engineMode, sessionRecording, luaApi }) => {
   const fileList = sessionRecording.files || [];
   const recordingState = sessionRecording.recordingState || SessionStateIdle;
+  const mode = engineMode.mode || EngineModeUserControl;
 
   return {
+    engineMode: mode,
     fileList,
     recordingState,
     startRecordingAscii: (filename) => {
@@ -379,6 +409,7 @@ const mapSubStateToProps = ({ sessionRecording, luaApi }) => {
 };
 
 const mapStateToSubState = state => ({
+  engineMode: state.engineMode,
   sessionRecording: state.sessionRecording,
   originPickerPopover: state.local.popovers.sessionRecording,
   luaApi: state.luaApi,
@@ -387,12 +418,14 @@ const mapStateToSubState = state => ({
 const mapDispatchToProps = dispatch => ({
   subscribe: () => {
     dispatch(subscribeToSessionRecording());
+    dispatch(subscribeToEngineMode());
   },
   unsubscribe: () => {
     dispatch(unsubscribeToSessionRecording());
   },
   refreshPlaybackFilesList: () => {
     dispatch(refreshSessionRecording());
+    dispatch(unsubscribeToEngineMode());
   },
 });
 
