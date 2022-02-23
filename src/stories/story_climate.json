@@ -17,7 +17,7 @@
         "altitude": 10000000
       }
     },
-	{
+    {
       "info": "End of mission",
       "date": "2020-04-20T15:00:00.00",
       "planet": "Earth",
@@ -42,21 +42,21 @@
     {
       "URI":"Scene.Earth.Renderable.Layers.ColorLayers.ERA5_Land_HighRes_Monthly_2M_Temperature_Temporal.Enabled",
       "label":"Land Temperature",
-	  "group":"ERA5",
+      "group":"ERA5",
       "defaultvalue": false
     },
-	{
+    {
       "URI":"Scene.Earth.Renderable.Layers.ColorLayers.ERA5_Land_Monthly_2M_Temperature_Temporal_mean_81-10vs10-20_each_year.Enabled",
       "label":"Land Temperature (Comparison against 1981-2010)",
-	  "group":"ERA5",
+      "group":"ERA5",
       "defaultvalue": true
     },
-	{
+    {
       "URI":"Climate_Mode",
       "label":"Climate Mode",
-	  "isAction": true,
-	  "actionEnabled":"climate_mode_true",
-	  "actionDisabled":"climate_mode_false",
+      "isAction": true,
+      "actionEnabled":"climate_mode_true",
+      "actionDisabled":"climate_mode_false",
       "defaultvalue": true
     }
   ]
