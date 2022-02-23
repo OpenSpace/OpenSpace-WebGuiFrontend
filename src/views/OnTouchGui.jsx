@@ -130,17 +130,17 @@ class OnTouchGui extends Component {
     if (this.props.story.toggleboolproperties) {
       this.props.story.toggleboolproperties.forEach((property) => {
         const defaultValue = property.defaultvalue ? true : false;
-		if(property.isAction) {
-			if(defaultValue) {
-				this.props.triggerActionDispatcher(property.actionEnabled);
-			}
-			else {
-				this.props.triggerActionDispatcher(property.actionDisabled);
-			}
-		}
-		else {
-			this.props.changePropertyValue(property.URI, defaultValue);
-		}
+        if (property.isAction) {
+          if (defaultValue) {
+            this.props.triggerActionDispatcher(property.actionEnabled);
+          }
+          else {
+            this.props.triggerActionDispatcher(property.actionDisabled);
+          }
+        }
+        else {
+          this.props.changePropertyValue(property.URI, defaultValue);
+        }
       });
     }
   }
