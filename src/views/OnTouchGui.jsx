@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { HashRouter as Router, Link, Route, withRouter } from 'react-router-dom';
 import { 
   addStoryInfo, addStoryTree, fetchData, resetStoryInfo, setPropertyValue, 
-  startConnection, subscribeToProperty, unsubscribeToProperty 
+  startConnection, subscribeToProperty, unsubscribeToProperty, triggerAction
 } from '../api/Actions';
 import { 
   DefaultStory, InfoIconKey, NavigationAnchorKey, ScaleKey, 
@@ -130,7 +130,17 @@ class OnTouchGui extends Component {
     if (this.props.story.toggleboolproperties) {
       this.props.story.toggleboolproperties.forEach((property) => {
         const defaultValue = property.defaultvalue ? true : false;
-        this.props.changePropertyValue(property.URI, defaultValue);
+        if (property.isAction) {
+          if (defaultValue) {
+            this.props.triggerActionDispatcher(property.actionEnabled);
+          }
+          else {
+            this.props.triggerActionDispatcher(property.actionDisabled);
+          }
+        }
+        else {
+          this.props.changePropertyValue(property.URI, defaultValue);
+        }
       });
     }
   }
@@ -276,6 +286,9 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = dispatch => ({
   changePropertyValue: (uri, value) => {
     dispatch(setPropertyValue(uri, value));
+  },
+  triggerActionDispatcher: (action) => {
+    dispatch(triggerAction(action));
   },
   FetchData: (id) => {
     dispatch(fetchData(id));
