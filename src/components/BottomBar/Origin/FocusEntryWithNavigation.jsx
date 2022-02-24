@@ -45,14 +45,14 @@ class FocusEntry extends Component {
           { name || identifier }
         </span>
         <div className={styles.buttonContainer}>
-          <Button className={styles.flyToButton} onClick={flyTo} title="Fly to">
-            <MaterialIcon className={styles.buttonIcon} icon="flight" />
-          </Button>
           { this.isActive && (
-            <Button className={styles.zoomToButton} onClick={zoomToFocus} title="Zoom to">
+            <Button className={styles.flyToButton} onClick={zoomToFocus} title="Zoom to">
               <MaterialIcon className={styles.buttonIcon} icon="center_focus_strong" />
             </Button>
           )}
+          <Button className={styles.flyToButton} onClick={flyTo} title="Fly to">
+            <MaterialIcon className={styles.buttonIcon} icon="flight" />
+          </Button>
         </div>
       </li>
     );

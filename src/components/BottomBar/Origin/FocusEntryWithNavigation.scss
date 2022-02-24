@@ -20,12 +20,9 @@ $icon-size: 22px;
   transform: translateY(-50%);
 }
 
-.zoomToButton, .flyToButton {
+.flyToButton {
   margin-left: 0.3em;
   padding: 0.2em 0.5em 0.1em;
-}
-
-.flyToButton {
   display: none;
 }
 
