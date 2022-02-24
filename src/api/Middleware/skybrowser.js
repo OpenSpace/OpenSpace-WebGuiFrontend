@@ -23,13 +23,6 @@ const getWWTImages = async (luaApi, callback) => {
   }
 };
 
-const selectImgWWT = async (id, callback) => {
-  let script = "openspace.skybrowser.selectImage(" + id + ")";
-  api.executeLuaScript(script, false);
-  //api.executeLuaScript("openspace.setPropertyValueSingle('Modules.CefWebGui.Reload', nil)");
-  callback();
-}
-
 export const skybrowser = store => next => (action) => {
   const result = next(action);
   switch (action.type) {
