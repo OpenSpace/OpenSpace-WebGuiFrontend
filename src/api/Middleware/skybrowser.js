@@ -38,10 +38,6 @@ export const skybrowser = store => next => (action) => {
         store.dispatch(initializeSkyBrowser(data));
       });
       break;
-    case actionTypes.selectImgSkyBrowser:
-      selectImgWWT(action.payload.imgName, () => {
-      })
-      break;
     default:
       break;
   }
