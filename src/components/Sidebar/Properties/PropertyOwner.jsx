@@ -24,7 +24,6 @@ import {
 import Property from './Property';
 import PropertyOwnerHeader from './PropertyOwnerHeader';
 
-
 /**
  * Return an identifier for the tree expansion state.
  */
@@ -70,6 +69,34 @@ class PropertyOwnerComponent extends Component {
     if (prevProps.layers !== this.props.layers) {
       this.setState({ shownLayers: this.props.layers });
     }
+  }
+
+  get header() {
+    const { uri, name, isExpanded, setExpanded, popOut, metaAction, trashAction,
+      isRenderable, isSceneGraphNodeOrLayer, dragHandleTitleProps
+    } = this.props;
+
+    console.log(dragHandleTitleProps);
+
+    const popOutAction = isRenderable ? popOut : undefined;
+    const hasMetaAction = isSceneGraphNodeOrLayer ? metaAction : undefined;
+
+    const header = (
+      <PropertyOwnerHeader
+        uri={uri}
+        expanded={isExpanded}
+        title={name}
+        setExpanded={setExpanded}
+        popOutAction={popOutAction}
+        trashAction={trashAction}
+        metaAction={hasMetaAction}
+      />
+    );
+
+    if (dragHandleTitleProps) {
+      return <div {...dragHandleTitleProps}> { header }</div>
+    }
+    return header;
   }
 
   // Render draggable and reorderable list with layers, using Beautinful DnD
@@ -134,8 +161,9 @@ class PropertyOwnerComponent extends Component {
               { shownLayers.map((uri, index) => (
                 <Draggable key={uri} draggableId={uri} index={index}>
                   {provided => (
-                    <div {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
+                    <div {...provided.draggableProps} ref={provided.innerRef}>
                       <PropertyOwner
+                        dragHandleTitleProps={provided.dragHandleProps}
                         uri={uri}
                         expansionIdentifier={`${expansionIdentifier}/${nodeExpansionIdentifier(uri)}`}
                         autoExpand={false}
@@ -154,8 +182,6 @@ class PropertyOwnerComponent extends Component {
 
   render() {
     const {
-      uri,
-      name,
       properties,
       subowners,
       subownerNames,
@@ -163,43 +189,20 @@ class PropertyOwnerComponent extends Component {
       setExpanded,
       expansionIdentifier,
       sort,
-      popOut,
-      metaAction,
-      trashAction,
-      isRenderable,
-      isSceneGraphNodeOrLayer,
     } = this.props;
 
     const sortedSubowners = sort
       ? (subowners.slice(0).sort((a, b) => subownerNames[a].localeCompare(subownerNames[b], 'en')))
       : subowners;
 
-    const popOutAction = isRenderable ? popOut : undefined;
-    const hasMetaAction = isSceneGraphNodeOrLayer ? metaAction : undefined;
-
-    const header = (
-      <PropertyOwnerHeader
-        uri={uri}
-        expanded={isExpanded}
-        title={name}
-        setExpanded={setExpanded}
-        popOutAction={popOutAction}
-        trashAction={trashAction}
-        metaAction={hasMetaAction}
-      />
-    );
-
     return (
       <ToggleContent
-        header={header}
+        header={this.header}
         expanded={isExpanded}
         setExpanded={setExpanded}
       >
-        {
-        this.renderLayersList()
-      }
-        {
-        sortedSubowners.map((uri) => {
+        { this.renderLayersList() }
+        { sortedSubowners.map((uri) => {
           let autoExpand = sortedSubowners.length + properties.length === 1 ? true : undefined;
           const splitUri = uri.split('.');
           if (splitUri.length > 0 && splitUri[splitUri.length - 1] === 'Renderable') {
@@ -214,10 +217,8 @@ class PropertyOwnerComponent extends Component {
             />
           );
         })
-      }
-        {
-        properties.map(uri => <Property key={uri} uri={uri} />)
-      }
+        }
+        { properties.map(uri => <Property key={uri} uri={uri} />) }
       </ToggleContent>
     );
   }
@@ -343,11 +344,13 @@ const PropertyOwner = connect(
 
 
 PropertyOwner.propTypes = {
+  dragHandleTitleProps: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]), 
   uri: PropTypes.string.isRequired,
   autoExpand: PropTypes.bool,
 };
 
 PropertyOwner.defaultProps = {
+  dragHandleTitleProps: false,
   properties: [],
   subowners: [],
 };
