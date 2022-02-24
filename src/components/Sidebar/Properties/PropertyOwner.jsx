@@ -76,8 +76,6 @@ class PropertyOwnerComponent extends Component {
       isRenderable, isSceneGraphNodeOrLayer, dragHandleTitleProps
     } = this.props;
 
-    console.log(dragHandleTitleProps);
-
     const popOutAction = isRenderable ? popOut : undefined;
     const hasMetaAction = isSceneGraphNodeOrLayer ? metaAction : undefined;
 
