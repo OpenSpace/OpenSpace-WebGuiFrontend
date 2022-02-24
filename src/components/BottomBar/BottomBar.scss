@@ -9,11 +9,3 @@
     background: $ui-background;
   }
 }
-
-.pickerDisabledByPlayback {
-  background-color: darken(rgba($blue, .7), 20%);
-}
-
-.pickerDisabledByPause {
-  background-color: rgba($orange, .7);
-}

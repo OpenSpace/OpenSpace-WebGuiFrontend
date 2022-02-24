@@ -9,7 +9,6 @@ import {
 } from '../../api/Actions';
 import {
   EngineModeCameraPath,
-  EngineModeSessionRecordingPlayback,
   EngineModeUserControl,
   SessionStateIdle,
   SessionStatePaused,
@@ -26,7 +25,6 @@ import Popover from '../common/Popover/Popover';
 import Row from '../common/Row/Row';
 import Picker from './Picker';
 import styles from './SessionRec.scss';
-import commonStyles from './BottomBar.scss';
 
 class SessionRec extends Component {
   constructor(props) {
@@ -76,19 +74,19 @@ class SessionRec extends Component {
     // The picker works and looks differently depending on the 
     // different states and modes
     if (engineMode === EngineModeCameraPath) {
-      classes.push(commonStyles.pickerDisabledByPlayback);
+      classes.push(Picker.DisabledBlue);
       onClick = undefined;
     }
     else if (recordingState === SessionStateRecording) {
-      classes.push(styles.recordingPicker);
+      classes.push(Picker.Red);
       onClick = this.toggleRecording;
     } 
     else if (recordingState === SessionStatePlaying) {
-      classes.push(styles.playingPicker);
+      classes.push(Picker.Blue);
       onClick = undefined;
     } 
     else if (recordingState === SessionStatePaused) {
-      classes.push(styles.pausedPicker);
+      classes.push(Picker.Orange);
       onClick = undefined;
     } 
     else if (showPopover) {

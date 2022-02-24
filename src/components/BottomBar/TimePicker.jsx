@@ -23,7 +23,6 @@ import SmallLabel from '../common/SmallLabel/SmallLabel';
 import Picker from './Picker';
 import SimulationIncrement from './SimulationIncrement';
 import styles from './TimePicker.scss';
-import commonStyles from './BottomBar.scss';
 
 class TimePicker extends Component {
   constructor(props) {
@@ -198,10 +197,10 @@ class TimePicker extends Component {
     const isCameraPathPlaying = (engineMode === EngineModeCameraPath);
 
     if (isSessionRecordingPaused) {  // TODO: add camera path paused check
-      return commonStyles.pickerDisabledByPause;
+      return Picker.DisabledOrange;
     }
     else if (isCameraPathPlaying || isSessionRecordingPlaying) {
-      return commonStyles.pickerDisabledByPlayback;
+      return Picker.DisabledBlue;
     }
     return '';
   }
