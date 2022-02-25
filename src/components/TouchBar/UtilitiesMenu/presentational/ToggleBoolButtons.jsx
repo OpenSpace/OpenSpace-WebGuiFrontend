@@ -11,7 +11,7 @@ class ToggleBoolButtons extends Component {
 
   handleGroup(clickedProperty) {
     const { properties } = this.props;
-    properties.foreach((p, i) => {
+    properties.map((p, i) => {
       if (clickedProperty.property.URI !== p.URI && clickedProperty.property.group === p.group) {
         this.toggleButtons[p.URI].disableIfChecked();
       }
