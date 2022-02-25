@@ -1,25 +1,17 @@
-import {
-  initializeSkyBrowser,
-} from '../Actions';
-
-import api from '../api';
-
+import { initializeSkyBrowser } from '../Actions';
 import { actionTypes } from '../Actions/actionTypes';
 
 const getWWTImages = async (luaApi, callback) => {
   let imgData = await luaApi.skybrowser.getListOfImages();
-  if(imgData) {
+  if (imgData) {
     imgData = Object.values(imgData[1]);
-    let imgDataWithKey = imgData.map((image) => {
-               return {
-                   ...image,
-                   key: image.identifier
-               }
-           });
+    const imgDataWithKey = imgData.map(image => ({
+      ...image,
+      key: image.identifier,
+    }));
     callback(imgDataWithKey);
-  }
-  else {
-      console.log('No WordWide Telescope images sent to GUI!');
+  } else {
+    console.log('No WordWide Telescope images sent to GUI!');
   }
 };
 

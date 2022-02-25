@@ -1,6 +1,5 @@
 @import "../../styles/all";
 
-
 $list-header: rgba(255,255,255,0.12);
 $list-header-hover: rgba(255,255,255,0.2);
 
@@ -10,7 +9,6 @@ $list-header-hover: rgba(255,255,255,0.2);
 
 input[type="file"] {
   display: none;
-
 }
 
 .filterList :placeholder-shown, label {
@@ -40,7 +38,6 @@ input[type="file"] {
   display: flex;
   width: inherit;
   padding: 10px 14px;
-
 }
 
 .selected {

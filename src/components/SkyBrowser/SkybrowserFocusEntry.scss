@@ -19,14 +19,12 @@ $image-width: 96px;
     border-left-width: 4px solid;
     border-left-style: solid;
   }
-
 }
 
 .tabEntry {
   height: 130px;
   margin-top: 4px;
   width: inherit;
-
 }
 
 .imageHeader {
@@ -34,7 +32,6 @@ $image-width: 96px;
   justify-content: space-between;
   margin-top: 1px;
   width: $image-width;
-
 }
 
 .removeImageButton {
@@ -43,10 +40,10 @@ $image-width: 96px;
   position: relative;
   left: 77px;
 }
+
 .addTo3DButton {
   padding: 3px 3px 2px 3px;
   border-radius: 4px;
-
 }
 
 .imageTitle {

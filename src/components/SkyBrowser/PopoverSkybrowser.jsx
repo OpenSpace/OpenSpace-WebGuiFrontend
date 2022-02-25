@@ -1,28 +1,22 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Resizable } from 're-resizable';
-
 import { excludeKeys } from '../../utils/helpers';
 import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import Button from '../common/Input/Button/Button';
-import Window from '../common/Window/Window';
-import SmallLabel from '../common/SmallLabel/SmallLabel';
-import TabMenu from '../Sidebar/TabMenu/TabMenu';
-
 import styles from './PopoverSkybrowser.scss';
 import WindowSkybrowser from './WindowSkybrowser';
 import PaneSkybrowser from './PaneSkybrowser';
-import SkybrowserTabs from './SkybrowserTabs';
 
 const findStyles = arr => arr.split(' ')
   .map(style => styles[style] || style)
   .join(' ');
 
 const WindowStyle = {
-  DETACHED : "DETACHED",
-  PANE : "PANE",
-  ATTACHED : "ATTACHED"
-}
+  DETACHED: 'DETACHED',
+  PANE: 'PANE',
+  ATTACHED: 'ATTACHED',
+};
 
 class PopoverSkybrowser extends Component {
   constructor(props) {
@@ -31,6 +25,7 @@ class PopoverSkybrowser extends Component {
       windowStyle: WindowStyle.ATTACHED,
       height: 440,
     };
+
     this.setAsPane = this.setAsPane.bind(this);
     this.setAsDetached = this.setAsDetached.bind(this);
     this.setAsAttached = this.setAsAttached.bind(this);
@@ -39,8 +34,8 @@ class PopoverSkybrowser extends Component {
 
   onResizeStop(e, direction, ref, delta) {
     this.setState({
-      height : this.state.height + delta.height
-    })
+      height: this.state.height + delta.height,
+    });
     this.props.heightCallback(this.state.height);
   }
 
@@ -68,8 +63,8 @@ class PopoverSkybrowser extends Component {
   }
 
   get asPopup() {
+    const { children, closeCallback, title } = this.props;
     return (
-
       <section {...this.inheritedProps} className={`${styles.popover} ${this.arrowStyle} ${this.styles}`}>
         <Resizable
           enable={{
@@ -91,35 +86,29 @@ class PopoverSkybrowser extends Component {
           handleClasses={{
             top: styles.topHandle,
             right: styles.rightHandle,
-            left: styles.leftHandle
+            left: styles.leftHandle,
           }}
           onResizeStop={this.onResizeStop}
         >
-        { this.props.title && (
-          <header>
-            <div className={styles.title}>
-              { this.props.title }
-            </div>
-
-            <div>
-              { <Button onClick={this.setAsDetached} transparent small>
+          { title && (
+            <header>
+              <div className={styles.title}>
+                { title }
+              </div>
+              <div>
+                <Button onClick={this.setAsDetached} transparent small>
                   <MaterialIcon icon="filter_none" />
                 </Button>
-              }
-               {
                 <Button onClick={this.setAsPane} transparent small>
                   <MaterialIcon icon="exit_to_app" />
                 </Button>
-              }
-              {
-                <Button onClick={this.props.closeCallback} transparent small>
+                <Button onClick={closeCallback} transparent small>
                   <MaterialIcon icon="close" className="small" />
                 </Button>
-              }
-            </div>
-          </header>
-        )}
-        { this.props.children }
+              </div>
+            </header>
+          )}
+          { children }
         </Resizable>
       </section>
 
@@ -127,30 +116,36 @@ class PopoverSkybrowser extends Component {
   }
 
   get asWindow() {
+    const { children } = this.props;
     return (
-        <WindowSkybrowser {...this.windowInheritedProps} onResizeStop={this.onResizeStop}
-          size={{height: this.state.height, width: '350px'}} setAsPane = {this.setAsPane} setAsAttached = {this.setAsAttached}>
-          { this.props.children }
-        </WindowSkybrowser>
+      <WindowSkybrowser
+        {...this.windowInheritedProps}
+        onResizeStop={this.onResizeStop}
+        size={{ height: this.state.height, width: '350px' }}
+        setAsPane={this.setAsPane}
+        setAsAttached={this.setAsAttached}
+      >
+        { children }
+      </WindowSkybrowser>
     );
   }
 
   get asSideview() {
+    const { children } = this.props;
     return (
       <PaneSkybrowser
         {...this.sideviewInheritedProps}
-        setAsAttached = {this.setAsAttached}
-        setAsDetached = {this.setAsDetached}
+        setAsAttached={this.setAsAttached}
+        setAsDetached={this.setAsDetached}
       >
-        { this.props.children }
+        { children }
       </PaneSkybrowser>
-  );
-
+    );
   }
 
   setAsDetached() {
     this.setState({ windowStyle: WindowStyle.DETACHED });
-    //this.props.heightCallback(this.state.height);
+    // this.props.heightCallback(this.state.height);
   }
 
   setAsPane() {
@@ -164,18 +159,14 @@ class PopoverSkybrowser extends Component {
   }
 
   render() {
+    const { windowStyle } = this.state;
 
-    switch(this.state.windowStyle) {
-      case WindowStyle.ATTACHED:
-        return this.asPopup;
-      case WindowStyle.DETACHED:
-        return  this.asWindow;
-      case WindowStyle.PANE:
-        return this.asSideview;
-      default:
-        return WindowStyle.ATTACHED;
+    switch (windowStyle) {
+      case WindowStyle.ATTACHED: return this.asPopup;
+      case WindowStyle.DETACHED: return this.asWindow;
+      case WindowStyle.PANE: return this.asSideview;
+      default: return WindowStyle.ATTACHED; // OBS! This can't be correct? // emmbr
     }
-
   }
 }
 
