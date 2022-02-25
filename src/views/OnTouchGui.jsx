@@ -109,10 +109,20 @@ class OnTouchGui extends Component {
       });
     }
     // If the previous story toggled bool properties reset them to default value
-    if (story.toggleboolproperties) {
-      story.toggleboolproperties.forEach((property) => {
-        const defaultValue = property.defaultvalue;
-        changePropertyValue(property.URI, defaultValue);
+    if (this.props.story.toggleboolproperties) {
+      this.props.story.toggleboolproperties.forEach((property) => {
+        const defaultValue = property.defaultvalue ? true : false;
+        if (property.isAction) {
+          if (defaultValue) {
+            this.props.triggerActionDispatcher(property.actionEnabled);
+          }
+          else {
+            this.props.triggerActionDispatcher(property.actionDisabled);
+          }
+        }
+        else {
+          this.props.changePropertyValue(property.URI, defaultValue);
+        }
       });
     }
   }
@@ -292,6 +302,9 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = dispatch => ({
   changePropertyValue: (uri, value) => {
     dispatch(setPropertyValue(uri, value));
+  },
+  triggerActionDispatcher: (action) => {
+    dispatch(triggerAction(action));
   },
   FetchData: (id) => {
     dispatch(fetchData(id));
