@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { subscribeToTime, unsubscribeToTime } from '../../../../api/Actions';
-import { FastForward, FastRewind, Forward, Play, Rewind } from '../../../../api/keys';
+import {
+  FastForward, FastRewind, Forward, Play, Rewind,
+} from '../../../../api/keys';
 import * as timeHelpers from '../../../../utils/timeHelpers';
 import Icon from '../../../common/MaterialIcon/MaterialIcon';
 import SmallLabel from '../../../common/SmallLabel/SmallLabel';
-import styles from './../style/TimeController.scss';
-import buttonStyles from './../style/UtilitiesButtons.scss';
+import styles from '../style/TimeController.scss';
+import buttonStyles from '../style/UtilitiesButtons.scss';
 
 const FastSpeed = 86400;
 const Speed = 3600;
@@ -43,51 +45,53 @@ class TimePlayerController extends Component {
   }
 
   currentTimeCallback(message) {
-    //Look here maybe
     timeHelpers.setDate(this.props.luaApi, 2222);
     const time = new Date(timeHelpers.DateStringWithTimeZone(message.time));
     this.setState({ time });
   }
 
   clickPlayer(e) {
+    const { isPaused, luaApi } = this.props;
     switch (e.target.id) {
-      case FastRewind: 
-          this.props.luaApi.time.setPause(false);
-          this.setSimulationSpeed(-FastSpeed); 
-          break;
+      case FastRewind:
+        luaApi.time.setPause(false);
+        this.setSimulationSpeed(-FastSpeed);
+        break;
       case Rewind:
-          this.props.luaApi.time.setPause(false);
-          this.setSimulationSpeed(-Speed);
-          break;
-      case Play: 
-          if (this.props.isPaused) {
-            this.props.luaApi.time.setPause(false);
-            this.setSimulationSpeed(1);
-          } else {
-            this.props.luaApi.time.setPause(true);
-            this.setSimulationSpeed(0);
-          }
-          break;
-      case Forward: 
-          this.props.luaApi.time.setPause(false);
-          this.setSimulationSpeed(Speed);
-          break;
+        luaApi.time.setPause(false);
+        this.setSimulationSpeed(-Speed);
+        break;
+      case Play:
+        if (isPaused) {
+          luaApi.time.setPause(false);
+          this.setSimulationSpeed(1);
+        } else {
+          luaApi.time.setPause(true);
+          this.setSimulationSpeed(0);
+        }
+        break;
+      case Forward:
+        luaApi.time.setPause(false);
+        this.setSimulationSpeed(Speed);
+        break;
       case FastForward:
-          this.props.luaApi.time.setPause(false);
-          this.setSimulationSpeed(FastSpeed);
-          break;
-      default: 
+        luaApi.time.setPause(false);
+        this.setSimulationSpeed(FastSpeed);
+        break;
+      default:
         break;
     }
   }
 
   render() {
+    const { deltaTime, isPaused, luaApi } = this.props;
+
     return (
       <div className={styles.TimeController}>
         <div className={styles.ButtonContainer}>
           <div
             className={buttonStyles.UtilitiesButton}
-            onClick={() => timeHelpers.setDateToNow(this.props.luaApi)} 
+            onClick={() => timeHelpers.setDateToNow(luaApi)}
             role="button"
             tabIndex="0"
           >
@@ -100,11 +104,36 @@ class TimePlayerController extends Component {
             {new Date(this.time).toUTCString()}
           </div>
           <div className={styles.PlayerContainer}>
-            <Icon icon="fast_rewind" id={FastRewind} className={`${styles.Icon} ${(this.props.deltaTime === -FastSpeed) && styles.active}`} onClick={this.clickPlayer} />
-            <Icon icon="fast_rewind" id={Rewind} className={`${styles.Icon} ${(this.props.deltaTime === -Speed) && styles.active}`} onClick={this.clickPlayer} />
-            <Icon icon={this.props.isPaused ? 'pause' : 'play_arrow'} id={Play} className={`${styles.Icon} ${(this.props.deltaTime === 0 || this.props.deltaTime === 1) && styles.active}`} onClick={this.clickPlayer} />
-            <Icon icon="fast_forward" id={Forward} className={`${styles.Icon} ${(this.props.deltaTime === Speed) && styles.active}`} onClick={this.clickPlayer} />
-            <Icon icon="fast_forward" id={FastForward} className={`${styles.Icon} ${(this.props.deltaTime === FastSpeed) && styles.active}`} onClick={this.clickPlayer} />
+            <Icon
+              icon="fast_rewind"
+              id={FastRewind}
+              className={`${styles.Icon} ${(deltaTime === -FastSpeed) && styles.active}`}
+              onClick={this.clickPlayer}
+            />
+            <Icon
+              icon="fast_rewind"
+              id={Rewind}
+              className={`${styles.Icon} ${(deltaTime === -Speed) && styles.active}`}
+              onClick={this.clickPlayer}
+            />
+            <Icon
+              icon={isPaused ? 'pause' : 'play_arrow'}
+              id={Play}
+              className={`${styles.Icon} ${(deltaTime === 0 || deltaTime === 1) && styles.active}`}
+              onClick={this.clickPlayer}
+            />
+            <Icon
+              icon="fast_forward"
+              id={Forward}
+              className={`${styles.Icon} ${(deltaTime === Speed) && styles.active}`}
+              onClick={this.clickPlayer}
+            />
+            <Icon
+              icon="fast_forward"
+              id={FastForward}
+              className={`${styles.Icon} ${(deltaTime === FastSpeed) && styles.active}`}
+              onClick={this.clickPlayer}
+            />
           </div>
         </div>
       </div>

@@ -1,14 +1,18 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { setPropertyValue } from '../../../api/Actions';
-import { ApplyFlyToKey, FlightDestinationDistanceKey, NavigationAnchorKey, RetargetAnchorKey, ScenePrefixKey } from '../../../api/keys';
 import propertyDispatcher from '../../../api/propertyDispatcher';
 import { UpdateDeltaTimeNow } from '../../../utils/timeHelpers';
+import { abortFlight } from '../../../utils/storyHelpers';
 import FocusButton from './FocusButton';
+import {
+  ScenePrefixKey, NavigationAnchorKey, RetargetAnchorKey,
+} from '../../../api/keys';
 import styles from './FocusMenu.scss';
 import OverViewButton from './OverViewButton';
 
-const DISTANCE_FACTOR = 4.0;
+const DISTANCE_FACTOR = 4.0; // target radii
+const SWITCH_FOCUS_DURATION = 5.0; // seconds
 
 class FocusMenu extends Component {
   constructor(props) {
@@ -22,74 +26,81 @@ class FocusMenu extends Component {
     this.applyFlyTo = this.applyFlyTo.bind(this);
   }
 
+  componentDidMount() {
+    const {
+      anchorDispatcher,
+      retargetAnchorDispatcher,
+    } = this.props;
+
+    anchorDispatcher.subscribe();
+    retargetAnchorDispatcher.subscribe();
+  }
+
   componentDidUpdate() {
-    if (this.props.anchor !== undefined) {
-      if (this.state.origin !== this.props.anchor.value) {
-        this.setState({ origin: this.props.anchor.value });
-      }
+    const { anchor } = this.props;
+    const { origin } = this.state;
+
+    if (anchor !== undefined && origin !== anchor.value) {
+      this.setState({ origin: anchor.value });
     }
   }
 
-  componentDidMount() {
-    this.props.anchorDispatcher.subscribe();
-    this.props.retargetAnchorDispatcher.subscribe();
-    this.props.flightDestinationDispatcher.subscribe();
-  }
-
   componentWillUnmount() {
-    this.props.anchorDispatcher.unsubscribe();
-    this.props.retargetAnchorDispatcher.unsubscribe();
-    this.props.flightDestinationDispatcher.unsubscribe();
+    const { anchorDispatcher, retargetAnchorDispatcher } = this.props;
+
+    anchorDispatcher.unsubscribe();
+    retargetAnchorDispatcher.unsubscribe();
   }
 
-  onChangeFocus(origin) {
-    this.props.luaApi.time.setPause(false);
-    UpdateDeltaTimeNow(this.props.luaApi, 1);
-    this.props.anchorDispatcher.set(origin.origin);
-    this.props.retargetAnchorDispatcher.set(null);
-    this.applyFlyTo(origin.origin);
+  async onChangeFocus(origin) {
+    const { anchorDispatcher, luaApi, retargetAnchorDispatcher } = this.props;
+
+    luaApi.pathnavigation.stopPath();
+
+    // Reset time controls
+    luaApi.time.setPause(false);
+    UpdateDeltaTimeNow(luaApi, 1);
+
+    anchorDispatcher.set(origin.origin);
+    retargetAnchorDispatcher.set(null);
+    this.applyFlyTo();
   }
 
-  async applyFlyTo(flyToNode) {
-    const radius = await this.props.luaApi.boundingSphere(flyToNode);
-    // Little ugly, but the [1] is needed since we use the version of the Lua API 
-    // that returns an object instead of a single value
-    const distance = radius[1] * DISTANCE_FACTOR; 
-
-    this.props.changePropertyValue(FlightDestinationDistanceKey, distance);
-    this.props.changePropertyValue(ApplyFlyToKey, true);
-    // TODO: use camera paths instead
+  applyFlyTo() {
+    const { luaApi } = this.props;
+    luaApi.pathnavigation.zoomToDistanceRelative(DISTANCE_FACTOR, SWITCH_FOCUS_DURATION);
+    // TODO: use camera path instead
   }
 
   applyOverview() {
+    const { luaApi, overviewLimit } = this.props;
+
     // TODO: Handle an interpolation of SetNavigationState to be able to have a
     // smooth navigation to a pre-defined overview location
-    this.props.changePropertyValue(FlightDestinationDistanceKey, this.props.overviewLimit);
-    this.props.changePropertyValue(ApplyFlyToKey, true);
+
+    luaApi.pathnavigation.zoomToDistance(overviewLimit, SWITCH_FOCUS_DURATION);
   }
 
   createFocusButtons() {
-    const { focusNodes } = this.props;
-    const focusPicker = focusNodes
-      .map(node =>
-        <FocusButton
-          key={node.identifier}
-          identifier={node.identifier}
-          active={this.props.anchor.value}
-          onChangeFocus={origin => this.onChangeFocus({ origin })}
-        />
-      );
-
-    return focusPicker;
+    const { anchor, focusNodes } = this.props;
+    const focusPicker = focusNodes.map(node => (
+      <FocusButton
+        key={node.identifier}
+        identifier={node.identifier}
+        active={anchor.value}
+        onChangeFocus={origin => this.onChangeFocus({ origin })}
+      />
+    ));
+    return (focusPicker);
   }
 
   render() {
+    const { anchor, focusNodes } = this.props;
+
     return (
       <div className={styles.FocusMenu}>
-        {this.props.anchor !== undefined &&
-          <OverViewButton onClick={this.applyOverview} />
-        }
-        {this.props.focusNodes.length > 0 && this.createFocusButtons()}
+        {anchor !== undefined && <OverViewButton onClick={this.applyOverview} /> }
+        {focusNodes.length > 0 && this.createFocusButtons()}
       </div>
     );
   }
@@ -116,7 +127,7 @@ const mapStateToProps = (state) => {
     overviewLimit,
     focusNodes,
     anchor,
-    luaApi: state.luaApi
+    luaApi: state.luaApi,
   };
 };
 
@@ -124,12 +135,12 @@ const mapDispatchToProps = dispatch => ({
   changePropertyValue: (uri, value) => {
     dispatch(setPropertyValue(uri, value));
   },
-  flightDestinationDispatcher: propertyDispatcher(
-    dispatch, FlightDestinationDistanceKey),
   anchorDispatcher: propertyDispatcher(
-    dispatch, NavigationAnchorKey),
+    dispatch, NavigationAnchorKey
+  ),
   retargetAnchorDispatcher: propertyDispatcher(
-    dispatch, RetargetAnchorKey)
+    dispatch, RetargetAnchorKey
+  )
 });
 
 FocusMenu = connect(
