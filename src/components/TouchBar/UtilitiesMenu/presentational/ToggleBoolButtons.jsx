@@ -3,10 +3,33 @@ import { connect } from 'react-redux';
 import ToggleBoolButton from './ToggleBoolButton';
 
 class ToggleBoolButtons extends Component {
+  constructor(props) {
+    super(props);
+    this.handleGroup = this.handleGroup.bind(this);
+    this.toggleButtons = [];
+  }
+
+  handleGroup(clickedProperty) {
+    const { properties } = this.props;
+    properties.map((p, i) => {
+      if (clickedProperty.property.URI !== p.URI && clickedProperty.property.group === p.group) {
+        this.toggleButtons[p.URI].disableIfChecked();
+      }
+    });
+  }
+
   get propertiesButtons() {
-    return (this.props.properties.map((property, i) => 
-      <ToggleBoolButton key={property.URI} property={property} />
-    ));
+    const { properties } = this.props;
+    return (
+      properties.map((property, i) => (
+        <ToggleBoolButton
+          ref={ref => this.toggleButtons[property.URI] = ref}
+          key={property.URI}
+          property={property}
+          handleGroup={this.handleGroup}
+        />
+      ))
+    );
   }
 
   render() {
@@ -18,7 +41,7 @@ class ToggleBoolButtons extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
   const properties = state.storyTree.story.toggleboolproperties;
   return {
     properties,
