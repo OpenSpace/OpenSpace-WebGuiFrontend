@@ -174,7 +174,7 @@ class OriginPicker extends Component {
 
     const cancelFlight = () => {
       luaApi.pathnavigation.stopPath();
-    }
+    };
 
     return (
       <div 
@@ -207,9 +207,9 @@ class OriginPicker extends Component {
     if (engineMode === EngineModeCameraPath) {
       return this.cameraPathPicker;
     }
-    return <>
-      {this.hasDistinctAim() ? this.anchorAndAimPicker : this.focusPicker }
-    </>
+    return (
+      <>{this.hasDistinctAim() ? this.anchorAndAimPicker : this.focusPicker }</>
+    );
   }
 
   // OBS same as timepicker
@@ -224,13 +224,13 @@ class OriginPicker extends Component {
 
     const isCameraPathPlaying = (engineMode === EngineModeCameraPath);
 
-    if (isSessionRecordingPaused) {  // TODO: add camera path paused check
-      return Picker.DisabledBlue;
+    if (isSessionRecordingPaused) { // TODO: add camera path paused check
+      return Picker.DisabledOrange;
     }
-    else if (isCameraPathPlaying) {
+    if (isCameraPathPlaying) {
       return Picker.Blue;
     }
-    else if (isSessionRecordingPlaying) {
+    if (isSessionRecordingPlaying) {
       return Picker.DisabledBlue;
     }
     return '';
@@ -370,7 +370,7 @@ class OriginPicker extends Component {
         <Picker onClick={this.togglePopover} className={pickerClasses}>
           {this.pickerContent }
         </Picker>
-        { popoverEnabledAndVisible && this.popover}
+        { popoverEnabledAndVisible && this.popover }
       </div>
     );
   }
@@ -483,6 +483,7 @@ OriginPicker.propTypes = {
   aimName: PropTypes.string,
   engineMode: PropTypes.string.isRequired,
   favorites: PropTypes.array.isRequired,
+  luaApi: PropTypes.object,
   showFavorites: PropTypes.bool.isRequired,
   navigationAction: PropTypes.string.isRequired,
   popoverVisible: PropTypes.bool.isRequired,
@@ -509,6 +510,7 @@ OriginPicker.defaultProps = {
   aim: undefined,
   anchorName: undefined,
   aimName: undefined,
+  luaApi: undefined,
 };
 
 OriginPicker = connect(
