@@ -7,19 +7,27 @@ import api from '../api';
 import { actionTypes } from '../Actions/actionTypes';
 
 const getWWTImages = async (luaApi, callback) => {
-  let imgData = await luaApi.skybrowser.getListOfImages();
-  if(imgData) {
-    imgData = Object.values(imgData[1]);
-    let imgDataWithKey = imgData.map((image) => {
-               return {
-                   ...image,
-                   key: image.identifier
-               }
-           });
-    callback(imgDataWithKey);
+  try {
+    if(!luaApi.skybrowser) {
+      throw new Error('No Sky Browser Module loaded!');
+    }
+    let imgData = await luaApi.skybrowser.getListOfImages();
+    if(imgData) {
+      imgData = Object.values(imgData[1]);
+      let imgDataWithKey = imgData.map((image) => {
+                 return {
+                     ...image,
+                     key: image.identifier
+                 }
+             });
+      callback(imgDataWithKey);
+    }
+    else {
+      throw new Error('No AAS WorldWide Telescope images!');
+    }
   }
-  else {
-      console.log('No WordWide Telescope images sent to GUI!');
+  catch(e) {
+
   }
 };
 

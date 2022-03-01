@@ -26,6 +26,7 @@ class WWTPanel extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      moduleIsLoaded: false,
       imageName: "",
       showOnlyNearest: true,
       targetData: "",
@@ -49,7 +50,7 @@ class WWTPanel extends Component {
 
   async componentDidMount(){
     try {
-       this.interval = setInterval(() => this.getTargetData(), 1000);
+       this.targetDataID = setInterval(() => this.getTargetData(), 1000);
     }
     catch(e) {
       console.log(e);
@@ -59,24 +60,35 @@ class WWTPanel extends Component {
   // Getters
   async getTargetData() {
     try {
-      let  target = await this.props.luaApi.skybrowser.getTargetData();
-      target = target[1];
+      if(!this.props.luaApi.skybrowser) {
+          throw new Error('Sky Browser Module is not loaded!');
+      }
+      else {
+        let  target = await this.props.luaApi.skybrowser.getTargetData();
+        target = target[1];
 
-      // Set the first object in the array to the camera and remove from array
-      let camera = target.OpenSpace;
-      delete target.OpenSpace;
+        // Set the first object in the array to the camera and remove from array
+        let camera = target.OpenSpace;
+        delete target.OpenSpace;
 
-      this.setState({
-        targetData: target,
-        selectedTarget: camera.selectedTargetId,
-        selectedBrowser: camera.selectedBrowserId,
-        isUsingRae: camera.isUsingRadiusAzimuthElevation,
-        isFacingCamera: camera.isFacingCamera,
-        cameraInSolarSystem: camera.cameraInSolarSystem
-      });
+        this.setState({
+          targetData: target,
+          selectedTarget: camera.selectedTargetId,
+          selectedBrowser: camera.selectedBrowserId,
+          isUsingRae: camera.isUsingRadiusAzimuthElevation,
+          isFacingCamera: camera.isFacingCamera,
+          cameraInSolarSystem: camera.cameraInSolarSystem,
+          moduleIsLoaded: true
+        });
+      }
     }
     catch(e) {
       console.log(e);
+      // Stop the timer to get the target data
+      clearInterval(this.targetDataID);
+      this.setState({
+        moduleIsLoaded: false
+      });
     }
   }
 
@@ -263,21 +275,16 @@ class WWTPanel extends Component {
   render() {
     const { popoverVisible } = this.props;
 
-    return (
-
-      <div className={Picker.Wrapper}>
-        {
-          <Picker onClick={this.togglePopover} style={{padding: 0}}>
-            <div style={{textAlign: 'center', display: 'block'}}>
-              <img src={wwtLogo} alt="WWT"  style={{width:'50%', height: '50%'}} />
-            </div>
-          </Picker>
-        }
-        {popoverVisible && this.popover }
-      </div>
-
-
-    );
+    return ( this.state.moduleIsLoaded ? <div className={Picker.Wrapper}>
+                                          {
+                                            <Picker onClick={this.togglePopover} style={{padding: 0}}>
+                                              <div style={{textAlign: 'center', display: 'block'}}>
+                                                <img src={wwtLogo} alt="WWT"  style={{width:'50%', height: '50%'}} />
+                                              </div>
+                                            </Picker>
+                                          }
+                                        {popoverVisible && this.popover }
+                                        </div> : "" );
   }
 }
 
