@@ -1,6 +1,5 @@
 @import "../../styles/all";
 
-
 $tabs-height: 48px;
 $tabs-active-height: 45px;
 $tabs-background: rgba(37,37,37,1);
@@ -12,116 +11,120 @@ $tabs-buttons-margin: 32px;
 $tabs-arrowbutton-width: 13.34px;
 
 .tabContainer {
-    background: $tabs-background;
-    position: absolute;
-    width: calc(100% - #{$tabs-margin-horizontal});
-    margin-left: $tabs-margin-horizontal / 2;
-    bottom: $popover-arrow-size;
+  background: $tabs-background;
+  position: absolute;
+  width: calc(100% - #{$tabs-margin-horizontal});
+  margin-left: $tabs-margin-horizontal / 2;
+  bottom: $popover-arrow-size;
 }
 
 .tab {
-    height: $tabs-height;
-    padding-left: 4px;
-    padding-right: 4px;
-    font-size: 16px;
-    border-top-right-radius: 4px;
-    border: 3px solid $tabs-background;
-    background: $tabs-background;
-    display: block;
-    &:hover {
-        background: $tabs-background-content;
-    }
-}
-.tabActive {
-    height: $tabs-active-height;
+  height: $tabs-height;
+  padding-left: 4px;
+  padding-right: 4px;
+  font-size: 16px;
+  border-top-right-radius: 4px;
+  border: 3px solid $tabs-background;
+  background: $tabs-background;
+  display: block;
+  &:hover {
     background: $tabs-background-content;
-    padding-left: 4px;
-    padding-right: 4px;
-    font-size: 16px;
-    display: block;
+  }
 }
+
+.tabActive {
+  height: $tabs-active-height;
+  background: $tabs-background-content;
+  padding-left: 4px;
+  padding-right: 4px;
+  font-size: 16px;
+  display: block;
+}
+
 .tabHeader {
-    display: grid;
-    position: relative;
+  display: grid;
+  position: relative;
 }
 
 .tabTitle {
-    max-width: calc(100% - #{$tabs-close-button-width});
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  max-width: calc(100% - #{$tabs-close-button-width});
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .tabButtonContainer {
-    display: flex;
-    margin-right: $tabs-buttons-margin;
+  display: flex;
+  margin-right: $tabs-buttons-margin;
 }
 
 .tabContent {
-    :global(.scroll-content) {
-        height: calc(100% - #{$tabs-active-height});
-        background: $tabs-background-content;
+  :global(.scroll-content) {
+    height: calc(100% - #{$tabs-active-height});
+    background: $tabs-background-content;
 
-        &::after, &::before {
-          background: transparent;
-        }
+    &::after, &::before {
+      background: transparent;
     }
+  }
 }
 
-
 .navTabs {
-    display: flex;
+  display: flex;
 }
 
 .topHandle {
-    height: 1px;
-    &:hover, &:active{
-      background: $tabs-background;
-    }
+  height: 1px;
+  &:hover, &:active{
+    background: $tabs-background;
+  }
 }
 
 //buttons
 .addTabButton {
-    font-size: 13px;
-    padding: 9px 6px 3px 6px;
-    border-top-right-radius: 4px;
-    height: $tabs-height;
-    background: $tabs-background;
+  font-size: 13px;
+  padding: 9px 6px 3px 6px;
+  border-top-right-radius: 4px;
+  height: $tabs-height;
+  background: $tabs-background;
+  border: 3px solid $tabs-background;
+  border-radius: 4px;
+
+  &:hover, &:active{
+    background: $tabs-background-content;
     border: 3px solid $tabs-background;
     border-radius: 4px;
-
-    &:hover, &:active{
-      background: $tabs-background-content;
-      border: 3px solid $tabs-background;
-      border-radius: 4px;
-    }
+  }
 }
+
 .closeTabButton {
-    border-radius: 4px;
-    padding: 3px 4px 3px 4px;
-    position: absolute;
-    right: -2px;
+  border-radius: 4px;
+  padding: 3px 4px 3px 4px;
+  position: absolute;
+  right: -2px;
+}
 
-}
 .tabButton {
-    border-radius: 4px;
-    padding: 3px 5px 3px 5px;
+  border-radius: 4px;
+  padding: 3px 5px 3px 5px;
 }
+
 .tabButtonActive {
-    background-color: $tabs-background;
-    border-radius: 4px;
-    padding: 3px 5px 3px 5px;
+  background-color: $tabs-background;
+  border-radius: 4px;
+  padding: 3px 5px 3px 5px;
 }
+
 .arrowButton {
+  display: inline-flex;
+  position: relative;
+  top: 38px;
+  padding: 10px 0 10px 0;
+  &Empty {
     display: inline-flex;
+    width: $tabs-arrowbutton-width;
+    padding: 10px 0 10px 0;
     position: relative;
     top: 38px;
-    padding: 10px 0 10px 0;
-    &Empty {
-        display: inline-flex;
-        width: $tabs-arrowbutton-width;
-        padding: 10px 0 10px 0;
-        position: relative;
-        top: 38px;
-    }
+  }
 }
