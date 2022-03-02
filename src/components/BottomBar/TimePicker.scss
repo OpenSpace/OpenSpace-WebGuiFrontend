@@ -5,14 +5,6 @@
   width: 100%;
 }
 
-.timePicker.disabledBySessionPlayback {
-  background-color: darken(rgba($blue, .7), 20%);
-}
-
-.timePicker.disabledBySessionPause {
-  background-color: rgba($orange, .7);
-}
-
 .timePopover {
   width: 350px;
 }

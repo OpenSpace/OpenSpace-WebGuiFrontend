@@ -58,9 +58,9 @@ export function precision(value: number) {
  * @param precision - desired precision of the resulting value
  */
 export function roundToNiceNumber(value: number, precision: number) {
-    // const p = Math.pow(10, precision(step));
-    const p = Math.pow(10, precision);
-    return Math.round(value * p) / p;
+  // const p = Math.pow(10, precision(step));
+  const p = Math.pow(10, precision);
+  return Math.round(value * p) / p;
 }
 
 /**

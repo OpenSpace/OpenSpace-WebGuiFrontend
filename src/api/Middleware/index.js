@@ -2,6 +2,7 @@ import { applyMiddleware } from 'redux';
 import { propertyTree } from './propertyTree';
 import { time } from './time';
 import { connection } from './connection';
+import { engineMode } from './engineMode';
 import { fetchData } from './fetchData';
 import { shortcuts } from './shortcuts';
 import { version } from './version';
@@ -17,6 +18,7 @@ const middleware = applyMiddleware(
   //logger, // middleWare for logging state change
   propertyTree,
   time,
+  engineMode,
   sessionRecording,
   connection,
   shortcuts,

@@ -27,5 +27,10 @@ Picker.Title = styles.Title;
 Picker.Wrapper = styles.Wrapper;
 Picker.Window = styles.Window;
 
-export default Picker;
+Picker.DisabledBlue = styles.DisabledBlue;
+Picker.DisabledOrange = styles.DisabledOrange;
+Picker.Blue = styles.Blue;
+Picker.Orange = styles.Orange;
+Picker.Red = styles.Red;
 
+export default Picker;

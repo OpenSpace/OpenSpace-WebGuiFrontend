@@ -13,7 +13,7 @@ export const actionTypes = {
   reloadPropertyTree: 'PROPERTY_TREE_RELOAD',
   refreshGroups: 'GROUPS_REFRESH',
 
-  updateTime: "TIME_UPDATE",
+  updateTime: 'TIME_UPDATE',
   subscribeToTime: 'TIME_SUBSCRIBE',
   unsubscribeToTime: 'TIME_UNSUBSCRIBE',
 
@@ -37,6 +37,7 @@ export const actionTypes = {
   // action types for documentation
   getDocumentation: 'DOCUMENTATION_GET',
   initializeDocumentation: 'DOCUMENTATION_INITIALIZE',
+
   // action types for exoplanets
   initializeExoplanets: 'EXOPLANETS_INITIALIZE',
   addExoplanets: 'EXOPLANETS_ADD',
@@ -52,6 +53,12 @@ export const actionTypes = {
   triggerAction: 'TRIGGER_ACTION',
   setActionsPath: 'SET_ACTIONS_PATH',
   toggleKeybindViewer: 'TOGGLE_KEYBIND_VIEWER',
+
+  // action types for engine mode
+  subscribeToEngineMode: 'ENGINE_MODE_SUBSCRIBE',
+  unsubscribeToEngineMode: 'ENGINE_MODE_UNSUBSCRIBE',
+  refreshEngineMode: 'ENGINE_MODE_REFRESH',
+  updateEngineMode: 'ENGINE_MODE_UPDATE',
 
   // action types for session recording
   subscribeToSessionRecording: 'SESSION_RECORDING_SUBSCRIBE',
@@ -78,9 +85,6 @@ export const actionTypes = {
   removeNodeMetaPopover: 'LOCAL_REMOVE_NODE_META_POPOVER',
 
   setShowAbout: 'LOCAL_SET_SHOW_ABOUT',
-
-  // action types for local gui settings
-  setNavigationAction: 'LOCAL_SET_NAVIGATION_ACTION',
 
   // action types for transfer function editor
   addTransferFunction: 'TRANSFERFUNCTION_ADD_TRANSFER_FUNCTION',
