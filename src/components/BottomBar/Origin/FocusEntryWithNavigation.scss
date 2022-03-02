@@ -1,0 +1,33 @@
+@import "../../../styles/all";
+@import "./FocusEntry";
+
+$icon-size: 22px;
+
+.entryWithNavigation {
+  @extend .entry; // From FocusEntry.scss
+
+  position: relative;
+}
+
+.buttonIcon {
+  font-size: $icon-size;
+}
+
+.buttonContainer {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.flyToButton {
+  margin-left: 0.3em;
+  padding: 0.2em 0.5em 0.1em;
+  display: none;
+}
+
+/* Show button on hover */
+.entryWithNavigation:hover .flyToButton,
+.entryWithNavigation:active .flyToButton {
+  display: inline-block;
+}

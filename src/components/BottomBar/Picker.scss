@@ -47,3 +47,37 @@
   z-index: 10;
 }
 
+.DisabledBlue {
+  background-color: darken(rgba($blue, .7), 20%);
+  &:hover {
+    background-color: darken(rgba($blue, .7), 20%);
+  }
+}
+
+.DisabledOrange {
+  background-color: rgba($orange, .7);
+  &:hover {
+    background-color: rgba($orange, .7);
+  }
+}
+
+.Blue {
+  background-color: $blue;
+  &:hover {
+    background-color: $blue;
+  }
+}
+
+.Orange {
+  background-color: $orange;
+  &:hover {
+    background-color: $orange;
+  }
+}
+
+.Red {
+  background-color: $red;
+  &:hover {
+    background-color: $red;
+  }
+}
