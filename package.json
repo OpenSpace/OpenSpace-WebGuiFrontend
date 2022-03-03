@@ -8,7 +8,7 @@
     "lint": "eslint --ext .jsx --ext .js src",
     "lint-nice": "eslint --ext .jsx --ext .js src || exit 0;",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "copyfiles index.html environment.js dist && webpack-dev-server --progress --colors --host 0.0.0.0 --port 4690",
+    "start": "copyfiles index.html environment.js dist && webpack-dev-server --progress --host 0.0.0.0 --port 4690",
     "prebuild": "npm install && rimraf dist",
     "build": "cross-env NODE_ENV=production webpack -p --config webpack.config.production.js",
     "postbuild": "copyfiles index.html dist",
@@ -43,6 +43,7 @@
     "react-select": "^3.2.0",
     "react-simple-keyboard": "^3.2.72",
     "redux": "^4.1.0",
+    "sass": "^1.49.9",
     "shallow-equal": "^1.2.1",
     "simple-keyboard-layouts": "^3.0.176",
     "svg-react-loader": "^0.4.6"
@@ -57,21 +58,20 @@
     "copyfiles": "^2.4.1",
     "cross-env": "^5.2.1",
     "css-loader": "^3.6.0",
-    "eslint": "^5.16.0",
-    "eslint-config-airbnb": "^17.1.1",
+    "eslint": "^8.10.0",
+    "eslint-config-airbnb": "^19.0.4",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-react": "^7.23.2",
     "file-loader": "^4.3.0",
     "flow-bin": "^0.101.1",
-    "node-sass": "^4.14.1",
     "rimraf": "^2.7.1",
     "sass-loader": "^7.3.1",
     "style-loader": "^0.23.1",
     "url-loader": "^2.3.0",
-    "webpack": "^4.46.0",
-    "webpack-cli": "^3.3.12",
-    "webpack-dev-server": "^3.11.2"
+    "webpack": "^5.69.1",
+    "webpack-cli": "^4.9.2",
+    "webpack-dev-server": "^4.7.4"
   },
   "babel": {
     "presets": [
