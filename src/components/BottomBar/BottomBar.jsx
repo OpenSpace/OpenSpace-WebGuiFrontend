@@ -18,7 +18,7 @@ const BottomBar = ({ showFlightController }) => (
     <ScreenSpaceRenderablePanel />
     <ExoplanetsPanel />
     <ActionsPanel />
-    {props.showFlightController && <FlightControlPanel />}
+    {showFlightController && <FlightControlPanel />}
     <WWTPanel />
   </div>
 );

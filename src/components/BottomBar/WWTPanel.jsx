@@ -85,7 +85,7 @@ class WWTPanel extends Component {
     const { targetData, selectedBrowser } = this.state;
     const selectedImagesIndices = targetData[selectedBrowser];
 
-    if (!selectedImagesIndices) {
+    if (!systemList || !selectedImagesIndices) {
       return [];
     }
 
@@ -97,8 +97,12 @@ class WWTPanel extends Component {
   }
 
   getAllImages() {
-    const images = this.props.systemList;
-    return images || {};
+    if(this.props.systemList.length) {
+      return this.props.systemList;
+    }
+    else {
+      return [];
+    }
   }
 
   getCurrentTargetColor() {
@@ -112,12 +116,10 @@ class WWTPanel extends Component {
     const { systemList } = this.props;
     const { targetData, selectedBrowser } = this.state;
     const targetPoint = targetData[selectedBrowser];
-    if (!targetPoint) {
+    if (!targetPoint || Object.keys(systemList).length === 0) {
       return [];
     }
-
     const searchRadius = targetPoint.FOV / 2;
-
     const isWithinFOV = (coord, target, FOV) => (coord < (target + FOV) && coord > (target - FOV));
 
     // Only load images that have coordinates within current window
@@ -206,7 +208,7 @@ class WWTPanel extends Component {
     const api = this.props.luaApi;
     const skybrowserApi = api.skybrowser;
 
-    const filterList = imageList.length === 0 ? '' : (
+    const filterList = imageList.length > 0 ? (
       <FilterList
         className={styles.filterList}
         data={imageList}
@@ -217,7 +219,7 @@ class WWTPanel extends Component {
         active={imageName}
         searchAutoFocus
       />
-    );
+    ) : '';
 
     let thisTabsImages = this.getSelectedTargetImages();
     thisTabsImages = thisTabsImages || [];
