@@ -40,24 +40,24 @@
 }
 
 .rightHandle {
-    background: transparent;
-    border-radius: 2px;
-    height: 100%;
-    width: 100%;
-    padding: 0;
-    margin-left: 5px;
-    &:hover, &:active{
-      background: $ui-background-solid;
+  background: transparent;
+  border-radius: 2px;
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  margin-left: 5px;
+  &:hover, &:active {
+    background: $ui-background-solid;
   }
 }
 
 .bottomHandle {
-    background: transparent;
-    border-radius: 2px;
-    height: 100%;
-    width: 100%;
-    padding: 0;
-    &:hover, &:active{
-      background: $ui-background-solid;
+  background: transparent;
+  border-radius: 2px;
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  &:hover, &:active {
+    background: $ui-background-solid;
   }
 }

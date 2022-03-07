@@ -3,7 +3,7 @@ import { actionTypes } from '../Actions/actionTypes';
 
 const getWWTImages = async (luaApi, callback) => {
   try {
-    if(!luaApi.skybrowser) {
+    if (!luaApi.skybrowser) {
       throw new Error('The Sky Browser Module is not loaded!');
     }
     let imgData = await luaApi.skybrowser.getListOfImages();

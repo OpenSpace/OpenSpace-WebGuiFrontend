@@ -5,7 +5,7 @@ const defaultState = {
   data: {},
 };
 
-export const skybrowser = (state = defaultState, action) => { // state refers to docu
+export const skybrowser = (state = defaultState, action) => {
   switch (action.type) {
     case actionTypes.initializeSkyBrowser:
       return {

@@ -14,20 +14,21 @@ class PaneSkybrowser extends Component {
       setAsAttached,
       setAsDetached,
     } = this.props;
+    const resizablePlacement = {
+      top: false,
+      right: false,
+      bottom: false,
+      left: true,
+      topRight: false,
+      bottomRight: false,
+      bottomLeft: false,
+      topLeft: false,
+    };
 
     return (
       <section className={styles.pane}>
         <Resizable
-          enable={{
-            top: false,
-            right: false,
-            bottom: false,
-            left: true,
-            topRight: false,
-            bottomRight: false,
-            bottomLeft: false,
-            topLeft: false,
-          }}
+          enable={resizablePlacement}
           defaultSize={{
             width: '350px',
             height: '100%',

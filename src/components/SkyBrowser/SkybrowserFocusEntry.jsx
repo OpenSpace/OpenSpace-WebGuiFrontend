@@ -15,11 +15,12 @@ class OpacitySlider extends Component {
   }
 
   handleChange(event) {
-    const { identifier } = this.props;
     this.setState({ value: event.target.value });
-    // Ensure the image has an id
-    if (identifier) {
-      this.props.setOpacity(Number(identifier), Number(this.state.value / 100));
+    // Ensure the image has an id, which consists of the index of the image
+    const index = Number(this.props.identifier);
+    const opacity = this.state.value / 100;
+    if (index) {
+      this.props.setOpacity(index, opacity);
     }
   }
 
@@ -82,7 +83,7 @@ class SkybrowserFocusEntry extends Component {
     } = this.props;
     const { skybrowserApi, setOpacity, removeImageSelection } = this.props;
 
-    const imageRemoveButton = removeImageSelection ? (
+    const imageRemoveButton = removeImageSelection && (
       <div style={{ display: 'flex' }}>
         <Button
           onClick={() => removeImageSelection(identifier)}
@@ -93,12 +94,11 @@ class SkybrowserFocusEntry extends Component {
           <MaterialIcon icon="close" className="small" />
         </Button>
       </div>
-    ) : '';
+    );
 
     const opacitySlider = setOpacity ? <OpacitySlider setOpacity={setOpacity} identifier={identifier} /> : '';
 
     return (
-
       <li
         className={`${styles.entry} ${this.isTabEntry && styles.tabEntry} ${this.isActive && styles.active}`}
         style={{ borderLeftColor: this.props.currentTargetColor() }}
@@ -123,7 +123,6 @@ class SkybrowserFocusEntry extends Component {
             isTabEntry={this.isTabEntry}
           />
         </div>
-
         {opacitySlider}
       </li>
     );

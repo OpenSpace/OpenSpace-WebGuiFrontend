@@ -20,7 +20,7 @@ class SkybrowserTabs extends Component {
     this.state = {
       height: 185,
       currentHeight: 185,
-      showButtonInfo: [false, false, false, false, false],
+      isShowingInfoButtons: [false, false, false, false, false],
       showSettings: false,
     };
 
@@ -47,7 +47,9 @@ class SkybrowserTabs extends Component {
   }
 
   get position() {
-    if (!this.wrapper) return { top: '0px', left: '0px' };
+    if (!this.wrapper) {
+      return { top: '0px', left: '0px' };
+    }
     const { top, right } = this.wrapper.getBoundingClientRect();
     return { top: `${top}`, left: `${right}` };
   }
@@ -59,17 +61,17 @@ class SkybrowserTabs extends Component {
   }
 
   showTooltip(i) {
-    const showButtonInfoNew = [...this.state.showButtonInfo];
-    showButtonInfoNew[i] = true;
-    this.setState({ showButtonInfoNew });
-    this.setState({ showButtonInfo: showButtonInfoNew });
+    const isShowingInfoButtonsNew = [...this.state.isShowingInfoButtons];
+    isShowingInfoButtonsNew[i] = true;
+    this.setState({ isShowingInfoButtonsNew });
+    this.setState({ isShowingInfoButtons: isShowingInfoButtonsNew });
   }
 
   hideTooltip(i) {
-    const showButtonInfoNew = [...this.state.showButtonInfo];
-    showButtonInfoNew[i] = false;
-    this.setState({ showButtonInfoNew });
-    this.setState({ showButtonInfo: showButtonInfoNew });
+    const isShowingInfoButtonsNew = [...this.state.isShowingInfoButtons];
+    isShowingInfoButtonsNew[i] = false;
+    this.setState({ isShowingInfoButtonsNew });
+    this.setState({ isShowingInfoButtons: isShowingInfoButtonsNew });
   }
 
   toggleFaceCamera() {
@@ -152,9 +154,9 @@ class SkybrowserTabs extends Component {
       },
     };
 
-    const buttons = [lookButton, moveButton, lockButton, showSettingsButton];
+    const buttonsData = [lookButton, moveButton, lockButton, showSettingsButton];
 
-    const Buttons = buttons.map((button, index) => (
+    const buttons = buttonsData.map((button, index) => (
       <Button
         onClick={() => { button.function(targetId); }}
         onMouseLeave={() => this.hideTooltip(index)}
@@ -163,7 +165,7 @@ class SkybrowserTabs extends Component {
         small
       >
         <MaterialIcon icon={button.icon} className="small" onMouseEnter={() => this.showTooltip(index)} />
-        { this.state.showButtonInfo[index] && (
+        { this.state.isShowingInfoButtons[index] && (
           <TooltipSkybrowser
             placement="bottom-right"
             style={this.position}
@@ -177,7 +179,7 @@ class SkybrowserTabs extends Component {
     return (
       <div>
         <span className={styles.tabButtonContainer} ref={this.setRef('wrapper')}>
-          {Buttons}
+          {buttons}
         </span>
       </div>
     );
@@ -185,7 +187,7 @@ class SkybrowserTabs extends Component {
 
   createTabs() {
     const { targets, selectedBrowser, skybrowserApi } = this.props;
-    const Buttons = targets[selectedBrowser] ? this.createButtons(targets[selectedBrowser]) : '';
+    const buttons = targets[selectedBrowser] && this.createButtons(targets[selectedBrowser]);
 
     const allTabs = Object.keys(targets).map((target, index) => {
       const targetColor = `rgb(${targets[target].color})`;
@@ -209,7 +211,7 @@ class SkybrowserTabs extends Component {
                 <MaterialIcon icon="close" className="small" />
               </Button>
             </span>
-            { selectedBrowser === target && Buttons }
+            { selectedBrowser === target && buttons }
           </div>
         </div>
       );
@@ -269,7 +271,7 @@ class SkybrowserTabs extends Component {
 
     return (
       <ScrollOverlay>
-        { data.length === 0 ? '' : tabs}
+        { data.length > 0 && tabs }
       </ScrollOverlay>
     );
   }

@@ -145,7 +145,6 @@ class PopoverSkybrowser extends Component {
 
   setAsDetached() {
     this.setState({ windowStyle: WindowStyle.DETACHED });
-    // this.props.heightCallback(this.state.height);
   }
 
   setAsPane() {
@@ -165,8 +164,7 @@ class PopoverSkybrowser extends Component {
       case WindowStyle.ATTACHED: return this.asPopup;
       case WindowStyle.DETACHED: return this.asWindow;
       case WindowStyle.PANE: return this.asSideview;
-      default: return WindowStyle.ATTACHED; // OBS! This can't be correct? // emmbr
-    }
+      default: WindowStyle.ATTACHED return this.asPopup; 
   }
 }
 

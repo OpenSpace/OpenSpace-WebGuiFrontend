@@ -106,10 +106,8 @@ class WWTPanel extends Component {
   }
 
   getCurrentTargetColor() {
-    const { targetData, selectedBrowser } = this.state;
-    const browser = targetData[selectedBrowser];
-
-    return browser ? `rgb(${browser.color})` : 'gray';
+    const browser = this.state.targetData[this.state.selectedBrowser];
+    return browser ? 'rgb(' + browser.color + ')' :  'gray';
   }
 
   getNearestImages() {
@@ -208,7 +206,7 @@ class WWTPanel extends Component {
     const api = this.props.luaApi;
     const skybrowserApi = api.skybrowser;
 
-    const filterList = imageList.length > 0 ? (
+    const filterList = imageList.length > 0 && (
       <FilterList
         className={styles.filterList}
         data={imageList}
@@ -219,10 +217,9 @@ class WWTPanel extends Component {
         active={imageName}
         searchAutoFocus
       />
-    ) : '';
+    );
 
-    let thisTabsImages = this.getSelectedTargetImages();
-    thisTabsImages = thisTabsImages || [];
+    const thisTabsImages = this.getSelectedTargetImages() || [];
 
     const selectionButtonsAndSearchHeight = 120; // Height of the image selection buttons and search image field
     const popoverHeight = currentPopoverHeight - selectionButtonsAndSearchHeight;
@@ -258,16 +255,12 @@ class WWTPanel extends Component {
             onClick={() => this.setState({ showOnlyNearest: false })}
           >
             <span>All images</span>
-            {' '}
-            {/* <MaterialIcon className={styles.photoIcon} icon="list_alt" /> */}
           </Picker>
           <Picker
             className={`${styles.picker} ${showOnlyNearest ? styles.selected : styles.unselected}`}
             onClick={() => this.setState({ showOnlyNearest: true })}
           >
             <span>Images within view</span>
-            {' '}
-            {/* <MaterialIcon className={styles.photoIcon} icon="my_location" /> */}
           </Picker>
         </div>
         <div className={PopoverSkybrowser.styles.content}>
@@ -284,17 +277,15 @@ class WWTPanel extends Component {
   }
 
   render() {
-    const { popoverVisible } = this.props;
-
-    return ( this.state.moduleIsLoaded ?
+    return ( this.state.moduleIsLoaded &&
       <div className={Picker.Wrapper}>
         <Picker onClick={this.togglePopover} style={{ padding: 0 }}>
           <div style={{ textAlign: 'center', display: 'block' }}>
             <img src={wwtLogo} alt="WWT" style={{ width: '50%', height: '50%' }} />
           </div>
         </Picker>
-        {popoverVisible && this.popover }
-      </div> : ""
+        {this.props.popoverVisible && this.popover }
+      </div>
     );
   }
 }

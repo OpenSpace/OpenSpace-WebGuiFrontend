@@ -10,7 +10,11 @@ import esaSkyLogo from './ESASKY.png';
 class InfoBoxSkybrowser extends Component {
   constructor(props) {
     super(props);
-    this.state = { showPopup: false, tooltipActive: false};
+    this.state = {
+      showPopup: false,
+      tooltipActive: false
+    };
+
     this.setRef = this.setRef.bind(this);
     this.tooltipActive = this.tooltipActive.bind(this);
     this.checkIfTooltipActive = this.checkIfTooltipActive.bind(this);
@@ -21,7 +25,6 @@ class InfoBoxSkybrowser extends Component {
     this.openEsaSky = this.openEsaSky.bind(this);
   }
 
-
   setRef(what) {
     return (element) => {
       this[what] = element;
@@ -29,7 +32,9 @@ class InfoBoxSkybrowser extends Component {
   }
 
   get position() {
-    if (!this.wrapper) return { top: '0px', left: '0px' };
+    if (!this.wrapper) {
+      return { top: '0px', left: '0px' };
+    }
     const { top, left, right, bottom } = this.wrapper.getBoundingClientRect();
     return { top: `${top}`, left: `${right}`};
   }
@@ -50,7 +55,7 @@ class InfoBoxSkybrowser extends Component {
   }
 
   checkIfTooltipActive() {
-    if(!this.state.tooltipActive) {
+    if (!this.state.tooltipActive) {
         this.hidePopup();
     }
   }
@@ -71,7 +76,7 @@ class InfoBoxSkybrowser extends Component {
   render() {
     const { icon, text, title, textUrl, ra, dec, fov} = this.props;
     const { showPopup } = this.state;
-    const esaSkyButton =   <Button onClick={() => {this.openEsaSky(ra,dec,fov)}} className={styles.tooltipButton}  transparent small>
+    const esaSkyButton = <Button onClick={() => {this.openEsaSky(ra,dec,fov)}} className={styles.tooltipButton} transparent small>
         <img src={esaSkyLogo} alt="EsaSky" style={{width:'100%'}} />
       </Button>;
 
@@ -83,22 +88,22 @@ class InfoBoxSkybrowser extends Component {
         onMouseLeave={() => setTimeout(this.checkIfTooltipActive, 500)}
         style={{fontSize: '15px'}}>
         </MaterialIcon>
-            { showPopup && (
-                <TooltipSkybrowser
-                placement="bottom-left"
-                style={this.position}
-                onMouseEnter={this.tooltipActive}
-                onMouseLeave={this.hidePopup}>
-                <span className={styles.tooltipTitle}> { title } </span>
-                { text }
-                { text && (
-                    <Button className={styles.tooltipButton} onClick={ () => this.openImageUrl(textUrl) }>
-                    Read more
-                    </Button>
-                )}
-                {esaSkyButton}
-                </TooltipSkybrowser>
+          { showPopup && (
+            <TooltipSkybrowser
+            placement="bottom-left"
+            style={this.position}
+            onMouseEnter={this.tooltipActive}
+            onMouseLeave={this.hidePopup}>
+            <span className={styles.tooltipTitle}> { title } </span>
+            { text }
+            { text && (
+              <Button className={styles.tooltipButton} onClick={ () => this.openImageUrl(textUrl) }>
+              Read more
+              </Button>
             )}
+            { esaSkyButton }
+            </TooltipSkybrowser>
+          )}
       </span>
     );
   }
