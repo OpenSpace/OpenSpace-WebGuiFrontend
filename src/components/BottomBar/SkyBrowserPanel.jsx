@@ -10,14 +10,14 @@ import SkybrowserFocusEntry from '../SkyBrowser/SkybrowserFocusEntry';
 import PopoverSkybrowser from '../SkyBrowser/PopoverSkybrowser';
 import SkybrowserTabs from '../SkyBrowser/SkybrowserTabs';
 import wwtLogo from './wwtlogo.png';
-import styles from './WWTPanel.scss';
+import styles from './SkyBrowserPanel.scss';
 
-class WWTPanel extends Component {
+class SkyBrowserPanel extends Component {
   constructor(props) {
     super(props);
     this.state = {
       moduleIsLoaded: false,
-      imageName: '',
+      activeImage: '',
       showOnlyNearest: true,
       targetData: '',
       selectedTarget: '',
@@ -161,7 +161,7 @@ class WWTPanel extends Component {
   selectImage(identifier) {
     if (identifier) {
       this.setState({
-        imageName: identifier,
+        activeImage: identifier,
       });
       this.props.luaApi.skybrowser.selectImage(Number(identifier));
     }
@@ -177,7 +177,7 @@ class WWTPanel extends Component {
       cameraInSolarSystem,
       currentTabHeight,
       currentPopoverHeight,
-      imageName,
+      activeImage,
       isFacingCamera,
       isUsingRae,
       showOnlyNearest,
@@ -214,7 +214,7 @@ class WWTPanel extends Component {
         viewComponent={SkybrowserFocusEntry}
         viewComponentProps={{ skybrowserApi, currentTargetColor: this.getCurrentTargetColor }}
         onSelect={this.selectImage}
-        active={imageName}
+        active={activeImage}
         searchAutoFocus
       />
     );
@@ -317,9 +317,9 @@ const mapDispatchToProps = dispatch => ({
   },
 });
 
-WWTPanel = connect(
+SkyBrowserPanel = connect(
   subStateToProps(mapSubStateToProps, mapStateToSubState),
   mapDispatchToProps,
-)(WWTPanel);
+)(SkyBrowserPanel);
 
-export default WWTPanel;
+export default SkyBrowserPanel;
