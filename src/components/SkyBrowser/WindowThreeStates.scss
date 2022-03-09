@@ -1,0 +1,91 @@
+@import '../../styles/all';
+@import "../common/Popover/Popover";
+
+$font-size: 0.8rem;
+
+.popover, .floatingWindow, .pane {
+  background: $ui-background;
+  color: $text-color-focus;
+  z-index: 10;
+}
+
+.popover, .floatingWindow {
+  border-radius: $popover-corner-radius;
+  max-width: none;
+  position: absolute;
+}
+
+.popover {
+  left: 50%;
+  transform: translateX(-50%);
+  width: auto;
+  bottom: calc(100% + #{$popover-arrow-size});
+}
+
+.pane {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100%;
+  max-width: 50%;
+}
+
+.title {
+  font-weight: 600;
+  font-size: $font-size;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.topMenu {
+  display: flex;
+  justify-content: space-between;
+}
+
+// Resizeable classes
+.topHandle {
+  background: transparent;
+  border-radius: 2px;
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  &:hover, &:active{
+    background: $ui-background-solid;
+  }
+}
+
+.leftHandle {
+  background: transparent;
+  border-radius: 2px;
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  margin-right: 5px;
+
+  &:hover, &:active{
+    background: $ui-background-solid;
+  }
+}
+
+.rightHandle {
+  background: transparent;
+  border-radius: 2px;
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  margin-left: 5px;
+  &:hover, &:active {
+    background: $ui-background-solid;
+  }
+}
+
+.bottomHandle {
+  background: transparent;
+  border-radius: 2px;
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  &:hover, &:active {
+    background: $ui-background-solid;
+  }
+}

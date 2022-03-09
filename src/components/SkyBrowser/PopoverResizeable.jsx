@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import { Resizable } from 're-resizable';
 import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import Button from '../common/Input/Button/Button';
-import styles from './PopoverSkybrowser.scss';
+import styles from './WindowThreeStates.scss';
 
-class PopoverSkybrowser extends Component {
+class PopoverResizeable extends Component {
   constructor(props) {
     super(props);
   }
@@ -13,7 +13,7 @@ class PopoverSkybrowser extends Component {
   render() {
     const { children } = this.props;
     return (
-      <section className={`${styles.popover} ${this.styles}`}>
+      <section className={`${styles.popover}`}>
         <Resizable
           enable={{
             top: true,
@@ -38,16 +38,14 @@ class PopoverSkybrowser extends Component {
           }}
           onResizeStop={this.onResizeStop}
         >
-          <div className={styles.content}>
-            { children }
-          </div>
+          { children }
         </Resizable>
       </section>
     );
   }
 }
 
-PopoverSkybrowser.propTypes = {
+PopoverResizeable.propTypes = {
   children: PropTypes.node,
   size: PropTypes.shape({
     height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
@@ -55,11 +53,11 @@ PopoverSkybrowser.propTypes = {
   }),
 };
 
-PopoverSkybrowser.defaultProps = {
+PopoverResizeable.defaultProps = {
   children: [],
   size: { height: 'auto', width: 'auto' },
 };
 
-PopoverSkybrowser.styles = styles;
+PopoverResizeable.styles = styles;
 
-export default PopoverSkybrowser;
+export default PopoverResizeable;

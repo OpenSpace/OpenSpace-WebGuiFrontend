@@ -4,10 +4,10 @@ import { Resizable } from 're-resizable';
 import { excludeKeys } from '../../utils/helpers';
 import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import Button from '../common/Input/Button/Button';
-import styles from './PopoverSkybrowser.scss';
-import WindowSkybrowser from './WindowSkybrowser';
-import PaneSkybrowser from './PaneSkybrowser';
-import PopoverSkybrowser from './PopoverSkybrowser';
+import styles from './WindowThreeStates.scss';
+import FloatingWindow from './FloatingWindow';
+import PaneRightHandSide from './PaneRightHandSide';
+import PopoverResizeable from './PopoverResizeable';
 
 const WindowStyle = {
   DETACHED: 'DETACHED',
@@ -15,7 +15,7 @@ const WindowStyle = {
   ATTACHED: 'ATTACHED',
 };
 
-class SkyBrowserWindowHandler extends Component {
+class WindowThreeStates extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -37,7 +37,7 @@ class SkyBrowserWindowHandler extends Component {
   get asPopup() {
     const { children, height } = this.props;
     return (
-      <PopoverSkybrowser
+      <PopoverResizeable
         onResizeStop={this.onResizeStop}
         size={{ height: `${height}px`, width: `${this.state.windowWidth}px` }}
         setAsPane={this.setAsPane}
@@ -45,36 +45,36 @@ class SkyBrowserWindowHandler extends Component {
       >
       { this.createTopBar() }
       { children }
-      </PopoverSkybrowser>
+      </PopoverResizeable>
     );
   }
 
   get asWindow() {
-    const { children } = this.props;
+    const { children, height } = this.props;
     return (
-      <WindowSkybrowser
+      <FloatingWindow
         onResizeStop={this.onResizeStop}
-        size={{ height: this.props.height, width: `${this.state.windowWidth}px` }}
+        size={{ height: height, width: `${this.state.windowWidth}px` }}
         setAsPane={this.setAsPane}
         setAsAttached={this.setAsAttached}
       >
         { this.createTopBar() }
         { children }
-      </WindowSkybrowser>
+      </FloatingWindow>
     );
   }
 
   get asSideview() {
     const { children } = this.props;
     return (
-      <PaneSkybrowser
+      <PaneRightHandSide
         setAsAttached={this.setAsAttached}
         setAsDetached={this.setAsDetached}
         width={`${this.state.windowWidth}px`}
       >
         { this.createTopBar() }
         { children }
-      </PaneSkybrowser>
+      </PaneRightHandSide>
     );
   }
 
@@ -105,7 +105,7 @@ class SkyBrowserWindowHandler extends Component {
                             <MaterialIcon icon="close" />
                           </Button>;
 
-    return <header className="header">
+    return <header className={`header ${styles.topMenu}`}>
       <div className={styles.title}>
         { this.props.title }
       </div>
@@ -130,7 +130,7 @@ class SkyBrowserWindowHandler extends Component {
   }
 }
 
-SkyBrowserWindowHandler.propTypes = {
+WindowThreeStates.propTypes = {
   children: PropTypes.node.isRequired,
   title: PropTypes.string,
   closeCallback: PropTypes.func,
@@ -138,7 +138,7 @@ SkyBrowserWindowHandler.propTypes = {
   height: PropTypes.Number,
 };
 
-SkyBrowserWindowHandler.defaultProps = {
+WindowThreeStates.defaultProps = {
   children: [],
   title: '',
   closeCallback: null,
@@ -146,6 +146,6 @@ SkyBrowserWindowHandler.defaultProps = {
   height: 440,
 };
 
-SkyBrowserWindowHandler.styles = styles;
+WindowThreeStates.styles = styles;
 
-export default SkyBrowserWindowHandler;
+export default WindowThreeStates;

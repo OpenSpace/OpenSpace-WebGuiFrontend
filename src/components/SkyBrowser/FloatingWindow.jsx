@@ -2,12 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Draggable from 'react-draggable';
 import { Resizable } from 're-resizable';
-import styles from './WindowSkybrowser.scss';
+import styles from './WindowThreeStates.scss';
 import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import Button from '../common/Input/Button/Button';
 import { excludeKeys } from '../../utils/helpers';
 
-const WindowSkybrowser = (props) => {
+const FloatingWindow = (props) => {
   const {
     children, size, position, onResizeStop,
   } = props;
@@ -18,7 +18,7 @@ const WindowSkybrowser = (props) => {
       handle=".header"
     >
       <section
-        className={styles.window}
+        className={`${styles.floatingWindow}`}
       >
         <Resizable
           enable={{ right: true, bottom: true }}
@@ -28,16 +28,14 @@ const WindowSkybrowser = (props) => {
           handleClasses={{ right: styles.rightHandle, bottom: styles.bottomHandle }}
           onResizeStop={onResizeStop}
         >
-          <div className={styles.content}>
-            { children }
-          </div>
+          { children }
         </Resizable>
       </section>
     </Draggable>
   );
 };
 
-WindowSkybrowser.propTypes = {
+FloatingWindow.propTypes = {
   children: PropTypes.node,
   position: PropTypes.shape({
     x: PropTypes.number,
@@ -49,10 +47,10 @@ WindowSkybrowser.propTypes = {
   })
 };
 
-WindowSkybrowser.defaultProps = {
+FloatingWindow.defaultProps = {
   children: [],
   position: { x: 10, y: -600 },
   size: { height: 'auto', width: 'auto' },
 };
 
-export default WindowSkybrowser;
+export default FloatingWindow;

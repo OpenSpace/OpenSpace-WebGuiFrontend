@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Resizable } from 're-resizable';
 import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
-import styles from './PaneSkybrowser.scss';
+import styles from './WindowThreeStates.scss';
 import Button from '../common/Input/Button/Button';
 
-class PaneSkybrowser extends Component {
+class PaneRightHandSide extends Component {
   render() {
     const { children } = this.props;
 
@@ -21,7 +21,7 @@ class PaneSkybrowser extends Component {
     };
 
     return (
-      <section className={styles.pane}>
+      <section className={`${styles.pane}`}>
         <Resizable
           enable={resizablePlacement}
           defaultSize={{
@@ -32,23 +32,21 @@ class PaneSkybrowser extends Component {
           handleClasses={{ left: styles.leftHandle }}
           onResizeStop={this.onResizeStop}
         >
-          <div className={styles.content}>
-            { children }
-          </div>
+          { children }
         </Resizable>
       </section>
     );
   }
 }
 
-PaneSkybrowser.propTypes = {
+PaneRightHandSide.propTypes = {
   children: PropTypes.node,
 };
 
-PaneSkybrowser.defaultProps = {
+PaneRightHandSide.defaultProps = {
   children: [],
 };
 
-PaneSkybrowser.styles = styles;
+PaneRightHandSide.styles = styles;
 
-export default PaneSkybrowser;
+export default PaneRightHandSide;

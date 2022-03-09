@@ -62,6 +62,7 @@ $tabs-arrowbutton-width: 13.34px;
   ul {
     display: flex;
     flex-wrap: wrap;
+    justify-content: space-around;
   }
   :global(.scroll-content) {
     height: calc(100% - #{$tabs-active-height});

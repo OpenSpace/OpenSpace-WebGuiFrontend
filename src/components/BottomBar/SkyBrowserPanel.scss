@@ -50,3 +50,14 @@ input[type="file"] {
     background: $list-header-hover;
   }
 }
+
+.content {
+  height: 100%;
+  width: auto;
+  display: inline-flexbox;
+  padding: 0px;
+}
+
+.scrollArea {
+  height : 100%;
+}

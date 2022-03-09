@@ -7,9 +7,9 @@ import subStateToProps from '../../utils/subStateToProps';
 import { setPopoverVisibility } from '../../api/Actions';
 // Sky  browser
 import SkybrowserFocusEntry from '../SkyBrowser/SkybrowserFocusEntry';
-import SkyBrowserWindowHandler from '../SkyBrowser/SkyBrowserWindowHandler';
-import PopoverSkybrowser from '../SkyBrowser/PopoverSkybrowser';
+import WindowThreeStates from '../SkyBrowser/WindowThreeStates';
 import SkybrowserTabs from '../SkyBrowser/SkybrowserTabs';
+import PopoverResizeable from '../SkyBrowser/PopoverResizeable'
 import wwtLogo from './wwtlogo.png';
 import styles from './SkyBrowserPanel.scss';
 
@@ -205,7 +205,7 @@ class SkyBrowserPanel extends Component {
 
     if (!cameraInSolarSystem) {
       const errorMessage = (
-        <SkyBrowserWindowHandler
+        <WindowThreeStates
           title="AAS WorldWide Telescope"
           closeCallback={this.togglePopover}
           heightCallback={this.setCurrentPopoverHeight}
@@ -214,7 +214,7 @@ class SkyBrowserPanel extends Component {
           <CenteredLabel>
             The camera has to be within the solar system for the sky browser to work.
           </CenteredLabel>
-        </SkyBrowserWindowHandler>
+        </WindowThreeStates>
       );
       return errorMessage;
     }
@@ -251,7 +251,7 @@ class SkyBrowserPanel extends Component {
         selectedBrowser={selectedBrowser}
         isUsingRae={isUsingRae}
         isFacingCamera={isFacingCamera}
-        currentPopoverHeight={popoverHeight}
+        currentPopoverHeight={this.state.currentPopoverHeight}
         setCurrentTabHeight={this.setCurrentTabHeight}
         data={thisTabsImages}
         selectImage={this.selectImage}
@@ -260,23 +260,23 @@ class SkyBrowserPanel extends Component {
     );
 
     return (
-      <SkyBrowserWindowHandler
+      <WindowThreeStates
         title="AAS WorldWide Telescope"
         closeCallback={this.togglePopover}
         heightCallback={this.setCurrentPopoverHeight}
         height={this.state.currentPopoverHeight}
       >
-      <div className={PopoverSkybrowser.styles.content}>
+      <div className={styles.content}>
         { this.createImageMenu() }
         <div
-          className={PopoverSkybrowser.styles.scrollArea}
+          className={styles.scrollArea}
           style={{ height: `calc(100% - ${currentTabHeight}px)` }}
         >
           {filterList}
         </div>
         {skybrowserTabs}
       </div>
-      </SkyBrowserWindowHandler>
+      </WindowThreeStates>
     );
   }
 
@@ -310,7 +310,6 @@ const mapStateToSubState = state => ({
   luaApi: state.luaApi,
   skybrowserData: state.skybrowser.data,
 });
-
 
 const mapDispatchToProps = dispatch => ({
   setPopoverVisibility: (visible) => {
