@@ -8,7 +8,7 @@ import OriginPicker from './Origin/OriginPicker';
 import ScreenSpaceRenderablePanel from './ScreenSpaceRenderablePanel';
 import SessionRec from './SessionRec';
 import TimePicker from './TimePicker';
-import WWTPanel from './WWTPanel';
+import SkyBrowserPanel from './SkyBrowserPanel';
 
 const BottomBar = ({ showFlightController }) => (
   <div className={styles.BottomBar}>
@@ -19,7 +19,7 @@ const BottomBar = ({ showFlightController }) => (
     <ExoplanetsPanel />
     <ActionsPanel />
     {showFlightController && <FlightControlPanel />}
-    <WWTPanel />
+    <SkyBrowserPanel />
   </div>
 );
 

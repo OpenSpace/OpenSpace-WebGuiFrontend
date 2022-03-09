@@ -51,16 +51,20 @@ $imagelist-margin: 4px;
 
 .content {
   height: calc(100% - #{$image-selection-header-height});
-  ul {
-    display: flex;
-    flex-wrap: wrap;
-  }
+  display: inline-flexbox;
+  padding: 0px;
   :global(.scroll-content) {
     width : 100%;
     &::after, &::before {
       background: transparent;
     }
   }
+}
+
+.content {
+  height: 100%;
+  width: auto;
+
 }
 
 .popover header {

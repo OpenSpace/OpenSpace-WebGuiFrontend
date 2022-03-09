@@ -7,6 +7,7 @@ import subStateToProps from '../../utils/subStateToProps';
 import { setPopoverVisibility } from '../../api/Actions';
 // Sky  browser
 import SkybrowserFocusEntry from '../SkyBrowser/SkybrowserFocusEntry';
+import SkyBrowserWindowHandler from '../SkyBrowser/SkyBrowserWindowHandler';
 import PopoverSkybrowser from '../SkyBrowser/PopoverSkybrowser';
 import SkybrowserTabs from '../SkyBrowser/SkybrowserTabs';
 import wwtLogo from './wwtlogo.png';
@@ -36,6 +37,7 @@ class SkyBrowserPanel extends Component {
     this.setCurrentPopoverHeight = this.setCurrentPopoverHeight.bind(this);
     this.selectImage = this.selectImage.bind(this);
     this.togglePopover = this.togglePopover.bind(this);
+    this.createImageMenu = this.createImageMenu.bind(this);
   }
 
   async componentDidMount() {
@@ -46,7 +48,6 @@ class SkyBrowserPanel extends Component {
     }
   }
 
-  // Getters
   async getTargetData() {
     try {
       if(!this.props.luaApi.skybrowser) {
@@ -149,7 +150,6 @@ class SkyBrowserPanel extends Component {
     return imgsWithinTarget;
   }
 
-  // Setters
   setCurrentTabHeight(height) {
     this.setState({ currentTabHeight: height });
   }
@@ -167,9 +167,26 @@ class SkyBrowserPanel extends Component {
     }
   }
 
-  // Popover
   togglePopover() {
     this.props.setPopoverVisibility(!this.props.popoverVisible);
+  }
+
+  createImageMenu() {
+    const showOnlyNearest = this.state.showOnlyNearest;
+    return <div className={styles.row}>
+      <Picker
+        className={`${styles.picker} ${showOnlyNearest ? styles.unselected : styles.selected}`}
+        onClick={() => this.setState({ showOnlyNearest: false })}
+      >
+        <span>All images</span>
+      </Picker>
+      <Picker
+        className={`${styles.picker} ${showOnlyNearest ? styles.selected : styles.unselected}`}
+        onClick={() => this.setState({ showOnlyNearest: true })}
+      >
+        <span>Images within view</span>
+      </Picker>
+    </div>;
   }
 
   get popover() {
@@ -188,16 +205,16 @@ class SkyBrowserPanel extends Component {
 
     if (!cameraInSolarSystem) {
       const errorMessage = (
-        <PopoverSkybrowser
+        <SkyBrowserWindowHandler
           title="AAS WorldWide Telescope"
           closeCallback={this.togglePopover}
-          detachable
           heightCallback={this.setCurrentPopoverHeight}
+          height={this.state.currentPopoverHeight}
         >
           <CenteredLabel>
             The camera has to be within the solar system for the sky browser to work.
           </CenteredLabel>
-        </PopoverSkybrowser>
+        </SkyBrowserWindowHandler>
       );
       return errorMessage;
     }
@@ -243,36 +260,23 @@ class SkyBrowserPanel extends Component {
     );
 
     return (
-      <PopoverSkybrowser
+      <SkyBrowserWindowHandler
         title="AAS WorldWide Telescope"
         closeCallback={this.togglePopover}
-        detachable
         heightCallback={this.setCurrentPopoverHeight}
+        height={this.state.currentPopoverHeight}
       >
-        <div className={styles.row}>
-          <Picker
-            className={`${styles.picker} ${showOnlyNearest ? styles.unselected : styles.selected}`}
-            onClick={() => this.setState({ showOnlyNearest: false })}
-          >
-            <span>All images</span>
-          </Picker>
-          <Picker
-            className={`${styles.picker} ${showOnlyNearest ? styles.selected : styles.unselected}`}
-            onClick={() => this.setState({ showOnlyNearest: true })}
-          >
-            <span>Images within view</span>
-          </Picker>
+      <div className={PopoverSkybrowser.styles.content}>
+        { this.createImageMenu() }
+        <div
+          className={PopoverSkybrowser.styles.scrollArea}
+          style={{ height: `calc(100% - ${currentTabHeight}px)` }}
+        >
+          {filterList}
         </div>
-        <div className={PopoverSkybrowser.styles.content}>
-          <div
-            className={PopoverSkybrowser.styles.scrollArea}
-            style={{ height: `calc(100% - ${currentTabHeight}px)` }}
-          >
-            {filterList}
-          </div>
-          {skybrowserTabs}
-        </div>
-      </PopoverSkybrowser>
+        {skybrowserTabs}
+      </div>
+      </SkyBrowserWindowHandler>
     );
   }
 

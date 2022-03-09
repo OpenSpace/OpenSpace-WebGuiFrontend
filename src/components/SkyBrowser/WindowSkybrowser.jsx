@@ -9,7 +9,7 @@ import { excludeKeys } from '../../utils/helpers';
 
 const WindowSkybrowser = (props) => {
   const {
-    children, title, closeCallback, setAsPane, setAsAttached, size, position, onResizeStop,
+    children, size, position, onResizeStop,
   } = props;
 
   return (
@@ -19,7 +19,6 @@ const WindowSkybrowser = (props) => {
     >
       <section
         className={styles.window}
-        {...excludeKeys(props, 'children title callback className closeCallback onResizeStop')}
       >
         <Resizable
           enable={{ right: true, bottom: true }}
@@ -29,28 +28,8 @@ const WindowSkybrowser = (props) => {
           handleClasses={{ right: styles.rightHandle, bottom: styles.bottomHandle }}
           onResizeStop={onResizeStop}
         >
-          <header className="header">
-            <div className={styles.title}>
-              { title }
-            </div>
-            { closeCallback && (
-            <div>
-              <Button onClick={setAsAttached} transparent small>
-                <MaterialIcon icon="open_in_browser" />
-              </Button>
-              <Button onClick={setAsPane} transparent small>
-                <MaterialIcon icon="exit_to_app" />
-              </Button>
-              <Button onClick={closeCallback} transparent small>
-                <MaterialIcon icon="close" className="small" />
-              </Button>
-            </div>
-            )}
-          </header>
           <div className={styles.content}>
-            <section className={styles.imageContent}>
-              { children }
-            </section>
+            { children }
           </div>
         </Resizable>
       </section>
@@ -60,8 +39,6 @@ const WindowSkybrowser = (props) => {
 
 WindowSkybrowser.propTypes = {
   children: PropTypes.node,
-  closeCallback: PropTypes.func,
-  className: PropTypes.string,
   position: PropTypes.shape({
     x: PropTypes.number,
     y: PropTypes.number,
@@ -69,17 +46,13 @@ WindowSkybrowser.propTypes = {
   size: PropTypes.shape({
     height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  }),
-  title: PropTypes.string,
+  })
 };
 
 WindowSkybrowser.defaultProps = {
-  children: '',
-  closeCallback: null,
-  className: '',
+  children: [],
   position: { x: 10, y: -600 },
   size: { height: 'auto', width: 'auto' },
-  title: 'WindowSkybrowser',
 };
 
 export default WindowSkybrowser;

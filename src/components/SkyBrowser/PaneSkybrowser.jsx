@@ -7,13 +7,8 @@ import Button from '../common/Input/Button/Button';
 
 class PaneSkybrowser extends Component {
   render() {
-    const {
-      children,
-      title,
-      closeCallback,
-      setAsAttached,
-      setAsDetached,
-    } = this.props;
+    const { children } = this.props;
+
     const resizablePlacement = {
       top: false,
       right: false,
@@ -30,31 +25,13 @@ class PaneSkybrowser extends Component {
         <Resizable
           enable={resizablePlacement}
           defaultSize={{
-            width: '350px',
+            width: this.props.width,
             height: '100%',
           }}
           minWidth={250}
           handleClasses={{ left: styles.leftHandle }}
           onResizeStop={this.onResizeStop}
         >
-          <header>
-            <div className={styles.title}>
-              { title }
-            </div>
-            { closeCallback && (
-              <div>
-                <Button onClick={setAsDetached} transparent small>
-                  <MaterialIcon icon="filter_none" />
-                </Button>
-                <Button onClick={setAsAttached} transparent small>
-                  <MaterialIcon icon="open_in_browser" />
-                </Button>
-                <Button onClick={closeCallback} transparent small>
-                  <MaterialIcon icon="close" />
-                </Button>
-              </div>
-            )}
-          </header>
           <div className={styles.content}>
             { children }
           </div>
@@ -66,14 +43,10 @@ class PaneSkybrowser extends Component {
 
 PaneSkybrowser.propTypes = {
   children: PropTypes.node,
-  closeCallback: PropTypes.func,
-  title: PropTypes.node,
 };
 
 PaneSkybrowser.defaultProps = {
   children: [],
-  closeCallback: null,
-  title: null,
 };
 
 PaneSkybrowser.styles = styles;
