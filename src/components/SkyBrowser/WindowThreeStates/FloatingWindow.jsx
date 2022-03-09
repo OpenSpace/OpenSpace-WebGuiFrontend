@@ -3,9 +3,8 @@ import PropTypes from 'prop-types';
 import Draggable from 'react-draggable';
 import { Resizable } from 're-resizable';
 import styles from './WindowThreeStates.scss';
-import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
-import Button from '../common/Input/Button/Button';
-import { excludeKeys } from '../../utils/helpers';
+import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
+import Button from '../../common/Input/Button/Button';
 
 const FloatingWindow = (props) => {
   const {

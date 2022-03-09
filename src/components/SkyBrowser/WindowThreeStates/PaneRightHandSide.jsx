@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Resizable } from 're-resizable';
-import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import styles from './WindowThreeStates.scss';
-import Button from '../common/Input/Button/Button';
+import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
+import Button from '../../common/Input/Button/Button';
 
 class PaneRightHandSide extends Component {
   render() {

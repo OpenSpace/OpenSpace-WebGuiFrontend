@@ -7,9 +7,8 @@ import subStateToProps from '../../utils/subStateToProps';
 import { setPopoverVisibility } from '../../api/Actions';
 // Sky  browser
 import SkybrowserFocusEntry from '../SkyBrowser/SkybrowserFocusEntry';
-import WindowThreeStates from '../SkyBrowser/WindowThreeStates';
+import WindowThreeStates from '../SkyBrowser/WindowThreeStates/WindowThreeStates';
 import SkybrowserTabs from '../SkyBrowser/SkybrowserTabs';
-import PopoverResizeable from '../SkyBrowser/PopoverResizeable'
 import wwtLogo from './wwtlogo.png';
 import styles from './SkyBrowserPanel.scss';
 

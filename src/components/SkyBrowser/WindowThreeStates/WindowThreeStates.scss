@@ -1,5 +1,5 @@
-@import '../../styles/all';
-@import "../common/Popover/Popover";
+@import '../../../styles/all';
+@import "../../common/Popover/Popover";
 
 $font-size: 0.8rem;
 
@@ -43,7 +43,7 @@ $font-size: 0.8rem;
 }
 
 // Resizeable classes
-.topHandle {
+.topHandle, .leftHandle, .rightHandle, .bottomHandle {
   background: transparent;
   border-radius: 2px;
   height: 100%;
@@ -55,37 +55,9 @@ $font-size: 0.8rem;
 }
 
 .leftHandle {
-  background: transparent;
-  border-radius: 2px;
-  height: 100%;
-  width: 100%;
-  padding: 0;
   margin-right: 5px;
-
-  &:hover, &:active{
-    background: $ui-background-solid;
-  }
 }
 
 .rightHandle {
-  background: transparent;
-  border-radius: 2px;
-  height: 100%;
-  width: 100%;
-  padding: 0;
   margin-left: 5px;
-  &:hover, &:active {
-    background: $ui-background-solid;
-  }
-}
-
-.bottomHandle {
-  background: transparent;
-  border-radius: 2px;
-  height: 100%;
-  width: 100%;
-  padding: 0;
-  &:hover, &:active {
-    background: $ui-background-solid;
-  }
 }
