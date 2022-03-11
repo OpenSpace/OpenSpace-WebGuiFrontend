@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Draggable from 'react-draggable';
 import { Resizable } from 're-resizable';
@@ -6,33 +6,37 @@ import styles from './WindowThreeStates.scss';
 import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
 import Button from '../../common/Input/Button/Button';
 
-const FloatingWindow = (props) => {
-  const {
-    children, size, position, onResizeStop,
-  } = props;
+class FloatingWindow extends Component {
+  constructor(props) {
+    super(props);
+  }
 
-  return (
-    <Draggable
-      defaultPosition={position}
-      handle=".header"
-    >
-      <section
-        className={`${styles.floatingWindow}`}
+  render() {
+    const { children, size, position, onResizeStop } = this.props;
+
+    return (
+      <Draggable
+        defaultPosition={position}
+        handle=".header"
       >
-        <Resizable
-          enable={{ right: true, bottom: true }}
-          defaultSize={{ width: size.width, height: size.height }}
-          minWidth={280}
-          minHeight={280}
-          handleClasses={{ right: styles.rightHandle, bottom: styles.bottomHandle }}
-          onResizeStop={onResizeStop}
+        <section
+          className={`${styles.floatingWindow}`}
         >
-          { children }
-        </Resizable>
-      </section>
-    </Draggable>
-  );
-};
+          <Resizable
+            enable={{ right: true, bottom: true }}
+            defaultSize={{ width: size.width, height: size.height }}
+            minWidth={280}
+            minHeight={280}
+            handleClasses={{ right: styles.rightHandle, bottom: styles.bottomHandle }}
+            onResizeStop={onResizeStop}
+          >
+            { children }
+          </Resizable>
+        </section>
+      </Draggable>
+    );
+  }
+}
 
 FloatingWindow.propTypes = {
   children: PropTypes.node,

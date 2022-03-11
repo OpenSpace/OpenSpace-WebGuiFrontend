@@ -1,15 +1,19 @@
 @import '../../../styles/all';
-@import "../../common/Popover/Popover";
+@import '../../common/Popover/Popover';
 
 $font-size: 0.8rem;
+$title-bar-height: 30px;
 
-.popover, .floatingWindow, .pane {
+.popover,
+.floatingWindow,
+.pane {
   background: $ui-background;
   color: $text-color-focus;
   z-index: 10;
 }
 
-.popover, .floatingWindow {
+.popover,
+.floatingWindow {
   border-radius: $popover-corner-radius;
   max-width: none;
   position: absolute;
@@ -38,18 +42,23 @@ $font-size: 0.8rem;
 }
 
 .topMenu {
+  height: $title-bar-height;
   display: flex;
   justify-content: space-between;
 }
 
 // Resizeable classes
-.topHandle, .leftHandle, .rightHandle, .bottomHandle {
+.topHandle,
+.leftHandle,
+.rightHandle,
+.bottomHandle {
   background: transparent;
   border-radius: 2px;
   height: 100%;
   width: 100%;
   padding: 0;
-  &:hover, &:active{
+  &:hover,
+  &:active {
     background: $ui-background-solid;
   }
 }

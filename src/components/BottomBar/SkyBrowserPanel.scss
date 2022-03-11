@@ -1,63 +1,11 @@
-@import "../../styles/all";
-
-$list-header: rgba(255,255,255,0.12);
-$list-header-hover: rgba(255,255,255,0.2);
-
-.photoIcon {
-  font-size: 2em;
-}
-
-input[type="file"] {
-  display: none;
-}
-
-.filterList :placeholder-shown, label {
-  text-indent: 6px;
-}
-
-.filterList input {
-  text-indent: 6px;
-  background-color: $list-header;
-  border-bottom: 2px solid $ui-background-solid;
-  &:hover {
-    background-color: $list-header-hover;
-  }
-}
-
-.row {
-  display:flex;
-  width: 100%;
-  background: $ui-background-hover;
-  justify-content: space-between;
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-.picker {
-  align-items: center;
-  display: flex;
-  width: inherit;
-  padding: 10px 14px;
-}
-
-.selected {
-  background: $ui-background-hover; // window and popup
-}
-
-.unselected {
-  background: $ui-background;
-  &:hover {
-    background: $list-header-hover;
-  }
-}
+@import '../../styles/all';
+@import '../common/Popover/Popover';
+$title-bar-height: 30px;
 
 .content {
-  height: 100%;
-  width: auto;
-  display: inline-flexbox;
-  padding: 0px;
-}
-
-.scrollArea {
-  height : 100%;
+  position: absolute;
+  top: $title-bar-height;
+  bottom: 0px;
+  width: 100%;
+  background: white;
 }

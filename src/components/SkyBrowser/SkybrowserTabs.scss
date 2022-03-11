@@ -1,10 +1,11 @@
-@import "../../styles/all";
+@import '../../styles/all';
+@import '../common/Popover/Popover';
 
 $tabs-height: 48px;
 $tabs-active-height: 45px;
-$tabs-background: rgba(37,37,37,1);
-$tabs-background-content: rgba(55,55,55,1);
-$tabs-not-selected: rgba(40,40,40,1);
+$tabs-background: rgba(37, 37, 37, 1);
+$tabs-background-content: rgba(55, 55, 55, 1);
+$tabs-not-selected: rgba(40, 40, 40, 1);
 $tabs-margin-horizontal: 8px;
 $tabs-close-button-width: 14px;
 $tabs-buttons-margin: 32px;
@@ -13,12 +14,21 @@ $tabs-arrowbutton-width: 13.34px;
 .tabContainer {
   background: $tabs-background;
   position: absolute;
-  width: calc(100% - #{$tabs-margin-horizontal});
-  margin-left: $tabs-margin-horizontal / 2;
-  bottom: $popover-arrow-size;
+  width: 100%;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  border-radius: $popover-corner-radius;
 }
 
-.tab {
+.image {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  object-fit: fill;
+}
+
+.tabInactive {
   height: $tabs-height;
   padding-left: 4px;
   padding-right: 4px;
@@ -59,18 +69,12 @@ $tabs-arrowbutton-width: 13.34px;
 }
 
 .tabContent {
+  height: calc(100% - #{$tabs-active-height});
+  background: $tabs-background-content;
   ul {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
-  }
-  :global(.scroll-content) {
-    height: calc(100% - #{$tabs-active-height});
-    background: $tabs-background-content;
-
-    &::after, &::before {
-      background: transparent;
-    }
   }
 }
 
@@ -80,7 +84,8 @@ $tabs-arrowbutton-width: 13.34px;
 
 .topHandle {
   height: 1px;
-  &:hover, &:active{
+  &:hover,
+  &:active {
     background: $tabs-background;
   }
 }
@@ -95,7 +100,8 @@ $tabs-arrowbutton-width: 13.34px;
   border: 3px solid $tabs-background;
   border-radius: 4px;
 
-  &:hover, &:active{
+  &:hover,
+  &:active {
     background: $tabs-background-content;
     border: 3px solid $tabs-background;
     border-radius: 4px;
@@ -109,7 +115,7 @@ $tabs-arrowbutton-width: 13.34px;
   right: -2px;
 }
 
-.tabButton {
+.tabButtonInactive {
   border-radius: 4px;
   padding: 3px 5px 3px 5px;
 }

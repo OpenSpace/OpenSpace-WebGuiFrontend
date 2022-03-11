@@ -9,7 +9,6 @@ import Row from '../common/Row/Row';
 import NumericInput from '../common/Input/NumericInput/NumericInput';
 import ColorPickerPopup from '../common/ColorPicker/ColorPickerPopup';
 import Checkbox from '../common/Input/Checkbox/Checkbox';
-import { excludeKeys } from '../../utils/helpers';
 import TooltipSkybrowser from './TooltipSkybrowser';
 import SkybrowserFocusEntry from './SkybrowserFocusEntry';
 import styles from './SkybrowserTabs.scss';
@@ -18,8 +17,6 @@ class SkybrowserTabs extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      height: 185,
-      currentHeight: 185,
       isShowingInfoButtons: [false, false, false, false, false],
       showSettings: false,
     };
@@ -27,7 +24,6 @@ class SkybrowserTabs extends Component {
     this.createTabs = this.createTabs.bind(this);
     this.createImageList = this.createImageList.bind(this);
     this.onResizeStop = this.onResizeStop.bind(this);
-    this.onResize = this.onResize.bind(this);
     this.setRef = this.setRef.bind(this);
     this.showTooltip = this.showTooltip.bind(this);
     this.hideTooltip = this.hideTooltip.bind(this);
@@ -39,11 +35,6 @@ class SkybrowserTabs extends Component {
     this.removeImageSelection = this.removeImageSelection.bind(this);
     this.createButtons = this.createButtons.bind(this);
     this.toggleShowSettings = this.toggleShowSettings.bind(this);
-  }
-
-  get inheritedProps() {
-    const doNotInclude = 'closeCallback className position size title';
-    return excludeKeys(this.props, doNotInclude);
   }
 
   get position() {
@@ -158,18 +149,21 @@ class SkybrowserTabs extends Component {
 
     const buttons = buttonsData.map((button, index) => (
       <Button
-        onClick={() => { button.function(targetId); }}
+        onClick={() => {
+          button.function(targetId);
+        }}
         onMouseLeave={() => this.hideTooltip(index)}
-        className={button.selected ? styles.tabButtonActive : styles.tabButton}
+        className={button.selected ? styles.tabButtonActive : styles.tabButtonInactive}
         transparent
         small
       >
-        <MaterialIcon icon={button.icon} className="small" onMouseEnter={() => this.showTooltip(index)} />
-        { this.state.isShowingInfoButtons[index] && (
-          <TooltipSkybrowser
-            placement="bottom-right"
-            style={this.position}
-          >
+        <MaterialIcon
+          icon={button.icon}
+          className="small"
+          onMouseEnter={() => this.showTooltip(index)}
+        />
+        {this.state.isShowingInfoButtons[index] && (
+          <TooltipSkybrowser placement="bottom-right" style={this.position}>
             {button.text}
           </TooltipSkybrowser>
         )}
@@ -177,11 +171,9 @@ class SkybrowserTabs extends Component {
     ));
 
     return (
-      <div>
-        <span className={styles.tabButtonContainer} ref={this.setRef('wrapper')}>
-          {buttons}
-        </span>
-      </div>
+      <span className={styles.tabButtonContainer} ref={this.setRef('wrapper')}>
+        {buttons}
+      </span>
     );
   }
 
@@ -194,14 +186,18 @@ class SkybrowserTabs extends Component {
       return (
         <div
           key={index}
-          style={selectedBrowser === target ? { borderTopRightRadius: '4px', borderTop: `3px solid ${targetColor}` } : {}}
+          style={
+            selectedBrowser === target
+              ? { borderTopRightRadius: '4px', borderTop: `3px solid ${targetColor}` }
+              : {}
+          }
         >
           <div
-            className={selectedBrowser === target ? styles.tabActive : styles.tab}
+            className={selectedBrowser === target ? styles.tabActive : styles.tabInactive}
             onClick={() => skybrowserApi.setSelectedBrowser(target)}
           >
             <span className={styles.tabHeader}>
-              <span className={styles.tabTitle}>{ targets[target].name }</span>
+              <span className={styles.tabTitle}>{targets[target].name}</span>
               <Button
                 onClick={() => skybrowserApi.removeTargetBrowserPair(target)}
                 className={styles.closeTabButton}
@@ -211,11 +207,12 @@ class SkybrowserTabs extends Component {
                 <MaterialIcon icon="close" className="small" />
               </Button>
             </span>
-            { selectedBrowser === target && buttons }
+            {selectedBrowser === target && buttons}
           </div>
         </div>
       );
     });
+
     return (
       <div className={styles.navTabs}>
         {allTabs}
@@ -234,12 +231,23 @@ class SkybrowserTabs extends Component {
     const {
       currentTargetColor, selectedBrowser, selectImage, skybrowserApi,
     } = props;
-    const tabs = (
+    const images = (
       <ul>
-        { data.map((entry, index) => (
+        {data.map((entry, index) => (
           <div>
-            {(index == 0) ? <span className={styles.arrowButtonEmpty} transparent /> : (
-              <Button onClick={() => skybrowserApi.setImageLayerOrder(selectedBrowser, Number(entry.identifier), index - 1)} className={styles.arrowButton} transparent>
+            {index == 0 ? (
+              <span transparent />
+            ) : (
+              <Button
+                onClick={() => skybrowserApi.setImageLayerOrder(
+                  selectedBrowser,
+                  Number(entry.identifier),
+                  index - 1,
+                )
+                }
+                className={styles.arrowButton}
+                transparent
+              >
                 <MaterialIcon icon="keyboard_arrow_left" />
               </Button>
             )}
@@ -252,28 +260,28 @@ class SkybrowserTabs extends Component {
               setOpacity={this.setOpacityOfImage}
               currentTargetColor={currentTargetColor}
             />
-            {(index === data.length - 1)
-              ? <span className={styles.arrowButtonEmpty} transparent />
-              : (
-                <Button
-                  onClick={() => skybrowserApi.setImageLayerOrder(selectedBrowser, Number(entry.identifier), index + 1)}
-                  className={styles.arrowButton}
-                  transparent
-                >
-                  <MaterialIcon icon="keyboard_arrow_right" />
-                </Button>
-              )
-            }
+            {index === data.length - 1 ? (
+              <span className={styles.arrowButtonEmpty} transparent />
+            ) : (
+              <Button
+                onClick={() => skybrowserApi.setImageLayerOrder(
+                  selectedBrowser,
+                  Number(entry.identifier),
+                  index + 1,
+                )
+                }
+                className={styles.arrowButton}
+                transparent
+              >
+                <MaterialIcon icon="keyboard_arrow_right" />
+              </Button>
+            )}
           </div>
         ))}
       </ul>
     );
 
-    return (
-      <ScrollOverlay>
-        { data.length > 0 && tabs }
-      </ScrollOverlay>
-    );
+    return <ScrollOverlay>{data.length > 0 && images}</ScrollOverlay>;
   }
 
   valueToColor(color) {
@@ -304,7 +312,7 @@ class SkybrowserTabs extends Component {
       <ColorPickerPopup
         disableAlpha
         color={this.valueToColor(target.color)}
-        onChange={(values) => { }}
+        onChange={(values) => {}}
         placement="right"
         disabled={false}
       />
@@ -318,7 +326,9 @@ class SkybrowserTabs extends Component {
           max={70}
           min={0.0000000001}
           disabled={!skybrowserApi.setVerticalFov}
-          onValueChanged={(fov) => { skybrowserApi.setVerticalFov(selectedBrowser, fov); }}
+          onValueChanged={(fov) => {
+            skybrowserApi.setVerticalFov(selectedBrowser, fov);
+          }}
           step={1}
           value={parseFloat(target.FOV.toFixed(precision))}
           placeholder="value 0"
@@ -330,7 +340,8 @@ class SkybrowserTabs extends Component {
             max={360}
             min={0}
             disabled={!skybrowserApi.setVerticalFov}
-            onValueChanged={value => skybrowserApi.setEquatorialAim(selectedBrowser, value, target.dec)}
+            onValueChanged={value => skybrowserApi.setEquatorialAim(selectedBrowser, value, target.dec)
+            }
             step={0.1}
             value={parseFloat(target.ra.toFixed(precision))}
             placeholder="value 1"
@@ -341,7 +352,8 @@ class SkybrowserTabs extends Component {
             max={90}
             min={-90}
             disabled={!skybrowserApi.setVerticalFov}
-            onValueChanged={value => skybrowserApi.setEquatorialAim(selectedBrowser, target.ra, value)}
+            onValueChanged={value => skybrowserApi.setEquatorialAim(selectedBrowser, target.ra, value)
+            }
             step={0.1}
             value={parseFloat(target.dec.toFixed(precision))}
             placeholder="value 2"
@@ -364,7 +376,7 @@ class SkybrowserTabs extends Component {
           wide
         />
         <Row className={`${styles.vectorProperty} ${this.disabled ? styles.disabled : ''}`}>
-          { colors.map((color, index) => (
+          {colors.map((color, index) => (
             <NumericInput
               className={colorData[index]}
               label={colorData[index]}
@@ -373,7 +385,12 @@ class SkybrowserTabs extends Component {
               onValueChanged={(value) => {
                 const newColor = colors;
                 newColor[index] = value;
-                skybrowserApi.setBorderColor(selectedBrowser, newColor[0], newColor[1], newColor[2]);
+                skybrowserApi.setBorderColor(
+                  selectedBrowser,
+                  newColor[0],
+                  newColor[1],
+                  newColor[2],
+                );
               }}
               step={1}
               value={color}
@@ -382,7 +399,7 @@ class SkybrowserTabs extends Component {
           ))}
         </Row>
         <Row className={`${styles.vectorProperty} ${this.disabled ? styles.disabled : ''}`}>
-          { size.map((value, index) => (
+          {size.map((value, index) => (
             <NumericInput
               className={sizeData[index]}
               label={sizeData[index]}
@@ -404,23 +421,15 @@ class SkybrowserTabs extends Component {
   }
 
   onResizeStop(e, direction, ref, delta) {
-    this.setState({
-      height: this.state.height + delta.height,
-    });
-  }
-
-  onResize(e, direction, ref, delta) {
-    this.setState({
-      currentHeight: this.state.height + delta.height,
-    });
-    this.props.setCurrentTabHeight(this.state.currentHeight);
+    // console.log(height);
+    this.props.setCurrentTabHeight(this.props.height + delta.height);
   }
 
   render() {
     const {
-      data, currentPopoverHeight, targets, selectedBrowser,
+      data, maxHeight, minHeight, targets, selectedBrowser, height,
     } = this.props;
-    const { showSettings, currentHeight } = this.state;
+    const { showSettings } = this.state;
 
     let tabDisplay;
     if (Object.keys(targets).length === 0) {
@@ -442,20 +451,16 @@ class SkybrowserTabs extends Component {
     }
 
     return (
-      <section {...this.inheritedProps} className={styles.tabContainer}>
+      <section className={styles.tabContainer}>
         <Resizable
           enable={{ top: true, bottom: false }}
           handleClasses={{ top: styles.topHandle }}
-          size={{ height: currentHeight }}
-          minHeight={130}
-          maxHeight={currentPopoverHeight}
+          minHeight={minHeight}
+          maxHeight={maxHeight}
           onResizeStop={this.onResizeStop}
-          onResize={this.onResize}
         >
           {this.createTabs()}
-          <div className={styles.tabContent} style={{ height: currentHeight }}>
-            {tabDisplay}
-          </div>
+          <div className={`${styles.tabContent} ${styles.tabContainer}`}>{tabDisplay}</div>
         </Resizable>
       </section>
     );

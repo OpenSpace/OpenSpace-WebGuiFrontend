@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
-import FilterList from '../common/FilterList/FilterList';
 import Picker from './Picker';
 import subStateToProps from '../../utils/subStateToProps';
 import { setPopoverVisibility } from '../../api/Actions';
 // Sky  browser
-import SkybrowserFocusEntry from '../SkyBrowser/SkybrowserFocusEntry';
 import WindowThreeStates from '../SkyBrowser/WindowThreeStates/WindowThreeStates';
 import SkybrowserTabs from '../SkyBrowser/SkybrowserTabs';
+import SkyBrowserImageList from '../SkyBrowser/SkyBrowserImageList';
 import wwtLogo from './wwtlogo.png';
 import styles from './SkyBrowserPanel.scss';
 
@@ -18,7 +17,6 @@ class SkyBrowserPanel extends Component {
     this.state = {
       moduleIsLoaded: false,
       activeImage: '',
-      showOnlyNearest: true,
       targetData: '',
       selectedTarget: '',
       isUsingRae: false,
@@ -26,9 +24,9 @@ class SkyBrowserPanel extends Component {
       cameraInSolarSystem: true,
       currentTabHeight: 185,
       currentPopoverHeight: 440,
+      btmHeight: '',
     };
     this.getAllImages = this.getAllImages.bind(this);
-    this.getNearestImages = this.getNearestImages.bind(this);
     this.getTargetData = this.getTargetData.bind(this);
     this.getCurrentTargetColor = this.getCurrentTargetColor.bind(this);
     this.getSelectedTargetImages = this.getSelectedTargetImages.bind(this);
@@ -36,7 +34,6 @@ class SkyBrowserPanel extends Component {
     this.setCurrentPopoverHeight = this.setCurrentPopoverHeight.bind(this);
     this.selectImage = this.selectImage.bind(this);
     this.togglePopover = this.togglePopover.bind(this);
-    this.createImageMenu = this.createImageMenu.bind(this);
   }
 
   async componentDidMount() {
@@ -49,10 +46,9 @@ class SkyBrowserPanel extends Component {
 
   async getTargetData() {
     try {
-      if(!this.props.luaApi.skybrowser) {
+      if (!this.props.luaApi.skybrowser) {
         throw new Error('Sky Browser Module is not loaded!');
-      }
-      else {
+      } else {
         let target = await this.props.luaApi.skybrowser.getTargetData();
         target = target[1];
 
@@ -67,7 +63,7 @@ class SkyBrowserPanel extends Component {
           isUsingRae: camera.isUsingRadiusAzimuthElevation,
           isFacingCamera: camera.isFacingCamera,
           cameraInSolarSystem: camera.cameraInSolarSystem,
-          moduleIsLoaded: true
+          moduleIsLoaded: true,
         });
       }
     } catch (e) {
@@ -75,7 +71,7 @@ class SkyBrowserPanel extends Component {
       // Stop the timer to get the target data
       clearInterval(this.targetDataID);
       this.setState({
-        moduleIsLoaded: false
+        moduleIsLoaded: false,
       });
     }
   }
@@ -97,56 +93,15 @@ class SkyBrowserPanel extends Component {
   }
 
   getAllImages() {
-    if(this.props.systemList.length) {
+    if (this.props.systemList.length) {
       return this.props.systemList;
     }
-    else {
-      return [];
-    }
+    return [];
   }
 
   getCurrentTargetColor() {
     const browser = this.state.targetData[this.state.selectedBrowser];
-    return browser ? 'rgb(' + browser.color + ')' :  'gray';
-  }
-
-  getNearestImages() {
-    const { systemList } = this.props;
-    const { targetData, selectedBrowser } = this.state;
-    const targetPoint = targetData[selectedBrowser];
-    if (!targetPoint || Object.keys(systemList).length === 0) {
-      return [];
-    }
-    const searchRadius = targetPoint.FOV / 2;
-    const isWithinFOV = (coord, target, FOV) => (coord < (target + FOV) && coord > (target - FOV));
-
-    // Only load images that have coordinates within current window
-    const imgsWithinTarget = systemList.filter((img) => {
-      if (!img.hasCelestialCoords) {
-        return false; // skip
-      }
-      if (isWithinFOV(img.ra, targetPoint.ra, searchRadius)
-          && isWithinFOV(img.dec, targetPoint.dec, searchRadius)) {
-        return true;
-      }
-      return false;
-    });
-
-    const distPow2 = (a, b) => (a - b) * (a - b);
-
-    const euclidianDistance = (a, b) => {
-      let sum = 0;
-      for (let i = 0; i < 3; i++) {
-        sum += distPow2(a.cartesianDirection[i], b.cartesianDirection[i]);
-      }
-      return Math.sqrt(sum);
-    };
-
-    imgsWithinTarget.sort((a, b) => {
-      const result = euclidianDistance(a, targetPoint) > euclidianDistance(b, targetPoint);
-      return result ? 1 : -1;
-    });
-    return imgsWithinTarget;
+    return browser ? `rgb(${browser.color})` : 'gray';
   }
 
   setCurrentTabHeight(height) {
@@ -170,24 +125,6 @@ class SkyBrowserPanel extends Component {
     this.props.setPopoverVisibility(!this.props.popoverVisible);
   }
 
-  createImageMenu() {
-    const showOnlyNearest = this.state.showOnlyNearest;
-    return <div className={styles.row}>
-      <Picker
-        className={`${styles.picker} ${showOnlyNearest ? styles.unselected : styles.selected}`}
-        onClick={() => this.setState({ showOnlyNearest: false })}
-      >
-        <span>All images</span>
-      </Picker>
-      <Picker
-        className={`${styles.picker} ${showOnlyNearest ? styles.selected : styles.unselected}`}
-        onClick={() => this.setState({ showOnlyNearest: true })}
-      >
-        <span>Images within view</span>
-      </Picker>
-    </div>;
-  }
-
   get popover() {
     const {
       cameraInSolarSystem,
@@ -202,6 +139,9 @@ class SkyBrowserPanel extends Component {
       targetData,
     } = this.state;
 
+    const api = this.props.luaApi;
+    const skybrowserApi = api.skybrowser;
+
     if (!cameraInSolarSystem) {
       const errorMessage = (
         <WindowThreeStates
@@ -209,6 +149,7 @@ class SkyBrowserPanel extends Component {
           closeCallback={this.togglePopover}
           heightCallback={this.setCurrentPopoverHeight}
           height={this.state.currentPopoverHeight}
+          selectImage={this.selectImage}
         >
           <CenteredLabel>
             The camera has to be within the solar system for the sky browser to work.
@@ -218,27 +159,7 @@ class SkyBrowserPanel extends Component {
       return errorMessage;
     }
 
-    const imageList = showOnlyNearest ? this.getNearestImages() : this.getAllImages();
-    const api = this.props.luaApi;
-    const skybrowserApi = api.skybrowser;
-
-    const filterList = imageList.length > 0 && (
-      <FilterList
-        className={styles.filterList}
-        data={imageList}
-        searchText={`Search from ${imageList.length.toString()} images...`}
-        viewComponent={SkybrowserFocusEntry}
-        viewComponentProps={{ skybrowserApi, currentTargetColor: this.getCurrentTargetColor }}
-        onSelect={this.selectImage}
-        active={activeImage}
-        searchAutoFocus
-      />
-    );
-
     const thisTabsImages = this.getSelectedTargetImages() || [];
-
-    const selectionButtonsAndSearchHeight = 120; // Height of the image selection buttons and search image field
-    const popoverHeight = currentPopoverHeight - selectionButtonsAndSearchHeight;
 
     const skybrowserTabs = (
       <SkybrowserTabs
@@ -250,11 +171,28 @@ class SkyBrowserPanel extends Component {
         selectedBrowser={selectedBrowser}
         isUsingRae={isUsingRae}
         isFacingCamera={isFacingCamera}
-        currentPopoverHeight={this.state.currentPopoverHeight}
+        maxHeight={this.state.currentPopoverHeight - 30}
+        minHeight={130}
         setCurrentTabHeight={this.setCurrentTabHeight}
+        height={this.state.currentTabHeight}
         data={thisTabsImages}
         selectImage={this.selectImage}
         currentTargetColor={this.getCurrentTargetColor}
+      />
+    );
+
+    const currentImageListHeight = this.state.currentPopoverHeight - this.state.currentTabHeight;
+
+    const imageList = (
+      <SkyBrowserImageList
+        luaApi={this.props.luaApi}
+        imageList={this.props.systemList}
+        selectedBrowserData={this.state.targetData[this.state.selectedBrowser]}
+        showOnlyNearest={this.state.showOnlyNearest}
+        activeImage={this.state.activeImage}
+        getCurrentTargetColor={this.getCurrentTargetColor}
+        selectImage={this.selectImage}
+        height={this.state.currentTabHeight}
       />
     );
 
@@ -264,40 +202,30 @@ class SkyBrowserPanel extends Component {
         closeCallback={this.togglePopover}
         heightCallback={this.setCurrentPopoverHeight}
         height={this.state.currentPopoverHeight}
+        defaultHeight={440}
       >
-      <div className={styles.content}>
-        { this.createImageMenu() }
-        <div
-          className={styles.scrollArea}
-          style={{ height: `calc(100% - ${currentTabHeight}px)` }}
-        >
-          {filterList}
-        </div>
-        {skybrowserTabs}
-      </div>
+        <div className={styles.content}>{skybrowserTabs}</div>
       </WindowThreeStates>
     );
   }
 
   render() {
-    return ( this.state.moduleIsLoaded &&
-      <div className={Picker.Wrapper}>
-        <Picker onClick={this.togglePopover} style={{ padding: 0 }}>
-          <div style={{ textAlign: 'center', display: 'block' }}>
-            <img src={wwtLogo} alt="WWT" style={{ width: '50%', height: '50%' }} />
-          </div>
-        </Picker>
-        {this.props.popoverVisible && this.popover }
-      </div>
+    return (
+      this.state.moduleIsLoaded && (
+        <div className={Picker.Wrapper}>
+          <Picker onClick={this.togglePopover} style={{ padding: 0 }}>
+            <div style={{ textAlign: 'center', display: 'block' }}>
+              <img src={wwtLogo} alt="WWT" style={{ width: '50%', height: '50%' }} />
+            </div>
+          </Picker>
+          {this.props.popoverVisible && this.popover}
+        </div>
+      )
     );
   }
 }
 
-const mapSubStateToProps = ({
-  luaApi,
-  popoverVisible,
-  skybrowserData,
-}) => ({
+const mapSubStateToProps = ({ luaApi, popoverVisible, skybrowserData }) => ({
   luaApi,
   popoverVisible,
   systemList: skybrowserData,
@@ -312,10 +240,12 @@ const mapStateToSubState = state => ({
 
 const mapDispatchToProps = dispatch => ({
   setPopoverVisibility: (visible) => {
-    dispatch(setPopoverVisibility({
-      popover: 'skybrowser',
-      visible,
-    }));
+    dispatch(
+      setPopoverVisibility({
+        popover: 'skybrowser',
+        visible,
+      }),
+    );
   },
 });
 

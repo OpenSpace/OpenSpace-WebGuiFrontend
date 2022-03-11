@@ -6,6 +6,16 @@ import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
 import Button from '../../common/Input/Button/Button';
 
 class PaneRightHandSide extends Component {
+
+  constructor(props) {
+    super(props);
+  }
+
+  componentDidMount() {
+    const { innerWidth: width, innerHeight: height } = window;
+    this.props.heightCallback(innerHeight);
+  }
+
   render() {
     const { children } = this.props;
 

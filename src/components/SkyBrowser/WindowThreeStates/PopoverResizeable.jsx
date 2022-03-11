@@ -11,7 +11,7 @@ class PopoverResizeable extends Component {
   }
 
   render() {
-    const { children } = this.props;
+    const { children, onResizeStop } = this.props;
     return (
       <section className={`${styles.popover}`}>
         <Resizable
@@ -36,7 +36,7 @@ class PopoverResizeable extends Component {
             right: styles.rightHandle,
             left: styles.leftHandle,
           }}
-          onResizeStop={this.onResizeStop}
+          onResizeStop={onResizeStop}
         >
           { children }
         </Resizable>
