@@ -121,7 +121,6 @@ class SkybrowserTabs extends Component {
       icon: 'visibility',
       text: 'Look at target',
       function(targetId) {
-        skybrowserApi.lockTarget(targetId);
         skybrowserApi.adjustCamera(targetId);
       },
     };
@@ -133,18 +132,6 @@ class SkybrowserTabs extends Component {
         skybrowserApi.centerTargetOnScreen(targetId);
       },
     };
-    const lockButton = {
-      selected: targetIsLocked,
-      icon: 'lock',
-      text: 'Lock aim of target',
-      function(targetId) {
-        if (targetIsLocked) {
-          skybrowserApi.unlockTarget(targetId);
-        } else {
-          skybrowserApi.lockTarget(targetId);
-        }
-      },
-    };
     const showSettingsButton = {
       selected: this.state.showSettings,
       icon: 'settings',
@@ -154,7 +141,7 @@ class SkybrowserTabs extends Component {
       },
     };
 
-    const buttonsData = [lookButton, moveButton, lockButton, showSettingsButton];
+    const buttonsData = [lookButton, moveButton, showSettingsButton];
 
     const buttons = buttonsData.map((button, index) => (
       <Button
