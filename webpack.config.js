@@ -22,8 +22,10 @@ module.exports = {
   devServer: {
     historyApiFallback: true,
     hot: true,
-    contentBase: resolve(__dirname, 'dist'),
-    publicPath: PublicPath,
+    static: {
+      directory: resolve(__dirname, 'dist'),
+      publicPath: PublicPath
+    },
     proxy: {
       '/': {
         target: 'http://localhost:4680',
@@ -95,7 +97,5 @@ module.exports = {
   plugins: [
     // enable HMR globally
     new webpack.HotModuleReplacementPlugin(),
-    // prints more readable module names in the browser console on HMR updates
-    new webpack.NamedModulesPlugin(),
   ],
 };
