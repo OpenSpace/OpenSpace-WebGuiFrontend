@@ -59,6 +59,8 @@ export const SessionStateRecording = 'recording';
 export const SessionStatePlaying = 'playing';
 export const SessionStatePaused = 'playing-paused';
 
+export const ExoplanetsModuleEnabledKey = 'Modules.Exoplanets.Enabled';
+
 // renderableTypes
 export const RenderableTypes = {
   // RenderableAtmosphere: "RenderableAtmosphere",

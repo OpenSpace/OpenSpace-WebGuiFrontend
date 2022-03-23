@@ -1,7 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { reloadPropertyTree, removeExoplanets, setPopoverVisibility } from '../../api/Actions';
-import { NavigationAimKey, NavigationAnchorKey } from '../../api/keys';
+import { 
+  reloadPropertyTree,
+  removeExoplanets,
+  setPopoverVisibility,
+  subscribeToProperty,
+  unsubscribeToProperty,
+} from '../../api/Actions';
+import { ExoplanetsModuleEnabledKey, NavigationAimKey, NavigationAnchorKey } from '../../api/keys';
 import propertyDispatcher from '../../api/propertyDispatcher';
 import subStateToProps from '../../utils/subStateToProps';
 import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
@@ -26,6 +32,16 @@ class ExoplanetsPanel extends Component {
     this.addSystem = this.addSystem.bind(this);
     this.onSelect = this.onSelect.bind(this);
     this.removeExoplanetSystem = this.removeExoplanetSystem.bind(this);
+  }
+
+  componentDidMount() {
+    const { startListening } = this.props;
+    startListening(ExoplanetsModuleEnabledKey);
+  }
+
+  componentWillUnmount() {
+    const { stopListening } = this.props;
+    stopListening(ExoplanetsModuleEnabledKey);
   }
 
   togglePopover() {
@@ -124,7 +140,11 @@ class ExoplanetsPanel extends Component {
   }
 
   render() {
-    const { popoverVisible, hasSystems } = this.props;
+    const { enabled, popoverVisible, hasSystems } = this.props;
+
+    if (!enabled) {
+      return <></>;
+    }
 
     return (
       <div className={Picker.Wrapper}>
@@ -144,7 +164,16 @@ class ExoplanetsPanel extends Component {
   }
 }
 
-const mapSubStateToProps = ({propertyOwners, popoverVisible, luaApi, exoplanetsData, anchor, aim}) => {
+const mapSubStateToProps = ({
+  properties,
+  propertyOwners,
+  popoverVisible,
+  luaApi,
+  exoplanetsData,
+  anchor,
+  aim
+}) => 
+{
   var systems = [];
   for (const [key, value] of Object.entries(propertyOwners)) {
     if (value.tags.includes('exoplanet_system')) {
@@ -152,7 +181,11 @@ const mapSubStateToProps = ({propertyOwners, popoverVisible, luaApi, exoplanetsD
     }
   }
 
+  const enabledProp = properties[ExoplanetsModuleEnabledKey];
+  const enabled = enabledProp ? enabledProp.value : false;
+
   return {
+    enabled,
     popoverVisible: popoverVisible,
     exoplanetSystems: systems,
     luaApi: luaApi,
@@ -164,6 +197,7 @@ const mapSubStateToProps = ({propertyOwners, popoverVisible, luaApi, exoplanetsD
 };
 
 const mapStateToSubState = (state) => ({
+  properties: state.propertyTree.properties,
   propertyOwners: state.propertyTree.propertyOwners,
   popoverVisible: state.local.popovers.exoplanets.visible,
   luaApi: state.luaApi,
@@ -186,6 +220,12 @@ const mapDispatchToProps = dispatch => ({
     dispatch(removeExoplanets({
       system
     }));
+  },
+  startListening: (uri) => {
+    dispatch(subscribeToProperty(uri));
+  },
+  stopListening: (uri) => {
+    dispatch(unsubscribeToProperty(uri));
   },
   anchorDispatcher: propertyDispatcher(dispatch, NavigationAnchorKey),
   aimDispatcher: propertyDispatcher(dispatch, NavigationAimKey),  
