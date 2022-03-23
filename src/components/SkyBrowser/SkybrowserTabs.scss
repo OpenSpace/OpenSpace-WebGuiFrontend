@@ -140,10 +140,9 @@ $tabs-arrowbutton-width: 13.34px;
   padding: 5px;
   border-radius: 4px;
   background: $tabs-buttons;
-  color: $text-color-blur;
+  color: $text-color-focus;
   &:hover, &:active{
-    background: $ui-background-active: rgba(white, 0.03);
-    color: $text-color-focus;
+    background: $ui-background-active;
   }
 }
 
