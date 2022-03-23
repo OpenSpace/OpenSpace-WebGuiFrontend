@@ -26,6 +26,13 @@ class ActionsPanel extends Component {
     this.props.setPopoverVisibility(!this.props.popoverVisible)
   }
 
+
+  // where we get the thing to click on
+
+ // this.props.navigationPath in Reducers/shortcuts
+
+ // provider create store with openspaceApp from './api/Reducers';
+
   addNavPath(e) {
     var navString = this.props.navigationPath;
     if (this.props.navigationPath == '/') {
@@ -198,7 +205,7 @@ class ActionsPanel extends Component {
   }
 }
 
-
+//takes application data/store and passes in to comonent as a prop
 const mapSubStateToProps = ({popoverVisible, luaApi, actions}) => {
   var actionsMapped = {"/": {actions:[], children:{}}};
   if (!actions.isInitialized) {
@@ -256,6 +263,10 @@ const mapStateToSubState = (state) => ({
   actions: state.shortcuts,
 });
 
+
+
+// to get the action to do something
+// dispatch -> call a function
 const mapDispatchToProps = dispatch => ({
   setPopoverVisibility: visible => {
     dispatch(setPopoverVisibility({

@@ -12,12 +12,17 @@ import App from './App';
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;    // Redux DevTools Extension courtesy of https://github.com/zalmoxisus/redux-devtools-extension
 
+
+//create store for redux system with all the information form the Reducers
 const store = createStore(
   openspaceApp,
   composeEnhancers(
     middleware,
   )
 );
+
+//add store to provider
+// nakes what in store avalible to our app openspaceApp
 
 const render = (Component) => {
   ReactDOM.render(

@@ -12,8 +12,8 @@ let openspace = undefined;
 
 function initializeConnection(store) {
   async function onConnect() {
-    openspace = await api.library();
-
+    openspace = await api.library(); // wait for dispatch to load(?)
+    // dispatch = update the state in store and pass in an action object
     store.dispatch(onOpenConnection());
     store.dispatch(initializeLuaApi(openspace));
   }
