@@ -8,7 +8,7 @@
     "lint": "eslint --ext .jsx --ext .js src",
     "lint-nice": "eslint --ext .jsx --ext .js src || exit 0;",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "copyfiles index.html environment.js dist && webpack-dev-server --progress --host 0.0.0.0 --port 4690",
+    "start": "copyfiles index.html environment.js dist && webpack-dev-server --progress --colors --host 0.0.0.0 --port 4690",
     "prebuild": "npm install && rimraf dist",
     "build": "cross-env NODE_ENV=production webpack -p --config webpack.config.production.js",
     "postbuild": "copyfiles index.html dist",
@@ -43,7 +43,6 @@
     "react-select": "^3.2.0",
     "react-simple-keyboard": "^3.2.72",
     "redux": "^4.1.0",
-    "sass": "^1.49.9",
     "shallow-equal": "^1.2.1",
     "simple-keyboard-layouts": "^3.0.176",
     "svg-react-loader": "^0.4.6"
