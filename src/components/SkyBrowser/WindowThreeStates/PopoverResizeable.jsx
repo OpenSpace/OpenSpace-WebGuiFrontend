@@ -11,9 +11,14 @@ class PopoverResizeable extends Component {
   }
 
   render() {
-    const { children, onResizeStop } = this.props;
+    const { children, setNewHeight } = this.props;
     return (
-      <section className={`${styles.popover}`}>
+      <section
+        className={`${styles.popover}`}
+        ref={(divElement) => {
+          this.windowDiv = divElement;
+        }}
+      >
         <Resizable
           enable={{
             top: true,
@@ -36,9 +41,9 @@ class PopoverResizeable extends Component {
             right: styles.rightHandle,
             left: styles.leftHandle,
           }}
-          onResizeStop={onResizeStop}
+          onResizeStop={() => setNewHeight(this.windowDiv.clientHeight)}
         >
-          { children }
+          {children}
         </Resizable>
       </section>
     );

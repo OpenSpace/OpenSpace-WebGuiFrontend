@@ -6,7 +6,6 @@ import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
 import Button from '../../common/Input/Button/Button';
 
 class PaneRightHandSide extends Component {
-
   constructor(props) {
     super(props);
   }
@@ -42,7 +41,7 @@ class PaneRightHandSide extends Component {
           handleClasses={{ left: styles.leftHandle }}
           onResizeStop={this.onResizeStop}
         >
-          { children }
+          {children}
         </Resizable>
       </section>
     );

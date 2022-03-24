@@ -23,7 +23,6 @@ class SkybrowserTabs extends Component {
 
     this.createTabs = this.createTabs.bind(this);
     this.createImageList = this.createImageList.bind(this);
-    this.onResizeStop = this.onResizeStop.bind(this);
     this.setRef = this.setRef.bind(this);
     this.showTooltip = this.showTooltip.bind(this);
     this.hideTooltip = this.hideTooltip.bind(this);
@@ -37,11 +36,16 @@ class SkybrowserTabs extends Component {
     this.toggleShowSettings = this.toggleShowSettings.bind(this);
   }
 
+  componentDidMount() {
+    const newHeight = this.tabsDiv.clientHeight;
+    this.props.setCurrentTabHeight(newHeight);
+  }
+
   get position() {
-    if (!this.wrapper) {
+    if (!this.infoButton) {
       return { top: '0px', left: '0px' };
     }
-    const { top, right } = this.wrapper.getBoundingClientRect();
+    const { top, right } = this.infoButton.getBoundingClientRect();
     return { top: `${top}`, left: `${right}` };
   }
 
@@ -135,6 +139,7 @@ class SkybrowserTabs extends Component {
 
     const buttons = buttonsData.map((button, index) => (
       <Button
+        key={index}
         onClick={() => {
           button.function(targetId);
         }}
@@ -157,7 +162,7 @@ class SkybrowserTabs extends Component {
     ));
 
     return (
-      <span className={styles.tabButtonContainer} ref={this.setRef('wrapper')}>
+      <span className={styles.tabButtonContainer} ref={this.setRef('infoButton')}>
         {buttons}
       </span>
     );
@@ -220,7 +225,7 @@ class SkybrowserTabs extends Component {
     const images = (
       <ul>
         {data.map((entry, index) => (
-          <div>
+          <div key={index}>
             {index == 0 ? (
               <span />
             ) : (
@@ -247,7 +252,7 @@ class SkybrowserTabs extends Component {
               currentTargetColor={currentTargetColor}
             />
             {index === data.length - 1 ? (
-              <span className={styles.arrowButtonEmpty} transparent />
+              <span className={styles.arrowButtonEmpty} />
             ) : (
               <Button
                 onClick={() => skybrowserApi.setImageLayerOrder(
@@ -267,7 +272,7 @@ class SkybrowserTabs extends Component {
       </ul>
     );
 
-    return <ScrollOverlay>{data.length > 0 && images}</ScrollOverlay>;
+    return images;
   }
 
   valueToColor(color) {
@@ -406,12 +411,6 @@ class SkybrowserTabs extends Component {
     );
   }
 
-  onResizeStop(e, direction, ref, delta) {
-    // console.log(height);
-    const newHeight = Math.max(this.props.height + delta.height, 0);
-    this.props.setCurrentTabHeight(newHeight);
-  }
-
   render() {
     const {
       data, maxHeight, minHeight, targets, selectedBrowser, height,
@@ -421,30 +420,27 @@ class SkybrowserTabs extends Component {
     let tabDisplay;
     if (Object.keys(targets).length === 0) {
       tabDisplay = (
-        <ScrollOverlay>
-          <CenteredLabel>There are no sky browsers. Press "+" to create one.</CenteredLabel>
-        </ScrollOverlay>
+        <CenteredLabel>There are no sky browsers. Press "+" to create one.</CenteredLabel>
       );
     } else if (showSettings) {
       tabDisplay = this.createSettings(targets[selectedBrowser]);
     } else if (data.length === 0) {
-      tabDisplay = (
-        <ScrollOverlay>
-          <CenteredLabel>There are no selected images in this sky browser.</CenteredLabel>
-        </ScrollOverlay>
-      );
+      tabDisplay = <CenteredLabel>There are no selected images in this sky browser.</CenteredLabel>;
     } else {
       tabDisplay = this.createImageList(data, this.props);
     }
-    // console.log(maxHeight);
+
     return (
-      <section className={styles.tabContainer}>
+      <section className={styles.tabContainer} ref={this.setRef('tabsDiv')}>
         <Resizable
           enable={{ top: true, bottom: false }}
           handleClasses={{ top: styles.topHandle }}
           minHeight={minHeight}
           maxHeight={maxHeight}
-          onResizeStop={this.onResizeStop}
+          onResizeStop={() => {
+            this.props.setCurrentTabHeight(this.tabsDiv.clientHeight);
+          }}
+          height={this.props.height}
         >
           {this.createTabs()}
           <div className={`${styles.tabContent} ${styles.tabContainer}`}>{tabDisplay}</div>

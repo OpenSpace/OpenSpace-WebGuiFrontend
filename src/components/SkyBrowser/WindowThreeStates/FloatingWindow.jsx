@@ -12,15 +12,17 @@ class FloatingWindow extends Component {
   }
 
   render() {
-    const { children, size, position, onResizeStop } = this.props;
+    const {
+      children, size, position, setNewHeight,
+    } = this.props;
 
     return (
-      <Draggable
-        defaultPosition={position}
-        handle=".header"
-      >
+      <Draggable defaultPosition={position} handle=".header">
         <section
           className={`${styles.floatingWindow}`}
+          ref={(divElement) => {
+            this.windowDiv = divElement;
+          }}
         >
           <Resizable
             enable={{ right: true, bottom: true }}
@@ -28,9 +30,9 @@ class FloatingWindow extends Component {
             minWidth={280}
             minHeight={280}
             handleClasses={{ right: styles.rightHandle, bottom: styles.bottomHandle }}
-            onResizeStop={onResizeStop}
+            onResizeStop={() => setNewHeight(this.windowDiv.clientHeight)}
           >
-            { children }
+            {children}
           </Resizable>
         </section>
       </Draggable>
@@ -47,7 +49,7 @@ FloatingWindow.propTypes = {
   size: PropTypes.shape({
     height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  })
+  }),
 };
 
 FloatingWindow.defaultProps = {

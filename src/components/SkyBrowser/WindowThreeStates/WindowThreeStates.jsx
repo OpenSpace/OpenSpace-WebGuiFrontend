@@ -25,25 +25,14 @@ class WindowThreeStates extends Component {
     this.setAsPane = this.setAsPane.bind(this);
     this.setAsDetached = this.setAsDetached.bind(this);
     this.setAsAttached = this.setAsAttached.bind(this);
-    this.onResizeStop = this.onResizeStop.bind(this);
     this.createTopBar = this.createTopBar.bind(this);
-  }
-
-  componentDidMount() {
-    // const height = this.divElement.clientHeight;
-    // this.props.heightCallback(height);
-  }
-
-  onResizeStop(e, direction, ref, delta) {
-    console.log(this.props.heightWindow + delta.height);
-    this.props.heightCallback(this.props.heightWindow + delta.height);
   }
 
   get asPopup() {
     const { children, height } = this.props;
     return (
       <PopoverResizeable
-        onResizeStop={this.onResizeStop}
+        setNewHeight={this.props.heightCallback}
         size={{ height: `${height}px`, width: `${this.state.windowWidth}px` }}
         setAsPane={this.setAsPane}
         setAsDetached={this.setAsDetached}
@@ -58,7 +47,7 @@ class WindowThreeStates extends Component {
     const { children, height } = this.props;
     return (
       <FloatingWindow
-        onResizeStop={this.onResizeStop}
+        setNewHeight={this.props.heightCallback}
         size={{ height, width: `${this.state.windowWidth}px` }}
         setAsPane={this.setAsPane}
         setAsAttached={this.setAsAttached}

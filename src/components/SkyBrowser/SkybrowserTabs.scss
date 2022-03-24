@@ -71,6 +71,7 @@ $tabs-arrowbutton-width: 13.34px;
 .tabContent {
   height: calc(100% - #{$tabs-active-height});
   background: $tabs-background-content;
+  overflow-x: hidden;
   ul {
     display: flex;
     flex-wrap: wrap;
@@ -129,5 +130,16 @@ $tabs-arrowbutton-width: 13.34px;
     padding: 10px 0 10px 0;
     position: relative;
     top: 38px;
+  }
+}
+
+.topHandle {
+  border-radius: 2px;
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  &:hover,
+  &:active {
+    background: $tabs-background-content;
   }
 }

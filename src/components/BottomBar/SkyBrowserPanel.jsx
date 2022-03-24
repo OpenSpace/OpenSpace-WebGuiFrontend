@@ -25,9 +25,8 @@ class SkyBrowserPanel extends Component {
       cameraInSolarSystem: true,
       currentTabHeight: 220,
       currentPopoverHeight: 440,
-      currentImageListHeight: 220,
-      btmHeight: '',
       showOnlyNearest: true,
+      menuHeight: 70,
     };
     this.getAllImages = this.getAllImages.bind(this);
     this.getTargetData = this.getTargetData.bind(this);
@@ -37,23 +36,7 @@ class SkyBrowserPanel extends Component {
     this.setCurrentPopoverHeight = this.setCurrentPopoverHeight.bind(this);
     this.selectImage = this.selectImage.bind(this);
     this.togglePopover = this.togglePopover.bind(this);
-    this.onResizeStop = this.onResizeStop.bind(this);
-    this.onResize = this.onResize.bind(this);
     this.createImageMenu = this.createImageMenu.bind(this);
-  }
-
-  onResizeStop(e, direction, ref, delta) {
-    const currentListHeight = this.state.currentImageListHeight;
-    this.setState({
-      currentImageListHeight: currentListHeight + delta.height,
-    });
-  }
-
-  onResize(e, direction, ref, delta) {
-    const currentListHeight = this.state.currentImageListHeight + delta.height;
-    this.setState({
-      currentTabHeight: this.state.currentPopoverHeight - currentListHeight - 30,
-    });
   }
 
   async componentDidMount() {
@@ -101,11 +84,11 @@ class SkyBrowserPanel extends Component {
   }
 
   getSelectedTargetImages() {
-    const { systemList } = this.props;
+    const { imageList } = this.props;
     const { targetData, selectedBrowser } = this.state;
     const selectedImagesIndices = targetData[selectedBrowser];
 
-    if (!systemList || !selectedImagesIndices) {
+    if (!imageList || !selectedImagesIndices) {
       return [];
     }
 
@@ -113,12 +96,12 @@ class SkyBrowserPanel extends Component {
     const images = selectedImagesIndices.selectedImages;
     if (!images) return [];
     const indices = Object.values(images);
-    return indices.map(index => systemList[index.toString()]);
+    return indices.map(index => imageList[index.toString()]);
   }
 
   getAllImages() {
-    if (this.props.systemList.length) {
-      return this.props.systemList;
+    if (this.props.imageList.length) {
+      return this.props.imageList;
     }
     return [];
   }
@@ -193,7 +176,6 @@ class SkyBrowserPanel extends Component {
           closeCallback={this.togglePopover}
           heightCallback={this.setCurrentPopoverHeight}
           heightWindow={this.state.currentPopoverHeight}
-          selectImage={this.selectImage}
         >
           <CenteredLabel>
             The camera has to be within the solar system for the sky browser to work.
@@ -215,7 +197,7 @@ class SkyBrowserPanel extends Component {
         selectedBrowser={selectedBrowser}
         isUsingRae={isUsingRae}
         isFacingCamera={isFacingCamera}
-        maxHeight={this.state.currentPopoverHeight - 30}
+        maxHeight={this.state.currentPopoverHeight - this.state.menuHeight}
         minHeight={130}
         setCurrentTabHeight={this.setCurrentTabHeight}
         height={this.state.currentTabHeight}
@@ -225,12 +207,12 @@ class SkyBrowserPanel extends Component {
       />
     );
 
-    const currentImageListHeight = this.state.currentPopoverHeight - this.state.currentTabHeight;
+    const currentImageListHeight = this.state.currentPopoverHeight - this.state.currentTabHeight - this.state.menuHeight;
 
     const imageList = (
       <SkyBrowserImageList
         luaApi={this.props.luaApi}
-        imageList={this.props.systemList}
+        imageList={this.props.imageList}
         selectedBrowserData={this.state.targetData[this.state.selectedBrowser]}
         showOnlyNearest={this.state.showOnlyNearest}
         activeImage={this.state.activeImage}
@@ -240,7 +222,7 @@ class SkyBrowserPanel extends Component {
         showOnlyNearest={this.state.showOnlyNearest}
       />
     );
-    // console.log(this.state.currentImageListHeight);
+
     return (
       <WindowThreeStates
         title="AAS WorldWide Telescope"
@@ -250,19 +232,9 @@ class SkyBrowserPanel extends Component {
         defaultHeight={440}
       >
         <div className={styles.content}>
-          <Resizable
-            enable={{ top: false, bottom: true }}
-            handleClasses={{ bottom: styles.handle }}
-            minHeight={0}
-            maxHeight={this.state.currentPopoverHeight - 30}
-            onResizeStop={this.onResizeStop}
-            onResize={this.onResize}
-            height={this.state.currentImageListHeight}
-          >
-            {this.createImageMenu()}
-            {imageList}
-            {skybrowserTabs}
-          </Resizable>
+          {this.createImageMenu()}
+          {imageList}
+          {skybrowserTabs}
         </div>
       </WindowThreeStates>
     );
@@ -284,17 +256,17 @@ class SkyBrowserPanel extends Component {
   }
 }
 
-const mapSubStateToProps = ({ luaApi, popoverVisible, skybrowserData }) => ({
+const mapSubStateToProps = ({ luaApi, popoverVisible, imageList }) => ({
   luaApi,
   popoverVisible,
-  systemList: skybrowserData,
+  imageList,
 });
 
 const mapStateToSubState = state => ({
   propertyOwners: state.propertyTree.propertyOwners,
   popoverVisible: state.local.popovers.skybrowser.visible,
   luaApi: state.luaApi,
-  skybrowserData: state.skybrowser.data,
+  imageList: state.skybrowser.data,
 });
 
 const mapDispatchToProps = dispatch => ({

@@ -7,7 +7,9 @@ $title-bar-height: 30px;
   top: $title-bar-height;
   bottom: 0px;
   width: 100%;
-  background: pink;
+  background: $ui-background;
+  padding: 0;
+  margin: 0;
 }
 
 .row {
@@ -15,22 +17,19 @@ $title-bar-height: 30px;
   width: 100%;
   height: 40px;
   background: $ui-background-hover;
-  justify-content: space-between;
-  overflow: hidden;
-  white-space: nowrap;
 }
-.test1 {
-  background: red;
-  height: 100%;
+
+.picker {
+  width: 50%;
+  margin: 0;
+  padding: 5;
+  font-size: 0.95rem;
 }
-.test2 {
-  background: pink;
-  height: 100%;
+
+.selected {
+  background: $ui-background-hover;
 }
-.handle {
-  height: 1px;
-  &:hover,
-  &:active {
-    background: blue;
-  }
+
+.unselected {
+  background: $ui-background;
 }
