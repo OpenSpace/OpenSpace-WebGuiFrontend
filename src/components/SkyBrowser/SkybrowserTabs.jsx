@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Resizable } from 're-resizable';
 import Button from '../common/Input/Button/Button';
 import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import ScrollOverlay from '../common/ScrollOverlay/ScrollOverlay';
@@ -110,7 +111,6 @@ class SkybrowserTabs extends Component {
       icon: 'visibility',
       text: 'Look at target',
       function(targetId) {
-        skybrowserApi.lockTarget(targetId);
         skybrowserApi.adjustCamera(targetId);
       },
     };
@@ -222,7 +222,7 @@ class SkybrowserTabs extends Component {
         {data.map((entry, index) => (
           <div>
             {index == 0 ? (
-              <span transparent />
+              <span />
             ) : (
               <Button
                 onClick={() => skybrowserApi.setImageLayerOrder(
@@ -436,7 +436,7 @@ class SkybrowserTabs extends Component {
     } else {
       tabDisplay = this.createImageList(data, this.props);
     }
-
+    // console.log(maxHeight);
     return (
       <section className={styles.tabContainer}>
         <Resizable

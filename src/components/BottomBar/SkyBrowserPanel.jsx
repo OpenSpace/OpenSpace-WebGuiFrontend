@@ -240,7 +240,7 @@ class SkyBrowserPanel extends Component {
         showOnlyNearest={this.state.showOnlyNearest}
       />
     );
-    console.log(this.state.currentImageListHeight);
+    // console.log(this.state.currentImageListHeight);
     return (
       <WindowThreeStates
         title="AAS WorldWide Telescope"
@@ -259,14 +259,10 @@ class SkyBrowserPanel extends Component {
             onResize={this.onResize}
             height={this.state.currentImageListHeight}
           >
-            <div className={styles.test1}>test1</div>
+            {this.createImageMenu()}
+            {imageList}
+            {skybrowserTabs}
           </Resizable>
-          <div className={styles.test2} style={{ height: this.state.currentTabHeight }}>
-            test2
-          </div>
-          {this.createImageMenu()}
-          {imageList}
-          {skybrowserTabs}
         </div>
       </WindowThreeStates>
     );

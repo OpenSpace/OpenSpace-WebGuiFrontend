@@ -5,7 +5,7 @@ $list-header-hover: rgba(255, 255, 255, 0.2);
 $menu-height: 40px;
 
 .filterlist {
-  background: pink;
+  background: $ui-background-solid;
 }
 
 .filterList :placeholder-shown,
