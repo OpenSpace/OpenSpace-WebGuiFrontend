@@ -9,12 +9,9 @@ import SkybrowserFocusEntry from './SkybrowserFocusEntry';
 class SkyBrowserImageList extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      showOnlyNearest: true,
-    };
+    this.state = {};
 
     this.getNearestImages = this.getNearestImages.bind(this);
-    this.createImageMenu = this.createImageMenu.bind(this);
   }
 
   getNearestImages() {
@@ -57,49 +54,28 @@ class SkyBrowserImageList extends Component {
     return imgsWithinTarget;
   }
 
-  createImageMenu() {
-    const { showOnlyNearest } = this.state;
-    return (
-      <div className={styles.row}>
-        <Picker
-          className={`${styles.picker} ${showOnlyNearest ? styles.unselected : styles.selected}`}
-          onClick={() => this.setState({ showOnlyNearest: false })}
-        >
-          <span>All images</span>
-        </Picker>
-        <Picker
-          className={`${styles.picker} ${showOnlyNearest ? styles.selected : styles.unselected}`}
-          onClick={() => this.setState({ showOnlyNearest: true })}
-        >
-          <span>Images within view</span>
-        </Picker>
-      </div>
-    );
-  }
-
   render() {
-    const imageList = this.state.showOnlyNearest ? this.getNearestImages() : this.props.imageList;
+    const imageList = this.props.showOnlyNearest ? this.getNearestImages() : this.props.imageList;
     const api = this.props.luaApi;
     const skybrowserApi = api.skybrowser;
 
-    const filterList = imageList.length > 0 && (
-      <FilterList
-        className={styles.filterList}
-        data={imageList}
-        searchText={`Search from ${imageList.length.toString()} images...`}
-        viewComponent={SkybrowserFocusEntry}
-        viewComponentProps={{ skybrowserApi, currentTargetColor: this.props.getCurrentTargetColor }}
-        onSelect={this.props.selectImage}
-        active={this.props.activeImage}
-        searchAutoFocus
-      />
-    );
-
     return (
-      <div className={styles.listContainer}>
-        {this.createImageMenu()}
-        {filterList}
-      </div>
+      imageList.length > 0 && (
+        <FilterList
+          className={styles.filterList}
+          height={this.props.height}
+          data={imageList}
+          searchText={`Search from ${imageList.length.toString()} images...`}
+          viewComponent={SkybrowserFocusEntry}
+          viewComponentProps={{
+            skybrowserApi,
+            currentTargetColor: this.props.getCurrentTargetColor,
+          }}
+          onSelect={this.props.selectImage}
+          active={this.props.activeImage}
+          searchAutoFocus
+        />
+      )
     );
   }
 }

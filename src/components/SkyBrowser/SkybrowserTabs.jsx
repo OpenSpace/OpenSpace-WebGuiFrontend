@@ -102,7 +102,6 @@ class SkybrowserTabs extends Component {
 
   createButtons(target) {
     const { skybrowserApi } = this.props;
-    const targetIsLocked = target.isLocked;
     const targetId = target.id;
     const toggleSettings = this.toggleShowSettings;
 
@@ -123,18 +122,6 @@ class SkybrowserTabs extends Component {
         skybrowserApi.centerTargetOnScreen(targetId);
       },
     };
-    const lockButton = {
-      selected: targetIsLocked,
-      icon: 'lock',
-      text: 'Lock aim of target',
-      function(targetId) {
-        if (targetIsLocked) {
-          skybrowserApi.unlockTarget(targetId);
-        } else {
-          skybrowserApi.lockTarget(targetId);
-        }
-      },
-    };
     const showSettingsButton = {
       selected: this.state.showSettings,
       icon: 'settings',
@@ -144,7 +131,7 @@ class SkybrowserTabs extends Component {
       },
     };
 
-    const buttonsData = [lookButton, moveButton, lockButton, showSettingsButton];
+    const buttonsData = [lookButton, moveButton, showSettingsButton];
 
     const buttons = buttonsData.map((button, index) => (
       <Button
@@ -421,7 +408,8 @@ class SkybrowserTabs extends Component {
 
   onResizeStop(e, direction, ref, delta) {
     // console.log(height);
-    this.props.setCurrentTabHeight(this.props.height + delta.height);
+    const newHeight = Math.max(this.props.height + delta.height, 0);
+    this.props.setCurrentTabHeight(newHeight);
   }
 
   render() {

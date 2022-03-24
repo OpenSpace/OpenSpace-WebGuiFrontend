@@ -29,8 +29,14 @@ class WindowThreeStates extends Component {
     this.createTopBar = this.createTopBar.bind(this);
   }
 
+  componentDidMount() {
+    // const height = this.divElement.clientHeight;
+    // this.props.heightCallback(height);
+  }
+
   onResizeStop(e, direction, ref, delta) {
-    this.props.heightCallback(this.props.height + delta.height);
+    console.log(this.props.heightWindow + delta.height);
+    this.props.heightCallback(this.props.heightWindow + delta.height);
   }
 
   get asPopup() {
@@ -149,8 +155,8 @@ WindowThreeStates.propTypes = {
   title: PropTypes.string,
   closeCallback: PropTypes.func,
   heightCallback: PropTypes.func,
-  height: PropTypes.Number,
-  defaultHeight: PropTypes.Number,
+  heightWindow: PropTypes.number,
+  defaultHeight: PropTypes.number,
 };
 
 WindowThreeStates.defaultProps = {
@@ -158,7 +164,7 @@ WindowThreeStates.defaultProps = {
   title: '',
   closeCallback: null,
   heightCallback: null,
-  height: 440,
+  heightWindow: 440,
   defaultHeight: 440,
 };
 

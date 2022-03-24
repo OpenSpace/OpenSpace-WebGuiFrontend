@@ -26,6 +26,8 @@ class SkyBrowserPanel extends Component {
       currentTabHeight: 220,
       currentPopoverHeight: 440,
       currentImageListHeight: 220,
+      btmHeight: '',
+      showOnlyNearest: true,
     };
     this.getAllImages = this.getAllImages.bind(this);
     this.getTargetData = this.getTargetData.bind(this);
@@ -37,6 +39,7 @@ class SkyBrowserPanel extends Component {
     this.togglePopover = this.togglePopover.bind(this);
     this.onResizeStop = this.onResizeStop.bind(this);
     this.onResize = this.onResize.bind(this);
+    this.createImageMenu = this.createImageMenu.bind(this);
   }
 
   onResizeStop(e, direction, ref, delta) {
@@ -59,6 +62,10 @@ class SkyBrowserPanel extends Component {
     } catch (e) {
       console.log(e);
     }
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.targetDataID);
   }
 
   async getTargetData() {
@@ -142,6 +149,26 @@ class SkyBrowserPanel extends Component {
     this.props.setPopoverVisibility(!this.props.popoverVisible);
   }
 
+  createImageMenu() {
+    const { showOnlyNearest } = this.state;
+    return (
+      <div className={styles.row}>
+        <Picker
+          className={`${styles.picker} ${showOnlyNearest ? styles.unselected : styles.selected}`}
+          onClick={() => this.setState({ showOnlyNearest: false })}
+        >
+          <span>All images</span>
+        </Picker>
+        <Picker
+          className={`${styles.picker} ${showOnlyNearest ? styles.selected : styles.unselected}`}
+          onClick={() => this.setState({ showOnlyNearest: true })}
+        >
+          <span>Images within view</span>
+        </Picker>
+      </div>
+    );
+  }
+
   get popover() {
     const {
       cameraInSolarSystem,
@@ -165,7 +192,7 @@ class SkyBrowserPanel extends Component {
           title="AAS WorldWide Telescope"
           closeCallback={this.togglePopover}
           heightCallback={this.setCurrentPopoverHeight}
-          height={this.state.currentPopoverHeight}
+          heightWindow={this.state.currentPopoverHeight}
           selectImage={this.selectImage}
         >
           <CenteredLabel>
@@ -209,7 +236,8 @@ class SkyBrowserPanel extends Component {
         activeImage={this.state.activeImage}
         getCurrentTargetColor={this.getCurrentTargetColor}
         selectImage={this.selectImage}
-        height={this.state.currentTabHeight}
+        height={currentImageListHeight}
+        showOnlyNearest={this.state.showOnlyNearest}
       />
     );
     console.log(this.state.currentImageListHeight);
@@ -236,6 +264,9 @@ class SkyBrowserPanel extends Component {
           <div className={styles.test2} style={{ height: this.state.currentTabHeight }}>
             test2
           </div>
+          {this.createImageMenu()}
+          {imageList}
+          {skybrowserTabs}
         </div>
       </WindowThreeStates>
     );

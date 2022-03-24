@@ -1,6 +1,9 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { ObjectWordBeginningSubstring, WordBeginningSubstring } from '../../../utils/StringMatchers';
+import {
+  ObjectWordBeginningSubstring,
+  WordBeginningSubstring,
+} from '../../../utils/StringMatchers';
 import CenteredLabel from '../CenteredLabel/CenteredLabel';
 import Input from '../Input/Input/Input';
 import ScrollOverlay from '../ScrollOverlay/ScrollOverlay';
@@ -45,8 +48,13 @@ class FilterList extends Component {
 
   render() {
     const {
-      active, className, onSelect, searchAutoFocus, searchText,
-      showFavorites, viewComponent,
+      active,
+      className,
+      onSelect,
+      searchAutoFocus,
+      searchText,
+      showFavorites,
+      viewComponent,
     } = this.props;
     const { search } = this.state;
     const entries = this.filtered;
@@ -67,10 +75,7 @@ class FilterList extends Component {
         );
       } else {
         inputChildren = (
-          <div
-            className={styles.favoritesButton}
-            onClick={() => this.props.setShowFavorites(true)}
-          >
+          <div className={styles.favoritesButton} onClick={() => this.props.setShowFavorites(true)}>
             Less
           </div>
         );
@@ -78,7 +83,7 @@ class FilterList extends Component {
     }
 
     return (
-      <section className={`${className} ${styles.filterList}`}>
+      <div className={`${className} ${styles.filterList}`} style={{ height: this.props.height }}>
         <Input
           value={search}
           placeholder={searchText}
@@ -90,13 +95,11 @@ class FilterList extends Component {
         </Input>
 
         <ScrollOverlay>
-          { entries.length === 0 && (
-            <CenteredLabel>
-              Nothing found. Try another search!
-            </CenteredLabel>
-          ) }
+          {entries.length === 0 && (
+            <CenteredLabel>Nothing found. Try another search!</CenteredLabel>
+          )}
           <ul>
-            { entries.map((entry, index) => (
+            {entries.map((entry, index) => (
               <EntryComponent
                 {...entry}
                 {...this.props.viewComponentProps}
@@ -107,7 +110,7 @@ class FilterList extends Component {
             ))}
           </ul>
         </ScrollOverlay>
-      </section>
+      </div>
     );
   }
 }
@@ -179,7 +182,7 @@ FilterList.defaultProps = {
   setShowFavorites: undefined,
   searchText: 'Search...',
   searchAutoFocus: false,
-  viewComponent: props => (<li>{ JSON.stringify(props) }</li>),
+  viewComponent: props => <li>{JSON.stringify(props)}</li>,
   viewComponentProps: {},
 };
 
