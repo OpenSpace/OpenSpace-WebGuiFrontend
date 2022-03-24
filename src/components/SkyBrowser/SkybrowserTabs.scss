@@ -5,6 +5,8 @@ $tabs-height: 48px;
 $tabs-active-height: 45px;
 $tabs-background: rgba(37, 37, 37, 1);
 $tabs-background-content: rgba(55, 55, 55, 1);
+$tabs-buttons: rgba(65, 65, 65, 1);
+$tabs-buttons-active: rgba(95, 95, 95, 1);
 $tabs-not-selected: rgba(40, 40, 40, 1);
 $tabs-margin-horizontal: 8px;
 $tabs-close-button-width: 14px;
@@ -132,7 +134,6 @@ $tabs-arrowbutton-width: 13.34px;
     top: 38px;
   }
 }
-
 .topHandle {
   border-radius: 2px;
   height: 100%;
@@ -142,4 +143,21 @@ $tabs-arrowbutton-width: 13.34px;
   &:active {
     background: $tabs-background-content;
   }
+}
+
+.renderCopyButton {
+  margin: 5px;
+  padding: 5px;
+  border-radius: 4px;
+  background: $tabs-buttons;
+  color: $text-color-focus;
+  &:hover,
+  &:active {
+    background: $ui-background-active;
+  }
+}
+
+.buttonContainer {
+  padding: 50;
+  justify-content: center;
 }
