@@ -82,14 +82,6 @@ $tabs-arrowbutton-width: 13.34px;
   display: flex;
 }
 
-.topHandle {
-  height: 1px;
-  &:hover,
-  &:active {
-    background: $tabs-background;
-  }
-}
-
 //buttons
 .addTabButton {
   font-size: 13px;

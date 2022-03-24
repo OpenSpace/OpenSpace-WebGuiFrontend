@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Resizable } from 're-resizable';
 import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
 import Picker from './Picker';
 import subStateToProps from '../../utils/subStateToProps';
@@ -22,9 +23,9 @@ class SkyBrowserPanel extends Component {
       isUsingRae: false,
       isFacingCamera: false,
       cameraInSolarSystem: true,
-      currentTabHeight: 185,
+      currentTabHeight: 220,
       currentPopoverHeight: 440,
-      btmHeight: '',
+      currentImageListHeight: 220,
     };
     this.getAllImages = this.getAllImages.bind(this);
     this.getTargetData = this.getTargetData.bind(this);
@@ -34,6 +35,22 @@ class SkyBrowserPanel extends Component {
     this.setCurrentPopoverHeight = this.setCurrentPopoverHeight.bind(this);
     this.selectImage = this.selectImage.bind(this);
     this.togglePopover = this.togglePopover.bind(this);
+    this.onResizeStop = this.onResizeStop.bind(this);
+    this.onResize = this.onResize.bind(this);
+  }
+
+  onResizeStop(e, direction, ref, delta) {
+    const currentListHeight = this.state.currentImageListHeight;
+    this.setState({
+      currentImageListHeight: currentListHeight + delta.height,
+    });
+  }
+
+  onResize(e, direction, ref, delta) {
+    const currentListHeight = this.state.currentImageListHeight + delta.height;
+    this.setState({
+      currentTabHeight: this.state.currentPopoverHeight - currentListHeight - 30,
+    });
   }
 
   async componentDidMount() {
@@ -195,7 +212,7 @@ class SkyBrowserPanel extends Component {
         height={this.state.currentTabHeight}
       />
     );
-
+    console.log(this.state.currentImageListHeight);
     return (
       <WindowThreeStates
         title="AAS WorldWide Telescope"
@@ -204,7 +221,22 @@ class SkyBrowserPanel extends Component {
         height={this.state.currentPopoverHeight}
         defaultHeight={440}
       >
-        <div className={styles.content}>{skybrowserTabs}</div>
+        <div className={styles.content}>
+          <Resizable
+            enable={{ top: false, bottom: true }}
+            handleClasses={{ bottom: styles.handle }}
+            minHeight={0}
+            maxHeight={this.state.currentPopoverHeight - 30}
+            onResizeStop={this.onResizeStop}
+            onResize={this.onResize}
+            height={this.state.currentImageListHeight}
+          >
+            <div className={styles.test1}>test1</div>
+          </Resizable>
+          <div className={styles.test2} style={{ height: this.state.currentTabHeight }}>
+            test2
+          </div>
+        </div>
       </WindowThreeStates>
     );
   }

@@ -9,3 +9,18 @@ $title-bar-height: 30px;
   width: 100%;
   background: white;
 }
+.test1 {
+  background: red;
+  height: 100%;
+}
+.test2 {
+  background: pink;
+  height: 100%;
+}
+.handle {
+  height: 1px;
+  &:hover,
+  &:active {
+    background: blue;
+  }
+}
