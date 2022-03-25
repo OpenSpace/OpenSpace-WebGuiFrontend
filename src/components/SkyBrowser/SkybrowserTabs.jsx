@@ -19,6 +19,7 @@ class SkybrowserTabs extends Component {
     this.state = {
       isShowingInfoButtons: [false, false, false, false, false],
       showSettings: false,
+      showSettingsRaeInfo: false,
     };
 
     this.createTabs = this.createTabs.bind(this);
@@ -41,11 +42,19 @@ class SkybrowserTabs extends Component {
     this.props.setCurrentTabHeight(newHeight);
   }
 
-  get position() {
+  get positionInfo() {
     if (!this.infoButton) {
       return { top: '0px', left: '0px' };
     }
     const { top, right } = this.infoButton.getBoundingClientRect();
+    return { top: `${top}`, left: `${right}` };
+  }
+
+  get positionRae() {
+    if (!this.raeInfo) {
+      return { top: '0px', left: '0px' };
+    }
+    const { top, right } = this.raeInfo.getBoundingClientRect();
     return { top: `${top}`, left: `${right}` };
   }
 
@@ -154,7 +163,7 @@ class SkybrowserTabs extends Component {
           onMouseEnter={() => this.showTooltip(index)}
         />
         {this.state.isShowingInfoButtons[index] && (
-          <TooltipSkybrowser placement="bottom-right" style={this.position}>
+          <TooltipSkybrowser placement="bottom-right" style={this.positionInfo}>
             {button.text}
           </TooltipSkybrowser>
         )}
@@ -388,6 +397,11 @@ class SkybrowserTabs extends Component {
             placeholder="value 2"
           />
         </Row>
+        <div
+          ref={this.setRef('raeInfo')}
+          onMouseEnter={() => this.setState({ showSettingsRaeInfo : true})}
+          onMouseLeave={() => this.setState({ showSettingsRaeInfo : false})}
+        >
         <Checkbox
           label="Use Radius Azimuth Elevation"
           checked={isUsingRae}
@@ -395,7 +409,16 @@ class SkybrowserTabs extends Component {
           disabled={false}
           setChecked={this.toggleRadiusAzimuthElevation}
           wide
+          style={{ width: '100%'}}
         />
+        {
+          this.state.showSettingsRaeInfo && (
+            <TooltipSkybrowser placement="bottom-right" style={this.positionRae}>
+              {"Using RAE coordinates is going to disable interaction with the sky browser."}
+            </TooltipSkybrowser>
+          )
+        }
+        </div>
         <Checkbox
           label="Face Camera"
           checked={isFacingCamera}
