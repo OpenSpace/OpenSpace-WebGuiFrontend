@@ -18,7 +18,7 @@ class OpacitySlider extends Component {
     this.setState({ value: event.target.value });
     // Ensure the image has an id, which consists of the index of the image
     const index = Number(this.props.identifier);
-    const opacity = this.state.value / 100;
+    const opacity = event.target.value / 100;
     if (index) {
       this.props.setOpacity(index, opacity);
     }
