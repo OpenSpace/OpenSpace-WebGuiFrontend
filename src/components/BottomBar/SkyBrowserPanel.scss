@@ -12,6 +12,39 @@ $title-bar-height: 30px;
   margin: 0;
 }
 
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.addTabButton {
+  width: 80%;
+  height: 80%;
+  background: $ui-background-active;
+  border-radius: 4px;
+}
+
+.plus {
+  --b:4px; /* the thickness */
+  aspect-ratio: 1/1;
+  width: 80%;
+  border: 10px; /* the outer space */
+  background:
+    conic-gradient(from 90deg at var(--b) var(--b),transparent 90deg, $text-color-blur 0)
+    calc(100% + var(--b)/2) calc(100% + var(--b)/2)/
+    calc(50%  + var(--b))   calc(50%  + var(--b));
+  display:inline-block;
+  margin-top: 20px;
+}
+
+.addTabButton:hover > .plus{
+  background:
+    conic-gradient(from 90deg at var(--b) var(--b), transparent 90deg, $text-color-focus 0)
+    calc(100% + var(--b)/2) calc(100% + var(--b)/2)/
+    calc(50%  + var(--b))   calc(50%  + var(--b));
+}
+
 .row {
   display: flex;
   width: 100%;

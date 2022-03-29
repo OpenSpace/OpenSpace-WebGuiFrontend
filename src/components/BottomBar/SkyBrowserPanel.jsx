@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import { Resizable } from 're-resizable';
 import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
 import Picker from './Picker';
+import Button from '../common/Input/Button/Button';
+import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import subStateToProps from '../../utils/subStateToProps';
 import { setPopoverVisibility } from '../../api/Actions';
 // Sky  browser
@@ -223,6 +225,17 @@ class SkyBrowserPanel extends Component {
       />
     );
 
+    const targetsExist = Object.keys(this.state.targetData).length !== 0;
+    const addTargetBrowserPairButton = <Button
+        onClick={() => skybrowserApi.createTargetBrowserPair()}
+        className={styles.addTabButton}
+        transparent
+      >
+        <CenteredLabel>Add Sky Browser</CenteredLabel>
+        <div className={styles.plus}>
+        </div>
+      </Button>;
+
     return (
       <WindowThreeStates
         title="AAS WorldWide Telescope"
@@ -231,11 +244,16 @@ class SkyBrowserPanel extends Component {
         height={this.state.currentPopoverHeight}
         defaultHeight={440}
       >
-        <div className={styles.content}>
+      {targetsExist ? <div className={styles.content}>
           {this.createImageMenu()}
           {imageList}
           {skybrowserTabs}
+        </div> :
+        <div className={`${styles.content} ${styles.center}`}>
+          {addTargetBrowserPairButton}
         </div>
+      }
+
       </WindowThreeStates>
     );
   }

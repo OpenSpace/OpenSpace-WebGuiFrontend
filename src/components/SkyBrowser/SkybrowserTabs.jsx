@@ -474,16 +474,12 @@ class SkybrowserTabs extends Component {
 
   render() {
     const {
-      data, maxHeight, minHeight, targets, selectedBrowser, height,
+      data, maxHeight, minHeight, targets, selectedBrowser, height, skybrowserApi
     } = this.props;
     const { showSettings } = this.state;
 
-    let tabDisplay;
-    if (Object.keys(targets).length === 0) {
-      tabDisplay = (
-        <CenteredLabel>There are no sky browsers. Press "+" to create one.</CenteredLabel>
-      );
-    } else if (showSettings) {
+    let tabDisplay = "";
+    if (showSettings) {
       tabDisplay = this.createSettings(targets[selectedBrowser]);
     } else if (data.length === 0) {
       tabDisplay = <CenteredLabel>There are no selected images in this sky browser.</CenteredLabel>;
