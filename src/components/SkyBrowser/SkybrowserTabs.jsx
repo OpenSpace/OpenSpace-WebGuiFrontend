@@ -115,7 +115,7 @@ class SkybrowserTabs extends Component {
   }
 
   createButtons(target) {
-    const { skybrowserApi } = this.props;
+    const { skybrowserApi, data } = this.props;
     const targetId = target.id;
     const toggleSettings = this.toggleShowSettings;
 
@@ -135,6 +135,16 @@ class SkybrowserTabs extends Component {
         skybrowserApi.centerTargetOnScreen(targetId);
       },
     };
+    const trashButton = {
+      selected: false,
+      icon: 'delete',
+      text: 'Remove all images',
+      function(targetId) {
+        data.map(image => {
+          skybrowserApi.removeSelectedImageInBrowser(targetId, Number(image.identifier));
+        })
+      },
+    };
     const showSettingsButton = {
       selected: this.state.showSettings,
       icon: 'settings',
@@ -144,7 +154,7 @@ class SkybrowserTabs extends Component {
       },
     };
 
-    const buttonsData = [lookButton, moveButton, showSettingsButton];
+    const buttonsData = [lookButton, moveButton, trashButton, showSettingsButton];
 
     const buttons = buttonsData.map((button, index) => (
       <Button
