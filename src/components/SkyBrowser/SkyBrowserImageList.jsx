@@ -55,7 +55,8 @@ class SkyBrowserImageList extends Component {
       let result = distA > distB;
       // If both the images are within a certain distance of each other
       // assume they are taken of the same object and sort on fov.
-      if(euclidianDistance(a, b) < this.state.distanceSortThreshold) {
+      if(euclidianDistance(a, selectedBrowserData) < this.state.distanceSortThreshold &&
+         euclidianDistance(b, selectedBrowserData) < this.state.distanceSortThreshold ) {
         result = a.fov > b.fov
       }
       return result ? 1 : -1;
