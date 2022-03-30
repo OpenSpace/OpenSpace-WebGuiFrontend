@@ -16,24 +16,24 @@ export const setPropertyValue = (uri, value) => ({
   },
 });
 
-export const addPropertyOwners = (propertyOwners) => ({
+export const addPropertyOwners = propertyOwners => ({
   type: actionTypes.addPropertyOwners,
   payload: {
-    propertyOwners
-  }
-})
+    propertyOwners,
+  },
+});
 
-export const addProperties = (properties) => ({
+export const addProperties = properties => ({
   type: actionTypes.addProperties,
   payload: {
-    properties
-  }
-})
+    properties,
+  },
+});
 
 export const refreshGroups = () => ({
   type: actionTypes.refreshGroups,
-  payload: {}
-})
+  payload: {},
+});
 
 export const subscribeToProperty = uri => ({
   type: actionTypes.subscribeToProperty,
@@ -49,19 +49,19 @@ export const unsubscribeToProperty = uri => ({
   },
 });
 
-export const subscribeToTime = uri => ({
+export const subscribeToTime = () => ({
   type: actionTypes.subscribeToTime,
   payload: {},
 });
 
-export const unsubscribeToTime = uri => ({
+export const unsubscribeToTime = () => ({
   type: actionTypes.unsubscribeToTime,
-  payload: {}
+  payload: {},
 });
 
 export const updateTime = timeData => ({
   type: actionTypes.updateTime,
-  payload: timeData
+  payload: timeData,
 });
 
 export const connectFlightController = () => ({
@@ -71,12 +71,12 @@ export const connectFlightController = () => ({
 
 export const disconnectFlightController = () => ({
   type: actionTypes.disconnectFlightController,
-  payload: {}
+  payload: {},
 });
 
-export const sendFlightControl = (flightControl) => ({
+export const sendFlightControl = flightControl => ({
   type: actionTypes.sendFlightControl,
-  payload: flightControl
+  payload: flightControl,
 });
 
 export const startConnection = () => ({
@@ -171,32 +171,32 @@ export const getDocumentation = () => ({
 
 export const initializeLuaApi = data => ({
   type: actionTypes.initializeLuaApi,
-  payload: data
+  payload: data,
 });
 
 export const initializeVersion = data => ({
   type: actionTypes.initializeVersion,
-  payload: data
+  payload: data,
 });
 
 export const initializeDocumentation = data => ({
   type: actionTypes.initializeDocumentation,
-  payload: data
+  payload: data,
 });
 
 export const initializeExoplanets = data => ({
   type: actionTypes.initializeExoplanets,
-  payload: data
+  payload: data,
 });
 
 export const addExoplanets = data => ({
   type: actionTypes.addExoplanets,
-  payload: data
+  payload: data,
 });
 
 export const removeExoplanets = data => ({
   type: actionTypes.removeExoplanets,
-  payload: data
+  payload: data,
 });
 
 export const subscribeToShortcuts = () => ({
@@ -211,102 +211,122 @@ export const unsubscribeToShortcuts = () => ({
 
 export const initializeShortcuts = data => ({
   type: actionTypes.initializeShortcuts,
-  payload: data
+  payload: data,
 });
 
 export const triggerAction = data => ({
   type: actionTypes.triggerAction,
-  payload: data
+  payload: data,
 });
 
 export const setActionsPath = data => ({
   type: actionTypes.setActionsPath,
-  payload: data
+  payload: data,
 });
 
 export const toggleKeybindViewer = data => ({
   type: actionTypes.toggleKeybindViewer,
-  payload: data
+  payload: data,
 });
 
 
 export const setNavigationAction = data => ({
   type: actionTypes.setNavigationAction,
-  payload: data
+  payload: data,
 });
 
 export const setOriginPickerShowFavorites = showFavorites => ({
   type: actionTypes.setOriginPickerShowFavorites,
-  payload: showFavorites
+  payload: showFavorites,
 });
 
 export const setPopoverVisibility = data => ({
   type: actionTypes.setPopoverVisibility,
-  payload: data
+  payload: data,
 });
 
 export const setShowAbout = show => ({
   type: actionTypes.setShowAbout,
-  payload: show
-})
+  payload: show,
+});
 
 export const setPopoverAttachment = data => ({
   type: actionTypes.setPopoverPosition,
-  payload: data
-})
+  payload: data,
+});
 
 export const setPopoverPosition = data => ({
   type: actionTypes.setPopoverPosition,
-  payload: data
-})
+  payload: data,
+});
 
 export const addNodePropertyPopover = data => ({
   type: actionTypes.addNodePropertyPopover,
-  payload: data
-})
+  payload: data,
+});
 
 export const removeNodePropertyPopover = data => ({
   type: actionTypes.removeNodePropertyPopover,
-  payload: data
-})
+  payload: data,
+});
 
 export const addNodeMetaPopover = data => ({
   type: actionTypes.addNodeMetaPopover,
-  payload: data
-})
+  payload: data,
+});
 
 export const removeNodeMetaPopover = data => ({
   type: actionTypes.removeNodeMetaPopover,
-  payload: data
-})
+  payload: data,
+});
 
 
 export const setPopoverActiveTab = data => ({
   type: actionTypes.setPopoverActiveTab,
-  payload: data
-})
+  payload: data,
+});
 
 export const setPropertyTreeExpansion = data => ({
   type: actionTypes.setPropertyTreeExpansion,
-  payload: data
-})
+  payload: data,
+});
+
+export const subscribeToEngineMode = () => ({
+  type: actionTypes.subscribeToEngineMode,
+  payload: {},
+});
+
+export const unsubscribeToEngineMode = () => ({
+  type: actionTypes.unsubscribeToEngineMode,
+  payload: {},
+});
+
+export const refreshEngineMode = () => ({
+  type: actionTypes.refreshEngineMode,
+  payload: {},
+});
+
+export const updateEngineMode = data => ({
+  type: actionTypes.updateEngineMode,
+  payload: data,
+});
 
 export const subscribeToSessionRecording = () => ({
   type: actionTypes.subscribeToSessionRecording,
-  payload: {}
-})
+  payload: {},
+});
 
 export const unsubscribeToSessionRecording = () => ({
   type: actionTypes.unsubscribeToSessionRecording,
-  payload: {}
-})
+  payload: {},
+});
 
 export const refreshSessionRecording = () => ({
   type: actionTypes.refreshSessionRecording,
-  payload: {}
-})
+  payload: {},
+});
 
 export const updateSessionRecording = data => ({
   type: actionTypes.updateSessionRecording,
-  payload: data
-})
+  payload: data,
+});

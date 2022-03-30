@@ -4,30 +4,8 @@
   font-size: 2em;
 }
 
-.playingPicker {
-  background-color: $blue;
-	 &:hover {
-    background-color: $blue;
-  }
-}
-
-.pausedPicker {
-  background-color: $orange;
-   &:hover {
-    background-color: $orange;
-  }
-}
-
 .playbackButton {
 	margin-right: 1em;
-}
-
-
-.recordingPicker {
-  background-color: $red;
-  &:hover {
-    background-color: $red;
-  }
 }
 
 .fpsInput {

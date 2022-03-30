@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import ActionsPanel from './ActionsPanel';
 import styles from './BottomBar.scss';
 import ExoplanetsPanel from './ExoplanetsPanel';
@@ -10,7 +11,7 @@ import TimePicker from './TimePicker';
 import ClimatePanel from './ClimatePanel';
 import Slider from './Slider';
 
-const BottomBar = (props) => (
+const BottomBar = ({ showFlightController }) => (
   <div className={styles.BottomBar}>
     <ClimatePanel />
     <OriginPicker />
@@ -21,8 +22,16 @@ const BottomBar = (props) => (
     <ExoplanetsPanel />
     <ActionsPanel />
     <Slider />
-    {props.showFlightController && <FlightControlPanel />}
+    {showFlightController && <FlightControlPanel />}
   </div>
 );
+
+BottomBar.propTypes = {
+  showFlightController: PropTypes.bool,
+};
+
+BottomBar.defaultProps = {
+  showFlightController: false,
+};
 
 export default BottomBar;
