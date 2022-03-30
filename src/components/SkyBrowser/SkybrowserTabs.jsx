@@ -145,6 +145,24 @@ class SkybrowserTabs extends Component {
         })
       },
     };
+    const scrollInButton = {
+      selected: false,
+      icon: 'zoom_in',
+      text: 'Zoom in',
+      function(targetId) {
+        const newFov = Math.max(target.FOV - 5, 0.01);
+        skybrowserApi.setVerticalFov(targetId, Number(newFov));
+      },
+    };
+    const scrollOutButton = {
+      selected: false,
+      icon: 'zoom_out',
+      text: 'Zoom out',
+      function(targetId) {
+        const newFov = Math.min(target.FOV + 5, 70);
+        skybrowserApi.setVerticalFov(targetId, Number(newFov));
+      },
+    };
     const showSettingsButton = {
       selected: this.state.showSettings,
       icon: 'settings',
@@ -154,7 +172,7 @@ class SkybrowserTabs extends Component {
       },
     };
 
-    const buttonsData = [lookButton, moveButton, trashButton, showSettingsButton];
+    const buttonsData = [lookButton, moveButton, scrollInButton, scrollOutButton, trashButton, showSettingsButton];
 
     const buttons = buttonsData.map((button, index) => (
       <Button
@@ -169,7 +187,7 @@ class SkybrowserTabs extends Component {
       >
         <MaterialIcon
           icon={button.icon}
-          className="small"
+          className="medium"
           onMouseEnter={() => this.showTooltip(index)}
         />
         {this.state.isShowingInfoButtons[index] && (
@@ -313,7 +331,7 @@ class SkybrowserTabs extends Component {
     const colors = target.color;
     const colorData = ['Border Color: Red', 'Green', 'Blue'];
     const sizeData = ['Browser Width', 'Browser Height'];
-    const precision = 7;
+    const precision = 10;
     const { api } = this.props;
     const { skybrowserApi } = this.props;
 
@@ -334,7 +352,7 @@ class SkybrowserTabs extends Component {
           className="Vertical Field Of View"
           label="Vertical Field Of View"
           max={70}
-          min={0.0000000001}
+          min={0}
           disabled={!skybrowserApi.setVerticalFov}
           onValueChanged={(fov) => {
             skybrowserApi.setVerticalFov(selectedBrowser, fov);

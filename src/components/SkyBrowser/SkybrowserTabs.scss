@@ -1,8 +1,8 @@
 @import '../../styles/all';
 @import '../common/Popover/Popover';
 
-$tabs-height: 48px;
-$tabs-active-height: 45px;
+$tabs-height: 52px;
+$tabs-active-height: 49px;
 $tabs-background: rgba(37, 37, 37, 1);
 $tabs-background-content: rgba(55, 55, 55, 1);
 $tabs-buttons: rgba(65, 65, 65, 1);
@@ -30,15 +30,18 @@ $tabs-arrowbutton-width: 13.34px;
   object-fit: fill;
 }
 
-.tabInactive {
-  height: $tabs-height;
+.tabActive, .tabInactive {
   padding-left: 4px;
   padding-right: 4px;
   font-size: 16px;
+  display: block;
+}
+
+.tabInactive {
+  height: $tabs-height;
   border-top-right-radius: 4px;
   border: 3px solid $tabs-background;
   background: $tabs-background;
-  display: block;
   &:hover {
     background: $tabs-background-content;
   }
@@ -47,10 +50,6 @@ $tabs-arrowbutton-width: 13.34px;
 .tabActive {
   height: $tabs-active-height;
   background: $tabs-background-content;
-  padding-left: 4px;
-  padding-right: 4px;
-  font-size: 16px;
-  display: block;
 }
 
 .tabHeader {
@@ -110,15 +109,13 @@ $tabs-arrowbutton-width: 13.34px;
   right: -2px;
 }
 
-.tabButtonInactive {
+.tabButtonInactive, .tabButtonActive {
   border-radius: 4px;
   padding: 3px 5px 3px 5px;
 }
 
 .tabButtonActive {
   background-color: $tabs-background;
-  border-radius: 4px;
-  padding: 3px 5px 3px 5px;
 }
 
 .arrowButton {
