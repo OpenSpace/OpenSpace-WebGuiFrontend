@@ -1,10 +1,8 @@
-import {
-  initializeExoplanets,
-} from '../Actions';
+import { initializeExoplanets } from "../Actions";
 
-import api from '../api';
+import api from "../api";
 
-import { actionTypes } from '../Actions/actionTypes';
+import { actionTypes } from "../Actions/actionTypes";
 
 const getExoplanets = async (luaApi, callback) => {
   let planetList = await luaApi.exoplanets.getListOfExoplanets();
@@ -12,21 +10,23 @@ const getExoplanets = async (luaApi, callback) => {
   if (!actualList) {
     return;
   }
-  var listArray = Object.values(actualList)
-  listArray = listArray.map(item => {
-    return {"name": item, "identifier": item};
-  })
+  var listArray = Object.values(actualList);
+  listArray = listArray.map((item) => {
+    return { name: item, identifier: item };
+  });
   callback(listArray);
 };
 
 const removeSystem = async (data, callback) => {
-  let script = "openspace.exoplanets.removeExoplanetSystem('"+ data +"')";
+  let script = "openspace.exoplanets.removeExoplanetSystem('" + data + "')";
   api.executeLuaScript(script, false);
-  api.executeLuaScript("openspace.setPropertyValueSingle('Modules.CefWebGui.Reload', nil)");
+  api.executeLuaScript(
+    "openspace.setPropertyValueSingle('Modules.CefWebGui.Reload', nil)"
+  );
   callback();
-}
+};
 
-export const exoplanets = store => next => (action) => {
+export const exoplanets = (store) => (next) => (action) => {
   const result = next(action);
   switch (action.type) {
     case actionTypes.initializeLuaApi:
@@ -35,7 +35,7 @@ export const exoplanets = store => next => (action) => {
       });
       break;
     case actionTypes.removeExoplanets:
-      removeSystem(action.payload.system, () => {})
+      removeSystem(action.payload.system, () => {});
       break;
     default:
       break;

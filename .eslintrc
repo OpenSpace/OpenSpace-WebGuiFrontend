@@ -10,7 +10,6 @@
   },
   "rules": {
     "linebreak-style": ["error", "unix"],
-    "no-plusplus": "off",
-    "react/forbid-prop-types": [false, {}]
+    "no-plusplus": "off"
   }
 }
