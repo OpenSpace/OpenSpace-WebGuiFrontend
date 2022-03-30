@@ -80,7 +80,8 @@ const defaultPopovers = {
   focusNodePropertiesPanel: popover({ attached: false }),
   activeNodePropertyPanels: {},
   activeNodeMetaPanels: {},
-  flightController: {}
+  flightController: {},
+  climate: popover(),
 }
 
 const popovers = (state = defaultPopovers, action) => {

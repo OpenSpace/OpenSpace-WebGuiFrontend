@@ -153,7 +153,7 @@ class ActionsPanel extends Component {
         closeCallback={this.togglePopover}
         detachable
         attached={true}
-      >        
+      >
         <div id='actionscroller' className={`${Popover.styles.content} ${styles.scroller}` }>
           <hr className={Popover.styles.delimiter} />
           <Row>
@@ -182,8 +182,8 @@ class ActionsPanel extends Component {
     } else {
       return (
         <div className={Picker.Wrapper}>
-          <Picker 
-            className={`${popoverVisible && Picker.Active}`} 
+          <Picker
+            className={`${popoverVisible && Picker.Active}`}
             onClick={this.togglePopover}
           >
             <div>
