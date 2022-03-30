@@ -9,7 +9,9 @@ import SkybrowserFocusEntry from './SkybrowserFocusEntry';
 class SkyBrowserImageList extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      distanceSortThreshold: 0.1
+    };
 
     this.getNearestImages = this.getNearestImages.bind(this);
   }
@@ -48,9 +50,17 @@ class SkyBrowserImageList extends Component {
     };
 
     imgsWithinTarget.sort((a, b) => {
-      const result = euclidianDistance(a, selectedBrowserData) > euclidianDistance(b, selectedBrowserData);
+      const distA = euclidianDistance(a, selectedBrowserData);
+      const distB = euclidianDistance(b, selectedBrowserData);
+      let result = distA > distB;
+      // If both the images are within a certain distance of each other
+      // assume they are taken of the same object and sort on fov.
+      if(euclidianDistance(a, b) < this.state.distanceSortThreshold) {
+        result = a.fov > b.fov
+      }
       return result ? 1 : -1;
     });
+
     return imgsWithinTarget;
   }
 
