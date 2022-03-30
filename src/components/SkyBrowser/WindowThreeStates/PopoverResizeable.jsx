@@ -34,7 +34,7 @@ class PopoverResizeable extends Component {
             width: this.props.size.width,
             height: this.props.size.height,
           }}
-          minHeight={280}
+          minHeight={this.props.minHeight}
           maxHeight={900}
           handleClasses={{
             top: styles.topHandle,

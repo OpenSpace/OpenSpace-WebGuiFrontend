@@ -28,7 +28,7 @@ class FloatingWindow extends Component {
             enable={{ right: true, bottom: true }}
             defaultSize={{ width: size.width, height: size.height }}
             minWidth={280}
-            minHeight={280}
+            minHeight={this.props.minHeight}
             handleClasses={{ right: styles.rightHandle, bottom: styles.bottomHandle }}
             onResizeStop={() => setNewHeight(this.windowDiv.clientHeight)}
           >

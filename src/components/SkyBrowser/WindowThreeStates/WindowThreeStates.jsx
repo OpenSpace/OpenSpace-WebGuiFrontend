@@ -36,6 +36,7 @@ class WindowThreeStates extends Component {
         size={{ height: `${height}px`, width: `${this.state.windowWidth}px` }}
         setAsPane={this.setAsPane}
         setAsDetached={this.setAsDetached}
+        minHeight={this.props.minHeight}
       >
         {this.createTopBar()}
         {children}
@@ -51,6 +52,7 @@ class WindowThreeStates extends Component {
         size={{ height, width: `${this.state.windowWidth}px` }}
         setAsPane={this.setAsPane}
         setAsAttached={this.setAsAttached}
+        minHeight={this.props.minHeight}
       >
         {this.createTopBar()}
         {children}
