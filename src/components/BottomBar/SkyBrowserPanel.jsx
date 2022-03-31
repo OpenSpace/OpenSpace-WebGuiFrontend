@@ -243,7 +243,7 @@ class SkyBrowserPanel extends Component {
         heightCallback={this.setCurrentPopoverHeight}
         height={this.state.currentPopoverHeight}
         defaultHeight={440}
-        minHeight={this.state.currentTabHeight + 30}
+        minHeight={this.state.currentTabHeight + this.state.menuHeight}
       >
       {targetsExist ? <div className={styles.content}>
           {this.createImageMenu()}
