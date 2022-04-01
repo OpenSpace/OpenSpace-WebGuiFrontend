@@ -327,11 +327,12 @@ class SkybrowserTabs extends Component {
     }
     const { isUsingRae, isFacingCamera, selectedBrowser } = this.props;
     // Take half to display in ranges [0,1] instead of [0,2]
-    const size = target.size.map(value => value * 0.5);
+    const size = target.size;
     const colors = target.color;
     const colorData = ['Border Color: Red', 'Green', 'Blue'];
     const sizeData = ['Browser Width', 'Browser Height'];
-    const precision = 10;
+    const precisionHigh = 10;
+    const precisionLow = 2;
     const { api } = this.props;
     const { skybrowserApi } = this.props;
 
@@ -358,7 +359,7 @@ class SkybrowserTabs extends Component {
             skybrowserApi.setVerticalFov(selectedBrowser, fov);
           }}
           step={1}
-          value={parseFloat(target.FOV.toFixed(precision))}
+          value={parseFloat(target.FOV.toFixed(precisionHigh))}
           placeholder="value 0"
         />
         <Row>
@@ -368,13 +369,12 @@ class SkybrowserTabs extends Component {
               label={sizeData[index]}
               max={1}
               min={0.1}
-              onValueChanged={(value) => {
-                const newSize = size.map(value => value * 2);
-                newSize[index] = value * 2;
-                skybrowserApi.setScreenSpaceSize(selectedBrowser, newSize[0], newSize[1]);
+              onValueChanged={(newValue) => {
+                size[index] = newValue * 2;
+                skybrowserApi.setScreenSpaceSize(selectedBrowser, size[0], size[1]);
               }}
               step={0.1}
-              value={parseFloat(value.toFixed(precision))}
+              value={parseFloat((value * 0.5).toFixed(precisionLow))}
               placeholder={`value ${index}`}
             />
           ))}
@@ -409,7 +409,7 @@ class SkybrowserTabs extends Component {
             onValueChanged={value => skybrowserApi.setEquatorialAim(selectedBrowser, value, target.dec)
             }
             step={0.1}
-            value={parseFloat(target.ra.toFixed(precision))}
+            value={parseFloat(target.ra.toFixed(precisionHigh))}
             placeholder="value 1"
           />
           <NumericInput
@@ -421,7 +421,7 @@ class SkybrowserTabs extends Component {
             onValueChanged={value => skybrowserApi.setEquatorialAim(selectedBrowser, target.ra, value)
             }
             step={0.1}
-            value={parseFloat(target.dec.toFixed(precision))}
+            value={parseFloat(target.dec.toFixed(precisionHigh))}
             placeholder="value 2"
           />
         </Row>
@@ -491,7 +491,7 @@ class SkybrowserTabs extends Component {
                 skybrowserApi.setScreenSpaceSize(selectedBrowser, newSize[0], newSize[1]);
               }}
               step={0.1}
-              value={parseFloat(value.toFixed(precision))}
+              value={parseFloat(value.toFixed(precisionHigh))}
               placeholder={`value ${index}`}
             />
           ))}
