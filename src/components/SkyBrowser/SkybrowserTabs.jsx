@@ -83,10 +83,7 @@ class SkybrowserTabs extends Component {
       api, isFacingCamera, selectedBrowser, selectedTarget,
     } = this.props;
     const uriBrowser = `ScreenSpace.${selectedBrowser}.FaceCamera`;
-    const uriTarget = `ScreenSpace.${selectedTarget}.FaceCamera`;
-
     api.setPropertyValueSingle(uriBrowser, !isFacingCamera);
-    api.setPropertyValueSingle(uriTarget, !isFacingCamera);
   }
 
   toggleRadiusAzimuthElevation() {
@@ -94,10 +91,7 @@ class SkybrowserTabs extends Component {
       api, isUsingRae, selectedBrowser, selectedTarget,
     } = this.props;
     const uriBrowser = `ScreenSpace.${selectedBrowser}.UseRadiusAzimuthElevation`;
-    const uriTarget = `ScreenSpace.${selectedTarget}.UseRadiusAzimuthElevation`;
-
     api.setPropertyValueSingle(uriBrowser, !isUsingRae);
-    api.setPropertyValueSingle(uriTarget, !isUsingRae);
   }
 
   toggleShowSettings() {
@@ -474,24 +468,6 @@ class SkybrowserTabs extends Component {
               }}
               step={1}
               value={color}
-              placeholder={`value ${index}`}
-            />
-          ))}
-        </Row>
-        <Row className={`${styles.vectorProperty} ${this.disabled ? styles.disabled : ''}`}>
-          {size.map((value, index) => (
-            <NumericInput
-              className={sizeData[index]}
-              label={sizeData[index]}
-              max={1}
-              min={0.1}
-              onValueChanged={(value) => {
-                const newSize = size.map(value => value * 2);
-                newSize[index] = value * 2;
-                skybrowserApi.setScreenSpaceSize(selectedBrowser, newSize[0], newSize[1]);
-              }}
-              step={0.1}
-              value={parseFloat(value.toFixed(precisionHigh))}
               placeholder={`value ${index}`}
             />
           ))}
