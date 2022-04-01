@@ -104,11 +104,11 @@ class SkybrowserFocusEntry extends Component {
         style={{ borderLeftColor: this.props.currentTargetColor() }}
         onMouseEnter={() => { skybrowserApi.moveCircleToHoverImage(Number(identifier)); }}
         onMouseLeave={() => { skybrowserApi.disableHoverCircle(); }}
-        onClick={this.select} 
+        onClick={setOpacity ? undefined : this.select}
       >
         {imageRemoveButton}
         <div className={styles.image}>
-          <img src={thumbnail} alt={''} className={styles.imageText}/>
+          <img src={thumbnail} alt={''} className={styles.imageText} onClick={setOpacity ? this.select : undefined}/>
         </div>
         <div className={styles.imageHeader}>
           <span className={styles.imageTitle}>
