@@ -141,20 +141,3 @@ $tabs-arrowbutton-width: 13.34px;
     background: $tabs-background-content;
   }
 }
-
-.renderCopyButton {
-  margin: 5px;
-  padding: 5px;
-  border-radius: 4px;
-  background: $tabs-buttons;
-  color: $text-color-focus;
-  &:hover,
-  &:active {
-    background: $ui-background-active;
-  }
-}
-
-.buttonContainer {
-  padding: 50;
-  justify-content: center;
-}
