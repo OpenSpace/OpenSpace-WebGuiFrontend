@@ -50,7 +50,6 @@ export const time = (state = defaultState, action = {}) => {
         //  4. -1234-03-15T22:59:20.345
         //  5. -  44-01-30T12:00:00.000
         //  6. -12345-03-15T22:59:20.345
-        console.log(time);
         let date = new Date("2000-01-01T12:00:00.000Z");
         let wholeParts = time.split('T');
         console.assert(wholeParts.length === 2);
