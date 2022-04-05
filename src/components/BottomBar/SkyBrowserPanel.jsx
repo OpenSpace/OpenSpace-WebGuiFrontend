@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Resizable } from 're-resizable';
 import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
 import Picker from './Picker';
 import Button from '../common/Input/Button/Button';
-import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import subStateToProps from '../../utils/subStateToProps';
 import { setPopoverVisibility } from '../../api/Actions';
 // Sky  browser
@@ -155,6 +153,7 @@ class SkyBrowserPanel extends Component {
   }
 
   get popover() {
+    const { imageList, luaApi } = this.props;
     const {
       cameraInSolarSystem,
       currentTabHeight,
@@ -162,14 +161,14 @@ class SkyBrowserPanel extends Component {
       activeImage,
       isFacingCamera,
       isUsingRae,
+      menuHeight,
       showOnlyNearest,
       selectedBrowser,
       selectedTarget,
       targetData,
     } = this.state;
 
-    const api = this.props.luaApi;
-    const skybrowserApi = api.skybrowser;
+    const skybrowserApi = luaApi.skybrowser;
 
     if (!cameraInSolarSystem) {
       const errorMessage = (
@@ -177,7 +176,7 @@ class SkyBrowserPanel extends Component {
           title="AAS WorldWide Telescope"
           closeCallback={this.togglePopover}
           heightCallback={this.setCurrentPopoverHeight}
-          heightWindow={this.state.currentPopoverHeight}
+          heightWindow={currentPopoverHeight}
         >
           <CenteredLabel>
             The camera has to be within the solar system for the sky browser to work.
@@ -191,7 +190,7 @@ class SkyBrowserPanel extends Component {
 
     const skybrowserTabs = (
       <SkybrowserTabs
-        api={api}
+        api={luaApi}
         skybrowserApi={skybrowserApi}
         cameraInSolarSystem={cameraInSolarSystem}
         targets={targetData}
@@ -199,41 +198,39 @@ class SkyBrowserPanel extends Component {
         selectedBrowser={selectedBrowser}
         isUsingRae={isUsingRae}
         isFacingCamera={isFacingCamera}
-        maxHeight={this.state.currentPopoverHeight - this.state.menuHeight}
+        maxHeight={currentPopoverHeight - menuHeight}
         minHeight={130}
         setCurrentTabHeight={this.setCurrentTabHeight}
-        height={this.state.currentTabHeight}
+        height={currentTabHeight}
         data={thisTabsImages}
         selectImage={this.selectImage}
         currentTargetColor={this.getCurrentTargetColor}
       />
     );
 
-    const currentImageListHeight = this.state.currentPopoverHeight - this.state.currentTabHeight - this.state.menuHeight;
+    const currentImageListHeight = currentPopoverHeight - currentTabHeight - menuHeight;
 
-    const imageList = (
+    const imageListComponent = (
       <SkyBrowserImageList
-        luaApi={this.props.luaApi}
-        imageList={this.props.imageList}
-        selectedBrowserData={this.state.targetData[this.state.selectedBrowser]}
-        showOnlyNearest={this.state.showOnlyNearest}
-        activeImage={this.state.activeImage}
+        luaApi={luaApi}
+        imageList={imageList}
+        selectedBrowserData={targetData[selectedBrowser]}
+        showOnlyNearest={showOnlyNearest}
+        activeImage={activeImage}
         getCurrentTargetColor={this.getCurrentTargetColor}
         selectImage={this.selectImage}
         height={currentImageListHeight}
-        showOnlyNearest={this.state.showOnlyNearest}
       />
     );
 
-    const targetsExist = Object.keys(this.state.targetData).length !== 0;
+    const targetsExist = Object.keys(targetData).length !== 0;
     const addTargetBrowserPairButton = <Button
         onClick={() => skybrowserApi.createTargetBrowserPair()}
         className={styles.addTabButton}
         transparent
       >
         <CenteredLabel>Add Sky Browser</CenteredLabel>
-        <div className={styles.plus}>
-        </div>
+        <div className={styles.plus} />
       </Button>;
 
     return (
@@ -241,20 +238,19 @@ class SkyBrowserPanel extends Component {
         title="AAS WorldWide Telescope"
         closeCallback={this.togglePopover}
         heightCallback={this.setCurrentPopoverHeight}
-        height={this.state.currentPopoverHeight}
+        height={currentPopoverHeight}
         defaultHeight={440}
-        minHeight={this.state.currentTabHeight + this.state.menuHeight}
+        minHeight={currentTabHeight + menuHeight}
       >
       {targetsExist ? <div className={styles.content}>
           {this.createImageMenu()}
-          {imageList}
+          {imageListComponent}
           {skybrowserTabs}
         </div> :
         <div className={`${styles.content} ${styles.center}`}>
           {addTargetBrowserPairButton}
         </div>
       }
-
       </WindowThreeStates>
     );
   }

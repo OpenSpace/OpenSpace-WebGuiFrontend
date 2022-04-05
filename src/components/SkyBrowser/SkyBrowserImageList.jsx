@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import FilterList from '../common/FilterList/FilterList';
-import Picker from '../BottomBar/Picker';
-import ScrollOverlay from '../common/ScrollOverlay/ScrollOverlay';
 import styles from './SkyBrowserImageList.scss';
 import SkybrowserFocusEntry from './SkybrowserFocusEntry';
 
