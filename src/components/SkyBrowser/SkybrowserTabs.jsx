@@ -145,7 +145,7 @@ class SkybrowserTabs extends Component {
         onClick={() => {
           button.function(targetId);
         }}
-        onMouseLeave={() => this.hideTooltip(index)}
+        onMouseOut={() => this.hideTooltip(index)}
         className={button.selected ? styles.tabButtonActive : styles.tabButtonInactive}
         transparent
         small
@@ -153,7 +153,7 @@ class SkybrowserTabs extends Component {
         <MaterialIcon
           icon={button.icon}
           className="medium"
-          onMouseEnter={() => this.showTooltip(index)}
+          onMouseOver={() => this.showTooltip(index)}
         />
         {this.state.isShowingInfoButtons[index] && (
           <TooltipSkybrowser placement="bottom-right" style={this.positionInfo}>

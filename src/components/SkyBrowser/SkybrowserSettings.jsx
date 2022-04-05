@@ -141,8 +141,8 @@ class SkybrowserSettings extends Component {
           <MaterialIcon
             icon={'info'}
             ref={this.setRef('copiesPosition')}
-            onMouseEnter={() => this.setState({ showCopiesInfo : true})}
-            onMouseLeave={() => this.setState({ showCopiesInfo : false})}
+            onMouseOver={() => this.setState({ showCopiesInfo : true})}
+            onMouseOut={() => this.setState({ showCopiesInfo : false})}
             style={{fontSize: '15px'}}>
           </MaterialIcon>
           {
@@ -285,8 +285,8 @@ class SkybrowserSettings extends Component {
           </Row>
           <div
             ref={this.setRef('raeInfo')}
-            onMouseEnter={() => this.setState({ showSettingsRaeInfo : true})}
-            onMouseLeave={() => this.setState({ showSettingsRaeInfo : false})}
+            onMouseOver={() => this.setState({ showSettingsRaeInfo : true})}
+            onMouseOut={() => this.setState({ showSettingsRaeInfo : false})}
           >
           <Checkbox
             label="Use Radius Azimuth Elevation"

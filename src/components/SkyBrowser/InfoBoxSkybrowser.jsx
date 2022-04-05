@@ -84,16 +84,16 @@ class InfoBoxSkybrowser extends Component {
       <span ref={this.setRef('wrapper')}>
         <MaterialIcon
         icon={icon}
-        onMouseEnter={this.showPopup}
-        onMouseLeave={() => setTimeout(this.checkIfTooltipActive, 500)}
+        onMouseOver={this.showPopup}
+        onMouseOut={() => setTimeout(this.checkIfTooltipActive, 500)}
         style={{fontSize: '15px'}}>
         </MaterialIcon>
           { showPopup && (
             <TooltipSkybrowser
             placement="bottom-left"
             style={this.position}
-            onMouseEnter={this.tooltipActive}
-            onMouseLeave={this.hidePopup}>
+            onMouseOver={this.tooltipActive}
+            onMouseOut={this.hidePopup}>
             <span className={styles.tooltipTitle}> { title } </span>
             { text }
             { text && (
