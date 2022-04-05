@@ -4,6 +4,7 @@ import { Resizable } from 're-resizable';
 import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
 import Picker from './Picker';
 import Button from '../common/Input/Button/Button';
+import SmallLabel from '../common/SmallLabel/SmallLabel';
 import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import subStateToProps from '../../utils/subStateToProps';
 import { setPopoverVisibility } from '../../api/Actions';
@@ -11,8 +12,8 @@ import { setPopoverVisibility } from '../../api/Actions';
 import WindowThreeStates from '../SkyBrowser/WindowThreeStates/WindowThreeStates';
 import SkybrowserTabs from '../SkyBrowser/SkybrowserTabs';
 import SkyBrowserImageList from '../SkyBrowser/SkyBrowserImageList';
-import wwtLogo from './wwtlogo.png';
 import styles from './SkyBrowserPanel.scss';
+import { Icon } from '@iconify/react';
 
 class SkyBrowserPanel extends Component {
   constructor(props) {
@@ -226,15 +227,27 @@ class SkyBrowserPanel extends Component {
     );
 
     const targetsExist = Object.keys(this.state.targetData).length !== 0;
-    const addTargetBrowserPairButton = <Button
-        onClick={() => skybrowserApi.createTargetBrowserPair()}
-        className={styles.addTabButton}
-        transparent
-      >
-        <CenteredLabel>Add Sky Browser</CenteredLabel>
-        <div className={styles.plus}>
+    const addTargetBrowserPairButton = (
+      <div className={styles.upperPart}>
+        <Button
+          onClick={() => skybrowserApi.createTargetBrowserPair()}
+          className={styles.addTabButton}
+          transparent
+        >
+          <CenteredLabel>Add Sky Browser</CenteredLabel>
+          <div className={styles.plus}>
+          </div>
+        </Button>
+      </div>);
+    const wwtLogoImg = (
+      <div className={styles.credits}>
+        <div className={styles.wwtLogoContainer}>
+          <img src={require('./wwtlogo.png')} alt="WwtLogo" className={styles.wwtLogo} />
+          <SmallLabel>
+            Powered by AAS WorldWide Telescope
+          </SmallLabel>
         </div>
-      </Button>;
+      </div>);
 
     return (
       <WindowThreeStates
@@ -252,6 +265,7 @@ class SkyBrowserPanel extends Component {
         </div> :
         <div className={`${styles.content} ${styles.center}`}>
           {addTargetBrowserPairButton}
+          {wwtLogoImg}
         </div>
       }
 
@@ -263,10 +277,8 @@ class SkyBrowserPanel extends Component {
     return (
       this.state.moduleIsLoaded && (
         <div className={Picker.Wrapper}>
-          <Picker onClick={this.togglePopover} style={{ padding: 0 }}>
-            <div style={{ textAlign: 'center', display: 'block' }}>
-              <img src={wwtLogo} alt="WWT" style={{ width: '50%', height: '50%' }} />
-            </div>
+          <Picker onClick={this.togglePopover} >
+            <Icon icon="mdi:telescope" color="white" alt="WWT" style={{ fontSize: '2em' }}/>
           </Picker>
           {this.props.popoverVisible && this.popover}
         </div>
