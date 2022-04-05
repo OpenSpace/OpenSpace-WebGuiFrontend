@@ -1,11 +1,12 @@
 @import "../../../styles/all";
+ ;
 
 $icon-size: 32px;
 $small-icon-size: 16px;
 
 .Icon {
   font-size: $icon-size;
-  margin-right: ($base-padding / 2);
+  margin-right: calc($base-padding/ 2);
 }
 
 .ButtonIcon {
@@ -19,7 +20,7 @@ $small-icon-size: 16px;
 .iconImage {
   animation: $appear-animation;
   height: $icon-size - 8px;
-  margin-right: ($base-padding / 2);
+  margin-right: calc($base-padding/ 2);
 }
 
 .list :global(.scroll-content) {

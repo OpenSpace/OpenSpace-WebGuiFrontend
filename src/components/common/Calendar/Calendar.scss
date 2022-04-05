@@ -1,6 +1,6 @@
 @import "../../../styles/all";
 
-$column-width: 100%/7;
+$column-width: calc(100%/ 7);
 $selected-border-width: 2px;
 
 .header {
@@ -57,5 +57,5 @@ $selected-border-width: 2px;
 }
 
 .year {
-  padding: $base-padding / 3 !important;
+  padding: calc($base-padding / 3) !important;
 }

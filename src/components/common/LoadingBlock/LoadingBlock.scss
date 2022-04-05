@@ -1,5 +1,6 @@
 @import "../../../styles/all";
 @import "../LoadingString/LoadingString";
+ ;
 
 .block {
   @extend .loadingBackground;
@@ -9,5 +10,5 @@
 }
 
 .block + .block {
-  margin-top: $base-padding / 2;
+  margin-top: calc($base-padding/ 2);
 }

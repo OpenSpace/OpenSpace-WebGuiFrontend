@@ -63,7 +63,8 @@ class ClimatePanel extends Component {
   }
 
   getSurfaceLayerAlaska() {
-    var surfaceLayers;
+    this.props.luaApi.time.setTime("2021-06-18T19:00:00");
+    //this.props.luaApi.navigation.addLocalRotation(20, 10);
     this.setState((prevState) => ({
       isToggleOn: !prevState.isToggleOn,
     }));
@@ -72,21 +73,25 @@ class ClimatePanel extends Component {
       "Scene.Earth.Renderable.Layers.ColorLayers.VIIRS_SNPP_Temporal.Enabled",
       this.state.isToggleOn
     );*/
-    surfaceLayers = this.props.luaApi.setPropertyValueSingle(
+    this.props.luaApi.setPropertyValueSingle(
       "Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled", true);
 
+    this.props.luaApi.setPropertyValueSingle(
+        "Scene.Earth.Renderable.Layers.ColorLayers.VIIRS_SNPP_Temporal.Enabled", false);
     //this.props.luaApi.setPropertyValue('Dashboard.StartPositionOffset', [10, -70]);
     this.props.luaApi.globebrowsing.flyToGeo(
+      "Earth",
       61.7810,
       -156.4567,
       2556000.0000,
+      7,
       true
     );
 
-    return surfaceLayers;
   }
 
   getSurfaceLayerGreenland() {
+    this.props.luaApi.time.setTime("2021-06-18T19:00:00");
     var surfaceLayers;
     this.setState((prevState) => ({
       isToggleOn: !prevState.isToggleOn,
@@ -98,10 +103,16 @@ class ClimatePanel extends Component {
     );*/
     surfaceLayers = this.props.luaApi.setPropertyValueSingle(
       "Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled", true)
+
+    this.props.luaApi.setPropertyValueSingle(
+        "Scene.Earth.Renderable.Layers.ColorLayers.VIIRS_SNPP_Temporal.Enabled", false);
+
     this.props.luaApi.globebrowsing.flyToGeo(
+      "Earth",
       71.0472,
       -47.1729,
       3881000.0000,
+      7,
       true
     );
 
@@ -110,7 +121,9 @@ class ClimatePanel extends Component {
   }
 
   getSurfaceLayerAntarctica() {
-    var surfaceLayers;
+    this.props.luaApi.time.setTime("2021-12-18T09:00:00");
+    //this.props.luaApi.navigation.addGlobalRotation(20, 10);
+//  var surfaceLayers;
     this.setState((prevState) => ({
       isToggleOn: !prevState.isToggleOn,
     }));
@@ -119,21 +132,55 @@ class ClimatePanel extends Component {
       "Scene.Earth.Renderable.Layers.ColorLayers.Terra_Modis_Temporal.Enabled",
       this.state.isToggleOn
     );*/
-    surfaceLayers = this.props.luaApi.setPropertyValueSingle(
+    this.props.luaApi.setPropertyValueSingle(
       "Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled", true)
-
+    this.props.luaApi.setPropertyValueSingle(
+          "Scene.Earth.Renderable.Layers.ColorLayers.VIIRS_SNPP_Temporal.Enabled", false);
+    //this.props.luaApi.time.setTime("2018-12-18T12:00:00");
     this.props.luaApi.globebrowsing.flyToGeo(
+      "Earth",
       -84.6081,
       94.7813,
       6990000.0000,
+      7,
       true
     );
-    return surfaceLayers;
+
+
+
+    //return surfaceLayers;
   }
+
+  getSurfaceLayerCurrents() {
+    this.props.luaApi.time.setTime("2021-12-18T09:00:00");
+    //this.props.luaApi.navigation.addGlobalRotation(20, 10);
+//  var surfaceLayers;
+    this.setState((prevState) => ({
+      isToggleOn: !prevState.isToggleOn,
+    }));
+    console.log("togle", this.state.isToggleOn);
+    this.props.luaApi.setPropertyValueSingle(
+      "Scene.Earth.Renderable.Layers.ColorLayers.OSCAR_Sea_Surface_Currents_Zonal.Enabled",
+      this.state.isToggleOn
+    );
+    this.props.luaApi.setPropertyValueSingle(
+      "Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled", true)
+    this.props.luaApi.setPropertyValueSingle(
+          "Scene.Earth.Renderable.Layers.ColorLayers.VIIRS_SNPP_Temporal.Enabled", false);
+    //this.props.luaApi.time.setTime("2018-12-18T12:00:00");
+    /*this.props.luaApi.globebrowsing.flyToGeo(
+      "Earth",
+      -67.2303,
+      48.9053,
+      12526000.0000,
+      7,
+      true
+    );*/
+
+}
 
   get popover() {
     var actionsContent;
-    var childrenContent;
     var backButton;
     var antarctica;
     var greenland;
@@ -214,7 +261,7 @@ class ClimatePanel extends Component {
         block
         smalltext
         onClick={() => {
-          popover2();
+          this.getSurfaceLayerCurrents();
         }}
         className={styles.actionButton}
       >
@@ -245,7 +292,6 @@ class ClimatePanel extends Component {
           <div className={styles.Grid}>
             {backButton}
             {actionsContent}
-            {childrenContent}
             {antarctica}
             {greenland}
             {alaska}

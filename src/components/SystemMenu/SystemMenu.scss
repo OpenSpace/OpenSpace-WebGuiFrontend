@@ -47,7 +47,7 @@
   }
 
   a, button {
-    padding: ($base-padding / 2) $base-padding;
+    padding: calc($base-padding/ 2) $base-padding;
     color: $text-color-focus;
     display: block;
     text-decoration: none;
@@ -58,7 +58,7 @@
   }
 
   .devModeNotifier {
-    padding: ($base-padding / 2) $base-padding;
+    padding: calc($base-padding/ 2) $base-padding;
     color: $ui-warning;
   }
 
