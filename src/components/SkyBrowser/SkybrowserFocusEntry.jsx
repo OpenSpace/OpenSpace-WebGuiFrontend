@@ -108,7 +108,7 @@ class SkybrowserFocusEntry extends Component {
       >
         {imageRemoveButton}
         <div className={styles.image}>
-          <img src={thumbnail} alt={''} className={styles.imageText} onClick={setOpacity ? this.select : undefined}/>
+          <img src={thumbnail} alt={''} loading='lazy' className={styles.imageText} onClick={setOpacity ? this.select : undefined}/>
         </div>
         <div className={styles.imageHeader}>
           <span className={styles.imageTitle}>

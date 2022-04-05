@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import FilterList from '../common/FilterList/FilterList';
-import Picker from '../BottomBar/Picker';
-import ScrollOverlay from '../common/ScrollOverlay/ScrollOverlay';
 import styles from './SkyBrowserImageList.scss';
 import SkybrowserFocusEntry from './SkybrowserFocusEntry';
 
@@ -16,8 +14,24 @@ class SkyBrowserImageList extends Component {
     this.getNearestImages = this.getNearestImages.bind(this);
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    if (nextProps.showOnlyNearest) {
+      // TODO: this can probably be made more efficient. We don't need to
+      // rerender if nothing changed
+      return true;
+    }
+    // Prevent rerendering unless important properties actually changed
+    return !(
+      this.props.showOnlyNearest === nextProps.showOnlyNearest &&
+      this.props.height === nextProps.height &&
+      this.props.selectImage === nextProps.selectImage &&
+      this.props.activeImage === nextProps.activeImage
+    );
+  }
+
   getNearestImages() {
     const { imageList, selectedBrowserData } = this.props;
+    const { distanceSortThreshold } = this.state;
 
     if (!selectedBrowserData || Object.keys(imageList).length === 0) {
       return [];
@@ -30,13 +44,8 @@ class SkyBrowserImageList extends Component {
       if (!img.hasCelestialCoords) {
         return false; // skip
       }
-      if (
-        isWithinFOV(img.ra, selectedBrowserData.ra, searchRadius)
-        && isWithinFOV(img.dec, selectedBrowserData.dec, searchRadius)
-      ) {
-        return true;
-      }
-      return false;
+      return isWithinFOV(img.ra, selectedBrowserData.ra, searchRadius)
+        && isWithinFOV(img.dec, selectedBrowserData.dec, searchRadius);
     });
 
     const distPow2 = (a, b) => (a - b) * (a - b);
@@ -55,8 +64,8 @@ class SkyBrowserImageList extends Component {
       let result = distA > distB;
       // If both the images are within a certain distance of each other
       // assume they are taken of the same object and sort on fov.
-      if(euclidianDistance(a, selectedBrowserData) < this.state.distanceSortThreshold &&
-         euclidianDistance(b, selectedBrowserData) < this.state.distanceSortThreshold ) {
+      if (euclidianDistance(a, selectedBrowserData) < distanceSortThreshold &&
+          euclidianDistance(b, selectedBrowserData) < distanceSortThreshold ) {
         result = a.fov > b.fov
       }
       return result ? 1 : -1;
@@ -66,27 +75,29 @@ class SkyBrowserImageList extends Component {
   }
 
   render() {
-    const imageList = this.props.showOnlyNearest ? this.getNearestImages() : this.props.imageList;
-    const api = this.props.luaApi;
-    const skybrowserApi = api.skybrowser;
+    const { activeImage, height, imageList, luaApi, showOnlyNearest, selectImage } = this.props;
+
+    const list = showOnlyNearest ? this.getNearestImages() : imageList;
+    const skybrowserApi = luaApi.skybrowser;
+    console.log('rendering image list');
+
+    // TODO: render hint if no images
 
     return (
-      imageList.length > 0 && (
-        <FilterList
-          className={styles.filterList}
-          height={this.props.height}
-          data={imageList}
-          searchText={`Search from ${imageList.length.toString()} images...`}
-          viewComponent={SkybrowserFocusEntry}
-          viewComponentProps={{
-            skybrowserApi,
-            currentTargetColor: this.props.getCurrentTargetColor,
-          }}
-          onSelect={this.props.selectImage}
-          active={this.props.activeImage}
-          searchAutoFocus
-        />
-      )
+      <FilterList
+        className={styles.filterList}
+        height={height} // TODO: prevent rerendering every time height changes
+        data={list}
+        searchText={`Search from ${list.length.toString()} images...`}
+        viewComponent={SkybrowserFocusEntry}
+        viewComponentProps={{
+          skybrowserApi,
+          currentTargetColor: this.props.getCurrentTargetColor,
+        }}
+        onSelect={selectImage}
+        active={activeImage}
+        searchAutoFocus
+      />
     );
   }
 }
