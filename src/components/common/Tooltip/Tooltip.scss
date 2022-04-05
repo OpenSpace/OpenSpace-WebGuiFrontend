@@ -10,7 +10,7 @@ $background: $ui-background-solid;
   font-size: 0.8 * $font-size;
   line-height: 1.4;
   max-width: 150px;
-  padding: $arrow-size (2 * $arrow-size) (1.5 * $arrow-size);
+  padding: $arrow-size calc(2 * $arrow-size) calc(1.5 * $arrow-size);
   position: absolute;
   white-space: normal;
   z-index: 10;

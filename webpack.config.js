@@ -19,6 +19,8 @@ module.exports = {
     publicPath: PublicPath,
   },
   devtool: 'inline-source-map',
+
+
   devServer: {
     historyApiFallback: true,
     hot: true,
@@ -26,15 +28,17 @@ module.exports = {
       directory: resolve(__dirname, 'dist'),
       publicPath: PublicPath
     },
+
     proxy: {
       '/': {
-        target: 'http://localhost:4680',
+        target: 'http://localhost:4690',
         bypass: function(req, res, proxyOptions) {
           if (req.originalUrl.indexOf('/frontend') === 0 ||
               req.originalUrl.indexOf('/environment.js') === 0)
           {
             return req.originalUrl;
           }
+
         }
       }
     }

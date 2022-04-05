@@ -1,6 +1,6 @@
 @import "../../../../styles/all";
 
-$height: $font-size + $base-padding * 1.5;
+$height: calc($font-size + $base-padding * 1.5);
 
 .wrapper {
   &:hover {

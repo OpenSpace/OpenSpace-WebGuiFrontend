@@ -8,13 +8,13 @@ $padding-horizontal: $input-padding-horizontal;
 $padding-vertical: $input-padding-vertical;
 
 // calculate good padding for input field
-$padding-top: $label-size + (2 * $label-margin);
+$padding-top: $label-size + calc(2 * $label-margin);
 $padding-bottom: $padding-vertical - $padding-top;
 $padding-bottom-loading: $padding-vertical - $padding-top - $loading-border-width;
 
 // different states
 $padding: $padding-top $padding-horizontal $padding-bottom;
-$padding-empty: ($padding-vertical / 2) $padding-horizontal;
+$padding-empty: calc($padding-vertical / 2) $padding-horizontal;
 $padding-loading: $padding-top $padding-horizontal $padding-bottom-loading;
 
 .group {
