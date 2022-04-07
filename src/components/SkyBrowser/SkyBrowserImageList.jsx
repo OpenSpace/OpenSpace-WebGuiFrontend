@@ -79,8 +79,6 @@ class SkyBrowserImageList extends Component {
 
     const list = showOnlyNearest ? this.getNearestImages() : imageList;
     const skybrowserApi = luaApi.skybrowser;
-    console.log('rendering image list');
-
     // TODO: render hint if no images
 
     return (

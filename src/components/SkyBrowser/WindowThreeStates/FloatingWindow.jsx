@@ -30,7 +30,11 @@ class FloatingWindow extends Component {
             minWidth={280}
             minHeight={this.props.minHeight}
             handleClasses={{ right: styles.rightHandle, bottom: styles.bottomHandle }}
-            onResizeStop={() => setNewHeight(this.windowDiv.clientHeight)}
+            onResizeStop={() => {
+              if(setNewHeight) {
+                setNewHeight(this.windowDiv.clientHeight)
+              }
+            }}
           >
             {children}
           </Resizable>

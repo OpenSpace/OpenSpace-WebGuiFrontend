@@ -34,8 +34,6 @@ class WindowThreeStates extends Component {
       <PopoverResizeable
         setNewHeight={this.props.heightCallback}
         size={{ height: `${height}px`, width: `${this.state.windowWidth}px` }}
-        setAsPane={this.setAsPane}
-        setAsDetached={this.setAsDetached}
         minHeight={this.props.minHeight}
       >
         {this.createTopBar()}
@@ -50,8 +48,6 @@ class WindowThreeStates extends Component {
       <FloatingWindow
         setNewHeight={this.props.heightCallback}
         size={{ height, width: `${this.state.windowWidth}px` }}
-        setAsPane={this.setAsPane}
-        setAsAttached={this.setAsAttached}
         minHeight={this.props.minHeight}
       >
         {this.createTopBar()}
@@ -64,8 +60,6 @@ class WindowThreeStates extends Component {
     const { children } = this.props;
     return (
       <PaneRightHandSide
-        setAsAttached={this.setAsAttached}
-        setAsDetached={this.setAsDetached}
         width={`${this.state.windowWidth}px`}
         heightCallback={this.props.heightCallback}
       >
