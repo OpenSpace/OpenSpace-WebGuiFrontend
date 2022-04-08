@@ -8,6 +8,7 @@ import OriginPicker from './Origin/OriginPicker';
 import ScreenSpaceRenderablePanel from './ScreenSpaceRenderablePanel';
 import SessionRec from './SessionRec';
 import TimePicker from './TimePicker';
+import SkyBrowserPanel from './SkyBrowserPanel';
 
 const BottomBar = ({ showFlightController }) => (
   <div className={styles.BottomBar}>
@@ -18,6 +19,7 @@ const BottomBar = ({ showFlightController }) => (
     <ExoplanetsPanel />
     <ActionsPanel />
     {showFlightController && <FlightControlPanel />}
+    <SkyBrowserPanel />
   </div>
 );
 
