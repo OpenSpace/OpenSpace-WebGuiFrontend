@@ -240,24 +240,6 @@ class SkybrowserSettings extends Component {
             placeholder="value 0"
           />
           <Row>
-            {size.map((value, index) => (
-              <NumericInput
-                key = {index}
-                className={sizeData[index]}
-                label={sizeData[index]}
-                max={1}
-                min={0.1}
-                onValueChanged={(newValue) => {
-                  size[index] = newValue * 2;
-                  skybrowserApi.setScreenSpaceSize(selectedBrowser, size[0], size[1]);
-                }}
-                step={0.1}
-                value={parseFloat((value * 0.5).toFixed(this.state.precisionLow))}
-                placeholder={`value ${index}`}
-              />
-            ))}
-          </Row>
-          <Row>
             <NumericInput
               className="Right Ascension"
               label="Right Ascension"

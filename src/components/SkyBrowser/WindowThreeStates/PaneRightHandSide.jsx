@@ -12,7 +12,7 @@ class PaneRightHandSide extends Component {
 
   componentDidMount() {
     const { innerWidth: width, innerHeight: height } = window;
-    this.props.heightCallback(innerHeight);
+    this.props.heightCallback(innerWidth, innerHeight);
   }
 
   render() {

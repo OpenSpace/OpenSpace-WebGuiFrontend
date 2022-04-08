@@ -10,7 +10,7 @@ class WorldWideTelescope extends Component {
     this.iframe = React.createRef();
     this.state = {
       isDragging: false,
-      startDragPosition: [0,0]
+      startDragPosition: [0,0],
     };
     this.sendMessageToWwt = this.sendMessageToWwt.bind(this);
     this.setAim = this.setAim.bind(this);
@@ -21,6 +21,10 @@ class WorldWideTelescope extends Component {
     this.addAllSelectedImages = this.addAllSelectedImages.bind(this);
     this.scroll = this.scroll.bind(this);
     this.createTopBar = this.createTopBar.bind(this);
+    this.changeSize = this.changeSize.bind(this);
+    this.setBorderColor = this.setBorderColor.bind(this);
+    this.color = [255, 255, 255];
+    this.screenSpaceSize = [0.5, 0.5];
   }
 
   componentDidMount() {
@@ -32,7 +36,6 @@ class WorldWideTelescope extends Component {
   }
 
   handleCallbackMessage(event) {
-    console.log("React " + event.data);
     if(event.data == "wwt_has_loaded") {
       this.sendMessageToWwt({
        event : "modify_settings",
@@ -44,10 +47,7 @@ class WorldWideTelescope extends Component {
         url:"https://raw.githubusercontent.com/WorldWideTelescope/wwt-web-client/master/assets/webclient-explore-root.wtml",
         loadChildFolders: true
       });
-      this.sendMessageToWwt({
-        event: "set_background_color",
-        data: this.props.target.color}
-      );
+      this.setBorderColor(this.props.target.color);
     }
     if(event.data == "load_image_collection_completed") {
       this.props.setImageCollectionIsLoaded(true);
@@ -55,9 +55,17 @@ class WorldWideTelescope extends Component {
     }
   }
 
+  setBorderColor(color) {
+    this.color = color;
+    this.sendMessageToWwt({
+      event: "set_background_color",
+      data: color}
+    );
+  }
+
   addAllSelectedImages() {
     this.props.selectedImages.reverse().map(image => (
-      this.props.selectImage(image.identifier)
+      this.props.selectImage(image.identifier, false)
     ));
   }
 
@@ -84,7 +92,6 @@ class WorldWideTelescope extends Component {
   handleDrag(mouse) {
     if(this.state.isDragging) {
       const end = [mouse.clientX, mouse.clientY];
-      console.log(end + "   " + this.state.startDragPosition);
       this.props.skybrowserApi.finetuneTargetPosition(this.props.target.id, this.state.startDragPosition, end);
     }
   }
@@ -105,7 +112,6 @@ class WorldWideTelescope extends Component {
   }
 
   scroll(e) {
-    console.log(e.deltaY);
     this.props.skybrowserApi.scrollOverBrowser(this.props.target.id, -e.deltaY);
   }
 
@@ -120,14 +126,29 @@ class WorldWideTelescope extends Component {
     );
   }
 
+  changeSize(widthWwt, heightWwt) {
+    const { innerWidth: windowWidth, innerHeight: windowHeight } = window;
+    const ratio = widthWwt / heightWwt;
+    const scale = heightWwt / windowHeight;
+    const newWidth = 2 * scale * ratio;
+    const newHeight = 2 * scale;
+    const id = this.props.target.id;
+    this.props.skybrowserApi.setScreenSpaceSize(id, newWidth, newHeight);
+    this.screenSpaceSize = [newWidth, newHeight];
+  }
+
   render() {
     const target = this.props.target;
+    if(target.color != this.color) {
+      this.setBorderColor(target.color);
+    }
+
     const iframe =
     <iframe
       id="webpage"
       name = "wwt"
       ref={this.iframe}
-      src="http://localhost:8000"
+      src="http://wwt.openspaceproject.com"
       allow="accelerometer; clipboard-write; gyroscope"
       allowFullScreen
       frameBorder="0"
@@ -154,7 +175,8 @@ class WorldWideTelescope extends Component {
       title={target.name}
       closeCallback={this.togglePopover}
       size={{ height: `400px`, width: `400px` }}
-      position={{ x: -600, y: -400 }}
+      position={{ x: -800, y: -600 }}
+      setNewHeight={this.changeSize}
     >
     {this.createTopBar()}
     <div className={styles.content}>

@@ -71,7 +71,7 @@ class WindowThreeStates extends Component {
 
   setAsDetached() {
     this.setState({ windowStyle: WindowStyle.DETACHED });
-    this.props.heightCallback(this.props.defaultHeight);
+    this.props.heightCallback(0, this.props.defaultHeight);
   }
 
   setAsPane() {
@@ -80,7 +80,7 @@ class WindowThreeStates extends Component {
 
   setAsAttached() {
     this.setState({ windowStyle: WindowStyle.ATTACHED });
-    this.props.heightCallback(this.props.defaultHeight);
+    this.props.heightCallback(0, this.props.defaultHeight);
   }
 
   createTopBar() {

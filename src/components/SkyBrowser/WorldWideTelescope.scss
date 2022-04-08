@@ -16,7 +16,7 @@ $top-bar-height: 25px;
   position: absolute;
   background-color: transparent;
   z-index: 10;
-  height: 100%;
+  height: calc(100% - #{$top-bar-height});
   width: 100%;
   margin: 0px;
   padding: 0px;

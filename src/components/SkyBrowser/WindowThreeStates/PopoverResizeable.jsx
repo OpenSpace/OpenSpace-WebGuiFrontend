@@ -41,7 +41,7 @@ class PopoverResizeable extends Component {
             right: styles.rightHandle,
             left: styles.leftHandle,
           }}
-          onResizeStop={() => setNewHeight(this.windowDiv.clientHeight)}
+          onResizeStop={() => setNewHeight(this.windowDiv.clientWidth, this.windowDiv.clientHeight)}
         >
           {children}
         </Resizable>

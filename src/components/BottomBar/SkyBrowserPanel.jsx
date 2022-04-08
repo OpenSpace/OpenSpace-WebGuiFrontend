@@ -125,16 +125,18 @@ class SkyBrowserPanel extends Component {
     this.setState({ currentTabHeight: height });
   }
 
-  setCurrentPopoverHeight(height) {
+  setCurrentPopoverHeight(width, height) {
     this.setState({ currentPopoverHeight: height });
   }
 
-  selectImage(identifier) {
+  selectImage(identifier, passToOs = true) {
     if (identifier) {
       this.setState({
         activeImage: identifier,
       });
-      this.props.luaApi.skybrowser.selectImage(Number(identifier));
+      if(passToOs) {
+        this.props.luaApi.skybrowser.selectImage(Number(identifier));
+      }
       this.passMessageToWwt({
         event: "image_layer_create",
         id: identifier,
@@ -299,7 +301,7 @@ class SkyBrowserPanel extends Component {
         heightCallback={this.setCurrentPopoverHeight}
         height={currentPopoverHeight}
         defaultHeight={440}
-        minHeight={currentTabHeight + menuHeight}
+        minHeight={440}
       >
       {targetsExist ? <div className={styles.content}>
           {this.createImageMenu()}

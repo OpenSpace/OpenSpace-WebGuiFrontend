@@ -32,7 +32,7 @@ class FloatingWindow extends Component {
             handleClasses={{ right: styles.rightHandle, bottom: styles.bottomHandle }}
             onResizeStop={() => {
               if(setNewHeight) {
-                setNewHeight(this.windowDiv.clientHeight)
+                setNewHeight(this.windowDiv.clientWidth, this.windowDiv.clientHeight)
               }
             }}
           >
