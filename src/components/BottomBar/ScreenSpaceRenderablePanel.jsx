@@ -147,7 +147,7 @@ class ScreenSpaceRenderablePanel extends Component {
 }
 
 const mapStateToProps = state => {
-  var renderables = state.propertyTree.propertyOwners.ScreenSpace ?
+  const renderables = state.propertyTree.propertyOwners.ScreenSpace ?
     state.propertyTree.propertyOwners.ScreenSpace.subowners :
     [];
 
@@ -165,16 +165,15 @@ const mapDispatchToProps = dispatch => ({
       popover: 'screenSpaceRenderables',
       visible
     }));
-    if (visible) {
-      dispatch(reloadPropertyTree());
-    }
   },
   refresh: () => {
     dispatch(reloadPropertyTree());
   }
 })
 
-ScreenSpaceRenderablePanel =
-  connect(mapStateToProps, mapDispatchToProps)(ScreenSpaceRenderablePanel);
+ScreenSpaceRenderablePanel = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ScreenSpaceRenderablePanel);
 
 export default ScreenSpaceRenderablePanel;
