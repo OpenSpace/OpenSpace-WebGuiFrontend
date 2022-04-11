@@ -10,6 +10,7 @@ import { sessionRecording } from './sessionRecording';
 import { flightController } from './flightController';
 import { documentation } from './documentation';
 import { exoplanets } from './exoplanets';
+import { skybrowser } from './skybrowser';
 
 import logger from './logger';
 
@@ -26,6 +27,7 @@ const middleware = applyMiddleware(
   flightController,
   documentation,
   exoplanets,
+  skybrowser,
 );
 
 export default middleware;

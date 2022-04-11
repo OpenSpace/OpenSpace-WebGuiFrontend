@@ -20,7 +20,7 @@ Elements.FullDate = [Elements.FullYear, Elements.Month, Elements.Date];
 Elements.DateAndTime = Elements.FullDate.concat(null).concat(Elements.Time);
 Object.freeze(Elements);
 
-const Months = "January February Mars April May June July August September October November December".split(" ");
+const Months = "January February March April May June July August September October November December".split(" ");
 
 const Interpretors = {
   Month: (input) => {
@@ -112,30 +112,39 @@ class Time extends Component {
   get date() {
     const { time } = this.props;
     const hours = this.shouldInclude(Elements.Hours);
-    return this.wrap(`${Time.zeroPad(time.getUTCDate())}`, 'Date', hours && ':');
+    const d = time.getUTCDate();
+    const zpd = Time.zeroPad(d);
+    return this.wrap(`${zpd}`, 'Date', hours && ':');
   }
 
   get hours() {
     const { time } = this.props;
     const minutes = this.shouldInclude(Elements.Minutes);
-    return this.wrap(`${Time.zeroPad(time.getUTCHours())}`, 'Hours', minutes && ':');
+    const h = time.getUTCHours();
+    const zph = Time.zeroPad(h);
+    return this.wrap(`${zph}`, 'Hours', minutes && ':');
   }
 
   get minutes() {
     const { time } = this.props;
     const seconds = this.shouldInclude(Elements.Seconds);
-    return this.wrap(`${Time.zeroPad(time.getUTCMinutes())}`, 'Minutes', seconds && ':');
+    const m = time.getUTCMinutes();
+    const zpm = Time.zeroPad(m);
+    return this.wrap(`${zpm}`, 'Minutes', seconds && ':');
   }
 
   get seconds() {
     const { time } = this.props;
     const milliseconds = this.shouldInclude(Elements.Milliseconds);
-    return this.wrap(`${Time.zeroPad(time.getUTCSeconds())}`, 'Seconds', milliseconds && '.');
+    const s = time.getUTCSeconds();
+    const zps = Time.zeroPad(s);
+    return this.wrap(`${zps}`, 'Seconds', milliseconds && '.');
   }
 
   get milliseconds() {
     const { time } = this.props;
-    return this.wrap(time.getUTCMilliseconds(), 'Milliseconds');
+    const ms = time.getUTCMilliseconds();
+    return this.wrap(ms, 'Milliseconds');
   }
 
   get hasCallback() {

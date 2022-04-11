@@ -199,6 +199,11 @@ export const removeExoplanets = data => ({
   payload: data,
 });
 
+export const initializeSkyBrowser = data => ({
+  type: actionTypes.initializeSkyBrowser,
+  payload: data
+});
+
 export const subscribeToShortcuts = () => ({
   type: actionTypes.subscribeToShortcuts,
   payload: {},
