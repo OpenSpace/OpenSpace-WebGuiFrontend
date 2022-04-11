@@ -60,6 +60,7 @@ export const SessionStatePlaying = 'playing';
 export const SessionStatePaused = 'playing-paused';
 
 export const ExoplanetsModuleEnabledKey = 'Modules.Exoplanets.Enabled';
+export const SkyBrowserModuleEnabledKey = 'Modules.SkyBrowser.Enabled';
 
 // renderableTypes
 export const RenderableTypes = {
