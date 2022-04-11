@@ -81,12 +81,11 @@ class ExoplanetsPanel extends Component {
   }
 
   get popover() {
-    const starNameLabel = <span>Star name</span>;
     const noContentLabel = <CenteredLabel>No active systems</CenteredLabel>;
-    const renderables = this.props.exoplanetSystems; 
+    const renderables = this.props.exoplanetSystems;
     let panelContent;
 
-    if (renderables.length == 0) {
+    if (renderables.length === 0) {
       panelContent = noContentLabel;
     } else {
       panelContent = renderables.map(prop =>
@@ -108,15 +107,22 @@ class ExoplanetsPanel extends Component {
       >        
         <div className={Popover.styles.content}>
           <Row>
-            <FilterList
-              data={this.props.systemList}
-              className={styles.list}
-              searchText={"Star name..."}
-              viewComponent={FocusEntry}
-              onSelect={this.onSelect}
-              active={this.state.starName}
-              searchAutoFocus
-            />
+            { this.props.hasSystems ? (
+              <FilterList
+                data={this.props.systemList}
+                className={styles.list}
+                searchText={"Star name..."}
+                viewComponent={FocusEntry}
+                onSelect={this.onSelect}
+                active={this.state.starName}
+                searchAutoFocus
+              />
+            ) : (
+              <CenteredLabel className={styles.redText}>
+                No exoplanet data was loaded
+              </CenteredLabel>
+            )
+            }
             <div className={Popover.styles.row}>
               <Button onClick={this.addSystem}
                       title="Add system"
@@ -140,7 +146,7 @@ class ExoplanetsPanel extends Component {
   }
 
   render() {
-    const { enabled, popoverVisible, hasSystems } = this.props;
+    const { enabled, popoverVisible } = this.props;
 
     if (!enabled) {
       return <></>;
@@ -148,16 +154,14 @@ class ExoplanetsPanel extends Component {
 
     return (
       <div className={Picker.Wrapper}>
-        {hasSystems && 
-          <Picker 
-            className={`${popoverVisible && Picker.Active}`} 
-            onClick={this.togglePopover}
-          >
-            <div>
-              <MaterialIcon className={styles.photoIcon} icon="hdr_strong" />
-            </div>
-          </Picker>
-        }
+        <Picker 
+          className={`${popoverVisible && Picker.Active}`} 
+          onClick={this.togglePopover}
+        >
+          <div>
+            <MaterialIcon className={styles.photoIcon} icon="hdr_strong" />
+          </div>
+        </Picker>
         { popoverVisible && this.popover }
       </div>
     );
