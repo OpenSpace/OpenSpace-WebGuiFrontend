@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import Window from '../common/Window/Window';
-import Picker from '../BottomBar/Picker';
+import Window from '../../common/Window/Window';
+import Picker from '../Picker';
 import FloatingWindow from './WindowThreeStates/FloatingWindow'
 import styles from './WorldWideTelescope.scss'
 
@@ -29,6 +29,7 @@ class WorldWideTelescope extends Component {
 
   componentDidMount() {
     window.addEventListener("message", this.handleCallbackMessage);
+    this.props.setImageCollectionIsLoaded(false);
   }
 
   componentWillUnmount() {
@@ -47,7 +48,9 @@ class WorldWideTelescope extends Component {
         url:"https://raw.githubusercontent.com/WorldWideTelescope/wwt-web-client/master/assets/webclient-explore-root.wtml",
         loadChildFolders: true
       });
-      this.setBorderColor(this.props.target.color);
+      if(this.props.browser) {
+        this.setBorderColor(this.props.browser.color);
+      }
     }
     if(event.data == "load_image_collection_completed") {
       this.props.setImageCollectionIsLoaded(true);
@@ -92,12 +95,12 @@ class WorldWideTelescope extends Component {
   handleDrag(mouse) {
     if(this.state.isDragging) {
       const end = [mouse.clientX, mouse.clientY];
-      this.props.skybrowserApi.finetuneTargetPosition(this.props.target.id, this.state.startDragPosition, end);
+      this.props.skybrowserApi.finetuneTargetPosition(this.props.browser.id, this.state.startDragPosition, end);
     }
   }
 
   mouseDown(mouse) {
-    this.props.skybrowserApi.startFinetuningTarget(this.props.target.id);
+    this.props.skybrowserApi.startFinetuningTarget(this.props.browser.id);
     const position = [mouse.clientX, mouse.clientY];
     this.setState({
       isDragging : true,
@@ -112,14 +115,13 @@ class WorldWideTelescope extends Component {
   }
 
   scroll(e) {
-    this.props.skybrowserApi.scrollOverBrowser(this.props.target.id, -e.deltaY);
+    this.props.skybrowserApi.scrollOverBrowser(this.props.browser.id, -e.deltaY);
   }
 
   createTopBar() {
-
     return (
       <header className={`header ${styles.topMenu}`}>
-        <div className={styles.title}>{this.props.target.name}</div>
+        <div className={styles.title}>{this.props.browser.name}</div>
         <div>
         </div>
       </header>
@@ -132,58 +134,63 @@ class WorldWideTelescope extends Component {
     const scale = heightWwt / windowHeight;
     const newWidth = 2 * scale * ratio;
     const newHeight = 2 * scale;
-    const id = this.props.target.id;
+    const id = this.props.browser.id;
     this.props.skybrowserApi.setScreenSpaceSize(id, newWidth, newHeight);
     this.screenSpaceSize = [newWidth, newHeight];
   }
 
   render() {
-    const target = this.props.target;
-    if(target.color != this.color) {
-      this.setBorderColor(target.color);
-    }
+    const browser = this.props.browser;
+    if(browser) {
+      if(browser.color != this.color) {
+        this.setBorderColor(browser.color);
+      }
 
-    const iframe =
-    <iframe
-      id="webpage"
-      name = "wwt"
-      ref={this.iframe}
-      src="http://wwt.openspaceproject.com"
-      allow="accelerometer; clipboard-write; gyroscope"
-      allowFullScreen
-      frameBorder="0"
-      align="middle"
-      className={styles.wwt}
+      const iframe =
+      <iframe
+        id="webpage"
+        name = "wwt"
+        ref={this.iframe}
+        src="http://wwt.openspaceproject.com"
+        allow="accelerometer; clipboard-write; gyroscope"
+        allowFullScreen
+        frameBorder="0"
+        align="middle"
+        className={styles.wwt}
+        >
+          <p>ERROR: cannot display AAS WorldWide Telescope research app!</p>
+        </iframe>;
+
+      const button = <button
+        className={styles.container}
+        onMouseMove={this.handleDrag}
+        onMouseDown={this.mouseDown}
+        onMouseUp={this.mouseUp}
+        onMouseLeave={this.mouseUp}
+        onWheel = {(e) => this.scroll(e)} />
+
+      if(browser) {
+        this.setAim(browser.ra, browser.dec, browser.fov, browser.roll);
+      }
+
+      return <FloatingWindow
+        className={`${Picker.Popover}`}
+        title={browser.name}
+        closeCallback={this.togglePopover}
+        size={{ height: `400px`, width: `400px` }}
+        position={{ x: -800, y: -600 }}
+        setNewHeight={this.changeSize}
       >
-        <p>ERROR: cannot display AAS WorldWide Telescope research app!</p>
-      </iframe>;
-
-    const button = <button
-      className={styles.container}
-      onMouseMove={this.handleDrag}
-      onMouseDown={this.mouseDown}
-      onMouseUp={this.mouseUp}
-      onMouseLeave={this.mouseUp}
-      onWheel = {(e) => this.scroll(e)} />
-
-    if(target) {
-      this.setAim(target.ra, target.dec, target.FOV, target.roll);
+      {this.createTopBar()}
+      <div className={styles.content}>
+      {button}
+      {iframe}
+      </div>
+      </FloatingWindow>;
     }
-
-    return <FloatingWindow
-      className={`${Picker.Popover}`}
-      title={target.name}
-      closeCallback={this.togglePopover}
-      size={{ height: `400px`, width: `400px` }}
-      position={{ x: -800, y: -600 }}
-      setNewHeight={this.changeSize}
-    >
-    {this.createTopBar()}
-    <div className={styles.content}>
-    {button}
-    {iframe}
-    </div>
-    </FloatingWindow>;
+    else {
+      return "";
+    }
   }
 }
 export default WorldWideTelescope;

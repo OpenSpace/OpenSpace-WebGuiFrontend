@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Resizable } from 're-resizable';
-import Button from '../common/Input/Button/Button';
-import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
-import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
-import TooltipSkybrowser from './TooltipSkybrowser';
-import SkybrowserFocusEntry from './SkybrowserFocusEntry';
-import styles from './SkybrowserTabs.scss';
-import SkybrowserSettings from './SkybrowserSettings.jsx'
+import Button from '../../common/Input/Button/Button';
+import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
+import CenteredLabel from '../../common/CenteredLabel/CenteredLabel';
+import SkyBrowserTooltip from './SkyBrowserTooltip';
+import SkyBrowserFocusEntry from './SkyBrowserFocusEntry';
+import styles from './SkyBrowserTabs.scss';
+import SkyBrowserSettings from './SkyBrowserSettings.jsx'
 
-class SkybrowserTabs extends Component {
+class SkyBrowserTabs extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -19,7 +19,6 @@ class SkybrowserTabs extends Component {
     };
     this.createTabs = this.createTabs.bind(this);
     this.createImageList = this.createImageList.bind(this);
-    this.setRef = this.setRef.bind(this);
     this.showTooltip = this.showTooltip.bind(this);
     this.hideTooltip = this.hideTooltip.bind(this);
     this.setOpacityOfImage = this.setOpacityOfImage.bind(this);
@@ -28,7 +27,6 @@ class SkybrowserTabs extends Component {
     this.toggleShowSettings = this.toggleShowSettings.bind(this);
     this.setImageLayerOrder = this.setImageLayerOrder.bind(this);
     this.removeTargetBrowserPair = this.removeTargetBrowserPair.bind(this);
-    this.tabs = React.createRef(this);
   }
 
   componentDidMount() {
@@ -42,12 +40,6 @@ class SkybrowserTabs extends Component {
     }
     const { top, right } = this.infoButton.getBoundingClientRect();
     return { top: `${top}`, left: `${right}` };
-  }
-
-  setRef(what) {
-    return (element) => {
-      this[what] = element;
-    };
   }
 
   showTooltip(i) {
@@ -69,8 +61,8 @@ class SkybrowserTabs extends Component {
   }
 
   setOpacityOfImage(identifier, opacity) {
-    const { skybrowserApi, selectedBrowser } = this.props;
-    skybrowserApi.setOpacityOfImageLayer(selectedBrowser, Number(identifier), opacity);
+    const { skybrowserApi, selectedBrowserId } = this.props;
+    skybrowserApi.setOpacityOfImageLayer(selectedBrowserId, Number(identifier), opacity);
     this.props.passMessageToWwt({
       event: "image_layer_set",
       id: String(identifier),
@@ -80,8 +72,8 @@ class SkybrowserTabs extends Component {
   }
 
   removeImageSelection(identifier) {
-    const { skybrowserApi, selectedBrowser } = this.props;
-    skybrowserApi.removeSelectedImageInBrowser(selectedBrowser, Number(identifier));
+    const { skybrowserApi, selectedBrowserId } = this.props;
+    skybrowserApi.removeSelectedImageInBrowser(selectedBrowserId, Number(identifier));
     this.props.passMessageToWwt({
       event: "image_layer_remove",
       id: String(identifier),
@@ -102,29 +94,29 @@ class SkybrowserTabs extends Component {
     })
   }
 
-  setSelectedBrowser(targetId) {
-    this.props.skybrowserApi.setSelectedBrowser(targetId);
+  setSelectedBrowser(browserId) {
+    this.props.skybrowserApi.setSelectedBrowser(browserId);
   }
 
-  createButtons(target) {
+  createButtons(browser) {
     const { skybrowserApi, data } = this.props;
-    const targetId = target.id;
+    const browserId = browser.id;
     const toggleSettings = this.toggleShowSettings;
 
     const lookButton = {
       selected: false,
       icon: 'visibility',
-      text: 'Look at target',
-      function(targetId) {
-        skybrowserApi.adjustCamera(targetId);
+      text: 'Look at browser',
+      function(browserId) {
+        skybrowserApi.adjustCamera(browserId);
       },
     };
     const moveButton = {
       selected: false,
       icon: 'filter_center_focus',
       text: 'Move target to center of view',
-      function: function(targetId) {
-        skybrowserApi.centerTargetOnScreen(targetId);
+      function: function(browserId) {
+        skybrowserApi.centerTargetOnScreen(browserId);
       },
     };
     var _this = this;
@@ -132,7 +124,7 @@ class SkybrowserTabs extends Component {
       selected: false,
       icon: 'delete',
       text: 'Remove all images',
-      function: (targetId) => (
+      function: (browserId) => (
         data.map((image) => this.removeImageSelection(Number(image.identifier)), _this)
       )
     };
@@ -140,25 +132,25 @@ class SkybrowserTabs extends Component {
       selected: false,
       icon: 'zoom_in',
       text: 'Zoom in',
-      function: function(targetId) {
-        const newFov = Math.max(target.FOV - 5, 0.01);
-        skybrowserApi.setVerticalFov(targetId, Number(newFov));
+      function: function(browserId) {
+        const newFov = Math.max(browser.fov - 5, 0.01);
+        skybrowserApi.setVerticalFov(browserId, Number(newFov));
       },
     };
     const scrollOutButton = {
       selected: false,
       icon: 'zoom_out',
       text: 'Zoom out',
-      function: function(targetId) {
-        const newFov = Math.min(target.FOV + 5, 70);
-        skybrowserApi.setVerticalFov(targetId, Number(newFov));
+      function: function(browserId) {
+        const newFov = Math.min(browser.fov + 5, 70);
+        skybrowserApi.setVerticalFov(browserId, Number(newFov));
       },
     };
     const showSettingsButton = {
       selected: this.state.showSettings,
       icon: 'settings',
       text: 'Settings',
-      function: function(targetId) {
+      function: function(browserId) {
         toggleSettings();
       },
     };
@@ -169,7 +161,7 @@ class SkybrowserTabs extends Component {
       <Button
         key={index}
         onClick={() => {
-          button.function(targetId);
+          button.function(browserId);
         }}
         onMouseOut={() => this.hideTooltip(index)}
         className={button.selected ? styles.tabButtonActive : styles.tabButtonInactive}
@@ -182,55 +174,58 @@ class SkybrowserTabs extends Component {
           onMouseOver={() => this.showTooltip(index)}
         />
         {this.state.isShowingInfoButtons[index] && (
-          <TooltipSkybrowser placement="bottom-right" style={this.positionInfo}>
+          <SkyBrowserTooltip placement="bottom-right" style={this.positionInfo}>
             {button.text}
-          </TooltipSkybrowser>
+          </SkyBrowserTooltip>
         )}
       </Button>
     ));
 
     return (
-      <span className={styles.tabButtonContainer} ref={this.setRef('infoButton')}>
+      <span
+        className={styles.tabButtonContainer}
+        ref={(element) => this.infoButton = element}
+        >
         {buttons}
       </span>
     );
   }
 
-  removeTargetBrowserPair(targetId) {
-    const ids = Object.keys(this.props.targets);
+  removeTargetBrowserPair(browserId) {
+    const ids = Object.keys(this.props.browsers);
     if(ids.length > 1) {
-      const index = ids.indexOf(targetId);
+      const index = ids.indexOf(browserId);
       if (index > -1) {
         ids.splice(index, 1); // 2nd parameter means remove one item only
       }
       this.props.skybrowserApi.setSelectedBrowser(ids[0]);
     }
-    this.props.skybrowserApi.removeTargetBrowserPair(targetId);
+    this.props.skybrowserApi.removeTargetBrowserPair(browserId);
   }
 
   createTabs() {
-    const { targets, selectedBrowser, skybrowserApi } = this.props;
-    const buttons = targets[selectedBrowser] && this.createButtons(targets[selectedBrowser]);
+    const { browsers, selectedBrowserId, skybrowserApi } = this.props;
+    const buttons = browsers[selectedBrowserId] && this.createButtons(browsers[selectedBrowserId]);
 
-    const allTabs = Object.keys(targets).map((target, index) => {
-      const targetColor = `rgb(${targets[target].color})`;
+    const allTabs = Object.keys(browsers).map((browser, index) => {
+      const browserColor = `rgb(${browsers[browser].color})`;
       return (
         <div
           key={index}
           style={
-            selectedBrowser === target
-              ? { borderTopRightRadius: '4px', borderTop: `3px solid ${targetColor}` }
+            selectedBrowserId === browser
+              ? { borderTopRightRadius: '4px', borderTop: `3px solid ${browserColor}` }
               : {}
           }
         >
           <div
-            className={selectedBrowser === target ? styles.tabActive : styles.tabInactive}
-            onClick={() => this.setSelectedBrowser(target)}
+            className={selectedBrowserId === browser ? styles.tabActive : styles.tabInactive}
+            onClick={() => this.setSelectedBrowser(browser)}
           >
             <span className={styles.tabHeader}>
-              <span className={styles.tabTitle}>{targets[target].name}</span>
+              <span className={styles.tabTitle}>{browsers[browser].name}</span>
               <Button
-                onClick={() => this.removeTargetBrowserPair(target)}
+                onClick={() => this.removeTargetBrowserPair(browser)}
                 className={styles.closeTabButton}
                 transparent
                 small
@@ -238,7 +233,7 @@ class SkybrowserTabs extends Component {
                 <MaterialIcon icon="close" className="small" />
               </Button>
             </span>
-            {selectedBrowser === target && buttons}
+            {selectedBrowserId === browser && buttons}
           </div>
         </div>
       );
@@ -260,7 +255,7 @@ class SkybrowserTabs extends Component {
 
   createImageList(data, props) {
     const {
-      currentTargetColor, selectedBrowser, selectImage, skybrowserApi,
+      currentBrowserColor, selectedBrowserId, selectImage, skybrowserApi,
     } = props;
     const images = (
       <ul>
@@ -270,27 +265,27 @@ class SkybrowserTabs extends Component {
               <span />
             ) : (
               <Button
-                onClick={() => this.setImageLayerOrder(selectedBrowser, Number(entry.identifier), index - 1)}
+                onClick={() => this.setImageLayerOrder(selectedBrowserId, Number(entry.identifier), index - 1)}
                 className={styles.arrowButton}
                 transparent
               >
                 <MaterialIcon icon="keyboard_arrow_left" />
               </Button>
             )}
-            <SkybrowserFocusEntry
+            <SkyBrowserFocusEntry
               {...entry}
               skybrowserApi={skybrowserApi}
               key={entry.identifier}
               onSelect={selectImage}
               removeImageSelection={this.removeImageSelection}
               setOpacity={this.setOpacityOfImage}
-              currentTargetColor={currentTargetColor}
+              currentBrowserColor={currentBrowserColor}
             />
             {index === data.length - 1 ? (
               <span className={styles.arrowButtonEmpty} />
             ) : (
               <Button
-                onClick={() =>  this.setImageLayerOrder(selectedBrowser, Number(entry.identifier), index + 1)}              
+                onClick={() =>  this.setImageLayerOrder(selectedBrowserId, Number(entry.identifier), index + 1)}
                 className={styles.arrowButton}
                 transparent
               >
@@ -307,20 +302,17 @@ class SkybrowserTabs extends Component {
 
   render() {
     const {
-      data, maxHeight, minHeight, targets, selectedBrowser, height, api, skybrowserApi, isUsingRae, isFacingCamera
+      data, maxHeight, minHeight, browsers, selectedBrowserId, height, api, skybrowserApi, isUsingRae, isFacingCamera
     } = this.props;
     const { showSettings } = this.state;
 
     let tabDisplay = "";
     if (showSettings) {
       tabDisplay = (
-        <SkybrowserSettings
-          target={targets[selectedBrowser]}
-          isUsingRae={isUsingRae}
-          isFacingCamera={isFacingCamera}
-          selectedBrowser={selectedBrowser}
-          api={api}
-          skybrowserApi={skybrowserApi}
+        <SkyBrowserSettings
+          browser={browsers[selectedBrowserId]}
+          selectedBrowserId={selectedBrowserId}
+          luaApi={api}
         />);
     } else if (data.length === 0) {
       tabDisplay = <CenteredLabel>There are no selected images in this sky browser.</CenteredLabel>;
@@ -329,7 +321,7 @@ class SkybrowserTabs extends Component {
     }
 
     return (
-      <section className={styles.tabContainer} ref={this.setRef('tabsDiv')}>
+      <section className={styles.tabContainer} ref={(element) => this.tabsDiv = element}>
         <Resizable
           enable={{ top: true, bottom: false }}
           handleClasses={{ top: styles.topHandle }}
@@ -348,15 +340,15 @@ class SkybrowserTabs extends Component {
   }
 }
 
-SkybrowserTabs.propTypes = {
+SkyBrowserTabs.propTypes = {
   children: PropTypes.node,
   data: PropTypes.array.isRequired,
   viewComponentProps: PropTypes.object,
 };
 
-SkybrowserTabs.defaultProps = {
+SkyBrowserTabs.defaultProps = {
   children: '',
   viewComponentProps: {},
 };
 
-export default SkybrowserTabs;
+export default SkyBrowserTabs;

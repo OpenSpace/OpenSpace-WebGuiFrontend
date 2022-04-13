@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Button from '../common/Input/Button/Button';
-import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
-import InfoBoxSkybrowser from './InfoBoxSkybrowser';
-import styles from './SkybrowserFocusEntry.scss';
+import Button from '../../common/Input/Button/Button';
+import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
+import SkyBrowserInfoBox from './SkyBrowserInfoBox';
+import styles from './SkyBrowserFocusEntry.scss';
 
 class OpacitySlider extends Component {
   constructor(props) {
@@ -42,7 +42,7 @@ class OpacitySlider extends Component {
   }
 }
 
-class SkybrowserFocusEntry extends Component {
+class SkyBrowserFocusEntry extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -81,7 +81,7 @@ class SkybrowserFocusEntry extends Component {
     const {
       name, identifier, thumbnail, credits, creditsUrl, ra, dec, fov,
     } = this.props;
-    const { skybrowserApi, setOpacity, removeImageSelection } = this.props;
+    const { skybrowserApi, setOpacity, removeImageSelection, currentBrowserColor } = this.props;
 
     const imageRemoveButton = removeImageSelection && (
       <div style={{ display: 'flex' }}>
@@ -101,7 +101,7 @@ class SkybrowserFocusEntry extends Component {
     return (
       <li
         className={`${styles.entry} ${this.isTabEntry && styles.tabEntry} ${this.isActive && styles.active}`}
-        style={{ borderLeftColor: this.props.currentTargetColor() }}
+        style={{ borderLeftColor: currentBrowserColor() }}
         onMouseOver={() => { skybrowserApi.moveCircleToHoverImage(Number(identifier)); }}
         onMouseOut={() => { skybrowserApi.disableHoverCircle(); }}
         onClick={setOpacity ? undefined : this.select}
@@ -114,7 +114,7 @@ class SkybrowserFocusEntry extends Component {
           <span className={styles.imageTitle}>
             { name || identifier }
           </span>
-          <InfoBoxSkybrowser
+          <SkyBrowserInfoBox
             title={(name || identifier)}
             text={credits}
             textUrl={creditsUrl}
@@ -130,16 +130,16 @@ class SkybrowserFocusEntry extends Component {
   }
 }
 
-SkybrowserFocusEntry.propTypes = {
+SkyBrowserFocusEntry.propTypes = {
   identifier: PropTypes.string.isRequired,
   name: PropTypes.string,
   onSelect: PropTypes.func,
   active: PropTypes.string,
 };
 
-SkybrowserFocusEntry.defaultProps = {
+SkyBrowserFocusEntry.defaultProps = {
   active: '',
   onSelect: null,
 };
 
-export default SkybrowserFocusEntry;
+export default SkyBrowserFocusEntry;

@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { times } from 'lodash';
-import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
-import Button from '../common/Input/Button/Button';
-import TooltipSkybrowser from './TooltipSkybrowser';
-import styles from './TooltipSkybrowser.scss';
+import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
+import Button from '../../common/Input/Button/Button';
+import SkyBrowserTooltip from './SkyBrowserTooltip';
+import styles from './SkyBrowserTooltip.scss';
 import esaSkyLogo from './ESASKY.png';
 
-class InfoBoxSkybrowser extends Component {
+class InfoBoxSkyBrowser extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -89,7 +89,7 @@ class InfoBoxSkybrowser extends Component {
         style={{fontSize: '15px'}}>
         </MaterialIcon>
           { showPopup && (
-            <TooltipSkybrowser
+            <SkyBrowserTooltip
             placement="bottom-left"
             style={this.position}
             onMouseOver={this.tooltipActive}
@@ -102,22 +102,22 @@ class InfoBoxSkybrowser extends Component {
               </Button>
             )}
             { esaSkyButton }
-            </TooltipSkybrowser>
+            </SkyBrowserTooltip>
           )}
       </span>
     );
   }
 }
 
-InfoBoxSkybrowser.propTypes = {
+InfoBoxSkyBrowser.propTypes = {
   icon: PropTypes.string,
   title: PropTypes.string.isRequired,
   text: PropTypes.string,
   textUrl: PropTypes.string
 };
 
-InfoBoxSkybrowser.defaultProps = {
+InfoBoxSkyBrowser.defaultProps = {
   icon: 'help',
 };
 
-export default InfoBoxSkybrowser;
+export default InfoBoxSkyBrowser;

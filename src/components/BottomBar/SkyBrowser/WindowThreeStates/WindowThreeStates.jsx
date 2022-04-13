@@ -5,8 +5,8 @@ import styles from './WindowThreeStates.scss';
 import FloatingWindow from './FloatingWindow';
 import PaneRightHandSide from './PaneRightHandSide';
 import PopoverResizeable from './PopoverResizeable';
-import Button from '../../common/Input/Button/Button';
-import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
+import Button from '../../../common/Input/Button/Button';
+import MaterialIcon from '../../../common/MaterialIcon/MaterialIcon';
 
 const WindowStyle = {
   DETACHED: 'DETACHED',

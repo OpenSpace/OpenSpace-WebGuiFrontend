@@ -5,86 +5,51 @@ import Picker from './Picker';
 import Button from '../common/Input/Button/Button';
 import SmallLabel from '../common/SmallLabel/SmallLabel';
 import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
-import subStateToProps from '../../utils/subStateToProps';
-import { setPopoverVisibility } from '../../api/Actions';
-// Sky  browser
-import WindowThreeStates from '../SkyBrowser/WindowThreeStates/WindowThreeStates';
-import SkybrowserTabs from '../SkyBrowser/SkybrowserTabs';
-import SkyBrowserImageList from '../SkyBrowser/SkyBrowserImageList';
-import styles from './SkyBrowserPanel.scss';
+import SkyBrowserImageList from './SkyBrowser/SkyBrowserImageList';
+import SkyBrowserTabs from './SkyBrowser/SkyBrowserTabs';
+import WindowThreeStates from './SkyBrowser/WindowThreeStates/WindowThreeStates';
+import WorldWideTelescope from './SkyBrowser/WorldWideTelescope';
 import { Icon } from '@iconify/react';
-import WorldWideTelescope from '../SkyBrowser/WorldWideTelescope';
+import { setPopoverVisibility, subscribeToSkyBrowser, unsubscribeToSkyBrowser } from '../../api/Actions';
+import subStateToProps from '../../utils/subStateToProps';
+import styles from './SkyBrowserPanel.scss';
 
 class SkyBrowserPanel extends Component {
   constructor(props) {
     super(props);
     this.wwt = React.createRef();
     this.state = {
-      moduleIsLoaded: false,
       activeImage: '',
-      targetData: '',
-      selectedTarget: '',
-      isUsingRae: false,
-      isFacingCamera: false,
-      cameraInSolarSystem: true,
       currentTabHeight: 220,
       currentPopoverHeight: 440,
       showOnlyNearest: true,
       menuHeight: 70,
-      wwtBrowsers: [],
-      imageCollectionIsLoaded: false
+      imageCollectionIsLoaded: false,
+      wwtBrowsers: []
     };
-    this.getAllImages = this.getAllImages.bind(this);
-    this.getTargetData = this.getTargetData.bind(this);
-    this.getCurrentTargetColor = this.getCurrentTargetColor.bind(this);
-    this.getSelectedTargetImages = this.getSelectedTargetImages.bind(this);
+    this.togglePopover = this.togglePopover.bind(this);
+    this.setImageCollectionIsLoaded = this.setImageCollectionIsLoaded.bind(this);
     this.setCurrentTabHeight = this.setCurrentTabHeight.bind(this);
     this.setCurrentPopoverHeight = this.setCurrentPopoverHeight.bind(this);
-    this.selectImage = this.selectImage.bind(this);
-    this.togglePopover = this.togglePopover.bind(this);
-    this.createImageMenu = this.createImageMenu.bind(this);
-    this.createWwtBrowsers = this.createWwtBrowsers.bind(this);
+    this.getCurrentBrowserColor = this.getCurrentBrowserColor.bind(this);
     this.passMessageToWwt = this.passMessageToWwt.bind(this);
-    this.setImageCollectionIsLoaded = this.setImageCollectionIsLoaded.bind(this);
+    this.getSelectedBrowserImages = this.getSelectedBrowserImages.bind(this);
+    this.selectImage = this.selectImage.bind(this);
+    this.createWwtBrowsers = this.createWwtBrowsers.bind(this);
+    this.createAddBrowserInterface = this.createAddBrowserInterface.bind(this);
+    this.createBrowserContent = this.createBrowserContent.bind(this);
   }
 
-  async componentDidMount() {
-    try {
-      this.targetDataID = setInterval(() => this.getTargetData(), 1000);
-    } catch (e) {
-      console.log(e);
-    }
+  componentDidMount() {
+    this.props.startSubscriptions();
   }
 
   componentWillUnmount() {
-    clearInterval(this.targetDataID);
+    this.props.stopSubscriptions();
   }
 
-  async getTargetData() {
-    try {
-      if (!this.props.luaApi.skybrowser) {
-        throw new Error('Sky Browser Module is not loaded!');
-      } else {
-        let target = await this.props.luaApi.skybrowser.getTargetData();
-        target = target[1];
-
-        // Set the first object in the array to the camera and remove from array
-        const camera = target.OpenSpace;
-        delete target.OpenSpace;
-
-        this.setState({
-          targetData: target,
-          selectedTarget: camera.selectedTargetId,
-          selectedBrowser: camera.selectedBrowserId,
-          isUsingRae: camera.isUsingRadiusAzimuthElevation,
-          isFacingCamera: camera.isFacingCamera,
-          cameraInSolarSystem: camera.cameraInSolarSystem,
-          moduleIsLoaded: true,
-        });
-      }
-    } catch (e) {
-      console.log(e);
-    }
+  togglePopover() {
+    this.props.setPopoverVisibility(!this.props.popoverVisible);
   }
 
   setImageCollectionIsLoaded(isLoaded) {
@@ -93,40 +58,36 @@ class SkyBrowserPanel extends Component {
     });
   }
 
-  getSelectedTargetImages() {
-    const { imageList } = this.props;
-    const { targetData, selectedBrowser } = this.state;
-    const target = targetData[selectedBrowser];
-
-    if (!imageList || !target) {
-      return [];
-    }
-
-    // For some reason, ghoul sends this vector as an object. Convert to array
-    const images = target.selectedImages;
-    if (!images) return [];
-    const indices = Object.values(images);
-    return indices.map(index => imageList[index.toString()]);
-  }
-
-  getAllImages() {
-    if (this.props.imageList.length) {
-      return this.props.imageList;
-    }
-    return [];
-  }
-
-  getCurrentTargetColor() {
-    const browser = this.state.targetData[this.state.selectedBrowser];
-    return browser ? `rgb(${browser.color})` : 'gray';
-  }
-
   setCurrentTabHeight(height) {
     this.setState({ currentTabHeight: height });
   }
 
   setCurrentPopoverHeight(width, height) {
     this.setState({ currentPopoverHeight: height });
+  }
+
+  getSelectedBrowserImages() {
+    const { imageList, browsers, selectedBrowserId } = this.props;
+    const browser = browsers[selectedBrowserId];
+    if (!imageList || !browser) {
+      return [];
+    }
+    const images = browser.selectedImages;
+    if (!images) {
+      return [];
+    }
+    const indices = Object.values(images);
+    return indices.map(index => imageList[index.toString()]);
+  }
+
+  getCurrentBrowserColor() {
+    const { browsers, selectedBrowserId } = this.props;
+    const browser = browsers[selectedBrowserId];
+    return browser !== undefined ? `rgb(${browser.color})` : 'gray';
+  }
+
+  passMessageToWwt(message) {
+    this.wwt.current.sendMessageToWwt(message);
   }
 
   selectImage(identifier, passToOs = true) {
@@ -146,13 +107,64 @@ class SkyBrowserPanel extends Component {
     }
   }
 
-  togglePopover() {
-    this.props.setPopoverVisibility(!this.props.popoverVisible);
+  createWwtBrowsers() {
+    const { browsers, selectedBrowserId } = this.props;
+    if(browsers !== undefined) {
+      const browser = browsers[selectedBrowserId];
+      const selectedImages = this.getSelectedBrowserImages();
+      return (
+        <WorldWideTelescope
+          browser = {browser}
+          skybrowserApi={this.props.luaApi.skybrowser}
+          ref={this.wwt}
+          setImageCollectionIsLoaded = {this.setImageCollectionIsLoaded}
+          selectedImages={selectedImages}
+          selectImage={this.selectImage}
+        />);
+    }
+    else {
+      return "";
+    }
   }
 
-  createImageMenu() {
-    const { showOnlyNearest } = this.state;
-    return (
+  createAddBrowserInterface() {
+    const { luaApi } = this.props;
+    const addBrowserPairButton = (
+      <div className={styles.upperPart}>
+        <Button
+          onClick={() => luaApi.skybrowser.createTargetBrowserPair()}
+          className={styles.addTabButton}
+          transparent
+        >
+          <CenteredLabel>Add Sky Browser</CenteredLabel>
+          <div className={styles.plus}>
+          </div>
+        </Button>
+      </div>);
+
+  const wwtLogoImg = (
+    <div className={styles.credits}>
+      <div className={styles.wwtLogoContainer}>
+        <img src={require('./wwtlogo.png')} alt="WwtLogo" className={styles.wwtLogo} />
+        <SmallLabel>
+          Powered by AAS WorldWide Telescope
+        </SmallLabel>
+      </div>
+    </div>);
+
+    return <div className={`${styles.content} ${styles.center}`}>
+      {addBrowserPairButton}
+      {wwtLogoImg}
+    </div>;
+  }
+
+  createBrowserContent() {
+    const { luaApi, cameraInSolarSystem, browsers, selectedBrowserId, imageList } = this.props;
+    const { currentPopoverHeight, currentTabHeight, menuHeight, activeImage, showOnlyNearest } = this.state;
+    const thisTabsImages = this.getSelectedBrowserImages() || [];
+    const currentImageListHeight = currentPopoverHeight - currentTabHeight - menuHeight;
+
+    const imageMenu = (
       <div className={styles.row}>
         <Picker
           className={`${styles.picker} ${showOnlyNearest ? styles.unselected : styles.selected}`}
@@ -168,131 +180,75 @@ class SkyBrowserPanel extends Component {
         </Picker>
       </div>
     );
-  }
-
-  createWwtBrowsers() {
-    if(Object.keys(this.state.targetData).length == 0) {
-      return "";
-    }
-    if(!this.state.targetData[this.state.selectedBrowser]) {
-      return "";
-    }
-    else {
-      const selectedImages = this.getSelectedTargetImages();
-      return <WorldWideTelescope
-      target = {this.state.targetData[this.state.selectedBrowser]}
-      skybrowserApi={this.props.luaApi.skybrowser}
-      ref={this.wwt}
-      setImageCollectionIsLoaded = {this.setImageCollectionIsLoaded}
-      selectedImages={selectedImages}
-      selectImage={this.selectImage}
-      />;
-    }
-  }
-
-  passMessageToWwt(message) {
-    this.wwt.current.sendMessageToWwt(message);
-  }
-
-  get popover() {
-    const { imageList, luaApi } = this.props;
-    const {
-      cameraInSolarSystem,
-      currentTabHeight,
-      currentPopoverHeight,
-      activeImage,
-      isFacingCamera,
-      isUsingRae,
-      menuHeight,
-      showOnlyNearest,
-      selectedBrowser,
-      selectedTarget,
-      targetData,
-    } = this.state;
-
-    const skybrowserApi = luaApi.skybrowser;
-
-    const targetsExist = Object.keys(this.state.targetData).length !== 0;
-    const imageCollectionIsLoaded = this.state.imageCollectionIsLoaded;
-    if (!cameraInSolarSystem || (!imageCollectionIsLoaded && targetsExist)) {
-      const msg = !this.state.imageCollectionIsLoaded ? "Loading image collection..." : "The camera has to be within the solar system for the sky browser to work.";
-      const errorMessage = (
-        <WindowThreeStates
-          title="AAS WorldWide Telescope"
-          closeCallback={this.togglePopover}
-          heightCallback={this.setCurrentPopoverHeight}
-          height={currentPopoverHeight}
-          defaultHeight={440}
-          minHeight={currentTabHeight + menuHeight}
-        >
-          <CenteredLabel>
-          {msg}
-          </CenteredLabel>
-        </WindowThreeStates>
-      );
-      return errorMessage;
-    }
-
-    const thisTabsImages = this.getSelectedTargetImages() || [];
 
     const skybrowserTabs = (
-      <SkybrowserTabs
+      <SkyBrowserTabs
         api={luaApi}
-        skybrowserApi={skybrowserApi}
+        skybrowserApi={luaApi.skybrowser}
         cameraInSolarSystem={cameraInSolarSystem}
-        targets={targetData}
-        selectedTarget={selectedTarget}
-        selectedBrowser={selectedBrowser}
-        isUsingRae={isUsingRae}
-        isFacingCamera={isFacingCamera}
+        browsers={browsers}
+        selectedBrowserId={selectedBrowserId}
         maxHeight={currentPopoverHeight - menuHeight}
         minHeight={130}
         setCurrentTabHeight={this.setCurrentTabHeight}
         height={currentTabHeight}
         data={thisTabsImages}
         selectImage={this.selectImage}
-        currentTargetColor={this.getCurrentTargetColor}
+        currentBrowserColor={this.getCurrentBrowserColor}
         passMessageToWwt={this.passMessageToWwt}
       />
     );
-
-    const currentImageListHeight = currentPopoverHeight - currentTabHeight - menuHeight;
 
     const imageListComponent = (
       <SkyBrowserImageList
         luaApi={luaApi}
         imageList={imageList}
-        selectedBrowserData={targetData[selectedBrowser]}
-        showOnlyNearest={showOnlyNearest}
+        selectedBrowserData={browsers[selectedBrowserId]}
+        showOnlyNearest={this.state.showOnlyNearest}
         activeImage={activeImage}
-        getCurrentTargetColor={this.getCurrentTargetColor}
+        currentBrowserColor={this.getCurrentBrowserColor}
         selectImage={this.selectImage}
         height={currentImageListHeight}
         passMessageToWwt={this.passMessageToWwt}
       />
     );
 
-    const addTargetBrowserPairButton = (
-      <div className={styles.upperPart}>
-        <Button
-          onClick={() => skybrowserApi.createTargetBrowserPair()}
-          className={styles.addTabButton}
-          transparent
-        >
-          <CenteredLabel>Add Sky Browser</CenteredLabel>
-          <div className={styles.plus}>
-          </div>
-        </Button>
-      </div>);
-    const wwtLogoImg = (
-      <div className={styles.credits}>
-        <div className={styles.wwtLogoContainer}>
-          <img src={require('./wwtlogo.png')} alt="WwtLogo" className={styles.wwtLogo} />
-          <SmallLabel>
-            Powered by AAS WorldWide Telescope
-          </SmallLabel>
-        </div>
-      </div>);
+    return <div className={styles.content}>
+        {imageMenu}
+        {imageListComponent}
+        {skybrowserTabs}
+      </div>;
+  }
+
+  get popover() {
+    const { imageList, cameraInSolarSystem, browsers } = this.props;
+    const { currentPopoverHeight, imageCollectionIsLoaded } = this.state;
+
+    const browsersExist = browsers && Object.keys(browsers).length !== 0;
+
+    let content = "";
+    if(!cameraInSolarSystem) {
+      const msg = "The camera has to be within the solar system for the sky browser to work.";
+      content = (
+        <CenteredLabel>
+        {msg}
+        </CenteredLabel>
+      );
+    }
+    else if(!browsersExist) {
+      content = this.createAddBrowserInterface();
+    }
+    else if(!imageCollectionIsLoaded && browsersExist) {
+      const msg = "Loading image collection...";
+      content = (
+        <CenteredLabel>
+        {msg}
+        </CenteredLabel>
+      );
+    }
+    else if(imageCollectionIsLoaded && browsersExist) {
+      content = this.createBrowserContent();
+    }
 
     return (
       <WindowThreeStates
@@ -303,23 +259,13 @@ class SkyBrowserPanel extends Component {
         defaultHeight={440}
         minHeight={440}
       >
-      {targetsExist ? <div className={styles.content}>
-          {this.createImageMenu()}
-          {imageListComponent}
-          {skybrowserTabs}
-        </div> :
-        <div className={`${styles.content} ${styles.center}`}>
-          {addTargetBrowserPairButton}
-          {wwtLogoImg}
-        </div>
-      }
+      {content}
       </WindowThreeStates>
     );
   }
 
   render() {
     return (
-      this.state.moduleIsLoaded && (
         <div className={Picker.Wrapper}>
           <Picker onClick={this.togglePopover} >
             <Icon icon="mdi:telescope" color="white" alt="WWT" style={{ fontSize: '2em' }}/>
@@ -327,15 +273,17 @@ class SkyBrowserPanel extends Component {
           {this.props.popoverVisible && this.popover}
           {this.props.popoverVisible && this.createWwtBrowsers()}
         </div>
-      )
     );
   }
 }
 
-const mapSubStateToProps = ({ luaApi, popoverVisible, imageList }) => ({
+const mapSubStateToProps = ({ luaApi, popoverVisible, imageList, selectedBrowserId, cameraInSolarSystem, browsers}) => ({
   luaApi,
   popoverVisible,
   imageList,
+  selectedBrowserId,
+  cameraInSolarSystem,
+  browsers
 });
 
 const mapStateToSubState = state => ({
@@ -343,6 +291,9 @@ const mapStateToSubState = state => ({
   popoverVisible: state.local.popovers.skybrowser.visible,
   luaApi: state.luaApi,
   imageList: state.skybrowser.data,
+  cameraInSolarSystem: state.skybrowser.cameraInSolarSystem,
+  selectedBrowserId: state.skybrowser.selectedBrowserId,
+  browsers: state.skybrowser.browsers
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -354,6 +305,12 @@ const mapDispatchToProps = dispatch => ({
       }),
     );
   },
+  startSubscriptions: () => {
+    dispatch(subscribeToSkyBrowser());
+  },
+  stopSubscriptions: () => {
+    dispatch(unsubscribeToSkyBrowser());
+  }
 });
 
 SkyBrowserPanel = connect(

@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Button from '../common/Input/Button/Button';
-import Row from '../common/Row/Row';
-import NumericInput from '../common/Input/NumericInput/NumericInput';
-import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
-import Checkbox from '../common/Input/Checkbox/Checkbox';
-import ColorPickerPopup from '../common/ColorPicker/ColorPickerPopup';
-import ToggleContent from '../common/ToggleContent/ToggleContent';
-import TooltipSkybrowser from './TooltipSkybrowser';
-import Popover from '../common/Popover/Popover';
-import styles from './SkybrowserSettings.scss';
+import Button from '../../common/Input/Button/Button';
+import Row from '../../common/Row/Row';
+import NumericInput from '../../common/Input/NumericInput/NumericInput';
+import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
+import Checkbox from '../../common/Input/Checkbox/Checkbox';
+import ColorPickerPopup from '../../common/ColorPicker/ColorPickerPopup';
+import ToggleContent from '../../common/ToggleContent/ToggleContent';
+import SkyBrowserTooltip from './SkyBrowserTooltip';
+import Popover from '../../common/Popover/Popover';
+import styles from './SkyBrowserSettings.scss';
 
-class SkybrowserSettings extends Component {
+class SkyBrowserSettings extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -44,19 +44,15 @@ class SkybrowserSettings extends Component {
   }
 
   toggleFaceCamera() {
-    const {
-      api, isFacingCamera, selectedBrowser, selectedTarget,
-    } = this.props;
-    const uriBrowser = `ScreenSpace.${selectedBrowser}.FaceCamera`;
-    api.setPropertyValueSingle(uriBrowser, !isFacingCamera);
+    const { luaApi, browser } = this.props;
+    const uriBrowser = `ScreenSpace.${browser.id}.FaceCamera`;
+    luaApi.setPropertyValueSingle(uriBrowser, !browser.isFacingCamera);
   }
 
   toggleRadiusAzimuthElevation() {
-    const {
-      api, isUsingRae, selectedBrowser, selectedTarget,
-    } = this.props;
-    const uriBrowser = `ScreenSpace.${selectedBrowser}.UseRadiusAzimuthElevation`;
-    api.setPropertyValueSingle(uriBrowser, !isUsingRae);
+    const { luaApi, browser } = this.props;
+    const uriBrowser = `ScreenSpace.${browser.id}.UseRadiusAzimuthElevation`;
+    luaApi.setPropertyValueSingle(uriBrowser, !browser.isFacingCamera);
   }
 
   get positionRae() {
@@ -80,8 +76,8 @@ class SkybrowserSettings extends Component {
     this.setState({ showExpandedSettings: !this.state.showExpandedSettings });
   }
 
-  createRenderCopiesSection(target, api, skybrowserApi, selectedBrowser) {
-    const renderCopies = target.renderCopies;
+  createRenderCopiesSection(browser, luaApi, selectedBrowserId) {
+    const renderCopies = browser.renderCopies;
     const positionData = ['Radius', 'Azimuth', 'Elevation'];
     const maxPosition = [10, 3.14, 3.14];
     const minPosition = [0, -3.14, -3.14];
@@ -100,8 +96,8 @@ class SkybrowserSettings extends Component {
                     const newVector = entry;
                     newVector[index] = newValue;
                     const renderCopyId = Object.keys(renderCopies)[indexCopy];
-                    const uriBrowser = `ScreenSpace.${selectedBrowser}.${renderCopyId}`;
-                    api.setPropertyValueSingle(uriBrowser, newVector);
+                    const uriBrowser = `ScreenSpace.${selectedBrowserId}.${renderCopyId}`;
+                    luaApi.setPropertyValueSingle(uriBrowser, newVector);
                   }}
                   step={0.1}
                   value={parseFloat((number).toFixed(this.state.precisionLow))}
@@ -147,9 +143,9 @@ class SkybrowserSettings extends Component {
           </MaterialIcon>
           {
             this.state.showCopiesInfo && (
-              <TooltipSkybrowser placement="bottom-right" style={this.copiesPosition}>
+              <SkyBrowserTooltip placement="bottom-right" style={this.copiesPosition}>
                 {"This sets the position of the first copy. The additional copies will be evenly spread out on the Azimuth."}
-              </TooltipSkybrowser>
+              </SkyBrowserTooltip>
             )
           }
           </Row>
@@ -178,7 +174,7 @@ class SkybrowserSettings extends Component {
         <Row className={styles.buttonContainer}>
           <Button
             onClick={() => {
-              skybrowserApi.addRenderCopy(selectedBrowser, this.state.noOfCopies, this.state.newPosition);
+              luaApi.skybrowser.addRenderCopy(selectedBrowserId, this.state.noOfCopies, this.state.newPosition);
             }}
             className={styles.renderCopyButton}
             transparent
@@ -187,7 +183,7 @@ class SkybrowserSettings extends Component {
           </Button>
           <Button
             onClick={() => {
-              skybrowserApi.removeRenderCopy(selectedBrowser);
+              luaApi.skybrowser.removeRenderCopy(selectedBrowserId);
             }}
             className={styles.renderCopyButton}
             transparent
@@ -200,24 +196,21 @@ class SkybrowserSettings extends Component {
   }
 
   render() {
-      const { isUsingRae, isFacingCamera, selectedBrowser, target } = this.props;
-      if (!target) {
+      const { selectedBrowserId, browser, luaApi } = this.props;
+      if (!browser) {
         return '';
       }
       // Take half to display in ranges [0,1] instead of [0,2]
-      const size = target.size;
-      const colors = target.color;
+      const size = browser.size;
+      const colors = browser.color;
       const colorData = ['Border Color: Red', 'Green', 'Blue'];
       const sizeData = ['Browser Width', 'Browser Height'];
-      const { api } = this.props;
-      const { skybrowserApi } = this.props;
-
-      const renderCopiesSection = this.createRenderCopiesSection(target, api, skybrowserApi, selectedBrowser);
+      const renderCopiesSection = this.createRenderCopiesSection(browser, luaApi, selectedBrowserId);
       // TODO: Fix color picker
       const colorPicker = (
         <ColorPickerPopup
           disableAlpha
-          color={this.valueToColor(target.color)}
+          color={this.valueToColor(browser.color)}
           onChange={(values) => {}}
           placement="right"
           disabled={false}
@@ -231,12 +224,12 @@ class SkybrowserSettings extends Component {
             label="Vertical Field Of View"
             max={70}
             min={0}
-            disabled={!skybrowserApi.setVerticalFov}
+            disabled={!luaApi.skybrowser.setVerticalFov}
             onValueChanged={(fov) => {
-              skybrowserApi.setVerticalFov(selectedBrowser, fov);
+              luaApi.skybrowser.setVerticalFov(selectedBrowserId, fov);
             }}
             step={1}
-            value={parseFloat(target.FOV.toFixed(this.state.precisionHigh))}
+            value={parseFloat(browser.fov.toFixed(this.state.precisionHigh))}
             placeholder="value 0"
           />
           <Row>
@@ -245,11 +238,11 @@ class SkybrowserSettings extends Component {
               label="Right Ascension"
               max={360}
               min={0}
-              disabled={!skybrowserApi.setVerticalFov}
-              onValueChanged={value => skybrowserApi.setEquatorialAim(selectedBrowser, value, target.dec)
+              disabled={!luaApi.skybrowser.setVerticalFov}
+              onValueChanged={value => luaApi.skybrowser.setEquatorialAim(selectedBrowserId, value, browser.dec)
               }
               step={0.1}
-              value={parseFloat(target.ra.toFixed(this.state.precisionHigh))}
+              value={parseFloat(browser.ra.toFixed(this.state.precisionHigh))}
               placeholder="value 1"
             />
             <NumericInput
@@ -257,11 +250,11 @@ class SkybrowserSettings extends Component {
               label="Declination"
               max={90}
               min={-90}
-              disabled={!skybrowserApi.setVerticalFov}
-              onValueChanged={value => skybrowserApi.setEquatorialAim(selectedBrowser, target.ra, value)
+              disabled={!luaApi.skybrowser.setVerticalFov}
+              onValueChanged={value => luaApi.skybrowser.setEquatorialAim(selectedBrowserId, browser.ra, value)
               }
               step={0.1}
-              value={parseFloat(target.dec.toFixed(this.state.precisionHigh))}
+              value={parseFloat(browser.dec.toFixed(this.state.precisionHigh))}
               placeholder="value 2"
             />
           </Row>
@@ -272,7 +265,7 @@ class SkybrowserSettings extends Component {
           >
           <Checkbox
             label="Use Radius Azimuth Elevation"
-            checked={isUsingRae}
+            checked={browser.isUsingRae}
             left={false}
             disabled={false}
             setChecked={this.toggleRadiusAzimuthElevation}
@@ -281,15 +274,15 @@ class SkybrowserSettings extends Component {
           />
           {
             this.state.showSettingsRaeInfo && (
-              <TooltipSkybrowser placement="bottom-right" style={this.positionRae}>
+              <SkyBrowserTooltip placement="bottom-right" style={this.positionRae}>
                 {"Using RAE coordinates is going to disable interaction with the sky browser."}
-              </TooltipSkybrowser>
+              </SkyBrowserTooltip>
             )
           }
           </div>
           <Checkbox
             label="Face Camera"
-            checked={isFacingCamera}
+            checked={browser.isFacingCamera}
             left={false}
             disabled={false}
             setChecked={this.toggleFaceCamera}
@@ -306,8 +299,8 @@ class SkybrowserSettings extends Component {
                 onValueChanged={(value) => {
                   const newColor = colors;
                   newColor[index] = value;
-                  skybrowserApi.setBorderColor(
-                    selectedBrowser,
+                  luaApi.skybrowser.setBorderColor(
+                    selectedBrowserId,
                     newColor[0],
                     newColor[1],
                     newColor[2],
@@ -325,14 +318,12 @@ class SkybrowserSettings extends Component {
   }
 }
 
-SkybrowserSettings.propTypes = {
-  isUsingRae: PropTypes.bool,
-  isFacingCamera: PropTypes.bool,
-  selectedBrowser: PropTypes.string,
-  target: PropTypes.object
+SkyBrowserSettings.propTypes = {
+  selectedBrowserId: PropTypes.string,
+  browser: PropTypes.object
 };
 
-SkybrowserSettings.defaultProps = {
+SkyBrowserSettings.defaultProps = {
 };
 
-export default SkybrowserSettings;
+export default SkyBrowserSettings;

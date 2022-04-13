@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import FilterList from '../common/FilterList/FilterList';
+import FilterList from '../../common/FilterList/FilterList';
 import styles from './SkyBrowserImageList.scss';
-import SkybrowserFocusEntry from './SkybrowserFocusEntry';
+import SkyBrowserFocusEntry from './SkyBrowserFocusEntry';
 
 class SkyBrowserImageList extends Component {
   constructor(props) {
@@ -36,7 +36,7 @@ class SkyBrowserImageList extends Component {
     if (!selectedBrowserData || Object.keys(imageList).length === 0) {
       return [];
     }
-    const searchRadius = selectedBrowserData.FOV / 2;
+    const searchRadius = selectedBrowserData.fov / 2;
     const isWithinFOV = (coord, target, FOV) => coord < target + FOV && coord > target - FOV;
 
     // Only load images that have coordinates within current window
@@ -75,7 +75,7 @@ class SkyBrowserImageList extends Component {
   }
 
   render() {
-    const { activeImage, height, imageList, luaApi, showOnlyNearest, selectImage } = this.props;
+    const { activeImage, height, imageList, luaApi, showOnlyNearest, selectImage, currentBrowserColor } = this.props;
 
     const list = showOnlyNearest ? this.getNearestImages() : imageList;
     const skybrowserApi = luaApi.skybrowser;
@@ -87,10 +87,10 @@ class SkyBrowserImageList extends Component {
         height={height} // TODO: prevent rerendering every time height changes
         data={list}
         searchText={`Search from ${list.length.toString()} images...`}
-        viewComponent={SkybrowserFocusEntry}
+        viewComponent={SkyBrowserFocusEntry}
         viewComponentProps={{
-          skybrowserApi,
-          currentTargetColor: this.props.getCurrentTargetColor,
+          skybrowserApi: skybrowserApi,
+          currentBrowserColor: currentBrowserColor,
         }}
         onSelect={selectImage}
         active={activeImage}
