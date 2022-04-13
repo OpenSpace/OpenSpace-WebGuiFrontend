@@ -20,7 +20,8 @@ class SkyBrowserPanel extends Component {
     this.wwt = React.createRef();
     this.state = {
       activeImage: '',
-      currentTabHeight: 220,
+      minimumTabHeight: 300,
+      currentTabHeight: 300,
       currentPopoverHeight: 440,
       showOnlyNearest: true,
       menuHeight: 70,
@@ -31,11 +32,11 @@ class SkyBrowserPanel extends Component {
     this.setImageCollectionIsLoaded = this.setImageCollectionIsLoaded.bind(this);
     this.setCurrentTabHeight = this.setCurrentTabHeight.bind(this);
     this.setCurrentPopoverHeight = this.setCurrentPopoverHeight.bind(this);
-    this.getCurrentBrowserColor = this.getCurrentBrowserColor.bind(this);
+    this.currentBrowserColor = this.currentBrowserColor.bind(this);
     this.passMessageToWwt = this.passMessageToWwt.bind(this);
     this.getSelectedBrowserImages = this.getSelectedBrowserImages.bind(this);
     this.selectImage = this.selectImage.bind(this);
-    this.createWwtBrowsers = this.createWwtBrowsers.bind(this);
+    this.createWwtBrowser = this.createWwtBrowser.bind(this);
     this.createAddBrowserInterface = this.createAddBrowserInterface.bind(this);
     this.createBrowserContent = this.createBrowserContent.bind(this);
   }
@@ -80,7 +81,7 @@ class SkyBrowserPanel extends Component {
     return indices.map(index => imageList[index.toString()]);
   }
 
-  getCurrentBrowserColor() {
+  currentBrowserColor() {
     const { browsers, selectedBrowserId } = this.props;
     const browser = browsers[selectedBrowserId];
     return browser !== undefined ? `rgb(${browser.color})` : 'gray';
@@ -107,7 +108,7 @@ class SkyBrowserPanel extends Component {
     }
   }
 
-  createWwtBrowsers() {
+  createWwtBrowser() {
     const { browsers, selectedBrowserId } = this.props;
     if(browsers !== undefined) {
       const browser = browsers[selectedBrowserId];
@@ -160,7 +161,7 @@ class SkyBrowserPanel extends Component {
 
   createBrowserContent() {
     const { luaApi, cameraInSolarSystem, browsers, selectedBrowserId, imageList } = this.props;
-    const { currentPopoverHeight, currentTabHeight, menuHeight, activeImage, showOnlyNearest } = this.state;
+    const { currentPopoverHeight, currentTabHeight, menuHeight, activeImage, showOnlyNearest, minimumTabHeight } = this.state;
     const thisTabsImages = this.getSelectedBrowserImages() || [];
     const currentImageListHeight = currentPopoverHeight - currentTabHeight - menuHeight;
 
@@ -183,18 +184,17 @@ class SkyBrowserPanel extends Component {
 
     const skybrowserTabs = (
       <SkyBrowserTabs
-        api={luaApi}
-        skybrowserApi={luaApi.skybrowser}
+        luaApi={luaApi}
         cameraInSolarSystem={cameraInSolarSystem}
-        browsers={browsers}
         selectedBrowserId={selectedBrowserId}
+        browsers={browsers}
         maxHeight={currentPopoverHeight - menuHeight}
-        minHeight={130}
+        minHeight={minimumTabHeight}
         setCurrentTabHeight={this.setCurrentTabHeight}
         height={currentTabHeight}
         data={thisTabsImages}
         selectImage={this.selectImage}
-        currentBrowserColor={this.getCurrentBrowserColor}
+        currentBrowserColor={this.currentBrowserColor}
         passMessageToWwt={this.passMessageToWwt}
       />
     );
@@ -204,9 +204,9 @@ class SkyBrowserPanel extends Component {
         luaApi={luaApi}
         imageList={imageList}
         selectedBrowserData={browsers[selectedBrowserId]}
-        showOnlyNearest={this.state.showOnlyNearest}
+        showOnlyNearest={showOnlyNearest}
         activeImage={activeImage}
-        currentBrowserColor={this.getCurrentBrowserColor}
+        currentBrowserColor={this.currentBrowserColor}
         selectImage={this.selectImage}
         height={currentImageListHeight}
         passMessageToWwt={this.passMessageToWwt}
@@ -271,7 +271,7 @@ class SkyBrowserPanel extends Component {
             <Icon icon="mdi:telescope" color="white" alt="WWT" style={{ fontSize: '2em' }}/>
           </Picker>
           {this.props.popoverVisible && this.popover}
-          {this.props.popoverVisible && this.createWwtBrowsers()}
+          {this.props.popoverVisible && this.createWwtBrowser()}
         </div>
     );
   }

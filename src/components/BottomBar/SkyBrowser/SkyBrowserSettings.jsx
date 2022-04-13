@@ -15,7 +15,6 @@ class SkyBrowserSettings extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      showSettingsRaeInfo: false,
       showExpandedCopies: false,
       showExpandedSettings: false,
       precisionLow: 2,
@@ -52,15 +51,7 @@ class SkyBrowserSettings extends Component {
   toggleRadiusAzimuthElevation() {
     const { luaApi, browser } = this.props;
     const uriBrowser = `ScreenSpace.${browser.id}.UseRadiusAzimuthElevation`;
-    luaApi.setPropertyValueSingle(uriBrowser, !browser.isFacingCamera);
-  }
-
-  get positionRae() {
-    if (!this.raeInfo) {
-      return { top: '0px', left: '0px' };
-    }
-    const { top, right } = this.raeInfo.getBoundingClientRect();
-    return { top: `${top}`, left: `${right}` };
+    luaApi.setPropertyValueSingle(uriBrowser, !browser.isUsingRae);
   }
 
   valueToColor(color) {
@@ -258,11 +249,6 @@ class SkyBrowserSettings extends Component {
               placeholder="value 2"
             />
           </Row>
-          <div
-            ref={this.setRef('raeInfo')}
-            onMouseOver={() => this.setState({ showSettingsRaeInfo : true})}
-            onMouseOut={() => this.setState({ showSettingsRaeInfo : false})}
-          >
           <Checkbox
             label="Use Radius Azimuth Elevation"
             checked={browser.isUsingRae}
@@ -272,14 +258,6 @@ class SkyBrowserSettings extends Component {
             wide
             style={{ width: '100%'}}
           />
-          {
-            this.state.showSettingsRaeInfo && (
-              <SkyBrowserTooltip placement="bottom-right" style={this.positionRae}>
-                {"Using RAE coordinates is going to disable interaction with the sky browser."}
-              </SkyBrowserTooltip>
-            )
-          }
-          </div>
           <Checkbox
             label="Face Camera"
             checked={browser.isFacingCamera}

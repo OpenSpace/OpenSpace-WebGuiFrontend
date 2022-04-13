@@ -81,7 +81,7 @@ class SkyBrowserFocusEntry extends Component {
     const {
       name, identifier, thumbnail, credits, creditsUrl, ra, dec, fov,
     } = this.props;
-    const { skybrowserApi, setOpacity, removeImageSelection, currentBrowserColor } = this.props;
+    const { luaApi, setOpacity, removeImageSelection, currentBrowserColor } = this.props;
 
     const imageRemoveButton = removeImageSelection && (
       <div style={{ display: 'flex' }}>
@@ -102,8 +102,8 @@ class SkyBrowserFocusEntry extends Component {
       <li
         className={`${styles.entry} ${this.isTabEntry && styles.tabEntry} ${this.isActive && styles.active}`}
         style={{ borderLeftColor: currentBrowserColor() }}
-        onMouseOver={() => { skybrowserApi.moveCircleToHoverImage(Number(identifier)); }}
-        onMouseOut={() => { skybrowserApi.disableHoverCircle(); }}
+        onMouseOver={() => { luaApi.skybrowser.moveCircleToHoverImage(Number(identifier)); }}
+        onMouseOut={() => { luaApi.skybrowser.disableHoverCircle(); }}
         onClick={setOpacity ? undefined : this.select}
       >
         {imageRemoveButton}

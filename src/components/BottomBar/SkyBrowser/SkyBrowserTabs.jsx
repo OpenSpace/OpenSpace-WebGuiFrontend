@@ -61,8 +61,8 @@ class SkyBrowserTabs extends Component {
   }
 
   setOpacityOfImage(identifier, opacity) {
-    const { skybrowserApi, selectedBrowserId } = this.props;
-    skybrowserApi.setOpacityOfImageLayer(selectedBrowserId, Number(identifier), opacity);
+    const { luaApi, selectedBrowserId } = this.props;
+    luaApi.skybrowser.setOpacityOfImageLayer(selectedBrowserId, Number(identifier), opacity);
     this.props.passMessageToWwt({
       event: "image_layer_set",
       id: String(identifier),
@@ -72,8 +72,8 @@ class SkyBrowserTabs extends Component {
   }
 
   removeImageSelection(identifier) {
-    const { skybrowserApi, selectedBrowserId } = this.props;
-    skybrowserApi.removeSelectedImageInBrowser(selectedBrowserId, Number(identifier));
+    const { luaApi, selectedBrowserId } = this.props;
+    luaApi.skybrowser.removeSelectedImageInBrowser(selectedBrowserId, Number(identifier));
     this.props.passMessageToWwt({
       event: "image_layer_remove",
       id: String(identifier),
@@ -81,7 +81,7 @@ class SkyBrowserTabs extends Component {
   }
 
   setImageLayerOrder(browserId, identifier, order) {
-    this.props.skybrowserApi.setImageLayerOrder(browserId, identifier, order);
+    this.props.luaApi.skybrowser.setImageLayerOrder(browserId, identifier, order);
     const reverseOrder = this.props.data.length - order - 1;
     this.props.passMessageToWwt({
       event: "image_layer_order",
@@ -95,11 +95,11 @@ class SkyBrowserTabs extends Component {
   }
 
   setSelectedBrowser(browserId) {
-    this.props.skybrowserApi.setSelectedBrowser(browserId);
+    this.props.luaApi.skybrowser.setSelectedBrowser(browserId);
   }
 
   createButtons(browser) {
-    const { skybrowserApi, data } = this.props;
+    const { luaApi, data } = this.props;
     const browserId = browser.id;
     const toggleSettings = this.toggleShowSettings;
 
@@ -108,7 +108,7 @@ class SkyBrowserTabs extends Component {
       icon: 'visibility',
       text: 'Look at browser',
       function(browserId) {
-        skybrowserApi.adjustCamera(browserId);
+        luaApi.skybrowser.adjustCamera(browserId);
       },
     };
     const moveButton = {
@@ -116,7 +116,7 @@ class SkyBrowserTabs extends Component {
       icon: 'filter_center_focus',
       text: 'Move target to center of view',
       function: function(browserId) {
-        skybrowserApi.centerTargetOnScreen(browserId);
+        luaApi.skybrowser.centerTargetOnScreen(browserId);
       },
     };
     var _this = this;
@@ -134,7 +134,7 @@ class SkyBrowserTabs extends Component {
       text: 'Zoom in',
       function: function(browserId) {
         const newFov = Math.max(browser.fov - 5, 0.01);
-        skybrowserApi.setVerticalFov(browserId, Number(newFov));
+        luaApi.skybrowser.setVerticalFov(browserId, Number(newFov));
       },
     };
     const scrollOutButton = {
@@ -143,7 +143,7 @@ class SkyBrowserTabs extends Component {
       text: 'Zoom out',
       function: function(browserId) {
         const newFov = Math.min(browser.fov + 5, 70);
-        skybrowserApi.setVerticalFov(browserId, Number(newFov));
+        luaApi.skybrowser.setVerticalFov(browserId, Number(newFov));
       },
     };
     const showSettingsButton = {
@@ -198,13 +198,13 @@ class SkyBrowserTabs extends Component {
       if (index > -1) {
         ids.splice(index, 1); // 2nd parameter means remove one item only
       }
-      this.props.skybrowserApi.setSelectedBrowser(ids[0]);
+      this.props.luaApi.skybrowser.setSelectedBrowser(ids[0]);
     }
-    this.props.skybrowserApi.removeTargetBrowserPair(browserId);
+    this.props.luaApi.skybrowser.removeTargetBrowserPair(browserId);
   }
 
   createTabs() {
-    const { browsers, selectedBrowserId, skybrowserApi } = this.props;
+    const { browsers, selectedBrowserId, luaApi } = this.props;
     const buttons = browsers[selectedBrowserId] && this.createButtons(browsers[selectedBrowserId]);
 
     const allTabs = Object.keys(browsers).map((browser, index) => {
@@ -243,7 +243,7 @@ class SkyBrowserTabs extends Component {
       <div className={styles.navTabs}>
         {allTabs}
         <Button
-          onClick={() => skybrowserApi.createTargetBrowserPair()}
+          onClick={() => luaApi.skybrowser.createTargetBrowserPair()}
           className={styles.addTabButton}
           transparent
         >
@@ -253,10 +253,10 @@ class SkyBrowserTabs extends Component {
     );
   }
 
-  createImageList(data, props) {
+  createImageList() {
     const {
-      currentBrowserColor, selectedBrowserId, selectImage, skybrowserApi,
-    } = props;
+      currentBrowserColor, selectedBrowserId, selectImage, luaApi, data
+    } = this.props;
     const images = (
       <ul>
         {data.map((entry, index) => (
@@ -274,7 +274,7 @@ class SkyBrowserTabs extends Component {
             )}
             <SkyBrowserFocusEntry
               {...entry}
-              skybrowserApi={skybrowserApi}
+              luaApi={luaApi}
               key={entry.identifier}
               onSelect={selectImage}
               removeImageSelection={this.removeImageSelection}
@@ -302,22 +302,22 @@ class SkyBrowserTabs extends Component {
 
   render() {
     const {
-      data, maxHeight, minHeight, browsers, selectedBrowserId, height, api, skybrowserApi, isUsingRae, isFacingCamera
+      data, maxHeight, minHeight, browsers, selectedBrowserId, height, luaApi
     } = this.props;
     const { showSettings } = this.state;
 
-    let tabDisplay = "";
+    let content = "";
     if (showSettings) {
-      tabDisplay = (
+      content = (
         <SkyBrowserSettings
           browser={browsers[selectedBrowserId]}
           selectedBrowserId={selectedBrowserId}
-          luaApi={api}
+          luaApi={luaApi}
         />);
     } else if (data.length === 0) {
-      tabDisplay = <CenteredLabel>There are no selected images in this sky browser.</CenteredLabel>;
+      content = <CenteredLabel>There are no selected images in this sky browser.</CenteredLabel>;
     } else {
-      tabDisplay = this.createImageList(data, this.props);
+      content = this.createImageList();
     }
 
     return (
@@ -330,10 +330,12 @@ class SkyBrowserTabs extends Component {
           onResizeStop={() => {
             this.props.setCurrentTabHeight(this.tabsDiv.clientHeight);
           }}
-          height={this.props.height}
+          height={height}
         >
           {this.createTabs()}
-          <div className={`${styles.tabContent} ${styles.tabContainer}`}>{tabDisplay}</div>
+          <div className={`${styles.tabContent} ${styles.tabContainer}`}>
+            {content}
+          </div>
         </Resizable>
       </section>
     );

@@ -78,7 +78,6 @@ class SkyBrowserImageList extends Component {
     const { activeImage, height, imageList, luaApi, showOnlyNearest, selectImage, currentBrowserColor } = this.props;
 
     const list = showOnlyNearest ? this.getNearestImages() : imageList;
-    const skybrowserApi = luaApi.skybrowser;
     // TODO: render hint if no images
 
     return (
@@ -89,7 +88,7 @@ class SkyBrowserImageList extends Component {
         searchText={`Search from ${list.length.toString()} images...`}
         viewComponent={SkyBrowserFocusEntry}
         viewComponentProps={{
-          skybrowserApi: skybrowserApi,
+          luaApi: luaApi,
           currentBrowserColor: currentBrowserColor,
         }}
         onSelect={selectImage}
