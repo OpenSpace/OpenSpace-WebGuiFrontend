@@ -29,6 +29,9 @@ class WorldWideTelescope extends Component {
 
   componentDidMount() {
     window.addEventListener("message", this.handleCallbackMessage);
+    this.sendMessageToWwt({
+     event : "disconnect_to_openspace",
+   })
     this.props.setImageCollectionIsLoaded(false);
   }
 
@@ -77,7 +80,6 @@ class WorldWideTelescope extends Component {
       var frame = this.iframe.current.contentWindow;
       frame.postMessage(message, "*");
     } catch (error) {
-      console.log("Trying to connect to AAS World Wide Telescope: " + error);
     }
   }
 

@@ -221,10 +221,15 @@ class SkyBrowserPanel extends Component {
   }
 
   get popover() {
-    const { imageList, cameraInSolarSystem, browsers } = this.props;
+    const { imageList, cameraInSolarSystem, browsers, selectedBrowserId } = this.props;
     const { currentPopoverHeight, imageCollectionIsLoaded } = this.state;
+    let allImageCollectionsAreLoaded = imageCollectionIsLoaded;
 
     const browsersExist = browsers && Object.keys(browsers).length !== 0;
+    if(browsersExist) {
+      const browser = browsers[selectedBrowserId];
+      allImageCollectionsAreLoaded = browser.isImageCollectionLoaded && imageCollectionIsLoaded;
+    }
 
     let content = "";
     if(!cameraInSolarSystem) {
@@ -238,7 +243,7 @@ class SkyBrowserPanel extends Component {
     else if(!browsersExist) {
       content = this.createAddBrowserInterface();
     }
-    else if(!imageCollectionIsLoaded && browsersExist) {
+    else if(!allImageCollectionsAreLoaded && browsersExist) {
       const msg = "Loading image collection...";
       content = (
         <CenteredLabel>
@@ -246,7 +251,7 @@ class SkyBrowserPanel extends Component {
         </CenteredLabel>
       );
     }
-    else if(imageCollectionIsLoaded && browsersExist) {
+    else if(allImageCollectionsAreLoaded && browsersExist) {
       content = this.createBrowserContent();
     }
 
