@@ -41,11 +41,11 @@ class SkyBrowserPanel extends Component {
     this.createBrowserContent = this.createBrowserContent.bind(this);
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.props.startSubscriptions();
   }
 
-  componentWillUnmount() {
+  async componentWillUnmount() {
     this.props.stopSubscriptions();
   }
 

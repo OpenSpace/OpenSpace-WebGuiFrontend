@@ -29,9 +29,6 @@ class WorldWideTelescope extends Component {
 
   componentDidMount() {
     window.addEventListener("message", this.handleCallbackMessage);
-    this.sendMessageToWwt({
-     event : "disconnect_to_openspace",
-   })
     this.props.setImageCollectionIsLoaded(false);
   }
 
