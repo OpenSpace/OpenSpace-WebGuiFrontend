@@ -150,7 +150,7 @@ class WorldWideTelescope extends Component {
         id="webpage"
         name = "wwt"
         ref={this.iframe}
-        src="http://wwt.openspaceproject.com"
+        src="http://wwt.openspaceproject.com/gui"
         allow="accelerometer; clipboard-write; gyroscope"
         allowFullScreen
         frameBorder="0"
