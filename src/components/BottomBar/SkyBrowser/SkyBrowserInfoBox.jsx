@@ -11,15 +11,14 @@ class InfoBoxSkyBrowser extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      showPopup: false,
+      isPopupShowing: false,
       tooltipActive: false
     };
 
     this.setRef = this.setRef.bind(this);
     this.tooltipActive = this.tooltipActive.bind(this);
     this.checkIfTooltipActive = this.checkIfTooltipActive.bind(this);
-    this.showPopup = this.showPopup.bind(this);
-    this.hidePopup = this.hidePopup.bind(this);
+    this.togglePopup = this.togglePopup.bind(this);
     this.openImageUrl = this.openImageUrl.bind(this);
     this.handleOutsideClick = this.handleOutsideClick.bind(this);
     this.openEsaSky = this.openEsaSky.bind(this);
@@ -60,12 +59,8 @@ class InfoBoxSkyBrowser extends Component {
     }
   }
 
-  showPopup() {
-    this.setState({ showPopup: !this.state.showPopup });
-  }
-
-  hidePopup() {
-    this.setState({ showPopup: false, tooltipActive: false});
+  togglePopup() {
+    this.setState({ isPopupShowing: !this.state.isPopupShowing });
   }
 
   openEsaSky(ra, dec, fov) {
@@ -75,25 +70,27 @@ class InfoBoxSkyBrowser extends Component {
 
   render() {
     const { icon, text, title, textUrl, ra, dec, fov} = this.props;
-    const { showPopup } = this.state;
+    const { isPopupShowing } = this.state;
     const esaSkyButton = <Button onClick={() => {this.openEsaSky(ra,dec,fov)}} className={styles.tooltipButton} transparent small>
         <img src={esaSkyLogo} alt="EsaSky" style={{width:'100%'}} />
       </Button>;
 
     return (
       <span ref={this.setRef('wrapper')}>
+      <Button
+      transparent
+      small
+      onClick={this.togglePopup}
+      >
         <MaterialIcon
         icon={icon}
-        onMouseOver={this.showPopup}
-        onMouseOut={() => setTimeout(this.checkIfTooltipActive, 500)}
         style={{fontSize: '15px'}}>
         </MaterialIcon>
-          { showPopup && (
+          { isPopupShowing && (
             <SkyBrowserTooltip
             placement="bottom-left"
             style={this.position}
-            onMouseOver={this.tooltipActive}
-            onMouseOut={this.hidePopup}>
+            >
             <span className={styles.tooltipTitle}> { title } </span>
             { text }
             { text && (
@@ -104,6 +101,7 @@ class InfoBoxSkyBrowser extends Component {
             { esaSkyButton }
             </SkyBrowserTooltip>
           )}
+          </Button>
       </span>
     );
   }
