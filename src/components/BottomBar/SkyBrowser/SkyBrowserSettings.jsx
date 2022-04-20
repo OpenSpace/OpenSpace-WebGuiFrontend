@@ -19,7 +19,7 @@ class SkyBrowserSettings extends Component {
       showExpandedSettings: false,
       precisionLow: 2,
       precisionHigh: 10,
-      newPosition: [2.1, 0, 0],
+      newPosition: [0, 0, 2],
       noOfCopies: 1,
       showCopiesInfo: false,
     };
@@ -69,9 +69,9 @@ class SkyBrowserSettings extends Component {
 
   createRenderCopiesSection(browser, luaApi, selectedBrowserId) {
     const renderCopies = browser.renderCopies;
-    const positionData = ['Radius', 'Azimuth', 'Elevation'];
-    const maxPosition = [10, 3.14, 3.14];
-    const minPosition = [0, -3.14, -3.14];
+    const positionData = browser.isUsingRae ? ['Radius', 'Azimuth', 'Elevation'] : ['X', 'Y', 'Z'];
+    const maxPosition = browser.isUsingRae ? [10, 3.14, 3.14] : [4, 4, 0];
+    const minPosition = browser.isUsingRae ? [0, -3.14, -3.14] : [-4, -4, -10];
     const newPositionVector = this.state.newPosition;
 
     const renderCopiesButtons = renderCopies ? Object.values(renderCopies).map((entry, indexCopy) => {
