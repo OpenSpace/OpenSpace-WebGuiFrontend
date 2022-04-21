@@ -19,7 +19,8 @@ const getWWTImages = async (luaApi, callback) => {
     }
   }
   catch(e) {
-    console.error(e);
+    // TODO: Put this back
+    //console.error(e);
   }
 };
 

@@ -1,0 +1,40 @@
+@import "../../styles/all";
+
+.streamIcon {
+  font-size: 2em;
+}
+
+.text {
+  color: snow;
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+
+.button {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  background-color: coral;
+  border-radius: .2vw;
+}
+
+.actionButton {
+  width: 120px;
+  height: 50px;
+  margin: 10px auto;
+  display: block;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.stream {
+  position: fixed;
+  width: 100%;
+  height:100%;
+}
+
+.stream video{
+  object-fit: cover;
+  height: 100%;
+  width: 120%;
+  transform: translateX(-10%);
+}

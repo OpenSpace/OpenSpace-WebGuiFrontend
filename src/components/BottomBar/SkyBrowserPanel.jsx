@@ -83,7 +83,8 @@ class SkyBrowserPanel extends Component {
         });
       }
     } catch (e) {
-      console.log(e);
+      //TODO: Put this back
+      //console.log(e);
     }
   }
 

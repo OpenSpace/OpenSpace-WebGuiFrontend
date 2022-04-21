@@ -10,26 +10,25 @@ import SessionRec from './SessionRec';
 import TimePicker from './TimePicker';
 import SkyBrowserPanel from './SkyBrowserPanel';
 import FlightSettings from './FlightSettings';
+import StreamingMenu from './StreamingMenu';
 
-const BottomBar = (props) => (
+const StreamingBottomBar = (props) => (
   <div className={styles.BottomBar}>
     <OriginPicker />
     <TimePicker />
-    <SessionRec />
+    <StreamingMenu/>
     <ScreenSpaceRenderablePanel />
     <ExoplanetsPanel />
-    <ActionsPanel />
-    {props.showFlightController && <FlightControlPanel />}
-    <SkyBrowserPanel />
+    {props.showFlightSettings && <FlightSettings/>}
   </div>
 );
 
-BottomBar.propTypes = {
+StreamingBottomBar.propTypes = {
   showFlightController: PropTypes.bool,
 };
 
-BottomBar.defaultProps = {
+StreamingBottomBar.defaultProps = {
   showFlightController: false,
 };
 
-export default BottomBar;
+export default StreamingBottomBar;
