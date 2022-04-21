@@ -212,18 +212,19 @@ function getLocalStream() {
     var constraints = default_constraints;
 
     // Add local stream 
-    if (navigator.mediaDevices.getDisplayMedia) {
-        return navigator.mediaDevices.getDisplayMedia(constraints);
+    if (navigator.mediaDevices.getUserMedia) {
+        return navigator.mediaDevices.getUserMedia(constraints);
     } else {
         errorUserMediaHandler();
     }
-
-    
 
 }
 
 function onRemoteTrack(event) {
     if (getVideoElement().srcObject !== event.streams[0]) {
+        // Add latency for user testing
+        //const [videoReceiver] = peer_connection.getReceivers();
+        //videoReceiver.playoutDelayHint = 0.5;
         console.log('Incoming stream');
         getVideoElement().srcObject = event.streams[0];
     }
