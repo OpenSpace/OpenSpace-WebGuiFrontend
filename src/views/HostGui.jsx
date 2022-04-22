@@ -16,7 +16,7 @@ import Sidebar from '../components/Sidebar/Sidebar';
 import StreamedVideo from '../components/StreamedVideo/StreamedVideo';
 import '../styles/base.scss';
 import About from './About/About';
-import styles from './HostGui.scss';
+import styles from './StreamingGui.scss';
 
 class HostGui extends Component {
   constructor(props) {

@@ -57,7 +57,11 @@ class StreamingMenu extends Component {
           <div>
               <MaterialIcon className={styles.streamIcon} icon="screen_share"/>
           </div>
-          {showPopover && <Popover className={Picker.Popover}>
+          {showPopover && 
+            <Popover 
+              className={Picker.Popover}
+              title="Streaming options"
+            >
             <div className={Popover.styles.content}>
             <Button
               block
@@ -65,7 +69,7 @@ class StreamingMenu extends Component {
               onClick={() => {joinSession()}}
               className={styles.actionButton}
             >
-              <p>JOIN Session</p>
+              <p>Host session</p>
             </Button>
 
 
@@ -75,7 +79,7 @@ class StreamingMenu extends Component {
               onClick={() => {hostSession()}}
               className={styles.actionButton}
             >
-                <p>HOST Session</p>
+                <p>Join session</p>
             </Button>
 
             </div>

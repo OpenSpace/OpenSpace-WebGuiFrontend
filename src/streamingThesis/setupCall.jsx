@@ -39,7 +39,6 @@ function websocketServerConnect() {
     //     setError("Too many connection attempts, aborting. Refresh page to try again");
     //     return;
     // }
-
     console.log("In websocketServerConnect...");
 
     if (window.location.protocol.startsWith ("file")) {

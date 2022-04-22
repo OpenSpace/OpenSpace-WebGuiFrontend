@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useRef } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { setShowAbout, startConnection } from '../api/Actions';
@@ -60,6 +60,8 @@ class StreamingGui extends Component {
     location.reload();
   }
 
+  
+
   render() {
     this.checkVersion();
     return (
@@ -88,6 +90,7 @@ class StreamingGui extends Component {
         )}
 
         {/* Standard appearance*/}
+        <div className={styles.streamingStatus}>Connected to server, waiting for a Host to start a session...</div>
         <StreamedVideo/>
         <NavigationLayer/>
         <section className={styles.Grid__Left}>
