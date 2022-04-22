@@ -5,7 +5,7 @@ var peerID = 0;
 var rtc_configuration = {iceServers: [{urls: "stun:stun.services.mozilla.com"},
                                       {urls: "stun:stun.l.google.com:19302"}]};
 
-var default_constraints = {video: true};
+var default_constraints;
 var connect_attempts = 0;
 var peer_connection;
 var send_channel;
@@ -14,6 +14,7 @@ var local_stream_promise;
 
 export const joinSession = () => {
     peerID = '1';
+    default_constraints = {video: true};
     websocketServerConnect();
     sendToSocket('SESSION', 'HOST');
     //if (status == "Registered with server, waiting for call")
@@ -22,6 +23,7 @@ export const joinSession = () => {
 
 export const hostSession = () => {
     peerID = 'HOST';
+    default_constraints = {video: false};
     websocketServerConnect();
 }
 
@@ -111,6 +113,7 @@ function onIncomingSDP(sdp) {
         if (sdp.type != "offer")
             return;
         setStatus("Got SDP offer");
+        // TODO: Vad är 'stream' i detta fall...
         local_stream_promise.then((stream) => {
             setStatus("Got local stream, creating answer");
             peer_connection.createAnswer()
@@ -140,6 +143,15 @@ function onServerMessage(event) {
             setStatus("Starting negotiation");
             if (!peer_connection)
                 createCall(null).then (generateOffer);
+
+            // If we want a remote offer - i.e. the host calls us
+            // if (wantRemoteOfferer()) {
+            //     // TODO: SEND >:(
+            //     ws_conn.send("OFFER_REQUEST");
+            //     setStatus("Sent OFFER_REQUEST, waiting for offer");
+            //     return;
+            // }
+            
             return;
         case "OFFER_REQUEST":
             // The peer wants us to set up and then send an offer
@@ -239,6 +251,7 @@ const handleDataChannelOpen = (event) =>{
 };
 
 const handleDataChannelMessageReceived = (event) =>{
+
     console.log("dataChannel.OnMessage:", event, event.data.type);
 
     setStatus("Received data channel message");
@@ -250,6 +263,7 @@ const handleDataChannelMessageReceived = (event) =>{
         console.log('Incoming data message');
     }
     send_channel.send("Hi! (from browser)");
+
 };
 
 const handleDataChannelError = (error) =>{

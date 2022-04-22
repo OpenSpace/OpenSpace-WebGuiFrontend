@@ -7,6 +7,7 @@ import OnScreenGui from './views/OnScreenGui';
 import OnTouchGui from './views/OnTouchGui';
 import RemoteGui from './views/RemoteGui';
 import StreamingGui from './views/StreamingGui';
+import HostGui from './views/HostGui';
 
 const App = () => (
   <Router>
@@ -18,6 +19,7 @@ const App = () => (
       {/* Here, more GUI variations can be added. */}
       {/* <Route path="/tablet" component={TabletGui} /> */}
       <Route path="/streaming" component={StreamingGui} />
+      <Route path="/host" component={HostGui} />
       <Route path="/" component={BrowserGui} />
       <Route component={NotFound} />
     </Switch>
