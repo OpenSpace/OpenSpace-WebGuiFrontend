@@ -19,7 +19,7 @@ class SkyBrowserSettings extends Component {
       showExpandedSettings: false,
       precisionLow: 2,
       precisionHigh: 10,
-      newPosition: [0, 0, 2],
+      newPosition: [0, 0, -2],
       noOfCopies: 1,
       showCopiesInfo: false,
     };

@@ -11,6 +11,7 @@ class WorldWideTelescope extends Component {
     this.state = {
       isDragging: false,
       startDragPosition: [0,0],
+      topBarHeight: 25
     };
     this.sendMessageToWwt = this.sendMessageToWwt.bind(this);
     this.setAim = this.setAim.bind(this);
@@ -121,15 +122,14 @@ class WorldWideTelescope extends Component {
     return (
       <header className={`header ${styles.topMenu}`}>
         <div className={styles.title}>{this.props.browser.name}</div>
-        <div>
-        </div>
       </header>
     );
   }
 
   changeSize(widthWwt, heightWwt) {
     const { innerWidth: windowWidth, innerHeight: windowHeight } = window;
-    const ratio = widthWwt / heightWwt;
+    console.log(this.state.topBarHeight);
+    const ratio = widthWwt / (heightWwt - this.state.topBarHeight);
     const scale = heightWwt / windowHeight;
     const newWidth = 2 * scale * ratio;
     const newHeight = 2 * scale;
@@ -176,7 +176,7 @@ class WorldWideTelescope extends Component {
         className={`${Picker.Popover}`}
         title={browser.name}
         closeCallback={this.togglePopover}
-        size={{ height: `400px`, width: `400px` }}
+        size={{ height: `425px`, width: `400px` }}
         position={{ x: -800, y: -600 }}
         setNewHeight={this.changeSize}
       >

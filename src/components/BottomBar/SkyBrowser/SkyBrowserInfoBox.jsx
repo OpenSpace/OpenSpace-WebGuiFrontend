@@ -86,6 +86,7 @@ class InfoBoxSkyBrowser extends Component {
         icon={icon}
         style={{fontSize: '15px'}}>
         </MaterialIcon>
+      </Button>
           { isPopupShowing && (
             <SkyBrowserTooltip
             placement="bottom-left"
@@ -101,7 +102,7 @@ class InfoBoxSkyBrowser extends Component {
             { esaSkyButton }
             </SkyBrowserTooltip>
           )}
-          </Button>
+
       </span>
     );
   }
