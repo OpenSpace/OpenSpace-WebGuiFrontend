@@ -8,11 +8,21 @@ import Button from '../../../common/Input/Button/Button';
 class PaneRightHandSide extends Component {
   constructor(props) {
     super(props);
+    this.handleResize = this.handleResize.bind(this);
+  }
+
+  handleResize() {
+    const { innerWidth: width, innerHeight: height } = window;
+    this.props.heightCallback(innerWidth, innerHeight);
   }
 
   componentDidMount() {
-    const { innerWidth: width, innerHeight: height } = window;
-    this.props.heightCallback(innerWidth, innerHeight);
+    this.handleResize();
+    window.addEventListener('resize', this.handleResize);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.handleResize)
   }
 
   render() {
