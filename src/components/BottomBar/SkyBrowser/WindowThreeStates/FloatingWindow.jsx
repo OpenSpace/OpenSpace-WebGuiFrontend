@@ -25,7 +25,7 @@ class FloatingWindow extends Component {
           }}
         >
           <Resizable
-            enable={{ right: true, bottom: true }}
+            enable={{ right: true, bottom: true, bottomRight: true }}
             defaultSize={{ width: defaultSize.width, height: defaultSize.height }}
             size={size ? size : undefined}
             minWidth={280}
