@@ -42,15 +42,8 @@ export const time = (state = defaultState, action = {}) => {
         // have exactly four digits.
         // So we parse the date string manually and call the correct function on the date
         // object instead
+        let date = new Date(dateStringWithTimeZone(time));
 
-        // The time string is in a form:
-        //  1. 1234-03-15T22:59:20.345
-        //  2.   44-01-30T12:00:00.000
-        //  3. 12345-03-15T22:59:20.345
-        //  4. -1234-03-15T22:59:20.345
-        //  5. -  44-01-30T12:00:00.000
-        //  6. -12345-03-15T22:59:20.345
-        let date = new Date("2000-01-01T12:00:00.000Z");
         let wholeParts = time.split('T');
         console.assert(wholeParts.length === 2);
 
@@ -66,22 +59,6 @@ export const time = (state = defaultState, action = {}) => {
         }
         else {
           date.setFullYear(parseInt(dayParts[0]));
-        }
-
-        date.setMonth(parseInt(dayParts[1]));
-        date.setDate(parseInt(dayParts[2]));
-
-
-        //
-        // Dealing with the time
-        let timeParts = wholeParts[1].split(':');
-        console.assert(timeParts.length === 3);
-        date.setHours(parseInt(timeParts[0]));
-        date.setMinutes(parseInt(timeParts[1]));
-        let secondsParts = timeParts[2].split('.');
-        date.setSeconds(parseInt(secondsParts[0]));
-        if (secondsParts.length > 0) {
-          date.setMilliseconds(parseInt(secondsParts[1]));
         }
 
         newState.time = date;
