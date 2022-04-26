@@ -6,6 +6,7 @@ import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
 import CenteredLabel from '../../common/CenteredLabel/CenteredLabel';
 import SkyBrowserTooltip from './SkyBrowserTooltip';
 import SkyBrowserFocusEntry from './SkyBrowserFocusEntry';
+import { Icon } from '@iconify/react';
 import styles from './SkyBrowserTabs.scss';
 import SkyBrowserSettings from './SkyBrowserSettings.jsx'
 
@@ -143,6 +144,15 @@ class SkyBrowserTabs extends Component {
         luaApi.skybrowser.setVerticalFov(browserId, Number(newFov));
       },
     };
+    const pointSpaceCraftButton = {
+      selected: false,
+      icon: 'eos-icons:satellite-alt',
+      iconify: true,
+      text: 'Point spacecraft',
+      function: function(browserId) {
+        luaApi.skybrowser.pointSpaceCraft(browserId);
+      },
+    };
     const showSettingsButton = {
       selected: this.state.showSettings,
       icon: 'settings',
@@ -152,7 +162,7 @@ class SkyBrowserTabs extends Component {
       },
     };
 
-    const buttonsData = [lookButton, moveButton, scrollInButton, scrollOutButton, trashButton, showSettingsButton];
+    const buttonsData = [lookButton, moveButton, scrollInButton, scrollOutButton, pointSpaceCraftButton, trashButton, showSettingsButton];
 
     const buttons = buttonsData.map((button, index) => (
       <Button
@@ -165,11 +175,18 @@ class SkyBrowserTabs extends Component {
         transparent
         small
       >
+        {button.iconify ?
+          <Icon
+            icon={button.icon}
+            rotate={2}
+            onMouseOver={() => this.showTooltip(index)}
+          />
+          :
         <MaterialIcon
           icon={button.icon}
           className="medium"
           onMouseOver={() => this.showTooltip(index)}
-        />
+        />}
         {this.state.isShowingInfoButtons[index] && (
           <SkyBrowserTooltip placement="bottom-right" style={this.positionInfo}>
             {button.text}
