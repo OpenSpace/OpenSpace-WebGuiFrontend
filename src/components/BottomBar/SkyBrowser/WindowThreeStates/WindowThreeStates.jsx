@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Resizable } from 're-resizable';
 import styles from './WindowThreeStates.scss';
 import FloatingWindow from './FloatingWindow';
 import PaneRightHandSide from './PaneRightHandSide';
@@ -26,6 +25,11 @@ class WindowThreeStates extends Component {
     this.setAsDetached = this.setAsDetached.bind(this);
     this.setAsAttached = this.setAsAttached.bind(this);
     this.createTopBar = this.createTopBar.bind(this);
+  }
+
+  componentDidMount() {
+    // Reset height when component is mounted
+    this.props.heightCallback(0, this.props.defaultHeight);
   }
 
   get asPopup() {
