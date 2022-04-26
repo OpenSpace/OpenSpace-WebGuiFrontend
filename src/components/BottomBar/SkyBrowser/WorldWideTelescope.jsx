@@ -115,7 +115,7 @@ class WorldWideTelescope extends Component {
   }
 
   scroll(e) {
-    this.props.skybrowserApi.scrollOverBrowser(this.props.browser.id, -e.deltaY);
+    this.props.skybrowserApi.scrollOverBrowser(this.props.browser.id, e.deltaY);
   }
 
   createTopBar() {
