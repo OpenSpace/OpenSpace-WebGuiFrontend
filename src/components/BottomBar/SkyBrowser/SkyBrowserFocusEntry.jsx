@@ -14,7 +14,7 @@ class OpacitySlider extends Component {
     this.handleChange = this.handleChange.bind(this);
   }
 
-  handleChange(event) {
+  handleChange(e) {
     this.setState({ value: event.target.value });
     // Ensure the image has an id, which consists of the index of the image
     const index = Number(this.props.identifier);
@@ -22,6 +22,9 @@ class OpacitySlider extends Component {
     if (index) {
       this.props.setOpacity(index, opacity);
     }
+    if (!e) var e = window.event;
+    e.cancelBubble = true;
+    if (e.stopPropagation) e.stopPropagation();
   }
 
   render() {
@@ -62,11 +65,14 @@ class SkyBrowserFocusEntry extends Component {
     return !!this.props.setOpacity;
   }
 
-  select(evt) {
+  select(e) {
     const { identifier, onSelect } = this.props;
     if (onSelect && identifier) {
       onSelect(identifier);
     }
+    if (!e) var e = window.event;
+    e.cancelBubble = true;
+    if (e.stopPropagation) e.stopPropagation();
   }
 
   showTooltip() {
@@ -86,7 +92,12 @@ class SkyBrowserFocusEntry extends Component {
     const imageRemoveButton = removeImageSelection && (
       <div style={{ display: 'flex' }}>
         <Button
-          onClick={() => removeImageSelection(identifier)}
+          onClick={(e) => {
+            if (!e) var e = window.event;
+            e.cancelBubble = true;
+            if (e.stopPropagation) e.stopPropagation();
+            removeImageSelection(identifier);
+          }}
           className={styles.removeImageButton}
           transparent
           small

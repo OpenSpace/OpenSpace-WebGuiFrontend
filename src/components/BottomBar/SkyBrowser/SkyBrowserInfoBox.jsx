@@ -59,8 +59,11 @@ class InfoBoxSkyBrowser extends Component {
     }
   }
 
-  togglePopup() {
+  togglePopup(e) {
     this.setState({ isPopupShowing: !this.state.isPopupShowing });
+    if (!e) var e = window.event;
+    e.cancelBubble = true;
+    if (e.stopPropagation) e.stopPropagation();
   }
 
   openEsaSky(ra, dec, fov) {
