@@ -51,7 +51,7 @@ class WindowThreeStates extends Component {
     return (
       <FloatingWindow
         setNewHeight={this.props.heightCallback}
-        size={{ height, width: `${this.state.windowWidth}px` }}
+        defaultSize={{ height, width: `${this.state.windowWidth}px` }}
         minHeight={this.props.minHeight}
       >
         {this.createTopBar()}

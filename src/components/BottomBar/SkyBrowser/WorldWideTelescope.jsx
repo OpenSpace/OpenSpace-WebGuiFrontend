@@ -11,7 +11,7 @@ class WorldWideTelescope extends Component {
     this.state = {
       isDragging: false,
       startDragPosition: [0,0],
-      topBarHeight: 25
+      topBarHeight: 25,
     };
     this.sendMessageToWwt = this.sendMessageToWwt.bind(this);
     this.setAim = this.setAim.bind(this);
@@ -25,7 +25,7 @@ class WorldWideTelescope extends Component {
     this.changeSize = this.changeSize.bind(this);
     this.setBorderColor = this.setBorderColor.bind(this);
     this.color = [255, 255, 255];
-    this.screenSpaceSize = [0.5, 0.5];
+    this.ratio = 1;
   }
 
   componentDidMount() {
@@ -127,22 +127,23 @@ class WorldWideTelescope extends Component {
   }
 
   changeSize(widthWwt, heightWwt) {
+    const { topBarHeight } = this.state;
     const { innerWidth: windowWidth, innerHeight: windowHeight } = window;
-    console.log(this.state.topBarHeight);
-    const ratio = widthWwt / (heightWwt - this.state.topBarHeight);
-    const scale = heightWwt / windowHeight;
+    const ratio = widthWwt / (heightWwt - topBarHeight);
+    const scale = (heightWwt - topBarHeight) / windowHeight;
     const newWidth = 2 * scale * ratio;
     const newHeight = 2 * scale;
     const id = this.props.browser.id;
+    this.props.setSize({ width: widthWwt, height: heightWwt });
     this.props.skybrowserApi.setScreenSpaceSize(id, newWidth, newHeight);
-    this.screenSpaceSize = [newWidth, newHeight];
   }
 
   render() {
-    const browser = this.props.browser;
+    const {browser, size} = this.props;
     if(browser) {
       if(browser.color != this.color) {
         this.setBorderColor(browser.color);
+        this.color = browser.color;
       }
 
       const iframe =
@@ -176,7 +177,8 @@ class WorldWideTelescope extends Component {
         className={`${Picker.Popover}`}
         title={browser.name}
         closeCallback={this.togglePopover}
-        size={{ height: `425px`, width: `400px` }}
+        defaultSize={{ height: `425px`, width: `400px` }}
+        size={{ height: `${size.height}px`, width: `${size.width}px` }}
         position={{ x: -800, y: -600 }}
         setNewHeight={this.changeSize}
       >

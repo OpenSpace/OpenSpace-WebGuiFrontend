@@ -26,6 +26,7 @@ class SkyBrowserTabs extends Component {
     this.createButtons = this.createButtons.bind(this);
     this.toggleShowSettings = this.toggleShowSettings.bind(this);
     this.setImageLayerOrder = this.setImageLayerOrder.bind(this);
+    this.createTargetBrowserPair = this.createTargetBrowserPair.bind(this);
     this.removeTargetBrowserPair = this.removeTargetBrowserPair.bind(this);
   }
 
@@ -92,10 +93,6 @@ class SkyBrowserTabs extends Component {
     this.setState({
       messageCounter : this.state.messageCounter + 1
     })
-  }
-
-  setSelectedBrowser(browserId) {
-    this.props.luaApi.skybrowser.setSelectedBrowser(browserId);
   }
 
   createButtons(browser) {
@@ -191,14 +188,20 @@ class SkyBrowserTabs extends Component {
     );
   }
 
+  createTargetBrowserPair() {
+    const {luaApi, setWwtRatio} = this.props;
+    luaApi.skybrowser.createTargetBrowserPair();
+    setWwtRatio(1);
+  }
+
   removeTargetBrowserPair(browserId) {
-    const ids = Object.keys(this.props.browsers);
+    let ids = Object.keys(this.props.browsers);
     if(ids.length > 1) {
       const index = ids.indexOf(browserId);
       if (index > -1) {
         ids.splice(index, 1); // 2nd parameter means remove one item only
       }
-      this.props.luaApi.skybrowser.setSelectedBrowser(ids[0]);
+      this.props.setSelectedBrowser(ids[0]);
     }
     this.props.luaApi.skybrowser.removeTargetBrowserPair(browserId);
   }
@@ -220,12 +223,22 @@ class SkyBrowserTabs extends Component {
         >
           <div
             className={selectedBrowserId === browser ? styles.tabActive : styles.tabInactive}
-            onClick={() => this.setSelectedBrowser(browser)}
+            onClick={(e) => {
+              if (!e) var e = window.event;
+              e.cancelBubble = true;
+              if (e.stopPropagation) e.stopPropagation();
+              this.props.setSelectedBrowser(browser)}
+            }
           >
             <span className={styles.tabHeader}>
               <span className={styles.tabTitle}>{browsers[browser].name}</span>
               <Button
-                onClick={() => this.removeTargetBrowserPair(browser)}
+                onClick={(e) => {
+                  if (!e) var e = window.event;
+                  e.cancelBubble = true;
+                  if (e.stopPropagation) e.stopPropagation();
+                  this.removeTargetBrowserPair(browser);
+                }}
                 className={styles.closeTabButton}
                 transparent
                 small
@@ -243,7 +256,7 @@ class SkyBrowserTabs extends Component {
       <div className={styles.navTabs}>
         {allTabs}
         <Button
-          onClick={() => luaApi.skybrowser.createTargetBrowserPair()}
+          onClick={() => this.createTargetBrowserPair()}
           className={styles.addTabButton}
           transparent
         >

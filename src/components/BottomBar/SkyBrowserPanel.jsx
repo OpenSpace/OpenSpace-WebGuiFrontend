@@ -26,12 +26,16 @@ class SkyBrowserPanel extends Component {
       showOnlyNearest: true,
       menuHeight: 70,
       imageCollectionIsLoaded: false,
-      wwtBrowsers: []
+      wwtBrowsers: [],
+      wwtSize: {width: 400, height: 400}
     };
     this.togglePopover = this.togglePopover.bind(this);
     this.setImageCollectionIsLoaded = this.setImageCollectionIsLoaded.bind(this);
     this.setCurrentTabHeight = this.setCurrentTabHeight.bind(this);
     this.setCurrentPopoverHeight = this.setCurrentPopoverHeight.bind(this);
+    this.setWwtSize = this.setWwtSize.bind(this);
+    this.setWwtRatio = this.setWwtRatio.bind(this);
+    this.setSelectedBrowser = this.setSelectedBrowser.bind(this);
     this.currentBrowserColor = this.currentBrowserColor.bind(this);
     this.passMessageToWwt = this.passMessageToWwt.bind(this);
     this.getSelectedBrowserImages = this.getSelectedBrowserImages.bind(this);
@@ -63,6 +67,19 @@ class SkyBrowserPanel extends Component {
   setImageCollectionIsLoaded(isLoaded) {
     this.setState({
       imageCollectionIsLoaded : isLoaded
+    });
+  }
+
+  setWwtSize(size) {
+    this.setState({
+      wwtSize: size
+    });
+  }
+
+  setWwtRatio(ratio) {
+    this.setWwtSize({
+      width: ratio * this.state.wwtSize.height,
+      height: this.state.wwtSize.height
     });
   }
 
@@ -116,8 +133,18 @@ class SkyBrowserPanel extends Component {
     }
   }
 
+  setSelectedBrowser(browserId) {
+    const {browsers} = this.props;
+    if (browsers === undefined || browsers[browserId] === undefined) {
+      return "";
+    }
+    this.props.luaApi.skybrowser.setSelectedBrowser(browserId);
+    this.setWwtRatio(browsers[browserId].ratio);
+  }
+
   createWwtBrowser() {
     const { browsers, selectedBrowserId } = this.props;
+
     if (browsers === undefined) {
       return "";
     }
@@ -131,6 +158,8 @@ class SkyBrowserPanel extends Component {
         setImageCollectionIsLoaded = {this.setImageCollectionIsLoaded}
         selectedImages={selectedImages}
         selectImage={this.selectImage}
+        size={this.state.wwtSize}
+        setSize={this.setWwtSize}
       />
     );
   }
@@ -203,6 +232,8 @@ class SkyBrowserPanel extends Component {
         selectImage={this.selectImage}
         currentBrowserColor={this.currentBrowserColor}
         passMessageToWwt={this.passMessageToWwt}
+        setSelectedBrowser={this.setSelectedBrowser}
+        setWwtRatio={this.setWwtRatio}
       />
     );
 
@@ -296,7 +327,7 @@ const mapSubStateToProps = ({
   popoverVisible,
   properties,
   selectedBrowserId
-}) => 
+}) =>
 {
   const enabledProp = properties[SkyBrowserModuleEnabledKey];
   const enabled = enabledProp ? enabledProp.value : false;

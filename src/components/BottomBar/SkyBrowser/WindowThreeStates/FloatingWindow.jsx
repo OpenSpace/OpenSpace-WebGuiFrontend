@@ -13,7 +13,7 @@ class FloatingWindow extends Component {
 
   render() {
     const {
-      children, size, position, setNewHeight,
+      children, defaultSize, position, setNewHeight, size
     } = this.props;
 
     return (
@@ -26,7 +26,8 @@ class FloatingWindow extends Component {
         >
           <Resizable
             enable={{ right: true, bottom: true }}
-            defaultSize={{ width: size.width, height: size.height }}
+            defaultSize={{ width: defaultSize.width, height: defaultSize.height }}
+            size={size ? size : undefined}
             minWidth={280}
             minHeight={this.props.minHeight}
             handleClasses={{ right: styles.rightHandle, bottom: styles.bottomHandle }}
@@ -50,7 +51,7 @@ FloatingWindow.propTypes = {
     x: PropTypes.number,
     y: PropTypes.number,
   }),
-  size: PropTypes.shape({
+  defaultSize: PropTypes.shape({
     height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   }),
@@ -59,7 +60,7 @@ FloatingWindow.propTypes = {
 FloatingWindow.defaultProps = {
   children: [],
   position: { x: 10, y: -600 },
-  size: { height: 'auto', width: 'auto' },
+  defaultSize: { height: 'auto', width: 'auto' },
 };
 
 export default FloatingWindow;
