@@ -27,12 +27,14 @@ class SkyBrowserPanel extends Component {
       menuHeight: 70,
       imageCollectionIsLoaded: false,
       wwtBrowsers: [],
-      wwtSize: {width: 400, height: 400}
+      wwtSize: {width: 400, height: 400},
+      hideTargetsAndBrowsersUponClose: false,
     };
     this.togglePopover = this.togglePopover.bind(this);
     this.setImageCollectionIsLoaded = this.setImageCollectionIsLoaded.bind(this);
     this.setCurrentTabHeight = this.setCurrentTabHeight.bind(this);
     this.setCurrentPopoverHeight = this.setCurrentPopoverHeight.bind(this);
+    this.setHideTargetsAndBrowsersUponClose = this.setHideTargetsAndBrowsersUponClose.bind(this);
     this.setWwtSize = this.setWwtSize.bind(this);
     this.setWwtRatio = this.setWwtRatio.bind(this);
     this.setSelectedBrowser = this.setSelectedBrowser.bind(this);
@@ -61,7 +63,11 @@ class SkyBrowserPanel extends Component {
   }
 
   togglePopover() {
+    const { luaApi } = this.props;
     this.props.setPopoverVisibility(!this.props.popoverVisible);
+    if(this.state.hideTargetsAndBrowsersUponClose) {
+      luaApi.skybrowser.showAllTargetsAndBrowsers(!this.props.popoverVisible)
+    }
   }
 
   setImageCollectionIsLoaded(isLoaded) {
@@ -80,6 +86,12 @@ class SkyBrowserPanel extends Component {
     this.setWwtSize({
       width: ratio * this.state.wwtSize.height,
       height: this.state.wwtSize.height
+    });
+  }
+
+  setHideTargetsAndBrowsersUponClose() {
+    this.setState({
+      hideTargetsAndBrowsersUponClose: !this.state.hideTargetsAndBrowsersUponClose
     });
   }
 
@@ -197,7 +209,15 @@ class SkyBrowserPanel extends Component {
 
   createBrowserContent() {
     const { luaApi, cameraInSolarSystem, browsers, selectedBrowserId, imageList } = this.props;
-    const { currentPopoverHeight, currentTabHeight, menuHeight, activeImage, showOnlyNearest, minimumTabHeight } = this.state;
+    const {
+      currentPopoverHeight,
+      currentTabHeight,
+      menuHeight,
+      activeImage,
+      showOnlyNearest,
+      minimumTabHeight,
+      hideTargetsAndBrowsersUponClose
+    } = this.state;
     const thisTabsImages = this.getSelectedBrowserImages() || [];
     const currentImageListHeight = currentPopoverHeight - currentTabHeight - menuHeight;
 
@@ -234,6 +254,8 @@ class SkyBrowserPanel extends Component {
         passMessageToWwt={this.passMessageToWwt}
         setSelectedBrowser={this.setSelectedBrowser}
         setWwtRatio={this.setWwtRatio}
+        setHideTargetsAndBrowsersUponClose={this.setHideTargetsAndBrowsersUponClose}
+        hideTargetsAndBrowsersUponClose={hideTargetsAndBrowsersUponClose}
       />
     );
 

@@ -187,7 +187,7 @@ class SkyBrowserSettings extends Component {
   }
 
   render() {
-      const { selectedBrowserId, browser, luaApi } = this.props;
+      const { selectedBrowserId, browser, luaApi, setHideTargetsAndBrowsersUponClose, hideTargetsAndBrowsersUponClose } = this.props;
       if (!browser) {
         return '';
       }
@@ -264,6 +264,14 @@ class SkyBrowserSettings extends Component {
             left={false}
             disabled={false}
             setChecked={this.toggleFaceCamera}
+            wide
+          />
+          <Checkbox
+            label="Disable target and browser upon closing window"
+            checked={hideTargetsAndBrowsersUponClose}
+            left={false}
+            disabled={false}
+            setChecked={setHideTargetsAndBrowsersUponClose}
             wide
           />
           <Row className={`${styles.vectorProperty} ${this.disabled ? styles.disabled : ''}`}>
