@@ -66,6 +66,7 @@ export const SkyBrowserModuleEnabledKey = 'Modules.SkyBrowser.Enabled';
 // Sky browser properties
 export const SkyBrowser_ShowTitleInBrowserKey = 'Modules.SkyBrowser.ShowTitleInGuiBrowser';
 export const SkyBrowser_HideTargetsBrowsersWithGuiKey = 'Modules.SkyBrowser.HideTargetsBrowsersWithGui';
+export const SkyBrowser_InverseZoomDirectionKey = 'Modules.SkyBrowser.InverseZoomDirection';
 
 // renderableTypes
 export const RenderableTypes = {

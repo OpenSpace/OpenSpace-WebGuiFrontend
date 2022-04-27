@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import Picker from '../Picker';
 import FloatingWindow from './WindowThreeStates/FloatingWindow'
 import styles from './WorldWideTelescope.scss'
-import { SkyBrowser_ShowTitleInBrowserKey } from '../../../api/keys';
+import { SkyBrowser_ShowTitleInBrowserKey, SkyBrowser_InverseZoomDirectionKey } from '../../../api/keys';
 import { getBoolPropertyValue } from '../../../utils/propertyTreeHelpers';
 
 class WorldWideTelescope extends Component {
@@ -101,7 +101,7 @@ class WorldWideTelescope extends Component {
       const end = [mouse.clientX, mouse.clientY];
       this.props.skybrowserApi.finetuneTargetPosition(
         this.props.browser.id,
-        this.state.startDragPosition, 
+        this.state.startDragPosition,
         end
       );
     }
@@ -121,7 +121,11 @@ class WorldWideTelescope extends Component {
   }
 
   scroll(e) {
-    this.props.skybrowserApi.scrollOverBrowser(this.props.browser.id, e.deltaY);
+    let scroll = e.deltaY;
+    if(this.props.inverseZoom) {
+      scroll *= -1;
+    }
+    this.props.skybrowserApi.scrollOverBrowser(this.props.browser.id, scroll);
   }
 
   changeSize(widthWwt, heightWwt) {
@@ -149,7 +153,7 @@ class WorldWideTelescope extends Component {
 
     this.setAim(browser.ra, browser.dec, browser.fov, browser.roll);
 
-    const topBar = 
+    const topBar =
       <header className={`header ${styles.topMenu}`}>
         <div className={styles.title}>{showTitle && this.props.browser.name}</div>
       </header>;
@@ -198,16 +202,19 @@ class WorldWideTelescope extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    showTitle: getBoolPropertyValue(state, SkyBrowser_ShowTitleInBrowserKey)
+    showTitle: getBoolPropertyValue(state, SkyBrowser_ShowTitleInBrowserKey),
+    inverseZoom: getBoolPropertyValue(state, SkyBrowser_InverseZoomDirectionKey),
   }
 };
 
 const mapDispatchToProps = dispatch => ({
   startListeningToProperties: () => {
     dispatch(subscribeToProperty(SkyBrowser_ShowTitleInBrowserKey));
+    dispatch(subscribeToProperty(SkyBrowser_InverseZoomDirectionKey));
   },
   stopListeningToProperties: () => {
     dispatch(unsubscribeToProperty(SkyBrowser_ShowTitleInBrowserKey));
+    dispatch(unsubscribeToProperty(SkyBrowser_InverseZoomDirectionKey));
   },
 })
 
