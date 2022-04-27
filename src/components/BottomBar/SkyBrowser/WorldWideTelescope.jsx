@@ -30,6 +30,7 @@ class WorldWideTelescope extends Component {
   }
 
   componentDidMount() {
+    this.props.setMessageFunction(this.sendMessageToWwt);
     window.addEventListener("message", this.handleCallbackMessage);
     this.props.setImageCollectionIsLoaded(false);
   }
@@ -69,9 +70,9 @@ class WorldWideTelescope extends Component {
   }
 
   addAllSelectedImages() {
-    this.props.selectedImages.reverse().map(image => (
-      this.props.selectImage(image.identifier, false)
-    ));
+    this.props.selectedImages.reverse().map(image => {
+      this.props.selectImage(image.identifier, false);
+    });
   }
 
   sendMessageToWwt(message) {

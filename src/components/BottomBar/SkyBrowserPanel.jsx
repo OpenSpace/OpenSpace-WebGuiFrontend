@@ -44,7 +44,6 @@ class SkyBrowserPanel extends Component {
     this.setWwtRatio = this.setWwtRatio.bind(this);
     this.setSelectedBrowser = this.setSelectedBrowser.bind(this);
     this.currentBrowserColor = this.currentBrowserColor.bind(this);
-    this.passMessageToWwt = this.passMessageToWwt.bind(this);
     this.getSelectedBrowserImages = this.getSelectedBrowserImages.bind(this);
     this.selectImage = this.selectImage.bind(this);
     this.createWwtBrowser = this.createWwtBrowser.bind(this);
@@ -127,12 +126,6 @@ class SkyBrowserPanel extends Component {
     return (browser !== undefined) ? `rgb(${browser.color})` : 'gray';
   }
 
-  passMessageToWwt(message) {
-    if (this.wwt.current) {
-      this.wwt.current.sendMessageToWwt(message);
-    }
-  }
-
   selectImage(identifier, passToOs = true) {
     if (identifier) {
       this.setState({
@@ -172,7 +165,7 @@ class SkyBrowserPanel extends Component {
       <WorldWideTelescope
         browser = {browser}
         skybrowserApi={this.props.luaApi.skybrowser}
-        ref={this.wwt}
+        setMessageFunction={func => this.passMessageToWwt = func}
         setImageCollectionIsLoaded = {this.setImageCollectionIsLoaded}
         selectedImages={selectedImages}
         selectImage={this.selectImage}
