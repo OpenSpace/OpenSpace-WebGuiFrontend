@@ -332,8 +332,7 @@ class SkyBrowserTabs extends Component {
 
   render() {
     const {
-      data, maxHeight, minHeight, browsers, selectedBrowserId, height, luaApi, setHideTargetsAndBrowsersUponClose,
-      hideTargetsAndBrowsersUponClose
+      data, maxHeight, minHeight, browsers, selectedBrowserId, height, luaApi
     } = this.props;
     const { showSettings } = this.state;
 
@@ -344,8 +343,6 @@ class SkyBrowserTabs extends Component {
           browser={browsers[selectedBrowserId]}
           selectedBrowserId={selectedBrowserId}
           luaApi={luaApi}
-          setHideTargetsAndBrowsersUponClose={setHideTargetsAndBrowsersUponClose}
-          hideTargetsAndBrowsersUponClose={hideTargetsAndBrowsersUponClose}
         />);
     } else if (data.length === 0) {
       content = <CenteredLabel>There are no selected images in this sky browser.</CenteredLabel>;

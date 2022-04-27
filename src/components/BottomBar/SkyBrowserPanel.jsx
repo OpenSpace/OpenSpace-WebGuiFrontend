@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { SkyBrowser_HideTargetsBrowsersWithGuiKey } from '../../api/keys';
+import { getBoolPropertyValue } from '../../utils/propertyTreeHelpers';
 import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
 import Picker from './Picker';
 import Button from '../common/Input/Button/Button';
@@ -32,14 +34,12 @@ class SkyBrowserPanel extends Component {
       imageCollectionIsLoaded: false,
       wwtBrowsers: [],
       wwtSize: {width: 400, height: 400},
-      hideTargetsAndBrowsersUponClose: false,
     };
     this.addTargetBrowserPair = this.addTargetBrowserPair.bind(this);
     this.togglePopover = this.togglePopover.bind(this);
     this.setImageCollectionIsLoaded = this.setImageCollectionIsLoaded.bind(this);
     this.setCurrentTabHeight = this.setCurrentTabHeight.bind(this);
     this.setCurrentPopoverHeight = this.setCurrentPopoverHeight.bind(this);
-    this.setHideTargetsAndBrowsersUponClose = this.setHideTargetsAndBrowsersUponClose.bind(this);
     this.setWwtSize = this.setWwtSize.bind(this);
     this.setWwtRatio = this.setWwtRatio.bind(this);
     this.setSelectedBrowser = this.setSelectedBrowser.bind(this);
@@ -66,9 +66,9 @@ class SkyBrowserPanel extends Component {
   }
 
   togglePopover() {
-    const { luaApi } = this.props;
-    this.props.setPopoverVisibility(!this.props.popoverVisible);
-    if(this.state.hideTargetsAndBrowsersUponClose) {
+    const { luaApi, setPopoverVisibility, popoverVisible, hideTargetsBrowsersWithGui } = this.props;
+    setPopoverVisibility(!popoverVisible);
+    if(hideTargetsBrowsersWithGui) {
       luaApi.skybrowser.showAllTargetsAndBrowsers(!this.props.popoverVisible)
     }
   }
@@ -89,12 +89,6 @@ class SkyBrowserPanel extends Component {
     this.setWwtSize({
       width: ratio * this.state.wwtSize.height,
       height: this.state.wwtSize.height
-    });
-  }
-
-  setHideTargetsAndBrowsersUponClose() {
-    this.setState({
-      hideTargetsAndBrowsersUponClose: !this.state.hideTargetsAndBrowsersUponClose
     });
   }
 
@@ -224,8 +218,7 @@ class SkyBrowserPanel extends Component {
       menuHeight,
       activeImage,
       showOnlyNearest,
-      minimumTabHeight,
-      hideTargetsAndBrowsersUponClose
+      minimumTabHeight
     } = this.state;
     const thisTabsImages = this.getSelectedBrowserImages() || [];
     const currentImageListHeight = currentPopoverHeight - currentTabHeight - menuHeight;
@@ -263,8 +256,6 @@ class SkyBrowserPanel extends Component {
         passMessageToWwt={this.passMessageToWwt}
         setSelectedBrowser={this.setSelectedBrowser}
         setWwtRatio={this.setWwtRatio}
-        setHideTargetsAndBrowsersUponClose={this.setHideTargetsAndBrowsersUponClose}
-        hideTargetsAndBrowsersUponClose={hideTargetsAndBrowsersUponClose}
       />
     );
 
@@ -354,6 +345,7 @@ const mapStateToProps = state => ({
   popoverVisible: state.local.popovers.skybrowser.visible,
   propertyOwners: state.propertyTree.propertyOwners,
   selectedBrowserId: state.skybrowser.selectedBrowserId,
+  hideTargetsBrowsersWithGui: getBoolPropertyValue(state, SkyBrowser_HideTargetsBrowsersWithGuiKey)
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -376,7 +368,13 @@ const mapDispatchToProps = dispatch => ({
   },
   stopSubscriptions: () => {
     dispatch(unsubscribeToSkyBrowser());
-  }
+  },
+  startListeningToProperties: () => {
+    dispatch(subscribeToProperty(SkyBrowser_HideTargetsBrowsersWithGuiKey));
+  },
+  stopListeningToProperties: () => {
+    dispatch(unsubscribeToProperty(SkyBrowser_HideTargetsBrowsersWithGuiKey));
+  },
 });
 
 SkyBrowserPanel = connect(mapStateToProps, mapDispatchToProps,
