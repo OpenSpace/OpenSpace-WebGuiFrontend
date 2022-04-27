@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import Picker from '../Picker';
 import FloatingWindow from './WindowThreeStates/FloatingWindow'
 import styles from './WorldWideTelescope.scss'
+import { SkyBrowser_ShowTitleInBrowserKey } from '../../../api/keys';
+import { getBoolPropertyValue } from '../../../utils/propertyTreeHelpers';
 
 class WorldWideTelescope extends Component {
   constructor(props) {
@@ -133,7 +136,7 @@ class WorldWideTelescope extends Component {
   }
 
   render() {
-    const {browser, size} = this.props;
+    const {browser, showTitle, size} = this.props;
     if (!browser) {
       return "";
     }
@@ -147,7 +150,7 @@ class WorldWideTelescope extends Component {
 
     const topBar = 
       <header className={`header ${styles.topMenu}`}>
-        <div className={styles.title}>{this.props.browser.name}</div>
+        <div className={styles.title}>{showTitle && this.props.browser.name}</div>
       </header>;
 
     // Covering div to handle interaction
@@ -191,4 +194,25 @@ class WorldWideTelescope extends Component {
     );
   }
 }
+
+const mapStateToProps = (state) => {
+  return {
+    showTitle: getBoolPropertyValue(state, SkyBrowser_ShowTitleInBrowserKey)
+  }
+};
+
+const mapDispatchToProps = dispatch => ({
+  startListeningToProperties: () => {
+    dispatch(subscribeToProperty(SkyBrowser_ShowTitleInBrowserKey));
+  },
+  stopListeningToProperties: () => {
+    dispatch(unsubscribeToProperty(SkyBrowser_ShowTitleInBrowserKey));
+  },
+})
+
+WorldWideTelescope = connect(
+  mapStateToProps,
+  mapDispatchToProps)
+(WorldWideTelescope);
+
 export default WorldWideTelescope;

@@ -59,8 +59,12 @@ export const SessionStateRecording = 'recording';
 export const SessionStatePlaying = 'playing';
 export const SessionStatePaused = 'playing-paused';
 
+// Component/Module enabled properties
 export const ExoplanetsModuleEnabledKey = 'Modules.Exoplanets.Enabled';
 export const SkyBrowserModuleEnabledKey = 'Modules.SkyBrowser.Enabled';
+
+// Sky browser properties
+export const SkyBrowser_ShowTitleInBrowserKey = 'Modules.SkyBrowser.ShowTitleInGuiBrowser';
 
 // renderableTypes
 export const RenderableTypes = {
