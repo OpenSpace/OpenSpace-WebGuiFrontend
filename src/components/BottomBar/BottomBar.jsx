@@ -27,12 +27,10 @@ let BottomBar = ({
 
   useEffect(() => {
     // componentDidMount
-    startListening(ExoplanetsModuleEnabledKey);
-    startListening(SkyBrowserModuleEnabledKey);
+    startListening();
 
     return () => { // componentWillUnmount
-      stopListening(ExoplanetsModuleEnabledKey);
-      stopListening(SkyBrowserModuleEnabledKey);
+      stopListening();
     }
   });
 
@@ -68,11 +66,13 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  startListening: (uri) => {
-    dispatch(subscribeToProperty(uri));
+  startListening: () => {
+    dispatch(subscribeToProperty(ExoplanetsModuleEnabledKey));
+    dispatch(subscribeToProperty(SkyBrowserModuleEnabledKey));
   },
-  stopListening: (uri) => {
-    dispatch(unsubscribeToProperty(uri));
+  stopListening: () => {
+    dispatch(unsubscribeToProperty(ExoplanetsModuleEnabledKey));
+    dispatch(unsubscribeToProperty(SkyBrowserModuleEnabledKey));
   },
 })
 
