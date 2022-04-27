@@ -24,7 +24,7 @@ class SkyBrowserPanel extends Component {
     this.wwt = React.createRef();
     this.state = {
       activeImage: '',
-      minimumTabHeight: 300,
+      minimumTabHeight: 80,
       currentTabHeight: 300,
       currentPopoverHeight: 440,
       showOnlyNearest: true,
