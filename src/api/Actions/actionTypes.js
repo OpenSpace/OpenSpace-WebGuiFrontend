@@ -39,6 +39,7 @@ export const actionTypes = {
   initializeDocumentation: 'DOCUMENTATION_INITIALIZE',
 
   // action types for exoplanets
+  loadExoplanetsData: 'EXOPLANETS_LOAD_DATA',
   initializeExoplanets: 'EXOPLANETS_INITIALIZE',
   addExoplanets: 'EXOPLANETS_ADD',
   removeExoplanets: 'EXOPLANETS_REMOVE',

@@ -29,7 +29,7 @@ const removeSystem = async (data, callback) => {
 export const exoplanets = store => next => (action) => {
   const result = next(action);
   switch (action.type) {
-    case actionTypes.initializeLuaApi:
+    case actionTypes.loadExoplanetsData:
       getExoplanets(action.payload, (data) => {
         store.dispatch(initializeExoplanets(data));
       });
