@@ -60,7 +60,7 @@ export const skybrowser = store => next => (action) => {
   const result = next(action);
   const state = store.getState();
   switch (action.type) {
-    case actionTypes.initializeLuaApi:
+    case actionTypes.loadSkyBrowserData:
       getWWTImages(action.payload, (data) => {
         store.dispatch(initializeSkyBrowser(data));
       });

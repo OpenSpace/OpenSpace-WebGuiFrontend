@@ -4,14 +4,18 @@ import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
 import Picker from './Picker';
 import Button from '../common/Input/Button/Button';
 import SmallLabel from '../common/SmallLabel/SmallLabel';
-import { SkyBrowserModuleEnabledKey } from '../../api/keys';
 import SkyBrowserImageList from './SkyBrowser/SkyBrowserImageList';
 import SkyBrowserTabs from './SkyBrowser/SkyBrowserTabs';
 import WindowThreeStates from './SkyBrowser/WindowThreeStates/WindowThreeStates';
 import WorldWideTelescope from './SkyBrowser/WorldWideTelescope';
 import { Icon } from '@iconify/react';
-import { reloadPropertyTree, setPopoverVisibility, subscribeToSkyBrowser, unsubscribeToSkyBrowser, initializeSkyBrowser } from '../../api/Actions';
-import subStateToProps from '../../utils/subStateToProps';
+import {
+  loadSkyBrowserData,
+  reloadPropertyTree,
+  setPopoverVisibility,
+  subscribeToSkyBrowser,
+  unsubscribeToSkyBrowser,
+} from '../../api/Actions';
 import styles from './SkyBrowserPanel.scss';
 
 class SkyBrowserPanel extends Component {
@@ -48,15 +52,14 @@ class SkyBrowserPanel extends Component {
     this.createBrowserContent = this.createBrowserContent.bind(this);
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    if (!this.props.enabled && !nextProps.enabled) {
-      return false;
-    }
-    return true;
-  }
-
   async componentDidMount() {
-    this.props.startSubscriptions();
+    const { isDataInitialized, loadData, luaApi, startSubscriptions } = this.props;
+
+    startSubscriptions();
+
+    if (!isDataInitialized) {
+      loadData(luaApi);
+    }
   }
 
   async componentWillUnmount() {
@@ -341,55 +344,33 @@ class SkyBrowserPanel extends Component {
   }
 
   render() {
-    const shouldRender = (this.props.enabled);
-    return shouldRender && (
-        <div className={Picker.Wrapper}>
-          <Picker onClick={this.togglePopover} >
-            <Icon icon="mdi:telescope" color="white" alt="WWT" style={{ fontSize: '2em' }}/>
-          </Picker>
-          {this.props.popoverVisible && this.popover}
-          {this.props.popoverVisible && this.createWwtBrowser()}
-        </div>
+    return (
+      <div className={Picker.Wrapper}>
+        <Picker onClick={this.togglePopover} >
+          <Icon icon="mdi:telescope" color="white" alt="WWT" style={{ fontSize: '2em' }}/>
+        </Picker>
+        {this.props.popoverVisible && this.popover}
+        {this.props.popoverVisible && this.createWwtBrowser()}
+      </div>
     );
   }
 }
 
-const mapSubStateToProps = ({
-  browsers,
-  cameraInSolarSystem,
-  imageList,
-  luaApi,
-  popoverVisible,
-  properties,
-  selectedBrowserId
-}) =>
-{
-  const enabledProp = properties[SkyBrowserModuleEnabledKey];
-  const enabled = enabledProp ? enabledProp.value : false;
-
-  return {
-    enabled,
-    luaApi,
-    popoverVisible,
-    imageList,
-    selectedBrowserId,
-    cameraInSolarSystem,
-    browsers
-  };
-};
-
-const mapStateToSubState = state => ({
+const mapStateToProps = state => ({
   browsers: state.skybrowser.browsers,
   cameraInSolarSystem: state.skybrowser.cameraInSolarSystem,
   imageList: state.skybrowser.data,
+  isDataInitialized: state.skybrowser.isInitialized,
   luaApi: state.luaApi,
   popoverVisible: state.local.popovers.skybrowser.visible,
-  properties: state.propertyTree.properties,
   propertyOwners: state.propertyTree.propertyOwners,
   selectedBrowserId: state.skybrowser.selectedBrowserId,
 });
 
 const mapDispatchToProps = dispatch => ({
+  loadData: (luaApi) => {
+    dispatch(loadSkyBrowserData(luaApi));
+  },
   refresh: () => {
     dispatch(reloadPropertyTree());
   },
@@ -409,9 +390,7 @@ const mapDispatchToProps = dispatch => ({
   }
 });
 
-SkyBrowserPanel = connect(
-  subStateToProps(mapSubStateToProps, mapStateToSubState),
-  mapDispatchToProps,
+SkyBrowserPanel = connect(mapStateToProps, mapDispatchToProps,
 )(SkyBrowserPanel);
 
 export default SkyBrowserPanel;

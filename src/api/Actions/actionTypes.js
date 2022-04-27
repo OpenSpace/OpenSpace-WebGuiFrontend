@@ -45,6 +45,7 @@ export const actionTypes = {
   removeExoplanets: 'EXOPLANETS_REMOVE',
 
   // action types for skybrowser
+  loadSkyBrowserData: 'SKYBROWSER_LOAD_DATA',
   initializeSkyBrowser: 'SKYBROWSER_INITIALIZE',
   subscribeToSkyBrowser: 'SKYBROWSER_SUBSCRIBE',
   unsubscribeToSkyBrowser: 'SKYBROWSER_UNSUBSCRIBE',

@@ -5,7 +5,7 @@ import {
   subscribeToProperty,
   unsubscribeToProperty,
 } from '../../api/Actions';
-import { ExoplanetsModuleEnabledKey } from '../../api/keys';
+import { ExoplanetsModuleEnabledKey, SkyBrowserModuleEnabledKey } from '../../api/keys';
 import { getEnabledPropertyValue } from '../../utils/propertyTreeHelpers';
 import ActionsPanel from './ActionsPanel';
 import styles from './BottomBar.scss';
@@ -20,6 +20,7 @@ import SkyBrowserPanel from './SkyBrowserPanel';
 let BottomBar = ({ 
   showExoplanets,
   showFlightController,
+  showSkyBrowser,
   startListening,
   stopListening
 }) => {
@@ -27,9 +28,11 @@ let BottomBar = ({
   useEffect(() => {
     // componentDidMount
     startListening(ExoplanetsModuleEnabledKey);
+    startListening(SkyBrowserModuleEnabledKey);
 
     return () => { // componentWillUnmount
       stopListening(ExoplanetsModuleEnabledKey);
+      stopListening(SkyBrowserModuleEnabledKey);
     }
   });
 
@@ -41,23 +44,26 @@ let BottomBar = ({
     {showExoplanets && <ExoplanetsPanel />}
     <ActionsPanel />
     {showFlightController && <FlightControlPanel />}
-    <SkyBrowserPanel />
+    {showSkyBrowser && <SkyBrowserPanel />}
   </div>
 };
 
 BottomBar.propTypes = {
-  showFlightController: PropTypes.bool,
   showExoplanets: PropTypes.bool,
+  showFlightController: PropTypes.bool,
+  showSkyBrowser: PropTypes.bool,
 };
 
 BottomBar.defaultProps = {
-  showFlightController: false,
   showExoplanets: false,
+  showFlightController: false,
+  showSkyBrowser: false,
 };
 
 const mapStateToProps = (state) => {
   return {
-    showExoplanets: getEnabledPropertyValue(state, ExoplanetsModuleEnabledKey)
+    showExoplanets: getEnabledPropertyValue(state, ExoplanetsModuleEnabledKey),
+    showSkyBrowser: getEnabledPropertyValue(state, SkyBrowserModuleEnabledKey)
   }
 };
 
