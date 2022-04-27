@@ -6,7 +6,7 @@ import {
   unsubscribeToProperty,
 } from '../../api/Actions';
 import { ExoplanetsModuleEnabledKey, SkyBrowserModuleEnabledKey } from '../../api/keys';
-import { getEnabledPropertyValue } from '../../utils/propertyTreeHelpers';
+import { getBoolPropertyValue } from '../../utils/propertyTreeHelpers';
 import ActionsPanel from './ActionsPanel';
 import styles from './BottomBar.scss';
 import ExoplanetsPanel from './ExoplanetsPanel';
@@ -60,8 +60,8 @@ BottomBar.defaultProps = {
 
 const mapStateToProps = (state) => {
   return {
-    showExoplanets: getEnabledPropertyValue(state, ExoplanetsModuleEnabledKey),
-    showSkyBrowser: getEnabledPropertyValue(state, SkyBrowserModuleEnabledKey)
+    showExoplanets: getBoolPropertyValue(state, ExoplanetsModuleEnabledKey),
+    showSkyBrowser: getBoolPropertyValue(state, SkyBrowserModuleEnabledKey)
   }
 };
 

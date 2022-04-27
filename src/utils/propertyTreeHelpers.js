@@ -21,7 +21,7 @@ export const keepCloning = (objectpassed) => {
   return temporaryStorage;
 };
 
-export const getEnabledPropertyValue = (state, uri) => {
+export const getBoolPropertyValue = (state, uri) => {
   const properties = state.propertyTree.properties;
   const property = properties[uri];
   return property ? property.value : false;
