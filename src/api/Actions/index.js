@@ -184,6 +184,11 @@ export const initializeDocumentation = data => ({
   payload: data,
 });
 
+export const loadExoplanetsData = luaApi => ({
+  type: actionTypes.loadExoplanetsData,
+  payload: luaApi,
+});
+
 export const initializeExoplanets = data => ({
   type: actionTypes.initializeExoplanets,
   payload: data,
