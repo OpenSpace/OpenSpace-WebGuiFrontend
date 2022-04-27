@@ -21,6 +21,11 @@ export const keepCloning = (objectpassed) => {
   return temporaryStorage;
 };
 
+export const getEnabledPropertyValue = (state, uri) => {
+  const properties = state.propertyTree.properties;
+  const property = properties[uri];
+  return property ? property.value : false;
+}
 
 // TODO: Delete unused function
 export function findSubtree(node, uri) {
