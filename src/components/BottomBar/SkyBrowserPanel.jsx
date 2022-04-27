@@ -10,7 +10,7 @@ import SkyBrowserTabs from './SkyBrowser/SkyBrowserTabs';
 import WindowThreeStates from './SkyBrowser/WindowThreeStates/WindowThreeStates';
 import WorldWideTelescope from './SkyBrowser/WorldWideTelescope';
 import { Icon } from '@iconify/react';
-import { setPopoverVisibility, subscribeToSkyBrowser, unsubscribeToSkyBrowser, initializeSkyBrowser } from '../../api/Actions';
+import { reloadPropertyTree, setPopoverVisibility, subscribeToSkyBrowser, unsubscribeToSkyBrowser, initializeSkyBrowser } from '../../api/Actions';
 import subStateToProps from '../../utils/subStateToProps';
 import styles from './SkyBrowserPanel.scss';
 
@@ -30,6 +30,7 @@ class SkyBrowserPanel extends Component {
       wwtSize: {width: 400, height: 400},
       hideTargetsAndBrowsersUponClose: false,
     };
+    this.addTargetBrowserPair = this.addTargetBrowserPair.bind(this);
     this.togglePopover = this.togglePopover.bind(this);
     this.setImageCollectionIsLoaded = this.setImageCollectionIsLoaded.bind(this);
     this.setCurrentTabHeight = this.setCurrentTabHeight.bind(this);
@@ -124,7 +125,9 @@ class SkyBrowserPanel extends Component {
   }
 
   passMessageToWwt(message) {
-    this.wwt.current.sendMessageToWwt(message);
+    if (this.wwt.current) {
+      this.wwt.current.sendMessageToWwt(message);
+    }
   }
 
   selectImage(identifier, passToOs = true) {
@@ -176,35 +179,45 @@ class SkyBrowserPanel extends Component {
     );
   }
 
+  addTargetBrowserPair() {
+    this.props.luaApi.skybrowser.createTargetBrowserPair()
+    // TODO: Once we have a proper way to subscribe to additions and removals
+    // of property owners, this 'hard' refresh should be removed.
+    setTimeout(() => {
+      this.props.refresh();
+    }, 500);
+  }
+
   createAddBrowserInterface() {
-    const { luaApi } = this.props;
     const addBrowserPairButton = (
       <div className={styles.upperPart}>
         <Button
-          onClick={() => luaApi.skybrowser.createTargetBrowserPair()}
+          onClick={this.addTargetBrowserPair}
           className={styles.addTabButton}
           transparent
         >
           <CenteredLabel>Add Sky Browser</CenteredLabel>
-          <div className={styles.plus}>
-          </div>
+          <div className={styles.plus}/>
         </Button>
       </div>);
 
-  const wwtLogoImg = (
-    <div className={styles.credits}>
-      <div className={styles.wwtLogoContainer}>
-        <img src={require('./wwtlogo.png')} alt="WwtLogo" className={styles.wwtLogo} />
-        <SmallLabel>
-          Powered by AAS WorldWide Telescope
-        </SmallLabel>
+    const wwtLogoImg = (
+      <div className={styles.credits}>
+        <div className={styles.wwtLogoContainer}>
+          <img src={require('./wwtlogo.png')} alt="WwtLogo" className={styles.wwtLogo} />
+          <SmallLabel>
+            Powered by AAS WorldWide Telescope
+          </SmallLabel>
+        </div>
       </div>
-    </div>);
+    );
 
-    return <div className={`${styles.content} ${styles.center}`}>
-      {addBrowserPairButton}
-      {wwtLogoImg}
-    </div>;
+    return (
+      <div className={`${styles.content} ${styles.center}`}>
+        {addBrowserPairButton}
+        {wwtLogoImg}
+      </div>
+    );
   }
 
   createBrowserContent() {
@@ -377,6 +390,9 @@ const mapStateToSubState = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
+  refresh: () => {
+    dispatch(reloadPropertyTree());
+  },
   setPopoverVisibility: (visible) => {
     dispatch(
       setPopoverVisibility({
