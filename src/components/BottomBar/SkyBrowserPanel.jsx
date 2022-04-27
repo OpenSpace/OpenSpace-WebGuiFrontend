@@ -302,10 +302,6 @@ class SkyBrowserPanel extends Component {
     let allImageCollectionsAreLoaded = imageCollectionIsLoaded;
 
     const browsersExist = browsers && Object.keys(browsers).length !== 0;
-    if (browsersExist) {
-      const browser = browsers[selectedBrowserId];
-      allImageCollectionsAreLoaded = browser.isImageCollectionLoaded && imageCollectionIsLoaded;
-    }
 
     let content = "";
     if (!cameraInSolarSystem) {
@@ -318,14 +314,14 @@ class SkyBrowserPanel extends Component {
     else if (!browsersExist) {
       content = this.createAddBrowserInterface();
     }
-    else if (!allImageCollectionsAreLoaded && browsersExist) {
+    else if (!imageCollectionIsLoaded && browsersExist) {
       content = (
         <CenteredLabel>
           Loading image collection...
         </CenteredLabel>
       );
     }
-    else if (allImageCollectionsAreLoaded && browsersExist) {
+    else if (imageCollectionIsLoaded && browsersExist) {
       content = this.createBrowserContent();
     }
 
