@@ -44,7 +44,7 @@ class WorldWideTelescope extends Component {
       });
       this.sendMessageToWwt({
         event: "load_image_collection",
-        url:"https://raw.githubusercontent.com/WorldWideTelescope/wwt-web-client/master/assets/webclient-explore-root.wtml",
+        url:"https://data.openspaceproject.com/wwt/1/imagecollection.wtml",
         loadChildFolders: true
       });
       if (this.props.browser) {
