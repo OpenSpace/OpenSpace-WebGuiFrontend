@@ -74,29 +74,31 @@ class SkyBrowserSettings extends Component {
     const minPosition = browser.isUsingRae ? [0, -3.14, -3.14] : [-4, -4, -10];
     const newPositionVector = this.state.newPosition;
 
-    const renderCopiesButtons = renderCopies ? Object.values(renderCopies).map((entry, indexCopy) => {
-            return <Row key={indexCopy} className={`${styles.vectorProperty} ${this.disabled ? styles.disabled : ''}`}>
-              {entry.map((number, index) => {
-                return <NumericInput
-                  key={index}
-                  className={positionData[index]}
-                  label={positionData[index]}
-                  max={maxPosition[index]}
-                  min={minPosition[index]}
-                  onValueChanged={(newValue) => {
-                    const newVector = entry;
-                    newVector[index] = newValue;
-                    const renderCopyId = Object.keys(renderCopies)[indexCopy];
-                    const uriBrowser = `ScreenSpace.${selectedBrowserId}.${renderCopyId}`;
-                    luaApi.setPropertyValueSingle(uriBrowser, newVector);
-                  }}
-                  step={0.1}
-                  value={parseFloat((number).toFixed(this.state.precisionLow))}
-                  placeholder={`value ${index}`}
-                />;
-              })}
-            </Row>;
-          }) : "";
+    const renderCopiesButtons = renderCopies && Object.values(renderCopies).map((entry, indexCopy) => {
+      return (
+        <Row key={indexCopy} className={`${styles.vectorProperty} ${this.disabled ? styles.disabled : ''}`}>
+          {entry.map((number, index) => {
+            return <NumericInput
+              key={index}
+              className={positionData[index]}
+              label={positionData[index]}
+              max={maxPosition[index]}
+              min={minPosition[index]}
+              onValueChanged={(newValue) => {
+                const newVector = entry;
+                newVector[index] = newValue;
+                const renderCopyId = Object.keys(renderCopies)[indexCopy];
+                const uriBrowser = `ScreenSpace.${selectedBrowserId}.${renderCopyId}`;
+                luaApi.setPropertyValueSingle(uriBrowser, newVector);
+              }}
+              step={0.1}
+              value={parseFloat((number).toFixed(this.state.precisionLow))}
+              placeholder={`value ${index}`}
+            />;
+          })}
+        </Row>
+      );
+    });
 
     return (
       <ToggleContent
@@ -113,11 +115,7 @@ class SkyBrowserSettings extends Component {
             label={"Number Of Copies"}
             max={5}
             min={1}
-            onValueChanged={(newValue) => {
-              this.setState({
-                noOfCopies : newValue
-              });
-            }}
+            onValueChanged={(newValue) => this.setState({ noOfCopies : newValue })}
             step={1}
             value={this.state.noOfCopies}
             placeholder={`value`}
@@ -151,9 +149,7 @@ class SkyBrowserSettings extends Component {
                 onValueChanged={(newValue) => {
                   const newVector = this.state.newPosition;
                   newVector[index] = newValue;
-                  this.setState({
-                    newPosition : newVector
-                  });
+                  this.setState({ newPosition : newVector });
                 }}
                 step={0.1}
                 value={parseFloat((number).toFixed(this.state.precisionLow))}

@@ -42,8 +42,8 @@ class WorldWideTelescope extends Component {
   handleCallbackMessage(event) {
     if (event.data == "wwt_has_loaded") {
       this.sendMessageToWwt({
-        event : "modify_settings",
-        settings : [["hideAllChrome", true]],
+        event: "modify_settings",
+        settings: [["hideAllChrome", true]],
         target: "app"
       });
       this.sendMessageToWwt({
@@ -65,8 +65,8 @@ class WorldWideTelescope extends Component {
     this.color = color;
     this.sendMessageToWwt({
       event: "set_background_color",
-      data: color}
-    );
+      data: color
+    });
   }
 
   addAllSelectedImages() {
@@ -87,12 +87,12 @@ class WorldWideTelescope extends Component {
 
   setAim(ra, dec, fov, roll) {
     this.sendMessageToWwt({
-      "event" : "center_on_coordinates",
-      "ra" : ra,
-      "dec" : dec,
-      "fov" : fov,
-      "roll" : roll,
-      "instant" : true
+      "event": "center_on_coordinates",
+      "ra": ra,
+      "dec": dec,
+      "fov": fov,
+      "roll": roll,
+      "instant": true
     });
   }
 
@@ -111,13 +111,13 @@ class WorldWideTelescope extends Component {
     this.props.skybrowserApi.startFinetuningTarget(this.props.browser.id);
     const position = [mouse.clientX, mouse.clientY];
     this.setState({
-      isDragging : true,
+      isDragging: true,
       startDragPosition: position
     });
   }
 
   mouseUp(mouse) {
-    this.setState({isDragging : false});
+    this.setState({isDragging: false});
   }
 
   scroll(e) {

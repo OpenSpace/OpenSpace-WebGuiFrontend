@@ -55,7 +55,7 @@ class InfoBoxSkyBrowser extends Component {
 
   checkIfTooltipActive() {
     if (!this.state.tooltipActive) {
-        this.hidePopup();
+      this.hidePopup();
     }
   }
 
@@ -67,45 +67,43 @@ class InfoBoxSkyBrowser extends Component {
   }
 
   openEsaSky(ra, dec, fov) {
-    let esaSkyUrl = "http://sky.esa.int/?target="+ra+"%"+dec+"&hips=DSS2+color&fov=" + fov + "&cooframe=J2000&sci=true&lang=en";
-    const newWindow = window.open(esaSkyUrl, "EsaSky");
+    let esaSkyUrl = "http://sky.esa.int/?target="+ra+"%"+dec+"&hips=DSS2+color&fov="+fov+"&cooframe=J2000&sci=true&lang=en";
+    window.open(esaSkyUrl, "EsaSky");
   }
 
   render() {
     const { icon, text, title, textUrl, ra, dec, fov} = this.props;
     const { isPopupShowing } = this.state;
-    const esaSkyButton = <Button onClick={() => {this.openEsaSky(ra,dec,fov)}} className={styles.tooltipButton} transparent small>
+    const esaSkyButton = (
+      <Button onClick={() => {this.openEsaSky(ra,dec,fov)}} className={styles.tooltipButton} transparent small>
         <img src={esaSkyLogo} alt="EsaSky" style={{width:'100%'}} />
-      </Button>;
+      </Button>
+    );
 
     return (
       <span ref={this.setRef('wrapper')}>
-      <Button
-      transparent
-      small
-      onClick={this.togglePopup}
-      >
-        <MaterialIcon
-        icon={icon}
-        style={{fontSize: '15px'}}>
-        </MaterialIcon>
-      </Button>
-          { isPopupShowing && (
-            <SkyBrowserTooltip
+        <Button
+          transparent
+          small
+          onClick={this.togglePopup}
+        >
+          <MaterialIcon icon={icon} style={{fontSize: '15px'}}/>
+        </Button>
+        {isPopupShowing && (
+          <SkyBrowserTooltip
             placement="bottom-left"
             style={this.position}
-            >
-            <span className={styles.tooltipTitle}> { title } </span>
-            { text }
-            { text && (
+          >
+            <span className={styles.tooltipTitle}>{ title }</span>
+            {text}
+            {text && (
               <Button className={styles.tooltipButton} onClick={ () => this.openImageUrl(textUrl) }>
-              Read more
+                Read more
               </Button>
             )}
             { esaSkyButton }
-            </SkyBrowserTooltip>
-          )}
-
+          </SkyBrowserTooltip>
+        )}
       </span>
     );
   }
