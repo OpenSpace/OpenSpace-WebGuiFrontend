@@ -61,8 +61,8 @@ export const skybrowser = store => next => (action) => {
   const state = store.getState();
   switch (action.type) {
     case actionTypes.loadSkyBrowserData:
-      getWWTImages(action.payload, (data) => {
-        store.dispatch(initializeSkyBrowser(data));
+      getWWTImages(action.payload, (imageList) => {
+        store.dispatch(initializeSkyBrowser(imageList));
       });
       break;
     case actionTypes.onOpenConnection:

@@ -351,7 +351,7 @@ class SkyBrowserPanel extends Component {
 const mapStateToProps = state => ({
   browsers: state.skybrowser.browsers,
   cameraInSolarSystem: state.skybrowser.cameraInSolarSystem,
-  imageList: state.skybrowser.data,
+  imageList: state.skybrowser.imageList,
   isDataInitialized: state.skybrowser.isInitialized,
   luaApi: state.luaApi,
   popoverVisible: state.local.popovers.skybrowser.visible,

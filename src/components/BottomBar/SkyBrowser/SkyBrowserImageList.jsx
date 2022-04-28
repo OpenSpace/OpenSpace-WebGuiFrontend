@@ -76,10 +76,9 @@ class SkyBrowserImageList extends Component {
 
   render() {
     const { activeImage, height, imageList, luaApi, showOnlyNearest, selectImage, currentBrowserColor } = this.props;
+    const list = showOnlyNearest ? this.getNearestImages() : imageList !== undefined ? imageList : [];
 
-    const list = showOnlyNearest ? this.getNearestImages() : imageList;
     // TODO: render hint if no images
-
     return (
       <FilterList
         className={styles.filterList}

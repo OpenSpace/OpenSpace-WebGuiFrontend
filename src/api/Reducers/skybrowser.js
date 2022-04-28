@@ -3,6 +3,7 @@ import { actionTypes } from '../Actions/actionTypes';
 const defaultState = {
   isInitialized: false,
   data: {},
+  imageList: [],
   selectedBrowserId: "",
   cameraIsInSolarSystem: true,
   targets: {}
@@ -13,7 +14,7 @@ export const skybrowser = (state = defaultState, action) => {
     case actionTypes.initializeSkyBrowser:
       return {
         isInitialized: true,
-        data: action.payload,
+        imageList: action.payload,
       };
     case actionTypes.subscribeToSkyBrowser:
       return {
