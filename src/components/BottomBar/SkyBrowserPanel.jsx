@@ -27,7 +27,7 @@ class SkyBrowserPanel extends Component {
     this.state = {
       activeImage: '',
       minimumTabHeight: 80,
-      currentTabHeight: 300,
+      currentTabHeight: 200,
       currentPopoverHeight: 440,
       showOnlyNearest: true,
       menuHeight: 70,
