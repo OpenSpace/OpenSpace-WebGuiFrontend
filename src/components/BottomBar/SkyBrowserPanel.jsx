@@ -43,9 +43,12 @@ class SkyBrowserPanel extends Component {
     this.setWwtSize = this.setWwtSize.bind(this);
     this.setWwtRatio = this.setWwtRatio.bind(this);
     this.setSelectedBrowser = this.setSelectedBrowser.bind(this);
+    this.addAllSelectedImages = this.addAllSelectedImages.bind(this);
+    this.removeAllSelectedImages = this.removeAllSelectedImages.bind(this);
     this.currentBrowserColor = this.currentBrowserColor.bind(this);
     this.getSelectedBrowserImages = this.getSelectedBrowserImages.bind(this);
     this.selectImage = this.selectImage.bind(this);
+    this.removeImageSelection = this.removeImageSelection.bind(this);
     this.createWwtBrowser = this.createWwtBrowser.bind(this);
     this.createAddBrowserInterface = this.createAddBrowserInterface.bind(this);
     this.createBrowserContent = this.createBrowserContent.bind(this);
@@ -130,7 +133,7 @@ class SkyBrowserPanel extends Component {
       }
       this.passMessageToWwt({
         event: "image_layer_create",
-        id: identifier,
+        id: String(identifier),
         url: this.props.imageList[identifier].url,
         mode: "preloaded",
         goto: false
@@ -138,13 +141,50 @@ class SkyBrowserPanel extends Component {
     }
   }
 
+  removeImageSelection(identifier, passToOs = true) {
+    const { luaApi, selectedBrowserId } = this.props;
+    if(passToOs) {
+      luaApi.skybrowser.removeSelectedImageInBrowser(selectedBrowserId, Number(identifier));
+    }
+    this.passMessageToWwt({
+      event: "image_layer_remove",
+      id: String(identifier),
+    });
+  }
+
   setSelectedBrowser(browserId) {
+    const {browsers, selectedBrowserId} = this.props;
+    if (browsers === undefined || browsers[browserId] === undefined) {
+      return "";
+    }
+    // Don't pass the selection to OpenSpace as we are only changing images in the GUI
+    // This is a result of only having one instance of the WWT application, but making
+    // it appear as there are many
+    const passToOs = false;
+    this.removeAllSelectedImages(selectedBrowserId, passToOs);
+    this.addAllSelectedImages(browserId, passToOs);
+    this.props.luaApi.skybrowser.setSelectedBrowser(browserId);
+    this.setWwtRatio(browsers[browserId].ratio);
+  }
+
+  addAllSelectedImages(browserId, passToOs = true) {
     const {browsers} = this.props;
     if (browsers === undefined || browsers[browserId] === undefined) {
       return "";
     }
-    this.props.luaApi.skybrowser.setSelectedBrowser(browserId);
-    this.setWwtRatio(browsers[browserId].ratio);
+    browsers[browserId].selectedImages.reverse().map(image => {
+      this.selectImage(String(image), passToOs);
+    });
+  }
+
+  removeAllSelectedImages(browserId, passToOs = true) {
+    const {browsers} = this.props;
+    if (browsers === undefined || browsers[browserId] === undefined) {
+      return "";
+    }
+    browsers[browserId].selectedImages.map(image => {
+      this.removeImageSelection(Number(image), passToOs);
+    });
   }
 
   createWwtBrowser() {
@@ -174,6 +214,7 @@ class SkyBrowserPanel extends Component {
         setMessageFunction={func => this.passMessageToWwt = func}
         setImageCollectionIsLoaded = {this.setImageCollectionIsLoaded}
         selectedImages={selectedImages}
+        addAllSelectedImages={this.addAllSelectedImages}
         selectImage={this.selectImage}
         size={this.state.wwtSize}
         setSize={this.setWwtSize}
@@ -264,6 +305,8 @@ class SkyBrowserPanel extends Component {
         height={currentTabHeight}
         data={thisTabsImages}
         selectImage={this.selectImage}
+        removeImageSelection={this.removeImageSelection}
+        removeAllSelectedImages={this.removeAllSelectedImages}
         currentBrowserColor={this.currentBrowserColor}
         passMessageToWwt={this.passMessageToWwt}
         setSelectedBrowser={this.setSelectedBrowser}

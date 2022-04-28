@@ -23,7 +23,6 @@ class SkyBrowserTabs extends Component {
     this.showTooltip = this.showTooltip.bind(this);
     this.hideTooltip = this.hideTooltip.bind(this);
     this.setOpacityOfImage = this.setOpacityOfImage.bind(this);
-    this.removeImageSelection = this.removeImageSelection.bind(this);
     this.createButtons = this.createButtons.bind(this);
     this.toggleShowSettings = this.toggleShowSettings.bind(this);
     this.setImageLayerOrder = this.setImageLayerOrder.bind(this);
@@ -73,15 +72,6 @@ class SkyBrowserTabs extends Component {
     });
   }
 
-  removeImageSelection(identifier) {
-    const { luaApi, selectedBrowserId } = this.props;
-    luaApi.skybrowser.removeSelectedImageInBrowser(selectedBrowserId, Number(identifier));
-    this.props.passMessageToWwt({
-      event: "image_layer_remove",
-      id: String(identifier),
-    });
-  }
-
   setImageLayerOrder(browserId, identifier, order) {
     this.props.luaApi.skybrowser.setImageLayerOrder(browserId, identifier, order);
     const reverseOrder = this.props.data.length - order - 1;
@@ -97,7 +87,7 @@ class SkyBrowserTabs extends Component {
   }
 
   createButtons(browser) {
-    const { luaApi, data } = this.props;
+    const { luaApi, data, removeAllSelectedImages } = this.props;
     const browserId = browser.id;
     const toggleSettings = this.toggleShowSettings;
 
@@ -122,9 +112,9 @@ class SkyBrowserTabs extends Component {
       selected: false,
       icon: 'delete',
       text: 'Remove all images',
-      function: (browserId) => (
-        data.map((image) => this.removeImageSelection(Number(image.identifier)), _this)
-      )
+      function: function(browserId) {
+        removeAllSelectedImages(browserId);
+      },
     };
     const scrollInButton = {
       selected: false,
@@ -285,7 +275,7 @@ class SkyBrowserTabs extends Component {
 
   createImageList() {
     const {
-      currentBrowserColor, selectedBrowserId, selectImage, luaApi, data
+      currentBrowserColor, selectedBrowserId, selectImage, luaApi, data, removeImageSelection
     } = this.props;
     const images = (
       <ul>
@@ -307,7 +297,7 @@ class SkyBrowserTabs extends Component {
               luaApi={luaApi}
               key={entry.identifier}
               onSelect={selectImage}
-              removeImageSelection={this.removeImageSelection}
+              removeImageSelection={removeImageSelection}
               setOpacity={this.setOpacityOfImage}
               currentBrowserColor={currentBrowserColor}
             />

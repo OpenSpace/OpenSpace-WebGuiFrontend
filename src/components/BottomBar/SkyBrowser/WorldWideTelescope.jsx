@@ -23,7 +23,6 @@ class WorldWideTelescope extends Component {
     this.mouseUp = this.mouseUp.bind(this);
     this.handleDrag = this.handleDrag.bind(this);
     this.handleCallbackMessage = this.handleCallbackMessage.bind(this);
-    this.addAllSelectedImages = this.addAllSelectedImages.bind(this);
     this.scroll = this.scroll.bind(this);
     this.changeSize = this.changeSize.bind(this);
     this.setBorderColor = this.setBorderColor.bind(this);
@@ -64,6 +63,7 @@ class WorldWideTelescope extends Component {
   }
 
   handleCallbackMessage(event) {
+    const { browserId } = this.props;
     if (event.data == "wwt_has_loaded") {
       this.sendMessageToWwt({
         event: "modify_settings",
@@ -79,7 +79,7 @@ class WorldWideTelescope extends Component {
     }
     if (event.data == "load_image_collection_completed") {
       this.props.setImageCollectionIsLoaded(true);
-      this.addAllSelectedImages();
+      this.props.addAllSelectedImages(browserId, false);
     }
   }
 
@@ -88,12 +88,6 @@ class WorldWideTelescope extends Component {
     this.sendMessageToWwt({
       event: "set_background_color",
       data: color
-    });
-  }
-
-  addAllSelectedImages() {
-    this.props.selectedImages.reverse().map(image => {
-      this.props.selectImage(image.identifier, false);
     });
   }
 
