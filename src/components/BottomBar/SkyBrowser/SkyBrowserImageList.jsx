@@ -21,11 +21,11 @@ class SkyBrowserImageList extends Component {
       return true;
     }
     // Prevent rerendering unless important properties actually changed
-    return !(
-      this.props.showOnlyNearest === nextProps.showOnlyNearest &&
-      this.props.height === nextProps.height &&
-      this.props.selectImage === nextProps.selectImage &&
-      this.props.activeImage === nextProps.activeImage
+    return (
+      this.props.showOnlyNearest !== nextProps.showOnlyNearest ||
+      this.props.height !== nextProps.height ||
+      this.props.selectImage !== nextProps.selectImage ||
+      this.props.activeImage !== nextProps.activeImage
     );
   }
 
