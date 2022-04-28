@@ -33,7 +33,7 @@ class SkyBrowserImageList extends Component {
     const { imageList, selectedBrowserData } = this.props;
     const { distanceSortThreshold } = this.state;
 
-    if (!selectedBrowserData || Object.keys(imageList).length === 0) {
+    if (!selectedBrowserData || !imageList || Object.keys(imageList).length === 0) {
       return [];
     }
     const searchRadius = selectedBrowserData.fov / 2;

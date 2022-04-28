@@ -154,10 +154,22 @@ class SkyBrowserPanel extends Component {
       return "";
     }
     const browser = browsers[selectedBrowserId];
+    if (browser === undefined) {
+      return "";
+    }
+
     const selectedImages = this.getSelectedBrowserImages();
     return (
       <WorldWideTelescope
-        browser = {browser}
+        browserId = {browser.id}
+        browserName = {browser.name}
+        browserAimInfo = {{
+          ra: browser.ra,
+          dec: browser.dec,
+          fov: browser.fov,
+          roll: browser.roll
+        }}
+        browserColor = {browser.color}
         skybrowserApi={this.props.luaApi.skybrowser}
         setMessageFunction={func => this.passMessageToWwt = func}
         setImageCollectionIsLoaded = {this.setImageCollectionIsLoaded}

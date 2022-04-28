@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import shallowEqualArrays from 'shallow-equal/arrays';
+import shallowEqualObjects from 'shallow-equal/objects';
 import Picker from '../Picker';
 import FloatingWindow from './WindowThreeStates/FloatingWindow'
 import styles from './WorldWideTelescope.scss'
@@ -39,6 +41,28 @@ class WorldWideTelescope extends Component {
     window.removeEventListener("message", this.handleCallbackMessage);
   }
 
+  componentDidUpdate(prevProps) {
+    const { browserAimInfo, browserColor } = this.props;
+    if (prevProps.browserColor !== browserColor) {
+      this.setBorderColor(browserColor);
+      this.color = browserColor;
+    }
+
+    if (!shallowEqualObjects(prevProps.browserAimInfo, browserAimInfo)) {
+      this.setAim(browserAimInfo);
+    }
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    const { browserAimInfo, browserColor, browserId } = this.props;
+
+    return (
+      !shallowEqualObjects(nextProps.browserAimInfo, browserAimInfo) ||
+      nextProps.browserId !== browserId ||
+      !shallowEqualArrays(nextProps.browserColor,browserColor)
+    );
+  }
+
   handleCallbackMessage(event) {
     if (event.data == "wwt_has_loaded") {
       this.sendMessageToWwt({
@@ -51,9 +75,7 @@ class WorldWideTelescope extends Component {
         url:"https://data.openspaceproject.com/wwt/1/imagecollection.wtml",
         loadChildFolders: true
       });
-      if (this.props.browser) {
-        this.setBorderColor(this.props.browser.color);
-      }
+      this.setBorderColor(this.props.browserColor);
     }
     if (event.data == "load_image_collection_completed") {
       this.props.setImageCollectionIsLoaded(true);
@@ -82,16 +104,17 @@ class WorldWideTelescope extends Component {
         frame.postMessage(message, "*");
       }
     } catch (error) {
+      // Do nothing
     }
   }
 
-  setAim(ra, dec, fov, roll) {
+  setAim(aimInfo) {
     this.sendMessageToWwt({
       "event": "center_on_coordinates",
-      "ra": ra,
-      "dec": dec,
-      "fov": fov,
-      "roll": roll,
+      "ra": aimInfo.ra,
+      "dec": aimInfo.dec,
+      "fov": aimInfo.fov,
+      "roll": aimInfo.roll,
       "instant": true
     });
   }
@@ -100,7 +123,7 @@ class WorldWideTelescope extends Component {
     if (this.state.isDragging) {
       const end = [mouse.clientX, mouse.clientY];
       this.props.skybrowserApi.finetuneTargetPosition(
-        this.props.browser.id,
+        this.props.browserId,
         this.state.startDragPosition,
         end
       );
@@ -108,7 +131,7 @@ class WorldWideTelescope extends Component {
   }
 
   mouseDown(mouse) {
-    this.props.skybrowserApi.startFinetuningTarget(this.props.browser.id);
+    this.props.skybrowserApi.startFinetuningTarget(this.props.browserId);
     const position = [mouse.clientX, mouse.clientY];
     this.setState({
       isDragging: true,
@@ -125,7 +148,7 @@ class WorldWideTelescope extends Component {
     if(this.props.inverseZoom) {
       scroll *= -1;
     }
-    this.props.skybrowserApi.scrollOverBrowser(this.props.browser.id, scroll);
+    this.props.skybrowserApi.scrollOverBrowser(this.props.browserId, scroll);
   }
 
   changeSize(widthWwt, heightWwt) {
@@ -135,27 +158,17 @@ class WorldWideTelescope extends Component {
     const scale = (heightWwt - topBarHeight) / windowHeight;
     const newWidth = 2 * scale * ratio;
     const newHeight = 2 * scale;
-    const id = this.props.browser.id;
+    const id = this.props.browserId;
     this.props.setSize({ width: widthWwt, height: heightWwt });
     this.props.skybrowserApi.setScreenSpaceSize(id, newWidth, newHeight);
   }
 
   render() {
-    const {browser, showTitle, size} = this.props;
-    if (!browser) {
-      return "";
-    }
-
-    if (browser.color != this.color) {
-      this.setBorderColor(browser.color);
-      this.color = browser.color;
-    }
-
-    this.setAim(browser.ra, browser.dec, browser.fov, browser.roll);
+    const { browserName, showTitle, size } = this.props;
 
     const topBar =
       <header className={`header ${styles.topMenu}`}>
-        <div className={styles.title}>{showTitle && this.props.browser.name}</div>
+        <div className={styles.title}>{showTitle && browserName}</div>
       </header>;
 
     // Covering div to handle interaction
@@ -171,7 +184,7 @@ class WorldWideTelescope extends Component {
     return (
       <FloatingWindow
         className={`${Picker.Popover}`}
-        title={browser.name}
+        title={browserName}
         closeCallback={this.togglePopover}
         defaultSize={{ height: `425px`, width: `400px` }}
         size={{ height: `${size.height}px`, width: `${size.width}px` }}
