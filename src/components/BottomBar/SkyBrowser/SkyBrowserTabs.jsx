@@ -360,6 +360,7 @@ class SkyBrowserTabs extends Component {
           onResizeStop={() => {
             this.props.setCurrentTabHeight(this.tabsDiv.clientHeight);
           }}
+          defaultSize={{width: 'auto', height: height}}
           height={height}
         >
           {this.createTabs()}
