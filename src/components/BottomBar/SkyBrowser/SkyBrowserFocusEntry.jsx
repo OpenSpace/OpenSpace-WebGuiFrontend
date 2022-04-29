@@ -8,14 +8,10 @@ import styles from './SkyBrowserFocusEntry.scss';
 class OpacitySlider extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      value: 100,
-    };
     this.handleChange = this.handleChange.bind(this);
   }
 
   handleChange(e) {
-    this.setState({ value: event.target.value });
     // Ensure the image has an id, which consists of the index of the image
     const index = Number(this.props.identifier);
     const opacity = event.target.value / 100;
@@ -28,14 +24,14 @@ class OpacitySlider extends Component {
   }
 
   render() {
-    const { value } = this.state;
+    const { opacity } = this.props;
     return (
       <div className={styles.slidecontainer}>
         <input
           type="range"
           min="0"
           max="100"
-          value={value}
+          value={opacity * 100}
           className={styles.slider}
           onChange={this.handleChange}
         />
@@ -86,8 +82,7 @@ class SkyBrowserFocusEntry extends Component {
   render() {
     const {
       name, identifier, thumbnail, credits, creditsUrl, ra, dec, fov,
-    } = this.props;
-    const { luaApi, setOpacity, removeImageSelection, currentBrowserColor } = this.props;
+      luaApi, setOpacity, removeImageSelection, currentBrowserColor, opacity } = this.props;
 
     const imageRemoveButton = removeImageSelection && (
       <div style={{ display: 'flex' }}>
@@ -107,7 +102,7 @@ class SkyBrowserFocusEntry extends Component {
       </div>
     );
 
-    const opacitySlider = setOpacity ? <OpacitySlider setOpacity={setOpacity} identifier={identifier} /> : '';
+    const opacitySlider = setOpacity ? <OpacitySlider setOpacity={setOpacity} opacity={opacity} identifier={identifier} /> : '';
 
     return (
       <li

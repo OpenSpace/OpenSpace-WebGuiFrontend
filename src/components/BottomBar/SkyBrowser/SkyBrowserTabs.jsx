@@ -22,7 +22,6 @@ class SkyBrowserTabs extends Component {
     this.createImageList = this.createImageList.bind(this);
     this.showTooltip = this.showTooltip.bind(this);
     this.hideTooltip = this.hideTooltip.bind(this);
-    this.setOpacityOfImage = this.setOpacityOfImage.bind(this);
     this.createButtons = this.createButtons.bind(this);
     this.toggleShowSettings = this.toggleShowSettings.bind(this);
     this.setImageLayerOrder = this.setImageLayerOrder.bind(this);
@@ -59,17 +58,6 @@ class SkyBrowserTabs extends Component {
 
   toggleShowSettings() {
     this.setState({ showSettings: !this.state.showSettings });
-  }
-
-  setOpacityOfImage(identifier, opacity) {
-    const { luaApi, selectedBrowserId } = this.props;
-    luaApi.skybrowser.setOpacityOfImageLayer(selectedBrowserId, Number(identifier), opacity);
-    this.props.passMessageToWwt({
-      event: "image_layer_set",
-      id: String(identifier),
-      setting: "opacity",
-      value: opacity
-    });
   }
 
   setImageLayerOrder(browserId, identifier, order) {
@@ -275,7 +263,7 @@ class SkyBrowserTabs extends Component {
 
   createImageList() {
     const {
-      currentBrowserColor, selectedBrowserId, selectImage, luaApi, data, removeImageSelection
+      currentBrowserColor, browsers, selectedBrowserId, selectImage, luaApi, data, removeImageSelection, setOpacityOfImage
     } = this.props;
     const images = (
       <ul>
@@ -298,7 +286,8 @@ class SkyBrowserTabs extends Component {
               key={entry.identifier}
               onSelect={selectImage}
               removeImageSelection={removeImageSelection}
-              setOpacity={this.setOpacityOfImage}
+              opacity={browsers[selectedBrowserId].opacities[index]}
+              setOpacity={setOpacityOfImage}
               currentBrowserColor={currentBrowserColor}
             />
             {index === data.length - 1 ? (

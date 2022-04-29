@@ -48,6 +48,7 @@ class SkyBrowserPanel extends Component {
     this.currentBrowserColor = this.currentBrowserColor.bind(this);
     this.getSelectedBrowserImages = this.getSelectedBrowserImages.bind(this);
     this.selectImage = this.selectImage.bind(this);
+    this.setOpacityOfImage = this.setOpacityOfImage.bind(this);
     this.removeImageSelection = this.removeImageSelection.bind(this);
     this.createWwtBrowser = this.createWwtBrowser.bind(this);
     this.createAddBrowserInterface = this.createAddBrowserInterface.bind(this);
@@ -141,6 +142,19 @@ class SkyBrowserPanel extends Component {
     }
   }
 
+  setOpacityOfImage(identifier, opacity, passToOs = true) {
+    const { luaApi, selectedBrowserId } = this.props;
+    if(passToOs) {
+      luaApi.skybrowser.setOpacityOfImageLayer(selectedBrowserId, Number(identifier), opacity);
+    }
+    this.passMessageToWwt({
+      event: "image_layer_set",
+      id: String(identifier),
+      setting: "opacity",
+      value: opacity
+    });
+  }
+
   removeImageSelection(identifier, passToOs = true) {
     const { luaApi, selectedBrowserId } = this.props;
     if(passToOs) {
@@ -172,8 +186,9 @@ class SkyBrowserPanel extends Component {
     if (browsers === undefined || browsers[browserId] === undefined) {
       return "";
     }
-    browsers[browserId].selectedImages.reverse().map(image => {
+    browsers[browserId].selectedImages.reverse().map((image, index) => {
       this.selectImage(String(image), passToOs);
+      this.setOpacityOfImage(String(image), browsers[browserId].opacities.reverse()[index], passToOs);
     });
   }
 
@@ -311,6 +326,7 @@ class SkyBrowserPanel extends Component {
         passMessageToWwt={this.passMessageToWwt}
         setSelectedBrowser={this.setSelectedBrowser}
         setWwtRatio={this.setWwtRatio}
+        setOpacityOfImage={this.setOpacityOfImage}
       />
     );
 
