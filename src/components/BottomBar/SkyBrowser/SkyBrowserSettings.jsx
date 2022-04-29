@@ -89,7 +89,19 @@ class SkyBrowserSettings extends Component {
     const renderCopiesButtons = renderCopies && Object.values(renderCopies).map((entry, indexCopy) => {
       return (
         <Row key={indexCopy} className={`${styles.vectorProperty} ${this.disabled ? styles.disabled : ''}`}>
-          {entry.map((number, index) => {
+          <Checkbox
+            label=""
+            checked={entry.show}
+            left={false}
+            disabled={false}
+            setChecked={(value) => {
+              const renderCopyId = Object.keys(renderCopies)[indexCopy];
+              const uriBrowser = `ScreenSpace.${selectedBrowserId}.${entry.idShowProperty}`;
+              luaApi.setPropertyValueSingle(uriBrowser, value);
+            }}
+            wide
+          />
+          {entry.position.map((number, index) => {
             return <NumericInput
               key={index}
               className={positionData[index]}
@@ -97,7 +109,7 @@ class SkyBrowserSettings extends Component {
               max={maxPosition[index]}
               min={minPosition[index]}
               onValueChanged={(newValue) => {
-                const newVector = entry;
+                const newVector = entry.position;
                 newVector[index] = newValue;
                 const renderCopyId = Object.keys(renderCopies)[indexCopy];
                 const uriBrowser = `ScreenSpace.${selectedBrowserId}.${renderCopyId}`;
