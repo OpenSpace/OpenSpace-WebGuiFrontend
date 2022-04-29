@@ -24,6 +24,7 @@ class SkyBrowserSettings extends Component {
       showCopiesInfo: false,
     };
     this.valueToColor = this.valueToColor.bind(this);
+    this.onColorPickerChange = this.onColorPickerChange.bind(this);
     this.toggleFaceCamera = this.toggleFaceCamera.bind(this);
     this.toggleRadiusAzimuthElevation = this.toggleRadiusAzimuthElevation.bind(this);
     this.setRef = this.setRef.bind(this);
@@ -55,12 +56,23 @@ class SkyBrowserSettings extends Component {
   }
 
   valueToColor(color) {
-    return {
-      r: color[0],
-      g: color[1],
+    return { 
+      r: color[0], 
+      g: color[1], 
       b: color[2],
-      a: 1.0,
+      a: 1.0 
     };
+  }
+
+  onColorPickerChange(color) {
+    const { luaApi, selectedBrowserId } = this.props;
+    const rgb = color.rgb;
+    luaApi.skybrowser.setBorderColor(
+      selectedBrowserId,
+      rgb.r,
+      rgb.g,
+      rgb.b,
+    );
   }
 
   showExpandedCopySettings() {
@@ -112,7 +124,7 @@ class SkyBrowserSettings extends Component {
           setExpanded={this.showExpandedCopySettings}
         >
           <NumericInput
-            label={"Number Of Copies"}
+            label={"Number of Copies"}
             max={5}
             min={1}
             onValueChanged={(newValue) => this.setState({ noOfCopies : newValue })}
@@ -120,8 +132,9 @@ class SkyBrowserSettings extends Component {
             value={this.state.noOfCopies}
             placeholder={`value`}
           />
-          <Row><header>
-          Position for first copy
+          <Row>
+          <header>
+            Position for first copy
           </header>
           <MaterialIcon
             icon={'info'}
@@ -139,7 +152,7 @@ class SkyBrowserSettings extends Component {
           }
           </Row>
           <Row className={`${styles.vectorProperty} ${this.disabled ? styles.disabled : ''}`}>
-          {newPositionVector.map((number, index) => {
+            {newPositionVector.map((number, index) => {
               return <NumericInput
                 key={index}
                 className={positionData[index]}
@@ -189,17 +202,16 @@ class SkyBrowserSettings extends Component {
       }
       // Take half to display in ranges [0,1] instead of [0,2]
       const size = browser.size;
-      const colors = browser.color;
-      const colorData = ['Border Color: Red', 'Green', 'Blue'];
-      const sizeData = ['Browser Width', 'Browser Height'];
+      const colorValues = browser.color;
+      const colorLabels = ['Border Color: R', 'G', 'B'];
       const renderCopiesSection = this.createRenderCopiesSection(browser, luaApi, selectedBrowserId);
-      // TODO: Fix color picker
+
       const colorPicker = (
         <ColorPickerPopup
+          className={styles.colorPicker}
           disableAlpha
           color={this.valueToColor(browser.color)}
-          onChange={(values) => {}}
-          placement="right"
+          onChange={this.onColorPickerChange}
           disabled={false}
         />
       );
@@ -207,8 +219,7 @@ class SkyBrowserSettings extends Component {
       return (
         <div>
           <NumericInput
-            className="Vertical Field Of View"
-            label="Vertical Field Of View"
+            label="Vertical Field of View"
             max={70}
             min={0}
             disabled={!luaApi.skybrowser.setVerticalFov}
@@ -221,7 +232,6 @@ class SkyBrowserSettings extends Component {
           />
           <Row>
             <NumericInput
-              className="Right Ascension"
               label="Right Ascension"
               max={360}
               min={0}
@@ -233,7 +243,6 @@ class SkyBrowserSettings extends Component {
               placeholder="value 1"
             />
             <NumericInput
-              className="Declination"
               label="Declination"
               max={90}
               min={-90}
@@ -263,15 +272,15 @@ class SkyBrowserSettings extends Component {
             wide
           />
           <Row className={`${styles.vectorProperty} ${this.disabled ? styles.disabled : ''}`}>
-            {colors.map((color, index) => (
+            {colorPicker}
+            {colorValues.map((color, index) => (
               <NumericInput
                 key={index}
-                className={colorData[index]}
-                label={colorData[index]}
+                label={colorLabels[index]}
                 max={255}
                 min={0}
                 onValueChanged={(value) => {
-                  const newColor = colors;
+                  const newColor = colorValues;
                   newColor[index] = value;
                   luaApi.skybrowser.setBorderColor(
                     selectedBrowserId,

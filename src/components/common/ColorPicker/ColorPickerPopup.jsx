@@ -45,7 +45,7 @@ class ColorPickerPopup extends Component {
   }
 
   togglePopup(evt) {
-    if(this.mounted) {
+    if (this.mounted) {
       this.setState({ showPopup: !this.state.showPopup });
     }
   }
@@ -57,13 +57,13 @@ class ColorPickerPopup extends Component {
   }
 
   closePopup() {
-    if(this.mounted) {
+    if (this.mounted) {
       this.setState({ showPopup: false });
     }
   }
 
   render() {
-    const { color, disableAlpha, disabled, onChange } = this.props;
+    const { className, color, disableAlpha, disabled, onChange } = this.props;
 
     const colorSwatchBg = {
       background: `rgba(${ color.r }, ${ color.g }, ${ color.b }, ${ color.a })`
@@ -76,6 +76,7 @@ class ColorPickerPopup extends Component {
     return (
       <span
         ref={this.setRef('wrapper')}
+        className={className}
       >
         <Button block small onClick={this.togglePopup} nopadding>
           <div className={styles.colorSwatch}>
@@ -88,7 +89,7 @@ class ColorPickerPopup extends Component {
         { !disabled && this.state.showPopup && (
             <Tooltip
               fixed
-              placement="right"
+              placement="right" // TODO: fix so placement can be set from property
               style={{...this.position, ...customTooltipCss}}
             >
               <ColorPicker
@@ -104,15 +105,17 @@ class ColorPickerPopup extends Component {
 }
 
 ColorPickerPopup.propTypes = {
+  className: PropTypes.string,
   color: PropTypes.object.isRequired,
   disableAlpha: PropTypes.bool,
   disabled: PropTypes.bool,
-  onChange: PropTypes.func
+  onChange: PropTypes.func,
 };
 
 ColorPickerPopup.defaultProps = {
+  className: "",
   disableAlpha: false,
-  disabled: false
+  disabled: false,
 };
 
 export default ColorPickerPopup;
