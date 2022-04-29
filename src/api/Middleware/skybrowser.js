@@ -19,12 +19,19 @@ function tearDownSubscription() {
   skybrowserTopic.cancel();
 }
 
-const getWWTImages = async (luaApi, callback) => {
+const getWwtData = async (luaApi, callback) => {
   try {
     if (!luaApi.skybrowser) {
       throw new Error('The Sky Browser Module is not loaded!');
     }
     let imgData = await luaApi.skybrowser.getListOfImages();
+    let url = await luaApi.skybrowser.getWwtImageCollectionUrl();
+    if (url) {
+      url = url[1].url;
+    }
+    else {
+      throw new Error('No AAS WorldWide Telescope image collection!');
+    }
     if (imgData) {
       imgData = Object.values(imgData[1]);
       if(imgData.length === 0) {
@@ -35,7 +42,7 @@ const getWWTImages = async (luaApi, callback) => {
           ...image,
           key: image.identifier,
         }));
-        callback(imgDataWithKey);
+        callback({imageList: imgDataWithKey, url: url});
       }
     } else {
       throw new Error('No AAS WorldWide Telescope images!');
@@ -61,8 +68,8 @@ export const skybrowser = store => next => (action) => {
   const state = store.getState();
   switch (action.type) {
     case actionTypes.loadSkyBrowserData:
-      getWWTImages(action.payload, (imageList) => {
-        store.dispatch(initializeSkyBrowser(imageList));
+      getWwtData(action.payload, (data) => {
+        store.dispatch(initializeSkyBrowser(data));
       });
       break;
     case actionTypes.onOpenConnection:

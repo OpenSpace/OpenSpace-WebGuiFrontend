@@ -6,22 +6,22 @@ const defaultState = {
   imageList: [],
   selectedBrowserId: "",
   cameraIsInSolarSystem: true,
-  targets: {}
+  targets: {},
+  url: ""
 };
 
 export const skybrowser = (state = defaultState, action) => {
+  const newState = {...state};
   switch (action.type) {
     case actionTypes.initializeSkyBrowser:
-      return {
-        isInitialized: true,
-        imageList: action.payload,
-      };
+      newState.isInitialized = true;
+      newState.imageList = action.payload.imageList;
+      newState.url = action.payload.url;
+      return newState;
     case actionTypes.subscribeToSkyBrowser:
-      return {
-        data: action.payload,
-      };
+      newState.data = action.payload;
+      return newState;
     case actionTypes.updateSkyBrowser:
-      const newState = {...state};
       newState.selectedBrowserId = action.payload.selectedBrowserId;
       newState.cameraInSolarSystem = action.payload.cameraInSolarSystem;
       newState.browsers = action.payload.browsers;

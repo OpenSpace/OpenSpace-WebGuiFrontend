@@ -63,7 +63,7 @@ class WorldWideTelescope extends Component {
   }
 
   handleCallbackMessage(event) {
-    const { browserId } = this.props;
+    const { browserId, url } = this.props;
     if (event.data == "wwt_has_loaded") {
       this.sendMessageToWwt({
         event: "modify_settings",
@@ -72,7 +72,7 @@ class WorldWideTelescope extends Component {
       });
       this.sendMessageToWwt({
         event: "load_image_collection",
-        url:"https://data.openspaceproject.com/wwt/1/imagecollection.wtml",
+        url: url,
         loadChildFolders: true
       });
       this.setBorderColor(this.props.browserColor);

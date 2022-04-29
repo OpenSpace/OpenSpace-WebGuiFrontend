@@ -203,7 +203,7 @@ class SkyBrowserPanel extends Component {
   }
 
   createWwtBrowser() {
-    const { browsers, selectedBrowserId } = this.props;
+    const { browsers, selectedBrowserId, url } = this.props;
 
     if (browsers === undefined) {
       return "";
@@ -233,6 +233,7 @@ class SkyBrowserPanel extends Component {
         selectImage={this.selectImage}
         size={this.state.wwtSize}
         setSize={this.setWwtSize}
+        url={url}
       />
     );
   }
@@ -359,7 +360,14 @@ class SkyBrowserPanel extends Component {
     const browsersExist = browsers && Object.keys(browsers).length !== 0;
 
     let content = "";
-    if (!cameraInSolarSystem) {
+    if(cameraInSolarSystem === undefined) {
+      content = (
+        <CenteredLabel>
+          Oops! There was a problem loading data from OpenSpace :(
+        </CenteredLabel>
+      );
+    }
+    else if (cameraInSolarSystem === false) {
       content = (
         <CenteredLabel>
           The camera has to be within the solar system for the sky browser to work.
@@ -411,6 +419,7 @@ const mapStateToProps = state => ({
   browsers: state.skybrowser.browsers,
   cameraInSolarSystem: state.skybrowser.cameraInSolarSystem,
   imageList: state.skybrowser.imageList,
+  url: state.skybrowser.url,
   isDataInitialized: state.skybrowser.isInitialized,
   luaApi: state.luaApi,
   popoverVisible: state.local.popovers.skybrowser.visible,
