@@ -37,8 +37,6 @@ $image-width: 96px;
 .removeImageButton {
   padding: 3px 4px 3px 4px;
   border-radius: 4px;
-  position: relative;
-  left: 77px;
 }
 
 .addTo3DButton {
@@ -52,6 +50,17 @@ $image-width: 96px;
   overflow: hidden;
   text-overflow: ellipsis;
   font-size: 16px;
+}
+
+.skySurvey {
+  font-size: 12px;
+  border-radius: 2px;
+  background: transparent;
+  color: $text-color-blur;
+  width: 70%;
+  margin-bottom: 3px;
+  padding-left: 3px;
+  margin-right: auto;
 }
 
 .image {

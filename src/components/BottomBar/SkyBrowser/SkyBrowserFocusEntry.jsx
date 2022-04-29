@@ -81,11 +81,15 @@ class SkyBrowserFocusEntry extends Component {
 
   render() {
     const {
-      name, identifier, thumbnail, credits, creditsUrl, ra, dec, fov,
+      name, identifier, thumbnail, credits, creditsUrl, ra, dec, fov, hasCelestialCoords,
       luaApi, setOpacity, removeImageSelection, currentBrowserColor, opacity } = this.props;
+    const skySurveyTag = !hasCelestialCoords ? <span className={styles.skySurvey}>
+        Sky Survey
+    </span> : "";
 
     const imageRemoveButton = removeImageSelection && (
-      <div style={{ display: 'flex' }}>
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        {skySurveyTag}
         <Button
           onClick={(e) => {
             if (!e) var e = window.event;
@@ -103,7 +107,6 @@ class SkyBrowserFocusEntry extends Component {
     );
 
     const opacitySlider = setOpacity ? <OpacitySlider setOpacity={setOpacity} opacity={opacity} identifier={identifier} /> : '';
-
     return (
       <li
         className={`${styles.entry} ${this.isTabEntry && styles.tabEntry} ${this.isActive && styles.active}`}
@@ -128,9 +131,11 @@ class SkyBrowserFocusEntry extends Component {
             dec={dec}
             fov={fov}
             isTabEntry={this.isTabEntry}
+            hasCelestialCoords={hasCelestialCoords}
           />
         </div>
         {opacitySlider}
+        {!setOpacity && skySurveyTag}
       </li>
     );
   }

@@ -72,13 +72,13 @@ class InfoBoxSkyBrowser extends Component {
   }
 
   render() {
-    const { icon, text, title, textUrl, ra, dec, fov} = this.props;
+    const { icon, text, title, textUrl, ra, dec, fov, hasCelestialCoords} = this.props;
     const { isPopupShowing } = this.state;
-    const esaSkyButton = (
+    const esaSkyButton = hasCelestialCoords ? (
       <Button onClick={() => {this.openEsaSky(ra,dec,fov)}} className={styles.tooltipButton} transparent small>
         <img src={esaSkyLogo} alt="EsaSky" style={{width:'100%'}} />
       </Button>
-    );
+    ) : "";
 
     return (
       <span ref={this.setRef('wrapper')}>
@@ -96,7 +96,7 @@ class InfoBoxSkyBrowser extends Component {
           >
             <span className={styles.tooltipTitle}>{ title }</span>
             {text}
-            {text && (
+            {textUrl !== "" && (
               <Button className={styles.tooltipButton} onClick={ () => this.openImageUrl(textUrl) }>
                 Read more
               </Button>
