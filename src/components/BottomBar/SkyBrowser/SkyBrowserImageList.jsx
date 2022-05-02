@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import CenteredLabel from '../../common/CenteredLabel/CenteredLabel';
 import FilterList from '../../common/FilterList/FilterList';
 import styles from './SkyBrowserImageList.scss';
 import SkyBrowserFocusEntry from './SkyBrowserFocusEntry';
@@ -78,7 +79,11 @@ class SkyBrowserImageList extends Component {
     const { activeImage, height, imageList, luaApi, showOnlyNearest, selectImage, currentBrowserColor } = this.props;
     const list = showOnlyNearest ? this.getNearestImages() : imageList !== undefined ? imageList : [];
 
-    // TODO: render hint if no images
+    const showNoImagesHint = (showOnlyNearest && list.length === 0);
+    if (showNoImagesHint) {
+      return <CenteredLabel>No images within the current view. Zoom out or move the target to look at another portion of the sky</CenteredLabel>
+    }
+
     return (
       <FilterList
         className={styles.filterList}
