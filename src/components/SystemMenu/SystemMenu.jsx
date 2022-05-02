@@ -88,9 +88,9 @@ const mapSubStateToProps = ({ luaApi }) => {
       luaApi.setPropertyValue("LuaConsole.IsVisible", !visible);
     },
     nativeGui: async () => {
-      const data = await luaApi.getPropertyValue("Modules.ImGUI.Main.Enabled");
+      const data = await luaApi.getPropertyValue("Modules.ImGUI.Enabled");
       const visible = data[1] || false;
-      luaApi.setPropertyValue("Modules.ImGUI.Main.Enabled", !visible);
+      luaApi.setPropertyValue("Modules.ImGUI.Enabled", !visible);
     },
     openTutorials: () => {
       var startString = "open";
