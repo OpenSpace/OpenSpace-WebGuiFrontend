@@ -16,6 +16,8 @@ import '../styles/base.scss';
 import About from './About/About';
 import styles from './OnScreenGui.scss';
 
+import NavigationLayer from '../components/NavigationLayer/NavigationLayer';
+
 class OnScreenGui extends Component {
   constructor(props) {
     super(props);
@@ -78,6 +80,8 @@ class OnScreenGui extends Component {
             </Error>
           </Overlay>
         )}
+
+        <NavigationLayer/>
         <section className={styles.Grid__Left}>
           <Sidebar />
         </section>
