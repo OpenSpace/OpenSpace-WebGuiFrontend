@@ -1,5 +1,6 @@
 // TODO: Städa upp bland dessa variabler
-var signalingServer = 'localhost'; 
+//var signalingServer = 'localhost';
+var signalingServer = '192.168.1.39';
 var signalingPort = 8443;
 var peerID = 0;
 var rtc_configuration = {iceServers: [{urls: "stun:stun.services.mozilla.com"},
@@ -12,18 +13,25 @@ var send_channel;
 var wsConnection;
 var local_stream_promise;
 
-export const joinSession = () => {
+export const hostSession = () => {
     peerID = '1';
-    default_constraints = {video: true};
+    // Dynamic constraints
+    //default_constraints = {video: true};
+    //1080p
+    default_constraints = {video: {width: 1920}, height: {exact: 1080}};
+    //720p
+    //default_constraints = {video: {width: 1280}, height: {exact: 720}};
+    //480p
+    //default_constraints = {video: {width: 640}, height: {exact: 480}};
     websocketServerConnect();
-    sendToSocket('SESSION', 'HOST');
+    sendToSocket('SESSION', '2');
     //if (status == "Registered with server, waiting for call")
     //onConnectClicked();
 }
 
-export const hostSession = () => {
-    peerID = 'HOST';
-    default_constraints = {video: false};
+export const joinSession = () => {
+    peerID = '2';
+    default_constraints = {video: false, frameRate: {max: 60}};
     websocketServerConnect();
 }
 
@@ -31,6 +39,7 @@ export const hostSession = () => {
 //      var callee_id = "HOST";
 //     sendToSocket('SESSION', callee_id);
 // }
+
 
 function websocketServerConnect() {
     // TODO: Handle # of connection attempts
@@ -136,7 +145,7 @@ function onServerMessage(event) {
         case "REGISTER":
             setStatus("Registered with server, waiting for call");
             if (peerID == "1")
-                sendToSocket('SESSION', 'HOST');
+                sendToSocket('SESSION', '2');
             return;
         case "SESSION_OK":
             setStatus("Starting negotiation");
@@ -222,9 +231,11 @@ function getLocalStream() {
 
     var constraints = default_constraints;
 
+    // TODO: unecessary if statement
     // Add local stream 
     if (navigator.mediaDevices.getUserMedia) {
         return navigator.mediaDevices.getUserMedia(constraints);
+        //return navigator.mediaDevices.getDisplayMedia(constraints);
     } else {
         errorUserMediaHandler();
     }
@@ -236,6 +247,7 @@ function onRemoteTrack(event) {
         // Add latency for user testing
         //const [videoReceiver] = peer_connection.getReceivers();
         //videoReceiver.playoutDelayHint = 0.5;
+        //videoReceiver.playoutDelayHint = 0.2;
         console.log('Incoming stream');
         getVideoElement().srcObject = event.streams[0];
     }

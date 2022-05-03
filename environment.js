@@ -7,6 +7,8 @@
 // with a different address/port combination than the defaults.
 
 window.OpenSpaceEnvironment = {
-//  wsAddress: '127.0.0.1',
-//  wsPort: 4682
+ //wsAddress: '127.0.0.1',
+ //wsPort: 4682
+   wsAddress: '192.168.1.39',
+   wsPort: 4682
 };

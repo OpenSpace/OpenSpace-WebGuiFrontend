@@ -14,6 +14,7 @@ import NodeMetaContainer from '../components/NodeMetaPanel/NodeMetaContainer';
 import NodePopOverContainer from '../components/NodePropertiesPanel/NodePopOverContainer';
 import Sidebar from '../components/Sidebar/Sidebar';
 import StreamedVideo from '../components/StreamedVideo/StreamedVideo';
+import {joinSession} from '../utils/WebRTCStreaming';
 import '../styles/base.scss';
 import About from './About/About';
 import styles from './StreamingGui.scss';
@@ -27,6 +28,8 @@ class StreamingGui extends Component {
 
   componentDidMount() {
     this.props.startConnection();
+    //Automatically join WebRTC session on load
+    //joinSession();
   }
 
   checkVersion() {

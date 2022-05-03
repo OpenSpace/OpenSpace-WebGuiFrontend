@@ -10,7 +10,7 @@ import Popover from '../common/Popover/Popover';
 import Picker from './Picker';
 import styles from  './StreamingMenu.scss';
 
-import { hostSession, joinSession} from '../../streamingThesis/setupCall';
+import { hostSession, joinSession} from '../../utils/WebRTCStreaming';
 
 
 class StreamingMenu extends Component {
@@ -66,7 +66,7 @@ class StreamingMenu extends Component {
             <Button
               block
               smalltext
-              onClick={() => {joinSession()}}
+              onClick={() => {hostSession()}}
               className={styles.actionButton}
             >
               <p>Host session</p>
@@ -76,7 +76,7 @@ class StreamingMenu extends Component {
             <Button
               block
               smalltext
-              onClick={() => {hostSession()}}
+              onClick={() => {joinSession()}}
               className={styles.actionButton}
             >
                 <p>Join session</p>
