@@ -41,7 +41,7 @@ class SkyBrowserSettings extends Component {
     this.toggleRadiusAzimuthElevation = this.toggleRadiusAzimuthElevation.bind(this);
     this.setRef = this.setRef.bind(this);
     this.setExpandedCopies = this.setExpandedCopies.bind(this);
-    this.createRenderCopiesSection = this.createRenderCopiesSection.bind(this);
+    this.createDisplayCopiesSection = this.createDisplayCopiesSection.bind(this);
     this.showExpandedCopySettings = this.showExpandedCopySettings.bind(this);
     this.setExpandedGeneralSettings = this.setExpandedGeneralSettings.bind(this);
   }
@@ -96,14 +96,14 @@ class SkyBrowserSettings extends Component {
     this.setState({ showExpandedSettings: !this.state.showExpandedSettings });
   }
 
-  createRenderCopiesSection(browser, luaApi, selectedBrowserId) {
-    const renderCopies = browser.renderCopies;
+  createDisplayCopiesSection(browser, luaApi, selectedBrowserId) {
+    const displayCopies = browser.displayCopies;
     const positionData = browser.isUsingRae ? ['Radius', 'Azimuth', 'Elevation'] : ['X', 'Y', 'Z'];
     const maxPosition = browser.isUsingRae ? [10, 3.14, 3.14] : [4, 4, 0];
     const minPosition = browser.isUsingRae ? [0, -3.14, -3.14] : [-4, -4, -10];
     const newPositionVector = this.state.newPosition;
 
-    const renderCopiesButtons = renderCopies && Object.values(renderCopies).map((entry, indexCopy) => {
+    const displayCopiesButtons = displayCopies && Object.values(displayCopies).map((entry, indexCopy) => {
       return (
         <Row key={indexCopy} className={`${styles.vectorProperty} ${this.disabled ? styles.disabled : ''}`}>
           <Checkbox
@@ -112,7 +112,7 @@ class SkyBrowserSettings extends Component {
             left={false}
             disabled={false}
             setChecked={(value) => {
-              const renderCopyId = Object.keys(renderCopies)[indexCopy];
+              const displayCopyId = Object.keys(displayCopies)[indexCopy];
               const uriBrowser = `ScreenSpace.${selectedBrowserId}.${entry.idShowProperty}`;
               luaApi.setPropertyValueSingle(uriBrowser, value);
             }}
@@ -128,8 +128,8 @@ class SkyBrowserSettings extends Component {
               onValueChanged={(newValue) => {
                 const newVector = entry.position;
                 newVector[index] = newValue;
-                const renderCopyId = Object.keys(renderCopies)[indexCopy];
-                const uriBrowser = `ScreenSpace.${selectedBrowserId}.${renderCopyId}`;
+                const displayCopyId = Object.keys(displayCopies)[indexCopy];
+                const uriBrowser = `ScreenSpace.${selectedBrowserId}.${displayCopyId}`;
                 luaApi.setPropertyValueSingle(uriBrowser, newVector);
               }}
               step={0.1}
@@ -147,6 +147,36 @@ class SkyBrowserSettings extends Component {
         expanded={this.state.showExpandedCopies}
         setExpanded={this.setExpandedCopies}
       >
+        <NumericInput
+          label="Scale"
+          max={2}
+          min={0.01}
+          disabled={!browser.scale}
+          onValueChanged={value => {
+            const uriBrowser = `ScreenSpace.${browser.id}.Scale`;
+            luaApi.setPropertyValueSingle(uriBrowser, value);
+          }}
+          step={0.1}
+          value={parseFloat(browser.scale.toFixed(this.state.precisionLow))}
+          placeholder="value 2"
+        />
+        <Checkbox
+          label="Face Camera"
+          checked={browser.isFacingCamera}
+          left={false}
+          disabled={false}
+          setChecked={this.toggleFaceCamera}
+          wide
+        />
+        <Checkbox
+          label="Use Radius Azimuth Elevation"
+          checked={browser.isUsingRae}
+          left={false}
+          disabled={false}
+          setChecked={this.toggleRadiusAzimuthElevation}
+          wide
+          style={{ width: '100%'}}
+        />
         <ToggleContent
           title={"Add Copy Settings"}
           expanded={this.state.showExpandedSettings}
@@ -203,24 +233,24 @@ class SkyBrowserSettings extends Component {
         <Row className={styles.buttonContainer}>
           <Button
             onClick={() => {
-              luaApi.skybrowser.addRenderCopy(selectedBrowserId, this.state.noOfCopies, this.state.newPosition);
+              luaApi.skybrowser.addDisplayCopy(selectedBrowserId, this.state.noOfCopies, this.state.newPosition);
             }}
-            className={styles.renderCopyButton}
+            className={styles.displayCopyButton}
             transparent
           >
             Add
           </Button>
           <Button
             onClick={() => {
-              luaApi.skybrowser.removeRenderCopy(selectedBrowserId);
+              luaApi.skybrowser.removeDisplayCopy(selectedBrowserId);
             }}
-            className={styles.renderCopyButton}
+            className={styles.displayCopyButton}
             transparent
           >
             Remove
           </Button>
         </Row>
-        {renderCopies && renderCopiesButtons}
+        {displayCopies && displayCopiesButtons}
       </ToggleContent>);
   }
 
@@ -233,7 +263,7 @@ class SkyBrowserSettings extends Component {
       const size = browser.size;
       const colorValues = browser.color;
       const colorLabels = ['Border Color: R', 'G', 'B'];
-      const renderCopiesSection = this.createRenderCopiesSection(browser, luaApi, selectedBrowserId);
+      const displayDisplaySection = this.createDisplayCopiesSection(browser, luaApi, selectedBrowserId);
 
       const colorPicker = (
         <ColorPickerPopup
@@ -283,36 +313,6 @@ class SkyBrowserSettings extends Component {
               placeholder="value 2"
             />
           </Row>
-          <NumericInput
-            label="Scale"
-            max={2}
-            min={0.01}
-            disabled={!browser.scale}
-            onValueChanged={value => {
-              const uriBrowser = `ScreenSpace.${browser.id}.Scale`;
-              luaApi.setPropertyValueSingle(uriBrowser, value);
-            }}
-            step={0.1}
-            value={parseFloat(browser.scale.toFixed(this.state.precisionLow))}
-            placeholder="value 2"
-          />
-          <Checkbox
-            label="Use Radius Azimuth Elevation"
-            checked={browser.isUsingRae}
-            left={false}
-            disabled={false}
-            setChecked={this.toggleRadiusAzimuthElevation}
-            wide
-            style={{ width: '100%'}}
-          />
-          <Checkbox
-            label="Face Camera"
-            checked={browser.isFacingCamera}
-            left={false}
-            disabled={false}
-            setChecked={this.toggleFaceCamera}
-            wide
-          />
           <Row className={`${styles.vectorProperty} ${this.disabled ? styles.disabled : ''}`}>
             {colorPicker}
             {colorValues.map((color, index) => (
@@ -337,7 +337,7 @@ class SkyBrowserSettings extends Component {
               />
             ))}
           </Row>
-          {renderCopiesSection}
+          {displayDisplaySection}
           <ToggleContent
             title={"General Settings"}
             expanded={this.state.showExpandedSettings}
