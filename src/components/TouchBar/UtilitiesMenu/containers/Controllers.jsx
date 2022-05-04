@@ -117,6 +117,8 @@ const mapStateToProps = (state) => {
       const scaleNode = state.propertyTree.properties[key];
       if (scaleNode) {
         scaleNodes.push(scaleNode);
+
+
       }
     });
   }

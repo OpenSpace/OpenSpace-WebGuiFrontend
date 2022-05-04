@@ -7,7 +7,7 @@ $font-size-hires: 18px;
 
 // padding
 $base-padding: 14px;
-<<<<<<< HEAD
+
 $vertical-padding: calc($base-padding / 2);
 $button-padding: $vertical-padding $base-padding;
 $sidebar-padding: calc($base-padding / 2);
@@ -15,15 +15,7 @@ $sidebar-indent: $base-padding;
 
 // popover
 $popover-horizontal-padding: calc($base-padding / 2);
-=======
-$vertical-padding: calc($base-padding/ 2);
-$button-padding: $vertical-padding $base-padding;
-$sidebar-padding: calc($base-padding/ 2);
-$sidebar-indent: $base-padding;
 
-// popover
-$popover-horizontal-padding: calc($base-padding/ 2);
->>>>>>> a53c5c1271baaa587ebf9404e44fb86e5a69625a
 $popover-arrow-size: 0.5rem;
 $popover-corner-radius: calc($popover-arrow-size / 2);
 

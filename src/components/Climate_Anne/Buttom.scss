@@ -1,0 +1,42 @@
+@import "../../styles/all";
+
+.antarctica, .greenland {
+  height: 3vw;
+  width: 15vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: $ui-background;
+  border-radius: 10%;
+  cursor: pointer;
+  transition: transform ease-in .1s;
+
+  &:hover {
+    transition: transform ease-in .1s;
+     background:darken($ui-background,8%);
+  }
+}
+
+.antarctica {
+  position: absolute;
+  top: 90%;
+  right: 6vW;
+  z-index: 999;
+  color: #fff;
+}
+
+.greenland {
+  position: absolute;
+  top: 90%;
+  left: 6vw;
+  z-index: 999;
+  color: #fff;
+}
+
+$icon-size: 2vw;
+
+.Icon {
+  font-size: $icon-size;
+  position: absolute;;
+  left: 1vW;
+}

@@ -9,7 +9,7 @@ class BrowserGui extends Component {
 
   render() {
     return (
-      <div style={{backgroundColor: '#050505'}}>
+        <div style={{backgroundColor: '#050505'}}>
         <OnScreenGui showFlightController />
       </div>
     );

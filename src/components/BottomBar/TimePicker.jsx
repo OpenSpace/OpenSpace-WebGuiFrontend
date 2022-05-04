@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
   setPopoverVisibility, subscribeToSessionRecording, subscribeToTime,
-  unsubscribeToSessionRecording, unsubscribeToTime, 
+  unsubscribeToSessionRecording, unsubscribeToTime,
   subscribeToEngineMode, unsubscribeToEngineMode
 } from '../../api/Actions';
 import {
@@ -188,10 +188,10 @@ class TimePicker extends Component {
   get pickerStyle() {
     const { engineMode, sessionRecordingState} = this.props;
 
-    const isSessionRecordingPlaying = (engineMode === EngineModeSessionRecordingPlayback) 
+    const isSessionRecordingPlaying = (engineMode === EngineModeSessionRecordingPlayback)
       && (sessionRecordingState === SessionStatePlaying);
 
-    const isSessionRecordingPaused = (engineMode === EngineModeSessionRecordingPlayback) 
+    const isSessionRecordingPaused = (engineMode === EngineModeSessionRecordingPlayback)
       && (sessionRecordingState === SessionStatePaused);
 
     const isCameraPathPlaying = (engineMode === EngineModeCameraPath);

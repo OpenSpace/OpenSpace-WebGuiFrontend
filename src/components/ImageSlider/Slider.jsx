@@ -19,9 +19,9 @@ class Slider extends Component {
         return startSlider === element.identifier;
       }
     )
-    
+
     // if startSlider was not in the listed stories, pick the first
-    if (startIndex < 0) { 
+    if (startIndex < 0) {
       startIndex = 0
     };
 

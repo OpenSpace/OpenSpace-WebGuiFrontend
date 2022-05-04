@@ -1,0 +1,146 @@
+@import "../../styles/all";
+@import "../../styles/all";
+
+
+.app {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  font-family: $font-family;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+}
+
+
+.Header {
+
+    color: blue;
+}
+.pre {
+    display: block;
+    padding: 10px 30px;
+    margin: 0;
+    overflow: scroll;
+}
+
+.Hej{
+
+
+  position: relative;
+  width: 500%;
+  margin: 0 auto;
+  height: 100%;
+  overflow: hidden;
+  background-color: blue;
+
+}
+
+
+.TellStory{
+
+  font-family: $font-family;
+
+  margin-top:4%;
+  height: 20%;
+  width: 70%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: $ui-background-hover;
+  cursor: pointer;
+  transition: transform ease-in .1s;
+  position: absolute;
+  top: 42%;
+  left: 10%;
+  z-index: 999;
+  color: white;
+
+  &:hover {
+    transition: transform ease-in .1s;
+    transform: scale(1.1);
+  }
+}
+
+
+
+
+
+.Grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  &:before,
+    &:after {
+      display: none;
+    }
+}
+
+
+
+.buttonIconGlacier {
+    font-size: 0em;
+}
+.buttonIcon {
+    font-size: 2em;
+}
+
+
+
+.bottomBarIcon {
+    font-size: 2em;
+}
+
+/*:root {
+  --blue: #1e90ff;
+  --white: #ffffff;
+}*/
+
+.menuButton {
+  width: 140px;
+  margin-bottom: 5px;
+  margin: 2px;
+  z-index: 1;
+  background-color: #1f1f1f;
+}
+.actionButton {
+  width: 92px;
+  margin-bottom: 5px;
+  margin: 2px;
+  background-color: #2b2b2b;
+  //position: absolute;
+  hover: black;
+  position: absolute;
+  opacity: 0;
+}
+.actionButtonGlacier {
+  width: 0px;
+  margin-bottom: 5px;
+  margin: 2px;
+  position: absolute;
+  //opacity: 0;
+  background-color: #1f1f1f;
+  //background-color: var(--blue);
+  color: blue;
+//  font-size: 0px;
+}
+#actionButtonGlacierID {
+  width: 0px;
+  margin-bottom: 5px;
+  margin: 2px;
+  position: absolute;
+  hover: black;
+  //opacity: 0;
+  //background-color: var(--blue);
+  color: pink;
+  z-index: -1;
+}
+.actionButton2 {
+  width: 140px;
+  margin-bottom: 5px;
+  margin: 2px;
+  background-color: #2b2b2b;
+  position: absolute;
+  opacity: 0;
+}

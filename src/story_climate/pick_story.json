@@ -1,0 +1,21 @@
+{
+  "climate_stories": [
+      {
+        "title": "Pick a story",
+        "info": "climate climate climate satellite satellite climate",
+        "identifier": "pick_story"
+
+
+      },
+      {
+          "title": "Explore the climate on west Antarctica",
+          "info": " antarctica antarctica antarctica antarctica.",
+          "identifier": "antarctica"
+      },
+      {
+          "title": "Explore the climate at Greenland",
+          "info": "Greenland Greenland Greenland Greenland.",
+          "identifier": "greenland"
+      }
+    ]
+  }

@@ -19,6 +19,7 @@ const MaterialIcon = (props) => {
   );
 };
 
+/** check if string */
 MaterialIcon.propTypes = {
   icon: PropTypes.string.isRequired,
   className: PropTypes.string,

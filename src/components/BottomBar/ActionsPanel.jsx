@@ -138,7 +138,7 @@ class ActionsPanel extends Component {
     }
 
     var navPathString = this.props.navigationPath;
-
+    console.log(navPathString)
     if (navPathString == '/') {
       keybindsContent = <Button
           block

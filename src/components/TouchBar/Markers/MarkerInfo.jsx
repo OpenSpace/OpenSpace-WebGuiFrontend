@@ -52,8 +52,8 @@ MarkerInfo.propTypes = {
 
 MarkerInfo.defaultProps = {
   position: '',
-  // showInfoIcon: false, // required, so should not have default value
-  // infoText: 'No info available', // required, so should not have default value
+  showInfoIcon: false, // required, so should not have default value
+  infoText: 'No info available', // required, so should not have default value
 };
 
 export default MarkerInfo;

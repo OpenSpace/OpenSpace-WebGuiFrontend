@@ -63,7 +63,9 @@ class ClimatePanel extends Component {
   }
 
   getSurfaceLayerAlaska() {
+
     this.props.luaApi.time.setTime("2021-06-18T19:00:00");
+    //this.props.luaApi.navigation.getNavigationState();
     //this.props.luaApi.navigation.addLocalRotation(20, 10);
     this.setState((prevState) => ({
       isToggleOn: !prevState.isToggleOn,
@@ -87,6 +89,7 @@ class ClimatePanel extends Component {
       7,
       true
     );
+    this.props.luaApi.navigation.addLocalRotation(0, 35);
 
   }
 
@@ -179,7 +182,105 @@ class ClimatePanel extends Component {
 
 }
 
+getBackButton(navPathString) {
+  if (this.props.navigationPath != "nada") {
+      navPathString = "hej"
+      return <Button block smalltext className={styles.backButton} onClick={this.goBack} key='backbtn' >&lt;- Back</Button>;
+  }
+}
+
+  get storyPopover() {
+    var navPathString = "nada";
+    var backButton= this.getBackButton(navPathString);
+    var artic;
+    var ocean;
+    var keybindsContent;
+    const { popoverVisible } = this.props;
+
+
+
+    console.log(navPathString)
+    if (navPathString == 'nada') {
+      keybindsContent = (
+        <Button
+          block
+          smalltext
+          onClick={ () =>this.popover}
+          key="showKeybinds"
+          className={styles.actionButton}
+        >
+          <p><MaterialIcon className={styles.buttonIcon} icon="launch" /></p>
+          Show Keybindings
+          <InfoBox inpanel panelscroll='actionscroller' text="Shows the keybinding vieiwer" />
+        </Button>);
+
+        navPathString = "hej"
+    }
+
+
+
+
+    /*artic = (
+      <Button
+        block
+        smalltext
+        onClick={() =>  this.popover }>
+        <p>
+          <MaterialIcon className={styles.buttonIcon} icon="whatshot" />
+        </p>
+        Ice
+        <InfoBox
+          inpanel
+          panelscroll="actionscroller"
+          text="hejehj"
+        />
+      </Button>
+    );
+    ocean = (
+      <Button
+        block
+        smalltext
+        onClick={() =>  this.popover }>
+        <p>
+          <MaterialIcon className={styles.buttonIcon} icon="water" />
+        </p>
+        Ice
+        <InfoBox
+          inpanel
+          panelscroll="actionscroller"
+          text="hejehj"
+        />
+      </Button>
+    );*/
+
+      return (
+        <Popover
+          className={`${Picker.Popover} ${styles.climatepanel}`}
+          title="What do you want to explore?"
+          closeCallback={this.togglePopover}
+          detachable
+          attached={true}
+        >
+          <div
+            id="actionscroller"
+
+          >
+            <div className={styles.Grid}>
+
+            {backButton}
+            {keybindsContent}
+
+
+            </div>
+          </div>
+        </Popover>
+      );
+
+  }
+
+
   get popover() {
+
     var actionsContent;
     var backButton;
     var antarctica;
@@ -238,6 +339,8 @@ class ClimatePanel extends Component {
         smalltext
         onClick={() => {
           this.getSurfaceLayerAlaska();
+
+          console.log("hej!", this.props.luaApi.globebrowsing.getGeoPositionForCamera());
         }}
         className={styles.actionButton}
       >
@@ -278,9 +381,10 @@ class ClimatePanel extends Component {
     );
 
     return (
+
       <Popover
         className={`${Picker.Popover} ${styles.climatepanel}`}
-        title="Which ice do you want to explore?"
+        title="hejhej"
         closeCallback={this.togglePopover}
         detachable
         attached={true}
@@ -290,72 +394,36 @@ class ClimatePanel extends Component {
           className={`${Popover.styles.content} ${styles.scroller}`}
         >
           <div className={styles.Grid}>
+
             {backButton}
             {actionsContent}
             {antarctica}
             {greenland}
             {alaska}
             {currents}
+
+            {console.log("hej pa dig")}
           </div>
         </div>
       </Popover>
     );
   }
 
-  get popover2() {
-    var overview;
 
-    overview = (
-      <Button
-        block
-        smalltext
-
-        className={styles.actionButton}
-      >
-        <p>
-          <MaterialIcon
-            className={styles.buttonIcon}
-            //icon="reply_all"
-            icon="import_export"
-          />
-        </p>
-        Overview
-
-      </Button>
-    );
-
-    return (
-      <Popover
-        className={`${Picker.Popover} ${styles.climatepanel}`}
-        title="Overview or detailed view?"
-        closeCallback={this.togglePopover}
-        detachable
-        attached={true}
-      >
-        <div
-          id="actionscroller"
-          className={`${Popover.styles.content} ${styles.scroller}`}
-        >
-          <div className={styles.Grid}>
-
-            {overview}
-          </div>
-        </div>
-      </Popover>
-    );
-  }
 
   render() {
     const { popoverVisible } = this.props;
 
     return (
       <div className={Picker.Wrapper}>
-        <Picker onClick={this.togglePopover}>
+        <Picker
+          className={`${popoverVisible && Picker.Active}`}
+          onClick={this.togglePopover}>
           <div>
-            <MaterialIcon className={styles.bottomBarIcon} icon="whatshot" />
+            <MaterialIcon className={styles.bottomBarIcon} icon="face" />
           </div>
         </Picker>
-        {popoverVisible && this.popover}
+        {popoverVisible && this.storyPopover}
       </div>
     );
   }
