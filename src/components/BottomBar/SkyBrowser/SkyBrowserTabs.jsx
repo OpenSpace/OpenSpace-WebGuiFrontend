@@ -225,7 +225,9 @@ class SkyBrowserTabs extends Component {
               if (!e) var e = window.event;
               e.cancelBubble = true;
               if (e.stopPropagation) e.stopPropagation();
-              this.props.setSelectedBrowser(browser)}
+              if(selectedBrowserId !== browser) {
+                this.props.setSelectedBrowser(browser)}
+              }
             }
           >
             <span className={styles.tabHeader}>

@@ -194,9 +194,12 @@ class SkyBrowserPanel extends Component {
     if (browsers === undefined || browsers[browserId] === undefined) {
       return "";
     }
-    browsers[browserId].selectedImages.reverse().map((image, index) => {
+    // Make deep copies in order to reverse later
+    const reverseImages = [...browsers[browserId].selectedImages];
+    const opacities = [...browsers[browserId].opacities];
+    reverseImages.reverse().map((image, index) => {
       this.selectImage(String(image), passToOs);
-      this.setOpacityOfImage(String(image), browsers[browserId].opacities.reverse()[index], passToOs);
+      this.setOpacityOfImage(String(image), opacities.reverse()[index], passToOs);
     });
   }
 
