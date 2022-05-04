@@ -93,7 +93,7 @@ class WorldWideTelescope extends Component {
 
   sendMessageToWwt(message) {
     try {
-      var frame = this.iframe.current.contentWindow;
+      let frame = this.iframe.current.contentWindow;
       if (frame) {
         frame.postMessage(message, "*");
       }
@@ -139,7 +139,7 @@ class WorldWideTelescope extends Component {
 
   scroll(e) {
     let scroll = e.deltaY;
-    if(this.props.inverseZoom) {
+    if (this.props.inverseZoom) {
       scroll *= -1;
     }
     this.props.skybrowserApi.scrollOverBrowser(this.props.browserId, scroll);
