@@ -154,7 +154,7 @@ class WorldWideTelescope extends Component {
     const newHeight = 2 * scale;
     const id = this.props.browserId;
     this.props.setSize({ width: widthWwt, height: heightWwt });
-    this.props.skybrowserApi.setScreenSpaceSize(id, newWidth, newHeight);
+    this.props.skybrowserApi.setBrowserRatio(id, newWidth / newHeight);
   }
 
   render() {
