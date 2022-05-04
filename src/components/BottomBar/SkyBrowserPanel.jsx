@@ -34,6 +34,7 @@ class SkyBrowserPanel extends Component {
       imageCollectionIsLoaded: false,
       wwtBrowsers: [],
       wwtSize: {width: 400, height: 400},
+      wwtPosition: { x: -800, y: -600 }
     };
     this.addTargetBrowserPair = this.addTargetBrowserPair.bind(this);
     this.togglePopover = this.togglePopover.bind(this);
@@ -53,6 +54,7 @@ class SkyBrowserPanel extends Component {
     this.createWwtBrowser = this.createWwtBrowser.bind(this);
     this.createAddBrowserInterface = this.createAddBrowserInterface.bind(this);
     this.createBrowserContent = this.createBrowserContent.bind(this);
+    this.setWwtPosition = this.setWwtPosition.bind(this);
   }
 
   async componentDidMount() {
@@ -102,6 +104,12 @@ class SkyBrowserPanel extends Component {
 
   setCurrentPopoverHeight(width, height) {
     this.setState({ currentPopoverHeight: height });
+  }
+
+  setWwtPosition(e, data) {
+    this.setState({
+      wwtPosition: { x: data.x, y: data.y}
+    });
   }
 
   getSelectedBrowserImages() {
@@ -234,6 +242,8 @@ class SkyBrowserPanel extends Component {
         size={this.state.wwtSize}
         setSize={this.setWwtSize}
         url={url}
+        position={this.state.wwtPosition}
+        setPosition={this.setWwtPosition}
       />
     );
   }

@@ -158,7 +158,7 @@ class WorldWideTelescope extends Component {
   }
 
   render() {
-    const { browserName, showTitle, size } = this.props;
+    const { browserName, showTitle, size, position, setPosition } = this.props;
 
     const topBar =
       <header className={`header ${styles.topMenu}`}>
@@ -182,7 +182,8 @@ class WorldWideTelescope extends Component {
         closeCallback={this.togglePopover}
         defaultSize={{ height: `425px`, width: `400px` }}
         size={{ height: `${size.height}px`, width: `${size.width}px` }}
-        position={{ x: -800, y: -600 }}
+        position={position}
+        handleStop={setPosition}
         setNewHeight={this.changeSize}
       >
         {topBar}

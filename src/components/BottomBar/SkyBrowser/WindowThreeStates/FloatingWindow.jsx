@@ -11,11 +11,11 @@ class FloatingWindow extends Component {
 
   render() {
     const {
-      children, defaultSize, position, setNewHeight, size
+      children, defaultSize, position, setNewHeight, size, handleStop
     } = this.props;
 
     return (
-      <Draggable defaultPosition={position} handle=".header">
+      <Draggable defaultPosition={position} handle=".header" onStop={handleStop}>
         <section
           className={`${styles.floatingWindow}`}
           ref={(divElement) => {
