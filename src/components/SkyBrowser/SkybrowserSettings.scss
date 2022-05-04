@@ -1,0 +1,21 @@
+@import '../../styles/all';
+@import './SkybrowserTabs';
+
+.buttonContainer {
+  padding: 50;
+  justify-content: flex-start;
+}
+
+.renderCopyButton {
+  flex-grow: 1;
+  height: 30px;
+  margin: 5px;
+  padding: 5px;
+  border-radius: 4px;
+  background: $tabs-buttons;
+  color: $text-color-focus;
+  &:hover,
+  &:active {
+    background: $ui-background-active;
+  }
+}

@@ -37,7 +37,31 @@ export const time = (state = defaultState, action = {}) => {
       const newState = {...state};
 
       if (time !== undefined) {
-        newState.time = new Date(dateStringWithTimeZone(time));
+        // The date constructor only accepts a small array of the different types that we
+        // might encounter. In particular it doesn't work with any year ranges that don't
+        // have exactly four digits.
+        // So we parse the date string manually and call the correct function on the date
+        // object instead
+        let date = new Date(dateStringWithTimeZone(time));
+
+        let wholeParts = time.split('T');
+        console.assert(wholeParts.length === 2);
+
+        //
+        // Dealing with the year
+        let dayParts = wholeParts[0].split('-');
+        console.assert(dayParts.length === 3 || dayParts.length === 4);
+        // If the length is 4, we have a leading - meaning that the date is negative
+        if (dayParts.length === 4) {
+          console.assert(dayParts[0].trim() === '');
+          dayParts.shift();
+          date.setFullYear(-parseInt(dayParts[0]));
+        }
+        else {
+          date.setFullYear(parseInt(dayParts[0]));
+        }
+
+        newState.time = date;
       }
       if (deltaTime !== undefined) {
         newState.deltaTime = deltaTime;

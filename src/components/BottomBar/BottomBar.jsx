@@ -10,6 +10,7 @@ import SessionRec from './SessionRec';
 import TimePicker from './TimePicker';
 import ClimatePanel from './ClimatePanel';
 import Slider from './Slider';
+import SkyBrowserPanel from './SkyBrowserPanel';
 
 const BottomBar = ({ showFlightController }) => (
   <div className={styles.BottomBar}>
@@ -23,6 +24,7 @@ const BottomBar = ({ showFlightController }) => (
     <ActionsPanel />
     <Slider />
     {showFlightController && <FlightControlPanel />}
+    <SkyBrowserPanel />
   </div>
 );
 

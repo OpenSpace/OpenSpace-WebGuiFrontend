@@ -43,6 +43,9 @@ export const actionTypes = {
   addExoplanets: 'EXOPLANETS_ADD',
   removeExoplanets: 'EXOPLANETS_REMOVE',
 
+  // action types for skybrowser
+  initializeSkyBrowser: 'SKYBROWSER_INITIALIZE',
+
   // action types for shortcuts
   subscribeToShortcuts: 'SHORTCUTS_SUBSCRIBE',
   unsubscribeToShortcuts: 'SHORTCUTS_UNSUBSCRIBE',

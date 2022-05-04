@@ -30,7 +30,6 @@ import Picker from "./Picker";
 class ClimatePanel extends Component {
 
 
-
   constructor(props) {
 
     super(props);
@@ -112,15 +111,32 @@ class ClimatePanel extends Component {
   }
 
   getSurfaceLayerAntarctica() {
+    console.log("Antarctica")
     this.props.luaApi.time.setTime("2021-12-18T09:00:00");
     this.setState((prevState) => ({
       isToggleOn: !prevState.isToggleOn,
     }));
     console.log("togle", this.state.isToggleOn);
+    /*this.props.luaApi.setPropertyValueSingle(
+      "Scene.Earth.Satellites..Enabled",
+      this.state.isToggleOn   //noaa-sos-overlays-currents
+    );*/
+
+    const list = this.props.luaApi.getProperty('{earth_satellites}.Renderable.Enabled');
+    console.log(list.length)
+
+    for (v in list){
+    console.log("v")
+      this.props.luaApi.setPropertyValueSingle(this.props.luaApi.getPropertyValue(v))
+    }
+
     /*surfaceLayers = this.props.luaApi.setPropertyValueSingle(
       "Scene.Earth.Renderable.Layers.ColorLayers.Terra_Modis_Temporal.Enabled",
       this.state.isToggleOn
     );*/
+    /*
+    this.props.luaApi.setPropertyValueSingle(
+      "Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled", true)*/
     this.props.luaApi.setPropertyValueSingle(
       "Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled", true)
     this.props.luaApi.setPropertyValueSingle(
@@ -141,10 +157,12 @@ class ClimatePanel extends Component {
       isToggleOn: !prevState.isToggleOn,
     }));
     console.log("togle", this.state.isToggleOn);
-    this.props.luaApi.setPropertyValueSingle(
+    /*this.props.luaApi.setPropertyValueSingle(
       "Scene.Earth.Renderable.Layers.ColorLayers.OSCAR_Sea_Surface_Currents_Zonal.Enabled",
       this.state.isToggleOn
-    );
+    );*/
+    //this.props.luaApi.setNavigationState([[60, -90, 0],[90, 60, 0],[0, 0, 1]])
+     //this.props.luaApi.navigation.addLocalRoll(60,0)
     this.props.luaApi.setPropertyValueSingle(
       "Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled", true)
     this.props.luaApi.setPropertyValueSingle(
