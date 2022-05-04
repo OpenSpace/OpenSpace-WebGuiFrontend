@@ -10,9 +10,7 @@ import SessionRec from './SessionRec';
 import TimePicker from './TimePicker';
 import ClimatePanel from './ClimatePanel';
 import Slider from './Slider';
-//import TimePlayerController from 'C:/Users/anne1/OpenSpace-WebGuiFrontend/src/components/TouchBar/UtilitiesMenu/presentational/TimePlayerController'
-//import InfoButton from 'C:/Users/anne1/OpenSpace-WebGuiFrontend/src/components/TouchBar/UtilitiesMenu/presentational/InfoButton'
-
+import SkyBrowserPanel from './SkyBrowserPanel';
 
 const BottomBar = ({ showFlightController }) => (
   <div className={styles.BottomBar}>
@@ -26,6 +24,7 @@ const BottomBar = ({ showFlightController }) => (
     <Slider />
 
     {showFlightController && <FlightControlPanel />}
+    <SkyBrowserPanel />
   </div>
 );
 

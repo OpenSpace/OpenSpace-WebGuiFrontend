@@ -1,0 +1,99 @@
+@import '../../styles/all';
+@import '../common/Popover/Popover';
+$title-bar-height: 30px;
+
+.content {
+  position: absolute;
+  top: $title-bar-height;
+  bottom: 0px;
+  width: 100%;
+  background: $ui-background;
+  padding: 0;
+  margin: 0;
+}
+
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 10%;
+}
+
+.credits {
+  width: 100%;
+  flex-grow: 1;
+}
+
+.upperPart {
+  width: 100%;
+  flex-grow: 3;
+}
+
+.wwtLogoContainer {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.wwtLogo {
+  max-width: 100%;
+  max-height: 100%;
+  padding: 5%;
+}
+
+.addTabButton {
+  max-width: 100%;
+  max-height: 100%;
+  width: 100%;
+  height: 100%;
+  background: $ui-background-active;
+  border-radius: 4px;
+}
+
+.plus {
+  max-width: 80%;
+  max-height: 80%;
+  --b:4px; /* the thickness */
+  aspect-ratio: 1/1;
+  height: 40%;
+  border: 10px; /* the outer space */
+  background:
+    conic-gradient(from 90deg at var(--b) var(--b),transparent 90deg, $text-color-blur 0)
+    calc(100% + var(--b)/2) calc(100% + var(--b)/2)/
+    calc(50%  + var(--b))   calc(50%  + var(--b));
+  display:inline-block;
+  margin-top: 10px;
+}
+
+.addTabButton:hover > .plus{
+  background:
+    conic-gradient(from 90deg at var(--b) var(--b), transparent 90deg, $text-color-focus 0)
+    calc(100% + var(--b)/2) calc(100% + var(--b)/2)/
+    calc(50%  + var(--b))   calc(50%  + var(--b));
+}
+
+.row {
+  display: flex;
+  width: 100%;
+  height: 40px;
+  background: $ui-background-hover;
+}
+
+.picker {
+  width: 50%;
+  margin: 0;
+  padding: 5;
+  font-size: 0.95rem;
+}
+
+.selected {
+  background: $ui-background-hover;
+}
+
+.unselected {
+  background: $ui-background;
+}

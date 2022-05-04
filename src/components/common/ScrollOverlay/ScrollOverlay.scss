@@ -7,7 +7,7 @@
 
   &::before,
   &::after {
-    content: " ";
+    content: ' ';
     pointer-events: none;
     z-index: 22;
   }
@@ -18,7 +18,7 @@
   background: linear-gradient(to top, transparent, $ui-background-solid);
   height: calc(2 * $base-padding);
   position: fixed;
-  width: unquote("calc(100% - #{$scrollbar-width})");
+  width: unquote('calc(100% - #{$scrollbar-width})');
 }
 
 .notAtBottom::after {
@@ -27,5 +27,5 @@
   height: calc(2 * $base-padding);
   position: fixed;
   bottom: 0;
-  width: unquote("calc(100% - #{$scrollbar-width})");
+  width: unquote('calc(100% - #{$scrollbar-width})');
 }

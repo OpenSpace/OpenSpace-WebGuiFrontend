@@ -39,7 +39,7 @@ class Popover extends Component {
     return (
       <section {...this.inheritedProps} className={`${styles.popover} ${this.arrowStyle} ${this.styles}`}>
         { this.props.title && (
-          <header>
+          <header className={styles.header}>
             <div className={styles.title}>
               { this.props.title }
             </div>

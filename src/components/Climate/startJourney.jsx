@@ -91,21 +91,24 @@ class StartJourney extends Component {
   }
 
   getStoryAntarctica(){
-    return (
+    /*return (
     <React.Fragment>
       <h1>Latest Users Posts</h1>
       <ul>
-        {this.props.posts.map((post) => {
+        {this.props.posts.map((this.climate_stories) => {
           return (
-            <li key={post.id}>
-              <AntarcticaButtom {...post} />
+            <li key={this.climate_stories.title}>
+              <AntarcticaButtom {... this.climate_stories} />
             </li>
           );
         })}
       </ul>
     </React.Fragment>
-  );
-  }
+  ); */
+  return(
+    <div><p>Antarctica</p></div>
+  )
+}
 
 
   get getJson(){

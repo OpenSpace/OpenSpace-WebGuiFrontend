@@ -1,0 +1,13 @@
+{
+  "stories": [
+      {
+          "title": "Climate Change",
+          "info": "Climate change is bad"
+      },
+      {
+          "title": "Glaciers",
+          "info": "The glaciers are melting"
+      },
+
+    ]
+}
