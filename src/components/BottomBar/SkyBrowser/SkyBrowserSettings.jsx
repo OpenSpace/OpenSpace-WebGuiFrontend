@@ -9,6 +9,17 @@ import ColorPickerPopup from '../../common/ColorPicker/ColorPickerPopup';
 import ToggleContent from '../../common/ToggleContent/ToggleContent';
 import SkyBrowserTooltip from './SkyBrowserTooltip';
 import Popover from '../../common/Popover/Popover';
+import Property from '../../Sidebar/Properties/Property'
+import {
+  SkyBrowser_ShowTitleInBrowserKey,
+  SkyBrowser_AllowCameraRotationKey,
+  SkyBrowser_InverseZoomDirectionKey,
+  SkyBrowser_CameraRotationSpeedKey,
+  SkyBrowser_TargetAnimationSpeedKey,
+  SkyBrowser_BrowserAnimationSpeedKey,
+  SkyBrowser_HideTargetsBrowsersWithGuiKey,
+  SkyBrowser_SpaceCraftAnimationTimeKey,
+ } from '../../../api/keys';
 import styles from './SkyBrowserSettings.scss';
 
 class SkyBrowserSettings extends Component {
@@ -17,6 +28,7 @@ class SkyBrowserSettings extends Component {
     this.state = {
       showExpandedCopies: false,
       showExpandedSettings: false,
+      generalSettingsExpanded: false,
       precisionLow: 2,
       precisionHigh: 10,
       newPosition: [0, 0, -2],
@@ -31,6 +43,7 @@ class SkyBrowserSettings extends Component {
     this.setExpandedCopies = this.setExpandedCopies.bind(this);
     this.createRenderCopiesSection = this.createRenderCopiesSection.bind(this);
     this.showExpandedCopySettings = this.showExpandedCopySettings.bind(this);
+    this.setExpandedGeneralSettings = this.setExpandedGeneralSettings.bind(this);
   }
 
   setRef(what) {
@@ -41,6 +54,10 @@ class SkyBrowserSettings extends Component {
 
   setExpandedCopies(expanded) {
     this.setState({ showExpandedCopies: expanded });
+  }
+
+  setExpandedGeneralSettings(expanded) {
+    this.setState({ generalSettingsExpanded: expanded });
   }
 
   toggleFaceCamera() {
@@ -56,11 +73,11 @@ class SkyBrowserSettings extends Component {
   }
 
   valueToColor(color) {
-    return { 
-      r: color[0], 
-      g: color[1], 
+    return {
+      r: color[0],
+      g: color[1],
       b: color[2],
-      a: 1.0 
+      a: 1.0
     };
   }
 
@@ -266,6 +283,19 @@ class SkyBrowserSettings extends Component {
               placeholder="value 2"
             />
           </Row>
+          <NumericInput
+            label="Scale"
+            max={2}
+            min={0.01}
+            disabled={!browser.scale}
+            onValueChanged={value => {
+              const uriBrowser = `ScreenSpace.${browser.id}.Scale`;
+              luaApi.setPropertyValueSingle(uriBrowser, value);
+            }}
+            step={0.1}
+            value={parseFloat(browser.scale.toFixed(this.state.precisionLow))}
+            placeholder="value 2"
+          />
           <Checkbox
             label="Use Radius Azimuth Elevation"
             checked={browser.isUsingRae}
@@ -308,6 +338,20 @@ class SkyBrowserSettings extends Component {
             ))}
           </Row>
           {renderCopiesSection}
+          <ToggleContent
+            title={"General Settings"}
+            expanded={this.state.showExpandedSettings}
+            setExpanded={this.showExpandedCopySettings}
+          >
+          <Property uri={SkyBrowser_ShowTitleInBrowserKey}/>
+          <Property uri={SkyBrowser_AllowCameraRotationKey}/>
+          <Property uri={SkyBrowser_CameraRotationSpeedKey}/>
+          <Property uri={SkyBrowser_TargetAnimationSpeedKey}/>
+          <Property uri={SkyBrowser_BrowserAnimationSpeedKey}/>
+          <Property uri={SkyBrowser_HideTargetsBrowsersWithGuiKey}/>
+          <Property uri={SkyBrowser_InverseZoomDirectionKey}/>
+          <Property uri={SkyBrowser_SpaceCraftAnimationTimeKey}/>
+          </ToggleContent>
         </div>
     );
   }
