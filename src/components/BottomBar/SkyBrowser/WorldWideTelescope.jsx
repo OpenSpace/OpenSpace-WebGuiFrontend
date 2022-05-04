@@ -131,6 +131,7 @@ class WorldWideTelescope extends Component {
       isDragging: true,
       startDragPosition: position
     });
+    this.props.skybrowserApi.stopAnimations(this.props.browserId);
   }
 
   mouseUp(mouse) {
@@ -143,6 +144,7 @@ class WorldWideTelescope extends Component {
       scroll *= -1;
     }
     this.props.skybrowserApi.scrollOverBrowser(this.props.browserId, scroll);
+    this.props.skybrowserApi.stopAnimations(this.props.browserId);
   }
 
   changeSize(widthWwt, heightWwt) {

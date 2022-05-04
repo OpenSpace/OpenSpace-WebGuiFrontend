@@ -92,6 +92,7 @@ class SkyBrowserTabs extends Component {
       icon: 'filter_center_focus',
       text: 'Move target to center of view',
       function: function(browserId) {
+        luaApi.skybrowser.stopAnimations(browserId);
         luaApi.skybrowser.centerTargetOnScreen(browserId);
       },
     };
@@ -109,6 +110,7 @@ class SkyBrowserTabs extends Component {
       icon: 'zoom_in',
       text: 'Zoom in',
       function: function(browserId) {
+        luaApi.skybrowser.stopAnimations(browserId);
         const newFov = Math.max(browser.fov - 5, 0.01);
         luaApi.skybrowser.setVerticalFov(browserId, Number(newFov));
       },
@@ -118,6 +120,7 @@ class SkyBrowserTabs extends Component {
       icon: 'zoom_out',
       text: 'Zoom out',
       function: function(browserId) {
+        luaApi.skybrowser.stopAnimations(browserId);
         const newFov = Math.min(browser.fov + 5, 70);
         luaApi.skybrowser.setVerticalFov(browserId, Number(newFov));
       },
