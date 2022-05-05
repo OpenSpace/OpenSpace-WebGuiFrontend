@@ -340,8 +340,8 @@ class SkyBrowserSettings extends Component {
           {displayDisplaySection}
           <ToggleContent
             title={"General Settings"}
-            expanded={this.state.showExpandedSettings}
-            setExpanded={this.showExpandedCopySettings}
+            expanded={this.state.generalSettingsExpanded}
+            setExpanded={this.setExpandedGeneralSettings}
           >
           <Property uri={SkyBrowser_ShowTitleInBrowserKey}/>
           <Property uri={SkyBrowser_AllowCameraRotationKey}/>
