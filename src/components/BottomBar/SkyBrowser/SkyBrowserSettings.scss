@@ -1,12 +1,12 @@
-@import '../../styles/all';
-@import './SkybrowserTabs';
+@import '../../../styles/all';
+@import './SkyBrowserTabs';
 
 .buttonContainer {
   padding: 50;
   justify-content: flex-start;
 }
 
-.renderCopyButton {
+.displayCopyButton {
   flex-grow: 1;
   height: 30px;
   margin: 5px;
@@ -18,4 +18,8 @@
   &:active {
     background: $ui-background-active;
   }
+}
+
+.colorPicker button {
+  height: 100%;
 }

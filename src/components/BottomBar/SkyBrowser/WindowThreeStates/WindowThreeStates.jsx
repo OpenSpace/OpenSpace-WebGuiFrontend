@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Resizable } from 're-resizable';
 import styles from './WindowThreeStates.scss';
 import FloatingWindow from './FloatingWindow';
 import PaneRightHandSide from './PaneRightHandSide';
 import PopoverResizeable from './PopoverResizeable';
-import Button from '../../common/Input/Button/Button';
-import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
+import Button from '../../../common/Input/Button/Button';
+import MaterialIcon from '../../../common/MaterialIcon/MaterialIcon';
 
 const WindowStyle = {
   DETACHED: 'DETACHED',
@@ -28,6 +27,11 @@ class WindowThreeStates extends Component {
     this.createTopBar = this.createTopBar.bind(this);
   }
 
+  componentDidMount() {
+    // Reset height when component is mounted
+    this.props.heightCallback(0, this.props.defaultHeight);
+  }
+
   get asPopup() {
     const { children, height } = this.props;
     return (
@@ -47,7 +51,7 @@ class WindowThreeStates extends Component {
     return (
       <FloatingWindow
         setNewHeight={this.props.heightCallback}
-        size={{ height, width: `${this.state.windowWidth}px` }}
+        defaultSize={{ height, width: `${this.state.windowWidth}px` }}
         minHeight={this.props.minHeight}
       >
         {this.createTopBar()}

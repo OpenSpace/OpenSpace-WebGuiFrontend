@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import styles from './TooltipSkybrowser.scss';
-import { excludeKeys } from '../../utils/helpers';
+import styles from './SkyBrowserTooltip.scss';
+import { excludeKeys } from '../../../utils/helpers';
 
-const TooltipSkybrowser = (props) => {
+const SkyBrowserTooltip = (props) => {
   const { children, placement, fixed } = props;
   return (
     <div
@@ -17,15 +17,15 @@ const TooltipSkybrowser = (props) => {
   );
 };
 
-TooltipSkybrowser.propTypes = {
+SkyBrowserTooltip.propTypes = {
   children: PropTypes.node.isRequired,
   placement: PropTypes.oneOf('bottom-left bottom-right'.split(' ')),
   fixed: PropTypes.bool,
 };
 
-TooltipSkybrowser.defaultProps = {
+SkyBrowserTooltip.defaultProps = {
   placement: 'top',
   fixed: false,
 };
 
-export default TooltipSkybrowser;
+export default SkyBrowserTooltip;

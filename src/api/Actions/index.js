@@ -204,9 +204,29 @@ export const removeExoplanets = data => ({
   payload: data,
 });
 
+export const loadSkyBrowserData = luaApi => ({
+  type: actionTypes.loadSkyBrowserData,
+  payload: luaApi,
+});
+
 export const initializeSkyBrowser = data => ({
   type: actionTypes.initializeSkyBrowser,
   payload: data
+});
+
+export const subscribeToSkyBrowser = data => ({
+  type: actionTypes.subscribeToSkyBrowser,
+  payload: data
+});
+
+export const unsubscribeToSkyBrowser = data => ({
+  type: actionTypes.unsubscribeToSkyBrowser,
+  payload: data
+});
+
+export const updateSkyBrowser = data => ({
+  type: actionTypes.updateSkyBrowser,
+  payload: data,
 });
 
 export const subscribeToShortcuts = () => ({

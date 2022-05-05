@@ -1,4 +1,4 @@
-@import "../../styles/all";
+@import "../../../styles/all";
 
 $arrow-size: 4px;
 $background: $ui-background-solid;
@@ -36,6 +36,15 @@ $tooltip-color: rgba(15,15,15,0.9); //rgba(60,60,60,0.95);
   border-radius: 4px;
   margin-top: 6px;
   background-color: rgba(70,70,70,0.8);
+}
+
+.esaSky {
+  margin: 3px;
+  width: 50%;
+}
+
+.buttons {
+  display: flex;
 }
 
 // placement
