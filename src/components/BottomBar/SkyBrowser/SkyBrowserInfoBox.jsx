@@ -7,7 +7,7 @@ import SkyBrowserTooltip from './SkyBrowserTooltip';
 import styles from './SkyBrowserTooltip.scss';
 import esaSkyLogo from './ESASKY.png';
 
-class InfoBoxSkyBrowser extends Component {
+class SkyBrowserInfoBox extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -109,15 +109,15 @@ class InfoBoxSkyBrowser extends Component {
   }
 }
 
-InfoBoxSkyBrowser.propTypes = {
+SkyBrowserInfoBox.propTypes = {
   icon: PropTypes.string,
   title: PropTypes.string.isRequired,
   text: PropTypes.string,
   textUrl: PropTypes.string
 };
 
-InfoBoxSkyBrowser.defaultProps = {
+SkyBrowserInfoBox.defaultProps = {
   icon: 'help',
 };
 
-export default InfoBoxSkyBrowser;
+export default SkyBrowserInfoBox;
