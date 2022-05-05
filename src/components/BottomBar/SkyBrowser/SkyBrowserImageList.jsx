@@ -11,15 +11,22 @@ class SkyBrowserImageList extends Component {
     this.state = {
       distanceSortThreshold: 0.1
     };
-
+    this.lastUpdateTime = new Date().getTime();
     this.getNearestImages = this.getNearestImages.bind(this);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
     if (nextProps.showOnlyNearest) {
       // TODO: this can probably be made more efficient. We don't need to
-      // rerender if nothing changed
-      return true;
+      // rerender if nothing changed.
+      // @micahnyc - I added throttling for now, so we dont update more then twice per second.
+      var time = new Date().getTime();
+      var timeSinceLastUpdate = time - this.lastUpdateTime;
+      var updateInterval = 500;
+      if (timeSinceLastUpdate > updateInterval) {
+        this.lastUpdateTime = time;
+        return true;
+      }
     }
     // Prevent rerendering unless important properties actually changed
     return (
@@ -31,12 +38,14 @@ class SkyBrowserImageList extends Component {
   }
 
   getNearestImages() {
+
     const { imageList, selectedBrowserData } = this.props;
     const { distanceSortThreshold } = this.state;
 
     if (!selectedBrowserData || !imageList || Object.keys(imageList).length === 0) {
       return [];
     }
+
     const searchRadius = selectedBrowserData.fov / 2;
     const isWithinFOV = (coord, target, FOV) => coord < target + FOV && coord > target - FOV;
 
@@ -76,6 +85,7 @@ class SkyBrowserImageList extends Component {
   }
 
   render() {
+
     const { activeImage, height, imageList, luaApi, showOnlyNearest, selectImage, currentBrowserColor } = this.props;
     const list = showOnlyNearest ? this.getNearestImages() : imageList !== undefined ? imageList : [];
 
