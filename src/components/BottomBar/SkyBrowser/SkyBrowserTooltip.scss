@@ -38,6 +38,15 @@ $tooltip-color: rgba(15,15,15,0.9); //rgba(60,60,60,0.95);
   background-color: rgba(70,70,70,0.8);
 }
 
+.esaSky {
+  margin: 3px;
+  width: 50%;
+}
+
+.buttons {
+  display: flex;
+}
+
 // placement
 .bottom-left {
   width: 120px;

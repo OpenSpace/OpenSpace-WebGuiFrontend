@@ -17,12 +17,19 @@ class SkyBrowserInfoBox extends Component {
 
     this.setRef = this.setRef.bind(this);
     this.tooltipActive = this.tooltipActive.bind(this);
-    this.checkIfTooltipActive = this.checkIfTooltipActive.bind(this);
     this.togglePopup = this.togglePopup.bind(this);
     this.openImageUrl = this.openImageUrl.bind(this);
     this.handleOutsideClick = this.handleOutsideClick.bind(this);
     this.openEsaSky = this.openEsaSky.bind(this);
   }
+
+  componentDidMount() {
+   document.addEventListener("mousedown", this.handleOutsideClick);
+ }
+
+ componentWillUnmount() {
+   document.removeEventListener("mousedown", this.handleOutsideClick);
+ }
 
   setRef(what) {
     return (element) => {
@@ -45,18 +52,12 @@ class SkyBrowserInfoBox extends Component {
 
   handleOutsideClick(evt) {
     if (this.wrapper && !this.wrapper.contains(evt.target)) {
-      this.hidePopup();
+      this.setState({ isPopupShowing: false });
     }
   }
 
   tooltipActive() {
     this.setState({ tooltipActive: !this.state.tooltipActive });
-  }
-
-  checkIfTooltipActive() {
-    if (!this.state.tooltipActive) {
-      this.hidePopup();
-    }
   }
 
   togglePopup(e) {
@@ -76,7 +77,7 @@ class SkyBrowserInfoBox extends Component {
     const { isPopupShowing } = this.state;
     const esaSkyButton = hasCelestialCoords ? (
       <Button onClick={() => {this.openEsaSky(ra,dec,fov)}} className={styles.tooltipButton} transparent small>
-        <img src={esaSkyLogo} alt="EsaSky" style={{width:'100%'}} />
+        <img src={esaSkyLogo} alt="EsaSky" className={styles.esaSky} />
       </Button>
     ) : "";
 
@@ -96,12 +97,14 @@ class SkyBrowserInfoBox extends Component {
           >
             <span className={styles.tooltipTitle}>{ title }</span>
             {text}
+            <div className={styles.buttons}>
             {textUrl !== "" && (
               <Button className={styles.tooltipButton} onClick={ () => this.openImageUrl(textUrl) }>
                 Read more
               </Button>
             )}
             { esaSkyButton }
+            </div>
           </SkyBrowserTooltip>
         )}
       </span>
