@@ -112,6 +112,7 @@ export function removeLastWordFromUri(uri) {
 // Returns whether a property should be visible in the gui
 export function isPropertyVisible(properties, uri) {
   const property = properties[uri];
+  const visibility = properties['Modules.CefWebGui.Visibility'];
 
   const splitUri = uri.split('.');
   if (splitUri.length > 1) {
@@ -119,10 +120,31 @@ export function isPropertyVisible(properties, uri) {
       return false;
   }
 
-  return property &&
-         property.description &&
-         property.description.MetaData &&
-         property.description.MetaData.Visibility !== 'Hidden';
+  if (property && property.description && property.description.MetaData &&
+      property.description.MetaData.Visibility) {
+    let propertyVisibility = "";
+    switch(property.description.MetaData.Visibility) {
+      case 'Hidden':
+        propertyVisibility = 3;
+        break;
+      case 'Developer':
+        propertyVisibility = 2;
+        break;
+      case 'User':
+        propertyVisibility = 1;
+        break;
+      case 'All':
+        propertyVisibility = 0;
+        break;
+      default:
+        propertyVisibility = 0;
+        break;
+    }
+    return visibility.value >= propertyVisibility;
+  }
+  else {
+    return false;
+  }
 }
 
 // Returns whether a property owner should be hidden in the gui
