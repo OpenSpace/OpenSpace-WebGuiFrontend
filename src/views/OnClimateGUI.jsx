@@ -190,23 +190,7 @@ class OnClimateGui extends Component {
     return (
 
       <div className={styles.app}>
-        {
-          <Router basename="/climate/">
-            <Route
-              path="/about"
-              render={() => (
-                <Overlay>
-                  <Stack style={{ maxWidth: '500px' }}>
-                    <Link style={{ alignSelf: 'flex-end', color: 'white' }} to="/">
-                      Close
-                    </Link>
-                    <About />
-                  </Stack>
-                </Overlay>
-              )}
-            />
-          </Router>
-        }
+    
         { connectionLost && (
           <Overlay>
             <Error>
@@ -220,6 +204,9 @@ class OnClimateGui extends Component {
             storyIdentifier={storyIdentifier}
           />
         )}
+        <p className={styles.storyTitle}>
+          {story.title}
+        </p>
 
 
 

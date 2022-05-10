@@ -27,12 +27,15 @@ import MaterialIcon from "../common/MaterialIcon/MaterialIcon";
 import Popover from "../common/Popover/Popover";
 import Row from "../common/Row/Row";
 import styles from "./startJourney.scss";
+import buttonStyles from './Button.scss';
 
 import  climate_stories from "../../story_climate/pick_story.json";
-import AntarcticaButtom from "./antarcticaButtom.jsx"
-import GreenlandButtom from "./greenlandButtom.jsx"
+import AlaskaButton from "./AlaskaButton.jsx"
+import AntarcticaButton from "./AntarcticaButton.jsx"
+import GreenlandButton from "./GreenlandButton.jsx"
+import { icons } from '../../api/resources';
 
-class StartJourney extends Component {
+class StartJourney extends React.Component {
 
   constructor(props) {
 
@@ -82,7 +85,11 @@ class StartJourney extends Component {
     this.setState({ index: i });
   }
 
-
+  getStoryAlaska(){
+    return(
+      <div><p>Alaska</p></div>
+    )
+  }
 
   getStoryGreenland(){
     return(
@@ -98,7 +105,7 @@ class StartJourney extends Component {
         {this.props.posts.map((this.climate_stories) => {
           return (
             <li key={this.climate_stories.title}>
-              <AntarcticaButtom {... this.climate_stories} />
+              <AntarcticaButton {... this.climate_stories} />
             </li>
           );
         })}
@@ -111,11 +118,14 @@ class StartJourney extends Component {
 }
 
 
+
   get getJson(){
 
     return(
-      <pre className={styles.pre}>
+      <pre>
         {JSON.stringify(this.state.climate_stories, 4, 1) }
+        //{JSON.stringify({ title: "Pick a story", description: "climate climate climate satellite satellite climate" }.title)}
+
       </pre>
 
     )
@@ -172,49 +182,64 @@ class StartJourney extends Component {
 
 
     );
-  }s
+  }
 
+  get icon() {
+    const { identifier } = this.props;
+    const icon = icons[identifier];
+    if (icon) {
+      return <img src={icon} className={styles.iconImage} alt={identifier} />;
+    }
+    return <Icon icon="language" className={styles.Icon} />;
+  }
 
   render() {
-
-
 
     return (
     <div className={styles.Hej}>
 
       <div className = {styles.TellStory}>
-
-
-              <h1>Climate Picker Name </h1>
-              <div className={styles.Header} onClick={this.toggle}>
-                <strong>Debug</strong>
+        <div class = "flex">
+        {
+          climate_stories.startpage.map((story) => {
+            return (
+              <div>
+                <h1>{story.title}</h1>
+                <p>{story.info}</p>
               </div>
-              {this.state.show
-              ? <div><h1>can't find file</h1></div> //cant find json file              )
-              : ( this.getJson)
-            }
+            );
+          })
+        }
+        <br/>
+        <br/>
+        <br/>
+        {
+          climate_stories.pickstory.map((story) => {
+            return (
+              <div>
+                <h4>{story.title}</h4>
+              </div>
+            );
+          })
+        }
+        </div>
 
-            <AntarcticaButtom getStoryAntarctica = {this.getStoryAntarctica}/>
-            <GreenlandButtom  getStoryGreenland  = {this.getStoryGreenland} />
+        <AlaskaButton getStoryAlaska = {this.getStoryAlaska}/>
+        <AntarcticaButton getStoryAntarctica = {this.getStoryAntarctica}/>
+        <GreenlandButton  getStoryGreenland  = {this.getStoryGreenland} />
+
       </div>
-
-
-
-
-
-
-
-
-
-          <button onClick={this.onChangeStory}>
-            {this.state.isToggleOn ? 'ON' : 'OFF'}
-          </button>
-
     </div>
     );
   }
 }
 
-
+const App = () => {
+  return (
+    <div>
+      <StartJourney posts={climate_stories} />
+    </div>
+  );
+};
 
 export default StartJourney;
