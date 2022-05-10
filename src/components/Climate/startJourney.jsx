@@ -1,6 +1,6 @@
 import React, { Component, useState } from "react";
 import classNames from 'classnames'
-import autoBind from 'react-autobind'
+import autoBind from 'react-autobind' //npm install
 import { connect } from "react-redux";
 import {
   setActionsPath,
@@ -28,9 +28,10 @@ import Popover from "../common/Popover/Popover";
 import Row from "../common/Row/Row";
 import styles from "./startJourney.scss";
 
-import  climate_stories from "../../story_climate/pick_story.json";
+import stories from "../../story_climate/climate_stories.json";
 import AntarcticaButtom from "./antarcticaButtom.jsx"
 import GreenlandButtom from "./greenlandButtom.jsx"
+import Pick from "./pick_story.jsx"
 
 class StartJourney extends Component {
 
@@ -39,35 +40,46 @@ class StartJourney extends Component {
     super(props);
     autoBind(this)
 
-    const {startNewJourney} =this.props;
+    const {startNewJourney, storyInfo} =this.props;
+
+    let startIndex = stories.climate_stories.findIndex(
+      function (element) {
+        return startNewJourney === element.identifier;
+      }
+    )
+    // if startSlider was not in the listed stories, pick the first
+    if (startIndex < 0) {
+      startIndex = 0
+    };
+
     this.state = {
+      index : startIndex,
       isToggleOn: true,
       show: false,
-      climate_stories: climate_stories.climate_stories
+      climate_stories: stories.climate_stories
 
     };
     //this.togglePopover = this.togglePopover.bind(this); //makes it possible to click at climate button
 
 
     this.onChangeStory      = this.onChangeStory.bind(this);
-    this.getStoryGreenland  = this.getStoryGreenland.bind(this);
-    this.getStoryAntarctica = this.getStoryAntarctica.bind(this);
+    this.getStoryGreenland  = this.getstorygreenland.bind(this);
+    this.getstoryantarctica = this.getstoryantarctica.bind(this);
     this.toggle = this.toggle.bind(this);
     //this.setStory = this.setStory.bind(this);
 
   }
-
   toggle() {
      this.setState({
        isToggleOn: true,
        show: !this.state.show,
-       climate_stories: climate_stories.climate_stories
+       climate_stories: stories.climate_stories
 
      });
    }
 
   onChangeStory(story) {
-
+    this.props.changeStory(story);
     //this.props.changeStory(story);
     this.setState(prevState => ({
       isToggleOn: !prevState.isToggleOn
@@ -76,38 +88,31 @@ class StartJourney extends Component {
     //this.setStory = this.setStory.bind(this);
   }
 
-  // Handle the click of a dot
-  handleDotClick(i) {
-    if (i === this.state.index) { return; }
-    this.setState({ index: i });
-  }
-
-
-
-  getStoryGreenland(){
+  getstorygreenland(){
+    this.setState({ index: 0 });
     return(
-      <div><p>greenland</p></div>
-    )
+      <pre className={styles.pre}>
+        {JSON.stringify(this.stories, 4, 1) }
+      </pre>
+
+    );
   }
 
-  getStoryAntarctica(){
-    /*return (
-    <React.Fragment>
+  getstoryantarctica(){
+    this.setState({ index: 1 });
+
+    /*<React.Fragment>
       <h1>Latest Users Posts</h1>
       <ul>
-        {this.props.posts.map((this.climate_stories) => {
-          return (
-            <li key={this.climate_stories.title}>
-              <AntarcticaButtom {... this.climate_stories} />
-            </li>
-          );
+        {this.props.characters.map((... climate_stories)=>{
+          return(<li key={this.climate_stories.title}>
+
+        </li>);
         })}
       </ul>
-    </React.Fragment>
-  ); */
-  return(
-    <div><p>Antarctica</p></div>
-  )
+    </React.Fragment>*/
+
+
 }
 
 
@@ -115,7 +120,7 @@ class StartJourney extends Component {
 
     return(
       <pre className={styles.pre}>
-        {JSON.stringify(this.state.climate_stories, 4, 1) }
+        {JSON.stringify(this.climate_stories, 4, 1) }
       </pre>
 
     )
@@ -126,7 +131,7 @@ class StartJourney extends Component {
 
 
 
-  get popover() {
+  /*get popover() {
     var greenland;
     var antarctica;
 
@@ -172,16 +177,26 @@ class StartJourney extends Component {
 
 
     );
-  }s
+  }s*/
 
 
   render() {
-
+    const story = Object.values(this.state.climate_stories)[this.state.index];
+    if (!story) {
+      console.log("ingen story")
+      return null;
+    }
 
 
     return (
-    <div className={styles.Hej}>
 
+    <div className={styles.Hej}>
+          <h2>heeeeeej</h2>
+          <h2>{this.state.climate_stories[1][1]}</h2>
+            <Pick
+              storyInfo={story}
+              onChangeStory={this.onChangeStory}
+            />
       <div className = {styles.TellStory}>
 
 
@@ -194,27 +209,28 @@ class StartJourney extends Component {
               : ( this.getJson)
             }
 
-            <AntarcticaButtom getStoryAntarctica = {this.getStoryAntarctica}/>
-            <GreenlandButtom  getStoryGreenland  = {this.getStoryGreenland} />
+            <AntarcticaButtom getstoryantarctica = {this.getstoryantarctica}/>
+            <GreenlandButtom getstorygreenland  = {this.getstorygreenland} />
       </div>
 
 
-
-
-
-
-
-
-
-          <button onClick={this.onChangeStory}>
+          /*<button onClick={this.onChangeStory}>
             {this.state.isToggleOn ? 'ON' : 'OFF'}
-          </button>
+          </button>*/
 
     </div>
+
     );
   }
 }
 
-
+const Post = (props) => {
+  return (
+    <div>
+      <h2>{props.content}</h2>
+      <h4>username: {props.user}</h4>
+    </div>
+  );
+};
 
 export default StartJourney;

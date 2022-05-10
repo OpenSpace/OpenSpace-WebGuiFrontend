@@ -18,7 +18,7 @@ const App = () => (
       <Route path="/remote" component={RemoteGui} />
 
       <Route path="/actions" component={ActionsGui} />
-      <Route path="/climate" component={OnClimateGui} />
+      <Route path="/climate" component={OnClimateGui} />  
 
       {/* Here, more GUI variations can be added. */}
       {/* <Route path="/tablet" component={TabletGui} /> */}

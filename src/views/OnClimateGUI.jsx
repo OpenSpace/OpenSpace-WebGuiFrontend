@@ -29,7 +29,7 @@ import {
 
 import {
   ValuePlaceholder, DefaultStory, ScaleKey,
-  NavigationAnchorKey, ZoomInLimitKey, ZoomOutLimitKey,
+  NavigationAnchorKey,InfoIconKey, ZoomInLimitKey, ZoomOutLimitKey,
 } from '../api/keys'
 
 
@@ -42,7 +42,7 @@ import {
   toggleShading, toggleHighResolution, toggleShowNode, toggleGalaxies,
   setStoryStart, showDevInfoOnScreen, storyFileParser, infoFileParser, flyTo,
 } from '../utils/storyHelpers';
-
+import  climate_stories from "../../stories/stories.json";
 //------------------------------------------------------------------------------//
 const KEYCODE_D = 68;
 
@@ -55,7 +55,7 @@ class OnClimateGui extends Component {
       developerMode: false,
       currentStory: DefaultStory,
       sliderStartStory: DefaultStory,
-      startJourney: DefaultStory,
+      startJourney: climate_stories,
     };
 
   }
@@ -63,7 +63,7 @@ class OnClimateGui extends Component {
 // where we call api
  componentDidMount() {
     const { luaApi, FetchData, StartConnection } = this.props;
-    this.props.StartConnection();
+    StartConnection();
 
 
     document.addEventListener('keydown', this.handleKeyPress);
@@ -250,11 +250,59 @@ const mapDispatchToProps = dispatch => ({
     dispatch(startConnection());
   },
 });
+
+
+
+
 OnClimateGui = withRouter(connect(
   mapStateToProps,
   mapDispatchToProps,
 )(OnClimateGui));
 
+
+
+
+
+
+
+
+
+
+
+
+// ----------------------------------
+
+
+
+
+class RequireLuaApi extends Component {
+  componentDidMount() {
+    const { StartConnection } = this.props;
+    StartConnection();
+  }
+
+  render() {
+    const { children, luaApi } = this.props;
+    if (!luaApi) {
+      return null;
+    }
+    return <>{children}</>;
+  }
+}
+
+const mapState = state => ({
+  luaApi: state.luaApi,
+});
+
+const mapDispatch = dispatch => ({
+  StartConnection: () => {
+    dispatch(startConnection());
+  },
+});
+
+RequireLuaApi = connect(mapState, mapDispatch)(RequireLuaApi);
+
+const WrappedOnTouchGui = props => <RequireLuaApi><OnClimateGui {...props} /></RequireLuaApi>;
 
 OnClimateGui.propTypes = {
   StartConnection: PropTypes.func,
@@ -284,4 +332,4 @@ OnClimateGui.defaultProps = {
   connectionLost: null
 };
 
-export default OnClimateGui;
+export default WrappedOnTouchGui;

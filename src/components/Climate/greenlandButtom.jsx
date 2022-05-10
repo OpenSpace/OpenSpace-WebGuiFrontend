@@ -3,9 +3,11 @@ import React from 'react';
 import Icon from '../common/MaterialIcon/MaterialIcon';
 import styles from './Buttom.scss';
 
-const GreenlandButtom = ({ click }) => (
+
+const GreenlandButtom = ( {click} ) => (
   <div className={styles.greenland} onClick={click} >
     <Icon icon="ac_unit" className={styles.Icon} />
+    <h1>greenlassnd</h1>
   </div>
 );
 
