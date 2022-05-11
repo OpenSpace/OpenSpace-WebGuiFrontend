@@ -187,13 +187,14 @@ class PropertyOwnerComponent extends Component {
       setExpanded,
       expansionIdentifier,
       sort,
+      isHidden
     } = this.props;
 
     const sortedSubowners = sort
       ? (subowners.slice(0).sort((a, b) => subownerNames[a].localeCompare(subownerNames[b], 'en')))
       : subowners;
 
-    return (
+    return !isHidden && (
       <ToggleContent
         header={this.header}
         expanded={isExpanded}
@@ -251,6 +252,8 @@ const mapSubStateToProps = (
   },
 ) => {
   const data = propertyOwners[uri];
+  const showHidden = properties['Modules.CefWebGui.ShowHiddenSceneGraphNodes'];
+  let isHidden = isPropertyOwnerHidden(properties, uri) && !showHidden.value;
   let subowners = data ? data.subowners : [];
   let subProperties = data ? data.properties : [];
 
@@ -291,6 +294,7 @@ const mapSubStateToProps = (
     sort,
     isRenderable: (renderableTypeProp != undefined),
     isSceneGraphNodeOrLayer: showMeta,
+    isHidden
   };
 };
 

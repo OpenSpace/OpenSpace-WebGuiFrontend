@@ -149,8 +149,12 @@ export function isPropertyVisible(properties, uri) {
 
 // Returns whether a property owner should be hidden in the gui
 export function isPropertyOwnerHidden(properties, uri) {
+  if (uri === undefined) return false;
   const prop = properties[uri + '.GuiHidden'];
-  return prop && prop.value;
+  if(prop && prop.value) {
+    return true;
+  }
+  else return false;
 }
 
 // Returns true if a property owner has no visible children
