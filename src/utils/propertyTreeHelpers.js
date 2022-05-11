@@ -125,15 +125,15 @@ export function isPropertyVisible(properties, uri) {
     let propertyVisibility = "";
     switch(property.description.MetaData.Visibility) {
       case 'Hidden':
-        propertyVisibility = 3;
+        propertyVisibility = 4;
         break;
       case 'Developer':
-        propertyVisibility = 2;
+        propertyVisibility = 3;
         break;
       case 'User':
         propertyVisibility = 1;
         break;
-      case 'All':
+      case 'Always':
         propertyVisibility = 0;
         break;
       default:
