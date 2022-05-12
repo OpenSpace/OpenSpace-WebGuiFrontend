@@ -252,7 +252,7 @@ const mapSubStateToProps = (
   },
 ) => {
   const data = propertyOwners[uri];
-  const showHidden = properties['Modules.CefWebGui.ShowHiddenSceneGraphNodes'];
+  const showHidden = properties['OpenSpaceEngine.ShowHiddenSceneGraphNodes'];
   let isHidden = isPropertyOwnerHidden(properties, uri) && !showHidden.value;
   let subowners = data ? data.subowners : [];
   let subProperties = data ? data.properties : [];
