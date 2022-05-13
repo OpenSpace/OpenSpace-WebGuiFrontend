@@ -34,8 +34,9 @@ import AlaskaButton from "./AlaskaButton.jsx"
 import AntarcticaButton from "./AntarcticaButton.jsx"
 import GreenlandButton from "./GreenlandButton.jsx"
 import { icons } from '../../api/resources';
+import ClimatePanel from '../BottomBar/ClimatePanel.jsx'
 
-class StartJourney extends React.Component {
+class StartJourney extends Component {
 
   constructor(props) {
 
@@ -44,34 +45,32 @@ class StartJourney extends React.Component {
 
     const {startNewJourney} =this.props;
     this.state = {
-      isToggleOn: true,
-      show: false,
-      climate_stories: climate_stories.climate_stories
+       isToggleOn: true,
+       show: false,
+       climate_stories: climate_stories.climate_stories
 
     };
     //this.togglePopover = this.togglePopover.bind(this); //makes it possible to click at climate button
 
-
     this.onChangeStory      = this.onChangeStory.bind(this);
-    this.getStoryAlaska = this.getStoryAlaska.bind(this);
-    this.getStoryGreenland  = this.getStoryGreenland.bind(this);
-    this.getStoryAntarctica = this.getStoryAntarctica.bind(this);
+    this.getStoryGreenland  = this.getstorygreenland.bind(this);
+    this.getStoryAlaska  = this.getstoryalaska.bind(this);
+    this.getstoryantarctica = this.getstoryantarctica.bind(this);
     this.toggle = this.toggle.bind(this);
     //this.setStory = this.setStory.bind(this);
 
   }
-
   toggle() {
      this.setState({
        isToggleOn: true,
        show: !this.state.show,
-       climate_stories: climate_stories.climate_stories
+       climate_stories: stories.climate_stories
 
      });
    }
 
   onChangeStory(story) {
-
+    this.props.changeStory(story);
     //this.props.changeStory(story);
     this.setState(prevState => ({
       isToggleOn: !prevState.isToggleOn
@@ -86,19 +85,33 @@ class StartJourney extends React.Component {
     this.setState({ index: i });
   }
 
-  getStoryAlaska(){
+  getstorygreenland(){
+    //climate_stories.greenland
+    climate_stories.greenland.map((story) => {
+      this.state.storyGreenland.title = story.title
+
+    })
     return(
-      <div><p>Alaska</p></div>
+      <div><p>{this.state.storyGreenland}</p></div>
     )
+
   }
 
-  getStoryGreenland(){
+  getstoryalaska(){
     return(
       <div><p>greenland</p></div>
     )
   }
 
-  getStoryAntarctica(){
+  getstoryantarctica(){
+    this.props.luaApi.globebrowsing.flyToGeo(
+      "Earth",
+      -84.6081,
+      94.7813,
+      6990000.0000,
+      7,
+      true
+    );
     /*return (
     <React.Fragment>
       <h1>Latest Users Posts</h1>
@@ -113,14 +126,11 @@ class StartJourney extends React.Component {
       </ul>
     </React.Fragment>
   ); */
-  return(
-    <div><p>Antarctica</p></div>
-  )
 }
 
 
 
-  get getJson(){
+  /*get getJson(){
 
     return(
       <pre>
@@ -128,9 +138,14 @@ class StartJourney extends React.Component {
         //{JSON.stringify({ title: "Pick a story", description: "climate climate climate satellite satellite climate" }.title)}
       </pre>
     )
-  }
 
-  get popover() {
+
+  }*/
+
+
+
+
+  /*get popover() {
     var greenland;
     var antarctica;
 
@@ -176,7 +191,7 @@ class StartJourney extends React.Component {
 
 
     );
-  }
+  }*/
 
   get icon() {
     const { identifier } = this.props;
@@ -195,14 +210,18 @@ class StartJourney extends React.Component {
       <div className = {styles.TellStory}>
         <div className = "flex">
         {
+          <div><h1>hej</h1>
+          <h1>{this.state.storyGreenland}</h1>
+          </div>,
           climate_stories.startpage.map((story) => {
             return (
-              <div key = {story.identifier}>
+              <div key = {story.id}>
                 <h1 key = {story.title}>{ story.title}</h1>
-                <p key= {story.info} >{ story.info}</p>
+                <p key= {story.info} >{story.info}</p>
               </div>
             );
           })
+
         }
         <br/>
         <br/>
@@ -210,13 +229,14 @@ class StartJourney extends React.Component {
         {
           climate_stories.pickstory.map((story) => {
             return (
-              <div key = {story.identifier}>
+              <div key = {story.id}>
                 <h4 key = {story.title} > {story.title}</h4>
               </div>
             );
           })
         }
         </div>
+
         <AlaskaButton     getStoryAlaska     = {this.getStoryAlaska}/>
         <AntarcticaButton getStoryAntarctica = {this.getStoryAntarctica}/>
         <GreenlandButton  getStoryGreenland  = {this.getStoryGreenland} />
@@ -235,5 +255,4 @@ const App = () => {
     </div>
   );
 };
-
 export default StartJourney;

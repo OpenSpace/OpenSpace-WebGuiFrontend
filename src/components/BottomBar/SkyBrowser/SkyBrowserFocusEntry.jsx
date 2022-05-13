@@ -1,38 +1,37 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Button from '../common/Input/Button/Button';
-import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
-import InfoBoxSkybrowser from './InfoBoxSkybrowser';
-import styles from './SkybrowserFocusEntry.scss';
+import Button from '../../common/Input/Button/Button';
+import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
+import SkyBrowserInfoBox from './SkyBrowserInfoBox';
+import styles from './SkyBrowserFocusEntry.scss';
 
 class OpacitySlider extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      value: 100,
-    };
     this.handleChange = this.handleChange.bind(this);
   }
 
-  handleChange(event) {
-    this.setState({ value: event.target.value });
+  handleChange(e) {
     // Ensure the image has an id, which consists of the index of the image
     const index = Number(this.props.identifier);
     const opacity = event.target.value / 100;
     if (index) {
       this.props.setOpacity(index, opacity);
     }
+    if (!e) var e = window.event;
+    e.cancelBubble = true;
+    if (e.stopPropagation) e.stopPropagation();
   }
 
   render() {
-    const { value } = this.state;
+    const { opacity } = this.props;
     return (
       <div className={styles.slidecontainer}>
         <input
           type="range"
           min="0"
           max="100"
-          value={value}
+          value={opacity * 100}
           className={styles.slider}
           onChange={this.handleChange}
         />
@@ -42,7 +41,7 @@ class OpacitySlider extends Component {
   }
 }
 
-class SkybrowserFocusEntry extends Component {
+class SkyBrowserFocusEntry extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -62,11 +61,14 @@ class SkybrowserFocusEntry extends Component {
     return !!this.props.setOpacity;
   }
 
-  select(evt) {
+  select(e) {
     const { identifier, onSelect } = this.props;
     if (onSelect && identifier) {
       onSelect(identifier);
     }
+    if (!e) var e = window.event;
+    e.cancelBubble = true;
+    if (e.stopPropagation) e.stopPropagation();
   }
 
   showTooltip() {
@@ -79,14 +81,22 @@ class SkybrowserFocusEntry extends Component {
 
   render() {
     const {
-      name, identifier, thumbnail, credits, creditsUrl, ra, dec, fov,
-    } = this.props;
-    const { skybrowserApi, setOpacity, removeImageSelection } = this.props;
+      name, identifier, thumbnail, credits, creditsUrl, ra, dec, fov, hasCelestialCoords,
+      luaApi, setOpacity, removeImageSelection, currentBrowserColor, opacity } = this.props;
+    const skySurveyTag = !hasCelestialCoords ? <span className={styles.skySurvey}>
+        Sky Survey
+    </span> : "";
 
     const imageRemoveButton = removeImageSelection && (
-      <div style={{ display: 'flex' }}>
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        {skySurveyTag}
         <Button
-          onClick={() => removeImageSelection(identifier)}
+          onClick={(e) => {
+            if (!e) var e = window.event;
+            e.cancelBubble = true;
+            if (e.stopPropagation) e.stopPropagation();
+            removeImageSelection(identifier);
+          }}
           className={styles.removeImageButton}
           transparent
           small
@@ -96,14 +106,13 @@ class SkybrowserFocusEntry extends Component {
       </div>
     );
 
-    const opacitySlider = setOpacity ? <OpacitySlider setOpacity={setOpacity} identifier={identifier} /> : '';
-
+    const opacitySlider = setOpacity ? <OpacitySlider setOpacity={setOpacity} opacity={opacity} identifier={identifier} /> : '';
     return (
       <li
         className={`${styles.entry} ${this.isTabEntry && styles.tabEntry} ${this.isActive && styles.active}`}
-        style={{ borderLeftColor: this.props.currentTargetColor() }}
-        onMouseOver={() => { skybrowserApi.moveCircleToHoverImage(Number(identifier)); }}
-        onMouseOut={() => { skybrowserApi.disableHoverCircle(); }}
+        style={{ borderLeftColor: currentBrowserColor() }}
+        onMouseOver={() => { luaApi.skybrowser.moveCircleToHoverImage(Number(identifier)); }}
+        onMouseOut={() => { luaApi.skybrowser.disableHoverCircle(); }}
         onClick={setOpacity ? undefined : this.select}
       >
         {imageRemoveButton}
@@ -114,7 +123,7 @@ class SkybrowserFocusEntry extends Component {
           <span className={styles.imageTitle}>
             { name || identifier }
           </span>
-          <InfoBoxSkybrowser
+          <SkyBrowserInfoBox
             title={(name || identifier)}
             text={credits}
             textUrl={creditsUrl}
@@ -122,24 +131,26 @@ class SkybrowserFocusEntry extends Component {
             dec={dec}
             fov={fov}
             isTabEntry={this.isTabEntry}
+            hasCelestialCoords={hasCelestialCoords}
           />
         </div>
         {opacitySlider}
+        {!setOpacity && skySurveyTag}
       </li>
     );
   }
 }
 
-SkybrowserFocusEntry.propTypes = {
+SkyBrowserFocusEntry.propTypes = {
   identifier: PropTypes.string.isRequired,
   name: PropTypes.string,
   onSelect: PropTypes.func,
   active: PropTypes.string,
 };
 
-SkybrowserFocusEntry.defaultProps = {
+SkyBrowserFocusEntry.defaultProps = {
   active: '',
   onSelect: null,
 };
 
-export default SkybrowserFocusEntry;
+export default SkyBrowserFocusEntry;

@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { storyImages } from '../../api/resources';
-import stories from '../../stories/stories.json';
+import stories from '../../story_climate/climate_stories.json';
+//import stories from '../../stories/stories.json';
 import LeftArrow from './Arrows/LeftArrow';
 import RightArrow from './Arrows/RightArrow';
 import Dots from './Dots/Dots';
@@ -93,8 +94,8 @@ class Slider extends Component {
           imagePaths={this.state.imagePaths}
           dotClick={this.handleDotClick}
         />
-        <RightArrow nextSlide={this.nextSlide} />
-        <LeftArrow prevSlide={this.prevSlide} />
+        <RightArrow nextSlide = {this.nextSlide} />
+        <LeftArrow prevSlide = {this.prevSlide} />
       </div>
     );
   }

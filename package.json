@@ -30,7 +30,7 @@
     "lodash": "^4.17.21",
     "openspace-api-js": "^0.1.5",
     "prop-types": "^15.7.2",
-    "re-resizable": "^6.9.0",
+    "re-resizable": "^6.9.9",
     "react": "^16.14.0",
     "react-autobind": "^1.0.6",
     "react-beautiful-dnd": "^13.1.0",

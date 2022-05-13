@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
-import styles from './Slide.scss';
-import StoryButton from './StoryButton';
+import styles from '../ImageSlider/Slide.scss';
+import StoryButton from '../ImageSlider/StoryButton';
 
-class Slide extends Component {
+class Pick extends Component {
   constructor(props) {
     super(props);
 
@@ -16,11 +16,11 @@ class Slide extends Component {
   }
 
   render() {
-    const { image, storyInfo } = this.props;
+    const { storyInfo } = this.props;
 
     return (
       <div className={styles.Container}>
-        <img src={image} className={styles.Slide} alt={'Story'} />
+        
         <div className={styles.StoryInfo}>
           <CenteredLabel className={styles.StoryName}>{storyInfo.title}</CenteredLabel>
           <CenteredLabel className={styles.Description}>{storyInfo.info}</CenteredLabel>
@@ -34,8 +34,8 @@ class Slide extends Component {
   }
 }
 
-Slide.propTypes = {
-  image: PropTypes.string.isRequired,
+Pick.propTypes = {
+
   onChangeStory: PropTypes.func.isRequired,
   storyInfo: PropTypes.shape({
     title: PropTypes.string,
@@ -43,4 +43,4 @@ Slide.propTypes = {
   }).isRequired,
 };
 
-export default Slide;
+export default Pick;

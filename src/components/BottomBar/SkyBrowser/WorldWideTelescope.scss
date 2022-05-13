@@ -1,4 +1,4 @@
-@import "../../styles/all";
+@import "../../../styles/all";
 
 $top-bar-height: 25px;
 
@@ -16,8 +16,8 @@ $top-bar-height: 25px;
   position: absolute;
   background-color: transparent;
   z-index: 10;
-  height: calc(100% - #{$top-bar-height});
-  width: 100%;
+  height: calc(98% - #{$top-bar-height});
+  width: 98%;
   margin: 0px;
   padding: 0px;
   border-width: 0px;
