@@ -21,6 +21,7 @@ import Sidebar from '../components/Sidebar/Sidebar';
 import NodeMetaContainer from '../components/NodeMetaPanel/NodeMetaContainer';
 import NodePopOverContainer from '../components/NodePropertiesPanel/NodePopOverContainer';
 
+
 import {
   setPropertyValue, startConnection, fetchData, addStoryTree, subscribeToProperty,
   unsubscribeToProperty, addStoryInfo, resetStoryInfo,
@@ -42,7 +43,7 @@ import {
   toggleShading, toggleHighResolution, toggleShowNode, toggleGalaxies,
   setStoryStart, showDevInfoOnScreen, storyFileParser, infoFileParser, flyTo,
 } from '../utils/storyHelpers';
-import  climate_stories from "../../stories/stories.json";
+//import  climate_stories from "../../stories/stories.json";
 //------------------------------------------------------------------------------//
 const KEYCODE_D = 68;
 
@@ -55,7 +56,7 @@ class OnClimateGui extends Component {
       developerMode: false,
       currentStory: DefaultStory,
       sliderStartStory: DefaultStory,
-      startJourney: climate_stories,
+      //startJourney: climate_stories,
     };
 
   }
@@ -190,23 +191,7 @@ class OnClimateGui extends Component {
     return (
 
       <div className={styles.app}>
-        {
-          <Router basename="/climate/">
-            <Route
-              path="/about"
-              render={() => (
-                <Overlay>
-                  <Stack style={{ maxWidth: '500px' }}>
-                    <Link style={{ alignSelf: 'flex-end', color: 'white' }} to="/">
-                      Close
-                    </Link>
-                    <About />
-                  </Stack>
-                </Overlay>
-              )}
-            />
-          </Router>
-        }
+
         { connectionLost && (
           <Overlay>
             <Error>
@@ -220,6 +205,9 @@ class OnClimateGui extends Component {
             storyIdentifier={storyIdentifier}
           />
         )}
+        <p className={styles.storyTitle}>
+          {story.title}
+        </p>
 
 
 

@@ -1,6 +1,6 @@
 import React, { Component, useState } from "react";
 import classNames from 'classnames'
-import autoBind from 'react-autobind' //npm install
+import autoBind from 'react-autobind'
 import { connect } from "react-redux";
 import {
   setActionsPath,
@@ -27,59 +27,52 @@ import MaterialIcon from "../common/MaterialIcon/MaterialIcon";
 import Popover from "../common/Popover/Popover";
 import Row from "../common/Row/Row";
 import styles from "./startJourney.scss";
+import buttonStyles from './Button.scss';
 
-import stories from "../../story_climate/climate_stories.json";
-import AntarcticaButtom from "./antarcticaButtom.jsx"
-import GreenlandButtom from "./greenlandButtom.jsx"
-import Pick from "./pick_story.jsx"
+import  climate_stories from "../../story_climate/pick_story.json";
+import AlaskaButton from "./AlaskaButton.jsx"
+import AntarcticaButton from "./AntarcticaButton.jsx"
+import GreenlandButton from "./GreenlandButton.jsx"
+import { icons } from '../../api/resources';
 
-class StartJourney extends Component {
+class StartJourney extends React.Component {
 
   constructor(props) {
 
     super(props);
     autoBind(this)
 
-    const {startNewJourney, storyInfo} =this.props;
-
-    let startIndex = stories.climate_stories.findIndex(
-      function (element) {
-        return startNewJourney === element.identifier;
-      }
-    )
-    // if startSlider was not in the listed stories, pick the first
-    if (startIndex < 0) {
-      startIndex = 0
-    };
-
+    const {startNewJourney} = this.props;
     this.state = {
-      index : startIndex,
       isToggleOn: true,
       show: false,
-      climate_stories: stories.climate_stories
-
+      climate_stories: climate_stories.climate_stories,
+      storyGreenland: climate_stories.greenland
     };
     //this.togglePopover = this.togglePopover.bind(this); //makes it possible to click at climate button
 
 
     this.onChangeStory      = this.onChangeStory.bind(this);
-    this.getStoryGreenland  = this.getstorygreenland.bind(this);
-    this.getstoryantarctica = this.getstoryantarctica.bind(this);
+
+    this.getStoryAlaska     = this.getStoryAlaska.bind(this);
+    this.getStoryGreenland  = this.getStoryGreenland.bind(this);
+    this.getStoryAntarctica = this.getStoryAntarctica.bind(this);
     this.toggle = this.toggle.bind(this);
     //this.setStory = this.setStory.bind(this);
 
   }
+
   toggle() {
      this.setState({
        isToggleOn: true,
        show: !this.state.show,
-       climate_stories: stories.climate_stories
+       climate_stories: climate_stories.climate_stories
 
      });
    }
 
   onChangeStory(story) {
-    this.props.changeStory(story);
+
     //this.props.changeStory(story);
     this.setState(prevState => ({
       isToggleOn: !prevState.isToggleOn
@@ -88,45 +81,65 @@ class StartJourney extends Component {
     //this.setStory = this.setStory.bind(this);
   }
 
-  getstorygreenland(){
-    this.setState({ index: 0 });
-    return(
-      <pre className={styles.pre}>
-        {JSON.stringify(this.stories, 4, 1) }
-      </pre>
-
-    );
+  // Handle the click of a dot
+  handleDotClick(i) {
+    if (i === this.state.index) { return; }
+    this.setState({ index: i });
   }
 
-  getstoryantarctica(){
-    this.setState({ index: 1 });
+  getStoryGreenland(){
+    //climate_stories.greenland
+    climate_stories.greenland.map((story) => {
+      this.state.storyGreenland.title = story.title
 
-    /*<React.Fragment>
+    })
+    return(
+      <div><p>{this.state.storyGreenland}</p></div>
+    )
+
+  }
+
+  getStoryAlaska(){
+    return(
+      <div><p>greenland</p></div>
+    )
+  }
+
+  getStoryAntarctica(){
+    /*return (
+    <React.Fragment>
       <h1>Latest Users Posts</h1>
       <ul>
-        {this.props.characters.map((... climate_stories)=>{
-          return(<li key={this.climate_stories.title}>
-
-        </li>);
+        {this.props.posts.map((this.climate_stories) => {
+          return (
+            <li key={this.climate_stories.title}>
+              <AntarcticaButton {... this.climate_stories} />
+            </li>
+          );
         })}
       </ul>
-    </React.Fragment>*/
-
-
+    </React.Fragment>
+  ); */
+  return(
+    <div><p>Antarctica</p></div>
+  )
 }
 
 
-  get getJson(){
+
+  /*get getJson(){
 
     return(
-      <pre className={styles.pre}>
-        {JSON.stringify(this.climate_stories, 4, 1) }
+      <pre>
+        {JSON.stringify(this.state.climate_stories, 4, 1) }
+        //{JSON.stringify({ title: "Pick a story", description: "climate climate climate satellite satellite climate" }.title)}
+
       </pre>
 
     )
 
 
-  }
+  }*/
 
 
 
@@ -177,60 +190,68 @@ class StartJourney extends Component {
 
 
     );
-  }s*/
+  }*/
+
+  get icon() {
+    const { identifier } = this.props;
+    const icon = icons[identifier];
+    if (icon) {
+      return <img src={icon} className={styles.iconImage} alt={identifier} />;
+    }
+    return <Icon icon="language" className={styles.Icon} />;
+  }
 
 
   render() {
-    const story = Object.values(this.state.climate_stories)[this.state.index];
-    if (!story) {
-      console.log("ingen story")
-      return null;
-    }
-
 
     return (
-
     <div className={styles.Hej}>
-          <h2>heeeeeej</h2>
-          <h2>{this.state.climate_stories[1][1]}</h2>
-            <Pick
-              storyInfo={story}
-              onChangeStory={this.onChangeStory}
-            />
+
       <div className = {styles.TellStory}>
-
-
-              <h1>Climate Picker Name </h1>
-              <div className={styles.Header} onClick={this.toggle}>
-                <strong>Debug</strong>
+        <div className = "flex">
+        {
+          <div><h1>hej</h1>
+          <h1>{this.state.storyGreenland}</h1>
+          </div>,
+          climate_stories.startpage.map((story) => {
+            return (
+              <div key = {story.id}>
+                <h1 key = {story.title}>{ story.title}</h1>
+                <p key= {story.info} >{story.info}</p>
               </div>
-              {this.state.show
-              ? <div><h1>can't find file</h1></div> //cant find json file              )
-              : ( this.getJson)
-            }
+            );
+          })
 
-            <AntarcticaButtom getstoryantarctica = {this.getstoryantarctica}/>
-            <GreenlandButtom getstorygreenland  = {this.getstorygreenland} />
+        }
+        <br/>
+        <br/>
+        <br/>
+        {
+          climate_stories.pickstory.map((story) => {
+            return (
+              <div key = {story.id}>
+                <h4 key = {story.title} > {story.title}</h4>
+              </div>
+            );
+          })
+        }
+        </div>
+
+        <AlaskaButton     getStoryAlaska     = {this.getStoryAlaska}/>
+        <AntarcticaButton getStoryAntarctica = {this.getStoryAntarctica}/>
+        <GreenlandButton  getStoryGreenland  = {this.getStoryGreenland} />
+
       </div>
-
-
-          /*<button onClick={this.onChangeStory}>
-            {this.state.isToggleOn ? 'ON' : 'OFF'}
-          </button>*/
-
     </div>
-
     );
   }
 }
 
-const Post = (props) => {
+const App = () => {
   return (
     <div>
-      <h2>{props.content}</h2>
-      <h4>username: {props.user}</h4>
+      <StartJourney posts={climate_stories} />
     </div>
   );
 };
-
 export default StartJourney;

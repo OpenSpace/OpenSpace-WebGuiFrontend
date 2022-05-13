@@ -94,8 +94,8 @@ class Slider extends Component {
           imagePaths={this.state.imagePaths}
           dotClick={this.handleDotClick}
         />
-        <RightArrow nextSlide={this.nextSlide} />
-        <LeftArrow prevSlide={this.prevSlide} />
+        <RightArrow nextSlide = {this.nextSlide} />
+        <LeftArrow prevSlide = {this.prevSlide} />
       </div>
     );
   }

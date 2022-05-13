@@ -1,13 +1,17 @@
 @import "../../styles/all";
 
-.antarctica, .greenland {
-  height: 3vw;
-  width: 15vw;
+.alaska, .antarctica, .greenland {
+  position: absolute;
+
+  z-index: 999;
+  color: #fff;
+  height: 35px;
+  width: 150px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: $ui-background;
-  border-radius: 10%;
+  border-radius: 10px;
   cursor: pointer;
   transition: transform ease-in .1s;
 
@@ -15,28 +19,27 @@
     transition: transform ease-in .1s;
      background:darken($ui-background,8%);
   }
-}
 
+}
+.alaska{
+ left: 20px;
+ top:250px;
+}
 .antarctica {
-  position: absolute;
-  top: 90%;
-  right: 6vW;
-  z-index: 999;
-  color: #fff;
+  left: 20px;
+  top:300px;
 }
 
 .greenland {
-  position: absolute;
-  top: 90%;
-  left: 6vw;
-  z-index: 999;
-  color: #fff;
+  left: 20px;
+  top: 350px;
+
 }
 
-$icon-size: 2vw;
+$icon-size: 20px;
 
 .Icon {
   font-size: $icon-size;
   position: absolute;;
-  left: 1vW;
+  right: 10px;
 }

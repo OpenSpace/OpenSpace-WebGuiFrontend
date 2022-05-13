@@ -4,7 +4,7 @@ import styles from './Buttom.scss';
 import Icon from '../common/MaterialIcon/MaterialIcon';
 
 const AntarcticaButtom = ( {props} ) => (
-  <div className={styles.antarctica} onClick={props} >
+  <div className={styles.antarctica} onClick=props >
     <h2>{props}</h2>
     <Icon icon="ac_unit" className={styles.Icon} />
   </div>

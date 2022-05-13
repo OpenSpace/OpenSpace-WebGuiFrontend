@@ -14,15 +14,17 @@ const App = () => (
 
     <Switch>
       <Route path="/ontouch" component={OnTouchGui} />
+      //<Route path="/onscreen" component={OnScreenGui} />
       <Route path="/onscreen" component={OnScreenGui} />
       <Route path="/remote" component={RemoteGui} />
 
       <Route path="/actions" component={ActionsGui} />
-      <Route path="/climate" component={OnClimateGui} />  
+      <Route path="/climate" component={OnClimateGui} />
 
       {/* Here, more GUI variations can be added. */}
       {/* <Route path="/tablet" component={TabletGui} /> */}
-      <Route path="/" component={RemoteGui} />
+      //<Route path="/" component={RemoteGui} />
+      <Route path="/" component={OnScreenGui} />
       <Route component={NotFound} />
     </Switch>
   </Router>
