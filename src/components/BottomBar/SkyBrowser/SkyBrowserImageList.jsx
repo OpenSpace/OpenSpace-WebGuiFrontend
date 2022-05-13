@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import FilterList from '../common/FilterList/FilterList';
+import CenteredLabel from '../../common/CenteredLabel/CenteredLabel';
+import FilterList from '../../common/FilterList/FilterList';
 import styles from './SkyBrowserImageList.scss';
-import SkybrowserFocusEntry from './SkybrowserFocusEntry';
+import SkyBrowserFocusEntry from './SkyBrowserFocusEntry';
 
 class SkyBrowserImageList extends Component {
   constructor(props) {
@@ -10,33 +11,42 @@ class SkyBrowserImageList extends Component {
     this.state = {
       distanceSortThreshold: 0.1
     };
-
+    this.lastUpdateTime = new Date().getTime();
     this.getNearestImages = this.getNearestImages.bind(this);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
     if (nextProps.showOnlyNearest) {
       // TODO: this can probably be made more efficient. We don't need to
-      // rerender if nothing changed
-      return true;
+      // rerender if nothing changed.
+      // @micahnyc - I added throttling for now, so we dont update more then twice per second.
+      var time = new Date().getTime();
+      var timeSinceLastUpdate = time - this.lastUpdateTime;
+      var updateInterval = 500;
+      if (timeSinceLastUpdate > updateInterval) {
+        this.lastUpdateTime = time;
+        return true;
+      }
     }
     // Prevent rerendering unless important properties actually changed
-    return !(
-      this.props.showOnlyNearest === nextProps.showOnlyNearest &&
-      this.props.height === nextProps.height &&
-      this.props.selectImage === nextProps.selectImage &&
-      this.props.activeImage === nextProps.activeImage
+    return (
+      this.props.showOnlyNearest !== nextProps.showOnlyNearest ||
+      this.props.height !== nextProps.height ||
+      this.props.selectImage !== nextProps.selectImage ||
+      this.props.activeImage !== nextProps.activeImage
     );
   }
 
   getNearestImages() {
+
     const { imageList, selectedBrowserData } = this.props;
     const { distanceSortThreshold } = this.state;
 
-    if (!selectedBrowserData || Object.keys(imageList).length === 0) {
+    if (!selectedBrowserData || !imageList || Object.keys(imageList).length === 0) {
       return [];
     }
-    const searchRadius = selectedBrowserData.FOV / 2;
+
+    const searchRadius = selectedBrowserData.fov / 2;
     const isWithinFOV = (coord, target, FOV) => coord < target + FOV && coord > target - FOV;
 
     // Only load images that have coordinates within current window
@@ -75,11 +85,14 @@ class SkyBrowserImageList extends Component {
   }
 
   render() {
-    const { activeImage, height, imageList, luaApi, showOnlyNearest, selectImage } = this.props;
 
-    const list = showOnlyNearest ? this.getNearestImages() : imageList;
-    const skybrowserApi = luaApi.skybrowser;
-    // TODO: render hint if no images
+    const { activeImage, height, imageList, luaApi, showOnlyNearest, selectImage, currentBrowserColor } = this.props;
+    const list = showOnlyNearest ? this.getNearestImages() : imageList !== undefined ? imageList : [];
+
+    const showNoImagesHint = (showOnlyNearest && list.length === 0);
+    if (showNoImagesHint) {
+      return <CenteredLabel>No images within the current view. Zoom out or move the target to look at another portion of the sky</CenteredLabel>
+    }
 
     return (
       <FilterList
@@ -87,10 +100,10 @@ class SkyBrowserImageList extends Component {
         height={height} // TODO: prevent rerendering every time height changes
         data={list}
         searchText={`Search from ${list.length.toString()} images...`}
-        viewComponent={SkybrowserFocusEntry}
+        viewComponent={SkyBrowserFocusEntry}
         viewComponentProps={{
-          skybrowserApi,
-          currentTargetColor: this.props.getCurrentTargetColor,
+          luaApi: luaApi,
+          currentBrowserColor: currentBrowserColor,
         }}
         onSelect={selectImage}
         active={activeImage}

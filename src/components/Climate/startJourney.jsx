@@ -1,6 +1,6 @@
 import React, { Component, useState } from "react";
 import classNames from 'classnames'
-import autoBind from 'react-autobind'
+import autoBind from 'react-autobind' //npm install
 import { connect } from "react-redux";
 import {
   setActionsPath,
@@ -27,52 +27,59 @@ import MaterialIcon from "../common/MaterialIcon/MaterialIcon";
 import Popover from "../common/Popover/Popover";
 import Row from "../common/Row/Row";
 import styles from "./startJourney.scss";
-import buttonStyles from './Button.scss';
 
-import  climate_stories from "../../story_climate/pick_story.json";
-import AlaskaButton from "./AlaskaButton.jsx"
-import AntarcticaButton from "./AntarcticaButton.jsx"
-import GreenlandButton from "./GreenlandButton.jsx"
-import { icons } from '../../api/resources';
+import stories from "../../story_climate/climate_stories.json";
+import AntarcticaButtom from "./antarcticaButtom.jsx"
+import GreenlandButtom from "./greenlandButtom.jsx"
+import Pick from "./pick_story.jsx"
 
-class StartJourney extends React.Component {
+class StartJourney extends Component {
 
   constructor(props) {
 
     super(props);
     autoBind(this)
 
-    const {startNewJourney} = this.props;
+    const {startNewJourney, storyInfo} =this.props;
+
+    let startIndex = stories.climate_stories.findIndex(
+      function (element) {
+        return startNewJourney === element.identifier;
+      }
+    )
+    // if startSlider was not in the listed stories, pick the first
+    if (startIndex < 0) {
+      startIndex = 0
+    };
+
     this.state = {
+      index : startIndex,
       isToggleOn: true,
       show: false,
-      climate_stories: climate_stories.climate_stories,
-      storyGreenland: climate_stories.greenland
+      climate_stories: stories.climate_stories
+
     };
     //this.togglePopover = this.togglePopover.bind(this); //makes it possible to click at climate button
 
 
     this.onChangeStory      = this.onChangeStory.bind(this);
-
-    this.getStoryAlaska     = this.getStoryAlaska.bind(this);
-    this.getStoryGreenland  = this.getStoryGreenland.bind(this);
-    this.getStoryAntarctica = this.getStoryAntarctica.bind(this);
+    this.getStoryGreenland  = this.getstorygreenland.bind(this);
+    this.getstoryantarctica = this.getstoryantarctica.bind(this);
     this.toggle = this.toggle.bind(this);
     //this.setStory = this.setStory.bind(this);
 
   }
-
   toggle() {
      this.setState({
        isToggleOn: true,
        show: !this.state.show,
-       climate_stories: climate_stories.climate_stories
+       climate_stories: stories.climate_stories
 
      });
    }
 
   onChangeStory(story) {
-
+    this.props.changeStory(story);
     //this.props.changeStory(story);
     this.setState(prevState => ({
       isToggleOn: !prevState.isToggleOn

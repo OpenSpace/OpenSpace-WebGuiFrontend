@@ -5,7 +5,7 @@ const defaultState = {
   data: {}
 }
 
-export const exoplanets = (state = defaultState, action) => { // state refers to docu
+export const exoplanets = (state = defaultState, action) => {
   switch (action.type) {
     case actionTypes.initializeExoplanets:
       return {

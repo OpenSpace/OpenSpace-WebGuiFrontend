@@ -43,6 +43,7 @@ export const ZoomOutLimitKey = 'Modules.Touch.TouchInteraction.ZoomOutLimit';
 export const ZoomInLimitKey = 'Modules.Touch.TouchInteraction.ZoomInLimit';
 // key for scale property
 export const ScaleKey = `Scene.${ValuePlaceholder}.Scale.Scale`;
+export const ScaleScreenSpaceKey = `ScreenSpace.${ValuePlaceholder}.Scale`;
 // keys for timePlayerController
 export const FastRewind = 'fast_rewind';
 export const Rewind = 'rewind';
@@ -59,7 +60,23 @@ export const SessionStateRecording = 'recording';
 export const SessionStatePlaying = 'playing';
 export const SessionStatePaused = 'playing-paused';
 
+<<<<<<< HEAD
 export const ExoplanetsModuleEnabledKey = 'Modules.Exoplanets.Enabled';
+=======
+// Component/Module enabled properties
+export const ExoplanetsModuleEnabledKey = 'Modules.Exoplanets.Enabled';
+export const SkyBrowserModuleEnabledKey = 'Modules.SkyBrowser.Enabled';
+
+// Sky browser properties
+export const SkyBrowser_ShowTitleInBrowserKey = 'Modules.SkyBrowser.ShowTitleInGuiBrowser';
+export const SkyBrowser_AllowCameraRotationKey = 'Modules.SkyBrowser.AllowCameraRotation';
+export const SkyBrowser_CameraRotationSpeedKey = 'Modules.SkyBrowser.CameraRotationSpeed';
+export const SkyBrowser_TargetAnimationSpeedKey = 'Modules.SkyBrowser.TargetAnimationSpeed';
+export const SkyBrowser_BrowserAnimationSpeedKey = 'Modules.SkyBrowser.BrowserAnimationSpeed';
+export const SkyBrowser_HideTargetsBrowsersWithGuiKey = 'Modules.SkyBrowser.HideTargetsBrowsersWithGui';
+export const SkyBrowser_InverseZoomDirectionKey = 'Modules.SkyBrowser.InverseZoomDirection';
+export const SkyBrowser_SpaceCraftAnimationTimeKey = 'Modules.SkyBrowser.SpaceCraftAnimationTime';
+>>>>>>> origin/master
 
 // renderableTypes
 export const RenderableTypes = {
