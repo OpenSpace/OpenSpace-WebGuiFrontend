@@ -60,9 +60,7 @@ export const SessionStateRecording = 'recording';
 export const SessionStatePlaying = 'playing';
 export const SessionStatePaused = 'playing-paused';
 
-<<<<<<< HEAD
-export const ExoplanetsModuleEnabledKey = 'Modules.Exoplanets.Enabled';
-=======
+
 // Component/Module enabled properties
 export const ExoplanetsModuleEnabledKey = 'Modules.Exoplanets.Enabled';
 export const SkyBrowserModuleEnabledKey = 'Modules.SkyBrowser.Enabled';
@@ -76,7 +74,7 @@ export const SkyBrowser_BrowserAnimationSpeedKey = 'Modules.SkyBrowser.BrowserAn
 export const SkyBrowser_HideTargetsBrowsersWithGuiKey = 'Modules.SkyBrowser.HideTargetsBrowsersWithGui';
 export const SkyBrowser_InverseZoomDirectionKey = 'Modules.SkyBrowser.InverseZoomDirection';
 export const SkyBrowser_SpaceCraftAnimationTimeKey = 'Modules.SkyBrowser.SpaceCraftAnimationTime';
->>>>>>> origin/master
+
 
 // renderableTypes
 export const RenderableTypes = {

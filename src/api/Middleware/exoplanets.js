@@ -10,17 +10,12 @@ const getExoplanets = async (luaApi, callback) => {
   if (!actualList) {
     return;
   }
-<<<<<<< HEAD
-  var listArray = Object.values(actualList);
-  listArray = listArray.map((item) => {
-    return { name: item, identifier: item };
-  });
-=======
+
   var listArray = Object.values(actualList)
   listArray = listArray.map(item => {
     return {"name": item, "identifier": item};
   })
->>>>>>> origin/master
+
   callback(listArray);
 };
 
@@ -42,11 +37,9 @@ export const exoplanets = (store) => (next) => (action) => {
       });
       break;
     case actionTypes.removeExoplanets:
-<<<<<<< HEAD
-      removeSystem(action.payload.system, () => {});
-=======
+
       removeSystem(action.payload.system, () => {})
->>>>>>> origin/master
+
       break;
     default:
       break;

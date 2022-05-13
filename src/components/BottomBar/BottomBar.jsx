@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { 
+import {
   subscribeToProperty,
   unsubscribeToProperty,
 } from '../../api/Actions';
@@ -19,12 +19,8 @@ import ClimatePanel from './ClimatePanel';
 import Slider from './Slider';
 import SkyBrowserPanel from './SkyBrowserPanel';
 
-<<<<<<< HEAD
-const BottomBar = ({ showFlightController }) => (
-  <div className={styles.BottomBar}>
-    <ClimatePanel />
-=======
-let BottomBar = ({ 
+
+let BottomBar = ({
   showExoplanets,
   showFlightController,
   showSkyBrowser,
@@ -42,7 +38,7 @@ let BottomBar = ({
   });
 
   return <div className={styles.BottomBar}>
->>>>>>> origin/master
+r
     <OriginPicker />
     <TimePicker />
     <SessionRec />

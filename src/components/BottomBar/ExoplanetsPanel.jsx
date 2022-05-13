@@ -1,19 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { 
+import {
   reloadPropertyTree,
   removeExoplanets,
   setPopoverVisibility,
-<<<<<<< HEAD
-  subscribeToProperty,
-  unsubscribeToProperty,
-} from '../../api/Actions';
-import { ExoplanetsModuleEnabledKey, NavigationAimKey, NavigationAnchorKey } from '../../api/keys';
-=======
   loadExoplanetsData,
 } from '../../api/Actions';
 import { NavigationAimKey, NavigationAnchorKey } from '../../api/keys';
->>>>>>> origin/master
 import propertyDispatcher from '../../api/propertyDispatcher';
 import subStateToProps from '../../utils/subStateToProps';
 import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
@@ -41,20 +34,10 @@ class ExoplanetsPanel extends Component {
   }
 
   componentDidMount() {
-<<<<<<< HEAD
-    const { startListening } = this.props;
-    startListening(ExoplanetsModuleEnabledKey);
-  }
-
-  componentWillUnmount() {
-    const { stopListening } = this.props;
-    stopListening(ExoplanetsModuleEnabledKey);
-=======
     const { isDataInitialized, loadData, luaApi } = this.props;
     if (!isDataInitialized) {
       loadData(luaApi);
     }
->>>>>>> origin/master
   }
 
   togglePopover() {
@@ -65,7 +48,7 @@ class ExoplanetsPanel extends Component {
     this.setState({
       starName: evt.target.value
     });
-  }  
+  }
 
   onSelect(identifier, evt) {
     this.setState({
@@ -117,7 +100,7 @@ class ExoplanetsPanel extends Component {
         closeCallback={this.togglePopover}
         detachable
         attached={true}
-      >        
+      >
         <div className={Popover.styles.content}>
           <Row>
             { this.props.hasSystems ? (
@@ -159,20 +142,12 @@ class ExoplanetsPanel extends Component {
   }
 
   render() {
-<<<<<<< HEAD
-    const { enabled, popoverVisible, hasSystems } = this.props;
-
-    if (!enabled) {
-      return <></>;
-    }
-=======
     const { popoverVisible } = this.props;
->>>>>>> origin/master
 
     return (
       <div className={Picker.Wrapper}>
-        <Picker 
-          className={`${popoverVisible && Picker.Active}`} 
+        <Picker
+          className={`${popoverVisible && Picker.Active}`}
           onClick={this.togglePopover}
         >
           <div>
@@ -186,26 +161,16 @@ class ExoplanetsPanel extends Component {
 }
 
 const mapSubStateToProps = ({
-<<<<<<< HEAD
-  properties,
-  propertyOwners,
-  popoverVisible,
-  luaApi,
-=======
   propertyOwners,
   popoverVisible,
   luaApi,
   isDataInitialized,
->>>>>>> origin/master
   exoplanetsData,
   anchor,
   aim
-}) => 
+}) =>
 {
-<<<<<<< HEAD
-=======
   // Find already existing systems
->>>>>>> origin/master
   var systems = [];
   for (const [key, value] of Object.entries(propertyOwners)) {
     if (value.tags.includes('exoplanet_system')) {
@@ -213,11 +178,7 @@ const mapSubStateToProps = ({
     }
   }
 
-  const enabledProp = properties[ExoplanetsModuleEnabledKey];
-  const enabled = enabledProp ? enabledProp.value : false;
-
   return {
-    enabled,
     popoverVisible: popoverVisible,
     exoplanetSystems: systems,
     isDataInitialized,
@@ -230,7 +191,6 @@ const mapSubStateToProps = ({
 };
 
 const mapStateToSubState = (state) => ({
-  properties: state.propertyTree.properties,
   propertyOwners: state.propertyTree.propertyOwners,
   popoverVisible: state.local.popovers.exoplanets.visible,
   luaApi: state.luaApi,
@@ -256,14 +216,8 @@ const mapDispatchToProps = dispatch => ({
   removeSystem: (system) => {
     dispatch(removeExoplanets({ system }));
   },
-  startListening: (uri) => {
-    dispatch(subscribeToProperty(uri));
-  },
-  stopListening: (uri) => {
-    dispatch(unsubscribeToProperty(uri));
-  },
   anchorDispatcher: propertyDispatcher(dispatch, NavigationAnchorKey),
-  aimDispatcher: propertyDispatcher(dispatch, NavigationAimKey),  
+  aimDispatcher: propertyDispatcher(dispatch, NavigationAimKey),
 })
 
 ExoplanetsPanel = connect(
