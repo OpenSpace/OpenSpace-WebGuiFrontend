@@ -2,7 +2,7 @@
 
 .alaska, .antarctica, .greenland {
   position: absolute;
-
+  font-size: 13px;
   z-index: 999;
   color: #fff;
   height: 35px;
@@ -19,21 +19,22 @@
     transition: transform ease-in .1s;
      background:darken($ui-background,8%);
   }
-
 }
+
 .alaska{
  left: 20px;
- top:250px;
+ //top:150%;
+ top: 250px;
 }
 .antarctica {
   left: 20px;
-  top:300px;
+  //top:175%;
+  top: 300px;
 }
-
 .greenland {
   left: 20px;
+  //top: 200%;
   top: 350px;
-
 }
 
 $icon-size: 20px;

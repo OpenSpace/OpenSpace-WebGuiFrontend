@@ -14,7 +14,6 @@
 .Header {
     color: blue;
 }
-
 .pre {
     display: block;
     padding: 10px 30px;
@@ -28,9 +27,8 @@
   margin: 0 auto;
   height: 100%;
   overflow: hidden;
-  background-color: #d3d3d3;
+//  background-color: #d3d3d3;
 }
-
 .TellStory{
   font-family: $font-family;
   height: 20%;
@@ -39,19 +37,22 @@
   align-items: center;
   justify-content: center;
   position: absolute;
-  top: 15%;
+  top: 30%;
   left: 10%;
   z-index: 999;
   color: white;
+  font-size: 16px;
+}
+
+.p{
+
+  font-size: 10px;
 }
 
 .flex {
   width: 50%;
   vertical-align: middle;
 }
-
-
-
 .Grid {
     display: flex;
     flex-wrap: wrap;
@@ -61,16 +62,12 @@
       display: none;
     }
 }
-
 .buttonIconGlacier {
     font-size: 0em;
 }
 .buttonIcon {
     font-size: 2em;
 }
-
-
-
 .bottomBarIcon {
     font-size: 2em;
 }

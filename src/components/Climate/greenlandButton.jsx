@@ -10,8 +10,8 @@ const GreenlandButton = ({ click }) => (
   </div>
 );
 
-GreenlandButton.propTypes = {
+/*GreenlandButton.propTypes = {
   greenland: PropTypes.func.isRequired,
-};
+};*/
 
 export default GreenlandButton;

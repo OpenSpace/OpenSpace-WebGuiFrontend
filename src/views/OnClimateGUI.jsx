@@ -190,7 +190,7 @@ class OnClimateGui extends Component {
     return (
 
       <div className={styles.app}>
-    
+
         { connectionLost && (
           <Overlay>
             <Error>
@@ -208,9 +208,6 @@ class OnClimateGui extends Component {
           {story.title}
         </p>
 
-
-
-
         <section className={styles.Grid__Left}>
           <StartJourney startNewJourney ={startJourney} />
 
@@ -222,8 +219,6 @@ class OnClimateGui extends Component {
           <BottomBar showFlightController={this.props.showFlightController}/>
           <KeybindingPanel />
         </section>
-
-
       </div>
     );
 }
@@ -241,7 +236,6 @@ OnClimateGui = withRouter(connect(
   mapStateToProps,
   mapDispatchToProps,
 )(OnClimateGui));
-
 
 OnClimateGui.propTypes = {
   StartConnection: PropTypes.func,

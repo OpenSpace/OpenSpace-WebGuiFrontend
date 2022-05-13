@@ -53,6 +53,7 @@ class StartJourney extends React.Component {
 
 
     this.onChangeStory      = this.onChangeStory.bind(this);
+    this.getStoryAlaska = this.getStoryAlaska.bind(this);
     this.getStoryGreenland  = this.getStoryGreenland.bind(this);
     this.getStoryAntarctica = this.getStoryAntarctica.bind(this);
     this.toggle = this.toggle.bind(this);
@@ -125,16 +126,9 @@ class StartJourney extends React.Component {
       <pre>
         {JSON.stringify(this.state.climate_stories, 4, 1) }
         //{JSON.stringify({ title: "Pick a story", description: "climate climate climate satellite satellite climate" }.title)}
-
       </pre>
-
     )
-
-
   }
-
-
-
 
   get popover() {
     var greenland;
@@ -193,19 +187,19 @@ class StartJourney extends React.Component {
     return <Icon icon="language" className={styles.Icon} />;
   }
 
-  render() {
 
+
+  render() {
     return (
     <div className={styles.Hej}>
-
       <div className = {styles.TellStory}>
-        <div class = "flex">
+        <div className = "flex">
         {
           climate_stories.startpage.map((story) => {
             return (
-              <div>
-                <h1>{story.title}</h1>
-                <p>{story.info}</p>
+              <div key = {story.identifier}>
+                <h1 key = {story.title}>{ story.title}</h1>
+                <p key= {story.info} >{ story.info}</p>
               </div>
             );
           })
@@ -216,21 +210,21 @@ class StartJourney extends React.Component {
         {
           climate_stories.pickstory.map((story) => {
             return (
-              <div>
-                <h4>{story.title}</h4>
+              <div key = {story.identifier}>
+                <h4 key = {story.title} > {story.title}</h4>
               </div>
             );
           })
         }
         </div>
-
-        <AlaskaButton getStoryAlaska = {this.getStoryAlaska}/>
+        <AlaskaButton     getStoryAlaska     = {this.getStoryAlaska}/>
         <AntarcticaButton getStoryAntarctica = {this.getStoryAntarctica}/>
         <GreenlandButton  getStoryGreenland  = {this.getStoryGreenland} />
-
       </div>
     </div>
     );
+
+
   }
 }
 
