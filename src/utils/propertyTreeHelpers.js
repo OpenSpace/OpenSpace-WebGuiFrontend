@@ -112,7 +112,7 @@ export function removeLastWordFromUri(uri) {
 // Returns whether a property should be visible in the gui
 export function isPropertyVisible(properties, uri) {
   const property = properties[uri];
-  const visibility = properties['OpenSpaceEngine.Visibility'];
+  const visibility = properties['OpenSpaceEngine.PropertyVisibility'];
 
   const splitUri = uri.split('.');
   if (splitUri.length > 1) {
