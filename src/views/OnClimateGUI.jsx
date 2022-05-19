@@ -89,14 +89,14 @@ class OnClimateGui extends Component {
     } = this.props;
     const previousStory = currentStory;
     this.setState({ currentStory: selectedStory });
-    this.setState({json: getJson});
+
     // Return if the selected story is the same as the OpenSpace property value
     if (previousStory === selectedStory) {
       return;
     }
-    getJson = this.addStoryTree(selectedStory);
+    const getJson = this.addStoryTree(selectedStory);
 
-
+    this.setState({json: getJson});
     // Set all the story specific properties
     //changePropertyValue(anchorNode.description.Identifier, json.start.planet);
     setStoryStart(luaApi, getJson.start.location, getJson.start.date);
@@ -108,6 +108,9 @@ class OnClimateGui extends Component {
     this.checkStorySettings(story, true);
     // Check and set the settings of the current story
     this.checkStorySettings(getJson, false);
+    return(
+      console.log(getJson.start.location)
+    )
   }
 
 
@@ -124,9 +127,9 @@ class OnClimateGui extends Component {
   // Read in json-file for new story and add it to redux
   addStoryTree(selectedStory) {
     const { AddStoryTree, AddStoryInfo, ResetStoryInfo } = this.props;
-    const storyFile = storyFileParserClimate(selectedStory);
+    const storyFile =  storyFileParserClimate(selectedStory);
 
-    AddStoryTree(storyFile);
+    //AddStoryTree(storyFile);
 
 
     return storyFile;
@@ -152,7 +155,6 @@ class OnClimateGui extends Component {
     const { currentStory, startJourney} = this.state;
 
 
-    
     return (
 
       <div className={styles.app}>

@@ -102,7 +102,7 @@ export const infoFileParser = (infoFile) => {
 
 
 export const storyFileParserClimate = (story) => {
-  const json = require(`../story_climate/story_climate_alaska.json`);
+  const json = require(`../story_climate/story_climate_${story}.json`);
   // TODO: Loop through all items and verify their format and type
   const parsedJSON = json;
 
@@ -122,7 +122,7 @@ export const storyFileParserClimate = (story) => {
 };
 
 export const infoFileParserClimate = (story) => {
-  const info = require(`../story_climate/${infoFile}.json`);
+  const info = require(`../story_climate/${story}.json`);
   const parsedInfo = info;
   return parsedInfo;
 };
