@@ -4,7 +4,7 @@
   "storyinfo": "Climate Climate",
   "overviewlimit": 1.0e+8,
   "focusbuttons": ["Earth"],
-
+  "hidenodes": ["Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune"],
   "timecontroller": true,
   "actions": ["climate_mode"],
   "datecontroller":  [

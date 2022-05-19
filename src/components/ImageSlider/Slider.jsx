@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { storyImages } from '../../api/resources';
-import stories from '../../story_climate/climate_stories.json';
-//import stories from '../../stories/stories.json';
+//import  from '../../story_climate/climate_stories.json';
+import stories from '../../stories/stories.json';
 import LeftArrow from './Arrows/LeftArrow';
 import RightArrow from './Arrows/RightArrow';
 import Dots from './Dots/Dots';
@@ -31,6 +31,7 @@ class Slider extends Component {
       imagePaths: [],
       stories: stories.stories,
     };
+
 
     // Push images from stories object into images array
     for (let i = 0; i < Object.keys(storyImages).length; i++) {
@@ -78,7 +79,7 @@ class Slider extends Component {
       return null;
     }
     const image = storyImages[story.identifier];
-
+     console.log("f " + this.props.changeStory);
     return (
       <div className={styles.Slider}>
         <div className={styles.SliderWrapper}>

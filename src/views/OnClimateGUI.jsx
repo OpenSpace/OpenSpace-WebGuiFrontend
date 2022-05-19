@@ -20,6 +20,7 @@ import ActionsPanel from '../components/BottomBar/ActionsPanel';
 import Sidebar from '../components/Sidebar/Sidebar';
 import NodeMetaContainer from '../components/NodeMetaPanel/NodeMetaContainer';
 import NodePopOverContainer from '../components/NodePropertiesPanel/NodePopOverContainer';
+import ExploreClimate from '../components/climate/exploreClimate'
 
 import {
   setPropertyValue, startConnection, fetchData, addStoryTree, subscribeToProperty,
@@ -40,7 +41,7 @@ import { UpdateDeltaTimeNow } from '../utils/timeHelpers';
 
 import {
   toggleShading, toggleHighResolution, toggleShowNode, toggleGalaxies,
-  setStoryStart, showDevInfoOnScreen, storyFileParser, infoFileParser, flyTo,
+  setStoryStart, showDevInfoOnScreen, storyFileParserClimate, infoFileParserClimate, flyTo, DataLoader,
 } from '../utils/storyHelpers';
 //import  climate_stories from "../../stories/stories.json";
 //------------------------------------------------------------------------------//
@@ -52,10 +53,17 @@ class OnClimateGui extends Component {
     this.checkedVersion = false;
     this.state = {
       developerMode: false,
-      currentStory: DefaultStory,
+      currentStory: "default",
       sliderStartStory: DefaultStory,
-      //startJourney: climate_stories,
+
+      startJourney: "default",
     };
+    this.changeStory = this.changeStory.bind(this);
+    this.addStoryTree = this.addStoryTree.bind(this);
+    this.setStory = this.setStory.bind(this);
+
+    this.resetStory = this.resetStory.bind(this);
+
 
     this.addStoryTree = this.addStoryTree.bind(this);
     this.changeStory = this.changeStory.bind(this);
@@ -68,96 +76,63 @@ class OnClimateGui extends Component {
 
 // where we call api
  componentDidMount() {
+    this.setState({ data: [] });
     const { luaApi, FetchData, StartConnection } = this.props;
     StartConnection();
-    FetchData(InfoIconKey); //idk if we need this
+    //FetchData(InfoIconKey);
 
-    document.addEventListener('keydown', this.handleKeyPress);
-    showDevInfoOnScreen(luaApi, false);
+    //showDevInfoOnScreen(luaApi, false);
   }
 
-  componentWillUnmount() {
-    document.removeEventListener('keydown', this.handleKeyPress);
-  }
 
-  setStory(selectedStory) {
+
+
+
+ setStory(selectedStory) {
     const {
-      anchorNode, changePropertyValue, luaApi, scaleNodes, story, storyIdentifier,
+      changePropertyValue, luaApi, scaleNodes, story, storyIdentifier, currentStory
     } = this.props;
-    const previousStory = storyIdentifier;
-
+    const previousStory = currentStory;
     this.setState({ currentStory: selectedStory });
-
+    this.setState({json: getJson});
     // Return if the selected story is the same as the OpenSpace property value
     if (previousStory === selectedStory) {
       return;
     }
+    getJson = this.addStoryTree(selectedStory);
 
-    const json = this.addStoryTree(selectedStory);
 
     // Set all the story specific properties
-    changePropertyValue(anchorNode.description.Identifier, json.start.planet);
-    setStoryStart(luaApi, json.start.location, json.start.date);
+    //changePropertyValue(anchorNode.description.Identifier, json.start.planet);
+    setStoryStart(luaApi, getJson.start.location, getJson.start.date);
 
-    if (json.overviewlimit) {
-      changePropertyValue(ZoomOutLimitKey, json.overviewlimit);
-    }
-    if (json.inzoomlimit) {
-      changePropertyValue(ZoomInLimitKey, json.inzoomlimit);
-    } else {
-      json.inzoomlimit = 1.0;
-      changePropertyValue(ZoomInLimitKey, 1.0);
 
-    }
-    if (json.start.overviewzoom) {
-      flyTo(luaApi, json.overviewlimit, 5.0);
-    }
 
-    changePropertyValue(anchorNode.description.Identifier, json.start.planet);
-
+    //changePropertyValue(anchorNode.description.Identifier, json.start.planet);
     // Check settings of the previous story and reset values
     this.checkStorySettings(story, true);
     // Check and set the settings of the current story
-    this.checkStorySettings(json, false);
-
-    // If the previous story scaled planets reset value
-    if (story.scalenodes) {
-      scaleNodes.forEach((node) => {
-        changePropertyValue(node.description.Identifier, 1);
-      });
-    }
-    // If the previous story toggled bool properties reset them to default value
-    if (this.props.story.toggleboolproperties) {
-      this.props.story.toggleboolproperties.forEach((property) => {
-        const defaultValue = property.defaultvalue ? true : false;
-        if (property.isAction) {
-          if (defaultValue) {
-            this.props.triggerActionDispatcher(property.actionEnabled);
-          }
-          else {
-            this.props.triggerActionDispatcher(property.actionDisabled);
-          }
-        }
-        else {
-          this.props.changePropertyValue(property.URI, defaultValue);
-        }
-      });
-    }
+    this.checkStorySettings(getJson, false);
   }
 
+
+  checkStorySettings(story, value) {
+    const { luaApi } = this.props;
+
+    const oppositeValue = !value;
+    if (story.hidenodes) {
+      story.hidenodes.forEach(node => toggleShowNode(luaApi, node, value));
+    }
+
+  }
 
   // Read in json-file for new story and add it to redux
   addStoryTree(selectedStory) {
     const { AddStoryTree, AddStoryInfo, ResetStoryInfo } = this.props;
-    const storyFile = storyFileParser(selectedStory);
+    const storyFile = storyFileParserClimate(selectedStory);
 
     AddStoryTree(storyFile);
-    if (storyFile.infoiconsfile) {
-      const info = infoFileParser(storyFile.infoiconsfile);
-      AddStoryInfo(info);
-    } else {
-      ResetStoryInfo();
-    }
+
 
     return storyFile;
   }
@@ -166,20 +141,22 @@ class OnClimateGui extends Component {
     this.setStory(e.target.id);
   }
 
-
   resetStory() {
     const { luaApi } = this.props;
     const { currentStory } = this.state;
 
-    this.state.startJourney = currentStory;
+
+    this.setState({startJourney: currentStory});
     UpdateDeltaTimeNow(luaApi, 1);
     this.setStory(DefaultStory);
   }
 
   render() {
     //let storyIdentifier = [];
-    const { connectionLost, story, storyIdentifier } = this.props;
-    const { currentStory, developerMode, sliderStartStory, startJourney } = this.state;
+    const { connectionLost, story, storyIdentifier  } = this.props;
+    const { currentStory, startJourney} = this.state;
+
+
 
     return (
 
@@ -190,29 +167,34 @@ class OnClimateGui extends Component {
             <Error>
               Connection lost. Trying to reconnect again soon.
             </Error>
+
           </Overlay>
         )}
+
+
         <p className={styles.storyTitle}>
-          {story.title}
+          {this.state.data}
         </p>
-
         <section className={styles.Grid__Left}>
-          <StartJourney startNewJourney ={startJourney} />
 
-          <Sidebar/>
+
+        {(currentStory === DefaultStory)
+          ? <StartJourney startNewJourney = {startJourney} changeStory={this.setStory}  />
+          : <ExploreClimate resetStory={this.resetStory} changeStory={this.changeStory} currentStory ={currentStory}  />
+        }
+        <Sidebar/>
         </section>
         <section className={styles.Grid__Right}>
           <NodePopOverContainer/>
           <NodeMetaContainer/>
-          <BottomBar showFlightController={this.props.showFlightController}/>
+
           <KeybindingPanel />
         </section>
       </div>
     );
 }
 }
-
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   let storyIdentifier = [];
   let anchorNode;
   const scaleNodes = [];
@@ -233,7 +215,6 @@ const mapStateToProps = (state) => {
       });
     }
   }
-
   return {
     storyIdentifier,
     connectionLost: state.connection.connectionLost,
@@ -242,13 +223,33 @@ const mapStateToProps = (state) => {
     anchorNode,
     scaleNodes,
     luaApi: state.luaApi,
-    version: state.version,
   };
 };
 
 const mapDispatchToProps = dispatch => ({
-  startConnection: () => {
-    dispatch(startConnection());
+  changePropertyValue: (uri, value) => {
+    dispatch(setPropertyValue(uri, value));
+  },
+  triggerActionDispatcher: (action) => {
+    dispatch(triggerAction(action));
+  },
+  /*FetchData: (id) => {
+    dispatch(fetchData(id));
+  },*/
+  AddStoryTree: (story) => {
+    dispatch(addStoryTree(story));
+  },
+  AddStoryInfo: (info) => {
+    dispatch(addStoryInfo(info));
+  },
+  ResetStoryInfo: () => {
+    dispatch(resetStoryInfo());
+  },
+  startListening: (uri) => {
+    dispatch(subscribeToProperty(uri));
+  },
+  stopListening: (uri) => {
+    dispatch(unsubscribeToProperty(uri));
   },
   changePropertyValue: (uri, value) => {
     dispatch(setPropertyValue(uri, value));
@@ -275,13 +276,11 @@ const mapDispatchToProps = dispatch => ({
     dispatch(unsubscribeToProperty(uri));
   },
 });
-
-
-
 OnClimateGui = withRouter(connect(
   mapStateToProps,
   mapDispatchToProps,
 )(OnClimateGui));
+
 
 
 
@@ -326,34 +325,35 @@ const mapDispatch = dispatch => ({
 
 RequireLuaApi = connect(mapState, mapDispatch)(RequireLuaApi);
 
-const WrappedOnTouchGui = props => <RequireLuaApi><OnClimateGui {...props} /></RequireLuaApi>;
+const WrappedOnClimateGui = props => <RequireLuaApi><OnClimateGui {...props} /></RequireLuaApi>;
 
 OnClimateGui.propTypes = {
   StartConnection: PropTypes.func,
-  FetchData: PropTypes.func,
+  //FetchData: PropTypes.func,
   changePropertyValue: PropTypes.func,
   AddStoryTree: PropTypes.func,
   AddStoryInfo: PropTypes.func,
   ResetStoryInfo: PropTypes.func,
   storyIdentifier: PropTypes.objectOf(PropTypes.shape({})),
   story: PropTypes.objectOf(PropTypes.shape({})),
-  anchorNode: PropTypes.objectOf(PropTypes.shape({})),
   scaleNodes: PropTypes.objectOf(PropTypes.shape({})),
   connectionLost: PropTypes.bool,
+  setStory: PropTypes.func,
+
 };
 
 OnClimateGui.defaultProps = {
   StartConnection: () => {},
-  FetchData: () => {},
+  //FetchData: () => {},
   changePropertyValue: () => {},
   AddStoryTree: () => {},
   AddStoryInfo: () => {},
   ResetStoryInfo: () => {},
   storyIdentifier: {},
   story: {},
-  anchorNode: {},
+
   scaleNodes: {},
   connectionLost: null
 };
 
-export default WrappedOnTouchGui;
+export default WrappedOnClimateGui;

@@ -93,8 +93,36 @@ export const storyFileParser = (story) => {
   return parsedJSON;
 };
 
+
 export const infoFileParser = (infoFile) => {
   const info = require(`../stories/${infoFile}.json`);
+  const parsedInfo = info;
+  return parsedInfo;
+};
+
+
+export const storyFileParserClimate = (story) => {
+  const json = require(`../story_climate/story_climate_alaska.json`);
+  // TODO: Loop through all items and verify their format and type
+  const parsedJSON = json;
+
+
+  // The strings from the json files are assumed to be UTC
+  // unless specified as 'NOW'
+  /*const startDateString = json.start.date;
+  let startDate;
+  if (startDateString === 'NOW') {
+    startDate = new Date();
+  } else {
+    startDate = new Date(startDateString);
+  }
+  parsedJSON.start.date = startDate;
+*/
+  return parsedJSON;
+};
+
+export const infoFileParserClimate = (story) => {
+  const info = require(`../story_climate/${infoFile}.json`);
   const parsedInfo = info;
   return parsedInfo;
 };

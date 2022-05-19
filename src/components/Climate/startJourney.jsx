@@ -2,6 +2,7 @@ import React, { Component, useState } from "react";
 import classNames from 'classnames'
 import autoBind from 'react-autobind'
 import { connect } from "react-redux";
+import PropTypes from 'prop-types';
 import {
   setActionsPath,
   setPopoverVisibility,
@@ -11,12 +12,14 @@ import {
   refreshSessionRecording,
   subscribeToSessionRecording,
   unsubscribeToSessionRecording,
+
 } from "../../api/Actions";
 import {
   sessionStateIdle,
   sessionStatePaused,
   sessionStatePlaying,
   sessionStateRecording,
+  DefaultStory,
 } from "../../api/keys";
 import subStateToProps from "../../utils/subStateToProps";
 import InfoBox from "../common/InfoBox/InfoBox";
@@ -28,8 +31,14 @@ import Popover from "../common/Popover/Popover";
 import Row from "../common/Row/Row";
 import styles from "./startJourney.scss";
 import buttonStyles from './Button.scss';
+import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
 
-import  climate_stories from "../../story_climate/pick_story.json";
+import StoryButton from './StoryButton';
+import Selectstorybutton from './selectStoryButton';
+import PickStory from './pick_story'
+
+import stories from "../../story_climate/climate_stories.json";
+import climate_stories from "../../story_climate/pick_story.json";
 import AlaskaButton from "./AlaskaButton.jsx"
 import AntarcticaButton from "./AntarcticaButton.jsx"
 import GreenlandButton from "./GreenlandButton.jsx"
@@ -41,59 +50,70 @@ class StartJourney extends Component {
   constructor(props) {
 
     super(props);
-    autoBind(this)
+    const {startNewJourney} = this.props;
 
-    const {startNewJourney} =this.props;
+    let startIndex = stories.stories.findIndex(
+
+      function (element) {
+        return startNewJourney === element.identifier;
+      }
+    )
+
+    // if startNewJourney was not in the listed stories, pick the first
+    if (startIndex < 0) {
+      startIndex = 0
+    };
+
+
+
+
     this.state = {
+      index: startIndex,
        isToggleOn: true,
        show: false,
-       climate_stories: climate_stories.climate_stories
+       climate_stories: climate_stories,
+       stories: stories.stories,
+       getstorygreenland : DefaultStory,
+       storiesArray: []
 
     };
     //this.togglePopover = this.togglePopover.bind(this); //makes it possible to click at climate button
 
-    this.onChangeStory      = this.onChangeStory.bind(this);
-    this.getStoryGreenland  = this.getstorygreenland.bind(this);
+    for (let i = 0; i < Object.values(this.state.stories); i++) {
+      this.state.storiesArray.push(Object.values(this.state.stories)[i]);
+    }
+
+    this.getstorygreenland  = this.getstorygreenland.bind(this);
     this.getStoryAlaska  = this.getstoryalaska.bind(this);
     this.getstoryantarctica = this.getstoryantarctica.bind(this);
     this.toggle = this.toggle.bind(this);
+    //this.handleStory = this.handleStory.bind(this);
+    this.onChangeStory = this.onChangeStory.bind(this);
     //this.setStory = this.setStory.bind(this);
 
   }
+  onChangeStory(story) {
+    this.props.changeStory(story);
+  }
+
   toggle() {
      this.setState({
        isToggleOn: true,
        show: !this.state.show,
-       climate_stories: stories.climate_stories
+       climate_stories: climate_stories,
+       getstorygreenland: {climate_stories: null}
 
      });
    }
 
-  onChangeStory(story) {
-    this.props.changeStory(story);
-    //this.props.changeStory(story);
-    this.setState(prevState => ({
-      isToggleOn: !prevState.isToggleOn
-    }));
-    //this.setStory(story.target.id)
-    //this.setStory = this.setStory.bind(this);
-  }
 
-  // Handle the click of a dot
-  handleDotClick(i) {
-    if (i === this.state.index) { return; }
-    this.setState({ index: i });
-  }
+
 
   getstorygreenland(){
     //climate_stories.greenland
-    climate_stories.greenland.map((story) => {
-      this.state.storyGreenland.title = story.title
+    this.setState({ index: this.state.index + 2 });
 
-    })
-    return(
-      <div><p>{this.state.storyGreenland}</p></div>
-    )
+
 
   }
 
@@ -194,7 +214,7 @@ class StartJourney extends Component {
   }*/
 
   get icon() {
-    const { identifier } = this.props;
+    //const { identifier } = this.props;
     const icon = icons[identifier];
     if (icon) {
       return <img src={icon} className={styles.iconImage} alt={identifier} />;
@@ -202,23 +222,31 @@ class StartJourney extends Component {
     return <Icon icon="language" className={styles.Icon} />;
   }
 
-
+  render() {
+    const story = Object.values(this.state.stories)[this.state.index];
+      //console.log("f " + this.props.changeStory);
+    if (!this.state.storiesArray) {
+      return null;
+    }
 
   render() {
     return (
+
     <div className={styles.Hej}>
       <div className = {styles.TellStory}>
         <div className = "flex">
         {
-          <div><h1>hej</h1>
-          <h1>{this.state.storyGreenland}</h1>
-          </div>,
+
+
           climate_stories.startpage.map((story) => {
             return (
               <div key = {story.id}>
-                <h1 key = {story.title}>{ story.title}</h1>
-                <p key= {story.info} >{story.info}</p>
+                <h1 key = {story.title}>{story.title}</h1>
+                <p
+                  key= {story.info}>{story.info}</p>
+
               </div>
+
             );
           })
 
@@ -226,33 +254,50 @@ class StartJourney extends Component {
         <br/>
         <br/>
         <br/>
-        {
-          climate_stories.pickstory.map((story) => {
-            return (
-              <div key = {story.id}>
-                <h4 key = {story.title} > {story.title}</h4>
+        <br/>
+        <br/>
+
+        <div className = {styles.TellStory}>
+          <div className ={styles.break} >
+
+
+                  {this.state.stories.map((story, index) => {
+                      return(
+                        <span key = {index}>
+                        <PickStory key = {index}
+                          storyInfo = {story}
+                          onChangeStory = {this.onChangeStory}
+                        />
+                        <br/>
+
+                        </span>
+                    );
+                  })}
+
               </div>
-            );
-          })
-        }
         </div>
 
-        <AlaskaButton     getStoryAlaska     = {this.getStoryAlaska}/>
+      /*  <AlaskaButton     getStoryAlaska     = {this.getStoryAlaska}/>
         <AntarcticaButton getStoryAntarctica = {this.getStoryAntarctica}/>
-        <GreenlandButton  getStoryGreenland  = {this.getStoryGreenland} />
+        <GreenlandButton  getStoryGreenland  = {this.getStoryGreenland} />*/
       </div>
     </div>
+  </div>
     );
 
 
   }
 }
 
-const App = () => {
-  return (
-    <div>
-      <StartJourney posts={climate_stories} />
-    </div>
-  );
+
+StartJourney.propTypes = {
+ changeStory: PropTypes.func.isRequired,
+
 };
+
+
+
+
+
+
 export default StartJourney;
