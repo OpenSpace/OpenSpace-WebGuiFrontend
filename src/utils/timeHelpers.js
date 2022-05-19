@@ -23,7 +23,7 @@ export const setDateToNow = (luaApi) => {
 export const setDate = (luaApi, date) => {
   // date.toJSON returns a UTC format string including timezone 'Z'
   // but the lua api only accepts a UTC string without time zone
-  const fixedDateString = date.toJSON().replace('Z', '');
+  const fixedDateString = JSON.stringify(date).replace('Z', '');
   luaApi.time.setTime(fixedDateString);
 };
 
