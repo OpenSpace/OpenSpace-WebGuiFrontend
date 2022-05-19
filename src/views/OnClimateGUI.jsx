@@ -104,7 +104,16 @@ class OnClimateGui extends Component {
     this.setState({json: getJson});
     // Set all the story specific properties
     //changePropertyValue(anchorNode.description.Identifier, json.start.planet);
-    setStoryStart(luaApi, getJson.start.location, getJson.start.date);
+    return(
+      console.log(selectedStory),
+      console.log(getJson.start.position)
+    );
+    luaApi.globebrowsing.goToGeo(
+      getJson.start.location.latitude,
+      getJson.start.location.longitude,
+      getJson.start.location.altitude,
+    );
+    setStoryStart(luaApi, getJson.start, getJson.start.date);
 
 
 
@@ -113,9 +122,7 @@ class OnClimateGui extends Component {
     this.checkStorySettings(story, true);
     // Check and set the settings of the current story
     this.checkStorySettings(getJson, false);
-    return(
-      console.log(getJson.start.location)
-    )
+
   }
 
 

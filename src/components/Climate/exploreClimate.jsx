@@ -24,7 +24,7 @@ class exploreClimate extends Component{
 
 
   render() {
-    //console.log("tjeeeeena " + this.props.currentStory)
+    // console.log("tjeeeeena " + this.props.currentStory)
     return (
 
 

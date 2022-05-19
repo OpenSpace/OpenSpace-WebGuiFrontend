@@ -26,13 +26,12 @@
   //z-index: 999;
   color: #fff;
   height: 35px;
-  top:250px;
-  width: 150px;
+  width: 280px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: $ui-background;
-  border-radius: 10px;
+  border-radius: 12px;
   cursor: pointer;
   transition: transform ease-in .1s;
 
@@ -40,12 +39,6 @@
     transition: transform ease-in .1s;
      background:darken($ui-background,8%);
   }
-}
-
-.flexB{
-  width: 50%;
-  vertical-align: middle;
-  
 }
 
 .alaska{

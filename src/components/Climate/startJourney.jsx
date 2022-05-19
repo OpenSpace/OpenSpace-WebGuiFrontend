@@ -39,9 +39,8 @@ import PickStory from './pick_story'
 
 import stories from "../../story_climate/climate_stories.json";
 import climate_stories from "../../story_climate/pick_story.json";
-import AlaskaButton from "./AlaskaButton.jsx"
-import AntarcticaButton from "./AntarcticaButton.jsx"
-import GreenlandButton from "./GreenlandButton.jsx"
+
+
 import { icons } from '../../api/resources';
 import ClimatePanel from '../BottomBar/ClimatePanel.jsx'
 class StartJourney extends Component {
@@ -231,8 +230,6 @@ class StartJourney extends Component {
       <div className = {styles.TellStory}>
         <div className = "flex">
         {
-
-
           climate_stories.startpage.map((story) => {
             return (
               <div key = {story.id}>
@@ -252,32 +249,23 @@ class StartJourney extends Component {
         <br/>
         <br/>
 
-        <div className = {styles.TellStory}>
+
+        {this.state.stories.map((story, index) => {
+
+           //console.log(itemd)
+            return(
+
+              <PickStory key = {index}
+                storyInfo = {story}
+                onChangeStory = {this.onChangeStory}
+              />
+
+
+          );
+        })}
 
 
 
-                  {this.state.stories.map((story, index) => {
-
-                      return(
-                        <div className = "flex">
-                        <span key = {index } id= {index}>
-                        <PickStory key = {index}
-                          storyInfo = {story}
-                          onChangeStory = {this.onChangeStory}
-                        />
-
-
-
-
-                        </span>
-                        </div>
-                    );
-                  })}
-        </div>
-
-      /*  <AlaskaButton     getStoryAlaska     = {this.getStoryAlaska}/>
-        <AntarcticaButton getStoryAntarctica = {this.getStoryAntarctica}/>
-        <GreenlandButton  getStoryGreenland  = {this.getStoryGreenland} />*/
       </div>
     </div>
   </div>

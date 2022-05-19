@@ -18,18 +18,19 @@ class Pick extends Component {
   render() {
     const { storyInfo } = this.props;
 
-
-
+    //console.log('item' + storyInfo.id)
+    var styles = 'item' + storyInfo.id
     return (
-      <div className={styles.generalB}>
-      <div className = "flex">
-          <StoryButton
-            pickStory={this.handleStory}
-            storyIdentifier={storyInfo.identifier}
-            storyId = {storyInfo.id}
-          />
+
+          <div style={{height: 40+2*storyInfo.id}} >
+
+            <StoryButton
+              pickStory={this.handleStory}
+              storyIdentifier={storyInfo.identifier}
+              storyId = {storyInfo.id}
+            />
+
           </div>
-      </div>
     );
   }
 }
