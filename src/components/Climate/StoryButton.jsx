@@ -13,6 +13,7 @@ const StoryButton = ({ pickStory, storyIdentifier }) => (
 StoryButton.propTypes = {
   pickStory: PropTypes.func.isRequired,
   storyIdentifier: PropTypes.string.isRequired,
+  storyId: PropTypes.string.isRequired,
 };
 
 export default StoryButton;

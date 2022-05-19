@@ -25,6 +25,7 @@ class Pick extends Component {
           <StoryButton
             pickStory={this.handleStory}
             storyIdentifier={storyInfo.identifier}
+            storyId = {storyInfo.id}
           />
       </div>
     );

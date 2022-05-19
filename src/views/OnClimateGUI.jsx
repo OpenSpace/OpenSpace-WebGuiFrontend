@@ -152,7 +152,7 @@ class OnClimateGui extends Component {
     const { currentStory, startJourney} = this.state;
 
 
-    //console.log(this.changeStory)
+    
     return (
 
       <div className={styles.app}>
@@ -174,7 +174,7 @@ class OnClimateGui extends Component {
 
 
         {(currentStory === DefaultStory)
-          ? <StartJourney startNewJourney = {startJourney} changeStory={this.changeStory}  />
+          ? <StartJourney startNewJourney = {startJourney} changeStory={this.setStory}  />
           : <ExploreClimate resetStory={this.resetStory} changeStory={this.changeStory} currentStory ={currentStory}  />
         }
         <Sidebar/>
