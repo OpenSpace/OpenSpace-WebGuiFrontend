@@ -7,8 +7,7 @@ import styles from './Button.scss';
 const StoryButton = ({ pickStory, storyIdentifier }) => (
   <div onClick={pickStory} id={storyIdentifier} role="button" tabIndex="0">
 
-    <SmallLabel className={styles.generalB} id={storyIdentifier}>{storyIdentifier}</SmallLabel>
-      <Icon icon="chevron_right" className={styles.Icon} />
+    <SmallLabel  id={storyIdentifier}>{storyIdentifier}</SmallLabel>
   </div>
 );
 

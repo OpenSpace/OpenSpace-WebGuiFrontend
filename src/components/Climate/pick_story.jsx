@@ -22,7 +22,7 @@ class Pick extends Component {
     var styles = 'item' + storyInfo.id
     return (
 
-          <div style={{height: 40+2*storyInfo.id}} >
+          <div style={{height: 40+1*storyInfo.id}} >
 
             <StoryButton
               pickStory={this.handleStory}
