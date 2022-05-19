@@ -253,23 +253,26 @@ class StartJourney extends Component {
         <br/>
 
         <div className = {styles.TellStory}>
-          <div className ={styles.break} >
+
 
 
                   {this.state.stories.map((story, index) => {
+
                       return(
-                        <span key = {index}>
+                        <div className = "flex">
+                        <span key = {index } id= {index}>
                         <PickStory key = {index}
                           storyInfo = {story}
                           onChangeStory = {this.onChangeStory}
                         />
-                        <br/>
+
+
+
 
                         </span>
+                        </div>
                     );
                   })}
-
-              </div>
         </div>
 
       /*  <AlaskaButton     getStoryAlaska     = {this.getStoryAlaska}/>

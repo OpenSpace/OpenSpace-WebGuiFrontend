@@ -58,11 +58,13 @@
   position: relative;
   align-items: stretch;
   justify-content: space-between;
-   align-content: space-between;
+  align-content: center;
   display: flex;
-  top: 100%;
-  width: calc(100% - 1em);
-  top: calc(100% - 62px);
+  //top: 100%;
+  //width: calc(100% - 1em);
+  width: 700px;
+  //top: calc(100% - 62px);
+  //height: calc(100px - 1px);
 }
 
 .Grid {

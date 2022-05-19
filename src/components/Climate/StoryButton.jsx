@@ -1,12 +1,14 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import SmallLabel from '../common/SmallLabel/SmallLabel';
-import styles from './StoryButton.scss';
+import Icon from '../common/MaterialIcon/MaterialIcon';
+import styles from './Button.scss';
 
 const StoryButton = ({ pickStory, storyIdentifier }) => (
-  <div className={styles.generalB} onClick={pickStory} id={storyIdentifier} role="button" tabIndex="0">
+  <div onClick={pickStory} id={storyIdentifier} role="button" tabIndex="0">
 
-    <SmallLabel style={{fontSize:'calc(7px + 1vw)'}} id={storyIdentifier}>{storyIdentifier}</SmallLabel>
+    <SmallLabel className={styles.generalB} id={storyIdentifier}>{storyIdentifier}</SmallLabel>
+      <Icon icon="chevron_right" className={styles.Icon} />
   </div>
 );
 

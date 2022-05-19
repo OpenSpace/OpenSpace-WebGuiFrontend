@@ -22,11 +22,13 @@ class Pick extends Component {
 
     return (
       <div className={styles.generalB}>
+      <div className = "flex">
           <StoryButton
             pickStory={this.handleStory}
             storyIdentifier={storyInfo.identifier}
             storyId = {storyInfo.id}
           />
+          </div>
       </div>
     );
   }

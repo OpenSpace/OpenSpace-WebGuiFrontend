@@ -3,7 +3,6 @@
 .alaska, .antarctica, .greenland {
   position: absolute;
   font-size: 13px;
-  //z-index: 999;
   color: #fff;
   height: 35px;
   width: 150px;
@@ -24,11 +23,11 @@
 .generalB{
   position: absolute;
 
-  z-index: 999;
+  //z-index: 999;
   color: #fff;
   height: 35px;
   top:250px;
-  width: 280px;
+  width: 150px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -41,10 +40,13 @@
     transition: transform ease-in .1s;
      background:darken($ui-background,8%);
   }
-
-
 }
 
+.flexB{
+  width: 50%;
+  vertical-align: middle;
+  
+}
 
 .alaska{
  left: 20px;
