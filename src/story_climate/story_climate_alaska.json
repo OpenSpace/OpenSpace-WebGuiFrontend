@@ -1,6 +1,6 @@
 {
-  "identifier":"climate_greenland",
-  "title": "Climate on Greenland",
+  "identifier":"climate_alaska",
+  "title": "Climate on Alaska",
   "storyinfo": "Climate Climate",
   "overviewlimit": 1.0e+8,
   "focusbuttons": ["Earth"],
@@ -10,21 +10,21 @@
   "datecontroller":  [
       {
         "info": "Show detailed currents",
-        "date": "2021-06-18T12:00:00.00",
+        "date": "2021-06-18T22:00:00.00",
         "anchor": "Earth",
-        "pitch": 0.018593148369062836,
+        "pitch": 0.05726826173823074,
         "position": {
-          "x": 3658988.1685075876,
-          "y": -3258903.088354517,
-          "z": 13509161.004235106
+          "x": -5342373.150739659,
+          "y": -3926203.3135169805,
+          "z": 12486323.301335737
         },
         "type": "setNavigationState",
         "up": {
-          "x": -0.553785064407723,
-          "y": 0.7627384035285887,
-          "z": 0.33399435657147625
+          "x": 0.5685856717092868,
+          "y": 0.6832561527415348,
+          "z": 0.4581171942502654
         },
-        "yaw": -0.18794626460125918,
+        "yaw": -0.3337957410554049,
 
         "toggleboolproperties": [
           {
@@ -35,22 +35,22 @@
         ]
       },
       {
-        "info": "Show ice melt on Greenland",
-        "date": "2021-06-18T12:00:00.00",
+        "info": "Zoom in on Alaska",
+        "date": "2021-06-18T22:00:00.00",
         "anchor": "Earth",
-        "pitch": 0.012558418970672117,
+        "pitch": 0.057268261672115586,
         "position": {
-          "x": 2237072.7247817996,
-          "y": -2351939.6260154126,
-          "z": 9512172.525368795
+          "x": -3311490.78011125,
+          "y": -3290465.0271513644,
+          "z": 8472200.317979852
         },
         "type": "setNavigationState",
         "up": {
-          "x": -0.7391180771291466,
-          "y": 0.5925299355472814,
-          "z": 0.32033223930982635
+          "x": 0.5600395982359906,
+          "y": 0.6746011517984312,
+          "z": 0.48090428819038494
         },
-        "yaw": -0.2251189038007127,
+        "yaw": -0.3337957411437066,
 
         "toggleboolproperties": [
           {
@@ -63,21 +63,21 @@
     ],
     "start": {
       "info": "Show overview of currents",
-      "date": "2021-06-18T12:00:00.00",
+      "date": "2021-06-18T22:00:00.00",
       "anchor": "Earth",
-      "pitch": 0.01859314835679376,
+      "pitch": 0.036809269173964765,
       "position": {
-        "x": 11829554.827842832,
-        "y": -13522336.666797535,
-        "z": 8725797.084431268
+        "x": -12473141.755951669,
+        "y": -9114685.955448685,
+        "z": 11168199.8503709
       },
       "type": "setNavigationState",
       "up": {
-        "x": -0.26490362548248503,
-        "y": 0.34844699238417637,
-        "z": 0.8991166568942307
+        "x": 0.3361430784904903,
+        "y": 0.5100890660539397,
+        "z": 0.7917177372493026
       },
-      "yaw": -0.18794626453978064,
+      "yaw": -0.3332731785454855,
 
       "toggleboolproperties": [
         {
@@ -94,11 +94,11 @@
         "value": "false"
       },
       {
-        "URI":"Climate_greenland_Mode",
-        "label":"Climate Greenland Mode",
+        "URI":"climate_alaska_Mode",
+        "label":"Climate Alaska Mode",
         "isAction": true,
-        "actionEnabled":"climate_greenland_mode_true",
-        "actionDisabled":"climate_greenland_mode_false",
+        "actionEnabled":"climate_alaska_mode_true",
+        "actionDisabled":"climate_alaska_mode_false",
         "defaultvalue": true
       }
     ]

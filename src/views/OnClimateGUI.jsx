@@ -21,7 +21,6 @@ import Sidebar from '../components/Sidebar/Sidebar';
 import NodeMetaContainer from '../components/NodeMetaPanel/NodeMetaContainer';
 import NodePopOverContainer from '../components/NodePropertiesPanel/NodePopOverContainer';
 
-
 import {
   setPropertyValue, startConnection, fetchData, addStoryTree, subscribeToProperty,
   unsubscribeToProperty, addStoryInfo, resetStoryInfo,
@@ -45,7 +44,6 @@ import {
 } from '../utils/storyHelpers';
 //import  climate_stories from "../../stories/stories.json";
 //------------------------------------------------------------------------------//
-const KEYCODE_D = 68;
 
 
 class OnClimateGui extends Component {
@@ -59,23 +57,30 @@ class OnClimateGui extends Component {
       //startJourney: climate_stories,
     };
 
+    this.addStoryTree = this.addStoryTree.bind(this);
+    this.changeStory = this.changeStory.bind(this);
+    this.setStory = this.setStory.bind(this);
+    this.resetStory = this.resetStory.bind(this);
+    //this.checkStorySettings = this.checkStorySettings.bind(this);
+    //this.handleKeyPress = this.handleKeyPress.bind(this);
+
   }
 
 // where we call api
  componentDidMount() {
     const { luaApi, FetchData, StartConnection } = this.props;
     StartConnection();
-
+    FetchData(InfoIconKey); //idk if we need this
 
     document.addEventListener('keydown', this.handleKeyPress);
-    //showDevInfoOnScreen(luaApi, false);
+    showDevInfoOnScreen(luaApi, false);
   }
 
   componentWillUnmount() {
     document.removeEventListener('keydown', this.handleKeyPress);
   }
 
-/*  setStory(selectedStory) {
+  setStory(selectedStory) {
     const {
       anchorNode, changePropertyValue, luaApi, scaleNodes, story, storyIdentifier,
     } = this.props;
@@ -102,6 +107,7 @@ class OnClimateGui extends Component {
     } else {
       json.inzoomlimit = 1.0;
       changePropertyValue(ZoomInLimitKey, 1.0);
+
     }
     if (json.start.overviewzoom) {
       flyTo(luaApi, json.overviewlimit, 5.0);
@@ -161,19 +167,6 @@ class OnClimateGui extends Component {
   }
 
 
-
-  toggleDeveloperMode() {
-    const { developerMode } = this.state;
-    const { luaApi } = this.props;
-    this.setState({ developerMode: !developerMode });
-
-    showDevInfoOnScreen(luaApi, developerMode);
-  }*/
-
-  myStory(){
-    console.log("hej")
-  }
-
   resetStory() {
     const { luaApi } = this.props;
     const { currentStory } = this.state;
@@ -199,12 +192,6 @@ class OnClimateGui extends Component {
             </Error>
           </Overlay>
         )}
-        { developerMode && (
-          <DeveloperMenu
-            changeStory={this.changeStory}
-            storyIdentifier={storyIdentifier}
-          />
-        )}
         <p className={styles.storyTitle}>
           {story.title}
         </p>
@@ -224,16 +211,70 @@ class OnClimateGui extends Component {
     );
 }
 }
-const mapStateToProps = state => ({
-  connectionLost: state.connection.connectionLost,
-  version: state.version,
-});
+
+const mapStateToProps = (state) => {
+  let storyIdentifier = [];
+  let anchorNode;
+  const scaleNodes = [];
+  const story = state.storyTree.story;
+
+  if (state.propertyTree !== undefined) {
+    storyIdentifier = story.identifier;
+    anchorNode = state.propertyTree.properties[NavigationAnchorKey];
+
+    if (story.scalenodes) {
+      story.scalenodes.nodes.forEach((node) => {
+        const key = ScaleKey.replace(ValuePlaceholder, `${node}`);
+        const foundScaleNode = state.propertyTree.properties[key];
+
+        if (foundScaleNode) {
+          scaleNodes.push(foundScaleNode);
+        }
+      });
+    }
+  }
+
+  return {
+    storyIdentifier,
+    connectionLost: state.connection.connectionLost,
+    story,
+    reset: state.storyTree.reset,
+    anchorNode,
+    scaleNodes,
+    luaApi: state.luaApi,
+    version: state.version,
+  };
+};
+
 const mapDispatchToProps = dispatch => ({
   startConnection: () => {
     dispatch(startConnection());
   },
+  changePropertyValue: (uri, value) => {
+    dispatch(setPropertyValue(uri, value));
+  },
+  triggerActionDispatcher: (action) => {
+    dispatch(triggerAction(action));
+  },
+  FetchData: (id) => {
+    dispatch(fetchData(id));
+  },
+  AddStoryTree: (story) => {
+    dispatch(addStoryTree(story));
+  },
+  AddStoryInfo: (info) => {
+    dispatch(addStoryInfo(info));
+  },
+  ResetStoryInfo: () => {
+    dispatch(resetStoryInfo());
+  },
+  startListening: (uri) => {
+    dispatch(subscribeToProperty(uri));
+  },
+  stopListening: (uri) => {
+    dispatch(unsubscribeToProperty(uri));
+  },
 });
-
 
 
 
