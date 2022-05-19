@@ -107,12 +107,10 @@ class OnClimateGui extends Component {
     return(
       console.log(selectedStory),
       console.log(getJson.start.position)
+
+
     );
-    luaApi.globebrowsing.goToGeo(
-      getJson.start.location.latitude,
-      getJson.start.location.longitude,
-      getJson.start.location.altitude,
-    );
+
     setStoryStart(luaApi, getJson.start, getJson.start.date);
 
 
@@ -196,7 +194,7 @@ class OnClimateGui extends Component {
         <section className={styles.Grid__Right}>
           <NodePopOverContainer/>
           <NodeMetaContainer/>
-
+          <BottomBar showFlightController={this.props.showFlightController}/>
           <KeybindingPanel />
         </section>
       </div>

@@ -13,7 +13,7 @@ export const flyTo = (luaApi, distance, duration = undefined) => {
 
 // Function to set the time and location for the start of a story
 export const setStoryStart = (luaApi, startPosition, startTime) => {
-  luaApi.pathnavigation.stopPath();
+
 
   luaApi.pathnavigation.flyToNavigationState({
     Anchor: startPosition.anchor,

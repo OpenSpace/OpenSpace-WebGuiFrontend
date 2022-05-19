@@ -6,7 +6,7 @@ import styles from './Button.scss';
 const StoryButton = ({ pickStory, storyIdentifier }) => (
   <div className={styles.generalB} onClick={pickStory} id={storyIdentifier} role="button" tabIndex="0">
 
-    <SmallLabel style={{fontSize:'calc(7px + 1vw)'}} id={storyIdentifier}>{storyIdentifier}</SmallLabel>
+    <SmallLabel  id={storyIdentifier}>{storyIdentifier}</SmallLabel>
   </div>
 );
 
