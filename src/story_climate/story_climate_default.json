@@ -1,0 +1,19 @@
+{
+  "identifier": "default",
+  "overviewlimit": 0,
+  "inzoomlimit": 0,
+  "zoomout": false,
+  "focusbuttons": [],
+  "timecontroller": false,
+  "datecontroller": false,
+  "sightscontroller": false,
+  "start": {
+    "planet": "Earth",
+    "date": "NOW",
+    "location": {
+      "latitude": 40.758701,
+      "longitude": -111.876183,
+      "altitude": 20000000
+    }
+  }
+}

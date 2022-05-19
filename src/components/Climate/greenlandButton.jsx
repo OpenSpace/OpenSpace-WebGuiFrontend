@@ -6,6 +6,7 @@ import styles from './Button.scss';
 const GreenlandButton = ({ click }) => (
   <div className={styles.greenland} onClick={() => click} >
   <h4>Greenland</h4>
+
     <Icon icon="chevron_right" className={styles.Icon} />
   </div>
 );

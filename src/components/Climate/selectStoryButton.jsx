@@ -1,10 +1,10 @@
-import PropTypes from 'prop-types';
+/*import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
 import styles from './Button.scss';
 import StoryButton from './StoryButton';
-
-class Pick extends Component {
+import GreenlandButton from './GreenlandButton'
+class Selectestorybutton extends Component {
   constructor(props) {
     super(props);
 
@@ -16,22 +16,25 @@ class Pick extends Component {
   }
 
   render() {
-    const { storyInfo } = this.props;
-
-
+    const { image, storyInfo } = this.props;
 
     return (
       <div className={styles.generalB}>
+
+        <div className = {styles.Icon}>
+          <CenteredLabel className={styles.StoryName}>{storyInfo.title}</CenteredLabel>
           <StoryButton
             pickStory={this.handleStory}
             storyIdentifier={storyInfo.identifier}
           />
+        </div>
+
       </div>
     );
   }
 }
 
-Pick.propTypes = {
+Selectestorybutton.propTypes = {
 
   onChangeStory: PropTypes.func.isRequired,
   storyInfo: PropTypes.shape({
@@ -40,4 +43,5 @@ Pick.propTypes = {
   }).isRequired,
 };
 
-export default Pick;
+export default Selectestorybutton;
+*/

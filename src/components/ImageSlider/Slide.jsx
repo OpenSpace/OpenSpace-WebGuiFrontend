@@ -17,7 +17,7 @@ class Slide extends Component {
 
   render() {
     const { image, storyInfo } = this.props;
-
+    
     return (
       <div className={styles.Container}>
         <img src={image} className={styles.Slide} alt={'Story'} />

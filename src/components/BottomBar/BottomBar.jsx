@@ -38,7 +38,7 @@ let BottomBar = ({
   });
 
   return <div className={styles.BottomBar}>
-r
+    <ClimatePanel />
     <OriginPicker />
     <TimePicker />
     <SessionRec />
