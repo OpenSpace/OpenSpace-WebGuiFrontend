@@ -44,7 +44,6 @@ import AntarcticaButton from "./AntarcticaButton.jsx"
 import GreenlandButton from "./GreenlandButton.jsx"
 import { icons } from '../../api/resources';
 import ClimatePanel from '../BottomBar/ClimatePanel.jsx'
-
 class StartJourney extends Component {
 
   constructor(props) {
@@ -63,9 +62,6 @@ class StartJourney extends Component {
     if (startIndex < 0) {
       startIndex = 0
     };
-
-
-
 
     this.state = {
       index: startIndex,
@@ -229,7 +225,6 @@ class StartJourney extends Component {
       return null;
     }
 
-  render() {
     return (
 
     <div className={styles.Hej}>

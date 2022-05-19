@@ -20,7 +20,7 @@
           "id": "3",
           "title": "Explore the climate on Alaska",
           "info": "alaska alaska alaska alaska.",
-          "identifier": "alaska"
+          "identifier": "Alaska"
       }
     ],
     "antarctica":[
@@ -28,7 +28,7 @@
           "id": "4",
           "title": "Explore the climate on west Antarctica",
           "info": " antarctica antarctica antarctica antarctica.",
-          "identifier": "antarctica"
+          "identifier": "Antarctica"
       }
     ],
     "greenland":[
@@ -36,7 +36,7 @@
           "id": "5",
           "title": "Explore the climate at Greenland",
           "info": "Greenland Greenland Greenland Greenland.",
-          "identifier": "greenland"
+          "identifier": "Greenland"
       }
     ]
   }

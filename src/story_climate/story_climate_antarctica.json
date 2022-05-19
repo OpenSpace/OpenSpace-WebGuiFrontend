@@ -26,13 +26,13 @@
         },
         "yaw": -0.270730555970509,
 
-        "toggleboolproperties": [
+        "toggleboolproperties":
           {
             "URI":"Scene.Earth.Renderable.Layers.ColorLayers.OSCAR_Sea_Surface_Currents_Zonal.Enabled",
             "label":"Detailed currents, OSCAR",
             "defaultvalue": true
-          },
-        ]
+          }
+
       },
 
       {
@@ -54,7 +54,7 @@
 
       },
       {
-        "info": "Show zoomed west Antarctica, Thwaites glacier"
+        "info": "Show zoomed west Antarctica, Thwaites glacier",
         "date": "2021-12-18T15:15:00.00",
         "anchor": "Earth",
         "pitch": 1.2620872679141455,
@@ -89,13 +89,12 @@
       },
       "yaw": -0.270730555970509,
 
-      "toggleboolproperties": [
+      "toggleboolproperties":
         {
           "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
           "label":"Overview of currents",
           "defaultvalue": true
-        },
-      ]
+        }
     },
 
     "toggleboolproperties": [
