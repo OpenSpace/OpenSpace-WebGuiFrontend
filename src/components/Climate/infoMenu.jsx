@@ -48,6 +48,7 @@ class InfoMenu extends Component{
     this.setState({ showPopover: !this.state.showPopover });
   }
   render() {
+    //console.log(this.props.currentStory)
     return (
       <div className={Picker.Wrapper}>
         <Picker

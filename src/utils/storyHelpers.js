@@ -15,13 +15,22 @@ export const flyTo = (luaApi, distance, duration = undefined) => {
 export const setStoryStart = (luaApi, startPosition, startTime) => {
   luaApi.pathnavigation.stopPath();
 
-  luaApi.globebrowsing.goToGeo(
-    startPosition.latitude,
-    startPosition.longitude,
-    startPosition.altitude,
-  );
+  luaApi.pathnavigation.flyToNavigationState({
+    Anchor: startPosition.anchor,
+    Pitch:startPosition.pitch,
+    Position:startPosition.position,
+    Up:startPosition.up,
+    Yaw:startPosition.yaw
+  });
 
-  setDate(luaApi, startTime);
+/*
+luaApi.globebrowsing.goToGeo(
+  startPosition.location.latitude,
+  startPosition.location.longitude,
+  startPosition.location.altitude,
+);;*/
+
+setDate(luaApi, startTime);
 };
 
 // Function to toggle the shading on a node, value = 'true' equals shading enabled
