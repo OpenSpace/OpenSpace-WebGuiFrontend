@@ -226,7 +226,7 @@ class StartJourney extends Component {
 
     return (
 
-    <div className={styles.Hej}>
+    <div className={styles.StoryPosistion}>
       <div className = {styles.TellStory}>
         <div className = "flex">
         {
@@ -259,7 +259,7 @@ class StartJourney extends Component {
                 storyInfo = {story}
                 onChangeStory = {this.onChangeStory}
               />
-            
+
 
           );
         })}

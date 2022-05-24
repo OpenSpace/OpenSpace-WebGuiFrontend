@@ -55,7 +55,7 @@ class OnClimateGui extends Component {
       developerMode: false,
       currentStory: "default",
       sliderStartStory: DefaultStory,
-
+      json: "defualt",
       startJourney: "default",
     };
     this.changeStory = this.changeStory.bind(this);
@@ -104,22 +104,18 @@ class OnClimateGui extends Component {
     this.setState({json: getJson});
     // Set all the story specific properties
     //changePropertyValue(anchorNode.description.Identifier, json.start.planet);
-    return(
-      console.log(selectedStory),
-      console.log(getJson.start.position)
 
-
-    );
-
+    // BUGG!! flytostorynavigation fungerar inte
     setStoryStart(luaApi, getJson.start, getJson.start.date);
 
-
-
+    //this.toggleSatelite(luaApi, getJson.start)
+    getJson.start.toggleboolproperties;
     //changePropertyValue(anchorNode.description.Identifier, json.start.planet);
     // Check settings of the previous story and reset values
     this.checkStorySettings(story, true);
     // Check and set the settings of the current story
     this.checkStorySettings(getJson, false);
+
 
   }
 
@@ -141,7 +137,6 @@ class OnClimateGui extends Component {
 
     //AddStoryTree(storyFile);
 
-
     return storyFile;
   }
 
@@ -162,9 +157,9 @@ class OnClimateGui extends Component {
   render() {
     //let storyIdentifier = [];
     const { connectionLost, story, storyIdentifier  } = this.props;
-    const { currentStory, startJourney} = this.state;
-
-
+    const { currentStory, startJourney, json} = this.state;
+    //console.log("change " + this.changeStory)
+    //console.log("set " + json)
     return (
 
       <div className={styles.app}>
@@ -178,7 +173,6 @@ class OnClimateGui extends Component {
           </Overlay>
         )}
 
-
         <p className={styles.storyTitle}>
           {this.state.data}
         </p>
@@ -187,7 +181,7 @@ class OnClimateGui extends Component {
 
         {(currentStory === DefaultStory)
           ? <StartJourney startNewJourney = {startJourney} changeStory={this.setStory}  />
-          : <ExploreClimate resetStory={this.resetStory} changeStory={this.changeStory} currentStory ={currentStory}  />
+        : <ExploreClimate resetStory={this.resetStory} json = {json}  />
         }
         <Sidebar/>
         </section>
@@ -346,6 +340,7 @@ OnClimateGui.propTypes = {
   scaleNodes: PropTypes.objectOf(PropTypes.shape({})),
   connectionLost: PropTypes.bool,
   setStory: PropTypes.func,
+
 
 };
 

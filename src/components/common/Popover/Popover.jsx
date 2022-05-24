@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+  import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { excludeKeys } from '../../../utils/helpers';
 import Button from '../Input/Button/Button';

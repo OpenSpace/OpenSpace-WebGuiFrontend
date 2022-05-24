@@ -6,6 +6,7 @@
   "focusbuttons": ["Earth"],
   "hidenodes": ["Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune"],
   "timecontroller": true,
+  "sightscontroller" : true,
   "actions": ["climate_mode"],
   "datecontroller":  [
       {
@@ -63,6 +64,7 @@
       "info": "Show overview of currents",
       "date": "2021-06-18T22:00:00.00",
       "anchor": "Earth",
+      "satellite": false,
       "pitch": 0.036809269173964765,
       "location": {
         "latitude": -12473141.755951669,

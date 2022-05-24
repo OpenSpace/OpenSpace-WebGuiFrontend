@@ -141,7 +141,7 @@ class ClimatePanel extends Component {
 
     this.props.luaApi.setPropertyValueSingle(
       "{earth_satellites}.Renderable.Enabled", false) // DOES NOT WORK!!
-      
+
     this.props.luaApi.setPropertyValueSingle(
           "Scene.Earth.Renderable.Layers.ColorLayers.VIIRS_SNPP_Temporal.Enabled", false);
     this.props.luaApi.globebrowsing.flyToGeo(
@@ -490,7 +490,7 @@ showHideCurrents() {
       <div className={Picker.Wrapper}>
         <Picker onClick={this.togglePopover}>
           <div>
-            <MaterialIcon className={styles.bottomBarIcon} icon="whatshot" />
+            <MaterialIcon className={styles.bottomBarIcon} icon="ac_unit" />
           </div>
         </Picker>
         {popoverVisible && this.popover}

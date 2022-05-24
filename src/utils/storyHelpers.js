@@ -23,15 +23,25 @@ export const setStoryStart = (luaApi, startPosition, startTime) => {
     Yaw:startPosition.yaw
   });
 
-/*
-luaApi.globebrowsing.goToGeo(
-  startPosition.location.latitude,
-  startPosition.location.longitude,
-  startPosition.location.altitude,
-);;*/
+
+  /*luaApi.globebrowsing.goToGeo(
+    startPosition.location.latitude,
+    startPosition.location.longitude,
+    startPosition.location.altitude,
+  );*/
 
 setDate(luaApi, startTime);
+//console.table(startPosition)
+//console.log("hej" + luaApi)
 };
+
+
+export const toggleSatelite = (luaApi, start) => {
+
+ start.toggleboolproperties;
+
+};
+
 
 // Function to toggle the shading on a node, value = 'true' equals shading enabled
 export const toggleShading = (luaApi, node, value) => {
@@ -112,9 +122,11 @@ export const infoFileParser = (infoFile) => {
 
 export const storyFileParserClimate = (story) => {
   const json = require(`../story_climate/story_climate_${story}.json`);
-  // TODO: Loop through all items and verify their format and type
-  const parsedJSON = json;
 
+
+  // TODO: Loop through all items and verify their format and type
+  //jsonfile in javascrip form
+  const parsedJSON = json;
 
   // The strings from the json files are assumed to be UTC
   // unless specified as 'NOW'
