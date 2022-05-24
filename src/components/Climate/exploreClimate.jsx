@@ -7,8 +7,9 @@ import { connect } from 'react-redux';
 
 import SightsController from '../TouchBar/UtilitiesMenu/presentational/SightsController';
 
-
-
+import {
+  storyGetLayer,
+} from '../../utils/storyHelpers';
 class exploreClimate extends Component{
 
 
@@ -19,9 +20,17 @@ class exploreClimate extends Component{
 
     };
 
-
+    this.setLayer = this.setLayer.bind(this);
   }
 
+
+  setLayer(layer){
+
+    const{luaApi} = this.props;
+    const layerFromJson = storyGetLayer(luaApi, layer);
+
+    return layerFromJson;
+  }
 
   render() {
     //console.log("hej")

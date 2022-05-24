@@ -40,7 +40,7 @@ import styles from './OnClimateGui.scss';
 import { UpdateDeltaTimeNow } from '../utils/timeHelpers';
 
 import {
-  toggleShading, toggleHighResolution, toggleShowNode, toggleGalaxies,
+  satelliteToggle, toggleShading, toggleHighResolution, toggleShowNode, toggleGalaxies,
   setStoryStart, showDevInfoOnScreen, storyFileParserClimate, infoFileParserClimate, flyTo, DataLoader,
 } from '../utils/storyHelpers';
 //import  climate_stories from "../../stories/stories.json";
@@ -84,10 +84,6 @@ class OnClimateGui extends Component {
     //showDevInfoOnScreen(luaApi, false);
   }
 
-
-
-
-
  setStory(selectedStory) {
     const {
       changePropertyValue, luaApi, scaleNodes, story, storyIdentifier, currentStory
@@ -106,7 +102,9 @@ class OnClimateGui extends Component {
     //changePropertyValue(anchorNode.description.Identifier, json.start.planet);
 
     // BUGG!! flytostorynavigation fungerar inte
-    setStoryStart(luaApi, getJson.start, getJson.start.date);
+    //setStoryStart(luaApi, getJson.start, getJson.start.date);
+
+    satelliteToggle(selectedStory, false);
 
     //this.toggleSatelite(luaApi, getJson.start)
     getJson.start.toggleboolproperties;
