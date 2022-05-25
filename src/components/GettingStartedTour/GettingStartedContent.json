@@ -1,0 +1,19 @@
+
+[ 
+    {
+        "uri" : "NavigationHandler.OrbitalNavigator.Anchor",
+        "value" : "Mars",
+        "title" : "A tour of the Universe...",
+        "text" : "Welcome to OpenSpace, where you can look at the Observable universe! Try to see if you can look at Mars",
+        "position" : { "x" : 100, "y" : 100},
+        "size" : { "height" : 300, "width" : 600}
+    },
+    {
+        "uri" : "Modules.Exoplanets.Enabled",
+        "value" : false,
+        "title" : "Next thing woop!",
+        "text" : "Obladi oblada life goes on YAH!",
+        "position" : { "x" : 400, "y" : 200},
+        "size" : { "height" : 400, "width" : 200}
+    }
+]

@@ -15,6 +15,7 @@ import Sidebar from '../components/Sidebar/Sidebar';
 import '../styles/base.scss';
 import About from './About/About';
 import styles from './OnScreenGui.scss';
+import TourPopup from '../components/GettingStartedTour/TourPopup'
 
 class OnScreenGui extends Component {
   constructor(props) {
@@ -86,6 +87,7 @@ class OnScreenGui extends Component {
           <NodeMetaContainer />
           <BottomBar showFlightController={this.props.showFlightController}/>
           <KeybindingPanel />
+          <TourPopup />
         </section>
       </div>
     );

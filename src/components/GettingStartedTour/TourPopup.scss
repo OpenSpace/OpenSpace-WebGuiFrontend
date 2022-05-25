@@ -1,0 +1,36 @@
+@import "../../styles/all.scss";
+
+$padding-horizontal: 0.3rem;
+$padding-vertical: 0.5rem;
+$padding: $padding-horizontal $padding-vertical;
+
+.content {
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+    background: $ui-background-solid;
+    border-radius: $popover-corner-radius;
+    box-shadow: $box-shadow;
+    color: $text-color-focus;
+}
+
+.title {
+    font-weight: 600;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    padding: $padding;
+    text-transform: uppercase;
+}
+
+.text {
+    padding: $padding;
+}
+
+.buttonContainer {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: $padding;
+    position: absolute;
+    bottom: 0px;
+}
