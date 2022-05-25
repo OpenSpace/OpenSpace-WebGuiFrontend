@@ -1,16 +1,44 @@
 {
   "identifier":"climate_antarctica",
   "title": "Climate on Antarctica",
-  "storyinfo": "Climate Climate",
+
   "overviewlimit": 1.0e+8,
   "focusbuttons": ["Earth"],
 
   "timecontroller": true,
   "actions": ["climate_mode"],
-  "datecontroller":  [
+  "journey":  [
+        {
+        "id" : 0,
+        "title": "Show overview of currents",
+        "storyinfo": "Climate Climate Climate Climate Climate Climate Climate Climate Climate",
+        "date": "2021-12-18T05:00:00.00",
+        "anchor": "Earth",
+        "pitch": 0.021489093114074403,
+        "position": {
+          "x": 5838129.482800765,
+          "y": 16433121.59048358,
+          "z": -16628187.613284111
+        },
+        "type": "setNavigationState",
+        "up": {
+          "x": 0.24383458368549688,
+          "y": 0.6456351831354855,
+          "z": 0.723671131175293
+        },
+        "yaw": -0.270730555970509,
 
+        "toggleboolproperties":
+          {
+            "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
+            "label":"Overview of currents",
+            "defaultvalue": true
+          }
+      },
       {
-        "info": "Show detailed currents",
+        "id" : 1,
+        "title": "Show detailed currents",
+        "storyinfo": "Climate Climate Climate Climate Climate Climate Climate Climate Climate",
         "date": "2021-12-18T05:00:00.00",
         "anchor": "Earth",
         "pitch": 0.021489093114074403,
@@ -36,7 +64,9 @@
       },
 
       {
-        "info": "Show zoomed Antarctica, choose west or east",
+        "id" : 2,
+        "title": "Show zoomed Antarctica, choose west or east",
+        "storyinfo": "Climate Climate Climate Climate Climate Climate Climate Climate Climate",
         "date": "2021-12-18T05:09:00.00",
         "anchor": "Earth",
         "pitch": -0.01365814920841428,
@@ -54,7 +84,9 @@
 
       },
       {
-        "info": "Show zoomed west Antarctica, Thwaites glacier",
+        "title": "Show zoomed west Antarctica, Thwaites glacier",
+        "id" : 3,
+        "storyinfo": "Climate Climate Climate Climate Climate Climate Climate Climate Climate",
         "date": "2021-12-18T15:15:00.00",
         "anchor": "Earth",
         "pitch": 1.2620872679141455,
@@ -71,32 +103,6 @@
         "yaw": -0.06989515637603734
       }
     ],
-    "start": {
-      "info": "Show overview of currents",
-      "date": "2021-12-18T05:00:00.00",
-      "anchor": "Earth",
-      "pitch": 0.021489093114074403,
-      "position": {
-        "x": 5838129.482800765,
-        "y": 16433121.59048358,
-        "z": -16628187.613284111
-      },
-      "type": "setNavigationState",
-      "up": {
-        "x": 0.24383458368549688,
-        "y": 0.6456351831354855,
-        "z": 0.723671131175293
-      },
-      "yaw": -0.270730555970509,
-
-      "toggleboolproperties":
-        {
-          "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
-          "label":"Overview of currents",
-          "defaultvalue": true
-        }
-    },
-
     "toggleboolproperties": [
       {
         "name": "{earth_satellites}.Renderable.Enabled",

@@ -54,7 +54,6 @@ class OnClimateGui extends Component {
     this.state = {
       developerMode: false,
       currentStory: "default",
-      sliderStartStory: DefaultStory,
       json: "defualt",
       startJourney: "default",
     };
@@ -66,9 +65,8 @@ class OnClimateGui extends Component {
 
 
     this.addStoryTree = this.addStoryTree.bind(this);
-    this.changeStory = this.changeStory.bind(this);
-    this.setStory = this.setStory.bind(this);
-    this.resetStory = this.resetStory.bind(this);
+
+
     //this.checkStorySettings = this.checkStorySettings.bind(this);
     //this.handleKeyPress = this.handleKeyPress.bind(this);
 
@@ -104,10 +102,11 @@ class OnClimateGui extends Component {
     // BUGG!! flytostorynavigation fungerar inte
     //setStoryStart(luaApi, getJson.start, getJson.start.date);
 
-    satelliteToggle(selectedStory, false);
+    //remove satelites from start profile
+    satelliteToggle(luaApi, true);
 
     //this.toggleSatelite(luaApi, getJson.start)
-    getJson.start.toggleboolproperties;
+    //getJson.start.toggleboolproperties;
     //changePropertyValue(anchorNode.description.Identifier, json.start.planet);
     // Check settings of the previous story and reset values
     this.checkStorySettings(story, true);

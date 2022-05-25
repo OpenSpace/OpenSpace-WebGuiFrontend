@@ -44,6 +44,30 @@
 
 }
 
+.increment{
+  position: absolute;
+  z-index: 999;
+  color: #fff;
+  height: 35px;
+  width: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: $ui-background;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform ease-in .1s;
+
+  &:hover {
+    transition: transform ease-in .1s;
+     background:darken($ui-background,8%);
+  }
+
+
+}
+
+
+
 .alaska{
  left: 20px;
  //top:150%;

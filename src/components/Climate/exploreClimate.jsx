@@ -4,7 +4,7 @@ import HomeButtonContainer from '../TouchBar/UtilitiesMenu/containers/HomeButton
 import styles from './exploreClimate.scss';
 import InfoMenu from './infoMenu'
 import { connect } from 'react-redux';
-
+import NextStepButton from './nextButton';
 import SightsController from '../TouchBar/UtilitiesMenu/presentational/SightsController';
 
 import {
@@ -17,10 +17,14 @@ class exploreClimate extends Component{
     super(props);
 
     this.state = {
+      StoryStep: 0,
 
     };
 
     this.setLayer = this.setLayer.bind(this);
+    this.stepThrueStory = this.stepThrueStory.bind(this);
+    this.Increment = this.Increment.bind(this);
+
   }
 
 
@@ -32,67 +36,80 @@ class exploreClimate extends Component{
     return layerFromJson;
   }
 
+
+  Increment = () => {
+        this.setState((prevState) => ({
+          StoryStep: prevState.StoryStep + 1
+    }));
+  }
+
+
+
+  stepThrueStory(StoryStep){
+    const { json } = this.props;
+
+    return(
+      json.journey.map((story) => {
+        if(story.id == StoryStep){
+          return (
+            <div>
+              <h1>
+                {story.title}
+              </h1>
+              <p>
+                {story.storyinfo}
+              </p>
+            </div>
+          );
+        }
+      })
+    )
+  }
+
+
   render() {
     //console.log("hej")
     //console.table(this.props.currentStory)
     //console.log(story.sightscontroller)
-    const { story, storyInfo} = this.props
+    const { json, story, storyInfo} = this.props;
+    const { StoryStep } = this.state;
+
+    var stepThrueStory = this.stepThrueStory(StoryStep);
 
 
-    /*{
-      this.props.story.datecontroller.map((story) => {
-        return (
-          <div key = {story.id}>
-            <h1 key = {story.title}>{story.title}</h1>
-            <p
-              key= {story.info}>{story.info}</p>
-
-          </div>
-
-        );
-      })
-
-    }*/
     //console.log(this.props.currentStory)
     //console.log("nemen")
     //console.table(this.props.story.title)
     //console.log("wooddffffp")
-    //console.log(this.props.json)
+    //console.log(StoryStep)
     return (
 
       <div className={styles.StoryPosistion}>
-        <div className = {styles.TellStory}>
+
+        <div key = {story.id} className = {styles.TellStory}>
           <div className = "flex">
 
+              {stepThrueStory}
 
+              <br/>
+              <br/>
+              <br/>
+              <br/>
+              <br/>
 
-
-          <div style={{ display: 'flex' }}>
-          {(story) && (
-            <div styles = {{color: "red"}}><p>hej</p></div>
-          )}
-
-          <div className={styles.exploreClimate}>
-
-            <section className={styles.HomeButton}>
-              <HomeButtonContainer resetStory={this.props.resetStory}/>
-
-            </section>
-              <section className={styles.Grid__Left}>
-              <InfoMenu resetStory={this.props.resetStory} pickedStory = {this.props.json}/>
-            </section>
-
+              <section className = {styles.NextStepButton}>
+                <NextStepButton increment = {this.Increment} storyStep = {StoryStep}/>
+              </section>
 
           </div>
-
+        </div>
+        <section className={styles.HomeButton}>
+          <HomeButtonContainer resetStory={this.props.resetStory}/>
+        </section>
       </div>
 
-    </div>
-  </div>
-</div>
-
-);}
-
+    );
+  }
 }
 
 

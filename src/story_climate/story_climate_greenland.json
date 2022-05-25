@@ -7,10 +7,39 @@
 
   "timecontroller": true,
   "actions": ["climate_mode"],
-  "datecontroller":  [
+  "journey":  [
       {
-        "info": "Show detailed currents",
+        "title": "Show overview of currents",
+        "storyinfo": "Climate Climate Climate Climate Climate Climate Climate Climate Climate",
         "date": "2021-06-18T12:00:00.00",
+        "id": 0,
+        "anchor": "Earth",
+        "pitch": 0.01859314835679376,
+        "position": {
+          "x": 11829554.827842832,
+          "y": -13522336.666797535,
+          "z": 8725797.084431268
+        },
+        "type": "setNavigationState",
+        "up": {
+          "x": -0.26490362548248503,
+          "y": 0.34844699238417637,
+          "z": 0.8991166568942307
+        },
+        "yaw": -0.18794626453978064,
+
+        "toggleboolproperties":
+          {
+            "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
+            "label":"Overview of currents",
+            "defaultvalue": true
+          }
+      },
+      {
+        "title": "Show detailed currents",
+        "storyinfo": "Climate Climate Climate Climate Climate Climate Climate Climate Climate",
+        "date": "2021-06-18T12:00:00.00",
+        "id": 1,
         "anchor": "Earth",
         "pitch": 0.018593148369062836,
         "position": {
@@ -34,8 +63,10 @@
           }
       },
       {
-        "info": "Show ice melt on Greenland",
+        "title": "Show ice melt on Greenland",
+        "storyinfo": "Climate Climate Climate Climate Climate Climate Climate Climate Climate",
         "date": "2021-06-18T12:00:00.00",
+        "id": 2,
         "anchor": "Earth",
         "pitch": 0.012558418970672117,
         "position": {
@@ -59,31 +90,7 @@
           }
       }
     ],
-    "start": {
-      "info": "Show overview of currents",
-      "date": "2021-06-18T12:00:00.00",
-      "anchor": "Earth",
-      "pitch": 0.01859314835679376,
-      "position": {
-        "x": 11829554.827842832,
-        "y": -13522336.666797535,
-        "z": 8725797.084431268
-      },
-      "type": "setNavigationState",
-      "up": {
-        "x": -0.26490362548248503,
-        "y": 0.34844699238417637,
-        "z": 0.8991166568942307
-      },
-      "yaw": -0.18794626453978064,
 
-      "toggleboolproperties":
-        {
-          "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
-          "label":"Overview of currents",
-          "defaultvalue": true
-        }
-    },
     "toggleboolproperties": [
       {
         "name": "{earth_satellites}.Renderable.Enabled",
