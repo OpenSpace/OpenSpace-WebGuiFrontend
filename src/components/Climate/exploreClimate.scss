@@ -47,3 +47,16 @@
   color: lightgrey;
   font-size: 16px;
 }
+
+.NextStepButton{
+  display: flex;
+  position: absolute;
+  left: 50%;
+}
+
+.PrevStepButton{
+  display: flex;
+  position: absolute;
+
+  left: 5%;
+}

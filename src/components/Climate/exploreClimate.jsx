@@ -22,7 +22,7 @@ class exploreClimate extends Component{
     this.setLayer = this.setLayer.bind(this);
     this.stepThroughStory = this.stepThroughStory.bind(this);
     this.Increment = this.Increment.bind(this);
-
+    this.Decrement = this.Decrement.bind(this);
   }
 
   setLayer(layer){
@@ -36,6 +36,13 @@ class exploreClimate extends Component{
   Increment = () => {
         this.setState((prevState) => ({
           StoryStep: prevState.StoryStep + 1
+    }));
+
+  }
+
+  Decrement = () => {
+        this.setState((prevState) => ({
+          StoryStep: prevState.StoryStep - 1
     }));
   }
 
@@ -76,11 +83,13 @@ class exploreClimate extends Component{
     //console.table(this.props.story.title)
     //console.log("wooddffffp")
     //console.log(StoryStep)
+
     return (
 
       <div className={styles.StoryPosistion}>
 
-        <div key = {story.id} className = {styles.TellStory}>
+        <div className = {styles.TellStory}>
+
           <div className = "flex">
 
               {stepThroughStory}
@@ -90,12 +99,18 @@ class exploreClimate extends Component{
               <br/>
               <br/>
               <br/>
-
+              {StoryStep != "undefined" &&
               <section className = {styles.NextStepButton}>
-                <NextStepButton increment = {this.Increment} storyStep = {StoryStep}/>
+                <NextStepButton next = {this.Increment} storyStep = {StoryStep} string = {"Next!"}/>
               </section>
-
+              }
+              {StoryStep > 0 &&
+                <section className = {styles.PrevStepButton}>
+                  <NextStepButton next = {this.Decrement} storyStep = {StoryStep} string = {"Previus!"}/>}
+                </section>
+              }
           </div>
+
         </div>
         <section className={styles.HomeButton}>
           <HomeButtonContainer resetStory={this.props.resetStory}/>
