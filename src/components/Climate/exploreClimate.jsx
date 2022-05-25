@@ -12,21 +12,18 @@ import {
 } from '../../utils/storyHelpers';
 class exploreClimate extends Component{
 
-
   constructor(props) {
     super(props);
 
     this.state = {
       StoryStep: 0,
-
     };
 
     this.setLayer = this.setLayer.bind(this);
-    this.stepThrueStory = this.stepThrueStory.bind(this);
+    this.stepThroughStory = this.stepThroughStory.bind(this);
     this.Increment = this.Increment.bind(this);
 
   }
-
 
   setLayer(layer){
 
@@ -36,23 +33,20 @@ class exploreClimate extends Component{
     return layerFromJson;
   }
 
-
   Increment = () => {
         this.setState((prevState) => ({
           StoryStep: prevState.StoryStep + 1
     }));
   }
 
-
-
-  stepThrueStory(StoryStep){
+  stepThroughStory(StoryStep){
     const { json } = this.props;
 
     return(
       json.journey.map((story) => {
         if(story.id == StoryStep){
           return (
-            <div>
+            <div key = {story.id}>
               <h1>
                 {story.title}
               </h1>
@@ -74,7 +68,7 @@ class exploreClimate extends Component{
     const { json, story, storyInfo} = this.props;
     const { StoryStep } = this.state;
 
-    var stepThrueStory = this.stepThrueStory(StoryStep);
+    var stepThroughStory = this.stepThroughStory(StoryStep);
 
 
     //console.log(this.props.currentStory)
@@ -89,7 +83,7 @@ class exploreClimate extends Component{
         <div key = {story.id} className = {styles.TellStory}>
           <div className = "flex">
 
-              {stepThrueStory}
+              {stepThroughStory}
 
               <br/>
               <br/>
