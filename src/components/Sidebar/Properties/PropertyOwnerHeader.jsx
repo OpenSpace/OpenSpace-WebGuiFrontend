@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import Checkbox from '../../common/Input/Checkbox/Checkbox';
 import Focus from 'svg-react-loader?name=Focus!../../../icons/focus.svg';
 import DraggableIcon from 'svg-react-loader?name=Aim!../../../icons/draggable_list.svg';
 import styles from './PropertyOwnerHeader.scss';
@@ -8,7 +9,6 @@ import toggleHeaderStyles from '../../common/ToggleContent/ToggleHeader.scss';
 import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
 import SvgIcon from '../../common/SvgIcon/SvgIcon';
 import { displayName } from './PropertyOwner';
-import Property from './Property';
 import propertyDispatcher from '../../../api/propertyDispatcher';
 import {
   NavigationAnchorKey,
@@ -20,8 +20,9 @@ import { isGlobeBrowsingLayer } from '../../../utils/propertyTreeHelpers';
 function PropertyOwnerHeader({
   title, identifier, expanded, setExpanded, onIcon, offIcon,
   quickToggleUri, enabled, isLayer, focusAction, shiftFocusAction,
-  popOutAction, metaAction, trashAction,
+  popOutAction, metaAction, trashAction
 }) {
+
   const onClick = (evt) => {
     setExpanded(!expanded);
   };
@@ -76,6 +77,12 @@ function PropertyOwnerHeader({
   // And additionally for height layers
   const isHeightLayer = isLayer && quickToggleUri.includes('Layers.HeightLayers.');
 
+  const onToggleCheckboxClick = () => {
+    console.log('changed the checkbox');
+    // if (!canFade) return;
+    this.props.dispatcher.set(value);
+  };
+
   return (
     <header
       className={`${toggleHeaderStyles.toggle} ${isLayer && styles.layerHeader}`}
@@ -87,10 +94,14 @@ function PropertyOwnerHeader({
         icon={expanded ? onIcon : offIcon}
         className={toggleHeaderStyles.icon}
       />
-      { quickToggleUri
-        && (
+      { quickToggleUri && (
         <span className={styles.leftButtonContainer}>
-          <Property uri={quickToggleUri} checkBoxOnly />
+          <Checkbox
+            wide={false}
+            checked={true} // TODO: should control the property value
+            label={null}
+            setChecked={onToggleCheckboxClick}
+          />
         </span>
         )
       }
@@ -100,8 +111,7 @@ function PropertyOwnerHeader({
         { isLayer && <SvgIcon className={styles.layerDraggableIcon}><DraggableIcon /></SvgIcon> }
       </span>
       <span className={styles.rightButtonContainer}>
-        { focusAction
-          && (
+        { focusAction && (
           <div className={styles.rightButton} onClick={onClickFocus}>
             <SvgIcon><Focus /></SvgIcon>
           </div>
@@ -124,17 +134,19 @@ function PropertyOwnerHeader({
 const mapStateToProps = (state, ownProps) => {
   const { uri, title } = ownProps;
 
-  let quickToggleUri;
-
   const splitUri = uri.split('.');
   const isRenderable = splitUri.length > 1 && splitUri[splitUri.length - 1] === 'Renderable';
 
   const identifier = splitUri.length > 1 && splitUri[1];
 
+  let quickToggleUri;
+  let canFade = false;
   if (state.propertyTree.properties[`${uri}.Enabled`] && !isRenderable) {
     quickToggleUri = `${uri}.Enabled`;
   } else if (state.propertyTree.properties[`${uri}.Renderable.Enabled`]) {
     quickToggleUri = `${uri}.Renderable.Enabled`;
+    // Check if this property can be faded
+    canFade = state.propertyTree.properties[`${uri}.Renderable.Fade`] !== undefined;
   }
 
   const enabled = quickToggleUri && state.propertyTree.properties[quickToggleUri].value;
@@ -149,6 +161,7 @@ const mapStateToProps = (state, ownProps) => {
     enabled,
     isLayer,
     identifier,
+    canFade,
   };
 };
 
