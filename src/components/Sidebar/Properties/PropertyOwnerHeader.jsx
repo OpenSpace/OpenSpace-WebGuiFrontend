@@ -70,14 +70,31 @@ class PropertyOwnerHeader extends Component {
     evt.stopPropagation();
   };
 
-  onToggleCheckboxClick = (value) => {
-    const { quickToggleUri } = this.props;
+  onToggleCheckboxClick = (shouldBeChecked) => {
+    const { fadeUri, luaApi, quickToggleUri } = this.props;
+    if (!quickToggleUri) return;
 
-    console.log('changed the checkbox');
-    // if (!canFade) return;
+    // Should not fade
+    if (!fadeUri) {
+      this.props.getPropertyDispatcher(quickToggleUri).set(shouldBeChecked);
+      return;
+    }
 
-    if (quickToggleUri) {
-      this.props.getPropertyDispatcher(quickToggleUri).set(value);
+    // TODO: make this a property in the Engine
+    const FadeDuration = 0.5; //seconds
+    const shouldFadeIn = shouldBeChecked;
+
+    // If fade in, first set fade value to 0 to make sure it's fully hidden
+    if (shouldFadeIn) {
+      luaApi.setPropertyValueSingle(fadeUri, 0.0);
+      luaApi.setPropertyValueSingle(fadeUri, 1.0, FadeDuration);
+      this.props.getPropertyDispatcher(quickToggleUri).set(shouldBeChecked);
+    }
+    else {
+      luaApi.setPropertyValueSingle(fadeUri, 0.0, FadeDuration);
+      setTimeout(() => {
+        this.props.getPropertyDispatcher(quickToggleUri).set(shouldBeChecked);
+      }, FadeDuration * 1000);
     }
   };
 
@@ -179,24 +196,29 @@ const mapStateToProps = (state, ownProps) => {
   const isLayer = isGlobeBrowsingLayer(uri);
 
   let quickToggleUri;
-  let canFade = false;
+  let fadeUri = undefined;
   const isRenderable = splitUri.length > 1 && splitUri[splitUri.length - 1] === 'Renderable';
   if (state.propertyTree.properties[`${uri}.Enabled`] && !isRenderable) {
     quickToggleUri = `${uri}.Enabled`;
   } else if (state.propertyTree.properties[`${uri}.Renderable.Enabled`]) {
     quickToggleUri = `${uri}.Renderable.Enabled`;
-    // Check if this property can be faded
-    canFade = state.propertyTree.properties[`${uri}.Renderable.Fade`] !== undefined;
   }
+
+  // Check if this property owner has a renderable that can be faded
+  if (state.propertyTree.properties[`${uri}.Renderable.Fade`] !== undefined)  {
+    fadeUri = `${uri}.Renderable.Fade`;
+  }
+
   const enabled = quickToggleUri && state.propertyTree.properties[quickToggleUri].value;
 
   return {
     title: title || displayName(state, uri),
     quickToggleUri,
+    fadeUri,
     enabled,
     isLayer,
     identifier,
-    canFade,
+    luaApi: state.luaApi,
   };
 };
 
