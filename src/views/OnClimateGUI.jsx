@@ -103,7 +103,7 @@ class OnClimateGui extends Component {
     //setStoryStart(luaApi, getJson.start, getJson.start.date);
 
     //remove satelites from start profile
-    satelliteToggle(luaApi, true);
+    satelliteToggle(luaApi, false);
 
     //this.toggleSatelite(luaApi, getJson.start)
     //getJson.start.toggleboolproperties;
