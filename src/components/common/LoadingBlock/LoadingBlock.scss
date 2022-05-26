@@ -9,5 +9,5 @@
 }
 
 .block + .block {
-  margin-top: $base-padding / 2;
+  margin-top: calc($base-padding / 2);
 }

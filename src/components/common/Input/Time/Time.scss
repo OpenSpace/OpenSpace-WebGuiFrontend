@@ -5,7 +5,7 @@
 }
 
 .textInput {
-  padding: $base-padding / 2 !important;
+  padding: calc($base-padding / 2) !important;
 }
 
 .element {
@@ -13,7 +13,7 @@
   flex-direction: column;
 
   + .element {
-    padding-left: $base-padding / 2;
+    padding-left: calc($base-padding / 2);
   }
 }
 
