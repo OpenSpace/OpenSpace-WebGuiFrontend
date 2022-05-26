@@ -1,19 +1,58 @@
 
 [ 
     {
-        "uri" : "NavigationHandler.OrbitalNavigator.Anchor",
-        "value" : "Mars",
-        "title" : "A tour of the Universe...",
-        "text" : "Welcome to OpenSpace, where you can look at the Observable universe! Try to see if you can look at Mars",
+        "uri" : "NavigationHandler.OrbitalNavigator.Friction.RotationalFriction",
+        "value" : false,
+        "title" : "Turn off friction",
+        "firstText" : "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam posuere maximus nulla. Donec elit eros, lobortis eget augue sit amet, volutpat posuere arcu. Sed a tristique orci. Phasellus efficitur dignissim ante, eu pharetra metus fermentum quis. Suspendisse blandit venenatis dui sed finibus. ",
+        "secondText" : "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam posuere maximus nulla. Donec elit eros, lobortis eget augue sit amet, volutpat posuere arcu. Sed a tristique orci. Phasellus efficitur dignissim ante, eu pharetra metus fermentum quis. Suspendisse blandit venenatis dui sed finibus. ",
         "position" : { "x" : 100, "y" : 100},
-        "size" : { "height" : 300, "width" : 600}
+        "size" : { "height" : 300, "width" : 600},
+        "arrowPosition" : { "x" : 1700, "y" : 1040},
+        "arrowRotation" : "right"
     },
     {
-        "uri" : "Modules.Exoplanets.Enabled",
-        "value" : false,
-        "title" : "Next thing woop!",
-        "text" : "Obladi oblada life goes on YAH!",
-        "position" : { "x" : 400, "y" : 200},
-        "size" : { "height" : 400, "width" : 200}
+        "uri" : "NavigationHandler.OrbitalNavigator.Anchor",
+        "value" : "Moon",
+        "title" : "Look at Moon",
+        "firstText" : "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam posuere maximus nulla. Donec elit eros, lobortis eget augue sit amet, volutpat posuere arcu. Sed a tristique orci. Phasellus efficitur dignissim ante, eu pharetra metus fermentum quis. Suspendisse blandit venenatis dui sed finibus. ",
+        "secondText" : "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam posuere maximus nulla. Donec elit eros, lobortis eget augue sit amet, volutpat posuere arcu. Sed a tristique orci. Phasellus efficitur dignissim ante, eu pharetra metus fermentum quis. Suspendisse blandit venenatis dui sed finibus. ",
+        "position" : { "x" : 100, "y" : 100},
+        "size" : { "height" : 300, "width" : 600},
+        "arrowPosition" : { "x" : 320, "y" : 70},
+        "arrowRotation" : "down"
+    },
+     {
+        "uri" : "Scene.Moon.Renderable.Layers.ColorLayers.Kaguya_Utah.Enabled",
+        "value" : true,
+        "title" : "Turn on the Kaguya Utah layers",
+        "firstText" : "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam posuere maximus nulla. Donec elit eros, lobortis eget augue sit amet, volutpat posuere arcu. Sed a tristique orci. Phasellus efficitur dignissim ante, eu pharetra metus fermentum quis. Suspendisse blandit venenatis dui sed finibus. ",
+        "secondText" : "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam posuere maximus nulla. Donec elit eros, lobortis eget augue sit amet, volutpat posuere arcu. Sed a tristique orci. Phasellus efficitur dignissim ante, eu pharetra metus fermentum quis. Suspendisse blandit venenatis dui sed finibus. ",
+        "position" : { "x" : 100, "y" : 100},
+        "size" : { "height" : 300, "width" : 600},
+        "arrowPosition" : { "x" : 50, "y" : 70},
+        "arrowRotation" : "down"
+    },
+    {
+        "uri" : "Scene.Constellations.Renderable.Enabled",
+        "value" : true,
+        "title" : "Turn on the star Constellations",
+        "firstText" : "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam posuere maximus nulla. Donec elit eros, lobortis eget augue sit amet, volutpat posuere arcu. Sed a tristique orci. Phasellus efficitur dignissim ante, eu pharetra metus fermentum quis. Suspendisse blandit venenatis dui sed finibus. ",
+        "secondText" : "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam posuere maximus nulla. Donec elit eros, lobortis eget augue sit amet, volutpat posuere arcu. Sed a tristique orci. Phasellus efficitur dignissim ante, eu pharetra metus fermentum quis. Suspendisse blandit venenatis dui sed finibus. ",
+        "position" : { "x" : 100, "y" : 100},
+        "size" : { "height" : 300, "width" : 600},
+        "arrowPosition" : { "x" : 50, "y" : 70},
+        "arrowRotation" : "down"
+    },
+    {
+        "uri" : "Scene.Constellations.Renderable.Enabled",
+        "value" : true,
+        "title" : "Finished!!",
+        "firstText" : "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam posuere maximus nulla. Donec elit eros, lobortis eget augue sit amet, volutpat posuere arcu. Sed a tristique orci. Phasellus efficitur dignissim ante, eu pharetra metus fermentum quis. Suspendisse blandit venenatis dui sed finibus. ",
+        "secondText" : "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam posuere maximus nulla. Donec elit eros, lobortis eget augue sit amet, volutpat posuere arcu. Sed a tristique orci. Phasellus efficitur dignissim ante, eu pharetra metus fermentum quis. Suspendisse blandit venenatis dui sed finibus. ",
+        "position" : { "x" : 100, "y" : 100},
+        "size" : { "height" : 300, "width" : 600},
+        "arrowPosition" : { "x" : 50, "y" : 70},
+        "arrowRotation" : "down"
     }
 ]

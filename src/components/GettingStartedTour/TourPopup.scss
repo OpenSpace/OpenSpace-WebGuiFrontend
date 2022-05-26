@@ -29,8 +29,50 @@ $padding: $padding-horizontal $padding-vertical;
 .buttonContainer {
     width: 100%;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     padding: $padding;
     position: absolute;
     bottom: 0px;
+}
+
+/* Animated arrow style */
+
+.icon {
+    position: fixed;
+    bottom: 200px;
+    left: 500px;
+    width: 80px;
+    height: 60px;
+    margin: 10px;
+}
+
+.arrow {
+    position: absolute;
+    top: 25px;
+    width: 90%;
+    height: 10px;
+    background-color: $text-color-focus;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, .2);
+    animation: arrow 700ms linear infinite;
+}
+
+.arrow::after,
+.arrow::before {
+    content: '';
+    position: absolute;
+    width: 60%;
+    height: 10px;
+    right: -8px;
+    background-color: $text-color-focus;
+}
+
+.arrow::after {
+    top: -12px;
+    transform: rotate(45deg);
+}
+
+.arrow::before {
+    top: 12px;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, .2);
+    transform: rotate(-45deg);
 }
