@@ -28,6 +28,20 @@ class PropertyOwnerHeader extends Component {
     this.onToggleCheckboxClick = this.onToggleCheckboxClick.bind(this);
   }
 
+  componentDidMount() {
+    const { quickToggleUri } = this.props;
+    if (quickToggleUri) {
+      this.props.getPropertyDispatcher(quickToggleUri).subscribe();
+    }
+  }
+
+  componentWillUnmount() {
+    const { quickToggleUri } = this.props;
+    if (quickToggleUri) {
+      this.props.getPropertyDispatcher(quickToggleUri).unsubscribe();
+    }
+  }
+
   onClick = (evt) => {
     this.props.setExpanded(!this.props.expanded);
   };
@@ -56,10 +70,15 @@ class PropertyOwnerHeader extends Component {
     evt.stopPropagation();
   };
 
-  onToggleCheckboxClick = () => {
+  onToggleCheckboxClick = (value) => {
+    const { quickToggleUri } = this.props;
+
     console.log('changed the checkbox');
     // if (!canFade) return;
-    // this.props.dispatcher.set(value);
+
+    if (quickToggleUri) {
+      this.props.getPropertyDispatcher(quickToggleUri).set(value);
+    }
   };
 
   render() {
@@ -114,7 +133,7 @@ class PropertyOwnerHeader extends Component {
           <span className={styles.leftButtonContainer}>
             <Checkbox
               wide={false}
-              checked={true} // TODO: should control the property value
+              checked={enabled}
               label={null}
               setChecked={this.onToggleCheckboxClick}
             />
@@ -152,12 +171,16 @@ const mapStateToProps = (state, ownProps) => {
   const { uri, title } = ownProps;
 
   const splitUri = uri.split('.');
-  const isRenderable = splitUri.length > 1 && splitUri[splitUri.length - 1] === 'Renderable';
-
+  
   const identifier = splitUri.length > 1 && splitUri[1];
+
+  // Check for layers so we can change their visuals (e.g makes the titles of enabled
+  // layers green and have different behavior on hover)
+  const isLayer = isGlobeBrowsingLayer(uri);
 
   let quickToggleUri;
   let canFade = false;
+  const isRenderable = splitUri.length > 1 && splitUri[splitUri.length - 1] === 'Renderable';
   if (state.propertyTree.properties[`${uri}.Enabled`] && !isRenderable) {
     quickToggleUri = `${uri}.Enabled`;
   } else if (state.propertyTree.properties[`${uri}.Renderable.Enabled`]) {
@@ -165,12 +188,7 @@ const mapStateToProps = (state, ownProps) => {
     // Check if this property can be faded
     canFade = state.propertyTree.properties[`${uri}.Renderable.Fade`] !== undefined;
   }
-
   const enabled = quickToggleUri && state.propertyTree.properties[quickToggleUri].value;
-
-  // Check for layers so we can change their visuals (e.g makes the titles of enabled
-  // layers green and have different behavior on hover)
-  const isLayer = isGlobeBrowsingLayer(uri);
 
   return {
     title: title || displayName(state, uri),
@@ -185,20 +203,28 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   const { uri } = ownProps;
   const splitUri = uri.split('.');
+
+  let focusAction = undefined;
+  let shiftFocusAction = undefined;
+
   if (splitUri.length === 2 && splitUri[0] === 'Scene') {
-    return {
-      focusAction: () => {
-        propertyDispatcher(dispatch, NavigationAnchorKey).set(splitUri[1]);
-        propertyDispatcher(dispatch, NavigationAimKey).set('');
-        propertyDispatcher(dispatch, RetargetAnchorKey).set(null);
-      },
-      shiftFocusAction: () => {
-        propertyDispatcher(dispatch, NavigationAnchorKey).set(splitUri[1]);
-        propertyDispatcher(dispatch, NavigationAimKey).set('');
-      },
+    focusAction = () => {
+      propertyDispatcher(dispatch, NavigationAnchorKey).set(splitUri[1]);
+      propertyDispatcher(dispatch, NavigationAimKey).set('');
+      propertyDispatcher(dispatch, RetargetAnchorKey).set(null);
+    };
+    shiftFocusAction = () => {
+      propertyDispatcher(dispatch, NavigationAnchorKey).set(splitUri[1]);
+      propertyDispatcher(dispatch, NavigationAimKey).set('');
     };
   }
-  return {};
+  return {
+    getPropertyDispatcher: (uri) => {
+      return propertyDispatcher(dispatch, uri)
+    },
+    focusAction,
+    shiftFocusAction
+  };
 };
 
 PropertyOwnerHeader = connect(
