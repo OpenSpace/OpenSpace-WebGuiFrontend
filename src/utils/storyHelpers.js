@@ -84,8 +84,9 @@ export const showDevInfoOnScreen = (luaApi, value) => {
 ///////// added climate /////
 
 export const storyGetLayer = (luaApi, layer) => {
-  luaApi.setPropertyValueSingle(
-    layer + ".Enabled", true);
+
+
+  luaApi.setPropertyValue(layer.URI, layer.defaultvalue);
 };
 
 

@@ -3,7 +3,7 @@ import React from 'react';
 import SmallLabel from '../common/SmallLabel/SmallLabel';
 import styles from '../Climate/Button.scss';
 
-const NextStepButton = ({next, NextStepId,string }) => (
+const NextStepButton = ({next, NextStepId, string }) => (
   <div className={styles.next} onClick={next} >
 
     <SmallLabel>{string}</SmallLabel>

@@ -20,7 +20,7 @@ import ActionsPanel from '../components/BottomBar/ActionsPanel';
 import Sidebar from '../components/Sidebar/Sidebar';
 import NodeMetaContainer from '../components/NodeMetaPanel/NodeMetaContainer';
 import NodePopOverContainer from '../components/NodePropertiesPanel/NodePopOverContainer';
-import ExploreClimate from '../components/climate/exploreClimate'
+import ExploreClimate from '../components/climate/ExploreClimate'
 
 import {
   setPropertyValue, startConnection, fetchData, addStoryTree, subscribeToProperty,
@@ -153,8 +153,8 @@ class OnClimateGui extends Component {
 
   render() {
     //let storyIdentifier = [];
-    const { connectionLost, story, storyIdentifier  } = this.props;
-    const { currentStory, startJourney, json} = this.state;
+    const {  connectionLost, story, storyIdentifier  } = this.props;
+    const { currentStory, startJourney, json, luaApi} = this.state;
     //console.log("change " + this.changeStory)
     //console.log("set " + json)
     return (
@@ -178,7 +178,7 @@ class OnClimateGui extends Component {
 
         {(currentStory === DefaultStory)
           ? <StartJourney startNewJourney = {startJourney} changeStory={this.setStory}  />
-        : <ExploreClimate resetStory={this.resetStory} json = {json}  />
+        : <ExploreClimate resetStory={this.resetStory} json = {json} />
         }
         <Sidebar/>
         </section>
@@ -295,7 +295,9 @@ OnClimateGui = withRouter(connect(
 
 
 
-
+// Because some of the functionality in OnClimate Gui requires the luaApi
+// we wrap it up in another component that only renders the gui after
+// luaApi has been connected
 class RequireLuaApi extends Component {
   componentDidMount() {
     const { StartConnection } = this.props;

@@ -6,11 +6,11 @@ import InfoMenu from './infoMenu'
 import { connect } from 'react-redux';
 import NextStepButton from './nextButton';
 import SightsController from '../TouchBar/UtilitiesMenu/presentational/SightsController';
-
+import subStateToProps from "../../utils/subStateToProps";
 import {
   storyGetLayer,
 } from '../../utils/storyHelpers';
-class exploreClimate extends Component{
+class ExploreClimate extends Component{
 
   constructor(props) {
     super(props);
@@ -18,40 +18,31 @@ class exploreClimate extends Component{
     this.state = {
       StoryStep: 0,
     };
-
-    this.setLayer = this.setLayer.bind(this);
     this.stepThroughStory = this.stepThroughStory.bind(this);
     this.Increment = this.Increment.bind(this);
     this.Decrement = this.Decrement.bind(this);
-  }
-
-  setLayer(layer){
-
-    const{luaApi} = this.props;
-    const layerFromJson = storyGetLayer(luaApi, layer);
-
-    return layerFromJson;
   }
 
   Increment = () => {
         this.setState((prevState) => ({
           StoryStep: prevState.StoryStep + 1
     }));
-
   }
-
   Decrement = () => {
         this.setState((prevState) => ({
           StoryStep: prevState.StoryStep - 1
     }));
   }
 
-  stepThroughStory(StoryStep){
-    const { json } = this.props;
+  stepThroughStory(StoryStep, filePath){
+    const {luaApi, json } = this.props;
+    var idnr = json.journey.length;
 
     return(
-      json.journey.map((story) => {
+      filePath.map((story) => {
         if(story.id == StoryStep){
+          console.log("hej",idnr);
+          storyGetLayer(luaApi, story.toggleboolproperties);
           return (
             <div key = {story.id}>
               <h1>
@@ -61,10 +52,12 @@ class exploreClimate extends Component{
                 {story.storyinfo}
               </p>
             </div>
+
           );
         }
       })
-    )
+    );
+
   }
 
 
@@ -75,63 +68,90 @@ class exploreClimate extends Component{
     const { json, story, storyInfo} = this.props;
     const { StoryStep } = this.state;
 
-    var stepThroughStory = this.stepThroughStory(StoryStep);
+    var stepThroughJourney = this.stepThroughStory(StoryStep, json.journey);
 
+    var stepThroughLocal = this.stepThroughStory(StoryStep, json.local)
 
     //console.log(this.props.currentStory)
     //console.log("nemen")
     //console.table(this.props.story.title)
     //console.log("wooddffffp")
-    //console.log(StoryStep)
+    console.log("woop" + StoryStep)
+    console.table("j " + stepThroughJourney)
+    console.table("l " + stepThroughLocal)
 
+    if(StoryStep < stepThroughJourney.length){
     return (
-
       <div className={styles.StoryPosistion}>
-
         <div className = {styles.TellStory}>
-
           <div className = "flex">
-
-              {stepThroughStory}
-
+              {stepThroughJourney}
               <br/>
               <br/>
               <br/>
               <br/>
               <br/>
-              {StoryStep != "undefined" &&
-              <section className = {styles.NextStepButton}>
-                <NextStepButton next = {this.Increment} storyStep = {StoryStep} string = {"Next!"}/>
-              </section>
+              { StoryStep <  stepThroughJourney.length-1 &&
+                <section className = {styles.NextStepButton}>
+                  <NextStepButton next = {this.Increment} storyStep = {StoryStep} string = {"Next!"}/>
+                </section>
               }
               {StoryStep > 0 &&
                 <section className = {styles.PrevStepButton}>
                   <NextStepButton next = {this.Decrement} storyStep = {StoryStep} string = {"Previus!"}/>}
                 </section>
               }
-          </div>
 
+          </div>
         </div>
         <section className={styles.HomeButton}>
           <HomeButtonContainer resetStory={this.props.resetStory}/>
         </section>
       </div>
 
-    );
+      );
+    }
+
+    else{
+      return(
+        <div className={styles.StoryPosistion}>
+          <div className = {styles.TellStory}>
+          {stepThroughLocal}
+            {StoryStep > 0 &&
+              <section className = {styles.PrevStepButton}>
+                <NextStepButton next = {this.Decrement} storyStep = {StoryStep} string = {"Prevffius!"}/>}
+              </section>
+            }
+        </div>
+      </div>
+
+      );
+  }
   }
 }
 
 
 
-exploreClimate.propTypes = {
+ExploreClimate.propTypes = {
   story: PropTypes.objectOf(PropTypes.shape({
     storyTitle: PropTypes.string,
     storyInfo: PropTypes.string,
   })),
+  luaApi: PropTypes.object,
 };
-exploreClimate.defaultProps = {
+ExploreClimate.defaultProps = {
   story: {},
   json: {},
 };
+const mapSubStateToProps = ({ luaApi }) => {
+  return {
+    luaApi: luaApi,
+  };
+};
 
-export default exploreClimate;
+const mapStateToSubState = (state) => ({
+  luaApi: state.luaApi,
+});
+ExploreClimate = connect(subStateToProps(mapSubStateToProps, mapStateToSubState))(ExploreClimate);
+
+export default ExploreClimate;
