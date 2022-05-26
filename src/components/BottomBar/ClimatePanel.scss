@@ -1,6 +1,10 @@
 @import "../../styles/all";
 @import "../../styles/all";
 
+.climatepanel{
+  width: 600em;
+}
+
 .Grid {
     display: flex;
     flex-wrap: wrap;
@@ -10,8 +14,6 @@
       display: none;
     }
 }
-
-
 
 .buttonIconGlacier {
     font-size: 0em;
@@ -32,15 +34,15 @@
 }*/
 
 .menuButton {
-  width: 140px;
+  width: 130px;
   margin-bottom: 5px;
   margin: 2px;
   z-index: 1;
   background-color: #1f1f1f;
 }
 .actionButton {
-  width: 92px;
-  margin-bottom: 5px;
+  width: 130px; // 105 is good
+  //margin-bottom: 5px;
   margin: 2px;
   background-color: #2b2b2b;
   //position: absolute;
@@ -71,7 +73,7 @@
   z-index: -1;
 }
 .actionButton2 {
-  width: 140px;
+  width: 197px;
   margin-bottom: 5px;
   margin: 2px;
   background-color: #2b2b2b;
