@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Checkbox from '../../common/Input/Checkbox/Checkbox';
@@ -17,118 +17,135 @@ import {
 } from '../../../api/keys';
 import { isGlobeBrowsingLayer } from '../../../utils/propertyTreeHelpers';
 
-function PropertyOwnerHeader({
-  title, identifier, expanded, setExpanded, onIcon, offIcon,
-  quickToggleUri, enabled, isLayer, focusAction, shiftFocusAction,
-  popOutAction, metaAction, trashAction
-}) {
+class PropertyOwnerHeader extends Component {
+  constructor(props) {
+    super(props);
+    this.onClick = this.onClick.bind(this);
+    this.onClickFocus = this.onClickFocus.bind(this);
+    this.popoutClick = this.popoutClick.bind(this);
+    this.metaClick = this.metaClick.bind(this);
+    this.trashClick = this.trashClick.bind(this);
+    this.onToggleCheckboxClick = this.onToggleCheckboxClick.bind(this);
+  }
 
-  const onClick = (evt) => {
-    setExpanded(!expanded);
+  onClick = (evt) => {
+    this.props.setExpanded(!this.props.expanded);
   };
 
-  const onClickFocus = (evt) => {
-    if (evt.shiftKey && shiftFocusAction) {
-      shiftFocusAction();
-    } else if (focusAction) {
-      focusAction();
+  onClickFocus = (evt) => {
+    if (evt.shiftKey && this.props.shiftFocusAction) {
+      this.props.shiftFocusAction();
+    } else if (this.props.focusAction) {
+      this.props.focusAction();
     }
     evt.stopPropagation();
   };
 
-  const popoutClick = (evt) => {
-    popOutAction();
+  popoutClick = (evt) => {
+    this.props.popOutAction();
     evt.stopPropagation();
   };
 
-  const metaClick = (evt) => {
-    metaAction();
+  metaClick = (evt) => {
+    this.props.metaAction();
     evt.stopPropagation();
   };
 
-  const trashClick = (evt) => {
-    trashAction(identifier);
+  trashClick = (evt) => {
+    this.props.trashAction(this.props.identifier);
     evt.stopPropagation();
   };
 
-  const popoutButton = (
-    <div className={styles.rightButton} onClick={popoutClick}>
-      <MaterialIcon icon="build" />
-    </div>
-  );
-
-  const metaButton = (
-    <div className={styles.rightButton} onClick={metaClick}>
-      <MaterialIcon icon="help_outline" />
-    </div>
-  );
-
-  const trashButton = (
-    <div className={styles.rightButton} onClick={trashClick}>
-      <MaterialIcon icon="delete" />
-    </div>
-  );
-
-  // Headers look slightly different for globe browsing layers
-  let titleClass = '';
-  if (isLayer) {
-    titleClass = enabled ? styles.enabledLayerTitle : styles.disabledLayerTitle;
-  }
-  // And additionally for height layers
-  const isHeightLayer = isLayer && quickToggleUri.includes('Layers.HeightLayers.');
-
-  const onToggleCheckboxClick = () => {
+  onToggleCheckboxClick = () => {
     console.log('changed the checkbox');
     // if (!canFade) return;
-    this.props.dispatcher.set(value);
+    // this.props.dispatcher.set(value);
   };
 
-  return (
-    <header
-      className={`${toggleHeaderStyles.toggle} ${isLayer && styles.layerHeader}`}
-      onClick={onClick}
-      role="button"
-      tabIndex={0}
-    >
-      <MaterialIcon
-        icon={expanded ? onIcon : offIcon}
-        className={toggleHeaderStyles.icon}
-      />
-      { quickToggleUri && (
-        <span className={styles.leftButtonContainer}>
-          <Checkbox
-            wide={false}
-            checked={true} // TODO: should control the property value
-            label={null}
-            setChecked={onToggleCheckboxClick}
-          />
-        </span>
-        )
-      }
-      <span className={`${toggleHeaderStyles.title} ${titleClass}`}>
-        { title }
-        { isHeightLayer && <MaterialIcon className={styles.heightLayerIcon} icon="landscape" /> }
-        { isLayer && <SvgIcon className={styles.layerDraggableIcon}><DraggableIcon /></SvgIcon> }
-      </span>
-      <span className={styles.rightButtonContainer}>
-        { focusAction && (
-          <div className={styles.rightButton} onClick={onClickFocus}>
-            <SvgIcon><Focus /></SvgIcon>
-          </div>
+  render() {
+    const {
+      enabled,
+      expanded,
+      isLayer,
+      onIcon,
+      offIcon,
+      title,
+      quickToggleUri
+    } = this.props;
+
+    const popoutButton = (
+      <div className={styles.rightButton} onClick={this.popoutClick}>
+        <MaterialIcon icon="build" />
+      </div>
+    );
+  
+    const metaButton = (
+      <div className={styles.rightButton} onClick={this.metaClick}>
+        <MaterialIcon icon="help_outline" />
+      </div>
+    );
+  
+    const trashButton = (
+      <div className={styles.rightButton} onClick={this.trashClick}>
+        <MaterialIcon icon="delete" />
+      </div>
+    );
+  
+    // Headers look slightly different for globe browsing layers
+    let titleClass = '';
+    if (isLayer) {
+      titleClass = enabled ? styles.enabledLayerTitle : styles.disabledLayerTitle;
+    }
+    // And additionally for height layers
+    const isHeightLayer = isLayer && quickToggleUri.includes('Layers.HeightLayers.');
+
+    return (
+      <header
+        className={`${toggleHeaderStyles.toggle} ${isLayer && styles.layerHeader}`}
+        onClick={this.onClick}
+        role="button"
+        tabIndex={0}
+      >
+        <MaterialIcon
+          icon={expanded ? onIcon : offIcon}
+          className={toggleHeaderStyles.icon}
+        />
+        { quickToggleUri && (
+          <span className={styles.leftButtonContainer}>
+            <Checkbox
+              wide={false}
+              checked={true} // TODO: should control the property value
+              label={null}
+              setChecked={this.onToggleCheckboxClick}
+            />
+          </span>
           )
         }
-        {
-          popOutAction && popoutButton
-        }
-        {
-          metaAction && metaButton
-        }
-        {
-          trashAction && trashButton
-        }
-      </span>
-    </header>
-  );
+        <span className={`${toggleHeaderStyles.title} ${titleClass}`}>
+          { title }
+          { isHeightLayer && <MaterialIcon className={styles.heightLayerIcon} icon="landscape" /> }
+          { isLayer && <SvgIcon className={styles.layerDraggableIcon}><DraggableIcon /></SvgIcon> }
+        </span>
+        <span className={styles.rightButtonContainer}>
+          { this.props.focusAction && (
+            <div className={styles.rightButton} onClick={this.onClickFocus}>
+              <SvgIcon><Focus /></SvgIcon>
+            </div>
+            )
+          }
+          {
+            this.props.popOutAction && popoutButton
+          }
+          {
+            this.props.metaAction && metaButton
+          }
+          {
+            this.props.trashAction && trashButton
+          }
+        </span>
+      </header>
+    );
+  }
 };
 
 const mapStateToProps = (state, ownProps) => {
