@@ -33,7 +33,7 @@ class InfoMenu extends Component{
 
       <Popover
         className = {Picker.Popover}
-        title = {this.props.currentStory}
+        title = {this.props.pickedStory.title}
         closeCallback = {this.togglePopover}
       >
 
@@ -48,7 +48,6 @@ class InfoMenu extends Component{
     this.setState({ showPopover: !this.state.showPopover });
   }
   render() {
-    //console.log(this.props.currentStory)
     return (
       <div className={Picker.Wrapper}>
         <Picker

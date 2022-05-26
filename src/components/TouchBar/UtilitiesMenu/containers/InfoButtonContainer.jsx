@@ -13,6 +13,7 @@ class InfoButtonController extends Component {
   }
 
   render() {
+    console.log(this.props.story.title)
     return (
       <div>
         {this.props.story.title &&

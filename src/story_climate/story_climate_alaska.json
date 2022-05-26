@@ -6,11 +6,47 @@
   "focusbuttons": ["Earth"],
   "hidenodes": ["Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune"],
   "timecontroller": true,
+  "sightscontroller" : true,
   "actions": ["climate_mode"],
-  "datecontroller":  [
+  "journey":  [
       {
-        "info": "Show detailed currents",
+        "title": "Show overview of currents",
+        "storyinfo": "Climate Climate Climate Climate Climate Climate Climate Climate Climate",
         "date": "2021-06-18T22:00:00.00",
+        "id" : 0,
+        "anchor": "Earth",
+        "satellite": false,
+        "pitch": 0.036809269173964765,
+        "location": {
+          "latitude": -12473141.755951669,
+          "longitude": -9114685.955448685,
+          "altitude": 11168199.8503709
+        },
+        "position": {
+          "x": -12473141.755951669,
+          "y": -9114685.955448685,
+          "z": 11168199.8503709
+        },
+        "type": "setNavigationState",
+        "up": {
+          "x": 0.3361430784904903,
+          "y": 0.5100890660539397,
+          "z": 0.7917177372493026
+        },
+        "yaw": -0.3332731785454855,
+
+        "toggleboolproperties":
+          {
+            "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
+            "label":"Overview of currents",
+            "defaultvalue": true
+          }
+      },
+      {
+        "title": "Show detailed currents",
+        "storyinfo": "Climate Climate Climate Climate Climate Climate Climate Climate Climate",
+        "date": "2021-06-18T22:00:00.00",
+        "id" : 1,
         "anchor": "Earth",
         "pitch": 0.05726826173823074,
         "position": {
@@ -34,8 +70,10 @@
           }
       },
       {
-        "info": "Zoom in on Alaska",
+        "title": "Zoom in on Alaska",
+        "storyinfo": "Climate Climate Climate Climate Climate Climate Climate Climate Climate",
         "date": "2021-06-18T22:00:00.00",
+        "id" : 2,
         "anchor": "Earth",
         "pitch": 0.057268261672115586,
         "position": {
@@ -59,36 +97,7 @@
           }
       }
     ],
-    "start": {
-      "info": "Show overview of currents",
-      "date": "2021-06-18T22:00:00.00",
-      "anchor": "Earth",
-      "pitch": 0.036809269173964765,
-      "location": {
-        "latitude": -12473141.755951669,
-        "longitude": -9114685.955448685,
-        "altitude": 11168199.8503709
-      },
-      "position": {
-        "x": -12473141.755951669,
-        "y": -9114685.955448685,
-        "z": 11168199.8503709
-      },
-      "type": "setNavigationState",
-      "up": {
-        "x": 0.3361430784904903,
-        "y": 0.5100890660539397,
-        "z": 0.7917177372493026
-      },
-      "yaw": -0.3332731785454855,
 
-      "toggleboolproperties":
-        {
-          "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
-          "label":"Overview of currents",
-          "defaultvalue": true
-        }
-    },
     "toggleboolproperties": [
       {
         "name": "{earth_satellites}.Renderable.Enabled",

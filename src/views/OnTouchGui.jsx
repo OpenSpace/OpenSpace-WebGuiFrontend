@@ -221,7 +221,7 @@ class OnTouchGui extends Component {
   render() {
     const { connectionLost, story, storyIdentifier } = this.props;
     const { currentStory, developerMode, sliderStartStory } = this.state;
-    
+
     return (
       <div className={styles.app}>
         {
