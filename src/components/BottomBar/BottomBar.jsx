@@ -45,8 +45,6 @@ let BottomBar = ({
     <ScreenSpaceRenderablePanel />
     {showExoplanets && <ExoplanetsPanel />}
     <ActionsPanel />
-    <Slider />
-
     {showFlightController && <FlightControlPanel />}
     {showSkyBrowser && <SkyBrowserPanel />}
   </div>

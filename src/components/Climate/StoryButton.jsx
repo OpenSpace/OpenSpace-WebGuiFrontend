@@ -5,9 +5,10 @@ import Icon from '../common/MaterialIcon/MaterialIcon';
 import styles from './Button.scss';
 
 const StoryButton = ({ pickStory, storyIdentifier }) => (
-  <div onClick={pickStory} id={storyIdentifier} role="button" tabIndex="0">
+  <div className = {styles.generalB} onClick={pickStory} id={storyIdentifier} role="button" tabIndex="0">
 
     <SmallLabel  id={storyIdentifier}>{storyIdentifier}</SmallLabel>
+    <Icon icon="chevron_right" className={styles.Icon} />
   </div>
 );
 

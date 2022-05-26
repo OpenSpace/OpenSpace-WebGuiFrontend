@@ -141,7 +141,7 @@ class ClimatePanel extends Component {
 
     this.props.luaApi.setPropertyValueSingle(
       "{earth_satellites}.Renderable.Enabled", false) // DOES NOT WORK!!
-      
+
     this.props.luaApi.setPropertyValueSingle(
           "Scene.Earth.Renderable.Layers.ColorLayers.VIIRS_SNPP_Temporal.Enabled", false);
     this.props.luaApi.globebrowsing.flyToGeo(
@@ -187,12 +187,73 @@ getSurfaceLayerCurrentsOverview() {
         "Scene.Earth.Renderable.Layers.ColorLayers.VIIRS_SNPP_Temporal.Enabled", false);
 }
 
+getSurfaceLayerFirstCons(){
+
+  this.props.luaApi.setPropertyValueSingle(
+    "Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-4m.Enabled",false);
+  this.props.luaApi.setPropertyValueSingle(
+    "Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-6m.Enabled",false);
+
+    this.setState((prevState) => ({
+      isToggleOn: !prevState.isToggleOn,
+    }));
+    this.props.luaApi.setPropertyValueSingle(
+      "Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-2m.Enabled",
+      this.state.isToggleOn
+    );
+  /*this.props.luaApi.setPropertyValueSingle(
+    "Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled", true);
+  this.props.luaApi.setPropertyValueSingle(
+        "Scene.Earth.Renderable.Layers.ColorLayers.VIIRS_SNPP_Temporal.Enabled", false);*/
+}
+
+getSurfaceLayerSecondCons(){
+
+  this.props.luaApi.setPropertyValueSingle(
+    "Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-2m.Enabled",false);
+  this.props.luaApi.setPropertyValueSingle(
+    "Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-6m.Enabled",false);
+
+    this.setState((prevState) => ({
+      isToggleOn: !prevState.isToggleOn,
+    }));
+    this.props.luaApi.setPropertyValueSingle(
+      "Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-4m.Enabled",
+      this.state.isToggleOn
+    );
+  /*this.props.luaApi.setPropertyValueSingle(
+    "Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled", true)
+  this.props.luaApi.setPropertyValueSingle(
+        "Scene.Earth.Renderable.Layers.ColorLayers.VIIRS_SNPP_Temporal.Enabled", false);*/
+}
+
+getSurfaceLayerThirdCons(){
+
+  this.props.luaApi.setPropertyValueSingle(
+    "Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-2m.Enabled",false);
+  this.props.luaApi.setPropertyValueSingle(
+    "Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-4m.Enabled",false);
+
+    this.setState((prevState) => ({
+      isToggleOn: !prevState.isToggleOn,
+    }));
+    this.props.luaApi.setPropertyValueSingle(
+      "Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-6m.Enabled",
+      this.state.isToggleOn
+    );
+  /*this.props.luaApi.setPropertyValueSingle(
+    "Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled", true)
+  this.props.luaApi.setPropertyValueSingle(
+        "Scene.Earth.Renderable.Layers.ColorLayers.VIIRS_SNPP_Temporal.Enabled", false);*/
+}
+
 showHideGlaciers() {
   var g = document.getElementById("glacierButton");
 
   if(g.value=="HIDE"){
     g.style.border = '2px solid #D3D3D3';
     document.getElementById("currentButton").style.border = 'none';
+    document.getElementById("consequenceButton").style.border = 'none';
 
     const glacier1 = document.getElementById('glaciersHide1');
     glacier1.style.position = 'relative';
@@ -214,8 +275,21 @@ showHideGlaciers() {
     current2.style.position = 'absolute';
     current2.style.opacity = '0';
 
+    const consequence1 = document.getElementById('consequenceHide1');
+    consequence1.style.position = 'absolute';
+    consequence1.style.opacity = '0';
+
+    const consequence2 = document.getElementById('consequenceHide2');
+    consequence2.style.position = 'absolute';
+    consequence2.style.opacity = '0';
+
+    const consequence3 = document.getElementById('consequenceHide3');
+    consequence3.style.position = 'absolute';
+    consequence3.style.opacity = '0';
+
     g.value="SHOW";
     document.getElementById("currentButton").value = 'HIDE';
+    document.getElementById("consequenceButton").value = 'HIDE';
     }
     else if(g.value=="SHOW"){
       g.style.border = 'none';
@@ -234,6 +308,7 @@ showHideGlaciers() {
 
       g.value="HIDE";
       document.getElementById("currentButton").value = 'SHOW';
+      document.getElementById("consequenceButton").value = 'SHOW';
     }
 }
 
@@ -243,6 +318,7 @@ showHideCurrents() {
     if(c.value=="HIDE"){
       c.style.border = '2px solid #D3D3D3';
       document.getElementById("glacierButton").style.border = 'none';
+      document.getElementById("consequenceButton").style.border = 'none';
 
       const current1 = document.getElementById('curentsHide1');
       current1.style.position = 'relative';
@@ -264,8 +340,21 @@ showHideCurrents() {
       glacier3.style.position = 'absolute';
       glacier3.style.opacity = '0';
 
+      const consequence1 = document.getElementById('consequenceHide1');
+      consequence1.style.position = 'absolute';
+      consequence1.style.opacity = '0';
+
+      const consequence2 = document.getElementById('consequenceHide2');
+      consequence2.style.position = 'absolute';
+      consequence2.style.opacity = '0';
+
+      const consequence3 = document.getElementById('consequenceHide3');
+      consequence3.style.position = 'absolute';
+      consequence3.style.opacity = '0';
+
       c.value="SHOW";
       document.getElementById("glacierButton").value = 'HIDE';
+      document.getElementById("consequenceButton").value = 'HIDE';
       }
       else if(c.value=="SHOW"){
         c.style.border = 'none';
@@ -280,8 +369,75 @@ showHideCurrents() {
 
         c.value="HIDE";
         document.getElementById("glacierButton").value = 'SHOW';
+        document.getElementById("consequenceButton").value = 'SHOW';
       }
 }
+
+showHideConsequenses() {
+  var c = document.getElementById("consequenceButton");
+
+    if(c.value=="HIDE"){
+      c.style.border = '2px solid #D3D3D3';
+      document.getElementById("glacierButton").style.border = 'none';
+      document.getElementById("currentButton").style.border = 'none';
+
+      const consequence1 = document.getElementById('consequenceHide1');
+      consequence1.style.position = 'relative';
+      consequence1.style.opacity = '1';
+
+      const consequence2 = document.getElementById('consequenceHide2');
+      consequence2.style.position = 'relative';
+      consequence2.style.opacity = '1';
+
+      const consequence3 = document.getElementById('consequenceHide3');
+      consequence3.style.position = 'relative';
+      consequence3.style.opacity = '1';
+
+      const current1 = document.getElementById('curentsHide1');
+      current1.style.position = 'absolute';
+      current1.style.opacity = '0';
+
+      const current2 = document.getElementById('curentsHide2');
+      current2.style.position = 'absolute';
+      current2.style.opacity = '0';
+
+      const glacier1 = document.getElementById('glaciersHide1');
+      glacier1.style.position = 'absolute';
+      glacier1.style.opacity = '0';
+
+      const glacier2 = document.getElementById('glaciersHide2');
+      glacier2.style.position = 'absolute';
+      glacier2.style.opacity = '0';
+
+      const glacier3 = document.getElementById('glaciersHide3');
+      glacier3.style.position = 'absolute';
+      glacier3.style.opacity = '0';
+
+      c.value="SHOW";
+      document.getElementById("glacierButton").value = 'HIDE';
+      document.getElementById("currentButton").value = 'HIDE';
+      }
+      else if(c.value=="SHOW"){
+        c.style.border = 'none';
+
+        const consequence1 = document.getElementById('consequenceHide1');
+        consequence1.style.position = 'absolute';
+        consequence1.style.opacity = '0';
+
+        const consequence2 = document.getElementById('consequenceHide2');
+        consequence2.style.position = 'absolute';
+        consequence2.style.opacity = '0';
+
+        const consequence3 = document.getElementById('consequenceHide3');
+        consequence3.style.position = 'absolute';
+        consequence3.style.opacity = '0';
+
+        c.value="HIDE";
+        document.getElementById("glacierButton").value = 'SHOW';
+        document.getElementById("currentButton").value = 'SHOW';
+      }
+}
+
 
 
 /*showHideGlaciers() {
@@ -339,6 +495,10 @@ showHideCurrents() {
     var currents;
     var overviewCurrents;
     var detailedCurrents;
+    var consequences;
+    var firstCons;
+    var secondCons;
+    var thirdCons;
 
     glaciers = (
       <Button
@@ -455,6 +615,67 @@ showHideCurrents() {
       </Button>
     );
 
+    consequences = (
+      <Button
+        block
+        smalltext
+        id="consequenceButton"
+        value="HIDE"
+        onClick={() => {
+          this.showHideConsequenses();
+        }}
+        className={styles.menuButton}
+      >
+        <p>
+          <MaterialIcon
+            className={styles.buttonIcon}
+            //icon="reply_all"
+            icon="close"
+          />
+        </p>
+        Consequences
+      </Button>
+    );
+
+    firstCons = (
+      <Button
+        id = "consequenceHide1"
+        //class = "cClass"
+        onClick={() => {
+          this.getSurfaceLayerFirstCons();
+        }}
+        className={styles.actionButton}
+      >
+        2 meters
+      </Button>
+    );
+
+    secondCons = (
+      <Button
+        id = "consequenceHide2"
+        //class = "cClass"
+        onClick={() => {
+          this.getSurfaceLayerSecondCons();
+        }}
+        className={styles.actionButton}
+      >
+        4 meters
+      </Button>
+    );
+
+    thirdCons = (
+      <Button
+        id = "consequenceHide3"
+        //class = "cClass"
+        onClick={() => {
+          this.getSurfaceLayerThirdCons();
+        }}
+        className={styles.actionButton}
+      >
+        6 meters
+      </Button>
+    );
+
     return (
       <Popover
         className={`${Picker.Popover} ${styles.climatepanel}`}
@@ -470,11 +691,15 @@ showHideCurrents() {
           <div className={styles.Grid}>
             {glaciers}
             {currents}
+            {consequences}
             {antarctica}
             {greenland}
             {alaska}
             {overviewCurrents}
             {detailedCurrents}
+            {firstCons}
+            {secondCons}
+            {thirdCons}
 
           </div>
         </div>
@@ -490,7 +715,7 @@ showHideCurrents() {
       <div className={Picker.Wrapper}>
         <Picker onClick={this.togglePopover}>
           <div>
-            <MaterialIcon className={styles.bottomBarIcon} icon="whatshot" />
+            <MaterialIcon className={styles.bottomBarIcon} icon="ac_unit" />
           </div>
         </Picker>
         {popoverVisible && this.popover}
