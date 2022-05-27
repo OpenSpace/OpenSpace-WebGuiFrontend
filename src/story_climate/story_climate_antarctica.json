@@ -1,7 +1,7 @@
 {
   "identifier":"climate_antarctica",
   "title": "Climate on Antarctica",
-
+  "storyinfo": "Climate Climate",
   "overviewlimit": 1.0e+8,
   "focusbuttons": ["Earth"],
 
@@ -92,7 +92,7 @@
 
     "local":[
       {
-        "title": "Show zoomed west Antarctica, Thwaites glacier",
+        "title": "West Antarctica, Thwaites glacier",
         "id" : 0,
         "storyinfo": "Climate Climate Climate Climate Climate Climate Climate Climate Climate",
         "date": "2021-12-18T15:15:00.00",
@@ -118,7 +118,7 @@
       },
 
       {
-        "title": "Show zoomed easst Antarctica",
+        "title": "Easst Antarctica",
         "id" : 1,
         "storyinfo": "Climate Climate Climate Climate Climate Climate Climate Climate Climate",
         "date": "2021-12-18T15:15:00.00",

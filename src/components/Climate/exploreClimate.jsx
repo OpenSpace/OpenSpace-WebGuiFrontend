@@ -5,6 +5,7 @@ import styles from './exploreClimate.scss';
 import InfoMenu from './infoMenu'
 import { connect } from 'react-redux';
 import NextStepButton from './nextButton';
+import PickStoryLocal from './PickStoryLocal';
 import SightsController from '../TouchBar/UtilitiesMenu/presentational/SightsController';
 import subStateToProps from "../../utils/subStateToProps";
 import {
@@ -17,6 +18,7 @@ class ExploreClimate extends Component{
 
     this.state = {
       StoryStep: 0,
+      LocalStory: "default",
     };
     this.stepThroughStory = this.stepThroughStory.bind(this);
     this.Increment = this.Increment.bind(this);
@@ -73,7 +75,7 @@ class ExploreClimate extends Component{
 
     console.log("woooopie" + StoryStep)
     console.table("j " + stepThroughJourney)
-    //console.table("l " + stepThroughLocal)
+    console.table("l " + stepThroughJourney.length)
 
     if(StoryStep < stepThroughJourney.length){
     return (
@@ -86,17 +88,31 @@ class ExploreClimate extends Component{
               <br/>
               <br/>
               <br/>
-              { StoryStep <  stepThroughJourney.length-1 &&
+              { StoryStep <  stepThroughJourney.length -1 &&
                 <section className = {styles.NextStepButton}>
                   <NextStepButton next = {this.Increment} storyStep = {StoryStep} string = {"Next!"}/>
                 </section>
               }
-              {StoryStep > 0 &&
+              {StoryStep > 0 && StoryStep < stepThroughJourney.length  &&
                 <section className = {styles.PrevStepButton}>
                   <NextStepButton next = {this.Decrement} storyStep = {StoryStep} string = {"Previous!"}/>}
                 </section>
               }
+              { StoryStep ==  stepThroughJourney.length - 1 && json.local.length > 0 &&
 
+
+                json.local.map((story, index) => {
+                    return(
+                      <div key = {index} style={{height: 40+1*story.id}} >
+                      <PickStoryLocal key = {index}
+                        storyInfo = {story}
+                        storyTitle = {story.title}
+                      />
+                    </div>
+                    );
+                  })
+
+              }
           </div>
         </div>
         <section className={styles.HomeButton}>

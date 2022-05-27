@@ -15,7 +15,6 @@
         "date": "2021-06-18T22:00:00.00",
         "id" : 0,
         "anchor": "Earth",
-        "satellite": false,
         "pitch": 0.036809269173964765,
         "location": {
           "latitude": -12473141.755951669,
@@ -97,6 +96,7 @@
           }
       }
     ],
+    "local":[],
 
     "toggleboolproperties": [
       {
