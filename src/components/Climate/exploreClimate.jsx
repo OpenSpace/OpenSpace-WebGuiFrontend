@@ -2,9 +2,9 @@ import PropTypes from 'prop-types';
 import React,{ Component } from 'react';
 import HomeButtonContainer from '../TouchBar/UtilitiesMenu/containers/HomeButtonContainer';
 import styles from './exploreClimate.scss';
-import InfoMenu from './infoMenu'
+
 import { connect } from 'react-redux';
-import NextStepButton from './nextButton';
+import NextPrevStepButton from './NextPrevButton';
 import PickStoryLocal from './PickStoryLocal';
 import SightsController from '../TouchBar/UtilitiesMenu/presentational/SightsController';
 import subStateToProps from "../../utils/subStateToProps";
@@ -23,6 +23,7 @@ class ExploreClimate extends Component{
     this.stepThroughStory = this.stepThroughStory.bind(this);
     this.Increment = this.Increment.bind(this);
     this.Decrement = this.Decrement.bind(this);
+    this.LocalStory = this.LocalStory.bind(this);
   }
 
   Increment = () => {
@@ -36,14 +37,30 @@ class ExploreClimate extends Component{
     }));
   }
 
+  LocalStory(story){
+    console.log("im here");
+    return (
+
+      <div key = {story.id} style={{ background: 'red' }}>
+        <h1>
+          hehafhfdalihdlihfdalihfdalihfdalhfdalhfdafdaljhfdafdaluhfda
+        </h1>
+        <p>
+          {story.storyinfo}
+        </p>
+      </div>
+    );
+  }
+
+
+
   stepThroughStory(StoryStep, filePath){
     const {luaApi, json } = this.props;
-    var idnr = json.journey.length;
-
+    console.log("hejheheheheheh");
     return(
       filePath.map((story) => {
         if(story.id == StoryStep){
-          console.log("hej",idnr);
+
           storyGetLayer(luaApi, story.toggleboolproperties);
           return (
             <div key = {story.id}>
@@ -64,23 +81,9 @@ class ExploreClimate extends Component{
 
 
   render() {
-    //console.log("hej")
-    //console.table(this.props.currentStory)
-    //console.log(story.sightscontroller)
     const { json, story, storyInfo} = this.props;
     const { StoryStep } = this.state;
-
     var stepThroughJourney = this.stepThroughStory(StoryStep, json.journey);
-
-    var stepThroughLocal = this.stepThroughStory(StoryStep, json.local)
-
-    //console.log(this.props.currentStory)
-    //console.log("nemen")
-    //console.table(this.props.story.title)
-    //console.log("wooddffffp")
-    console.log("woop" + StoryStep)
-    console.table("j " + stepThroughJourney)
-    console.table("l " + stepThroughJourney.length)
 
     if(StoryStep < stepThroughJourney.length){
     return (
@@ -95,28 +98,25 @@ class ExploreClimate extends Component{
               <br/>
               { StoryStep <  stepThroughJourney.length -1 &&
                 <section className = {styles.NextStepButton}>
-                  <NextStepButton next = {this.Increment} storyStep = {StoryStep} string = {"Next!"}/>
+                  <NextPrevStepButton next = {this.Increment} storyStep = {StoryStep} string = {"Next!"}/>
                 </section>
               }
               {StoryStep > 0 && StoryStep < stepThroughJourney.length  &&
                 <section className = {styles.PrevStepButton}>
-                  <NextStepButton next = {this.Decrement} storyStep = {StoryStep} string = {"Previus!"}/>}
+                  <NextPrevStepButton next = {this.Decrement} storyStep = {StoryStep} string = {"Previus!"}/>}
                 </section>
               }
-              { StoryStep ==  stepThroughJourney.length - 1 && json.local.length > 0 &&
-
+              {StoryStep ==  stepThroughJourney.length - 1 && json.local.length > 0 &&
 
                 json.local.map((story, index) => {
                     return(
-                      <div key = {index} style={{height: 40+1*story.id}} >
-                      <PickStoryLocal key = {index}
-                        storyInfo = {story}
-                        storyTitle = {story.title}
+                      <div key = {index} style = {{ height: 40+1*story.id }} >
+                      <PickStoryLocal key = { index }
+                        storyInfo = { story }
                       />
-                    </div>
+                     </div>
                     );
                   })
-
               }
           </div>
         </div>
@@ -145,8 +145,6 @@ class ExploreClimate extends Component{
   }
   }
 }
-
-
 
 ExploreClimate.propTypes = {
   story: PropTypes.objectOf(PropTypes.shape({

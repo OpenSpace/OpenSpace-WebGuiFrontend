@@ -12,20 +12,20 @@ class Pick extends Component {
   }
 
   handleStory(e) {
-    this.props.onChangeStory(e.target.id);
+    this.props.changeStory(e.target.id);
   }
 
   render() {
-    const { storyInfo } = this.props;
 
-    //console.log('item' + storyInfo.id)
-    var styles = 'item' + storyInfo.id
+    const { climateStorys } = this.props;
+
+  console.table(climateStorys)
     return (
-          <div style={{height: 40+1*storyInfo.id}} >
+          <div style={{height: 40+1*climateStorys.id}} >
             <StoryButton
               pickStory={this.handleStory}
-              storyIdentifier= {storyInfo.identifier}
-              storyId = {storyInfo.id}
+              storyIdentifier= {climateStorys.title}
+              storyId = {climateStorys.id}
             />
           </div>
     );
@@ -33,8 +33,8 @@ class Pick extends Component {
 }
 
 Pick.propTypes = {
-  onChangeStory: PropTypes.func.isRequired,
-  storyInfo: PropTypes.shape({
+  changeStory: PropTypes.func.isRequired,
+  climateStorys: PropTypes.shape({
     title: PropTypes.string,
     info: PropTypes.string,
   }).isRequired,

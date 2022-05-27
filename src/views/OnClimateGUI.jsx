@@ -27,7 +27,7 @@ import {
   unsubscribeToProperty, addStoryInfo, resetStoryInfo,
 } from '../api/Actions';
 
-
+import climate_stories from "../story_climate/pick_story.json";
 import {
   ValuePlaceholder, DefaultStory, ScaleKey,
   NavigationAnchorKey,InfoIconKey, ZoomInLimitKey, ZoomOutLimitKey,
@@ -56,6 +56,7 @@ class OnClimateGui extends Component {
       currentStory: "default",
       json: "defualt",
       startJourney: "default",
+      climate_storys: climate_stories,
     };
     this.changeStory = this.changeStory.bind(this);
     this.addStoryTree = this.addStoryTree.bind(this);
@@ -145,7 +146,6 @@ class OnClimateGui extends Component {
     const { luaApi } = this.props;
     const { currentStory } = this.state;
 
-
     this.setState({startJourney: currentStory});
     UpdateDeltaTimeNow(luaApi, 1);
     this.setStory(DefaultStory);
@@ -154,9 +154,9 @@ class OnClimateGui extends Component {
   render() {
     //let storyIdentifier = [];
     const {  connectionLost, story, storyIdentifier  } = this.props;
-    const { currentStory, startJourney, json, luaApi} = this.state;
-    //console.log("change " + this.changeStory)
-    //console.log("set " + json)
+    const { currentStory, json, luaApi, climate_storys} = this.state;
+
+    //console.log(typeof(climate_storys))
     return (
 
       <div className={styles.app}>
@@ -177,8 +177,8 @@ class OnClimateGui extends Component {
 
 
         {(currentStory === DefaultStory)
-          ? <StartJourney startNewJourney = {startJourney} changeStory={this.setStory}  />
-        : <ExploreClimate resetStory={this.resetStory} json = {json} />
+          ? <StartJourney changeStory = {this.setStory} />
+        : <ExploreClimate resetStory = {this.resetStory} json = {json} />
         }
         <Sidebar/>
         </section>
