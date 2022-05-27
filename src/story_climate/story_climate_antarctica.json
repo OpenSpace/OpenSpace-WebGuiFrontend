@@ -87,8 +87,6 @@
             "label":"Detailed currents, OSCAR",
             "defaultvalue": true
           }
-
-
       }
     ],
 
@@ -143,23 +141,6 @@
             "label":"Detailed currents, OSCAR",
             "defaultvalue": true
           }
-      }
-
-    ],
-
-    "toggleboolproperties": [
-      {
-        "name": "{earth_satellites}.Renderable.Enabled",
-        "type": "setPropertyValue",
-        "value": "false"
-      },
-      {
-        "URI":"Scene.Earth.Renderable.Layers.ColorLayers.OSCAR_Sea_Surface_Currents_Zonal.Enabled",
-        "label":"Climate Antarctica Mode",
-        "isAction": true,
-        "actionEnabled":"climate_antarctica_mode_true",
-        "actionDisabled":"climate_antarctica_mode_false",
-        "defaultvalue": false
       }
     ]
   }

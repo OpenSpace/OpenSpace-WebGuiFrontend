@@ -41,8 +41,11 @@ class ExploreClimate extends Component{
     return(
       filePath.map((story) => {
         if(story.id == StoryStep){
+          console.log("storystep " + StoryStep);
           console.log("hej",idnr);
           storyGetLayer(luaApi, story.toggleboolproperties);
+          console.log("asset " + story.toggleboolproperties);
+          //console.log("id "= story.id);
           return (
             <div key = {story.id}>
               <h1>
@@ -52,7 +55,6 @@ class ExploreClimate extends Component{
                 {story.storyinfo}
               </p>
             </div>
-
           );
         }
       })
@@ -62,23 +64,16 @@ class ExploreClimate extends Component{
 
 
   render() {
-    //console.log("hej")
-    //console.table(this.props.currentStory)
-    //console.log(story.sightscontroller)
     const { json, story, storyInfo} = this.props;
     const { StoryStep } = this.state;
 
     var stepThroughJourney = this.stepThroughStory(StoryStep, json.journey);
 
-    var stepThroughLocal = this.stepThroughStory(StoryStep, json.local)
+    //var stepThroughLocal = this.stepThroughStory(StoryStep, json.local)
 
-    //console.log(this.props.currentStory)
-    //console.log("nemen")
-    //console.table(this.props.story.title)
-    //console.log("wooddffffp")
-    console.log("woop" + StoryStep)
+    console.log("woooopie" + StoryStep)
     console.table("j " + stepThroughJourney)
-    console.table("l " + stepThroughLocal)
+    //console.table("l " + stepThroughLocal)
 
     if(StoryStep < stepThroughJourney.length){
     return (
@@ -98,7 +93,7 @@ class ExploreClimate extends Component{
               }
               {StoryStep > 0 &&
                 <section className = {styles.PrevStepButton}>
-                  <NextStepButton next = {this.Decrement} storyStep = {StoryStep} string = {"Previus!"}/>}
+                  <NextStepButton next = {this.Decrement} storyStep = {StoryStep} string = {"Previous!"}/>}
                 </section>
               }
 
@@ -116,10 +111,10 @@ class ExploreClimate extends Component{
       return(
         <div className={styles.StoryPosistion}>
           <div className = {styles.TellStory}>
-          {stepThroughLocal}
+        //{stepThroughLocal}
             {StoryStep > 0 &&
               <section className = {styles.PrevStepButton}>
-                <NextStepButton next = {this.Decrement} storyStep = {StoryStep} string = {"Prevffius!"}/>}
+                <NextStepButton next = {this.Decrement} storyStep = {StoryStep} string = {"Previous!!!"}/>}
               </section>
             }
         </div>

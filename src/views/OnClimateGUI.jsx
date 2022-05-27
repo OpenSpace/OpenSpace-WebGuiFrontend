@@ -60,10 +60,7 @@ class OnClimateGui extends Component {
     this.changeStory = this.changeStory.bind(this);
     this.addStoryTree = this.addStoryTree.bind(this);
     this.setStory = this.setStory.bind(this);
-
     this.resetStory = this.resetStory.bind(this);
-
-
     this.addStoryTree = this.addStoryTree.bind(this);
 
 
@@ -103,7 +100,7 @@ class OnClimateGui extends Component {
     //setStoryStart(luaApi, getJson.start, getJson.start.date);
 
     //remove satelites from start profile
-    satelliteToggle(luaApi, true);
+    satelliteToggle(luaApi, false);
 
     //this.toggleSatelite(luaApi, getJson.start)
     //getJson.start.toggleboolproperties;
@@ -112,10 +109,7 @@ class OnClimateGui extends Component {
     this.checkStorySettings(story, true);
     // Check and set the settings of the current story
     this.checkStorySettings(getJson, false);
-
-
   }
-
 
   checkStorySettings(story, value) {
     const { luaApi } = this.props;
@@ -124,7 +118,6 @@ class OnClimateGui extends Component {
     if (story.hidenodes) {
       story.hidenodes.forEach(node => toggleShowNode(luaApi, node, value));
     }
-
   }
 
   // Read in json-file for new story and add it to redux
