@@ -1,0 +1,54 @@
+@import "../../../styles/all";
+
+
+
+.StoryPosistion{
+  position: relative;
+  width: 400%;
+  margin: 0 auto;
+  height: 100%;
+  overflow: hidden;
+  background: white;
+//  background-color: #d3d3d3;
+}
+
+.TellStory{
+  font-family: $font-family;
+  height: 20%;
+  width: 70%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 30%;
+  left: 10%;
+  z-index: 999;
+  color: lightgrey;
+  font-size: 16px;
+}
+
+.button{
+  font-family: $font-family;
+  height: 1%;
+  width: 70%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 50%;
+  left: 10%;
+  z-index: 999;
+  color: lightgrey;
+  font-size: 16px;
+}
+.flex {
+  width: 50%;
+  vertical-align: middle;
+}
+
+
+.test{
+  background: blue;
+  top: 30%;
+
+}

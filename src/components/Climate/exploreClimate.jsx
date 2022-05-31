@@ -5,7 +5,7 @@ import styles from './exploreClimate.scss';
 
 import { connect } from 'react-redux';
 import NextPrevStepButton from './NextPrevButton';
-import PickStoryLocal from './PickStoryLocal';
+import PickStoryLocal from './LocalStory/PickStoryLocal';
 import SightsController from '../TouchBar/UtilitiesMenu/presentational/SightsController';
 import subStateToProps from "../../utils/subStateToProps";
 import {
@@ -85,64 +85,60 @@ class ExploreClimate extends Component{
     const { StoryStep } = this.state;
     var stepThroughJourney = this.stepThroughStory(StoryStep, json.journey);
 
-    if(StoryStep < stepThroughJourney.length){
+    
     return (
       <div className={styles.StoryPosistion}>
         <div className = {styles.TellStory}>
           <div className = "flex">
-              {stepThroughJourney}
-              <br/>
-              <br/>
-              <br/>
-              <br/>
-              <br/>
+            <div id = "je" >
+            {stepThroughJourney}
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            </div>
+
               { StoryStep <  stepThroughJourney.length -1 &&
-                <section className = {styles.NextStepButton}>
-                  <NextPrevStepButton next = {this.Increment} storyStep = {StoryStep} string = {"Next!"}/>
-                </section>
+                <div>
+                  <section className = {styles.NextStepButton}>
+                    <NextPrevStepButton next = {this.Increment} storyStep = {StoryStep} string = {"Next!"}/>
+                  </section>
+                </div>
               }
               {StoryStep > 0 && StoryStep < stepThroughJourney.length  &&
                 <section className = {styles.PrevStepButton}>
-                  <NextPrevStepButton next = {this.Decrement} storyStep = {StoryStep} string = {"Previus!"}/>}
+                  <NextPrevStepButton next = {this.Decrement} storyStep = {StoryStep} string = {"Previus!"}/>
                 </section>
-              }
-              {StoryStep ==  stepThroughJourney.length - 1 && json.local.length > 0 &&
+                }
 
-                json.local.map((story, index) => {
-                    return(
-                      <div key = {index} style = {{ height: 40+1*story.id }} >
-                      <PickStoryLocal key = { index }
-                        storyInfo = { story }
-                      />
-                     </div>
-                    );
-                  })
-              }
+
           </div>
         </div>
+        {StoryStep ==  stepThroughJourney.length - 1 && json.local.length > 0 &&
+
+          json.local.map((story, index) => {
+            console.log("if" + StoryStep);
+
+            return(
+                <div key = {index}>
+                <PickStoryLocal key = { index }
+                  storyInfo = { story }
+                  displayStory ={stepThroughJourney[StoryStep]}
+                  storystep = {StoryStep}
+                />
+               </div>
+              );
+            })
+
+        }
         <section className={styles.HomeButton}>
           <HomeButtonContainer resetStory={this.props.resetStory}/>
         </section>
       </div>
 
       );
-    }
 
-    else{
-      return(
-        <div className={styles.StoryPosistion}>
-          <div className = {styles.TellStory}>
-          {stepThroughLocal}
-            {StoryStep > 0 &&
-              <section className = {styles.PrevStepButton}>
-                <NextStepButton next = {this.Decrement} storyStep = {StoryStep} string = {"Prevffius!"}/>}
-              </section>
-            }
-        </div>
-      </div>
-
-      );
-  }
   }
 }
 

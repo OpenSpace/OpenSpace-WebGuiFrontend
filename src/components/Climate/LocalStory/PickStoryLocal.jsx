@@ -1,11 +1,12 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
-import styles from '../Climate/Button.scss';
+import CenteredLabel from '../../common/CenteredLabel/CenteredLabel';
+import styles from './LocalStory.scss';
 import {
  DefaultStory,
-} from '../../api/keys'
-import GetlocalStory from '../Climate/GetlocalStory';
+} from '../../../api/keys'
+import GetlocalStory from './GetlocalStory';
+import DisplaylocalStory from './DisplaylocalStory'
 
 class PickStoryLocal extends Component {
   constructor(props) {
@@ -36,27 +37,36 @@ class PickStoryLocal extends Component {
    }
 
   render() {
-    const { storyInfo } = this.props;
+    const {storyInfo, displayStory, storyStep} = this.props;
     const {currentStory} = this.state;
-    //console.log(storyInfo)
-    //console.table(storyInfo.title)
+    //console.log("tjema")
+    //console.table(displayStory)
+    console.log(storyInfo.id)
 
     return (
-          <div style={{height: 40+1*storyInfo.id}} >
+          <div>
             {(currentStory === DefaultStory)
-              ? <GetlocalStory changeStory = {this.setStory} climateStorys = {storyInfo}/>
-             :  <div><h1>hej</h1></div>
+              ?<div className = {styles.button}>
+              <div style={{height: 30+90*storyInfo.id}} >
+                <GetlocalStory changeStory = {this.setStory} climateStorys = {storyInfo} displayStory = {displayStory}/>
+              </div>
+                </div>
+            :  <DisplaylocalStory climateStorys = {storyInfo}/>
             }
           </div>
+
+
     );
   }
 }
 
 PickStoryLocal.propTypes = {
+  storyStep: PropTypes.number,
   storyInfo: PropTypes.shape({
     title: PropTypes.string,
     info: PropTypes.string,
   }).isRequired,
+
 };
 
 export default PickStoryLocal;

@@ -61,10 +61,7 @@ class OnClimateGui extends Component {
     this.changeStory = this.changeStory.bind(this);
     this.addStoryTree = this.addStoryTree.bind(this);
     this.setStory = this.setStory.bind(this);
-
     this.resetStory = this.resetStory.bind(this);
-
-
     this.addStoryTree = this.addStoryTree.bind(this);
 
 

@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
-import styles from '../Climate/Button.scss';
-import StoryButton from '../Climate/StoryButton';
+import CenteredLabel from '../../common/CenteredLabel/CenteredLabel';
+import styles from '../../Climate/Button.scss';
+import StoryButton from '../../Climate/StoryButton';
 
 class Pick extends Component {
   constructor(props) {
@@ -17,17 +17,18 @@ class Pick extends Component {
 
   render() {
 
-    const { climateStorys } = this.props;
+    const { climateStorys, displayStory } = this.props;
 
-  console.table(climateStorys)
+
+    //console.table(climateStorys)
     return (
-          <div style={{height: 40+1*climateStorys.id}} >
+
             <StoryButton
               pickStory={this.handleStory}
               storyIdentifier= {climateStorys.title}
               storyId = {climateStorys.id}
             />
-          </div>
+          
     );
   }
 }
