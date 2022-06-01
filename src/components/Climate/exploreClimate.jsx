@@ -84,21 +84,23 @@ class ExploreClimate extends Component{
     const { json, story, storyInfo} = this.props;
     const { StoryStep } = this.state;
     var stepThroughJourney = this.stepThroughStory(StoryStep, json.journey);
-
-    
+    console.log("if ");
+    console.log(StoryStep);
     return (
       <div className={styles.StoryPosistion}>
         <div className = {styles.TellStory}>
           <div className = "flex">
-            <div id = "je" >
-            {stepThroughJourney}
-            <br/>
-            <br/>
-            <br/>
-            <br/>
-            <br/>
-            </div>
 
+            { StoryStep <  stepThroughJourney.length &&
+              <div id = "je" >
+                {stepThroughJourney}
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+              </div>
+            }
               { StoryStep <  stepThroughJourney.length -1 &&
                 <div>
                   <section className = {styles.NextStepButton}>
@@ -106,32 +108,33 @@ class ExploreClimate extends Component{
                   </section>
                 </div>
               }
-              {StoryStep > 0 && StoryStep < stepThroughJourney.length  &&
+              {StoryStep > 0   &&
+
                 <section className = {styles.PrevStepButton}>
                   <NextPrevStepButton next = {this.Decrement} storyStep = {StoryStep} string = {"Previus!"}/>
                 </section>
+                }
+                { json.journey[StoryStep].local.length > 0 &&
+
+                  json.journey[StoryStep].local.map((story, index) => {
+
+                    return(
+                        <div key = {index}>
+                        <PickStoryLocal key = { index }
+                          storyInfo = { story }
+                          StoryStep = {StoryStep}
+                          next = {this.Increment}
+                        />
+                       </div>
+                      );
+                    })
+
                 }
 
 
           </div>
         </div>
-        {StoryStep ==  stepThroughJourney.length - 1 && json.local.length > 0 &&
 
-          json.local.map((story, index) => {
-            console.log("if" + StoryStep);
-
-            return(
-                <div key = {index}>
-                <PickStoryLocal key = { index }
-                  storyInfo = { story }
-                  displayStory ={stepThroughJourney[StoryStep]}
-                  storystep = {StoryStep}
-                />
-               </div>
-              );
-            })
-
-        }
         <section className={styles.HomeButton}>
           <HomeButtonContainer resetStory={this.props.resetStory}/>
         </section>

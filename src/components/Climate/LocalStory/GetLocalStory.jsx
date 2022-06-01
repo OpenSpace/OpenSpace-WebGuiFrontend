@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import CenteredLabel from '../../common/CenteredLabel/CenteredLabel';
 import styles from '../../Climate/Button.scss';
-import StoryButton from '../../Climate/StoryButton';
+import StoryButton from './StoryButtonLocal';
 
 class Pick extends Component {
   constructor(props) {
@@ -12,23 +12,33 @@ class Pick extends Component {
   }
 
   handleStory(e) {
+
     this.props.changeStory(e.target.id);
+
   }
+
+  Increment = () => {
+        this.setState((prevState) => ({
+          StoryStep: prevState.StoryStep + 1
+    }));
+  }
+
+
 
   render() {
 
-    const { climateStorys, displayStory } = this.props;
+    const { climateStorys, next } = this.props;
 
-
-    //console.table(climateStorys)
     return (
 
             <StoryButton
               pickStory={this.handleStory}
+              next = {next}
               storyIdentifier= {climateStorys.title}
-              storyId = {climateStorys.id}
+
+
             />
-          
+
     );
   }
 }
@@ -38,6 +48,7 @@ Pick.propTypes = {
   climateStorys: PropTypes.shape({
     title: PropTypes.string,
     info: PropTypes.string,
+    next: PropTypes.func,
   }).isRequired,
 };
 

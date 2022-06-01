@@ -37,18 +37,15 @@ class PickStoryLocal extends Component {
    }
 
   render() {
-    const {storyInfo, displayStory, storyStep} = this.props;
+    const {storyInfo, StoryStep, next} = this.props;
     const {currentStory} = this.state;
-    //console.log("tjema")
-    //console.table(displayStory)
-    console.log(storyInfo.id)
 
     return (
           <div>
             {(currentStory === DefaultStory)
               ?<div className = {styles.button}>
               <div style={{height: 30+90*storyInfo.id}} >
-                <GetlocalStory changeStory = {this.setStory} climateStorys = {storyInfo} displayStory = {displayStory}/>
+                <GetlocalStory changeStory = {this.setStory} climateStorys = {storyInfo} StoryStep = {StoryStep} next = {next}/>
               </div>
                 </div>
             :  <DisplaylocalStory climateStorys = {storyInfo}/>
@@ -61,12 +58,17 @@ class PickStoryLocal extends Component {
 }
 
 PickStoryLocal.propTypes = {
-  storyStep: PropTypes.number,
+
   storyInfo: PropTypes.shape({
     title: PropTypes.string,
     info: PropTypes.string,
   }).isRequired,
 
 };
+
+PickStoryLocal.defaultProps = {
+  next: PropTypes.func.isRequired,
+};
+
 
 export default PickStoryLocal;

@@ -33,7 +33,8 @@
             "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
             "label":"Overview of currents",
             "defaultvalue": true
-          }
+          },
+          "local": []
       },
       {
         "id" : 1,
@@ -59,7 +60,8 @@
             "URI":"Scene.Earth.Renderable.Layers.ColorLayers.OSCAR_Sea_Surface_Currents_Zonal.Enabled",
             "label":"Detailed currents, OSCAR",
             "defaultvalue": true
-          }
+          },
+          "local": []
 
       },
 
@@ -86,66 +88,67 @@
             "URI":"Scene.Earth.Renderable.Layers.ColorLayers.OSCAR_Sea_Surface_Currents_Zonal.Enabled",
             "label":"Detailed currents, OSCAR",
             "defaultvalue": true
+          },
+        "local":[
+          {
+            "title": "West Antarctica, Thwaites glacier",
+            "id" : 0,
+            "storyinfo": "Climate Climate Climate Climate Climate Climate Climate Climate Climate",
+            "date": "2021-12-18T15:15:00.00",
+            "anchor": "Earth",
+            "pitch": 1.2620872679141455,
+            "position": {
+              "x": -327926.2148501796,
+              "y": -1699685.2488059355,
+              "z": -6139431.104908226
+            },
+            "up": {
+              "x": 0.8931303645008966,
+              "y": 0.4189549602899258,
+              "z": -0.16369145748927294
+            },
+            "yaw": -0.06989515637603734,
+            "toggleboolproperties":
+              {
+                "URI":"Scene.Earth.Renderable.Layers.ColorLayers.OSCAR_Sea_Surface_Currents_Zonal.Enabled",
+                "label":"Detailed currents, OSCAR",
+                "defaultvalue": true
+              }
+          },
+
+          {
+            "title": "Easst Antarctica",
+            "id" : 1,
+            "storyinfo": "Climate Climate Climate Climate Climate Climate Climate Climate Climate",
+            "date": "2021-12-18T15:15:00.00",
+            "anchor": "Earth",
+            "pitch": 1.2620872679141455,
+            "position": {
+              "x": -327926.2148501796,
+              "y": -1699685.2488059355,
+              "z": -6139431.104908226
+            },
+            "up": {
+              "x": 0.8931303645008966,
+              "y": 0.4189549602899258,
+              "z": -0.16369145748927294
+            },
+            "yaw": -0.06989515637603734,
+            "toggleboolproperties":
+              {
+                "URI":"Scene.Earth.Renderable.Layers.ColorLayers.OSCAR_Sea_Surface_Currents_Zonal.Enabled",
+                "label":"Detailed currents, OSCAR",
+                "defaultvalue": true
+              }
           }
+
+        ]
 
 
       }
     ],
 
-    "local":[
-      {
-        "title": "West Antarctica, Thwaites glacier",
-        "id" : 0,
-        "storyinfo": "Climate Climate Climate Climate Climate Climate Climate Climate Climate",
-        "date": "2021-12-18T15:15:00.00",
-        "anchor": "Earth",
-        "pitch": 1.2620872679141455,
-        "position": {
-          "x": -327926.2148501796,
-          "y": -1699685.2488059355,
-          "z": -6139431.104908226
-        },
-        "up": {
-          "x": 0.8931303645008966,
-          "y": 0.4189549602899258,
-          "z": -0.16369145748927294
-        },
-        "yaw": -0.06989515637603734,
-        "toggleboolproperties":
-          {
-            "URI":"Scene.Earth.Renderable.Layers.ColorLayers.OSCAR_Sea_Surface_Currents_Zonal.Enabled",
-            "label":"Detailed currents, OSCAR",
-            "defaultvalue": true
-          }
-      },
 
-      {
-        "title": "Easst Antarctica",
-        "id" : 1,
-        "storyinfo": "Climate Climate Climate Climate Climate Climate Climate Climate Climate",
-        "date": "2021-12-18T15:15:00.00",
-        "anchor": "Earth",
-        "pitch": 1.2620872679141455,
-        "position": {
-          "x": -327926.2148501796,
-          "y": -1699685.2488059355,
-          "z": -6139431.104908226
-        },
-        "up": {
-          "x": 0.8931303645008966,
-          "y": 0.4189549602899258,
-          "z": -0.16369145748927294
-        },
-        "yaw": -0.06989515637603734,
-        "toggleboolproperties":
-          {
-            "URI":"Scene.Earth.Renderable.Layers.ColorLayers.OSCAR_Sea_Surface_Currents_Zonal.Enabled",
-            "label":"Detailed currents, OSCAR",
-            "defaultvalue": true
-          }
-      }
-
-    ],
 
     "toggleboolproperties": [
       {
