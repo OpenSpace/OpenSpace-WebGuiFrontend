@@ -11,6 +11,7 @@ import { flightController } from './flightController';
 import { documentation } from './documentation';
 import { exoplanets } from './exoplanets';
 import { skybrowser } from './skybrowser';
+import { camera } from './camera'
 
 import logger from './logger';
 
@@ -28,6 +29,7 @@ const middleware = applyMiddleware(
   documentation,
   exoplanets,
   skybrowser,
+  camera
 );
 
 export default middleware;
