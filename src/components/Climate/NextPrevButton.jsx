@@ -3,7 +3,7 @@ import React from 'react';
 import SmallLabel from '../common/SmallLabel/SmallLabel';
 import styles from '../Climate/Button.scss';
 
-const NextStepButton = ({next, NextStepId, string }) => (
+const NextStepButton = ({next, NextStepId, string, setShowStory }) => (
   <div className={styles.next} onClick={next} >
 
     <SmallLabel>{string}</SmallLabel>
@@ -11,6 +11,7 @@ const NextStepButton = ({next, NextStepId, string }) => (
 );
 
 NextStepButton.propTypes = {
+  setShowStory: PropTypes.number.isRequired,
   storyStep: PropTypes.number.isRequired,
   next: PropTypes.func.isRequired,
 };

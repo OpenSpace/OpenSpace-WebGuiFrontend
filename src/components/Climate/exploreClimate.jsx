@@ -19,44 +19,31 @@ class ExploreClimate extends Component{
     this.state = {
       StoryStep: 0,
       LocalStory: "default",
+      showStory: true,
     };
     this.stepThroughStory = this.stepThroughStory.bind(this);
     this.Increment = this.Increment.bind(this);
     this.Decrement = this.Decrement.bind(this);
-    this.LocalStory = this.LocalStory.bind(this);
   }
 
   Increment = () => {
         this.setState((prevState) => ({
-          StoryStep: prevState.StoryStep + 1
+          StoryStep: prevState.StoryStep + 1,
+          showStory: true
     }));
   }
   Decrement = () => {
         this.setState((prevState) => ({
-          StoryStep: prevState.StoryStep - 1
+          StoryStep: prevState.StoryStep - 1,
+          showStory: true
     }));
   }
 
-  LocalStory(story){
-    console.log("im here");
-    return (
-
-      <div key = {story.id} style={{ background: 'red' }}>
-        <h1>
-          hehafhfdalihdlihfdalihfdalihfdalhfdalhfdafdaljhfdafdaluhfda
-        </h1>
-        <p>
-          {story.storyinfo}
-        </p>
-      </div>
-    );
-  }
-
+  ShowMainStory = () =>{}
 
 
   stepThroughStory(StoryStep, filePath){
     const {luaApi, json } = this.props;
-    console.log("hejheheheheheh");
     return(
       filePath.map((story) => {
         if(story.id == StoryStep){
@@ -72,26 +59,25 @@ class ExploreClimate extends Component{
               </p>
             </div>
 
-          );
-        }
-      })
-    );
-
-  }
+            );
+          }
+        })
+      );
+    }
 
 
   render() {
     const { json, story, storyInfo} = this.props;
-    const { StoryStep } = this.state;
+    const { StoryStep, showStory } = this.state;
     var stepThroughJourney = this.stepThroughStory(StoryStep, json.journey);
-    console.log("if ");
-    console.log(StoryStep);
+    console.table( showStory);
+
     return (
       <div className={styles.StoryPosistion}>
         <div className = {styles.TellStory}>
           <div className = "flex">
 
-            { StoryStep <  stepThroughJourney.length &&
+            { StoryStep <  stepThroughJourney.length && showStory &&
               <div id = "je" >
                 {stepThroughJourney}
                 <br/>
@@ -104,33 +90,38 @@ class ExploreClimate extends Component{
               { StoryStep <  stepThroughJourney.length -1 &&
                 <div>
                   <section className = {styles.NextStepButton}>
-                    <NextPrevStepButton next = {this.Increment} storyStep = {StoryStep} string = {"Next!"}/>
+                    <NextPrevStepButton
+                      next = {this.Increment}
+                      storyStep = {StoryStep}
+                      string = {"Next!"}
+                      />
                   </section>
                 </div>
               }
               {StoryStep > 0   &&
-
                 <section className = {styles.PrevStepButton}>
-                  <NextPrevStepButton next = {this.Decrement} storyStep = {StoryStep} string = {"Previus!"}/>
+                  <NextPrevStepButton
+                    next = {this.Decrement}
+                    storyStep = {StoryStep}
+                    string = {"Previus!"}
+                    />
                 </section>
-                }
-                { json.journey[StoryStep].local.length > 0 &&
-
+              }
+              { json.journey[StoryStep].local.length > 0 &&
                   json.journey[StoryStep].local.map((story, index) => {
-
                     return(
                         <div key = {index}>
                         <PickStoryLocal key = { index }
                           storyInfo = { story }
-                          StoryStep = {StoryStep}
-                          next = {this.Increment}
+                          StoryStep = { StoryStep }
+                          setShowStory = {(newState) => this.setState({
+                            showStory: newState
+                          })}
                         />
                        </div>
                       );
                     })
-
-                }
-
+              }
 
           </div>
         </div>

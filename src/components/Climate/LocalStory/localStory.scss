@@ -30,14 +30,12 @@
 .button{
   font-family: $font-family;
   height: 1%;
-  width: 70%;
+  width: 200%;
   display: flex;
   align-items: center;
   justify-content: center;
   position: absolute;
-  top: 50%;
-  left: 10%;
-  z-index: 999;
+  top: 70%;
   color: lightgrey;
   font-size: 16px;
 }

@@ -15,8 +15,6 @@ class DisplaylocalStory extends Component{
 
   }
 
-
-
   render() {
     const { climateStorys} = this.props;
     console.log('shddej')
@@ -27,7 +25,7 @@ class DisplaylocalStory extends Component{
 
         <div className = {styles.TellStory}>
           <div className = "flex">
-          <div key = {climateStorys.id}>
+            <div key = {climateStorys.id}>
                 <h1>
                   {climateStorys.title}
                 </h1>
@@ -35,19 +33,17 @@ class DisplaylocalStory extends Component{
                   {climateStorys.storyinfo}
                 </p>
 
-        </div>
-  </div>
-      </div>
-
-
-
+              </div>
+            </div>
+          </div>
     );
+  }
+}
 
-}
-}
-  DisplaylocalStory.defaultProps = {
+
+DisplaylocalStory.defaultProps = {
 
     climateStorys: {},
   };
 
-  export default DisplaylocalStory;
+export default DisplaylocalStory;

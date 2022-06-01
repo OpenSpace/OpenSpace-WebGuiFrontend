@@ -9,18 +9,14 @@ class Pick extends Component {
     super(props);
 
     this.handleStory = this.handleStory.bind(this);
+
   }
 
   handleStory(e) {
-
+    console.log("hej");
     this.props.changeStory(e.target.id);
+    this.props.setShowStory(false);
 
-  }
-
-  Increment = () => {
-        this.setState((prevState) => ({
-          StoryStep: prevState.StoryStep + 1
-    }));
   }
 
 
@@ -33,17 +29,18 @@ class Pick extends Component {
 
             <StoryButton
               pickStory={this.handleStory}
-              next = {next}
+              next = {this.resetLocalStory}
               storyIdentifier= {climateStorys.title}
-
-
             />
 
     );
   }
 }
 
+
+
 Pick.propTypes = {
+  setShowStory: PropTypes.func.isRequired,
   changeStory: PropTypes.func.isRequired,
   climateStorys: PropTypes.shape({
     title: PropTypes.string,
