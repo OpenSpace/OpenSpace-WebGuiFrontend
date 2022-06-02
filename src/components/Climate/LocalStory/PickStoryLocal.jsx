@@ -7,21 +7,22 @@ import {
 } from '../../../api/keys'
 import GetlocalStory from './GetlocalStory';
 import DisplaylocalStory from './DisplaylocalStory'
+import StoryButton from './StoryButtonLocal';
 
 class PickStoryLocal extends Component {
   constructor(props) {
     super(props);
     this.state = {
       currentStory: "default",
+      showLocalStory: false,
+      LocalStep: 0,
         }
 
-    this.changeStory = this.changeStory.bind(this);
-    this.setStory =   this.setStory.bind(this);
-    this.resetStory = this.resetStory.bind(this);
-  }
 
-  changeStory(e) {
-    this.setStory(e.target.id);
+    this.setStory =   this.setStory.bind(this);
+    this.handleStory = this.handleStory.bind(this);
+    this.Increment = this.Increment.bind(this);
+
   }
 
   setStory(selectedStory) {
@@ -36,28 +37,62 @@ class PickStoryLocal extends Component {
        return;
      }
    }
-   
+
+   Increment = () => {
+         this.setState((prevState) => ({
+           LocalStep: prevState.LocalStep + 1,
+
+     }));
+   }
+
+   handleStory(e) {
+     console.log("hej " + this.state.currentStory)
+     this.setStory(e.target.id);
+     this.props.setShowStory(false);
+
+
+     this.setState((prevState) => ({
+       currentStory: "default"
+
+     }));
+     console.log("hej igen " + this.state.currentStory);
+
+   }
+
+
+
 
   render() {
-    const {storyInfo, StoryStep, next, setShowStory} = this.props;
-    const {currentStory} = this.state;
-    console.table(setShowStory)
+    const {storyInfo, StoryStep, next } = this.props;
+    const {currentStory,showLocalStory} = this.state;
+    console.log(currentStory)
+
     return (
           <div>
-            {(currentStory === DefaultStory)
-              ?<div className = {styles.button}>
+              <div className = {styles.button}>
                   <div style={{width: 400+600*storyInfo.id}} >
-                    <GetlocalStory changeStory = {this.setStory} climateStorys = {storyInfo} StoryStep = {StoryStep} setShowStory = {setShowStory}/>
+                    <StoryButton
+                      pickStory = {this.handleStory}
+                      storyIdentifier= {storyInfo.title}
+                    />
                   </div>
               </div>
-            : <div>
-                <div className = {styles.button}>
-                  <div style={{width: 400+600*storyInfo.id}} >
-                    <GetlocalStory changeStory = {this.setStory} climateStorys = {storyInfo} StoryStep = {StoryStep} setShowStory = {setShowStory}/>
-                  </div>
-                </div>
-                  <DisplaylocalStory climateStorys = {storyInfo}/>
-              </div>
+
+            {(currentStory != DefaultStory) && showLocalStory == true &&
+              <div>
+                  <DisplaylocalStory
+                    climateStorys = {storyInfo}
+                    setLocalStory = {(newState) => this.setState({
+                      currentStory: "default"
+                    })}
+                    />
+             </div>
+
+            }
+            {currentStory == DefaultStory &&
+              <div><h2>hejhej</h2></div>
+
+
             }
           </div>
     );
@@ -65,6 +100,7 @@ class PickStoryLocal extends Component {
 }
 
 PickStoryLocal.propTypes = {
+  StoryIndex: PropTypes.number.isRequired,
   setShowStory: PropTypes.func.isRequired,
   storyInfo: PropTypes.shape({
     title: PropTypes.string,

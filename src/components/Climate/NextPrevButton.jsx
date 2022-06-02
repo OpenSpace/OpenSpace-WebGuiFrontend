@@ -11,7 +11,7 @@ const NextStepButton = ({next, NextStepId, string, setShowStory }) => (
 );
 
 NextStepButton.propTypes = {
-  setShowStory: PropTypes.number.isRequired,
+
   storyStep: PropTypes.number.isRequired,
   next: PropTypes.func.isRequired,
 };

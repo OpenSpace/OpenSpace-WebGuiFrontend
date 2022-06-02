@@ -13,23 +13,21 @@ class Pick extends Component {
   }
 
   handleStory(e) {
-    console.log("hej");
+  
     this.props.changeStory(e.target.id);
     this.props.setShowStory(false);
-
+    this.props.setShowLocalStory(true);
   }
 
 
 
   render() {
 
-    const { climateStorys, next } = this.props;
-
+    const { climateStorys } = this.props;
     return (
 
             <StoryButton
               pickStory={this.handleStory}
-              next = {this.resetLocalStory}
               storyIdentifier= {climateStorys.title}
             />
 
@@ -41,6 +39,7 @@ class Pick extends Component {
 
 Pick.propTypes = {
   setShowStory: PropTypes.func.isRequired,
+  setShowLocalStory: PropTypes.func.isRequired,
   changeStory: PropTypes.func.isRequired,
   climateStorys: PropTypes.shape({
     title: PropTypes.string,

@@ -70,7 +70,6 @@ class ExploreClimate extends Component{
     const { json, story, storyInfo} = this.props;
     const { StoryStep, showStory } = this.state;
     var stepThroughJourney = this.stepThroughStory(StoryStep, json.journey);
-    console.table( showStory);
 
     return (
       <div className={styles.StoryPosistion}>
@@ -109,9 +108,11 @@ class ExploreClimate extends Component{
               }
               { json.journey[StoryStep].local.length > 0 &&
                   json.journey[StoryStep].local.map((story, index) => {
+                    console.log("indec" + index)
                     return(
                         <div key = {index}>
                         <PickStoryLocal key = { index }
+                          storyIndex = {index}
                           storyInfo = { story }
                           StoryStep = { StoryStep }
                           setShowStory = {(newState) => this.setState({
