@@ -9,7 +9,7 @@ import PickStoryLocal from './PickStoryLocal';
 import SightsController from '../TouchBar/UtilitiesMenu/presentational/SightsController';
 import subStateToProps from "../../utils/subStateToProps";
 import {
-  storyGetLayer,
+  storyGetLayer, storyGetLayer2, storyGetLocation
 } from '../../utils/storyHelpers';
 class ExploreClimate extends Component{
 
@@ -44,10 +44,12 @@ class ExploreClimate extends Component{
       filePath.map((story) => {
         if(story.id == StoryStep){
           console.log("storystep " + StoryStep);
-          console.log("hej",idnr);
+          console.log("heeej",idnr);
+          console.table(story)
+          storyGetLayer2(luaApi, story.toggleboolproperties_noshow);
           storyGetLayer(luaApi, story.toggleboolproperties);
-          console.log("asset " + story.toggleboolproperties);
-          //console.log("id "= story.id);
+          storyGetLocation(luaApi, story.pos);
+
           return (
             <div key = {story.id}>
               <h1>
@@ -56,7 +58,9 @@ class ExploreClimate extends Component{
               <p>
                 {story.storyinfo}
               </p>
+
             </div>
+
           );
         }
       })
@@ -72,10 +76,6 @@ class ExploreClimate extends Component{
     var stepThroughJourney = this.stepThroughStory(StoryStep, json.journey);
 
     //var stepThroughLocal = this.stepThroughStory(StoryStep, json.local)
-
-    console.log("woooopie" + StoryStep)
-    console.table("j " + stepThroughJourney)
-    console.table("l " + stepThroughJourney.length)
 
     if(StoryStep < stepThroughJourney.length){
     return (
@@ -98,6 +98,7 @@ class ExploreClimate extends Component{
                   <NextStepButton next = {this.Decrement} storyStep = {StoryStep} string = {"Previous!"}/>}
                 </section>
               }
+
               { StoryStep ==  stepThroughJourney.length - 1 && json.local.length > 0 &&
 
 
@@ -108,16 +109,26 @@ class ExploreClimate extends Component{
                         storyInfo = {story}
                         storyTitle = {story.title}
                       />
+
                     </div>
+
+
+
                     );
                   })
 
               }
+              <br/>
+              <br/>
+              <br/>
+              <div className={styles.HomeButton}>
+
+                  <HomeButtonContainer resetStory={this.props.resetStory}/>
+
+              </div>
           </div>
         </div>
-        <section className={styles.HomeButton}>
-          <HomeButtonContainer resetStory={this.props.resetStory}/>
-        </section>
+
       </div>
 
       );

@@ -89,6 +89,23 @@ export const storyGetLayer = (luaApi, layer) => {
   luaApi.setPropertyValue(layer.URI, layer.defaultvalue);
 };
 
+export const storyGetLayer2 = (luaApi, layer) => {
+
+
+  luaApi.setPropertyValue(layer.URI, layer.defaultvalue);
+};
+
+export const storyGetLocation = (luaApi, position) => {
+
+  luaApi.pathnavigation.flyToNavigationState({
+    Anchor: position.anchor,
+    Pitch: position.pitch,
+    Position: [position.position.x,position.position.y,position.position.z],
+    Up: [position.up.x,position.up.y,position.up.z],
+    Yaw: position.yaw
+  })
+}
+
 
 export const satelliteToggle = (luaApi, toggleBool) => {
 
@@ -101,6 +118,8 @@ export const satelliteToggle = (luaApi, toggleBool) => {
   luaApi.setPropertyValue("Scene.stations.Renderable.Enabled", toggleBool); //Spacestation
 
 };
+
+
 
 /////////////////////////
 

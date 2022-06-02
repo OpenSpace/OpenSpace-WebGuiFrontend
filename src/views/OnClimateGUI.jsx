@@ -97,7 +97,7 @@ class OnClimateGui extends Component {
     //changePropertyValue(anchorNode.description.Identifier, json.start.planet);
 
     // BUGG!! flytostorynavigation fungerar inte
-    //setStoryStart(luaApi, getJson.start, getJson.start.date);
+    // (luaApi, getJson.start, getJson.start.date);
 
     //remove satelites from start profile
     satelliteToggle(luaApi, false);

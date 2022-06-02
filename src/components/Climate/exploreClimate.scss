@@ -15,13 +15,16 @@
   width: 100%;
 }
 .HomeButton{
-  top: 100px;
+  //top: 100px;
   display: flex;
-  height: 10%;
+  //height: 10%;
   background: $ui-background;
-  opacity: 20%;
+  //opacity: 20%;
   color: white;
   border-right: 3px solid $ui-background-hover;
+  z-index: 99;
+  width: 380px;
+  border-radius: 20px;
 }
 
 .StoryPosistion{
