@@ -20,26 +20,43 @@ class ExploreClimate extends Component{
       StoryStep: 0,
       LocalStory: "default",
       showStory: true,
+      currentStory: "default"
     };
     this.stepThroughStory = this.stepThroughStory.bind(this);
     this.Increment = this.Increment.bind(this);
     this.Decrement = this.Decrement.bind(this);
+    this.def = this.def.bind(this);
   }
 
   Increment = () => {
         this.setState((prevState) => ({
           StoryStep: prevState.StoryStep + 1,
-          showStory: true
+          showStory: true,
+            currentStory: "default"
     }));
   }
   Decrement = () => {
         this.setState((prevState) => ({
           StoryStep: prevState.StoryStep - 1,
-          showStory: true
+          showStory: true,
+          currentStory: "default"
     }));
   }
 
-  ShowMainStory = () =>{}
+  def(index, length){
+
+    for (var i = 0 ; i <=  length; i++){
+      if(i!=index){
+        console.log("hhf " + this.state.LocalStory)
+        this.setState((prevState) => ({
+          LocalStory: this.state.DefLocalStory
+
+        }));
+      }
+
+    }
+
+  }
 
 
   stepThroughStory(StoryStep, filePath){
@@ -68,7 +85,7 @@ class ExploreClimate extends Component{
 
   render() {
     const { json, story, storyInfo} = this.props;
-    const { StoryStep, showStory } = this.state;
+    const { StoryStep, showStory, LocalStory, currentStory } = this.state;
     var stepThroughJourney = this.stepThroughStory(StoryStep, json.journey);
 
     return (
@@ -102,19 +119,27 @@ class ExploreClimate extends Component{
                   <NextPrevStepButton
                     next = {this.Decrement}
                     storyStep = {StoryStep}
+                    currentStory = { currentStory }
                     string = {"Previus!"}
                     />
                 </section>
               }
               { json.journey[StoryStep].local.length > 0 &&
                   json.journey[StoryStep].local.map((story, index) => {
-                    console.log("indec" + index)
+                    console.log("indec" + json.journey[StoryStep].local.length)
+
                     return(
                         <div key = {index}>
                         <PickStoryLocal key = { index }
+
                           storyIndex = {index}
                           storyInfo = { story }
                           StoryStep = { StoryStep }
+                          def = {this.def}
+                          currentStory = { currentStory }
+                          setCurrentStory = {(newState) => this.setState({
+                            currentStory: newState
+                          })}
                           setShowStory = {(newState) => this.setState({
                             showStory: newState
                           })}
