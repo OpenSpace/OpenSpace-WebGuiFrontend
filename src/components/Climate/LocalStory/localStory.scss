@@ -4,7 +4,7 @@
 
 .StoryPosistion{
   position: relative;
-  width: 400%;
+  width: 450%;
   margin: 0 auto;
   height: 100%;
   overflow: hidden;
@@ -30,15 +30,16 @@
 .button{
   font-family: $font-family;
   height: 1%;
-  width: 200%;
+  width: 210%;
   display: flex;
   align-items: center;
   justify-content: center;
   position: absolute;
   top: 90%;
-  left: 0%;
-
-  color: lightgrey;
+  left: -5%;
+  display: flex;
+  flex: 1;
+  color: green;
   font-size: 16px;
 }
 .flex {

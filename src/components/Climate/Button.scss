@@ -1,16 +1,17 @@
 @import "../../styles/all";
 
-.alaska, .antarctica, .greenland {
+.generalBSmall{
   position: absolute;
-  font-size: 13px;
+
+  //z-index: 999;
   color: #fff;
   height: 35px;
-  width: 150px;
+  width: 220px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: $ui-background;
-  border-radius: 10px;
+  border-radius: 12px;
   cursor: pointer;
   transition: transform ease-in .1s;
 
