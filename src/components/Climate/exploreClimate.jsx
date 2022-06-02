@@ -64,7 +64,7 @@ class ExploreClimate extends Component{
     return(
       filePath.map((story) => {
         if(story.id == StoryStep){
-          storyGetLayer2(luaApi, story.toggleboolproperties_noshow);
+          storyGetLayer(luaApi, story.toggleboolproperties_noshow);
           storyGetLayer(luaApi, story.toggleboolproperties);
           storyGetLocation(luaApi, story.pos);
 
@@ -102,7 +102,7 @@ class ExploreClimate extends Component{
 
               </div>
             }
-            
+
             { json.journey[StoryStep].local.length > 0 &&
                 json.journey[StoryStep].local.map((story, index) => {
                   console.log("indec" + json.journey[StoryStep].local.length)

@@ -35,8 +35,6 @@
               "label":"Overview of currents",
               "defaultvalue": true
             },
-
-
           "toggleboolproperties_noshow":
             {
               "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-ecco2_sst-veg_land-layer.Enabled",
@@ -83,7 +81,6 @@
           },
           "local": []
       },
-
       {
         "id" : 2,
         "title": "Show zoomed Antarctica, choose west or east",
@@ -109,6 +106,12 @@
             "URI":"Scene.Earth.Renderable.Layers.ColorLayers.OSCAR_Sea_Surface_Currents_Zonal.Enabled",
             "label":"Detailed currents, OSCAR",
             "defaultvalue": true
+          },
+          "toggleboolproperties_noshow":
+            {
+              "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
+              "label":"Overview of currents",
+              "defaultvalue": false
           },
         "local":[
           {
@@ -136,6 +139,12 @@
                 "URI":"Scene.Earth.Renderable.Layers.ColorLayers.OSCAR_Sea_Surface_Currents_Zonal.Enabled",
                 "label":"Detailed currents, OSCAR",
                 "defaultvalue": true
+              },
+              "toggleboolproperties_noshow":
+              {
+                "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
+                "label":"Overview of currents",
+                "defaultvalue": false
               }
           },
 
@@ -164,6 +173,12 @@
                 "URI":"Scene.Earth.Renderable.Layers.ColorLayers.OSCAR_Sea_Surface_Currents_Zonal.Enabled",
                 "label":"Detailed currents, OSCAR",
                 "defaultvalue": true
+              },
+              "toggleboolproperties_noshow":
+              {
+                "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
+                "label":"Overview of currents",
+                "defaultvalue": false
               }
           }
         ]
@@ -173,24 +188,32 @@
         "title": "Consequences from sea level rise",
         "storyinfo": "Climate Climate Climate Climate Climate Climate Climate Climate Climate",
         "date": "2021-12-18T05:09:00.00",
-        "anchor": "Earth",
-        "pitch": -0.01365814920841428,
-        "position": {
-          "x": -104490.09322710335,
-          "y": 1233313.5986336279,
-          "z": -13043699.828143667
+        "pos": {
+          "anchor": "Earth",
+          "pitch": -0.01365814920841428,
+          "position": {
+            "x": -104490.09322710335,
+            "y": 1233313.5986336279,
+            "z": -13043699.828143667
+          },
+          "up": {
+            "x": 0.9788158844128632,
+            "y": 0.2044199247269714,
+            "z": 0.011487331965404246
+          },
+          "yaw": -0.23596752380578936
         },
-        "up": {
-          "x": 0.9788158844128632,
-          "y": 0.2044199247269714,
-          "z": 0.011487331965404246
-        },
-        "yaw": -0.23596752380578936,
         "toggleboolproperties":
           {
             "URI":"Scene.Earth.Renderable.Layers.ColorLayers.OSCAR_Sea_Surface_Currents_Zonal.Enabled",
             "label":"Detailed currents, OSCAR",
             "defaultvalue": true
+          },
+          "toggleboolproperties_noshow":
+          {
+            "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
+            "label":"Overview of currents",
+            "defaultvalue": false
           },
         "local":[]
       }

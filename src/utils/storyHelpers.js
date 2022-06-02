@@ -84,16 +84,9 @@ export const showDevInfoOnScreen = (luaApi, value) => {
 ///////// added climate /////
 
 export const storyGetLayer = (luaApi, layer) => {
-
-
   luaApi.setPropertyValue(layer.URI, layer.defaultvalue);
 };
 
-export const storyGetLayer2 = (luaApi, layer) => {
-
-
-  luaApi.setPropertyValue(layer.URI, layer.defaultvalue);
-};
 
 export const storyGetLocation = (luaApi, position) => {
 
