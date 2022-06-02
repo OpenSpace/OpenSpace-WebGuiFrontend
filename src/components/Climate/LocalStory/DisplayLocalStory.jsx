@@ -12,16 +12,14 @@ class DisplaylocalStory extends Component{
   constructor(props) {
     super(props);
 
-  
+
   }
 
 
 
   render() {
     const { climateStorys, setShowLocalStory} = this.props;
-    console.log('shddej')
-
-
+    console.log('DisplaylocalStory')
     return (
 
         <div className = {styles.TellStory}>
@@ -44,6 +42,7 @@ class DisplaylocalStory extends Component{
 
 DisplaylocalStory.defaultProps = {
     climateStorys: {},
+
   };
 
 export default DisplaylocalStory;
