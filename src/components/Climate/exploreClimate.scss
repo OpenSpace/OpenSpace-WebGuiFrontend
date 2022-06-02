@@ -1,6 +1,5 @@
 @import "../../styles/all";
 
-
 .Grid__Left {
   display: flex;
   flex-direction: column;
@@ -52,14 +51,14 @@
 }
 
 .NextStepButton{
-  top: 110%;
+  top: 80px;
   display: flex;
   position: absolute;
   left: 50%;
 }
 
 .PrevStepButton{
-  top: 110%;
+  top: 80px;
   display: flex;
   position: absolute;
 

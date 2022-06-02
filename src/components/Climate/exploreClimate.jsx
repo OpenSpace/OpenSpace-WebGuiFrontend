@@ -48,7 +48,6 @@ class ExploreClimate extends Component{
 
     for (var i = 0 ; i <=  length; i++){
       if(i!=index){
-        console.log("hhf " + this.state.LocalStory)
         this.setState((prevState) => ({
           LocalStory: this.state.DefLocalStory
 
@@ -102,7 +101,7 @@ class ExploreClimate extends Component{
 
               </div>
             }
-            
+
             { json.journey[StoryStep].local.length > 0 &&
                 json.journey[StoryStep].local.map((story, index) => {
                   console.log("indec" + json.journey[StoryStep].local.length)

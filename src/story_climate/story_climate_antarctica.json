@@ -11,7 +11,7 @@
         {
           "id" : 0,
           "title": "Show overview of currents",
-          "storyinfo": "Climate Climate Climate Climate Climate Climate Climate Climate Climate",
+          "storyinfo": "This dataset shows the direction of warm surface waters in red and cold bottom waters in blue as arrows showing direction of movement. Changes in ocean circulation could have drastic impacts on the climate. The transport of heat associated with the ocean conveyor belt partially moderates the cold temperatures in the North. As the poles warm due to climate change, melt water from ice and glaciers enters the ocean. This fresh melt water has the potential to slow or even shut off the ocean circulation, which is dependent on temperature and salinity. The density of the fresh melt water is less than that of salty ocean water. This causes the fresh melt water to form a layer on the surface that can block the warm, salty ocean water from transporting heat to the atmosphere. The effect would be a cooling of the higher latitudes. If the warm water is not able to give off heat, it can not cool and sink to the bottom of the ocean. This would disturb the circulation of the entire ocean conveyor belt and have a noticeable impact on the climate in the northern latitudes.",
           "date": "2021-12-18T05:00:00.00",
           "pos": {
             "anchor": "Earth",
