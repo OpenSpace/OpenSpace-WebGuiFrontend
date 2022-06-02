@@ -63,3 +63,12 @@
 
   left: 5%;
 }
+
+$icon-size: 20px;
+
+.Icon {
+  font-size: $icon-size;
+  position: absolute;;
+  right: 10px;
+
+}

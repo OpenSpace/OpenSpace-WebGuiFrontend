@@ -39,7 +39,9 @@
             "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
             "label":"Overview of currents",
             "defaultvalue": true
-          }
+          },
+          "local":[]
+
       },
       {
         "title": "Show detailed currents",
@@ -66,7 +68,8 @@
             "URI":"Scene.Earth.Renderable.Layers.ColorLayers.OSCAR_Sea_Surface_Currents_Zonal.Enabled",
             "label":"Detailed currents, OSCAR",
             "defaultvalue": true
-          }
+          },
+          "local":[]
       },
       {
         "title": "Zoom in on Alaska",
@@ -93,10 +96,12 @@
             "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
             "label":"Overview of currents",
             "defaultvalue": true
-          }
+          },
+          "local":[]
       }
+
     ],
-    "local":[],
+
 
     "toggleboolproperties": [
       {

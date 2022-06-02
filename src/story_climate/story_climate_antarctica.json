@@ -13,29 +13,28 @@
           "title": "Show overview of currents",
           "storyinfo": "Climate Climate Climate Climate Climate Climate Climate Climate Climate",
           "date": "2021-12-18T05:00:00.00",
-          "pos":
-          {
-          "anchor": "Earth",
-          "pitch": -0.02249910974253141,
-          "position": {
-            "x": 19305329.039923728,
-            "y": 11257097.687918952,
-            "z": -9011652.821980316
+          "pos": {
+            "anchor": "Earth",
+            "pitch": -0.02249910974253141,
+            "position": {
+              "x": 19305329.039923728,
+              "y": 11257097.687918952,
+              "z": -9011652.821980316
+            },
+            "type": "setNavigationState",
+            "up": {
+              "x": 0.34647119952256505,
+              "y": 0.14743360618608958,
+              "z": 0.9264022018909281
+            },
+            "yaw": -0.2558781145796229
           },
-          "type": "setNavigationState",
-          "up": {
-            "x": 0.34647119952256505,
-            "y": 0.14743360618608958,
-            "z": 0.9264022018909281
-          },
-          "yaw": -0.2558781145796229
-        },
-        "toggleboolproperties":
-          {
-            "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
-            "label":"Overview of currents",
-            "defaultvalue": true
-          },
+          "toggleboolproperties":
+            {
+              "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
+              "label":"Overview of currents",
+              "defaultvalue": true
+            },
 
 
           "toggleboolproperties_noshow":
@@ -43,31 +42,32 @@
               "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-ecco2_sst-veg_land-layer.Enabled",
               "label":"Detailed currents, ECCO",
               "defaultvalue": false
-            }
-      },
-      {
-        "id" : 1,
-        "title": "Show detailed currents",
-        "storyinfo": "Climate Climate Climate Climate Climate Climate Climate Climate Climate",
-        "date": "2021-12-18T05:00:00.00",
-
-        "pos":
-        {
-          "anchor": "Earth",
-          "pitch": -0.022558471991152986,
-          "position": {
-            "x": -39121.401130186394,
-            "y": -261304.86831871886,
-            "z": -18336843.09999675
-          },
-          "type": "setNavigationState",
-          "up": {
-            "x": 0.9526825958195455,
-            "y": -0.3039581985290602,
-            "z": 0.0022989496518204255
-          },
-          "yaw": -0.20582220095513115
+            },
+            "local": []
         },
+        {
+          "id" : 1,
+          "title": "Show detailed currents",
+          "storyinfo": "Climate Climate Climate Climate Climate Climate Climate Climate Climate",
+          "date": "2021-12-18T05:00:00.00",
+
+          "pos":
+          {
+            "anchor": "Earth",
+            "pitch": -0.022558471991152986,
+            "position": {
+              "x": -39121.401130186394,
+              "y": -261304.86831871886,
+              "z": -18336843.09999675
+            },
+            "type": "setNavigationState",
+            "up": {
+              "x": 0.9526825958195455,
+              "y": -0.3039581985290602,
+              "z": 0.0022989496518204255
+            },
+            "yaw": -0.20582220095513115
+          },
 
         "toggleboolproperties":
           {
@@ -80,7 +80,8 @@
               "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
               "label":"Overview of currents",
               "defaultvalue": false
-          }
+          },
+          "local": []
       },
 
       {
@@ -108,65 +109,110 @@
             "URI":"Scene.Earth.Renderable.Layers.ColorLayers.OSCAR_Sea_Surface_Currents_Zonal.Enabled",
             "label":"Detailed currents, OSCAR",
             "defaultvalue": true
+          },
+        "local":[
+          {
+            "title": "West Antarctica",
+            "id" : 0,
+            "storyinfo": "Climate Climate Climate Climate Climate Climate Climate Climate Climate",
+            "date": "2021-12-18T15:15:00.00",
+            "pos": {
+              "anchor": "Earth",
+              "pitch": 1.2620872679141455,
+              "position": {
+                "x": -327926.2148501796,
+                "y": -1699685.2488059355,
+                "z": -6139431.104908226
+              },
+              "up": {
+                "x": 0.8931303645008966,
+                "y": 0.4189549602899258,
+                "z": -0.16369145748927294
+              },
+              "yaw": -0.06989515637603734
+            },
+            "toggleboolproperties":
+              {
+                "URI":"Scene.Earth.Renderable.Layers.ColorLayers.OSCAR_Sea_Surface_Currents_Zonal.Enabled",
+                "label":"Detailed currents, OSCAR",
+                "defaultvalue": true
+              }
+          },
+
+          {
+            "title": "East Antarctica",
+            "id" : 1,
+            "storyinfo": "Climate Climate Climate Climate Climate Climate Climate Climate Climate",
+            "date": "2021-12-18T15:15:00.00",
+            "pos": {
+              "anchor": "Earth",
+              "pitch": 1.2620872679141455,
+              "position": {
+                "x": -327926.2148501796,
+                "y": -1699685.2488059355,
+                "z": -6139431.104908226
+              },
+              "up": {
+                "x": 0.8931303645008966,
+                "y": 0.4189549602899258,
+                "z": -0.16369145748927294
+              },
+              "yaw": -0.06989515637603734
+            },
+            "toggleboolproperties":
+              {
+                "URI":"Scene.Earth.Renderable.Layers.ColorLayers.OSCAR_Sea_Surface_Currents_Zonal.Enabled",
+                "label":"Detailed currents, OSCAR",
+                "defaultvalue": true
+              }
           }
+        ]
+      },
+      {
+        "id" : 3,
+        "title": "Consequences from sea level rise",
+        "storyinfo": "Climate Climate Climate Climate Climate Climate Climate Climate Climate",
+        "date": "2021-12-18T05:09:00.00",
+        "anchor": "Earth",
+        "pitch": -0.01365814920841428,
+        "position": {
+          "x": -104490.09322710335,
+          "y": 1233313.5986336279,
+          "z": -13043699.828143667
+        },
+        "up": {
+          "x": 0.9788158844128632,
+          "y": 0.2044199247269714,
+          "z": 0.011487331965404246
+        },
+        "yaw": -0.23596752380578936,
+        "toggleboolproperties":
+          {
+            "URI":"Scene.Earth.Renderable.Layers.ColorLayers.OSCAR_Sea_Surface_Currents_Zonal.Enabled",
+            "label":"Detailed currents, OSCAR",
+            "defaultvalue": true
+          },
+        "local":[]
       }
+
+
     ],
 
-    "local":[
-      {
-        "title": "West Antarctica, Thwaites glacier",
-        "id" : 0,
-        "storyinfo": "Climate Climate Climate Climate Climate Climate Climate Climate Climate",
-        "date": "2021-12-18T15:15:00.00",
-        "pos": {
-          "anchor": "Earth",
-          "pitch": 1.2620872679141455,
-          "position": {
-            "x": -327926.2148501796,
-            "y": -1699685.2488059355,
-            "z": -6139431.104908226
-          },
-          "up": {
-            "x": 0.8931303645008966,
-            "y": 0.4189549602899258,
-            "z": -0.16369145748927294
-          }
-        },
-        "yaw": -0.06989515637603734,
-        "toggleboolproperties":
-          {
-            "URI":"Scene.Earth.Renderable.Layers.ColorLayers.OSCAR_Sea_Surface_Currents_Zonal.Enabled",
-            "label":"Detailed currents, OSCAR",
-            "defaultvalue": true
-          }
-      },
 
+
+    "toggleboolproperties": [
       {
-        "title": "East Antarctica",
-        "id" : 1,
-        "storyinfo": "Climate Climate Climate Climate Climate Climate Climate Climate Climate",
-        "date": "2021-12-18T15:15:00.00",
-        "pos": {
-          "anchor": "Earth",
-          "pitch": 1.2620872679141455,
-          "position": {
-            "x": -327926.2148501796,
-            "y": -1699685.2488059355,
-            "z": -6139431.104908226
-          },
-          "up": {
-            "x": 0.8931303645008966,
-            "y": 0.4189549602899258,
-            "z": -0.16369145748927294
-          },
-          "yaw": -0.06989515637603734
-        },
-        "toggleboolproperties":
-          {
-            "URI":"Scene.Earth.Renderable.Layers.ColorLayers.OSCAR_Sea_Surface_Currents_Zonal.Enabled",
-            "label":"Detailed currents, OSCAR",
-            "defaultvalue": true
-          }
+        "name": "{earth_satellites}.Renderable.Enabled",
+        "type": "setPropertyValue",
+        "value": "false"
+      },
+      {
+        "URI":"Scene.Earth.Renderable.Layers.ColorLayers.OSCAR_Sea_Surface_Currents_Zonal.Enabled",
+        "label":"Climate Antarctica Mode",
+        "isAction": true,
+        "actionEnabled":"climate_antarctica_mode_true",
+        "actionDisabled":"climate_antarctica_mode_false",
+        "defaultvalue": false
       }
     ]
   }

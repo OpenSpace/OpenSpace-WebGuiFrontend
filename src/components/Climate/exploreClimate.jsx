@@ -2,10 +2,11 @@ import PropTypes from 'prop-types';
 import React,{ Component } from 'react';
 import HomeButtonContainer from '../TouchBar/UtilitiesMenu/containers/HomeButtonContainer';
 import styles from './exploreClimate.scss';
-import InfoMenu from './infoMenu'
+import stylesButton from '../Climate/Button.scss';
+import Icon from '../common/MaterialIcon/MaterialIcon';
 import { connect } from 'react-redux';
-import NextStepButton from './nextButton';
-import PickStoryLocal from './PickStoryLocal';
+import NextPrevStepButton from './NextPrevButton';
+import PickStoryLocal from './LocalStory/PickStoryLocal';
 import SightsController from '../TouchBar/UtilitiesMenu/presentational/SightsController';
 import subStateToProps from "../../utils/subStateToProps";
 import {
@@ -19,6 +20,7 @@ class ExploreClimate extends Component{
     this.state = {
       StoryStep: 0,
       LocalStory: "default",
+      showStory: true,
     };
     this.stepThroughStory = this.stepThroughStory.bind(this);
     this.Increment = this.Increment.bind(this);
@@ -27,25 +29,25 @@ class ExploreClimate extends Component{
 
   Increment = () => {
         this.setState((prevState) => ({
-          StoryStep: prevState.StoryStep + 1
+          StoryStep: prevState.StoryStep + 1,
+          showStory: true
     }));
   }
   Decrement = () => {
         this.setState((prevState) => ({
-          StoryStep: prevState.StoryStep - 1
+          StoryStep: prevState.StoryStep - 1,
+          showStory: true
     }));
   }
 
+  ShowMainStory = () =>{}
+
+
   stepThroughStory(StoryStep, filePath){
     const {luaApi, json } = this.props;
-    var idnr = json.journey.length;
-
     return(
       filePath.map((story) => {
         if(story.id == StoryStep){
-          console.log("storystep " + StoryStep);
-          console.log("heeej",idnr);
-          console.table(story)
           storyGetLayer2(luaApi, story.toggleboolproperties_noshow);
           storyGetLayer(luaApi, story.toggleboolproperties);
           storyGetLocation(luaApi, story.pos);
@@ -61,63 +63,78 @@ class ExploreClimate extends Component{
 
             </div>
 
-          );
-        }
-      })
-    );
-
-  }
+            );
+          }
+        })
+      );
+    }
 
 
   render() {
     const { json, story, storyInfo} = this.props;
-    const { StoryStep } = this.state;
-
+    const { StoryStep, showStory } = this.state;
     var stepThroughJourney = this.stepThroughStory(StoryStep, json.journey);
 
-    //var stepThroughLocal = this.stepThroughStory(StoryStep, json.local)
-
-    if(StoryStep < stepThroughJourney.length){
     return (
       <div className={styles.StoryPosistion}>
         <div className = {styles.TellStory}>
           <div className = "flex">
-              {stepThroughJourney}
-              <br/>
-              <br/>
-              <br/>
-              <br/>
-              <br/>
+
+            { StoryStep <  stepThroughJourney.length && showStory &&
+              <div id = "je" >
+                {stepThroughJourney}
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+              </div>
+            }
               { StoryStep <  stepThroughJourney.length -1 &&
-                <section className = {styles.NextStepButton}>
-                  <NextStepButton next = {this.Increment} storyStep = {StoryStep} string = {"Next!"}/>
-                </section>
-              }
-              {StoryStep > 0 && StoryStep < stepThroughJourney.length  &&
-                <section className = {styles.PrevStepButton}>
-                  <NextStepButton next = {this.Decrement} storyStep = {StoryStep} string = {"Previous!"}/>}
-                </section>
-              }
-
-              { StoryStep ==  stepThroughJourney.length - 1 && json.local.length > 0 &&
-
-
-                json.local.map((story, index) => {
-                    return(
-                      <div key = {index} style={{height: 40+1*story.id}} >
-                      <PickStoryLocal key = {index}
-                        storyInfo = {story}
-                        storyTitle = {story.title}
+                <div>
+                  <section className = {styles.NextStepButton}>
+                    <NextPrevStepButton
+                      next = {this.Increment}
+                      storyStep = {StoryStep}
+                      string = {"Next"}
+                      iconNextPrev = "chevron_right"
+                      iconPlacement = {styles.Icon}
                       />
 
-                    </div>
-
-
-
-                    );
-                  })
-
+                  </section>
+                </div>
               }
+
+              {StoryStep > 0   &&
+                <section className = {styles.PrevStepButton}>
+                  <NextPrevStepButton
+                    next = {this.Decrement}
+                    storyStep = {StoryStep}
+                    string = {"Previus"}
+                    iconNextPrev = "chevron_left"
+                    iconPlacement = {styles.Icon}
+                    />
+
+                </section>
+              }
+              { json.journey[StoryStep].local.length > 0 &&
+                  json.journey[StoryStep].local.map((story, index) => {
+                    console.log("indec" + index)
+                    return(
+                        <div key = {index}>
+                        <PickStoryLocal key = { index }
+                          storyIndex = {index}
+                          storyInfo = { story }
+                          StoryStep = { StoryStep }
+                          setShowStory = {(newState) => this.setState({
+                            showStory: newState
+                          })}
+                        />
+                       </div>
+                      );
+                    })
+              }
+
               <br/>
               <br/>
               <br/>
@@ -125,34 +142,19 @@ class ExploreClimate extends Component{
 
                   <HomeButtonContainer resetStory={this.props.resetStory}/>
 
+
               </div>
+
           </div>
         </div>
 
+
       </div>
 
       );
-    }
 
-    else{
-      return(
-        <div className={styles.StoryPosistion}>
-          <div className = {styles.TellStory}>
-        //{stepThroughLocal}
-            {StoryStep > 0 &&
-              <section className = {styles.PrevStepButton}>
-                <NextStepButton next = {this.Decrement} storyStep = {StoryStep} string = {"Previous!!!"}/>}
-              </section>
-            }
-        </div>
-      </div>
-
-      );
-  }
   }
 }
-
-
 
 ExploreClimate.propTypes = {
   story: PropTypes.objectOf(PropTypes.shape({

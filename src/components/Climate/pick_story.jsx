@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
-import styles from './Button.scss';
-import StoryButton from './StoryButton';
+import styles from '../Climate/Button.scss';
+import StoryButton from '../Climate/StoryButton';
 
 class Pick extends Component {
   constructor(props) {
@@ -24,7 +24,7 @@ class Pick extends Component {
           <div style={{height: 40+1*storyInfo.id}} >
             <StoryButton
               pickStory={this.handleStory}
-              storyIdentifier={storyInfo.identifier}
+              storyIdentifier= {storyInfo.identifier}
               storyId = {storyInfo.id}
             />
           </div>
