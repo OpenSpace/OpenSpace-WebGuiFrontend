@@ -19,14 +19,13 @@ class ExploreClimate extends Component{
 
     this.state = {
       StoryStep: 0,
-      LocalStory: "default",
       showStory: true,
       currentStory: "default"
     };
     this.stepThroughStory = this.stepThroughStory.bind(this);
     this.Increment = this.Increment.bind(this);
     this.Decrement = this.Decrement.bind(this);
-    this.def = this.def.bind(this);
+
   }
 
   Increment = () => {
@@ -42,21 +41,6 @@ class ExploreClimate extends Component{
           showStory: true,
           currentStory: "default"
     }));
-  }
-
-  def(index, length){
-
-    for (var i = 0 ; i <=  length; i++){
-      if(i!=index){
-        console.log("hhf " + this.state.LocalStory)
-        this.setState((prevState) => ({
-          LocalStory: this.state.DefLocalStory
-
-        }));
-      }
-
-    }
-
   }
 
   stepThroughStory(StoryStep, filePath){
@@ -76,9 +60,7 @@ class ExploreClimate extends Component{
               <p>
                 {story.storyinfo}
               </p>
-
             </div>
-
             );
           }
         })
@@ -87,8 +69,8 @@ class ExploreClimate extends Component{
 
 
   render() {
-    const { json, story, storyInfo} = this.props;
-    const { StoryStep, showStory, LocalStory, currentStory } = this.state;
+    const { json, storyInfo} = this.props;
+    const { StoryStep, showStory, currentStory } = this.state;
     var stepThroughJourney = this.stepThroughStory(StoryStep, json.journey);
 
     return (
@@ -97,12 +79,10 @@ class ExploreClimate extends Component{
           <div className = "flex">
 
             { StoryStep <  stepThroughJourney.length && showStory &&
-              <div id = "je" >
+              <div >
                 {stepThroughJourney}
-
               </div>
             }
-
             { json.journey[StoryStep].local.length > 0 &&
                 json.journey[StoryStep].local.map((story, index) => {
                   console.log("indec" + json.journey[StoryStep].local.length)
@@ -110,10 +90,7 @@ class ExploreClimate extends Component{
                   return(
                       <div key = {index}>
                       <PickStoryLocal key = { index }
-                        storyIndex = {index}
-                        storyInfo = { story }
-                        StoryStep = { StoryStep }
-                        def = {this.def}
+                        storyInfo = { story }             
                         currentStory = { currentStory }
                         setCurrentStory = {(newState) => this.setState({
                           currentStory: newState
@@ -126,7 +103,7 @@ class ExploreClimate extends Component{
                     );
                   })
             }
-              { StoryStep <  stepThroughJourney.length -1 &&
+            { StoryStep <  stepThroughJourney.length -1 &&
                 <div>
                   <section className = {styles.NextStepButton}>
                     <NextPrevStepButton
@@ -150,20 +127,15 @@ class ExploreClimate extends Component{
                     string = {"Previus"}
                     iconNextPrev = "chevron_left"
                     iconPlacement = {styles.Icon}
-
                     />
 
                 </section>
               }
-
-
               <br/>
               <br/>
               <br/>
               <div className={styles.HomeButton}>
-
                   <HomeButtonContainer resetStory={this.props.resetStory}/>
-
 
               </div>
 
