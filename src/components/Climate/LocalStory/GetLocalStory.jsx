@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import CenteredLabel from '../../common/CenteredLabel/CenteredLabel';
-import styles from '../../Climate/Button.scss';
+import styles from '../LocalStory/localStory.scss';
 import StoryButton from './StoryButtonLocal';
 
 class Pick extends Component {
@@ -13,7 +13,7 @@ class Pick extends Component {
   }
 
   handleStory(e) {
-  
+
     this.props.changeStory(e.target.id);
     this.props.setShowStory(false);
     this.props.setShowLocalStory(true);

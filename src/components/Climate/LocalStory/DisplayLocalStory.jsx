@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
-import styles from './LocalStory.scss';
+import styles from '../../Climate/Button.scss';
 import {
  DefaultStory,
 } from '../../../api/keys'
@@ -19,11 +19,11 @@ class DisplaylocalStory extends Component{
 
   render() {
     const { climateStorys, setShowLocalStory} = this.props;
-    console.log('DisplaylocalStory')
+    console.log('DisplaylocalStory ddfff')
     return (
 
-        <div className = {styles.TellStory}>
-          <div className = "flex">
+
+
             <div key = {climateStorys.id}>
                 <h1>
                   {climateStorys.title}
@@ -32,8 +32,9 @@ class DisplaylocalStory extends Component{
                   {climateStorys.storyinfo}
                 </p>
 
-              </div>
-            </div>
+
+
+
           </div>
     );
   }

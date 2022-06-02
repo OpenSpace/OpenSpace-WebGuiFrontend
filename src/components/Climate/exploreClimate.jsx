@@ -96,12 +96,32 @@ class ExploreClimate extends Component{
             { StoryStep <  stepThroughJourney.length && showStory &&
               <div id = "je" >
                 {stepThroughJourney}
-                <br/>
-                <br/>
-                <br/>
-                <br/>
-                <br/>
+
               </div>
+            }
+            
+            { json.journey[StoryStep].local.length > 0 &&
+                json.journey[StoryStep].local.map((story, index) => {
+                  console.log("indec" + json.journey[StoryStep].local.length)
+
+                  return(
+                      <div key = {index}>
+                      <PickStoryLocal key = { index }
+                        storyIndex = {index}
+                        storyInfo = { story }
+                        StoryStep = { StoryStep }
+                        def = {this.def}
+                        currentStory = { currentStory }
+                        setCurrentStory = {(newState) => this.setState({
+                          currentStory: newState
+                        })}
+                        setShowStory = {(newState) => this.setState({
+                          showStory: newState
+                        })}
+                      />
+                     </div>
+                    );
+                  })
             }
               { StoryStep <  stepThroughJourney.length -1 &&
                 <div>
@@ -124,30 +144,7 @@ class ExploreClimate extends Component{
                     />
                 </section>
               }
-              { json.journey[StoryStep].local.length > 0 &&
-                  json.journey[StoryStep].local.map((story, index) => {
-                    console.log("indec" + json.journey[StoryStep].local.length)
 
-                    return(
-                        <div key = {index}>
-                        <PickStoryLocal key = { index }
-
-                          storyIndex = {index}
-                          storyInfo = { story }
-                          StoryStep = { StoryStep }
-                          def = {this.def}
-                          currentStory = { currentStory }
-                          setCurrentStory = {(newState) => this.setState({
-                            currentStory: newState
-                          })}
-                          setShowStory = {(newState) => this.setState({
-                            showStory: newState
-                          })}
-                        />
-                       </div>
-                      );
-                    })
-              }
 
           </div>
         </div>

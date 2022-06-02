@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import CenteredLabel from '../../common/CenteredLabel/CenteredLabel';
-import styles from './LocalStory.scss';
+import styles from '../LocalStory/localStory.scss';
 import {
  DefaultStory,
 } from '../../../api/keys'
@@ -56,7 +56,7 @@ class PickStoryLocal extends Component {
   render() {
     const {storyInfo, StoryStep, storyLength, storyIndex, currentStory } = this.props;
     const {showLocalStory,initialState } = this.state;
-    console.log("render " + this.state.currentStory)
+    console.log("refffddddfdnfdffer " + this.state.currentStory)
 
 
     return (
@@ -69,14 +69,14 @@ class PickStoryLocal extends Component {
                 />
               </div>
           </div>
-
+          <div>
             {(currentStory == storyInfo.title) &&
-                      <DisplaylocalStory
-                        climateStorys = {storyInfo}
-                        />
+                <DisplaylocalStory
+                  climateStorys = {storyInfo}
+                  />
             }
 
-          </div>
+          </div></div>
     );
   }
 }
