@@ -59,7 +59,6 @@ class ExploreClimate extends Component{
 
   }
 
-
   stepThroughStory(StoryStep, filePath){
     const {luaApi, json } = this.props;
     return(
