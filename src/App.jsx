@@ -6,7 +6,7 @@ import NotFound from './views/NotFound';
 import OnScreenGui from './views/OnScreenGui';
 import OnTouchGui from './views/OnTouchGui';
 import RemoteGui from './views/RemoteGui';
-import OnClimateGui from './views/OnClimateGui'
+import OnClimateGui from './views/OnClimateGui';
 
 
 const App = () => (

@@ -7,17 +7,16 @@ import {
 } from '../../api/Actions';
 import { ExoplanetsModuleEnabledKey, SkyBrowserModuleEnabledKey } from '../../api/keys';
 import { getBoolPropertyValue } from '../../utils/propertyTreeHelpers';
-import ActionsPanel from './ActionsPanel';
-import styles from './BottomBar.scss';
-import ExoplanetsPanel from './ExoplanetsPanel';
-import FlightControlPanel from './FlightControlPanel';
-import OriginPicker from './Origin/OriginPicker';
-import ScreenSpaceRenderablePanel from './ScreenSpaceRenderablePanel';
-import SessionRec from './SessionRec';
-import TimePicker from './TimePicker';
-import ClimatePanel from './ClimatePanel';
-import Slider from './Slider';
-import SkyBrowserPanel from './SkyBrowserPanel';
+
+import styles from '../BottomBar/BottomBar.scss';
+import HomeButtonContainer from '../TouchBar/UtilitiesMenu/containers/HomeButtonContainer';
+
+
+import SessionRec from '../BottomBar/SessionRec';
+import TimePicker from '../BottomBar/TimePicker';
+import ClimatePanel from '../BottomBar/ClimatePanel';
+import Slider from '../BottomBar/Slider';
+import SkyBrowserPanel from '../BottomBar/SkyBrowserPanel';
 import TimePlayerController from '../TouchBar/UtilitiesMenu/presentational/TimePlayerController'
 
 
@@ -26,7 +25,8 @@ let BottomBar = ({
   showFlightController,
   showSkyBrowser,
   startListening,
-  stopListening
+  stopListening,
+  resetStory
 }) => {
 
   useEffect(() => {
@@ -40,10 +40,8 @@ let BottomBar = ({
 
   return <div className={styles.BottomBar}>
     <ClimatePanel />
-    <OriginPicker />
+    <HomeButtonContainer resetStory={resetStory}/>
     <TimePicker />
-    <ScreenSpaceRenderablePanel />
-    {showExoplanets && <ExoplanetsPanel />}
 
     {showFlightController && <FlightControlPanel />}
 
@@ -56,6 +54,7 @@ BottomBar.propTypes = {
   showExoplanets: PropTypes.bool,
   showFlightController: PropTypes.bool,
   showSkyBrowser: PropTypes.bool,
+  resetStory: PropTypes.func.isRequired,
 };
 
 BottomBar.defaultProps = {

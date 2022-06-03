@@ -5,7 +5,6 @@ import {
   withRouter, HashRouter as Router, Route, Link,
 } from 'react-router-dom';
 
-
 import { formatVersion, isCompatible, RequiredOpenSpaceVersion, RequiredSocketApiVersion } from '../api/Version';
 
 import KeybindingPanel from '../components/BottomBar/KeybindingPanel';
@@ -13,7 +12,7 @@ import KeybindingPanel from '../components/BottomBar/KeybindingPanel';
 import '../styles/base.scss';
 import Error from '../components/common/Error/Error';
 import Overlay from '../components/common/Overlay/Overlay';
-import BottomBar from '../components/BottomBar/BottomBar';
+import BottomBar from '../components/Climate/ClimateBar';
 import Button from '../components/common/Input/Button/Button';
 import Stack from '../components/common/Stack/Stack';
 import ActionsPanel from '../components/BottomBar/ActionsPanel';
@@ -21,7 +20,7 @@ import Sidebar from '../components/Sidebar/Sidebar';
 import NodeMetaContainer from '../components/NodeMetaPanel/NodeMetaContainer';
 import NodePopOverContainer from '../components/NodePropertiesPanel/NodePopOverContainer';
 import ExploreClimate from '../components/climate/ExploreClimate'
-
+import HomeButtonContainer from '../components/TouchBar/UtilitiesMenu/containers/HomeButtonContainer';
 import {
   setPropertyValue, startConnection, fetchData, addStoryTree, subscribeToProperty,
   unsubscribeToProperty, addStoryInfo, resetStoryInfo,
@@ -57,16 +56,13 @@ class OnClimateGui extends Component {
       json: "defualt",
       startJourney: "default",
       climate_storys: climate_stories,
+      NoShow: "nopp",
     };
     this.changeStory = this.changeStory.bind(this);
     this.addStoryTree = this.addStoryTree.bind(this);
     this.setStory = this.setStory.bind(this);
     this.resetStory = this.resetStory.bind(this);
     this.addStoryTree = this.addStoryTree.bind(this);
-
-
-    //this.checkStorySettings = this.checkStorySettings.bind(this);
-    //this.handleKeyPress = this.handleKeyPress.bind(this);
 
   }
 
@@ -75,9 +71,6 @@ class OnClimateGui extends Component {
     this.setState({ data: [] });
     const { luaApi, FetchData, StartConnection } = this.props;
     StartConnection();
-    //FetchData(InfoIconKey);
-
-    //showDevInfoOnScreen(luaApi, false);
   }
 
  setStory(selectedStory) {
@@ -94,17 +87,11 @@ class OnClimateGui extends Component {
     const getJson = this.addStoryTree(selectedStory);
 
     this.setState({json: getJson});
-    // Set all the story specific properties
-    //changePropertyValue(anchorNode.description.Identifier, json.start.planet);
 
-    // BUGG!! flytostorynavigation fungerar inte
-    // (luaApi, getJson.start, getJson.start.date);
 
     //remove satelites from start profile
     satelliteToggle(luaApi, false);
 
-    //this.toggleSatelite(luaApi, getJson.start)
-    //getJson.start.toggleboolproperties;
     //changePropertyValue(anchorNode.description.Identifier, json.start.planet);
     // Check settings of the previous story and reset values
     this.checkStorySettings(story, true);
@@ -127,7 +114,6 @@ class OnClimateGui extends Component {
     const storyFile =  storyFileParserClimate(selectedStory);
 
     //AddStoryTree(storyFile);
-
     return storyFile;
   }
 
@@ -140,6 +126,14 @@ class OnClimateGui extends Component {
     const { currentStory } = this.state;
 
     this.setState({startJourney: currentStory});
+    UpdateDeltaTimeNow(luaApi, 1);
+    this.setStory(DefaultStory);
+  }
+
+  noShow(){
+    const { luaApi } = this.props;
+    const { currentStory } = this.state;
+    this.setState({startJourney: NoShow});
     UpdateDeltaTimeNow(luaApi, 1);
     this.setStory(DefaultStory);
   }
@@ -174,13 +168,17 @@ class OnClimateGui extends Component {
         : <ExploreClimate resetStory = {this.resetStory} json = {json} />
         }
         <Sidebar/>
+          
         </section>
         <section className={styles.Grid__Right}>
           <NodePopOverContainer/>
-          <NodeMetaContainer/>
-          <BottomBar showFlightController={this.props.showFlightController}/>
-          <KeybindingPanel />
+
+
+        <NodeMetaContainer/>
+          <BottomBar resetStory={this.resetStory} showFlightController={this.props.showFlightController} climatePanel ={this.noShow}/>
+        <KeybindingPanel />
         </section>
+
       </div>
     );
 }

@@ -1,0 +1,75 @@
+@import "../../styles/all";
+
+.UtilitiesButton {
+  padding: $button-padding;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex-grow: 1;
+  align-items: center;
+
+  &:hover {
+    background: $ui-background-hover;
+    outline: 0;
+  }
+
+  &.active {
+    background: rgba(black, 0.5);
+    border-bottom: 3px solid $ui-highlight-secondary;
+  }
+}
+
+.UtilitiesButton:active {
+  background: rgba(black, 0.5);
+  border-bottom: 3px solid $ui-highlight-secondary;
+}
+.UtilitiesButton:active {
+  background: rgba(black, 0.5);
+  border-bottom: 3px solid $ui-highlight-secondary;
+}
+
+$icon-size: 32px;
+.Test{
+
+  color: red;
+  margin-left: 600px;
+
+}
+.Icon {
+  font-size: $icon-size;
+
+}
+
+.Text {
+  font-size: $icon-size;
+  display: table-cell;
+  align-items: center;
+}
+
+.Instructions {
+  position: absolute;
+  align-items: center;
+  top: 80%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index:-9999;
+  height: 80%;
+}
+
+.Background{
+  position: absolute;
+  top: 0;
+  z-index:-9999;
+  height: 100%;
+  width: 200%;
+  color: lightgray;
+  background-color: rgba(black, 0.5);
+
+}
+
+
+.Row {
+    display: table;
+    table-layout: fixed; /*Optional*/
+    border-spacing: 14px; /*Optional*/
+}

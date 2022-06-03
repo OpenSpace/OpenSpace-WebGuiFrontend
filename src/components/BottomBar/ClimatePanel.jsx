@@ -521,7 +521,6 @@ showHideCurrents() {
     antarctica = (
       <Button
         id = "glaciersHide1"
-        class = "gClass"
         block
         smalltext
         onClick={() => {
@@ -536,7 +535,6 @@ showHideCurrents() {
     greenland = (
       <Button
         id = "glaciersHide2"
-        class = "gClass"
         block
         smalltext
         onClick={() => {
@@ -552,7 +550,6 @@ showHideCurrents() {
     alaska = (
       <Button
         id = "glaciersHide3"
-        class = "gClass"
         block
         smalltext
         className={styles.actionButton}
@@ -589,7 +586,6 @@ showHideCurrents() {
     overviewCurrents = (
       <Button
         id = "curentsHide1"
-        class = "cClass"
         block
         className={styles.actionButton2}
         smalltext
@@ -604,7 +600,6 @@ showHideCurrents() {
     detailedCurrents = (
       <Button
         id = "curentsHide2"
-        class = "cClass"
         onClick={() => {
           this.getSurfaceLayerCurrentsDetailed();
           //event.target.setAttribute('style', 'position: absolute; opacity: 0;');
@@ -629,7 +624,6 @@ showHideCurrents() {
         <p>
           <MaterialIcon
             className={styles.buttonIcon}
-            //icon="reply_all"
             icon="close"
           />
         </p>
@@ -640,7 +634,6 @@ showHideCurrents() {
     firstCons = (
       <Button
         id = "consequenceHide1"
-        //class = "cClass"
         onClick={() => {
           this.getSurfaceLayerFirstCons();
         }}
@@ -653,7 +646,6 @@ showHideCurrents() {
     secondCons = (
       <Button
         id = "consequenceHide2"
-        //class = "cClass"
         onClick={() => {
           this.getSurfaceLayerSecondCons();
         }}
@@ -666,7 +658,6 @@ showHideCurrents() {
     thirdCons = (
       <Button
         id = "consequenceHide3"
-        //class = "cClass"
         onClick={() => {
           this.getSurfaceLayerThirdCons();
         }}

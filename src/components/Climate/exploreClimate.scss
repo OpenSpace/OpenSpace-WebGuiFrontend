@@ -1,5 +1,13 @@
 @import "../../styles/all";
-
+.app {
+  color: white;
+  display: flex;
+  font-family: $font-family;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+}
 
 .Grid__Left {
   display: flex;
@@ -62,7 +70,6 @@
   top: 110%;
   display: flex;
   position: absolute;
-
   left: 5%;
 }
 

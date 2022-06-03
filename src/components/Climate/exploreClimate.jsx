@@ -90,7 +90,7 @@ class ExploreClimate extends Component{
                   return(
                       <div key = {index}>
                       <PickStoryLocal key = { index }
-                        storyInfo = { story }             
+                        storyInfo = { story }
                         currentStory = { currentStory }
                         setCurrentStory = {(newState) => this.setState({
                           currentStory: newState
