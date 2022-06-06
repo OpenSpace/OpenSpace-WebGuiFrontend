@@ -18,7 +18,7 @@ import ClimatePanel from '../BottomBar/ClimatePanel';
 import Slider from '../BottomBar/Slider';
 import SkyBrowserPanel from '../BottomBar/SkyBrowserPanel';
 import TimePlayerController from '../TouchBar/UtilitiesMenu/presentational/TimePlayerController'
-
+import Instructions from './Instructions/Instructions'
 
 let BottomBar = ({
   showExoplanets,
@@ -26,7 +26,8 @@ let BottomBar = ({
   showSkyBrowser,
   startListening,
   stopListening,
-  resetStory
+  resetStory,
+  setNoShow
 }) => {
 
   useEffect(() => {
@@ -39,28 +40,25 @@ let BottomBar = ({
   });
 
   return <div className={styles.BottomBar}>
-    <ClimatePanel />
+    <Instructions/>
+    <ClimatePanel  setNoShow = {setNoShow}/>
     <HomeButtonContainer resetStory={resetStory}/>
     <TimePicker />
+
 
     {showFlightController && <FlightControlPanel />}
 
   </div>
 };
 
-
-
 BottomBar.propTypes = {
-  showExoplanets: PropTypes.bool,
   showFlightController: PropTypes.bool,
-  showSkyBrowser: PropTypes.bool,
   resetStory: PropTypes.func.isRequired,
+
 };
 
 BottomBar.defaultProps = {
-  showExoplanets: false,
   showFlightController: false,
-  showSkyBrowser: false,
 };
 
 const mapStateToProps = (state) => {

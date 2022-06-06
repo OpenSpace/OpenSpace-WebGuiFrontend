@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { instructionImage } from '../../api/resources';
-import Icon from '../common/MaterialIcon/MaterialIcon';
-import SmallLabel from '../common/SmallLabel/SmallLabel';
+import { instructionImage } from '../../../api/resources';
+import Icon from '../../common/MaterialIcon/MaterialIcon';
+import SmallLabel from '../../common/SmallLabel/SmallLabel';
 import styles from './Instructions.scss';
-import imagescroll from '../../../images/scrollclick.png'
-import imageright from '../../../images/rightclick.png'
-import imagesleft from '../../../images/leftclick.png'
+import imagescroll from '../../../../images/scrollclick.png'
+import imageright from '../../../../images/rightclick.png'
+import imagesleft from '../../../../images/leftclick.png'
 const Instructions = props => {
   const [showInstructions, setShowInstructions] = useState(false);
 

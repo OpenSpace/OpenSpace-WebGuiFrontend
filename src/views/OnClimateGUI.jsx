@@ -39,7 +39,7 @@ import styles from './OnClimateGui.scss';
 import { UpdateDeltaTimeNow } from '../utils/timeHelpers';
 
 import {
-  satelliteToggle, toggleShading, toggleHighResolution, toggleShowNode, toggleGalaxies,
+  storyGetLayer, storyGetLocation, satelliteToggle, toggleShading, toggleHighResolution, toggleShowNode, toggleGalaxies,
   setStoryStart, showDevInfoOnScreen, storyFileParserClimate, infoFileParserClimate, flyTo, DataLoader,
 } from '../utils/storyHelpers';
 //import  climate_stories from "../../stories/stories.json";
@@ -55,14 +55,14 @@ class OnClimateGui extends Component {
       currentStory: "default",
       json: "defualt",
       startJourney: "default",
-      climate_storys: climate_stories,
-      NoShow: "nopp",
+      climate_stories: climate_stories,
+      NoShow: "noShow",
     };
-    this.changeStory = this.changeStory.bind(this);
     this.addStoryTree = this.addStoryTree.bind(this);
     this.setStory = this.setStory.bind(this);
     this.resetStory = this.resetStory.bind(this);
     this.addStoryTree = this.addStoryTree.bind(this);
+    this.noShow = this.noShow.bind(this);
 
   }
 
@@ -77,6 +77,8 @@ class OnClimateGui extends Component {
     const {
       changePropertyValue, luaApi, scaleNodes, story, storyIdentifier, currentStory
     } = this.props;
+
+
     const previousStory = currentStory;
     this.setState({ currentStory: selectedStory });
 
@@ -87,7 +89,6 @@ class OnClimateGui extends Component {
     const getJson = this.addStoryTree(selectedStory);
 
     this.setState({json: getJson});
-
 
     //remove satelites from start profile
     satelliteToggle(luaApi, false);
@@ -117,9 +118,19 @@ class OnClimateGui extends Component {
     return storyFile;
   }
 
-  changeStory(e) {
-    this.setStory(e.target.id);
+  noShow(){
+    console.log("hej")
+    const { luaApi } = this.props;
+    const {currentStory, NoShow} = this.state;
+
+
+    this.setState({
+      currentStory: NoShow
+    })
+    this.setStory(NoShow);
+
   }
+
 
   resetStory() {
     const { luaApi } = this.props;
@@ -128,22 +139,27 @@ class OnClimateGui extends Component {
     this.setState({startJourney: currentStory});
     UpdateDeltaTimeNow(luaApi, 1);
     this.setStory(DefaultStory);
+    //remove satelites from start profile
+    satelliteToggle(luaApi, true);
+    luaApi.setPropertyValue("NavigationHandler.OrbitalNavigator.IdleBehavior.ApplyIdleBehavior", true);
+    // get orginal story position
+    climate_stories.startpage.map((story) => {
+      return (
+          storyGetLocation(luaApi, story.pos),
+          storyGetLayer(luaApi, story.toggleboolproperties)
+          );
+        });
   }
 
-  noShow(){
-    const { luaApi } = this.props;
-    const { currentStory } = this.state;
-    this.setState({startJourney: NoShow});
-    UpdateDeltaTimeNow(luaApi, 1);
-    this.setStory(DefaultStory);
-  }
 
   render() {
     //let storyIdentifier = [];
-    const {  connectionLost, story, storyIdentifier  } = this.props;
-    const { currentStory, json, luaApi, climate_storys} = this.state;
+    const {  connectionLost,  } = this.props;
+    const { currentStory, json, luaApi, NoShow } = this.state;
 
-    //console.log(typeof(climate_storys))
+    //console.log(NoShow)
+    //console.log("cur " + currentStory)
+    //console.log("def " + DefaultStory)
     return (
 
       <div className={styles.app}>
@@ -153,7 +169,6 @@ class OnClimateGui extends Component {
             <Error>
               Connection lost. Trying to reconnect again soon.
             </Error>
-
           </Overlay>
         )}
 
@@ -162,20 +177,22 @@ class OnClimateGui extends Component {
         </p>
         <section className={styles.Grid__Left}>
 
-
-        {(currentStory === DefaultStory)
-          ? <StartJourney changeStory = {this.setStory} />
-        : <ExploreClimate resetStory = {this.resetStory} json = {json} />
+        {(currentStory === NoShow) &&
+          <div><p>hej</p></div>
         }
+        {(currentStory === DefaultStory )
+          ? <StartJourney changeStory = {this.setStory}/>
+        : <ExploreClimate resetStory = {this.resetStory} json = {json} currentStory= {currentStory}/>
+        }
+
+
         <Sidebar/>
-          
+
         </section>
         <section className={styles.Grid__Right}>
           <NodePopOverContainer/>
-
-
         <NodeMetaContainer/>
-          <BottomBar resetStory={this.resetStory} showFlightController={this.props.showFlightController} climatePanel ={this.noShow}/>
+          <BottomBar resetStory={this.resetStory} setNoShow = {this.noShow}/>
         <KeybindingPanel />
         </section>
 
@@ -249,21 +266,7 @@ const mapDispatchToProps = dispatch => ({
   FetchData: (id) => {
     dispatch(fetchData(id));
   },
-  AddStoryTree: (story) => {
-    dispatch(addStoryTree(story));
-  },
-  AddStoryInfo: (info) => {
-    dispatch(addStoryInfo(info));
-  },
-  ResetStoryInfo: () => {
-    dispatch(resetStoryInfo());
-  },
-  startListening: (uri) => {
-    dispatch(subscribeToProperty(uri));
-  },
-  stopListening: (uri) => {
-    dispatch(unsubscribeToProperty(uri));
-  },
+
 });
 OnClimateGui = withRouter(connect(
   mapStateToProps,

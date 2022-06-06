@@ -105,8 +105,8 @@ export const satelliteToggle = (luaApi, toggleBool) => {
   luaApi.setPropertyValue("Scene.visual.Renderable.Enabled", toggleBool); //100 brightes
   luaApi.setPropertyValue("Scene.geo.Renderable.Enabled", toggleBool); //geostationary
   luaApi.setPropertyValue("Scene.gps-ops.Renderable.Enabled", toggleBool); //gps
-  luaApi.setPropertyValue("Scene.ISS_trail.Renderable.Enabled", toggleBool); //iss Trail
-  luaApi.setPropertyValue("Scene.ISSModel.Renderable.Enabled", toggleBool); //iss Modell
+  //luaApi.setPropertyValue("Scene.ISS_trail.Renderable.Enabled", toggleBool); //iss Trail
+  //luaApi.setPropertyValue("Scene.ISSModel.Renderable.Enabled", toggleBool); //iss Modell
   luaApi.setPropertyValue("Scene.tle-new.Renderable.Enabled", toggleBool); //Last 30days
   luaApi.setPropertyValue("Scene.stations.Renderable.Enabled", toggleBool); //Spacestation
 
@@ -115,7 +115,7 @@ export const satelliteToggle = (luaApi, toggleBool) => {
 
 
 /////////////////////////
-
+//NavigationHandler.OrbitalNavigator.IdleBehavior.DampenInterpolationTime
 
 /**
 * This function helps verifying the input values of the json file

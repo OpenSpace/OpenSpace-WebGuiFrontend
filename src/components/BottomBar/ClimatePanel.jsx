@@ -10,6 +10,7 @@ import {
   subscribeToSessionRecording,
   unsubscribeToSessionRecording,
 } from "../../api/Actions";
+import PropTypes from 'prop-types';
 import {
   sessionStateIdle,
   sessionStatePaused,
@@ -34,14 +35,17 @@ class ClimatePanel extends Component {
     super(props);
     this.state = { isToggleOn: true };
     this.togglePopover = this.togglePopover.bind(this); //makes it possible to click at climate button
+
   }
 
   //same in all jsx files
-  togglePopover() {
+togglePopover() {
     this.props.setPopoverVisibility(!this.props.popoverVisible);
+    this.props.setNoShow();
+    console.log(this.props.setNoShow)
   }
 
-  getSurfaceLayerAlaska() {
+getSurfaceLayerAlaska() {
     this.props.luaApi.time.setTime("2021-06-18T19:00:00");
     this.props.luaApi.setPropertyValueSingle(
       "Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled", true);
@@ -140,9 +144,6 @@ class ClimatePanel extends Component {
       "Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled", true)
 
     this.props.luaApi.setPropertyValueSingle(
-      "{earth_satellites}.Renderable.Enabled", false) // DOES NOT WORK!!
-
-    this.props.luaApi.setPropertyValueSingle(
           "Scene.Earth.Renderable.Layers.ColorLayers.VIIRS_SNPP_Temporal.Enabled", false);
     this.props.luaApi.globebrowsing.flyToGeo(
       "Earth",
@@ -170,322 +171,82 @@ class ClimatePanel extends Component {
       "Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled", true)
     this.props.luaApi.setPropertyValueSingle(
           "Scene.Earth.Renderable.Layers.ColorLayers.VIIRS_SNPP_Temporal.Enabled", false);
-}
+    }
 
-getSurfaceLayerCurrentsOverview() {
+  getSurfaceLayerCurrentsOverview() {
+      this.setState((prevState) => ({
+        isToggleOn: !prevState.isToggleOn,
+      }));
+      console.log("togleff", this.state.isToggleOn);
+      this.props.luaApi.setPropertyValueSingle(
+        "Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
+        this.state.isToggleOn   //noaa-sos-overlays-currents
+      );
+      this.props.luaApi.setPropertyValueSingle(
+        "Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled", true)
+      this.props.luaApi.setPropertyValueSingle(
+            "Scene.Earth.Renderable.Layers.ColorLayers.VIIRS_SNPP_Temporal.Enabled", false);
+    }
+
+  getSurfaceLayerCons(showNode, hideNode, hideNode2){
+
+  this.props.luaApi.setPropertyValueSingle(
+    `Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-${hideNode}.Enabled`,false);
+    this.props.luaApi.setPropertyValueSingle(
+      `Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-${hideNode2}.Enabled`,false);
+
   this.setState((prevState) => ({
-    isToggleOn: !prevState.isToggleOn,
-  }));
-  console.log("togle", this.state.isToggleOn);
-  this.props.luaApi.setPropertyValueSingle(
-    "Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
-    this.state.isToggleOn   //noaa-sos-overlays-currents
-  );
-  this.props.luaApi.setPropertyValueSingle(
-    "Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled", true)
-  this.props.luaApi.setPropertyValueSingle(
-        "Scene.Earth.Renderable.Layers.ColorLayers.VIIRS_SNPP_Temporal.Enabled", false);
-}
-
-getSurfaceLayerFirstCons(){
-
-  this.props.luaApi.setPropertyValueSingle(
-    "Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-4m.Enabled",false);
-  this.props.luaApi.setPropertyValueSingle(
-    "Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-6m.Enabled",false);
-
-    this.setState((prevState) => ({
       isToggleOn: !prevState.isToggleOn,
     }));
-    this.props.luaApi.setPropertyValueSingle(
-      "Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-2m.Enabled",
-      this.state.isToggleOn
-    );
-  /*this.props.luaApi.setPropertyValueSingle(
-    "Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled", true);
   this.props.luaApi.setPropertyValueSingle(
-        "Scene.Earth.Renderable.Layers.ColorLayers.VIIRS_SNPP_Temporal.Enabled", false);*/
+        `Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-${showNode}.Enabled`,
+      true
+    );
 }
 
-getSurfaceLayerSecondCons(){
-
-  this.props.luaApi.setPropertyValueSingle(
-    "Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-2m.Enabled",false);
-  this.props.luaApi.setPropertyValueSingle(
-    "Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-6m.Enabled",false);
-
-    this.setState((prevState) => ({
-      isToggleOn: !prevState.isToggleOn,
-    }));
-    this.props.luaApi.setPropertyValueSingle(
-      "Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-4m.Enabled",
-      this.state.isToggleOn
-    );
-  /*this.props.luaApi.setPropertyValueSingle(
-    "Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled", true)
-  this.props.luaApi.setPropertyValueSingle(
-        "Scene.Earth.Renderable.Layers.ColorLayers.VIIRS_SNPP_Temporal.Enabled", false);*/
+  ShowHideButton(node, pos, opacity){
+  const hideNode = document.getElementById(node);
+  hideNode.style.position = pos;
+  hideNode.style.opacity = opacity;
 }
 
-getSurfaceLayerThirdCons(){
-
-  this.props.luaApi.setPropertyValueSingle(
-    "Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-2m.Enabled",false);
-  this.props.luaApi.setPropertyValueSingle(
-    "Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-4m.Enabled",false);
-
-    this.setState((prevState) => ({
-      isToggleOn: !prevState.isToggleOn,
-    }));
-    this.props.luaApi.setPropertyValueSingle(
-      "Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-6m.Enabled",
-      this.state.isToggleOn
-    );
-  /*this.props.luaApi.setPropertyValueSingle(
-    "Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled", true)
-  this.props.luaApi.setPropertyValueSingle(
-        "Scene.Earth.Renderable.Layers.ColorLayers.VIIRS_SNPP_Temporal.Enabled", false);*/
-}
-
-showHideGlaciers() {
-  var g = document.getElementById("glacierButton");
+  showHide(button, showarray, hide1, hide2) {
+  var g = document.getElementById(button);
 
   if(g.value=="HIDE"){
-    g.style.border = '2px solid #D3D3D3';
+
+    document.getElementById("glacierButton").style.border = 'none';
     document.getElementById("currentButton").style.border = 'none';
     document.getElementById("consequenceButton").style.border = 'none';
+    g.style.border = '2px solid #D3D3D3';
 
-    const glacier1 = document.getElementById('glaciersHide1');
-    glacier1.style.position = 'relative';
-    glacier1.style.opacity = '1';
+    showarray.map((show) =>{
+      this.ShowHideButton(show, 'relative', '1')
+    }),
+    hide1.map((hide) =>{
+      this.ShowHideButton(hide, 'absolute', '0')
+    }),
+    hide2.map((hide) =>{
+      this.ShowHideButton(hide, 'absolute', '0')
+    }),
 
-    const glacier2 = document.getElementById('glaciersHide2');
-    glacier2.style.position = 'relative';
-    glacier2.style.opacity = '1';
-
-    const glacier3 = document.getElementById('glaciersHide3');
-    glacier3.style.position = 'relative';
-    glacier3.style.opacity = '1';
-
-    const current1 = document.getElementById('curentsHide1');
-    current1.style.position = 'absolute';
-    current1.style.opacity = '0';
-
-    const current2 = document.getElementById('curentsHide2');
-    current2.style.position = 'absolute';
-    current2.style.opacity = '0';
-
-    const consequence1 = document.getElementById('consequenceHide1');
-    consequence1.style.position = 'absolute';
-    consequence1.style.opacity = '0';
-
-    const consequence2 = document.getElementById('consequenceHide2');
-    consequence2.style.position = 'absolute';
-    consequence2.style.opacity = '0';
-
-    const consequence3 = document.getElementById('consequenceHide3');
-    consequence3.style.position = 'absolute';
-    consequence3.style.opacity = '0';
-
-    g.value="SHOW";
+    document.getElementById("glacierButton").value = 'HIDE';
     document.getElementById("currentButton").value = 'HIDE';
     document.getElementById("consequenceButton").value = 'HIDE';
+    g.value="SHOW";
     }
     else if(g.value=="SHOW"){
       g.style.border = 'none';
-
-      const glacier1 = document.getElementById('glaciersHide1');
-      glacier1.style.position = 'absolute';
-      glacier1.style.opacity = '0';
-
-      const glacier2 = document.getElementById('glaciersHide2');
-      glacier2.style.position = 'absolute';
-      glacier2.style.opacity = '0';
-
-      const glacier3 = document.getElementById('glaciersHide3');
-      glacier3.style.position = 'absolute';
-      glacier3.style.opacity = '0';
-
-      g.value="HIDE";
+      showarray.map((show) =>{
+        this.ShowHideButton(show, 'absolute', '0')
+      }),
+      document.getElementById("glacierButton").value = 'SHOW';
       document.getElementById("currentButton").value = 'SHOW';
       document.getElementById("consequenceButton").value = 'SHOW';
-    }
-}
-
-showHideCurrents() {
-  var c = document.getElementById("currentButton");
-
-    if(c.value=="HIDE"){
-      c.style.border = '2px solid #D3D3D3';
-      document.getElementById("glacierButton").style.border = 'none';
-      document.getElementById("consequenceButton").style.border = 'none';
-
-      const current1 = document.getElementById('curentsHide1');
-      current1.style.position = 'relative';
-      current1.style.opacity = '1';
-
-      const current2 = document.getElementById('curentsHide2');
-      current2.style.position = 'relative';
-      current2.style.opacity = '1';
-
-      const glacier1 = document.getElementById('glaciersHide1');
-      glacier1.style.position = 'absolute';
-      glacier1.style.opacity = '0';
-
-      const glacier2 = document.getElementById('glaciersHide2');
-      glacier2.style.position = 'absolute';
-      glacier2.style.opacity = '0';
-
-      const glacier3 = document.getElementById('glaciersHide3');
-      glacier3.style.position = 'absolute';
-      glacier3.style.opacity = '0';
-
-      const consequence1 = document.getElementById('consequenceHide1');
-      consequence1.style.position = 'absolute';
-      consequence1.style.opacity = '0';
-
-      const consequence2 = document.getElementById('consequenceHide2');
-      consequence2.style.position = 'absolute';
-      consequence2.style.opacity = '0';
-
-      const consequence3 = document.getElementById('consequenceHide3');
-      consequence3.style.position = 'absolute';
-      consequence3.style.opacity = '0';
-
-      c.value="SHOW";
-      document.getElementById("glacierButton").value = 'HIDE';
-      document.getElementById("consequenceButton").value = 'HIDE';
-      }
-      else if(c.value=="SHOW"){
-        c.style.border = 'none';
-
-        const current1 = document.getElementById('curentsHide1');
-        current1.style.position = 'absolute';
-        current1.style.opacity = '0';
-
-        const current2 = document.getElementById('curentsHide2');
-        current2.style.position = 'absolute';
-        current2.style.opacity = '0';
-
-        c.value="HIDE";
-        document.getElementById("glacierButton").value = 'SHOW';
-        document.getElementById("consequenceButton").value = 'SHOW';
-      }
-}
-
-showHideConsequenses() {
-  var c = document.getElementById("consequenceButton");
-
-    if(c.value=="HIDE"){
-      c.style.border = '2px solid #D3D3D3';
-      document.getElementById("glacierButton").style.border = 'none';
-      document.getElementById("currentButton").style.border = 'none';
-
-      const consequence1 = document.getElementById('consequenceHide1');
-      consequence1.style.position = 'relative';
-      consequence1.style.opacity = '1';
-
-      const consequence2 = document.getElementById('consequenceHide2');
-      consequence2.style.position = 'relative';
-      consequence2.style.opacity = '1';
-
-      const consequence3 = document.getElementById('consequenceHide3');
-      consequence3.style.position = 'relative';
-      consequence3.style.opacity = '1';
-
-      const current1 = document.getElementById('curentsHide1');
-      current1.style.position = 'absolute';
-      current1.style.opacity = '0';
-
-      const current2 = document.getElementById('curentsHide2');
-      current2.style.position = 'absolute';
-      current2.style.opacity = '0';
-
-      const glacier1 = document.getElementById('glaciersHide1');
-      glacier1.style.position = 'absolute';
-      glacier1.style.opacity = '0';
-
-      const glacier2 = document.getElementById('glaciersHide2');
-      glacier2.style.position = 'absolute';
-      glacier2.style.opacity = '0';
-
-      const glacier3 = document.getElementById('glaciersHide3');
-      glacier3.style.position = 'absolute';
-      glacier3.style.opacity = '0';
-
-      c.value="SHOW";
-      document.getElementById("glacierButton").value = 'HIDE';
-      document.getElementById("currentButton").value = 'HIDE';
-      }
-      else if(c.value=="SHOW"){
-        c.style.border = 'none';
-
-        const consequence1 = document.getElementById('consequenceHide1');
-        consequence1.style.position = 'absolute';
-        consequence1.style.opacity = '0';
-
-        const consequence2 = document.getElementById('consequenceHide2');
-        consequence2.style.position = 'absolute';
-        consequence2.style.opacity = '0';
-
-        const consequence3 = document.getElementById('consequenceHide3');
-        consequence3.style.position = 'absolute';
-        consequence3.style.opacity = '0';
-
-        c.value="HIDE";
-        document.getElementById("glacierButton").value = 'SHOW';
-        document.getElementById("currentButton").value = 'SHOW';
-      }
-}
-
-
-
-/*showHideGlaciers() {
-  var g = document.getElementById("glacierButton");
-  if(g.value=="HIDE"){
-    g.style.border = '2px solid #D3D3D3';
-    document.getElementById("currentButton").style.border = 'none';
-    const glacier1 = document.getElementsByClassName('gClass');
-    glacier1.style.position = 'relative';
-    glacier1.style.opacity = '1';
-    const current1 = document.getElementsByClassName('cClass');
-    current1.style.position = 'absolute';
-    current1.style.opacity = '0';
-    g.value="SHOW";
-    document.getElementById("currentButton").value = 'HIDE';
-    }
-    else if(g.value=="SHOW"){
-      g.style.border = 'none';
-      const glacier1 = document.getElementsByClassName('gClass');
-      glacier1.style.position = 'absolute';
-      glacier1.style.opacity = '0';
       g.value="HIDE";
-      document.getElementById("currentButton").value = 'SHOW';
     }
 }
-showHideCurrents() {
-  var c = document.getElementById("currentButton");
-    if(c.value=="HIDE"){
-      c.style.border = '2px solid #D3D3D3';
-      document.getElementById("glacierButton").style.border = 'none';
-      const current1 = document.getElementsByClassName('cClass');
-      current1.style.position = 'relative';
-      current1.style.opacity = '1';
-      const glacier1 = document.getElementsByClassName('gClass');
-      glacier1.style.position = 'absolute';
-      glacier1.style.opacity = '0';
-      c.value="SHOW";
-      document.getElementById("glacierButton").value = 'HIDE';
-      }
-      else if(c.value=="SHOW"){
-        c.style.border = 'none';
-        const current1 = document.getElementsByClassName('cClass');
-        current1.style.position = 'absolute';
-        current1.style.opacity = '0';
-        c.value="HIDE";
-        document.getElementById("glacierButton").value = 'SHOW';
-      }
-}*/
+
 
   get popover() {
     var glaciers;
@@ -500,6 +261,11 @@ showHideCurrents() {
     var secondCons;
     var thirdCons;
 
+    var currentHide = [ 'curentsHide1', 'curentsHide2' ];
+    var consequenceHide = ['consequenceHide1', 'consequenceHide2', 'consequenceHide3'];
+    var glaciersHide = ['glaciersHide1', 'glaciersHide2', 'glaciersHide3']
+
+
     glaciers = (
       <Button
         block
@@ -507,7 +273,7 @@ showHideCurrents() {
         id="glacierButton"
         value="HIDE"
         onClick={() => {
-          this.showHideGlaciers();
+          this.showHide("glacierButton",glaciersHide, currentHide, consequenceHide );
         }}
         className={styles.menuButton}
       >
@@ -568,7 +334,7 @@ showHideCurrents() {
         id="currentButton"
         value="HIDE"
         onClick={() => {
-          this.showHideCurrents();
+          this.showHide("currentButton", currentHide, consequenceHide, glaciersHide );
         }}
         className={styles.menuButton}
       >
@@ -617,7 +383,7 @@ showHideCurrents() {
         id="consequenceButton"
         value="HIDE"
         onClick={() => {
-          this.showHideConsequenses();
+          this.showHide("consequenceButton",consequenceHide, glaciersHide, currentHide );
         }}
         className={styles.menuButton}
       >
@@ -635,7 +401,7 @@ showHideCurrents() {
       <Button
         id = "consequenceHide1"
         onClick={() => {
-          this.getSurfaceLayerFirstCons();
+          this.getSurfaceLayerCons("2m", "6m", "4m");
         }}
         className={styles.actionButton}
       >
@@ -647,7 +413,7 @@ showHideCurrents() {
       <Button
         id = "consequenceHide2"
         onClick={() => {
-          this.getSurfaceLayerSecondCons();
+          this.getSurfaceLayerCons("4m", "2m", "6m");
         }}
         className={styles.actionButton}
       >
@@ -659,7 +425,7 @@ showHideCurrents() {
       <Button
         id = "consequenceHide3"
         onClick={() => {
-          this.getSurfaceLayerThirdCons();
+          this.getSurfaceLayerCons("6m", "4m", "2m");
         }}
         className={styles.actionButton}
       >
@@ -700,7 +466,7 @@ showHideCurrents() {
 
   render() {
 
-    const { popoverVisible } = this.props;
+    const { popoverVisible, setNoShow } = this.props;
 
     return (
       <div className={Picker.Wrapper}>
@@ -742,4 +508,10 @@ ClimatePanel = connect(
   subStateToProps(mapSubStateToProps, mapStateToSubState),
   mapDispatchToProps
 )(ClimatePanel);
+
+
+ClimatePanel.propTypes = {
+ setNoShow: PropTypes.func.isRequired,
+};
+
 export default ClimatePanel;

@@ -1,0 +1,26 @@
+{
+  "identifier":"noShow",
+  "title": "",
+  "storyinfo": "",
+  "focusbuttons": ["Earth"],
+  "timecontroller": true,
+  "sightscontroller" : true,
+  "actions": ["climate_mode"],
+  "journey":  [
+    {
+      "local": []
+    },
+    {
+      "local": []
+    },
+    {
+      "local": []
+    },
+    {
+      "local": []
+    }
+  ],
+    "toggleboolproperties": [
+
+    ]
+  }
