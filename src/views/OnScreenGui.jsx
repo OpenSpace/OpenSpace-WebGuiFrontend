@@ -20,6 +20,9 @@ import TourPopup from '../components/GettingStartedTour/TourPopup'
 class OnScreenGui extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      showTutorial : true
+    }
     this.checkedVersion = false;
     this.showFlightController = props.showFlightController;
   }
@@ -87,7 +90,7 @@ class OnScreenGui extends Component {
           <NodeMetaContainer />
           <BottomBar showFlightController={this.props.showFlightController}/>
           <KeybindingPanel />
-          <TourPopup />
+          <TourPopup isVisible={this.state.showTutorial} setVisibility = { (show) => this.setState({ showTutorial : show })}/>
         </section>
       </div>
     );

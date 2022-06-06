@@ -3,6 +3,10 @@
 $padding-horizontal: 0.3rem;
 $padding-vertical: 0.5rem;
 $padding: $padding-horizontal $padding-vertical;
+$highlight-color: #e8c274;
+$logo-color: #b2d29c;
+$margin-over-mouse-button: 40px;
+$mouse-color: $text-color-blur;
 
 .content {
     width: 100%;
@@ -24,15 +28,91 @@ $padding: $padding-horizontal $padding-vertical;
 
 .text {
     padding: $padding;
+    overflow-wrap: break-word;
+}
+
+.centerContent {
+    display: flex;
+    justify-content: center;
+}
+
+.spaceBetweenContent {
+    display: flex;
+    justify-content: space-between;
+}
+
+.mouseButtonText {
+    text-align: center;
+    margin-top: $margin-over-mouse-button;
+    color: $mouse-color;
+}
+
+.goalText {
+    color:$highlight-color;
+    font-style: italic;
 }
 
 .buttonContainer {
     width: 100%;
-    display: flex;
-    justify-content: flex-end;
     padding: $padding;
     position: absolute;
     bottom: 0px;
+}
+
+.mouseDescription {
+    display: flex;
+    justify-content: space-evenly;
+    flex-direction: row;
+}
+
+.logo {
+    width: 300px; 
+    object-fit: contain;
+    padding: 20px;
+}
+
+.nextButton {
+    color: $ui-background-solid;
+    font-weight: bold;
+}
+
+.nextButton:enabled {
+    display: inline-block;
+    transition: all .3s;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+
+    &:after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: $highlight-color;
+        z-index: -2;
+    }
+
+    &:before {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0%;
+        height: 100%;
+        background-color: darken($highlight-color, 15%);
+        transition: all .3s;
+        z-index: -1;
+    }
+
+    &:hover {
+        color: #fff;
+
+        &:before {
+            width: 100%;
+        }
+    }
 }
 
 /* Animated arrow style */
@@ -51,7 +131,7 @@ $padding: $padding-horizontal $padding-vertical;
     top: 25px;
     width: 90%;
     height: 10px;
-    background-color: $text-color-focus;
+    background-color: $highlight-color;
     box-shadow: 0 3px 5px rgba(0, 0, 0, .2);
     animation: arrow 700ms linear infinite;
 }
@@ -63,7 +143,7 @@ $padding: $padding-horizontal $padding-vertical;
     width: 60%;
     height: 10px;
     right: -8px;
-    background-color: $text-color-focus;
+    background-color: $highlight-color;
 }
 
 .arrow::after {
@@ -76,3 +156,208 @@ $padding: $padding-horizontal $padding-vertical;
     box-shadow: 0 3px 5px rgba(0, 0, 0, .2);
     transform: rotate(-45deg);
 }
+
+/* Keyboard button */
+.keyboardButton {
+    background-color: transparent;
+    border: 1;
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 5px;
+    border-color: $mouse-color;
+    width: 60px;
+    height: 45px;
+    margin-top: calc(1.5 * $margin-over-mouse-button);
+}
+
+.keyboardButtonText {
+    margin-top: 10%;
+    font-style: italic;
+    letter-spacing: 3px;
+    color: $mouse-color;
+}
+
+.plus {
+    color: $mouse-color;
+    margin-top: calc(1.7 * $margin-over-mouse-button);
+    margin-left: $margin-over-mouse-button;
+}
+
+/* Animated mouse */
+$mouse-size: 80px;
+$button-border: 0.4;
+$mouse-ratio: 0.65;
+$line-width: 2px;
+
+.mouseContainer {
+    padding: $margin-over-mouse-button;
+}
+
+.leftButton, .rightButton, .bar, .mouseButton, .verticalBar {
+    background-color: $mouse-color;
+} 
+
+.mouse {
+    width: calc($mouse-size * $mouse-ratio);
+    height: $mouse-size;
+    position: relative;
+    border-radius: calc($mouse-size * 0.45);
+    border: 2px solid $mouse-color;
+}
+
+.leftButton, .rightButton {
+    width: calc($mouse-size * $mouse-ratio * 0.5);
+    margin-left: -2px;
+    height: calc($mouse-size * $button-border + 3px);
+    position: absolute;
+    animation: fadebackground 1s infinite alternate;
+    margin-top: - calc($line-width * 0.5);
+}
+
+.leftButton {
+    border-radius: calc($mouse-size * 0.45) 0 0 0;
+}
+
+.rightButton {
+    border-radius: 0 calc($mouse-size * 0.45) 0 0;
+    margin-left: calc($mouse-size * $mouse-ratio * 0.5 - 2px);
+}
+
+.bar {
+    height: 2px;
+    width: calc($mouse-size * $mouse-ratio - 2px);
+    margin-top: calc($mouse-size * $button-border);
+    margin-left: -1px;
+    position: absolute;
+}
+
+.verticalBar {
+    width: 2px;
+    height: calc($mouse-size * $button-border);
+    margin-left: calc($mouse-size * $mouse-ratio * 0.45 );
+    position: absolute;
+}
+
+.mouseButton {
+    width: calc($mouse-size * 0.1);
+    height: calc($mouse-size * 0.25);
+    border-radius: calc(0.05 * $mouse-size);
+    position: absolute;
+    height: calc($mouse-size * 0.25);
+    left: calc(50% - ($mouse-size * 0.025));
+    margin: calc(0.15 * $mouse-size) 0 0 -2px;
+    animation: fadebackground 1s infinite alternate;
+}
+
+@keyframes fadebackground {
+    from {
+        background-color: $mouse-color;
+    }
+
+    to {
+        background-color: transparent;
+    }
+}
+
+/* Animated arrows */
+$arrows-width : 10px;
+$arrows-translation: calc($arrows-width * 0.6);
+$arrows-line-width: 2px;
+
+.arrows {
+    position: absolute; 
+}
+
+.arrows span {
+    display: block;
+    width: $arrows-width;
+    height: $arrows-width;
+    border-bottom: $arrows-line-width solid $mouse-color;
+    border-right: $arrows-line-width solid $mouse-color;
+    animation: arrowsAnimation 2s infinite;
+    transform: rotate(45deg)
+}
+
+.arrows span:nth-child(2) {
+    animation-delay: -0.2s;
+}
+
+.arrows span:nth-child(3) {
+    animation-delay: -0.4s;
+}
+
+@keyframes arrowsAnimation {
+    0% {
+        opacity: 0;
+        transform: rotate(45deg) translate(-$arrows-translation, -$arrows-translation);
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+        transform: rotate(45deg) translate($arrows-translation, $arrows-translation);
+    }
+}
+
+/* Animated checkmark */
+$color : #6fbf39;
+$stroke-width: 5px;
+
+.checkmarkContainer {
+    margin-top: 80px;
+}
+
+.checkmark__circle {
+    stroke-dasharray: 166;
+    stroke-dashoffset: 166;
+    stroke-width: $stroke-width;
+    stroke-miterlimit: 10;
+    stroke: $color;
+    fill: none;
+    animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+
+.checkmark {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    stroke-width: 5;
+    stroke: white;
+    stroke-miterlimit: 10;
+    box-shadow: inset 0px 0px 0px $color;
+    animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
+}
+
+.checkmark__check {
+    transform-origin: 50% 50%;
+    stroke-dasharray: 48;
+    stroke-dashoffset: 48;
+    animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+}
+
+@keyframes stroke {
+    100% {
+        stroke-dashoffset: 0;
+    }
+}
+
+@keyframes scale {
+    0%,
+    100% {
+        transform: none;
+    }
+
+    50% {
+        transform: scale3d(1.1, 1.1, 1);
+    }
+}
+
+@keyframes fill {
+    100% {
+        box-shadow: inset 0px 0px 0px 30px $color;
+    }
+}
+
