@@ -138,7 +138,7 @@ class ExploreClimate extends Component{
                 </section>
 
             }
-            {(currentStory != "noShow") 
+            {(currentStory != "noShow") &&
 
               <div className={styles.HomeButton}>
                   <HomeButtonContainer resetStory={this.props.resetStory}/>
