@@ -217,14 +217,115 @@
             "label":"Overview of currents",
             "defaultvalue": false
           },
-        "local":[]
+        "local":[
+          {
+          "title": "2m rise",
+          "id" : 0,
+          "storyinfo": "Climate Climate Climate Climate Climate Climate Climate Climate Climate",
+          "date": "2021-12-18T15:15:00.00",
+          "pos":{
+             "anchor": "Earth",
+             "pitch":5,
+             "position":{
+                "x":-1152145.3978969743,
+                "y":-15271036.370115351,
+                "z":9682927.443411129
+             },
+             "type":"setNavigationState",
+             "up":{
+                "x":-0.20400852731965874,
+                "y":0.5351667325265219,
+                "z":0.819742086986968
+             },
+             "yaw":-0.2376877039313796
+          },
+          "toggleboolproperties":
+            {
+              "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-2m.Enabled",
+              "label":"Detailed currents, OSCAR",
+              "defaultvalue": true
+            },
+            "toggleboolproperties_noshow":
+            {
+              "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
+              "label":"Overview of currents",
+              "defaultvalue": false
+            }
+        },
+        {
+          "title": "4m rise",
+          "id" : 1,
+          "storyinfo": "Climate Climate Climate Climate Climate Climate Climate Climate Climate",
+          "date": "2021-12-18T15:15:00.00",
+          "pos":{
+             "anchor":"Earth",
+             "pitch":-0.03651119926122576,
+             "position":{
+                "x":-1152145.3978969743,
+                "y":-15271036.370115351,
+                "z":9682927.443411129
+             },
+             "type":"setNavigationState",
+             "up":{
+                "x":-0.20400852731965874,
+                "y":0.5351667325265219,
+                "z":0.819742086986968
+             },
+             "yaw":-0.2376877039313796
+          },
+          "toggleboolproperties":
+            {
+              "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-4m.Enabled",
+              "label":"Detailed currents, OSCAR",
+              "defaultvalue": true
+            },
+            "toggleboolproperties_noshow":
+            {
+              "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
+              "label":"Overview of currents",
+              "defaultvalue": false
+            }
+        },
+        {
+          "title": "6m rise",
+          "id" : 1,
+          "storyinfo": "Climate Climate Climate Climate Climate Climate Climate Climate Climate",
+          "date": "2021-12-18T15:15:00.00",
+          "pos":{
+             "anchor":"Earth",
+             "pitch":-0.03651119926122576,
+             "position":{
+                "x":-1152145.3978969743,
+                "y":-15271036.370115351,
+                "z":9682927.443411129
+             },
+             "type":"setNavigationState",
+             "up":{
+                "x":-0.20400852731965874,
+                "y":0.5351667325265219,
+                "z":0.819742086986968
+             },
+             "yaw":-0.2376877039313796
+          },
+          "toggleboolproperties":
+            {
+              "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-6m.Enabled",
+              "label":"Detailed currents, OSCAR",
+              "defaultvalue": true
+            },
+            "toggleboolproperties_noshow":
+            {
+              "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
+              "label":"Overview of currents",
+              "defaultvalue": false
+            }
+        }
+
+      ]
       }
 
 
     ],
-
-
-
     "toggleboolproperties": [
       {
         "name": "{earth_satellites}.Renderable.Enabled",

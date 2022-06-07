@@ -210,7 +210,7 @@ getSurfaceLayerAlaska() {
   hideNode.style.opacity = opacity;
 }
 
-  showHide(button, showarray, hide1, hide2) {
+  showHide(button, showarray, hidearray1, hidearray2) {
   var g = document.getElementById(button);
 
   if(g.value=="HIDE"){
@@ -223,10 +223,10 @@ getSurfaceLayerAlaska() {
     showarray.map((show) =>{
       this.ShowHideButton(show, 'relative', '1')
     }),
-    hide1.map((hide) =>{
+    hidearray1.map((hide) =>{
       this.ShowHideButton(hide, 'absolute', '0')
     }),
-    hide2.map((hide) =>{
+    hidearray2.map((hide) =>{
       this.ShowHideButton(hide, 'absolute', '0')
     }),
 
@@ -273,7 +273,7 @@ getSurfaceLayerAlaska() {
         id="glacierButton"
         value="HIDE"
         onClick={() => {
-          this.showHide("glacierButton",glaciersHide, currentHide, consequenceHide );
+          this.showHide("glacierButton", glaciersHide, currentHide, consequenceHide );
         }}
         className={styles.menuButton}
       >

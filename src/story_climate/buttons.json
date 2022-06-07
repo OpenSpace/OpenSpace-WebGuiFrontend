@@ -168,24 +168,25 @@
       }
    ],
    "firstCons":[
+     
       {
          "id":"consequenceHide1",
          "date":"2021-06-18T12:00:00.00",
          "pos":{
-            "anchor":"Earth",
-            "pitch":0.018593148369062836,
+            "anchor": "Earth",
+            "pitch":5,
             "position":{
-               "x":3658988.1685075876,
-               "y":-3258903.088354517,
-               "z":13509161.004235106
+               "x":-1152145.3978969743,
+               "y":-15271036.370115351,
+               "z":9682927.443411129
             },
             "type":"setNavigationState",
             "up":{
-               "x":-0.553785064407723,
-               "y":0.7627384035285887,
-               "z":0.33399435657147625
+               "x":-0.20400852731965874,
+               "y":0.5351667325265219,
+               "z":0.819742086986968
             },
-            "yaw":-0.18794626460125918
+            "yaw":-0.2376877039313796
          },
          "toggleboolproperties":{
             "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-2m.Enabled.Enabled",
@@ -207,24 +208,25 @@
       }
    ],
    "secondCons":[
+
       {
          "id":"consequenceHide2",
          "date":"2021-12-18T05:00:00.00",
          "pos":{
             "anchor":"Earth",
-            "pitch":-0.02249910974253141,
+            "pitch":-0.03651119926122576,
             "position":{
-               "x":19305329.039923728,
-               "y":11257097.687918952,
-               "z":-9011652.821980316
+               "x":-1152145.3978969743,
+               "y":-15271036.370115351,
+               "z":9682927.443411129
             },
             "type":"setNavigationState",
             "up":{
-               "x":0.34647119952256505,
-               "y":0.14743360618608958,
-               "z":0.9264022018909281
+               "x":-0.20400852731965874,
+               "y":0.5351667325265219,
+               "z":0.819742086986968
             },
-            "yaw":-0.2558781145796229
+            "yaw":-0.2376877039313796
          },
          "toggleboolproperties":{
             "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-4m.Enabled",
@@ -246,24 +248,25 @@
       }
    ],
    "thirdCons":[
+
       {
          "id":"consequenceHide3",
          "date":"2021-12-18T05:00:00.00",
          "pos":{
             "anchor":"Earth",
-            "pitch":-0.02249910974253141,
+            "pitch":-0.03651119926122576,
             "position":{
-               "x":19305329.039923728,
-               "y":11257097.687918952,
-               "z":-9011652.821980316
+               "x":-1152145.3978969743,
+               "y":-15271036.370115351,
+               "z":9682927.443411129
             },
             "type":"setNavigationState",
             "up":{
-               "x":0.34647119952256505,
-               "y":0.14743360618608958,
-               "z":0.9264022018909281
+               "x":-0.20400852731965874,
+               "y":0.5351667325265219,
+               "z":0.819742086986968
             },
-            "yaw":-0.2558781145796229
+            "yaw":-0.2376877039313796
          },
          "toggleboolproperties":{
             "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-6m.Enabled",
