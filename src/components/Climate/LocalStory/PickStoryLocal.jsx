@@ -27,33 +27,26 @@ class PickStoryLocal extends Component {
 
   render() {
     const {storyInfo, currentStory } = this.props;
-    console.log("storyinfo: " + storyInfo.identifier)
-    var uniqueStyle = storyInfo.identifier
+
+
     return (
-
-
-      // id = {styles.${storyInfo.identifier}}
       <div>
-
           <div className = {styles.button}>
-              <div style={{width: 400+600*storyInfo.id, height: 40+1*storyInfo.id}} >
-
+              <div style={{width: 9000, height: 100*storyInfo.id}} >
                 <StoryButton
                   pickStory = {this.handleStory}
                   storyIdentifier= {storyInfo.title}
                 />
               </div>
           </div>
+          <div>
+            {(currentStory == storyInfo.title) &&
+                <DisplaylocalStory
+                  climateStorys = {storyInfo}
+                  />
+            }
 
-        <div>
-          {(currentStory == storyInfo.title) &&
-              <DisplaylocalStory
-                climateStorys = {storyInfo}
-                />
-          }
-
-        </div>
-      </div>
+          </div></div>
     );
   }
 }
@@ -66,5 +59,7 @@ PickStoryLocal.propTypes = {
   }).isRequired,
 
 };
+
+
 
 export default PickStoryLocal;

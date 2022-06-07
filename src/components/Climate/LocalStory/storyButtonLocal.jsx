@@ -13,8 +13,8 @@ const StoryButton = ({ pickStory, storyIdentifier }) => (
 
 StoryButton.propTypes = {
   pickStory: PropTypes.func.isRequired,
-  storyIdentifier: PropTypes.string.isRequired,
 
+  storyIdentifier: PropTypes.string.isRequired,
 
 };
 
