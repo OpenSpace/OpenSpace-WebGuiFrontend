@@ -82,47 +82,11 @@ class ExploreClimate extends Component{
         <div className = {styles.TellStory}>
           <div className = "flex">
 
-
-
             { StoryStep <  stepThroughJourney.length && showStory && (currentStory != "noShow") &&
               <div >
                 {stepThroughJourney}
               </div>
             }
-            { json.journey[StoryStep].local.length > 0 && (currentStory != "noShow") &&
-                json.journey[StoryStep].local.map((story, index) => {
-                  console.log("indec" + json.journey[StoryStep].local.length)
-
-                  return(
-                      <div key = {index}>
-                      <PickStoryLocal key = { index }
-                        storyInfo = { story }
-                        currentStory = { currentStoryLocal }
-                        setCurrentStory = {(newState) => this.setState({
-                          currentStoryLocal: newState
-                        })}
-                        setShowStory = {(newState) => this.setState({
-                          showStory: newState
-                        })}
-                      />
-                     </div>
-                    );
-                  })
-            }
-            { StoryStep <  stepThroughJourney.length -1 && (currentStory != "noShow")&&
-                <div>
-                  <section className = {styles.NextStepButton}>
-                    <NextPrevStepButton
-                      next = {this.Increment}
-                      storyStep = {StoryStep}
-                      string = {"Next"}
-                      iconNextPrev = "chevron_right"
-                      iconPlacement = {styles.Icon}
-                      />
-
-                  </section>
-                </div>
-              }
 
               {StoryStep > 0  && (currentStory != "noShow") &&
                 <section className = {styles.PrevStepButton}>
@@ -138,6 +102,40 @@ class ExploreClimate extends Component{
                 </section>
 
             }
+            { StoryStep <  stepThroughJourney.length -1 && (currentStory != "noShow") &&
+                <div>
+                  <section className = {styles.NextStepButton}>
+                    <NextPrevStepButton
+                      next = {this.Increment}
+                      storyStep = {StoryStep}
+                      string = {"Next"}
+                      iconNextPrev = "chevron_right"
+                      iconPlacement = {styles.Icon}
+                      />
+
+                  </section>
+                </div>
+              }
+              { json.journey[StoryStep].local.length > 0 && (currentStory != "noShow") &&
+                  json.journey[StoryStep].local.map((story, index) => {
+                    console.log("indec" + json.journey[StoryStep].local.length)
+
+                    return(
+                        <div key = {index}>
+                        <PickStoryLocal key = { index }
+                          storyInfo = { story }
+                          currentStory = { currentStoryLocal }
+                          setCurrentStory = {(newState) => this.setState({
+                            currentStoryLocal: newState
+                          })}
+                          setShowStory = {(newState) => this.setState({
+                            showStory: newState
+                          })}
+                        />
+                       </div>
+                      );
+                    })
+                }
             {(currentStory != "noShow") &&
 
               <div className={styles.HomeButton}>
