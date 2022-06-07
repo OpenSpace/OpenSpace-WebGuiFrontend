@@ -35,18 +35,12 @@
           },
           "yaw": -0.3332731785454855
         },
-        "toggleboolproperties":
+        "toggleboolproperties":[
           {
             "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
             "label":"Overview of currents",
             "defaultvalue": true
-          },
-          "toggleboolproperties_noshow":
-          {
-            "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
-            "label":"Overview of currents",
-            "defaultvalue": false
-          },
+          }],
           "local":[]
 
       },
@@ -72,18 +66,12 @@
           "yaw": -0.3337957410554049
         },
 
-        "toggleboolproperties":
+        "toggleboolproperties":[
           {
             "URI":"Scene.Earth.Renderable.Layers.ColorLayers.OSCAR_Sea_Surface_Currents_Zonal.Enabled",
             "label":"Detailed currents, OSCAR",
             "defaultvalue": true
-          },
-          "toggleboolproperties_noshow":
-          {
-            "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
-            "label":"Overview of currents",
-            "defaultvalue": false
-          },
+          }],
           "local":[]
       },
       {
@@ -108,18 +96,12 @@
           "yaw": -0.3337957411437066
         },
 
-        "toggleboolproperties":
+        "toggleboolproperties":[
           {
             "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
             "label":"Overview of currents",
             "defaultvalue": true
-          },
-          "toggleboolproperties_noshow":
-          {
-            "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
-            "label":"Overview of currents",
-            "defaultvalue": false
-          },
+          }],
           "local":[]
       }
 
