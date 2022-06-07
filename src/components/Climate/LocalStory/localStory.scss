@@ -35,7 +35,7 @@
   align-items: center;
   justify-content: center;
   position: absolute;
-  top: 90%;
+//  top: 90%;
   left: -5%;
   display: flex;
   flex: 1;
@@ -45,10 +45,18 @@
 .flex {
   width: 50%;
   vertical-align: middle;
+  display: block;
 }
 
 
 .test{
+  background: blue;
+  top: 30%;
+
+}
+
+
+.westAntarctica{
   background: blue;
   top: 30%;
 

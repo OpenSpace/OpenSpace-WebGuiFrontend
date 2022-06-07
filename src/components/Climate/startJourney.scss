@@ -50,8 +50,8 @@
 }
 
 .flex {
-  width: 50%;
-  vertical-align: middle;
+//  width: 50%;
+//  vertical-align: middle;
 }
 
 .break{
@@ -69,8 +69,8 @@
 
 .Grid {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
+  //  flex-wrap: wrap;
+  //  justify-content: flex-start;
   &:before,
     &:after {
       display: none;

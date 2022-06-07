@@ -14,31 +14,38 @@
         "storyinfo": "Climate Climate Climate Climate Climate Climate Climate Climate Climate",
         "date": "2021-06-18T22:00:00.00",
         "id" : 0,
-        "anchor": "Earth",
-        "pitch": 0.036809269173964765,
-        "location": {
-          "latitude": -12473141.755951669,
-          "longitude": -9114685.955448685,
-          "altitude": 11168199.8503709
+          "pos": {
+          "anchor": "Earth",
+          "pitch": 0.036809269173964765,
+          "location": {
+            "latitude": -12473141.755951669,
+            "longitude": -9114685.955448685,
+            "altitude": 11168199.8503709
+          },
+          "position": {
+            "x": -12473141.755951669,
+            "y": -9114685.955448685,
+            "z": 11168199.8503709
+          },
+          "type": "setNavigationState",
+          "up": {
+            "x": 0.3361430784904903,
+            "y": 0.5100890660539397,
+            "z": 0.7917177372493026
+          },
+          "yaw": -0.3332731785454855
         },
-        "position": {
-          "x": -12473141.755951669,
-          "y": -9114685.955448685,
-          "z": 11168199.8503709
-        },
-        "type": "setNavigationState",
-        "up": {
-          "x": 0.3361430784904903,
-          "y": 0.5100890660539397,
-          "z": 0.7917177372493026
-        },
-        "yaw": -0.3332731785454855,
-
         "toggleboolproperties":
           {
             "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
             "label":"Overview of currents",
             "defaultvalue": true
+          },
+          "toggleboolproperties_noshow":
+          {
+            "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
+            "label":"Overview of currents",
+            "defaultvalue": false
           },
           "local":[]
 
@@ -48,26 +55,34 @@
         "storyinfo": "Climate Climate Climate Climate Climate Climate Climate Climate Climate",
         "date": "2021-06-18T22:00:00.00",
         "id" : 1,
-        "anchor": "Earth",
-        "pitch": 0.05726826173823074,
-        "position": {
-          "x": -5342373.150739659,
-          "y": -3926203.3135169805,
-          "z": 12486323.301335737
+        "pos": {
+          "anchor": "Earth",
+          "pitch": 0.05726826173823074,
+          "position": {
+            "x": -5342373.150739659,
+            "y": -3926203.3135169805,
+            "z": 12486323.301335737
+          },
+          "type": "setNavigationState",
+          "up": {
+            "x": 0.5685856717092868,
+            "y": 0.6832561527415348,
+            "z": 0.4581171942502654
+          },
+          "yaw": -0.3337957410554049
         },
-        "type": "setNavigationState",
-        "up": {
-          "x": 0.5685856717092868,
-          "y": 0.6832561527415348,
-          "z": 0.4581171942502654
-        },
-        "yaw": -0.3337957410554049,
 
         "toggleboolproperties":
           {
             "URI":"Scene.Earth.Renderable.Layers.ColorLayers.OSCAR_Sea_Surface_Currents_Zonal.Enabled",
             "label":"Detailed currents, OSCAR",
             "defaultvalue": true
+          },
+          "toggleboolproperties_noshow":
+          {
+            "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
+            "label":"Overview of currents",
+            "defaultvalue": false
           },
           "local":[]
       },
@@ -76,26 +91,34 @@
         "storyinfo": "Climate Climate Climate Climate Climate Climate Climate Climate Climate",
         "date": "2021-06-18T22:00:00.00",
         "id" : 2,
-        "anchor": "Earth",
-        "pitch": 0.057268261672115586,
-        "position": {
-          "x": -3311490.78011125,
-          "y": -3290465.0271513644,
-          "z": 8472200.317979852
+        "pos": {
+          "anchor": "Earth",
+          "pitch": 0.057268261672115586,
+          "position": {
+            "x": -3311490.78011125,
+            "y": -3290465.0271513644,
+            "z": 8472200.317979852
+          },
+          "type": "setNavigationState",
+          "up": {
+            "x": 0.5600395982359906,
+            "y": 0.6746011517984312,
+            "z": 0.48090428819038494
+          },
+          "yaw": -0.3337957411437066
         },
-        "type": "setNavigationState",
-        "up": {
-          "x": 0.5600395982359906,
-          "y": 0.6746011517984312,
-          "z": 0.48090428819038494
-        },
-        "yaw": -0.3337957411437066,
 
         "toggleboolproperties":
           {
             "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
             "label":"Overview of currents",
             "defaultvalue": true
+          },
+          "toggleboolproperties_noshow":
+          {
+            "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
+            "label":"Overview of currents",
+            "defaultvalue": false
           },
           "local":[]
       }

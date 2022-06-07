@@ -55,7 +55,7 @@ class StartJourney extends Component {
 
     <div className={styles.StoryPosistion}>
       <div className = {styles.TellStory}>
-        <div className = "flex">
+        <div>
         {
           climate_stories.startpage.map((story) => {
             return (

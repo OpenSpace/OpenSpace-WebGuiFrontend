@@ -19,7 +19,7 @@ class Pick extends Component {
     const { storyInfo } = this.props;
 
     //console.log('item' + storyInfo.id)
-    var styles = 'item' + storyInfo.id
+    //var styles = 'item' + storyInfo.id
     return (
           <div style={{height: 40+1*storyInfo.id}} >
             <StoryButton

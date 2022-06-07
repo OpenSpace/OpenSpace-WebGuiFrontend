@@ -18,6 +18,7 @@ import TimePicker from './TimePicker';
 import ClimatePanel from './ClimatePanel';
 import Slider from './Slider';
 import SkyBrowserPanel from './SkyBrowserPanel';
+//import TimePlayerController from '../TouchBar/UtilitiesMenu/presentational/TimePlayerController'
 
 
 let BottomBar = ({

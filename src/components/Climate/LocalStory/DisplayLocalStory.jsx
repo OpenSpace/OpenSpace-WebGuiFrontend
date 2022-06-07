@@ -19,7 +19,7 @@ class DisplaylocalStory extends Component{
 
   render() {
     const { climateStorys, setShowLocalStory} = this.props;
-    console.log('DisplaylocalStory ddfff')
+    console.log('DisplaylocalStory hejhej')
     return (
 
 
