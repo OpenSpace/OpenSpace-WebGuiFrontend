@@ -84,6 +84,7 @@ export const showDevInfoOnScreen = (luaApi, value) => {
 ///////// added climate /////
 
 export const storyGetLayer = (luaApi, layer) => {
+  console.log("heheh")
   luaApi.setPropertyValue(layer.URI, layer.defaultvalue);
 };
 
@@ -112,6 +113,18 @@ export const satelliteToggle = (luaApi, toggleBool) => {
 
 };
 
+export const storyGetIdleBehavior = (luaApi, scrollValue)=>{
+  luaApi.setPropertyValue("NavigationHandler.OrbitalNavigator.IdleBehavior.ApplyIdleBehavior", true);
+  luaApi.setPropertyValue("NavigationHandler.OrbitalNavigator.IdleBehavior.IdleBehavior", scrollValue);
+
+};
+
+export const storyResetLayer = (luaApi) => {
+
+  luaApi.setPropertyValue("Scene.Earth.Renderable.Layers.ColorLayers.*.Enabled", false);
+  luaApi.setPropertyValue("Scene.Earth.Renderable.Layers.Overlays.*.Enabled", false);
+
+};
 
 
 /////////////////////////
