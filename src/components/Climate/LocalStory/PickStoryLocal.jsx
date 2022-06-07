@@ -32,11 +32,13 @@ class PickStoryLocal extends Component {
     return (
       <div>
           <div className = {styles.button}>
-              <div style={{width: 9000, height: 100*storyInfo.id}} >
+
+              <div style={{height: 100*storyInfo.id}} >
                 <StoryButton
                   pickStory = {this.handleStory}
                   storyIdentifier= {storyInfo.title}
                 />
+            
               </div>
           </div>
           <div>
