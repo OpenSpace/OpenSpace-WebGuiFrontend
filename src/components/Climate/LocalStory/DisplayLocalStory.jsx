@@ -6,24 +6,15 @@ import {
  DefaultStory,
 } from '../../../api/keys'
 
-
 class DisplaylocalStory extends Component{
 
   constructor(props) {
     super(props);
-
-
   }
-
-
 
   render() {
     const { climateStorys, setShowLocalStory} = this.props;
-    console.log('DisplaylocalStory ddfff')
     return (
-
-
-
             <div key = {climateStorys.id}>
                 <h1>
                   {climateStorys.title}
@@ -31,19 +22,13 @@ class DisplaylocalStory extends Component{
                 <p>
                   {climateStorys.storyinfo}
                 </p>
-
-
-
-
           </div>
     );
   }
 }
 
-
 DisplaylocalStory.defaultProps = {
     climateStorys: {},
-
   };
 
 export default DisplaylocalStory;

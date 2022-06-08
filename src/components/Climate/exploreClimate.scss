@@ -59,18 +59,57 @@
   font-size: 16px;
 }
 
+/*.StoryPosistion{
+  position: absolute;
+  width: calc(-5vw + 40% + 10px );
+  margin: 0% 5%;
+  height: 100%;
+  top: calc(20vw - 10% - 50px );
+//  background-color: #D3D3D3;
+}
+.TellStory{
+  font-family: $font-family;
+  margin: 0% 0% 50% 0%;
+  color: lightgrey;
+  font-size: 16px;
+}
+*/
 .NextStepButton{
   //top: 80px;
+  //display: flex;
+  //position: absolute;
+  //left: 50%;
+
+  font-family: $font-family;
+  height: 1%;
+  width: 210%;
   display: flex;
+  align-items: center;
+  justify-content: center;
   position: absolute;
-  left: 50%;
+  top: 270%;
+  left: -30%;
+  display: flex;
 }
 
 .PrevStepButton{
 //  top: 80px;
+  //display: flex;
+  //position: absolute;
+  //left: 5%;
+  //bottom: 10px;
+
+  font-family: $font-family;
+  height: 1%;
+  width: 210%;
   display: flex;
+  align-items: center;
+  justify-content: center;
   position: absolute;
-  left: 5%;
+  top: 270%;
+  left: -90%;
+  display: flex;
+
 }
 
 $icon-size: 20px;

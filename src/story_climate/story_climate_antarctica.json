@@ -29,18 +29,24 @@
             },
             "yaw": -0.2558781145796229
           },
-          "toggleboolproperties":
+          "IdleBehavior": {
+            "URI" : "NavigationHandler.OrbitalNavigator.IdleBehavior.IdleBehavior",
+            "defaultvalue": 1
+
+          },
+          "toggleboolproperties":[
+            {
+              "URI":"Scene.Earth.Renderable.Layers.ColorLayers.BMNG_Utah.Enabled",
+              "label":"Overview of currents",
+              "defaultvalue": true
+            },
             {
               "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
               "label":"Overview of currents",
               "defaultvalue": true
-            },
-          "toggleboolproperties_noshow":
-            {
-              "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-ecco2_sst-veg_land-layer.Enabled",
-              "label":"Detailed currents, ECCO",
-              "defaultvalue": false
-            },
+            }
+          ],
+
             "local": []
         },
         {
@@ -66,20 +72,18 @@
             },
             "yaw": -0.20582220095513115
           },
+          "IdleBehavior": {
+            "URI" : "NavigationHandler.OrbitalNavigator.IdleBehavior.IdleBehavior",
+            "defaultvalue": 1
 
-        "toggleboolproperties":
-          {
-            "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-ecco2_sst-veg_land-layer.Enabled",
-            "label":"Detailed currents, ECCO",
-            "defaultvalue": true
           },
-          "toggleboolproperties_noshow":
+          "toggleboolproperties":[
             {
-              "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
-              "label":"Overview of currents",
-              "defaultvalue": false
-          },
-          "local": []
+              "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-ecco2_sst-veg_land-layer.Enabled",
+              "label":"Detailed currents, ECCO",
+              "defaultvalue": true
+            }],
+            "local": []
       },
       {
         "id" : 2,
@@ -101,18 +105,19 @@
           },
           "yaw": -0.23596752380578936
         },
-        "toggleboolproperties":
+
+        "IdleBehavior": {
+          "URI" : "NavigationHandler.OrbitalNavigator.IdleBehavior.IdleBehavior",
+          "value": 1
+
+        },
+
+        "toggleboolproperties":[
           {
-            "URI":"Scene.Earth.Renderable.Layers.ColorLayers.OSCAR_Sea_Surface_Currents_Zonal.Enabled",
-            "label":"Detailed currents, OSCAR",
+            "URI":"Scene.Earth.Renderable.Layers.ColorLayers.BMNG_Utah.Enabled",
+            "label":"Overview of currents",
             "defaultvalue": true
-          },
-          "toggleboolproperties_noshow":
-            {
-              "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
-              "label":"Overview of currents",
-              "defaultvalue": false
-          },
+          }],
         "local":[
           {
             "title": "West Antarctica",
@@ -122,31 +127,25 @@
             "date": "2021-12-18T15:15:00.00",
             "pos": {
               "anchor": "Earth",
-              "pitch": 1.2620872679141455,
+              "pitch":-0.07628754947440182,
               "position": {
-                "x": -327926.2148501796,
-                "y": -1699685.2488059355,
+                "x": 3104618.506161256,
+                "y": -4473994.576754474,
                 "z": -6139431.104908226
               },
               "up": {
-                "x": 0.8931303645008966,
-                "y": 0.4189549602899258,
-                "z": -0.16369145748927294
+                "x": 0.9554527959733778,
+                "y": 0.2654110663886267,
+                "z": 0.12910042798189394
               },
-              "yaw": -0.06989515637603734
+              "yaw": -0.24549208215976548
             },
-            "toggleboolproperties":
+            "toggleboolproperties":[
               {
-                "URI":"Scene.Earth.Renderable.Layers.ColorLayers.OSCAR_Sea_Surface_Currents_Zonal.Enabled",
-                "label":"Detailed currents, OSCAR",
-                "defaultvalue": true
-              },
-              "toggleboolproperties_noshow":
-              {
-                "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
+                "URI":"Scene.Earth.Renderable.Layers.ColorLayers.BMNG_Utah.Enabled",
                 "label":"Overview of currents",
-                "defaultvalue": false
-              }
+                "defaultvalue": true
+              }]
           },
 
           {
@@ -157,66 +156,60 @@
             "date": "2021-12-18T15:15:00.00",
             "pos": {
               "anchor": "Earth",
-              "pitch": 1.2620872679141455,
+              "pitch": -0.07628754950628651,
               "position": {
-                "x": -327926.2148501796,
-                "y": -1699685.2488059355,
-                "z": -6139431.104908226
+                "x": 149483.4216060876,
+                "y": 4549722.493829091,
+                "z": -14099379.981424518
               },
               "up": {
-                "x": 0.8931303645008966,
-                "y": 0.4189549602899258,
-                "z": -0.16369145748927294
+                "x": 0.9355751942801847,
+                "y": 0.3330448023060279,
+                "z": 0.11738916263665083
               },
-              "yaw": -0.06989515637603734
+              "yaw": -0.245492082193302
             },
-            "toggleboolproperties":
+            "toggleboolproperties":[
               {
-                "URI":"Scene.Earth.Renderable.Layers.ColorLayers.OSCAR_Sea_Surface_Currents_Zonal.Enabled",
-                "label":"Detailed currents, OSCAR",
-                "defaultvalue": true
-              },
-              "toggleboolproperties_noshow":
-              {
-                "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
+                "URI":"Scene.Earth.Renderable.Layers.ColorLayers.BMNG_Utah.Enabled",
                 "label":"Overview of currents",
-                "defaultvalue": false
-              }
+                "defaultvalue": true
+              }]
           }
         ]
       },
       {
         "id" : 3,
         "title": "Consequences from sea level rise",
-        "storyinfo": "Climate Climate Climate Climate Climate Climate Climate Climate Climate",
+        "storyinfo": "Global mean sea level has risen about 8–9 inches (21–24 centimeters) since 1880, with about a third of that coming in just the last two and a half decades. The rising water level is mostly due to a combination of melt water from glaciers and ice sheets and thermal expansion of seawater as it warms. In 2020, global mean sea level was 91.3 millimeters (3.6 inches) above the 1993 average, making it the highest annual average in the satellite record (1993-present).",
         "date": "2021-12-18T05:09:00.00",
         "pos": {
           "anchor": "Earth",
-          "pitch": -0.01365814920841428,
+          "pitch": -0.07628754944400731,
           "position": {
-            "x": -104490.09322710335,
-            "y": 1233313.5986336279,
-            "z": -13043699.828143667
+            "x": -9855783.266296387,
+            "y": -36845537.331535816,
+            "z": 12655787.969493866
           },
           "up": {
-            "x": 0.9788158844128632,
-            "y": 0.2044199247269714,
-            "z": 0.011487331965404246
+            "x":-0.5160768662172519,
+            "y": 0.3984763963453224,
+            "z":0.7582092255512496
           },
-          "yaw": -0.23596752380578936
+          "yaw": -0.24549208207731862
         },
-        "toggleboolproperties":
+        "IdleBehavior": {
+          "URI" : "NavigationHandler.OrbitalNavigator.IdleBehavior.IdleBehavior",
+          "defaultvalue": 1
+
+        },
+        "toggleboolproperties":[
           {
-            "URI":"Scene.Earth.Renderable.Layers.ColorLayers.OSCAR_Sea_Surface_Currents_Zonal.Enabled",
-            "label":"Detailed currents, OSCAR",
-            "defaultvalue": true
-          },
-          "toggleboolproperties_noshow":
-          {
-            "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
+            "URI":"Scene.Earth.Renderable.Layers.ColorLayers.BMNG_Utah.Enabled",
             "label":"Overview of currents",
-            "defaultvalue": false
-          },
+            "defaultvalue": true
+          }
+          ],
         "local":[
           {
           "title": "2m rise",
@@ -239,18 +232,17 @@
              },
              "yaw":-0.2376877039313796
           },
-          "toggleboolproperties":
+          "toggleboolproperties":[
             {
-              "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-2m.Enabled",
-              "label":"Detailed currents, OSCAR",
+              "URI":"Scene.Earth.Renderable.Layers.ColorLayers.BMNG_Utah.Enabled",
+              "label":"Overview of currents",
               "defaultvalue": true
             },
-            "toggleboolproperties_noshow":
             {
-              "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
+              "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-2m.Enabled",
               "label":"Overview of currents",
-              "defaultvalue": false
-            }
+              "defaultvalue": true
+            }]
         },
         {
           "title": "4m rise",
@@ -273,22 +265,17 @@
              },
              "yaw":-0.2376877039313796
           },
-          "toggleboolproperties":
+          "toggleboolproperties":[
             {
               "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-4m.Enabled",
-              "label":"Detailed currents, OSCAR",
-              "defaultvalue": true
-            },
-            "toggleboolproperties_noshow":
-            {
-              "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
               "label":"Overview of currents",
-              "defaultvalue": false
-            }
+              "defaultvalue": true
+            }]
+
         },
         {
           "title": "6m rise",
-          "id" : 1,
+          "id" : 2,
           "storyinfo": "Climate Climate Climate Climate Climate Climate Climate Climate Climate",
           "date": "2021-12-18T15:15:00.00",
           "pos":{
@@ -307,26 +294,18 @@
              },
              "yaw":-0.2376877039313796
           },
-          "toggleboolproperties":
+          "toggleboolproperties":[
             {
               "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-6m.Enabled",
-              "label":"Detailed currents, OSCAR",
-              "defaultvalue": true
-            },
-            "toggleboolproperties_noshow":
-            {
-              "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
               "label":"Overview of currents",
-              "defaultvalue": false
-            }
+              "defaultvalue": true
+            }]
         }
 
       ]
       }
-
-
     ],
-    "toggleboolproperties": [
+    "toggleboolproperties":[
       {
         "name": "{earth_satellites}.Renderable.Enabled",
         "type": "setPropertyValue",

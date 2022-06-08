@@ -23,19 +23,8 @@ export const setStoryStart = (luaApi, startPosition, startTime) => {
     Yaw:startPosition.yaw
   });
 
-
-  /*luaApi.globebrowsing.goToGeo(
-    startPosition.location.latitude,
-    startPosition.location.longitude,
-    startPosition.location.altitude,
-  );*/
-
 setDate(luaApi, startTime);
-//console.table(startPosition)
-//console.log("hej" + luaApi)
 };
-
-
 
 // Function to toggle the shading on a node, value = 'true' equals shading enabled
 export const toggleShading = (luaApi, node, value) => {
@@ -99,7 +88,6 @@ export const storyGetLocation = (luaApi, position) => {
   })
 }
 
-
 export const satelliteToggle = (luaApi, toggleBool) => {
 
   luaApi.setPropertyValue("Scene.visual.Renderable.Enabled", toggleBool); //100 brightes
@@ -109,9 +97,19 @@ export const satelliteToggle = (luaApi, toggleBool) => {
   //luaApi.setPropertyValue("Scene.ISSModel.Renderable.Enabled", toggleBool); //iss Modell
   luaApi.setPropertyValue("Scene.tle-new.Renderable.Enabled", toggleBool); //Last 30days
   luaApi.setPropertyValue("Scene.stations.Renderable.Enabled", toggleBool); //Spacestation
-
 };
 
+export const storyGetIdleBehavior = (luaApi, scrollValue)=>{
+  luaApi.setPropertyValue("NavigationHandler.OrbitalNavigator.IdleBehavior.ApplyIdleBehavior", true);
+  luaApi.setPropertyValue("NavigationHandler.OrbitalNavigator.IdleBehavior.IdleBehavior", scrollValue);
+};
+
+export const storyResetLayer = (luaApi) => {
+
+  luaApi.setPropertyValue("Scene.Earth.Renderable.Layers.ColorLayers.*.Enabled", false);
+  luaApi.setPropertyValue("Scene.Earth.Renderable.Layers.Overlays.*.Enabled", false);
+
+};
 
 
 /////////////////////////

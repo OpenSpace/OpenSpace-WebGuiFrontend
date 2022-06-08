@@ -10,7 +10,7 @@ import PickStoryLocal from './LocalStory/PickStoryLocal';
 import SightsController from '../TouchBar/UtilitiesMenu/presentational/SightsController';
 import subStateToProps from "../../utils/subStateToProps";
 import {
-  storyGetLayer, storyGetLayer2, storyGetLocation
+  storyGetLayer, storyGetLocation, storyGetIdleBehavior, storyResetLayer
 } from '../../utils/storyHelpers';
 class ExploreClimate extends Component{
   constructor(props) {
@@ -24,29 +24,42 @@ class ExploreClimate extends Component{
     this.stepThroughStory = this.stepThroughStory.bind(this);
     this.Increment = this.Increment.bind(this);
     this.Decrement = this.Decrement.bind(this);
+    //this.getToggleboolproperties =this.getToggleboolproperties.bind(this);
+
   }
   Increment = () => {
         this.setState((prevState) => ({
           StoryStep: prevState.StoryStep + 1,
           showStory: true,
-            currentStory: "default"
+          currentStory: "default",
+          currentStoryLocal: "default"
     }));
   }
   Decrement = () => {
         this.setState((prevState) => ({
           StoryStep: prevState.StoryStep - 1,
           showStory: true,
-          currentStory: "default"
+          currentStory: "default",
+          currentStoryLocal: "default"
     }));
   }
+
   stepThroughStory(StoryStep, filePath){
     const {luaApi, json } = this.props;
+    var orbitAtConstantLatiude = 1
+    storyResetLayer(luaApi);
     return(
       filePath.map((story) => {
         if(story.id == StoryStep){
-          storyGetLayer(luaApi, story.toggleboolproperties_noshow);
-          storyGetLayer(luaApi, story.toggleboolproperties);
+
+          story.toggleboolproperties.map((layer) => {
+            console.table(layer);
+              storyGetLayer(luaApi, layer )
+          });
+
           storyGetLocation(luaApi, story.pos);
+          storyGetIdleBehavior(luaApi, 1);
+
           return (
             <div key = {story.id}>
               <h1>
@@ -60,14 +73,16 @@ class ExploreClimate extends Component{
           }
         })
       );
-      luaApi.setPropertyValue("NavigationHandler.OrbitalNavigator.IdleBehavior.ApplyIdleBehavior", true);
     }
+
   render() {
-    const { json, storyInfo, currentStory} = this.props;
+    const { json, storyInfo, currentStory, luaApi } = this.props;
     const { StoryStep, showStory, currentStoryLocal } = this.state;
     var stepThroughJourney = this.stepThroughStory(StoryStep, json.journey);
-    console.log("local "  + json.journey[StoryStep].local.length)
-    console.log("cirre " + currentStory)
+    //var getToggleboolproperties = this.getToggleboolproperties(StoryStep, json.journey)
+
+
+    //noSow -> we don't want to show the story if pressing the climate icon in the bar
     return (
       <div className={styles.StoryPosistion}>
         <div className = {styles.TellStory}>
@@ -77,56 +92,61 @@ class ExploreClimate extends Component{
                 {stepThroughJourney}
               </div>
             }
-            { json.journey[StoryStep].local.length > 0 && (currentStory != "noShow") &&
-                json.journey[StoryStep].local.map((story, index) => {
-                  console.log("indec" + json.journey[StoryStep].local.length)
-                  console.table(story)
-                  return(
-                      <div key = {index}>
-                      <PickStoryLocal key = { index }
-                        storyInfo = { story }
-                        currentStory = { currentStoryLocal }
-                        setCurrentStory = {(newState) => this.setState({
-                          currentStoryLocal: newState
-                        })}
-                        setShowStory = {(newState) => this.setState({
-                          showStory: newState
-                        })}
-                      />
-                     </div>
-                    );
-                  })
-            }
-            { StoryStep <  stepThroughJourney.length -1 && (currentStory != "noShow")&&
-                <div>
-                  <section className = {styles.NextStepButton}>
-                    <NextPrevStepButton
-                      next = {this.Increment}
-                      storyStep = {StoryStep}
-                      string = {"Next"}
-                      iconNextPrev = "chevron_right"
-                      iconPlacement = {styles.Icon}
-                      />
-                  </section>
-                </div>
-              }
-              {StoryStep > 0  && (currentStory != "noShow") &&
-                <section className = {styles.PrevStepButton}>
-                  <NextPrevStepButton
-                    next = {this.Decrement}
-                    storyStep = {StoryStep}
-                    currentStory = { currentStory }
-                    string = {"Previus"}
-                    iconNextPrev = "chevron_left"
-                    iconPlacement = {styles.Icon}
-                    />
-                </section>
-            }
-            {(currentStory != "noShow") &&
-              <div className={styles.HomeButton}>
-                  <HomeButtonContainer resetStory={this.props.resetStory}/>
-              </div>
-            }
+
+            <br/>
+            <br/>
+            <br/>
+
+              { json.journey[StoryStep].local.length > 0 && (currentStory != "noShow") &&
+                  json.journey[StoryStep].local.map((story, index) => {
+
+                    return(
+                        <div key = {index}>
+                        <PickStoryLocal key = { index }
+                          storyInfo = { story }
+                          currentStory = { currentStoryLocal }
+                          setCurrentStory = {(newState) => this.setState({
+                            currentStoryLocal: newState
+                          })}
+                          setShowStory = {(newState) => this.setState({
+                            showStory: newState
+                          })}
+                          luaApi = {luaApi}
+                        />
+                       </div>
+                      );
+                    })
+                }
+                <br/>
+                <br/>
+                <br/>
+
+                { StoryStep <  stepThroughJourney.length -1 && (currentStory != "noShow") &&
+                    <div>
+                      <section className = {styles.NextStepButton}>
+                        <NextPrevStepButton
+                          next = {this.Increment}
+                          storyStep = {StoryStep}
+                          string = {"Next"}
+                          iconNextPrev = "chevron_right"
+                          iconPlacement = {styles.Icon}
+                          />
+                      </section>
+                    </div>
+                  }
+                  {StoryStep > 0  && (currentStory != "noShow") &&
+                    <section className = {styles.PrevStepButton}>
+                      <NextPrevStepButton
+                        next = {this.Decrement}
+                        storyStep = {StoryStep}
+                        currentStory = { currentStory }
+                        string = {"Previus"}
+                        iconNextPrev = "chevron_left"
+                        iconPlacement = {styles.Icon}
+                        />
+
+                    </section>
+                  }
           </div>
         </div>
       </div>

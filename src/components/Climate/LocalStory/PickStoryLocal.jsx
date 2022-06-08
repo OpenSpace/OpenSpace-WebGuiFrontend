@@ -9,6 +9,10 @@ import GetlocalStory from './GetlocalStory';
 import DisplaylocalStory from './DisplaylocalStory'
 import StoryButton from './StoryButtonLocal';
 
+import {
+  storyGetLayer, storyGetLocation
+} from '../../../utils/storyHelpers';
+
 class PickStoryLocal extends Component {
   constructor(props) {
     super(props);
@@ -21,13 +25,14 @@ class PickStoryLocal extends Component {
   }
 
    handleStory(e) {
-     this.props.setShowStory(false);
-     this.props.setCurrentStory(e.target.id)
+     const {storyInfo, setShowStory, setCurrentStory} = this.props
+     setShowStory(false);
+     setCurrentStory(e.target.id)
    }
 
   render() {
     const {storyInfo, currentStory } = this.props;
-
+    console.table(storyInfo)
 
     return (
       <div>

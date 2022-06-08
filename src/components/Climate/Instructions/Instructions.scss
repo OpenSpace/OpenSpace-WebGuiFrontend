@@ -52,14 +52,14 @@ $icon-size: 32px;
   top: 80%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index:-9999;
+  z-index:9999;
   height: 80%;
 }
 
 .Background{
   position: absolute;
   top: 0;
-  z-index:-9999;
+  z-index:9999;
   height: 100%;
   width: 200%;
   color: lightgray;

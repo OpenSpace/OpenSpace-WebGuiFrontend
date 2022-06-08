@@ -27,6 +27,9 @@ import Popover from "../common/Popover/Popover";
 import Row from "../common/Row/Row";
 import styles from "./ClimatePanel.scss";
 import Picker from "./Picker";
+import {
+  storyResetLayer
+} from '../../utils/storyHelpers';
 
 class ClimatePanel extends Component {
 
@@ -42,17 +45,12 @@ class ClimatePanel extends Component {
 togglePopover() {
     this.props.setPopoverVisibility(!this.props.popoverVisible);
     this.props.setNoShow();
-    console.log(this.props.setNoShow)
   }
 
 getSurfaceLayerAlaska() {
     this.props.luaApi.time.setTime("2021-06-18T19:00:00");
     this.props.luaApi.setPropertyValueSingle(
       "Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled", true);
-
-    //I don't know if we want this
-    this.props.luaApi.setPropertyValueSingle(
-        "Scene.Earth.Renderable.Layers.ColorLayers.VIIRS_SNPP_Temporal.Enabled", false);
     this.props.luaApi.globebrowsing.flyToGeo(
       "Earth",
       61.7810,
@@ -63,35 +61,10 @@ getSurfaceLayerAlaska() {
     );
   }
 
-
   getSurfaceLayerGreenland() {
     this.props.luaApi.time.setTime("1990-06-18T13:00:00");
-
-    //Solve the camera angle to use this! Also, we need a dataset with height map
-    //this.props.luaApi.navigation.addLocalRotation(0 , 85)
-    //this.props.luaApi.navigation.addTruckMovement(0 , 250) //zoom
-    //this.props.luaApi.navigation.addLocalRoll(10 , 30) // rotering, didn't use this
-    var surfaceLayers;
-    this.setState((prevState) => ({
-      isToggleOn: !prevState.isToggleOn,
-    }));
-    console.log("togle", this.state.isToggleOn);
-    /*surfaceLayers = this.props.luaApi.setPropertyValueSingle(
-      "Scene.Earth.Renderable.Layers.ColorLayers.MODIS_Terra_Chlorophyll_A_Temporal.Enabled",
-      this.state.isToggleOn
-    );*/
-
-    //DOES NOT WORK, why not??
     this.props.luaApi.setPropertyValueSingle(
-      "Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-greenland_melt.Enabled",
-      this.state.isToggleOn   //noaa-sos-overlays-currents
-    );
-  /*  this.props.luaApi.setPropertyValueSingle(
-      "Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-greenland_melt", true);
-    surfaceLayers = this.props.luaApi.setPropertyValueSingle(
-      "Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled", true)*/
-    this.props.luaApi.setPropertyValueSingle(
-        "Scene.Earth.Renderable.Layers.ColorLayers.VIIRS_SNPP_Temporal.Enabled", false);
+        "Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-greenland_melt.Enabled", true);
     this.props.luaApi.globebrowsing.flyToGeo(
       "Earth",
       71.0472,
@@ -100,51 +73,12 @@ getSurfaceLayerAlaska() {
       7,
       true
     );
-
-    //use this if using movements
-  /*  this.props.luaApi.globebrowsing.flyToGeo(
-      "Earth",
-      59.1818,
-      -44.1987,
-      3881000.0000, //53000.0000
-      7,
-      true
-    );*/
-    return surfaceLayers;
   }
 
   getSurfaceLayerAntarctica() {
-    console.log("Antarctica")
     this.props.luaApi.time.setTime("2021-12-18T09:00:00");
-    this.setState((prevState) => ({
-      isToggleOn: !prevState.isToggleOn,
-    }));
-    console.log("togle", this.state.isToggleOn);
-    /*this.props.luaApi.setPropertyValueSingle(
-      "Scene.Earth.Satellites..Enabled",
-      this.state.isToggleOn   //noaa-sos-overlays-currents
-    );*/
-
-    /*const list = this.props.luaApi.getProperty('{earth_satellites}.Renderable.Enabled');
-    console.log(list.length)
-
-    for (v in list){
-    console.log("v")
-      this.props.luaApi.setPropertyValueSingle(this.props.luaApi.getPropertyValue(v))
-    }*/
-
-    /*surfaceLayers = this.props.luaApi.setPropertyValueSingle(
-      "Scene.Earth.Renderable.Layers.ColorLayers.Terra_Modis_Temporal.Enabled",
-      this.state.isToggleOn
-    );*/
-    /*
-    this.props.luaApi.setPropertyValueSingle(
-      "Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled", true)*/
     this.props.luaApi.setPropertyValueSingle(
       "Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled", true)
-
-    this.props.luaApi.setPropertyValueSingle(
-          "Scene.Earth.Renderable.Layers.ColorLayers.VIIRS_SNPP_Temporal.Enabled", false);
     this.props.luaApi.globebrowsing.flyToGeo(
       "Earth",
       -84.6081,
@@ -156,48 +90,37 @@ getSurfaceLayerAlaska() {
   }
 
   getSurfaceLayerCurrentsDetailed() {
-
-    this.setState((prevState) => ({
+    /*this.setState((prevState) => ({
       isToggleOn: !prevState.isToggleOn,
     }));
-    console.log("togle", this.state.isToggleOn);
     this.props.luaApi.setPropertyValueSingle(
       "Scene.Earth.Renderable.Layers.ColorLayers.OSCAR_Sea_Surface_Currents_Zonal.Enabled",
       this.state.isToggleOn
-    );
-    //this.props.luaApi.setNavigationState([[60, -90, 0],[90, 60, 0],[0, 0, 1]])
-     //this.props.luaApi.navigation.addLocalRoll(60,0)
+    );*/
+    this.props.luaApi.setPropertyValueSingle(
+      "Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-ecco2_sst-veg_land-layer.Enabled", true)
     this.props.luaApi.setPropertyValueSingle(
       "Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled", true)
-    this.props.luaApi.setPropertyValueSingle(
-          "Scene.Earth.Renderable.Layers.ColorLayers.VIIRS_SNPP_Temporal.Enabled", false);
     }
 
   getSurfaceLayerCurrentsOverview() {
-      this.setState((prevState) => ({
+      /*this.setState((prevState) => ({
         isToggleOn: !prevState.isToggleOn,
       }));
-      console.log("togleff", this.state.isToggleOn);
       this.props.luaApi.setPropertyValueSingle(
         "Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
         this.state.isToggleOn   //noaa-sos-overlays-currents
       );
+      */
+      this.props.luaApi.setPropertyValueSingle(
+        "Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled", true)
       this.props.luaApi.setPropertyValueSingle(
         "Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled", true)
-      this.props.luaApi.setPropertyValueSingle(
-            "Scene.Earth.Renderable.Layers.ColorLayers.VIIRS_SNPP_Temporal.Enabled", false);
     }
 
   getSurfaceLayerCons(showNode, hideNode, hideNode2){
-
   this.props.luaApi.setPropertyValueSingle(
-    `Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-${hideNode}.Enabled`,false);
-    this.props.luaApi.setPropertyValueSingle(
-      `Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-${hideNode2}.Enabled`,false);
-
-  this.setState((prevState) => ({
-      isToggleOn: !prevState.isToggleOn,
-    }));
+    "Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled", true)
   this.props.luaApi.setPropertyValueSingle(
         `Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-${showNode}.Enabled`,
       true
@@ -264,6 +187,7 @@ getSurfaceLayerAlaska() {
     var currentHide = [ 'curentsHide1', 'curentsHide2' ];
     var consequenceHide = ['consequenceHide1', 'consequenceHide2', 'consequenceHide3'];
     var glaciersHide = ['glaciersHide1', 'glaciersHide2', 'glaciersHide3']
+    const {luaApi} = this.props;
 
 
     glaciers = (
@@ -273,6 +197,8 @@ getSurfaceLayerAlaska() {
         id="glacierButton"
         value="HIDE"
         onClick={() => {
+          this.props.luaApi.setPropertyValueSingle(
+            "Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled", true);
           this.showHide("glacierButton",glaciersHide, currentHide, consequenceHide );
         }}
         className={styles.menuButton}
@@ -290,6 +216,7 @@ getSurfaceLayerAlaska() {
         block
         smalltext
         onClick={() => {
+              storyResetLayer(luaApi);
               this.getSurfaceLayerAntarctica();
         }}
         className={styles.actionButton}
@@ -304,6 +231,7 @@ getSurfaceLayerAlaska() {
         block
         smalltext
         onClick={() => {
+          storyResetLayer(luaApi);
           this.getSurfaceLayerGreenland();
       }}
       className={styles.actionButton}
@@ -320,6 +248,7 @@ getSurfaceLayerAlaska() {
         smalltext
         className={styles.actionButton}
         onClick={() => {
+          storyResetLayer(luaApi);
           this.getSurfaceLayerAlaska();
         }}
       >
@@ -334,6 +263,8 @@ getSurfaceLayerAlaska() {
         id="currentButton"
         value="HIDE"
         onClick={() => {
+          this.props.luaApi.setPropertyValueSingle(
+            "Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled", true);
           this.showHide("currentButton", currentHide, consequenceHide, glaciersHide );
         }}
         className={styles.menuButton}
@@ -341,7 +272,6 @@ getSurfaceLayerAlaska() {
         <p>
           <MaterialIcon
             className={styles.buttonIcon}
-            //icon="reply_all"
             icon="import_export"
           />
         </p>
@@ -356,6 +286,7 @@ getSurfaceLayerAlaska() {
         className={styles.actionButton2}
         smalltext
         onClick={() => {
+          storyResetLayer(luaApi);
           this.getSurfaceLayerCurrentsOverview();
         }}
       >
@@ -367,8 +298,8 @@ getSurfaceLayerAlaska() {
       <Button
         id = "curentsHide2"
         onClick={() => {
+          storyResetLayer(luaApi);
           this.getSurfaceLayerCurrentsDetailed();
-          //event.target.setAttribute('style', 'position: absolute; opacity: 0;');
         }}
         className={styles.actionButton2}
       >
@@ -383,7 +314,9 @@ getSurfaceLayerAlaska() {
         id="consequenceButton"
         value="HIDE"
         onClick={() => {
-          this.showHide("consequenceButton",consequenceHide, glaciersHide, currentHide );
+          this.props.luaApi.setPropertyValueSingle(
+            "Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled", true);
+          this.showHide("consequenceButton",consequenceHide, glaciersHide, currentHide);
         }}
         className={styles.menuButton}
       >
@@ -401,6 +334,7 @@ getSurfaceLayerAlaska() {
       <Button
         id = "consequenceHide1"
         onClick={() => {
+          storyResetLayer(luaApi);
           this.getSurfaceLayerCons("2m", "6m", "4m");
         }}
         className={styles.actionButton}
@@ -413,6 +347,7 @@ getSurfaceLayerAlaska() {
       <Button
         id = "consequenceHide2"
         onClick={() => {
+          storyResetLayer(luaApi);
           this.getSurfaceLayerCons("4m", "2m", "6m");
         }}
         className={styles.actionButton}
@@ -425,6 +360,7 @@ getSurfaceLayerAlaska() {
       <Button
         id = "consequenceHide3"
         onClick={() => {
+          storyResetLayer(luaApi);
           this.getSurfaceLayerCons("6m", "4m", "2m");
         }}
         className={styles.actionButton}
@@ -467,6 +403,8 @@ getSurfaceLayerAlaska() {
   render() {
 
     const { popoverVisible, setNoShow } = this.props;
+    this.props.luaApi.setPropertyValueSingle(
+      "Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled", true)
 
     return (
       <div className={Picker.Wrapper}>
