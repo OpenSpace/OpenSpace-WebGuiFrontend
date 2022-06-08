@@ -23,6 +23,7 @@ import Button from "../common/Input/Button/Button";
 import Input from "../common/Input/Input/Input";
 import Select from "../common/Input/Select/Select";
 import MaterialIcon from "../common/MaterialIcon/MaterialIcon";
+import SmallLabel from '../common/SmallLabel/SmallLabel';
 import Popover from "../common/Popover/Popover";
 import Row from "../common/Row/Row";
 import styles from "./ClimatePanel.scss";
@@ -409,8 +410,9 @@ getSurfaceLayerAlaska() {
     return (
       <div className={Picker.Wrapper}>
         <Picker onClick={this.togglePopover}>
-          <div>
+          <div className= {styles.iconButton}>
             <MaterialIcon className={styles.bottomBarIcon} icon="ac_unit" />
+            <SmallLabel>Climate change</SmallLabel>
           </div>
         </Picker>
         {popoverVisible && this.popover}
