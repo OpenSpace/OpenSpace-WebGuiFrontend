@@ -29,19 +29,12 @@
           },
           "yaw": -0.18794626453978064
         },
-        "toggleboolproperties":
+        "toggleboolproperties":[
           {
             "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
             "label":"Overview of currents",
             "defaultvalue": true
-          },
-
-          "toggleboolproperties_noshow":
-          {
-            "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
-            "label":"Overview of currents",
-            "defaultvalue": false
-          },
+          }],
           "local": []
       },
       {
@@ -66,18 +59,12 @@
           "yaw": -0.18794626460125918
         },
 
-        "toggleboolproperties":
+        "toggleboolproperties":[
           {
             "URI":"Scene.Earth.Renderable.Layers.ColorLayers.OSCAR_Sea_Surface_Currents_Zonal.Enabled",
             "label":"Detailed currents, OSCAR",
             "defaultvalue": true
-          },
-          "toggleboolproperties_noshow":
-          {
-            "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
-            "label":"Overview of currents",
-            "defaultvalue": false
-          },
+            }],
           "local": []
       },
       {
@@ -102,24 +89,18 @@
           "yaw": -0.2251189038007127
         },
 
-        "toggleboolproperties":
+        "toggleboolproperties":[
           {
             "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
             "label":"Overview of currents",
             "defaultvalue": true
-          },
-          "toggleboolproperties_noshow":
-          {
-            "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
-            "label":"Overview of currents",
-            "defaultvalue": false
-          },
+          }],
           "local": []
       }
     ],
 
 
-    "toggleboolproperties": [
+    "toggleboolproperties":[ 
       {
         "name": "{earth_satellites}.Renderable.Enabled",
         "type": "setPropertyValue",
