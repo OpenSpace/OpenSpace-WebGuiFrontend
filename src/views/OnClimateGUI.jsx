@@ -119,7 +119,6 @@ class OnClimateGui extends Component {
   }
 
   noShow(){
-    console.log("hej")
     const { luaApi } = this.props;
     const {currentStory, NoShow} = this.state;
 
@@ -178,7 +177,6 @@ class OnClimateGui extends Component {
         <section className={styles.Grid__Left}>
 
         {(currentStory === NoShow) &&
-          <div><p>hej</p></div>
         }
         {(currentStory === DefaultStory )
           ? <StartJourney changeStory = {this.setStory}/>

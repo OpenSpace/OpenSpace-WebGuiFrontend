@@ -52,42 +52,37 @@ getSurfaceLayerAlaska() {
     this.props.luaApi.time.setTime("2021-06-18T19:00:00");
     this.props.luaApi.setPropertyValueSingle(
       "Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled", true);
-    this.props.luaApi.globebrowsing.flyToGeo(
-      "Earth",
-      61.7810,
-      -156.4567,
-      2556000.0000,
-      7,
-      true
-    );
+    this.props.luaApi.pathnavigation.flyToNavigationState({
+      Anchor: "Earth",
+      Pitch: -0.012375098376340654,
+      Position: [-3393660.2275227755,-2148409.0635887426,8741045.139887046],
+      Up: [0.1605747175864971,0.9422423951092073,0.2939303130520595],
+      Yaw: 0.00454623459293006
+    })
   }
 
   getSurfaceLayerGreenland() {
     this.props.luaApi.time.setTime("1990-06-18T13:00:00");
     this.props.luaApi.setPropertyValueSingle(
         "Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-greenland_melt.Enabled", true);
-    this.props.luaApi.globebrowsing.flyToGeo(
-      "Earth",
-      71.0472,
-      -47.1729,
-      3881000.0000,
-      7,
-      true
-    );
+    this.props.luaApi.pathnavigation.flyToNavigationState({
+      Anchor: "Earth",
+      Pitch: 0.014254640432675488,
+      Position: [2265092.7505675764,-2443758.000099453,9702953.000268325],
+      Up: [-0.5392642157018696,0.7781942850583407,0.32188159370486896],
+      Yaw: 0.005985688815975313
+    })
   }
 
   getSurfaceLayerAntarctica() {
     this.props.luaApi.time.setTime("2021-12-18T09:00:00");
     this.props.luaApi.setPropertyValueSingle(
       "Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled", true)
-    this.props.luaApi.globebrowsing.flyToGeo(
-      "Earth",
-      -84.6081,
-      94.7813,
-      6990000.0000,
-      7,
-      true
-    );
+    this.props.luaApi.pathnavigation.flyToNavigationState({
+      Anchor: "Earth",
+      Position: [-104705.15622399468,1251800.0000400436,-13308985.999998953],
+      Up: [0.9707838373933274,-0.23806926465116995,-0.030029423643085362],
+    })
   }
 
   getSurfaceLayerCurrentsDetailed() {
@@ -119,13 +114,20 @@ getSurfaceLayerAlaska() {
         "Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled", true)
     }
 
-  getSurfaceLayerCons(showNode, hideNode, hideNode2){
+  getSurfaceLayerCons(showNode){
   this.props.luaApi.setPropertyValueSingle(
     "Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled", true)
   this.props.luaApi.setPropertyValueSingle(
         `Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-${showNode}.Enabled`,
       true
     );
+  /*this.props.luaApi.pathnavigation.flyToNavigationState({
+    Anchor: "Earth",
+    Pitch: -0.03608261848856605,
+    Position: [2293604.0205524014,-11653043.468794724,5311440.30260426],
+    Up: [-0.38875661674058404,0.317676461452206,0.8648410020226956],
+    Yaw: -0.03951464745807516
+  })*/
 }
 
   ShowHideButton(node, pos, opacity){
@@ -170,7 +172,6 @@ getSurfaceLayerAlaska() {
       g.value="HIDE";
     }
 }
-
 
   get popover() {
     var glaciers;
@@ -406,6 +407,13 @@ getSurfaceLayerAlaska() {
     const { popoverVisible, setNoShow } = this.props;
     this.props.luaApi.setPropertyValueSingle(
       "Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled", true)
+    this.props.luaApi.pathnavigation.flyToNavigationState({
+      Anchor: "Earth",
+      Pitch: -0.025697526978135675,
+      Position: [2314072.2457855055,-13824807.97957724,10089542.198761959],
+      Up: [-0.48458829410384396,0.461299844968446,0.7432204506400601],
+      Yaw: -0.021084089833419275
+    })
 
     return (
       <div className={Picker.Wrapper}>
