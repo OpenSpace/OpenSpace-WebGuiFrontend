@@ -3,12 +3,13 @@
 $padding-horizontal: 0.3rem;
 $padding-vertical: 0.5rem;
 $padding: $padding-horizontal $padding-vertical;
-$highlight-color: #e8c274;
+$highlight-color: #ffb51d;
 $logo-color: #b2d29c;
+$logo-color2: #85c8c4;
 $margin-over-mouse-button: 40px;
 $mouse-color: $text-color-blur;
 
-.content {
+.window {
     width: 100%;
     height: 100%;
     border-radius: 5px;
@@ -26,11 +27,33 @@ $mouse-color: $text-color-blur;
     text-transform: uppercase;
 }
 
-.text {
+.content {
     padding: $padding;
-    overflow-wrap: break-word;
+    width: 100%;
+    height: 100%;
+    bottom: 0;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
 }
 
+.text {
+    overflow-wrap: break-word;
+    padding: $padding;
+}
+
+.progressBarContent {
+    height: 3px;
+    background-color: $text-color-blur;
+    bottom: 0;
+    position: absolute;
+    border-bottom-left-radius: 3px;
+}
+
+.scroll {
+    overflow-y: auto;
+    overflow-x: hidden;
+}
 .centerContent {
     display: flex;
     justify-content: center;
@@ -55,13 +78,13 @@ $mouse-color: $text-color-blur;
 .buttonContainer {
     width: 100%;
     padding: $padding;
-    position: absolute;
-    bottom: 0px;
+    margin-top: auto;
+    margin-bottom: 5px;
 }
 
 .mouseDescription {
     display: flex;
-    justify-content: space-evenly;
+    justify-content: space-between;
     flex-direction: row;
 }
 
@@ -115,6 +138,30 @@ $mouse-color: $text-color-blur;
     }
 }
 
+$animated-border-width : 3px;
+$animated-border-length : 15px;
+
+.animatedBorder {
+    background-image: linear-gradient(90deg, $highlight-color 50%, transparent 50%), 
+                      linear-gradient(90deg, $highlight-color 50%, transparent 50%), 
+                      linear-gradient(0deg, $highlight-color 50%, transparent 50%), 
+                      linear-gradient(0deg, $highlight-color 50%, transparent 50%);
+    background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
+    background-size: $animated-border-length $animated-border-width, $animated-border-length $animated-border-width, $animated-border-width $animated-border-length, $animated-border-width $animated-border-length;
+    background-position: left top, right bottom, left bottom, right top;
+    animation: border-dance 1s infinite linear;
+}
+
+@keyframes border-dance {
+    0% {
+        background-position: left top, right bottom, left bottom, right top;
+    }
+
+    100% {
+        background-position: left $animated-border-length top, right $animated-border-length bottom, left bottom $animated-border-length, right top $animated-border-length;
+    }
+}
+
 /* Animated arrow style */
 
 .icon {
@@ -165,13 +212,13 @@ $mouse-color: $text-color-blur;
     border-width: 2px;
     border-radius: 5px;
     border-color: $mouse-color;
-    width: 60px;
-    height: 45px;
+    width: fit-content;
+    padding: 10px;
+    height: fit-content;
     margin-top: calc(1.5 * $margin-over-mouse-button);
 }
 
 .keyboardButtonText {
-    margin-top: 10%;
     font-style: italic;
     letter-spacing: 3px;
     color: $mouse-color;
@@ -191,6 +238,8 @@ $line-width: 2px;
 
 .mouseContainer {
     padding: $margin-over-mouse-button;
+    padding-bottom: 60px;
+    margin-right: 20px;
 }
 
 .leftButton, .rightButton, .bar, .mouseButton, .verticalBar {
@@ -306,10 +355,6 @@ $arrows-line-width: 2px;
 $color : #6fbf39;
 $stroke-width: 5px;
 
-.checkmarkContainer {
-    margin-top: 80px;
-}
-
 .checkmark__circle {
     stroke-dasharray: 166;
     stroke-dashoffset: 166;
@@ -321,8 +366,8 @@ $stroke-width: 5px;
 }
 
 .checkmark {
-    width: 56px;
-    height: 56px;
+    width: 100%;
+    height: 100%;
     border-radius: 50%;
     stroke-width: 5;
     stroke: white;
@@ -357,7 +402,7 @@ $stroke-width: 5px;
 
 @keyframes fill {
     100% {
-        box-shadow: inset 0px 0px 0px 30px $color;
+        box-shadow: inset 0px 0px 0px 1000px $color;
     }
 }
 

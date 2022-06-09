@@ -16,6 +16,7 @@ import '../styles/base.scss';
 import About from './About/About';
 import styles from './OnScreenGui.scss';
 import TourPopup from '../components/GettingStartedTour/TourPopup'
+import { TutorialProvider } from '../components/GettingStartedTour/GettingStartedContext';
 
 class OnScreenGui extends Component {
   constructor(props) {
@@ -62,7 +63,8 @@ class OnScreenGui extends Component {
     this.checkVersion();
     return (
       <div className={styles.app}>
-        { this.props.showAbout && (
+        <TutorialProvider>
+          {this.props.showAbout && (
           <Overlay>
             <Stack style={{ maxWidth: '500px' }}>
               <Button style={{ alignSelf: 'flex-end', color: 'white' }} onClick={this.props.hideAbout}>
@@ -92,6 +94,7 @@ class OnScreenGui extends Component {
           <KeybindingPanel />
           <TourPopup isVisible={this.state.showTutorial} setVisibility = { (show) => this.setState({ showTutorial : show })}/>
         </section>
+      </TutorialProvider>
       </div>
     );
   }
