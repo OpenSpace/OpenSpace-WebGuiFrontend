@@ -35,14 +35,13 @@ class ClimatePanel extends Component {
     super(props);
     this.state = { isToggleOn: true };
     this.togglePopover = this.togglePopover.bind(this); //makes it possible to click at climate button
-
+    this.getSurfaceLayerCons = this.getSurfaceLayerCons.bind()
   }
 
   //same in all jsx files
 togglePopover() {
     this.props.setPopoverVisibility(!this.props.popoverVisible);
     this.props.setNoShow();
-    console.log(this.props.setNoShow)
   }
 
 getSurfaceLayerAlaska() {

@@ -36,12 +36,12 @@
           },
           "toggleboolproperties":[
             {
-              "URI":"Scene.Earth.Renderable.Layers.ColorLayers.BMNG_Utah.Enabled",
+              "URI":"Scene.Earth.Renderable.Layers.ColorLayers.GRACE.Enabled",
               "label":"Overview of currents",
               "defaultvalue": true
             },
             {
-              "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
+              "URI":"Scene.Earth.Renderable.Layers.Overlays.Coastlines.Enabled",
               "label":"Overview of currents",
               "defaultvalue": true
             }
@@ -80,7 +80,7 @@
           },
           "toggleboolproperties":[
             {
-              "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-ecco2_sst-gray_land-layer.Enabled",
+              "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-ecco2_sst-gray_land.Enabled",
               "label":"Detailed currents, ECCO",
               "defaultvalue": true
             }],
@@ -89,7 +89,7 @@
       {
         "id" : 2,
         "title": "Show zoomed Antarctica, choose west or east",
-        "storyinfo": "Climate Climate Climate Climate Climate Climate Climate Climate Climate",
+        "storyinfo": "Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate ClimateClimate Climate Climate Climate Climate Climate Climate Climate ClimateClimate Climate Climate Climate Climate Climate Climate Climate ClimateClimate Climate Climate Climate Climate Climate Climate Climate ClimateClimate Climate Climate Climate Climate Climate Climate Climate ClimateClimate Climate Climate Climate Climate Climate Climate Climate ClimateClimate Climate Climate Climate Climate Climate Climate Climate ClimateClimate Climate Climate Climate Climate Climate Climate Climate ClimateClimate Climate Climate Climate Climate Climate Climate Climate ClimateClimate Climate Climate Climate Climate Climate Climate Climate ClimateClimate Climate Climate Climate Climate Climate Climate Climate ClimateClimate Climate Climate Climate Climate Climate Climate Climate ClimateClimate Climate Climate Climate Climate Climate Climate Climate Climate",
         "date": "2021-12-18T05:09:00.00",
         "pos": {
           "anchor": "Earth",
@@ -115,7 +115,7 @@
 
         "toggleboolproperties":[
           {
-            "URI":"Scene.Earth.Renderable.Layers.ColorLayers.OSCAR_Sea_Surface_Currents_Zonal.Enabled",
+            "URI":"Scene.Earth.Renderable.Layers.ColorLayers.GRACE.Enabled",
             "label":"Detailed currents, OSCAR",
             "defaultvalue": true
           }],
@@ -142,7 +142,7 @@
             },
             "toggleboolproperties":[
               {
-                "URI":"Scene.Earth.Renderable.Layers.ColorLayers.OSCAR_Sea_Surface_Currents_Zonal.Enabled",
+                "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-ecco2_sst-gray_land.Enabled",
                 "label":"Detailed currents, OSCAR",
                 "defaultvalue": true
               }]
@@ -170,7 +170,7 @@
             },
             "toggleboolproperties":[
               {
-                "URI":"Scene.Earth.Renderable.Layers.ColorLayers.OSCAR_Sea_Surface_Currents_Zonal.Enabled",
+                "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-ecco2_sst-gray_land.Enabled",
                 "label":"Detailed currents, OSCAR",
                 "defaultvalue": true
               }]
@@ -267,7 +267,7 @@
         },
         {
           "title": "6m rise",
-          "id" : 1,
+          "id" : 2,
           "storyinfo": "Climate Climate Climate Climate Climate Climate Climate Climate Climate",
           "date": "2021-12-18T15:15:00.00",
           "pos":{

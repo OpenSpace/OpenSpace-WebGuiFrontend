@@ -5,7 +5,9 @@ import styles from '../../Climate/Button.scss';
 import {
  DefaultStory,
 } from '../../../api/keys'
-
+import {
+  storyGetLayer, storyGetLocation, storyGetIdleBehavior, storyResetLayer
+} from '../../../utils/storyHelpers';
 
 class DisplaylocalStory extends Component{
 
@@ -18,12 +20,17 @@ class DisplaylocalStory extends Component{
 
 
   render() {
-    const { climateStorys, setShowLocalStory} = this.props;
-    console.log('DisplaylocalStory ddfff')
+    const { climateStorys, setShowLocalStory, luaApi} = this.props;
+    var orbitAtConstantLatiude = 1 //placment in IdleBehavior scrollbar
+
+    storyResetLayer(luaApi);
+    climateStorys.toggleboolproperties.map((layer) => {
+        storyGetLayer(luaApi, layer )
+    });
+    storyGetLocation(luaApi, climateStorys.pos);
+    storyGetIdleBehavior(luaApi, orbitAtConstantLatiude);
+
     return (
-
-
-
             <div key = {climateStorys.id}>
                 <h1>
                   {climateStorys.title}
@@ -31,11 +38,7 @@ class DisplaylocalStory extends Component{
                 <p>
                   {climateStorys.storyinfo}
                 </p>
-
-
-
-
-          </div>
+              </div>
     );
   }
 }

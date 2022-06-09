@@ -26,6 +26,7 @@ class ExploreClimate extends Component{
     this.stepThroughStory = this.stepThroughStory.bind(this);
     this.Increment = this.Increment.bind(this);
     this.Decrement = this.Decrement.bind(this);
+
     //this.getToggleboolproperties =this.getToggleboolproperties.bind(this);
 
   }
@@ -51,28 +52,30 @@ class ExploreClimate extends Component{
 
   stepThroughStory(StoryStep, filePath){
     const {luaApi, json } = this.props;
-    var orbitAtConstantLatiude = 1
+    var orbitAtConstantLatiude = 1 //placment in IdleBehavior scrollbar
+
     storyResetLayer(luaApi);
+
     return(
       filePath.map((story) => {
-        if(story.id == StoryStep){
 
+        if(story.id == StoryStep){
           story.toggleboolproperties.map((layer) => {
               storyGetLayer(luaApi, layer )
           });
-
-
           storyGetLocation(luaApi, story.pos);
-          storyGetIdleBehavior(luaApi, 1);
+          storyGetIdleBehavior(luaApi, orbitAtConstantLatiude);
 
           return (
             <div key = {story.id}>
               <h1>
                 {story.title}
               </h1>
+
               <p>
                 {story.storyinfo}
               </p>
+
             </div>
             );
           }
@@ -81,6 +84,10 @@ class ExploreClimate extends Component{
 
     }
 
+  setLocalStory(){
+
+
+  }
 
   render() {
     const { json, storyInfo, currentStory, luaApi } = this.props;
@@ -90,22 +97,25 @@ class ExploreClimate extends Component{
 
 
     //noSow -> we don't want to show the story if pressing the climate icon in the bar
+    // see ClimatePanel
     return (
       <div className={styles.StoryPosistion}>
         <div className = {styles.TellStory}>
           <div className = "flex">
 
             { StoryStep <  stepThroughJourney.length && showStory && (currentStory != "noShow") &&
-              <div >
+              <div  >
                 {stepThroughJourney}
+
               </div>
+
             }
 
               { json.journey[StoryStep].local.length > 0 && (currentStory != "noShow") &&
-                  json.journey[StoryStep].local.map((story, index) => {
 
+                  json.journey[StoryStep].local.map((story, index) => {
                     return(
-                        <div key = {index}>
+                        <div key = {index} >
                         <PickStoryLocal key = { index }
                           storyInfo = { story }
                           currentStory = { currentStoryLocal }
@@ -120,6 +130,7 @@ class ExploreClimate extends Component{
                        </div>
                       );
                     })
+
                 }
                 { StoryStep <  stepThroughJourney.length -1 && (currentStory != "noShow") &&
                     <div>
