@@ -212,25 +212,25 @@
           ],
         "local":[
           {
-          "title": "2m rise",
-          "id" : 0,
-          "storyinfo": "Climate Climate Climate Climate Climate Climate Climate Climate Climate",
+          "title": "2 meters rise",
+          "id" : 2,
+          "storyinfo": "This happened when the sea level rised with 2 meter.",
           "date": "2021-12-18T15:15:00.00",
           "pos":{
-             "anchor": "Earth",
-             "pitch":5,
-             "position":{
-                "x":-1152145.3978969743,
-                "y":-15271036.370115351,
-                "z":9682927.443411129
-             },
-             "type":"setNavigationState",
-             "up":{
-                "x":-0.20400852731965874,
-                "y":0.5351667325265219,
-                "z":0.819742086986968
-             },
-             "yaw":-0.2376877039313796
+            "anchor": "Earth",
+            "pitch": -0.022558471991152986,
+            "position": {
+              "x": -39121.401130186394,
+              "y": -261304.86831871886,
+              "z": -18336843.09999675
+            },
+            "type": "setNavigationState",
+            "up": {
+              "x": 0.9526825958195455,
+              "y": -0.3039581985290602,
+              "z": 0.0022989496518204255
+            },
+            "yaw": -0.20582220095513115
           },
           "toggleboolproperties":[
             {
@@ -245,9 +245,9 @@
             }]
         },
         {
-          "title": "4m rise",
+          "title": "4 meters rise",
           "id" : 1,
-          "storyinfo": "Climate Climate Climate Climate Climate Climate Climate Climate Climate",
+          "storyinfo": "This happened when the sea level rised with 4 meter.",
           "date": "2021-12-18T15:15:00.00",
           "pos":{
              "anchor":"Earth",
@@ -267,16 +267,16 @@
           },
           "toggleboolproperties":[
             {
-              "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-4m.Enabled",
+              "URI":"Scene.Earth.Renderable.Layers.ColorLayers.BMNG_Utah.Enabled",
               "label":"Overview of currents",
               "defaultvalue": true
             }]
 
         },
         {
-          "title": "6m rise",
-          "id" : 2,
-          "storyinfo": "Climate Climate Climate Climate Climate Climate Climate Climate Climate",
+          "title": "6 meters rise",
+          "id" : 0,
+          "storyinfo": "This happened when the sea level rised with 6 meter.",
           "date": "2021-12-18T15:15:00.00",
           "pos":{
              "anchor":"Earth",
@@ -301,23 +301,7 @@
               "defaultvalue": true
             }]
         }
-
       ]
-      }
-    ],
-    "toggleboolproperties":[
-      {
-        "name": "{earth_satellites}.Renderable.Enabled",
-        "type": "setPropertyValue",
-        "value": "false"
-      },
-      {
-        "URI":"Scene.Earth.Renderable.Layers.ColorLayers.OSCAR_Sea_Surface_Currents_Zonal.Enabled",
-        "label":"Climate Antarctica Mode",
-        "isAction": true,
-        "actionEnabled":"climate_antarctica_mode_true",
-        "actionDisabled":"climate_antarctica_mode_false",
-        "defaultvalue": false
       }
     ]
   }

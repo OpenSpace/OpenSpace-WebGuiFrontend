@@ -32,7 +32,8 @@ class PickStoryLocal extends Component {
 
   render() {
     const {storyInfo, currentStory } = this.props;
-    console.table(storyInfo)
+  //  console.table(storyInfo)
+
 
     return (
       <div>
@@ -43,7 +44,7 @@ class PickStoryLocal extends Component {
                   pickStory = {this.handleStory}
                   storyIdentifier= {storyInfo.title}
                 />
-            
+
               </div>
           </div>
           <div>

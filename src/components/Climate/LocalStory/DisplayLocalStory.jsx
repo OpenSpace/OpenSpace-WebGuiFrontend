@@ -5,6 +5,9 @@ import styles from '../../Climate/Button.scss';
 import {
  DefaultStory,
 } from '../../../api/keys'
+import {
+  storyGetLayer, storyGetLocation, storyGetIdleBehavior, storyResetLayer
+} from '../../../utils/storyHelpers';
 
 class DisplaylocalStory extends Component{
 
@@ -13,7 +16,15 @@ class DisplaylocalStory extends Component{
   }
 
   render() {
+    const {luaApi, json } = this.props;
+    //storyResetLayer(luaApi);
     const { climateStorys, setShowLocalStory} = this.props;
+    console.log(climateStorys.title)
+    console.table(climateStorys.toggleboolproperties);
+   climateStorys.toggleboolproperties.map((layer) => {
+      console.table(layer);
+        storyGetLayer(luaApi, layer )
+    });
     return (
             <div key = {climateStorys.id}>
                 <h1>

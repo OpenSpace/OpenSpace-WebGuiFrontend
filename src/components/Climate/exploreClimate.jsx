@@ -53,10 +53,21 @@ class ExploreClimate extends Component{
         if(story.id == StoryStep){
 
           story.toggleboolproperties.map((layer) => {
-            console.table(layer);
+          //  console.log("Layer!!!!!");
+          //  console.table(layer);
               storyGetLayer(luaApi, layer )
           });
+        /*  if (story.local.length > 0){
+            story.local.toggleboolproperties.map((layer) => {
+              console.table(layer);
+                storyGetLayer(luaApi, layer )
+            });
+          }*/
 
+          //console.log("TITLE not local??: " + story.title)
+          //console.log("start local")
+          //console.table(story.local)
+          //console.log("end local")
           storyGetLocation(luaApi, story.pos);
           storyGetIdleBehavior(luaApi, 1);
 
@@ -64,6 +75,7 @@ class ExploreClimate extends Component{
             <div key = {story.id}>
               <h1>
                 {story.title}
+
               </h1>
               <p>
                 {story.storyinfo}
@@ -100,6 +112,17 @@ class ExploreClimate extends Component{
               { json.journey[StoryStep].local.length > 0 && (currentStory != "noShow") &&
                   json.journey[StoryStep].local.map((story, index) => {
 
+                    //console.log("LOCAL TITLE: " + story.title)
+                    //console.log("LOCAL LAYER: " + story.toggleboolproperties)
+                    //console.log("LOCAL LAYER")
+                    //console.table(story.toggleboolproperties)
+                    /*story.toggleboolproperties.map((layer) => {
+                      console.log("Layer LOCAL starts ");
+                      console.table(layer);
+                      console.log("Layer LOCAL ends ");
+                      storyGetLayer(luaApi, layer )
+                    });*/
+
                     return(
                         <div key = {index}>
                         <PickStoryLocal key = { index }
@@ -110,6 +133,7 @@ class ExploreClimate extends Component{
                           })}
                           setShowStory = {(newState) => this.setState({
                             showStory: newState
+
                           })}
                           luaApi = {luaApi}
                         />

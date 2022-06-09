@@ -76,7 +76,6 @@ export const storyGetLayer = (luaApi, layer) => {
   luaApi.setPropertyValue(layer.URI, layer.defaultvalue);
 };
 
-
 export const storyGetLocation = (luaApi, position) => {
 
   luaApi.pathnavigation.flyToNavigationState({
@@ -140,13 +139,11 @@ export const storyFileParser = (story) => {
   return parsedJSON;
 };
 
-
 export const infoFileParser = (infoFile) => {
   const info = require(`../stories/${infoFile}.json`);
   const parsedInfo = info;
   return parsedInfo;
 };
-
 
 export const storyFileParserClimate = (story) => {
   const json = require(`../story_climate/story_climate_${story}.json`);

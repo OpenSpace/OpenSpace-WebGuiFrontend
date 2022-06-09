@@ -119,6 +119,7 @@ class OnClimateGui extends Component {
   }
 
   noShow(){
+
     const { luaApi } = this.props;
     const {currentStory, NoShow} = this.state;
 
@@ -145,7 +146,7 @@ class OnClimateGui extends Component {
     climate_stories.startpage.map((story) => {
       return (
           storyGetLocation(luaApi, story.pos),
-          storyGetLayer(luaApi, story.toggleboolproperties)
+          storyGetLayer(luaApi, story.toggleboolproperties) // works when this is gone too?
           );
         });
   }
@@ -177,6 +178,7 @@ class OnClimateGui extends Component {
         <section className={styles.Grid__Left}>
 
         {(currentStory === NoShow) &&
+          <div><p>hej</p></div>
         }
         {(currentStory === DefaultStory )
           ? <StartJourney changeStory = {this.setStory}/>
