@@ -24,6 +24,7 @@ class ExploreClimate extends Component{
     this.stepThroughStory = this.stepThroughStory.bind(this);
     this.Increment = this.Increment.bind(this);
     this.Decrement = this.Decrement.bind(this);
+
     //this.getToggleboolproperties =this.getToggleboolproperties.bind(this);
 
   }
@@ -46,30 +47,21 @@ class ExploreClimate extends Component{
 
   stepThroughStory(StoryStep, filePath){
     const {luaApi, json } = this.props;
-    var orbitAtConstantLatiude = 1
+    var orbitAtConstantLatiude = 1 //placment in IdleBehavior scrollbar
+
     storyResetLayer(luaApi);
+
     return(
       filePath.map((story) => {
-        if(story.id == StoryStep){
 
+        if(story.id == StoryStep){
           story.toggleboolproperties.map((layer) => {
           //  console.log("Layer!!!!!");
           //  console.table(layer);
               storyGetLayer(luaApi, layer )
           });
-        /*  if (story.local.length > 0){
-            story.local.toggleboolproperties.map((layer) => {
-              console.table(layer);
-                storyGetLayer(luaApi, layer )
-            });
-          }*/
-
-          //console.log("TITLE not local??: " + story.title)
-          //console.log("start local")
-          //console.table(story.local)
-          //console.log("end local")
           storyGetLocation(luaApi, story.pos);
-          storyGetIdleBehavior(luaApi, 1);
+          storyGetIdleBehavior(luaApi, orbitAtConstantLatiude);
 
           return (
             <div key = {story.id}>
@@ -77,9 +69,11 @@ class ExploreClimate extends Component{
                 {story.title}
 
               </h1>
+
               <p>
                 {story.storyinfo}
               </p>
+
             </div>
             );
           }
@@ -95,14 +89,17 @@ class ExploreClimate extends Component{
 
 
     //noSow -> we don't want to show the story if pressing the climate icon in the bar
+    // see ClimatePanel
     return (
       <div className={styles.StoryPosistion}>
         <div className = {styles.TellStory}>
           <div className = "flex">
             { StoryStep <  stepThroughJourney.length && showStory && (currentStory != "noShow") &&
-              <div >
+              <div  >
                 {stepThroughJourney}
+
               </div>
+
             }
 
             <br/>
@@ -110,21 +107,10 @@ class ExploreClimate extends Component{
             <br/>
 
               { json.journey[StoryStep].local.length > 0 && (currentStory != "noShow") &&
+
                   json.journey[StoryStep].local.map((story, index) => {
-
-                    //console.log("LOCAL TITLE: " + story.title)
-                    //console.log("LOCAL LAYER: " + story.toggleboolproperties)
-                    //console.log("LOCAL LAYER")
-                    //console.table(story.toggleboolproperties)
-                    /*story.toggleboolproperties.map((layer) => {
-                      console.log("Layer LOCAL starts ");
-                      console.table(layer);
-                      console.log("Layer LOCAL ends ");
-                      storyGetLayer(luaApi, layer )
-                    });*/
-
                     return(
-                        <div key = {index}>
+                        <div key = {index} >
                         <PickStoryLocal key = { index }
                           storyInfo = { story }
                           currentStory = { currentStoryLocal }
@@ -140,6 +126,7 @@ class ExploreClimate extends Component{
                        </div>
                       );
                     })
+
                 }
                 <br/>
                 <br/>

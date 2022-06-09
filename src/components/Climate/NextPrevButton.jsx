@@ -8,8 +8,20 @@ const NextStepButton = ({next, NextStepId, string, setShowStory, iconNextPrev, i
 
   <div className={styles.next} onClick={next} >
 
-    <SmallLabel>{string}</SmallLabel>
-    <Icon icon= {iconNextPrev} className={styles.Icon} />
+        {string == "Previus" &&
+          <div>
+            <SmallLabel>{string}</SmallLabel>
+            <Icon icon= {iconNextPrev} className={styles.IconPrev} />
+          </div>
+
+        }
+        {string == "Next" &&
+          <div>
+            <SmallLabel>{string}</SmallLabel>
+            <Icon icon= {iconNextPrev} className={styles.Icon} />
+          </div>
+        }
+
 
   </div>
 

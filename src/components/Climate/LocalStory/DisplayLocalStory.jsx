@@ -16,15 +16,16 @@ class DisplaylocalStory extends Component{
   }
 
   render() {
-    const {luaApi, json } = this.props;
-    //storyResetLayer(luaApi);
-    const { climateStorys, setShowLocalStory} = this.props;
-    console.log(climateStorys.title)
-    console.table(climateStorys.toggleboolproperties);
-   climateStorys.toggleboolproperties.map((layer) => {
-      console.table(layer);
+    const { climateStorys, setShowLocalStory, luaApi} = this.props;
+    var orbitAtConstantLatiude = 1 //placment in IdleBehavior scrollbar
+
+    storyResetLayer(luaApi);
+    climateStorys.toggleboolproperties.map((layer) => {
         storyGetLayer(luaApi, layer )
     });
+    storyGetLocation(luaApi, climateStorys.pos);
+    storyGetIdleBehavior(luaApi, orbitAtConstantLatiude);
+
     return (
             <div key = {climateStorys.id}>
                 <h1>
@@ -33,7 +34,7 @@ class DisplaylocalStory extends Component{
                 <p>
                   {climateStorys.storyinfo}
                 </p>
-          </div>
+              </div>
     );
   }
 }

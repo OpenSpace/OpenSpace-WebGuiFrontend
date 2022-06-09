@@ -10,7 +10,7 @@ import DisplaylocalStory from './DisplaylocalStory'
 import StoryButton from './StoryButtonLocal';
 
 import {
-  storyGetLayer, storyGetLocation
+  storyGetLayer, storyGetLocation, storyResetLayer
 } from '../../../utils/storyHelpers';
 
 class PickStoryLocal extends Component {
@@ -25,16 +25,14 @@ class PickStoryLocal extends Component {
   }
 
    handleStory(e) {
-     const {storyInfo, setShowStory, setCurrentStory} = this.props
+     const {storyInfo, setShowStory, setCurrentStory, luaApi} = this.props
      setShowStory(false);
      setCurrentStory(e.target.id)
+
    }
 
   render() {
     const {storyInfo, currentStory } = this.props;
-  //  console.table(storyInfo)
-
-
     return (
       <div>
           <div className = {styles.button}>
@@ -51,6 +49,7 @@ class PickStoryLocal extends Component {
             {(currentStory == storyInfo.title) &&
                 <DisplaylocalStory
                   climateStorys = {storyInfo}
+                  luaApi = {this.props.luaApi}
                   />
             }
 
@@ -64,6 +63,7 @@ PickStoryLocal.propTypes = {
   storyInfo: PropTypes.shape({
     title: PropTypes.string,
     info: PropTypes.string,
+    luaApi: PropTypes.object,
   }).isRequired,
 
 };

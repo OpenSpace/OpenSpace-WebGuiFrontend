@@ -8,7 +8,7 @@
   height: 35px;
   padding: 3px 4%;
   display: inline-block;
-  display: flex;
+
   align-items: center;
   justify-content: center;
   background: $ui-background;
@@ -68,8 +68,13 @@
 
 $icon-size: 20px;
 
+.IconPrev {
+  font-size: $icon-size;
+  position: absolute;;
+  left: 10px;
+}
 .Icon {
   font-size: $icon-size;
   position: absolute;;
-  right: 10px;
+  left: 10px;
 }

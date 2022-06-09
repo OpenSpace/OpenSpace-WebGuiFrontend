@@ -8,13 +8,11 @@
   padding: 0;
   width: 100vw;
 }
-
 .Grid__Left {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
 }
-
 .Grid__Right {
   display: flex;
   flex-direction: column;
@@ -34,16 +32,14 @@
   width: 380px;
   border-radius: 20px;
 }
-
 .StoryPosistion{
   position: relative;
   width: 200%;
   margin: 0 auto;
   height: 100%;
   overflow: hidden;
-//  background-color: #d3d3d3;
+//  background-color: #D3D3D3;
 }
-
 .TellStory{
   font-family: $font-family;
   height: 20%;
@@ -79,7 +75,6 @@
   //display: flex;
   //position: absolute;
   //left: 50%;
-
   font-family: $font-family;
   height: 1%;
   width: 210%;
@@ -91,7 +86,6 @@
   left: -30%;
   display: flex;
 }
-
 .PrevStepButton{
 //  top: 80px;
   //display: flex;
@@ -111,12 +105,9 @@
   display: flex;
 
 }
-
 $icon-size: 20px;
-
 .Icon {
   font-size: $icon-size;
   position: absolute;;
   right: 10px;
-
 }
