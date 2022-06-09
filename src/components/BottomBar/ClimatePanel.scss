@@ -80,28 +80,12 @@
   position: absolute;
   opacity: 0;
 }
-/*
-.windowContainer {
- .actionButton {
-    min-width: 310px;
-    min-height: 100px;
-  }
-  font-size: 3.4em;
-  overflow: scroll;
-  overflow-y: auto;
-  height: 100%;
-  overflow-x: hidden;
-}
 
-.folderButton {
-  background-color: $ui-background-slider-input;
+.iconButton{
+  padding: 7px 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex-grow: 1;
+  align-items: center;
 }
-
-.actionsPanel {
-  min-width: 394px;
-  max-width: 394px;
-  height: 400px;
-  max-height: 400px;
-  min-height: 400px;
-}
-*/

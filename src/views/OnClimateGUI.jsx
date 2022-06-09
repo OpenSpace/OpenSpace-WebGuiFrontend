@@ -177,9 +177,7 @@ class OnClimateGui extends Component {
         </p>
         <section className={styles.Grid__Left}>
 
-        {(currentStory === NoShow) &&
-          <div><p>hej</p></div>
-        }
+        
         {(currentStory === DefaultStory )
           ? <StartJourney changeStory = {this.setStory}/>
         : <ExploreClimate resetStory = {this.resetStory} json = {json} currentStory= {currentStory}/>

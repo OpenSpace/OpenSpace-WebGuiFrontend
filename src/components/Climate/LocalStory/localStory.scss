@@ -29,13 +29,16 @@
 
 .button{
   font-family: $font-family;
+  height: 1%;
   width: 210%;
-  justify-content: center;
-  position: absolute;  left: -5%;
   display: flex;
-  color: green;
-  font-size: 16px;
-  margin: 10px 1px;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 140%;
+  left: -90%;
+  display: flex;
+
 }
 .flex {
   width: 50%;

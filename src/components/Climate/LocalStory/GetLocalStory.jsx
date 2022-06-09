@@ -18,9 +18,7 @@ class Pick extends Component {
     this.props.setShowStory(false);
     this.props.setShowLocalStory(true);
   }
-
-
-
+  
   render() {
 
     const { climateStorys } = this.props;
@@ -34,8 +32,6 @@ class Pick extends Component {
     );
   }
 }
-
-
 
 Pick.propTypes = {
   setShowStory: PropTypes.func.isRequired,

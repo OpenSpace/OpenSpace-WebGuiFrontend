@@ -13,11 +13,7 @@ class DisplaylocalStory extends Component{
 
   constructor(props) {
     super(props);
-
-
   }
-
-
 
   render() {
     const { climateStorys, setShowLocalStory, luaApi} = this.props;
@@ -43,10 +39,8 @@ class DisplaylocalStory extends Component{
   }
 }
 
-
 DisplaylocalStory.defaultProps = {
     climateStorys: {},
-
   };
 
 export default DisplaylocalStory;

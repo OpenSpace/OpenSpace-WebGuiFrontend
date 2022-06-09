@@ -13,10 +13,8 @@ import {
   storyGetLayer, storyGetLocation, storyGetIdleBehavior, storyResetLayer
 } from '../../utils/storyHelpers';
 class ExploreClimate extends Component{
-
   constructor(props) {
     super(props);
-
     this.state = {
       StoryStep: 0,
       showStory: true,
@@ -30,7 +28,6 @@ class ExploreClimate extends Component{
     //this.getToggleboolproperties =this.getToggleboolproperties.bind(this);
 
   }
-
   Increment = () => {
         this.setState((prevState) => ({
           StoryStep: prevState.StoryStep + 1,
@@ -48,8 +45,6 @@ class ExploreClimate extends Component{
     }));
   }
 
-
-
   stepThroughStory(StoryStep, filePath){
     const {luaApi, json } = this.props;
     var orbitAtConstantLatiude = 1 //placment in IdleBehavior scrollbar
@@ -61,6 +56,7 @@ class ExploreClimate extends Component{
 
         if(story.id == StoryStep){
           story.toggleboolproperties.map((layer) => {
+            console.table(layer);
               storyGetLayer(luaApi, layer )
           });
           storyGetLocation(luaApi, story.pos);
@@ -81,13 +77,7 @@ class ExploreClimate extends Component{
           }
         })
       );
-
     }
-
-  setLocalStory(){
-
-
-  }
 
   render() {
     const { json, storyInfo, currentStory, luaApi } = this.props;
@@ -102,7 +92,6 @@ class ExploreClimate extends Component{
       <div className={styles.StoryPosistion}>
         <div className = {styles.TellStory}>
           <div className = "flex">
-
             { StoryStep <  stepThroughJourney.length && showStory && (currentStory != "noShow") &&
               <div  >
                 {stepThroughJourney}
@@ -110,6 +99,10 @@ class ExploreClimate extends Component{
               </div>
 
             }
+
+            <br/>
+            <br/>
+            <br/>
 
               { json.journey[StoryStep].local.length > 0 && (currentStory != "noShow") &&
 
@@ -132,6 +125,10 @@ class ExploreClimate extends Component{
                     })
 
                 }
+                <br/>
+                <br/>
+                <br/>
+
                 { StoryStep <  stepThroughJourney.length -1 && (currentStory != "noShow") &&
                     <div>
                       <section className = {styles.NextStepButton}>
@@ -158,19 +155,12 @@ class ExploreClimate extends Component{
 
                     </section>
                   }
-            {(currentStory != "noShow") &&
-
-              <div className={styles.HomeButton}>
-                  <HomeButtonContainer resetStory={this.props.resetStory}/>
-              </div>
-            }
           </div>
         </div>
       </div>
       );
   }
 }
-
 ExploreClimate.propTypes = {
   story: PropTypes.objectOf(PropTypes.shape({
     storyTitle: PropTypes.string,
@@ -189,10 +179,8 @@ const mapSubStateToProps = ({ luaApi }) => {
     luaApi: luaApi,
   };
 };
-
 const mapStateToSubState = (state) => ({
   luaApi: state.luaApi,
 });
 ExploreClimate = connect(subStateToProps(mapSubStateToProps, mapStateToSubState))(ExploreClimate);
-
 export default ExploreClimate;
