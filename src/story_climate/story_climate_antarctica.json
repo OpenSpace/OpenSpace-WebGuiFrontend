@@ -11,7 +11,7 @@
         {
           "id" : 0,
           "title": "Show overview of currents",
-          "storyinfo": "Climate Climate Climate Climate Climate Climate Climate Climate Climate",
+          "storyinfo": "Climate Climate Climate Climate Climate Climate Climate Climate Climate.",
           "date": "2021-12-18T05:00:00.00",
           "pos": {
             "anchor": "Earth",
@@ -32,20 +32,18 @@
           "IdleBehavior": {
             "URI" : "NavigationHandler.OrbitalNavigator.IdleBehavior.IdleBehavior",
             "defaultvalue": 1
-
           },
           "toggleboolproperties":[
             {
-              "URI":"Scene.Earth.Renderable.Layers.ColorLayers.GRACE.Enabled",
-              "label":"Overview of currents",
+              "URI":"Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled",
+              "label":"Background of Earth",
               "defaultvalue": true
             },
             {
-              "URI":"Scene.Earth.Renderable.Layers.Overlays.Coastlines.Enabled",
+              "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
               "label":"Overview of currents",
               "defaultvalue": true
             }
-
           ],
 
             "local": []
@@ -76,11 +74,15 @@
           "IdleBehavior": {
             "URI" : "NavigationHandler.OrbitalNavigator.IdleBehavior.IdleBehavior",
             "defaultvalue": 1
-
           },
           "toggleboolproperties":[
             {
-              "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-ecco2_sst-gray_land.Enabled",
+              "URI":"Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled",
+              "label":"Background of Earth",
+              "defaultvalue": true
+            },
+            {
+              "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-ecco2_sst-veg_land-layer.Enabled",
               "label":"Detailed currents, ECCO",
               "defaultvalue": true
             }],
@@ -89,7 +91,7 @@
       {
         "id" : 2,
         "title": "Show zoomed Antarctica, choose west or east",
-        "storyinfo": "Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate Climate ClimateClimate Climate Climate Climate Climate Climate Climate Climate ClimateClimate Climate Climate Climate Climate Climate Climate Climate ClimateClimate Climate Climate Climate Climate Climate Climate Climate ClimateClimate Climate Climate Climate Climate Climate Climate Climate ClimateClimate Climate Climate Climate Climate Climate Climate Climate ClimateClimate Climate Climate Climate Climate Climate Climate Climate ClimateClimate Climate Climate Climate Climate Climate Climate Climate ClimateClimate Climate Climate Climate Climate Climate Climate Climate ClimateClimate Climate Climate Climate Climate Climate Climate Climate ClimateClimate Climate Climate Climate Climate Climate Climate Climate ClimateClimate Climate Climate Climate Climate Climate Climate Climate ClimateClimate Climate Climate Climate Climate Climate Climate Climate Climate",
+        "storyinfo": "Antarctica is separated by two regions, East Antarctica and West Antarctica. ",
         "date": "2021-12-18T05:09:00.00",
         "pos": {
           "anchor": "Earth",
@@ -106,24 +108,22 @@
           },
           "yaw": -0.23596752380578936
         },
-
         "IdleBehavior": {
           "URI" : "NavigationHandler.OrbitalNavigator.IdleBehavior.IdleBehavior",
           "value": 1
-
         },
-
         "toggleboolproperties":[
           {
-            "URI":"Scene.Earth.Renderable.Layers.ColorLayers.GRACE.Enabled",
-            "label":"Detailed currents, OSCAR",
+            "URI":"Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled",
+            "label":"Background of Earth",
             "defaultvalue": true
           }],
         "local":[
           {
             "title": "West Antarctica",
+            "identifier": "westAntarctica",
             "id" : 0,
-            "storyinfo": "Climate Climate Climate Climate Climate Climate Climate Climate Climate",
+            "storyinfo": "West Antarctica has thinner ice than East Antarctica, and there are ice sheets on the bedrock that are below sea level. This makes West Antarctica more unstable. There is a layer of warmer water in the ocean below the colder freshwater.",
             "date": "2021-12-18T15:15:00.00",
             "pos": {
               "anchor": "Earth",
@@ -142,16 +142,17 @@
             },
             "toggleboolproperties":[
               {
-                "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-ecco2_sst-gray_land.Enabled",
-                "label":"Detailed currents, OSCAR",
+                "URI":"Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled",
+                "label":"Background of Earth",
                 "defaultvalue": true
               }]
           },
 
           {
             "title": "East Antarctica",
+            "identifier": "eastAntarctica",
             "id" : 1,
-            "storyinfo": "Climate Climate Climate Climate Climate Climate Climate Climate Climate",
+            "storyinfo": "East Antarctica is located east of the Transantarctic Mountains and has the thickest ice on Earth. The east side of Antarctica is quite stable. This is due to both the thickness of the ice sheet and also because the bedrock underneath the ice sheet is mostly above sea level. ",
             "date": "2021-12-18T15:15:00.00",
             "pos": {
               "anchor": "Earth",
@@ -170,8 +171,8 @@
             },
             "toggleboolproperties":[
               {
-                "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-ecco2_sst-gray_land.Enabled",
-                "label":"Detailed currents, OSCAR",
+                "URI":"Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled",
+                "label":"Background of Earth",
                 "defaultvalue": true
               }]
           }
@@ -180,7 +181,7 @@
       {
         "id" : 3,
         "title": "Consequences from sea level rise",
-        "storyinfo": "Climate Climate Climate Climate Climate Climate Climate Climate Climate",
+        "storyinfo": "Climate Climate Climate Climate Climate Climate Climate Climate Climate.",
         "date": "2021-12-18T05:09:00.00",
         "pos": {
           "anchor": "Earth",
@@ -200,14 +201,14 @@
         "IdleBehavior": {
           "URI" : "NavigationHandler.OrbitalNavigator.IdleBehavior.IdleBehavior",
           "defaultvalue": 1
-
         },
         "toggleboolproperties":[
           {
-            "URI":"Scene.Earth.Renderable.Layers.ColorLayers.OSCAR_Sea_Surface_Currents_Zonal.Enabled",
-            "label":"Detailed currents, OSCAR",
+            "URI":"Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled",
+            "label":"Background of Earth",
             "defaultvalue": true
-          }],
+          }
+          ],
         "local":[
           {
           "title": "2 meters rise",
@@ -231,6 +232,11 @@
             "yaw": -0.20582220095513115
           },
           "toggleboolproperties":[
+            {
+              "URI":"Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled",
+              "label":"Background of Earth",
+              "defaultvalue": true
+            },
             {
               "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-2m.Enabled",
               "label":"Sea level rise, 2m",
@@ -260,15 +266,21 @@
           },
           "toggleboolproperties":[
             {
+              "URI":"Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled",
+              "label":"Background of Earth",
+              "defaultvalue": true
+            },
+            {
               "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-4m.Enabled",
               "label":"Sea level rise, 4m",
               "defaultvalue": true
             }]
+
         },
         {
           "title": "6 meters rise",
           "id" : 0,
-          "storyinfo": "This happened when the sea level rised with 6 meter.",
+          "storyinfo": "This happened when the sea level rised with 6 meter",
           "date": "2021-12-18T15:15:00.00",
           "pos":{
              "anchor":"Earth",
@@ -287,6 +299,11 @@
              "yaw":-0.2376877039313796
           },
           "toggleboolproperties":[
+            {
+              "URI":"Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled",
+              "label":"Background of Earth",
+              "defaultvalue": true
+            },
             {
               "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-6m.Enabled",
               "label":"Sea level rise, 6m",

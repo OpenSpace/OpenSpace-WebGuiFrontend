@@ -23,6 +23,8 @@ import Button from "../common/Input/Button/Button";
 import Input from "../common/Input/Input/Input";
 import Select from "../common/Input/Select/Select";
 import MaterialIcon from "../common/MaterialIcon/MaterialIcon";
+import climateButton from '../../../images/climateButton.png'
+import consequences from '../../../images/consequences.png'
 import SmallLabel from '../common/SmallLabel/SmallLabel';
 import Popover from "../common/Popover/Popover";
 import Row from "../common/Row/Row";
@@ -322,12 +324,7 @@ getSurfaceLayerAlaska() {
         }}
         className={styles.menuButton}
       >
-        <p>
-          <MaterialIcon
-            className={styles.buttonIcon}
-            icon="close"
-          />
-        </p>
+      <img src = {consequences} alt = "consequences" />
         Consequences
       </Button>
     );
@@ -419,7 +416,7 @@ getSurfaceLayerAlaska() {
       <div className={Picker.Wrapper}>
         <Picker onClick={this.togglePopover}>
           <div className= {styles.iconButton}>
-            <MaterialIcon className={styles.bottomBarIcon} icon="ac_unit" />
+            <img src = {climateButton} alt = "climateButton" />
             <SmallLabel>Climate change</SmallLabel>
           </div>
         </Picker>

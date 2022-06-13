@@ -2,30 +2,20 @@
 
 .generalBSmall{
   position: absolute;
-
-  //z-index: 999;
   color: #fff;
   height: 35px;
   padding: 3px 4%;
-  display: inline-block;
-
+  display: flex;
   align-items: center;
   justify-content: center;
-  background: $ui-background;
+  background: rgba(24, 24, 24, 0.9);
   border-radius: 12px;
   cursor: pointer;
-  transition: transform ease-in .1s;
-
-  &:hover {
-    transition: transform ease-in .1s;
-     background:darken($ui-background,8%);
-  }
+  transition: transform ease-in 0.1s;
 }
 
 .generalB{
   position: absolute;
-
-  //z-index: 999;
   color: #fff;
   height: 35px;
   width: 280px;
@@ -45,7 +35,6 @@
 
 .next{
   position: absolute;
-
   color: #fff;
   height: 35px;
   width: 150px;
@@ -61,8 +50,6 @@
     transition: transform ease-in .1s;
      background:darken($ui-background,8%);
   }
-
-
 }
 
 
@@ -76,5 +63,5 @@ $icon-size: 20px;
 .Icon {
   font-size: $icon-size;
   position: absolute;;
-  left: 10px;
+  right: 10px;
 }

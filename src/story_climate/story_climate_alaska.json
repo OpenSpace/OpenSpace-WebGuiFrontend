@@ -37,6 +37,11 @@
         },
         "toggleboolproperties":[
           {
+            "URI":"Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled",
+            "label":"Background of Earth",
+            "defaultvalue": true
+          },
+          {
             "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
             "label":"Overview of currents",
             "defaultvalue": true
@@ -68,8 +73,13 @@
 
         "toggleboolproperties":[
           {
-            "URI":"Scene.Earth.Renderable.Layers.ColorLayers.OSCAR_Sea_Surface_Currents_Zonal.Enabled",
-            "label":"Detailed currents, OSCAR",
+            "URI":"Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled",
+            "label":"Background of Earth",
+            "defaultvalue": true
+          },
+          {
+            "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-ecco2_sst-veg_land-layer.Enabled",
+            "label":"Detailed currents, ECCO",
             "defaultvalue": true
           }],
           "local":[]
@@ -98,29 +108,146 @@
 
         "toggleboolproperties":[
           {
-            "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
-            "label":"Overview of currents",
+            "URI":"Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled",
+            "label":"Background of Earth",
             "defaultvalue": true
           }],
           "local":[]
-      }
-
-    ],
-
-
-    "toggleboolproperties": [
-      {
-        "name": "{earth_satellites}.Renderable.Enabled",
-        "type": "setPropertyValue",
-        "value": "false"
       },
       {
-        "URI":"climate_alaska_Mode",
-        "label":"Climate Alaska Mode",
-        "isAction": true,
-        "actionEnabled":"climate_alaska_mode_true",
-        "actionDisabled":"climate_alaska_mode_false",
-        "defaultvalue": true
+        "id" : 3,
+        "title": "Consequences from sea level rise",
+        "storyinfo": "Climate Climate Climate Climate Climate Climate Climate Climate Climate.",
+        "date": "2021-12-18T05:09:00.00",
+        "pos": {
+          "anchor": "Earth",
+          "pitch": -0.07628754944400731,
+          "position": {
+            "x": -9855783.266296387,
+            "y": -36845537.331535816,
+            "z": 12655787.969493866
+          },
+          "up": {
+            "x":-0.5160768662172519,
+            "y": 0.3984763963453224,
+            "z":0.7582092255512496
+          },
+          "yaw": -0.24549208207731862
+        },
+        "IdleBehavior": {
+          "URI" : "NavigationHandler.OrbitalNavigator.IdleBehavior.IdleBehavior",
+          "defaultvalue": 1
+        },
+        "toggleboolproperties":[
+          {
+            "URI":"Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled",
+            "label":"Background of Earth",
+            "defaultvalue": true
+          }
+          ],
+        "local":[
+          {
+          "title": "2 meters rise",
+          "id" : 2,
+          "storyinfo": "This happened when the sea level rised with 2 meter.",
+          "date": "2021-12-18T15:15:00.00",
+          "pos":{
+            "anchor": "Earth",
+            "pitch": -0.022558471991152986,
+            "position": {
+              "x": -39121.401130186394,
+              "y": -261304.86831871886,
+              "z": -18336843.09999675
+            },
+            "type": "setNavigationState",
+            "up": {
+              "x": 0.9526825958195455,
+              "y": -0.3039581985290602,
+              "z": 0.0022989496518204255
+            },
+            "yaw": -0.20582220095513115
+          },
+          "toggleboolproperties":[
+            {
+              "URI":"Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled",
+              "label":"Background of Earth",
+              "defaultvalue": true
+            },
+            {
+              "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-2m.Enabled",
+              "label":"Sea level rise, 2m",
+              "defaultvalue": true
+            }]
+        },
+        {
+          "title": "4 meters rise",
+          "id" : 1,
+          "storyinfo": "This happened when the sea level rised with 4 meter.",
+          "date": "2021-12-18T15:15:00.00",
+          "pos":{
+             "anchor":"Earth",
+             "pitch":-0.03651119926122576,
+             "position":{
+                "x":-1152145.3978969743,
+                "y":-15271036.370115351,
+                "z":9682927.443411129
+             },
+             "type":"setNavigationState",
+             "up":{
+                "x":-0.20400852731965874,
+                "y":0.5351667325265219,
+                "z":0.819742086986968
+             },
+             "yaw":-0.2376877039313796
+          },
+          "toggleboolproperties":[
+            {
+              "URI":"Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled",
+              "label":"Background of Earth",
+              "defaultvalue": true
+            },
+            {
+              "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-4m.Enabled",
+              "label":"Sea level rise, 4m",
+              "defaultvalue": true
+            }]
+
+        },
+        {
+          "title": "6 meters rise",
+          "id" : 0,
+          "storyinfo": "This happened when the sea level rised with 6 meter",
+          "date": "2021-12-18T15:15:00.00",
+          "pos":{
+             "anchor":"Earth",
+             "pitch":-0.03651119926122576,
+             "position":{
+                "x":-1152145.3978969743,
+                "y":-15271036.370115351,
+                "z":9682927.443411129
+             },
+             "type":"setNavigationState",
+             "up":{
+                "x":-0.20400852731965874,
+                "y":0.5351667325265219,
+                "z":0.819742086986968
+             },
+             "yaw":-0.2376877039313796
+          },
+          "toggleboolproperties":[
+            {
+              "URI":"Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled",
+              "label":"Background of Earth",
+              "defaultvalue": true
+            },
+            {
+              "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-6m.Enabled",
+              "label":"Sea level rise, 6m",
+              "defaultvalue": true
+            }]
+        }
+      ]
       }
+
     ]
   }
