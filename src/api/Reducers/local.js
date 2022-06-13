@@ -78,6 +78,7 @@ const defaultPopovers = {
   skybrowser: popover(),
   actions: popover(),
   keybinds: popover(),
+  geoposition: popover(),
   focusNodePropertiesPanel: popover({ attached: false }),
   activeNodePropertyPanels: {},
   activeNodeMetaPanels: {},

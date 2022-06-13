@@ -36,6 +36,7 @@
     "react-color": "^2.19.3",
     "react-dom": "^16.14.0",
     "react-draggable": "^4.4.3",
+    "react-geocode": "^0.2.3",
     "react-hot-loader": "^4.13.0",
     "react-input-autosize": "^2.2.2",
     "react-redux": "^7.2.4",
