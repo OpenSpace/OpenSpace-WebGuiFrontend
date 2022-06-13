@@ -24,7 +24,9 @@ import Input from "../common/Input/Input/Input";
 import Select from "../common/Input/Select/Select";
 import MaterialIcon from "../common/MaterialIcon/MaterialIcon";
 import climateButton from '../../../images/climateButton.png'
-import consequences from '../../../images/consequences.png'
+import glac from '../../../images/glac.png'
+import cur from '../../../images/cur.png'
+import cons from '../../../images/cons.png'
 import SmallLabel from '../common/SmallLabel/SmallLabel';
 import Popover from "../common/Popover/Popover";
 import Row from "../common/Row/Row";
@@ -207,10 +209,12 @@ getSurfaceLayerAlaska() {
         }}
         className={styles.menuButton}
       >
-        <p>
-          <MaterialIcon className={styles.buttonIcon} icon="ac_unit" />
-        </p>
-        Glaciers
+        <div>
+          <img src = {glac} alt = "glac" />
+        </div>
+        <div>
+          Glaciers
+        </div>
       </Button>
     );
 
@@ -273,13 +277,12 @@ getSurfaceLayerAlaska() {
         }}
         className={styles.menuButton}
       >
-        <p>
-          <MaterialIcon
-            className={styles.buttonIcon}
-            icon="import_export"
-          />
-        </p>
-        Currents
+        <div className={styles.flex}>
+          <img src = {cur} alt = "cur" />
+        </div>
+        <div>
+          Currents
+        </div>
       </Button>
     );
 
@@ -324,8 +327,12 @@ getSurfaceLayerAlaska() {
         }}
         className={styles.menuButton}
       >
-      <img src = {consequences} alt = "consequences" />
-        Consequences
+        <div className={styles.flex}>
+          <img src = {cons} alt = "cons" />
+        </div>
+        <div>
+          Consequences
+        </div>
       </Button>
     );
 
