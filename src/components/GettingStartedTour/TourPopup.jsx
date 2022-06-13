@@ -18,6 +18,7 @@ import openspaceLogo from "./openspace-color-transparent.png";
 import { useTutorial } from "./GettingStartedContext"; 
 import MaterialIcon from "../common/MaterialIcon/MaterialIcon";
 import Checkbox from "../common/Input/Checkbox/Checkbox";
+import Row from "../common/Row/Row";
 
 function AnimatedCheckmark({...props}) {
   return <div className={styles.centerContent}>
@@ -38,8 +39,10 @@ function KeyboardButton({ buttonText, ...props }) {
 
 function AnimatedArrows({ ...props }) {
   return <div className={styles.arrows} {...props}>
-    <span></span>
-    <span></span>
+    <div style={{ padding : '10px'}}>
+      <span></span>
+      <span></span>
+    </div>
   </div>;
 }
 
@@ -80,11 +83,18 @@ function useLocalStorageState(
 }
 
 function AnimatedMouse({ button, ...props }) {
-  const rotation = button === 'right' ? [180, 0] : [-90, 90];
-  const marginSide = button === 'right' ? '0px': '100px';
-  const offset = button === 'right' ? ['-30px', '90px'] : [null, null];
-  return <div className={`${styles.mouseContainer} ${styles.centerContent}`} {...props}>
-    <AnimatedArrows style={{ marginLeft: marginSide, marginTop: offset[0], transform: `rotate(${rotation[0]}deg)` }}/>
+  let style = null;
+  if (button === 'right') {
+    style = {
+      flexDirection: 'column',
+      paddingTop: '0px',
+      paddingBottom: '20px',
+      marginRight : '20px'
+    };
+  }
+  const rotation = button === 'right' ? [0, 180] : [-90, 90];
+  return <div className={`${styles.mouseContainer} ${styles.centerContent}`} style={style}{...props}>
+    <AnimatedArrows style={{ transform: `rotate(${rotation[0]}deg)` }}/>
     <div className={styles.mouse}>
       {button === 'left' && <div className={styles.leftButton}></div>}
       {button === 'right' && <div className={styles.rightButton}></div>}
@@ -92,7 +102,7 @@ function AnimatedMouse({ button, ...props }) {
       <div className={styles.bar}></div>
       <div className={styles.verticalBar}></div>
     </div>
-    <AnimatedArrows style={{ marginRight: marginSide, marginTop: offset[1], transform: `rotate(${rotation[1]}deg)` }}/>
+    <AnimatedArrows style={{ transform: `rotate(${rotation[1]}deg)` }}/>
   </div> 
 }
 
@@ -218,7 +228,7 @@ function MouseDescriptions({ button, info, description, keyboardButton}) {
   return <div className={styles.mouseDescription}>
       <p className={`${styles.text} ${styles.mouseButtonText}`}><i>{info}</i> <br /> { description }</p>
       {keyboardButton && <>
-        <KeyboardButton buttonText={keyboardButton} style={{ marginLeft: '60px' }} /> 
+        <KeyboardButton buttonText={keyboardButton} /> 
         <p className={styles.plus}>+</p>
       </>}
       <AnimatedMouse button={button} />
@@ -298,10 +308,8 @@ function TourPopup({ properties, cameraPosition, marsTrailColor, startSubscripti
   const allConditionsAreFulfilled = hasGoals ? !conditionIsFulfilled.includes(false) : false;
 
   return (isVisible && <>
-    {Boolean(content.arrowPosition) && !allConditionsAreFulfilled &&
-      <>
-      <AnimatedArrow rotation={content.arrowRotation} position={content.arrowPosition} />
-      </>}
+    {Boolean(content.position) && !allConditionsAreFulfilled &&
+      <div className={`${styles.animatedBorder} ${styles.geoPositionBox}`} />}
     <ResizeableDraggable
       default={{
         x: 500,
@@ -341,6 +349,7 @@ function TourPopup({ properties, cameraPosition, marsTrailColor, startSubscripti
             }
           </>
         }
+        {!allConditionsAreFulfilled && <p className={` ${styles.text} ${styles.infoText}`}>{content.infoText}</p>}
         {content.bulletList && content.bulletList.map(text => <li key={text} className={styles.text}>{text}</li>)}
         {isLastSlide && <>
           <div style={{ display: 'flex'}}>

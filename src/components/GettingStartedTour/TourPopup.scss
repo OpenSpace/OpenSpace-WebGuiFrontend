@@ -42,6 +42,11 @@ $mouse-color: $text-color-blur;
     padding: $padding;
 }
 
+.infoText {
+    color: $text-color-blur;
+    font-style: italic;
+}
+
 .progressBarContent {
     height: 3px;
     background-color: $text-color-blur;
@@ -138,6 +143,14 @@ $mouse-color: $text-color-blur;
     }
 }
 
+.geoPositionBox {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 450px;
+    height: 70px;
+}
+
 $animated-border-width : 3px;
 $animated-border-length : 15px;
 
@@ -216,6 +229,7 @@ $animated-border-length : 15px;
     padding: 10px;
     height: fit-content;
     margin-top: calc(1.5 * $margin-over-mouse-button);
+    margin-left: 20px;
 }
 
 .keyboardButtonText {
@@ -227,7 +241,7 @@ $animated-border-length : 15px;
 .plus {
     color: $mouse-color;
     margin-top: calc(1.7 * $margin-over-mouse-button);
-    margin-left: $margin-over-mouse-button;
+    margin-left: 20px;
 }
 
 /* Animated mouse */
@@ -237,9 +251,8 @@ $mouse-ratio: 0.65;
 $line-width: 2px;
 
 .mouseContainer {
-    padding: $margin-over-mouse-button;
+    padding: 40px;
     padding-bottom: 60px;
-    margin-right: 20px;
 }
 
 .leftButton, .rightButton, .bar, .mouseButton, .verticalBar {
@@ -310,35 +323,35 @@ $line-width: 2px;
 
 /* Animated arrows */
 $arrows-width : 10px;
-$arrows-translation: calc($arrows-width * 0.6);
+$arrows-translation: calc($arrows-width * 0.4);
 $arrows-line-width: 2px;
 
 .arrows {
-    position: absolute; 
+    display: flex;
+    justify-content: center;
 }
 
 .arrows span {
     display: block;
     width: $arrows-width;
     height: $arrows-width;
-    border-bottom: $arrows-line-width solid $mouse-color;
-    border-right: $arrows-line-width solid $mouse-color;
+    border-top: $arrows-line-width solid $mouse-color;
+    border-left: $arrows-line-width solid $mouse-color;
     animation: arrowsAnimation 2s infinite;
     transform: rotate(45deg)
 }
 
 .arrows span:nth-child(2) {
-    animation-delay: -0.2s;
+    animation-delay: 0.2s;
 }
 
 .arrows span:nth-child(3) {
-    animation-delay: -0.4s;
+    animation-delay: 0.4s;
 }
-
 @keyframes arrowsAnimation {
     0% {
         opacity: 0;
-        transform: rotate(45deg) translate(-$arrows-translation, -$arrows-translation);
+        transform: rotate(45deg) translate($arrows-translation, $arrows-translation);
     }
 
     50% {
@@ -347,7 +360,7 @@ $arrows-line-width: 2px;
 
     100% {
         opacity: 0;
-        transform: rotate(45deg) translate($arrows-translation, $arrows-translation);
+        transform: rotate(45deg) translate(-$arrows-translation, -$arrows-translation);
     }
 }
 

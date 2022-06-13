@@ -51,6 +51,7 @@
         "title" : "Navigation",
         "key": ["origin", "Moon"],
         "firstText" : "We can also look at other planets.",
+        "infoText" : "This is an infotext",
         "goalText" : ["Set the navigation focus to the Moon"],
         "arrowPosition" : { "x" : 320, "y" : 70},
         "arrowRotation" : "down"
