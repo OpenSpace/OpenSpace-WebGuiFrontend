@@ -29,6 +29,10 @@
           },
           "yaw": -0.18794626453978064
         },
+        "screenSpace":{
+            "URI":"ScreenSpace.noaa-sos-oceans-ecco2_sst-gray_land.Enabled",
+            "defaultvalue":false
+         },
         "toggleboolproperties":[
           {
             "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
@@ -59,6 +63,10 @@
           "yaw": -0.18794626460125918
         },
 
+        "screenSpace":{
+            "URI":"ScreenSpace.noaa-sos-oceans-ecco2_sst-gray_land.Enabled",
+            "defaultvalue":false
+         },
         "toggleboolproperties":[
           {
             "URI":"Scene.Earth.Renderable.Layers.ColorLayers.OSCAR_Sea_Surface_Currents_Zonal.Enabled",
@@ -95,12 +103,16 @@
             "label":"Overview of currents",
             "defaultvalue": true
           }],
+          "screenSpace":{
+              "URI":"ScreenSpace.noaa-sos-oceans-ecco2_sst-gray_land.Enabled",
+              "defaultvalue":false
+           },
           "local": []
       }
     ],
 
 
-    "toggleboolproperties":[ 
+    "toggleboolproperties":[
       {
         "name": "{earth_satellites}.Renderable.Enabled",
         "type": "setPropertyValue",

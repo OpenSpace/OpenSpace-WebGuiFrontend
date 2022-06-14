@@ -4,21 +4,20 @@ import PropTypes from 'prop-types';
 import {
   subscribeToProperty,
   unsubscribeToProperty,
-} from '../../api/Actions';
-import { ExoplanetsModuleEnabledKey, SkyBrowserModuleEnabledKey } from '../../api/keys';
-import { getBoolPropertyValue } from '../../utils/propertyTreeHelpers';
+} from '../../../api/Actions';
+import { ExoplanetsModuleEnabledKey, SkyBrowserModuleEnabledKey } from '../../../api/keys';
+import { getBoolPropertyValue } from '../../../utils/propertyTreeHelpers';
 
-import styles from '../BottomBar/BottomBar.scss';
-import HomeButtonContainer from '../TouchBar/UtilitiesMenu/containers/HomeButtonContainer';
+import styles from '../../BottomBar/BottomBar.scss';
+import HomeButtonContainer from './showStory';
 
-
-import SessionRec from '../BottomBar/SessionRec';
-import TimePicker from '../BottomBar/TimePicker';
-import ClimatePanel from '../BottomBar/ClimatePanel';
-import Slider from '../BottomBar/Slider';
-import SkyBrowserPanel from '../BottomBar/SkyBrowserPanel';
-import TimePlayerController from '../TouchBar/UtilitiesMenu/presentational/TimePlayerController'
-import Instructions from './Instructions/Instructions'
+import SessionRec from '../../BottomBar/SessionRec';
+import TimePicker from '../../BottomBar/TimePicker';
+import ClimatePanel from './ClimatePanel';
+import Slider from '../../BottomBar/Slider';
+import SkyBrowserPanel from '../../BottomBar/SkyBrowserPanel';
+import TimePlayerController from '../../TouchBar/UtilitiesMenu/presentational/TimePlayerController'
+import Instructions from './Instructions'
 
 let BottomBar = ({
   showExoplanets,
@@ -45,7 +44,7 @@ let BottomBar = ({
     <HomeButtonContainer resetStory={resetStory}/>
     <TimePicker />
 
-
+  
     {showFlightController && <FlightControlPanel />}
 
   </div>

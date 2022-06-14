@@ -12,15 +12,15 @@ import KeybindingPanel from '../components/BottomBar/KeybindingPanel';
 import '../styles/base.scss';
 import Error from '../components/common/Error/Error';
 import Overlay from '../components/common/Overlay/Overlay';
-import BottomBar from '../components/Climate/ClimateBar';
+import BottomBar from '../components/Climate/ButtomMenu/ClimateBar';
 import Button from '../components/common/Input/Button/Button';
-import Stack from '../components/common/Stack/Stack';
+
 import ActionsPanel from '../components/BottomBar/ActionsPanel';
 import Sidebar from '../components/Sidebar/Sidebar';
 import NodeMetaContainer from '../components/NodeMetaPanel/NodeMetaContainer';
 import NodePopOverContainer from '../components/NodePropertiesPanel/NodePopOverContainer';
 import ExploreClimate from '../components/climate/ExploreClimate'
-import HomeButtonContainer from '../components/TouchBar/UtilitiesMenu/containers/HomeButtonContainer';
+
 import {
   setPropertyValue, startConnection, fetchData, addStoryTree, subscribeToProperty,
   unsubscribeToProperty, addStoryInfo, resetStoryInfo,
@@ -39,8 +39,8 @@ import styles from './OnClimateGui.scss';
 import { UpdateDeltaTimeNow } from '../utils/timeHelpers';
 
 import {
-  storyGetLayer, storyGetLocation, satelliteToggle, toggleShading, toggleHighResolution, toggleShowNode, toggleGalaxies,
-  setStoryStart, showDevInfoOnScreen, storyFileParserClimate, infoFileParserClimate, flyTo, DataLoader,
+  storyGetLayer, storyGetLocation, satelliteToggle, toggleShowNode,
+  storyFileParserClimate, storyResetLayer, storyGetIdleBehavior
 } from '../utils/storyHelpers';
 //import  climate_stories from "../../stories/stories.json";
 //------------------------------------------------------------------------------//
@@ -135,17 +135,20 @@ class OnClimateGui extends Component {
   resetStory() {
     const { luaApi } = this.props;
     const { currentStory } = this.state;
-
+    storyResetLayer(luaApi);
     this.setState({startJourney: currentStory});
     UpdateDeltaTimeNow(luaApi, 1);
     this.setStory(DefaultStory);
     //remove satelites from start profile
     satelliteToggle(luaApi, true);
-    luaApi.setPropertyValue("NavigationHandler.OrbitalNavigator.IdleBehavior.ApplyIdleBehavior", true);
+    time = setDateToNow(luaApi)
+    //spin earth
+    storyGetIdleBehavior(luaApi, 0, true);
     // get orginal story position
+
     climate_stories.startpage.map((story) => {
       return (
-          storyGetLocation(luaApi, story.pos),
+          storyGetLocation(luaApi, story.pos, time),
           storyGetLayer(luaApi, story.toggleboolproperties)
           );
         });
@@ -177,7 +180,7 @@ class OnClimateGui extends Component {
         </p>
         <section className={styles.Grid__Left}>
 
-        
+
         {(currentStory === DefaultStory )
           ? <StartJourney changeStory = {this.setStory}/>
         : <ExploreClimate resetStory = {this.resetStory} json = {json} currentStory= {currentStory}/>

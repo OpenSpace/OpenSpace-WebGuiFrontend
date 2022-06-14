@@ -41,6 +41,10 @@
             "label":"Overview of currents",
             "defaultvalue": true
           }],
+          "screenSpace":{
+              "URI":"ScreenSpace.noaa-sos-oceans-ecco2_sst-gray_land.Enabled",
+              "defaultvalue":false
+           },
           "local":[]
 
       },
@@ -72,6 +76,10 @@
             "label":"Detailed currents, OSCAR",
             "defaultvalue": true
           }],
+          "screenSpace":{
+              "URI":"ScreenSpace.noaa-sos-oceans-ecco2_sst-gray_land.Enabled",
+              "defaultvalue":false
+           },
           "local":[]
       },
       {
@@ -102,6 +110,10 @@
             "label":"Overview of currents",
             "defaultvalue": true
           }],
+          "screenSpace":{
+              "URI":"ScreenSpace.noaa-sos-oceans-ecco2_sst-gray_land.Enabled",
+              "defaultvalue":false
+           },
           "local":[]
       }
 

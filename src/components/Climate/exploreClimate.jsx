@@ -10,8 +10,9 @@ import PickStoryLocal from './LocalStory/PickStoryLocal';
 import SightsController from '../TouchBar/UtilitiesMenu/presentational/SightsController';
 import subStateToProps from "../../utils/subStateToProps";
 import {
-  storyGetLayer, storyGetLocation, storyGetIdleBehavior, storyResetLayer
+  storyGetLayer, storyGetLocation, storyGetIdleBehavior, storyResetLayer, storyGetScreenSpace
 } from '../../utils/storyHelpers';
+import { setDate } from '../../utils/timeHelpers';
 class ExploreClimate extends Component{
   constructor(props) {
     super(props);
@@ -59,8 +60,10 @@ class ExploreClimate extends Component{
             console.table(layer);
               storyGetLayer(luaApi, layer )
           });
-          storyGetLocation(luaApi, story.pos);
-          storyGetIdleBehavior(luaApi, orbitAtConstantLatiude);
+          storyGetLocation(luaApi, story.pos, story.date);
+          storyGetIdleBehavior(luaApi, orbitAtConstantLatiude, true);
+          storyGetScreenSpace(luaApi, story.screenSpace)
+          
 
           return (
             <div key = {story.id}>

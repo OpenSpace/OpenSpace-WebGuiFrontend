@@ -4,33 +4,33 @@ import {
   setActionsPath,
   setPopoverVisibility,
   triggerAction,
-} from "../../api/Actions";
+} from "../../../api/Actions";
 import {
   refreshSessionRecording,
   subscribeToSessionRecording,
   unsubscribeToSessionRecording,
-} from "../../api/Actions";
+} from "../../../api/Actions";
 import PropTypes from 'prop-types';
 import {
   sessionStateIdle,
   sessionStatePaused,
   sessionStatePlaying,
   sessionStateRecording,
-} from "../../api/keys";
-import subStateToProps from "../../utils/subStateToProps";
-import InfoBox from "../common/InfoBox/InfoBox";
-import Button from "../common/Input/Button/Button";
-import Input from "../common/Input/Input/Input";
-import Select from "../common/Input/Select/Select";
-import MaterialIcon from "../common/MaterialIcon/MaterialIcon";
-import SmallLabel from '../common/SmallLabel/SmallLabel';
-import Popover from "../common/Popover/Popover";
-import Row from "../common/Row/Row";
+} from "../../../api/keys";
+import subStateToProps from "../../../utils/subStateToProps";
+import InfoBox from "../../common/InfoBox/InfoBox";
+import Button from "../../common/Input/Button/Button";
+import Input from "../../common/Input/Input/Input";
+import Select from "../../common/Input/Select/Select";
+import MaterialIcon from "../../common/MaterialIcon/MaterialIcon";
+import SmallLabel from '../../common/SmallLabel/SmallLabel';
+import Popover from "../../common/Popover/Popover";
+import Row from "../../common/Row/Row";
 import styles from "./ClimatePanel.scss";
-import Picker from "./Picker";
+import Picker from "../../BottomBar/Picker";
 import {
   storyResetLayer
-} from '../../utils/storyHelpers';
+} from '../../../utils/storyHelpers';
 
 class ClimatePanel extends Component {
 
@@ -325,7 +325,7 @@ getSurfaceLayerAlaska() {
         <p>
           <MaterialIcon
             className={styles.buttonIcon}
-            icon="close"
+            icon="flood"
           />
         </p>
         Consequences

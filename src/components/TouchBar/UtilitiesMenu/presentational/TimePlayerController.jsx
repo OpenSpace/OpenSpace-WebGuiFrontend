@@ -33,6 +33,7 @@ class TimePlayerController extends Component {
   }
 
   get time() {
+    console.log(this.props.time)
     return this.props.time.toUTCString();
   }
 

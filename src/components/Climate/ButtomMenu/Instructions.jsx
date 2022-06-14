@@ -31,6 +31,9 @@ const Instructions = props => {
         <div className = {styles.Background}>
           <div className = {styles.Instructions}>
             <div className = {styles.Row}>
+              <div className = {styles.Text}><h3>How to use OpenSpace:</h3></div>
+            </div>
+            <div className = {styles.Row}>
               <img src = {imagesleft} alt = "imagesleft" />
               <div className = {styles.Text}><p>: Spin around Earth</p></div>
             </div>
@@ -43,7 +46,8 @@ const Instructions = props => {
               <div className = {styles.Text}><p>: Rotate the Camera</p></div>
             </div>
             <div className = {styles.Row}>
-              <div className = {styles.Text}> <p> CTRL key + </p></div>
+              <div className = {styles.TextCTRL}> <p> Ctrl </p> </div>
+              <div className = {styles.Text}><p>+</p></div>
               <img src = {imagesleft} alt="imagesleft" />
               <div className = {styles.Text}>: Yaw or Pitch the Camera</div>
             </div>

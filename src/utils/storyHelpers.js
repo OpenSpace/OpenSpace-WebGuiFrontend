@@ -77,7 +77,10 @@ export const storyGetLayer = (luaApi, layer) => {
 };
 
 
-export const storyGetLocation = (luaApi, position) => {
+export const storyGetLocation = (luaApi, position, startTime) => {
+
+  //set date and time
+  luaApi.time.setTime(startTime);
 
   luaApi.pathnavigation.flyToNavigationState({
     Anchor: position.anchor,
@@ -86,6 +89,7 @@ export const storyGetLocation = (luaApi, position) => {
     Up: [position.up.x,position.up.y,position.up.z],
     Yaw: position.yaw
   })
+
 }
 
 export const satelliteToggle = (luaApi, toggleBool) => {
@@ -93,14 +97,14 @@ export const satelliteToggle = (luaApi, toggleBool) => {
   luaApi.setPropertyValue("Scene.visual.Renderable.Enabled", toggleBool); //100 brightes
   luaApi.setPropertyValue("Scene.geo.Renderable.Enabled", toggleBool); //geostationary
   luaApi.setPropertyValue("Scene.gps-ops.Renderable.Enabled", toggleBool); //gps
-  //luaApi.setPropertyValue("Scene.ISS_trail.Renderable.Enabled", toggleBool); //iss Trail
-  //luaApi.setPropertyValue("Scene.ISSModel.Renderable.Enabled", toggleBool); //iss Modell
+  luaApi.setPropertyValue("Scene.ISS_trail.Renderable.Enabled", toggleBool); //iss Trail
+  luaApi.setPropertyValue("Scene.ISSModel.Renderable.Enabled", toggleBool); //iss Modell
   luaApi.setPropertyValue("Scene.tle-new.Renderable.Enabled", toggleBool); //Last 30days
   luaApi.setPropertyValue("Scene.stations.Renderable.Enabled", toggleBool); //Spacestation
 };
 
-export const storyGetIdleBehavior = (luaApi, scrollValue)=>{
-  luaApi.setPropertyValue("NavigationHandler.OrbitalNavigator.IdleBehavior.ApplyIdleBehavior", true);
+export const storyGetIdleBehavior = (luaApi, scrollValue, toggleBool)=>{
+  luaApi.setPropertyValue("NavigationHandler.OrbitalNavigator.IdleBehavior.ApplyIdleBehavior", toggleBool);
   luaApi.setPropertyValue("NavigationHandler.OrbitalNavigator.IdleBehavior.IdleBehavior", scrollValue);
 };
 
@@ -111,6 +115,10 @@ export const storyResetLayer = (luaApi) => {
 
 };
 
+export const storyGetScreenSpace = (luaApi, screenSpace) => {
+  luaApi.setPropertyValue(screenSpace.URI, screenSpace.defaultvalue )
+
+};
 
 
 /////////////////////////
