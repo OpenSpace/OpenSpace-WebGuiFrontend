@@ -9,6 +9,7 @@ import Error from '../components/common/Error/Error';
 import Button from '../components/common/Input/Button/Button';
 import Overlay from '../components/common/Overlay/Overlay';
 import Stack from '../components/common/Stack/Stack';
+import LuaConsole from '../components/LuaConsole/LuaConsole';
 import NodeMetaContainer from '../components/NodeMetaPanel/NodeMetaContainer';
 import NodePopOverContainer from '../components/NodePropertiesPanel/NodePopOverContainer';
 import Sidebar from '../components/Sidebar/Sidebar';
@@ -82,6 +83,7 @@ class OnScreenGui extends Component {
           <Sidebar />
         </section>
         <section className={styles.Grid__Right}>
+          <LuaConsole />
           <NodePopOverContainer />
           <NodeMetaContainer />
           <BottomBar showFlightController={this.props.showFlightController}/>
