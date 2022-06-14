@@ -48,6 +48,9 @@ let Group = ({ path, expansionIdentifier, entries, isExpanded, setExpanded, sort
   }
 
   if (displayName(path) === "Software Integration") {
+    {/* A bit hacky...
+        This won't affect any logic or GUI other than adding a new `ToggleContent`
+        under "Scene/Software Integration" if there is at least one SGN there. */}
     sortedEntries.unshift({
       type: "softwareIntegrationSessionHandlingUi"
     });
