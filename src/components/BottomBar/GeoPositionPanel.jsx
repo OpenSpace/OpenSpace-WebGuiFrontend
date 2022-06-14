@@ -53,7 +53,7 @@ function GeoPositionPanel({ luaApi, popoverVisible, setPopoverVisibilityProp }) 
       >        
         <Input placeholder={"Search..."} onChange={(value) => getLongLat(value)}></Input>
         long lat
-        <Button onClick={() => luaApi.globebrowsing.goToGeo("Earth", lat, long, 8000000)}>Go to position</Button>
+        <Button onClick={() => luaApi.globebrowsing.flyToGeo("Earth", lat, long, 8000000)}>Go to position</Button>
       </Popover>
     );
   }
