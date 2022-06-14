@@ -1,11 +1,13 @@
 import React, { useState, useCallback } from 'react'
+import { useSelector, useDispatch } from "react-redux";
+
 import Button from "../../common/Input/Button/Button";
 import Input from "../../common/Input/Input/Input";
 import ToggleContent from "../../common/ToggleContent/ToggleContent";
 import MaterialIcon from "../../common/MaterialIcon/MaterialIcon";
 import InfoBox from "../../common/InfoBox/InfoBox";
 import Row from "../../common/Row/Row";
-import { useSelector } from "react-redux";
+import { setPropertyTreeExpansion } from '../../../api/Actions';
 
 import styles from './SoftwareIntegrationSession.scss';
 import toggleHeaderStyles from '../../common/ToggleContent/ToggleHeader.scss';
@@ -17,14 +19,23 @@ const useIsSessionNameValid = () => {
 };
 
 const SaveSession = () => {
+  const dispatch = useDispatch();
   const luaApi = useSelector((state) => state.luaApi);
+  const expanded = useSelector((state) => state.local.propertyTreeExpansion["SoftwareIntegrationSessionHandlingUi"]);
   const isSessionNameValid = useIsSessionNameValid();
 
-  const [expanded, setExpanded] = useState(false);
   const [sessionName, setSessionName] = useState("");
   const [loading, setLoading] = useState(false);
   const [hasSavedButNotChanged, setHasSavedButNotChanged] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+
+  const setExpanded = useCallback((expanded) => {
+    if (!dispatch) return;
+    dispatch(setPropertyTreeExpansion({
+      identifier: "SoftwareIntegrationSessionHandlingUi",
+      expanded,
+    }));
+  }, [dispatch]);
 
   const onSessionNameChange = (event) => {
     if (!event?.target) return;
