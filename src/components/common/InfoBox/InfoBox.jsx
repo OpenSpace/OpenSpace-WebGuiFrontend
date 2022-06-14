@@ -42,11 +42,12 @@ class InfoBox extends Component {
   }
 
   render() {
-    const { icon, text, inpanel } = this.props;
+    const { icon, text, inpanel, className } = this.props;
     const { showPopup } = this.state;
     return (
       <span
         ref={this.setRef('wrapper')}
+        className={className}
       >
         <MaterialIcon icon={icon}
          onMouseEnter={this.showPopup}
@@ -64,10 +65,12 @@ class InfoBox extends Component {
 InfoBox.propTypes = {
   icon: PropTypes.string,
   text: PropTypes.string.isRequired,
+  className: PropTypes.string,
 };
 
 InfoBox.defaultProps = {
   icon: 'info',
+  className: '',
 };
 
 export default InfoBox;

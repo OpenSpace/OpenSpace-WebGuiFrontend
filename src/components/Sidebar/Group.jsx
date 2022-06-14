@@ -9,6 +9,7 @@ import PropertyOwner, {
   displayName as propertyOwnerName, 
   nodeExpansionIdentifier as propertyOwnerNodeExpansionIdentifier 
 } from './Properties/PropertyOwner';
+import SoftwareIntegrationSession from "./SoftwareIntegrationSession/SoftwareIntegrationSession";
 
 const displayName = path => {
   const splitPath = path.split('/');
@@ -46,6 +47,12 @@ let Group = ({ path, expansionIdentifier, entries, isExpanded, setExpanded, sort
       });
   }
 
+  if (displayName(path) === "Software Integration") {
+    sortedEntries.unshift({
+      type: "softwareIntegrationSessionHandlingUi"
+    });
+  }
+
   return <ToggleContent
     title={displayName(path)}
     expanded={isExpanded}
@@ -73,6 +80,9 @@ let Group = ({ path, expansionIdentifier, entries, isExpanded, setExpanded, sort
                                   uri={entry.payload}
                                   expansionIdentifier={childNodeIdentifier} />
             }
+          case 'softwareIntegrationSessionHandlingUi': {
+            return <SoftwareIntegrationSession key={entry.type} />;
+          }
           default:
             return null;
         }
