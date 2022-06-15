@@ -26,6 +26,7 @@ import MaterialIcon from "../common/MaterialIcon/MaterialIcon";
 import climateButton from '../../../images/climateButton.png'
 import glac from '../../../images/glac.png'
 import glac2 from '../../../images/glac2.png'
+import newGlac from '../../../images/newGlac.png'
 import cur from '../../../images/cur.png'
 import cons from '../../../images/cons.png'
 import SmallLabel from '../common/SmallLabel/SmallLabel';
@@ -211,7 +212,7 @@ getSurfaceLayerAlaska() {
         className={styles.menuButton}
       >
         <div>
-          <img src = {glac2} alt = "glac" />
+          <img src = {newGlac} alt = "glac" />
         </div>
         <div>
           Glaciers
@@ -225,7 +226,7 @@ getSurfaceLayerAlaska() {
         block
         smalltext
         onClick={() => {
-          
+
               storyResetLayer(luaApi);
               this.getSurfaceLayerAntarctica();
         }}

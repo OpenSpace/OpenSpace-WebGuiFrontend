@@ -52,14 +52,14 @@ class ExploreClimate extends Component{
 
     return(
       filePath.map((story) => {
-
         if(story.id == StoryStep){
           story.toggleboolproperties.map((layer) => {
           //  console.log("Layer!!!!!");
           //  console.table(layer);
               storyGetLayer(luaApi, layer )
           });
-          storyGetLocation(luaApi, story.pos);
+
+          storyGetLocation(luaApi, story.pos, story.date);
           storyGetIdleBehavior(luaApi, orbitAtConstantLatiude);
 
           return (
@@ -84,9 +84,8 @@ class ExploreClimate extends Component{
     const { json, storyInfo, currentStory, luaApi } = this.props;
     const { StoryStep, showStory, currentStoryLocal } = this.state;
     var stepThroughJourney = this.stepThroughStory(StoryStep, json.journey);
+
     //var getToggleboolproperties = this.getToggleboolproperties(StoryStep, json.journey)
-
-
     //noSow -> we don't want to show the story if pressing the climate icon in the bar
     // see ClimatePanel
     return (
@@ -96,9 +95,7 @@ class ExploreClimate extends Component{
             { StoryStep <  stepThroughJourney.length && showStory && (currentStory != "noShow") &&
               <div  >
                 {stepThroughJourney}
-
               </div>
-
             }
 
             <br/>
@@ -106,7 +103,6 @@ class ExploreClimate extends Component{
             <br/>
 
               { json.journey[StoryStep].local.length > 0 && (currentStory != "noShow") &&
-
                   json.journey[StoryStep].local.map((story, index) => {
                     return(
                         <div key = {index} >
@@ -118,14 +114,12 @@ class ExploreClimate extends Component{
                           })}
                           setShowStory = {(newState) => this.setState({
                             showStory: newState
-
                           })}
                           luaApi = {luaApi}
                         />
                        </div>
                       );
                     })
-
                 }
                 <br/>
                 <br/>
@@ -154,7 +148,6 @@ class ExploreClimate extends Component{
                         iconNextPrev = "chevron_left"
                         iconPlacement = {styles.Icon}
                         />
-
                     </section>
                   }
           </div>

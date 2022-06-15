@@ -77,8 +77,9 @@ export const storyGetLayer = (luaApi, layer) => {
   luaApi.setPropertyValue(layer.URI, layer.defaultvalue);
 };
 
-export const storyGetLocation = (luaApi, position) => {
-
+export const storyGetLocation = (luaApi, position, startTime) => {
+  //set date and time
+  luaApi.time.setTime(startTime);
   luaApi.pathnavigation.flyToNavigationState({
     Anchor: position.anchor,
     Pitch: position.pitch,
@@ -86,12 +87,8 @@ export const storyGetLocation = (luaApi, position) => {
     Up: [position.up.x,position.up.y,position.up.z],
     Yaw: position.yaw
   })
-};
+}
 
-/*export const storyGetDate = (luaApi, date) => {
-
-  luaApi.time.setTime(date);
-};*/
 
 export const satelliteToggle = (luaApi, toggleBool) => {
 
@@ -113,7 +110,7 @@ export const storyResetLayer = (luaApi) => {
 
   luaApi.setPropertyValue("Scene.Earth.Renderable.Layers.ColorLayers.*.Enabled", false);
   luaApi.setPropertyValue("Scene.Earth.Renderable.Layers.Overlays.*.Enabled", false);
-  luaApi.setPropertyValue("ScreenSpace.noaa-sos-oceans-ecco2_sst-veg_land-colorbar.Enabled", false);
+  luaApi.setPropertyValue("ScreenSpace.*.Enabled", false);
 };
 
 

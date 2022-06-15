@@ -148,11 +148,10 @@ class OnClimateGui extends Component {
     // get orginal story position
     climate_stories.startpage.map((story) => {
       return (
-          storyGetLocation(luaApi, story.pos),
+          storyGetLocation(luaApi, story.pos, story.date),
           storyGetLayer(luaApi, story.toggleboolproperties) // works when this is gone too?
           );
         });
-
   }
 
 

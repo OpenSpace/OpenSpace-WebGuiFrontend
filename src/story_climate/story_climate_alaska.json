@@ -78,8 +78,13 @@
             "defaultvalue": true
           },
           {
-            "URI":"Scene.Earth.Renderable.Layers.ColorLayers.ECCO_temp.Enabled",
+            "URI":"Scene.Earth.Renderable.Layers.ColorLayers.ECCO_temp-layer.Enabled",
             "label":"Own ECCO",
+            "defaultvalue": true
+          },
+          {
+            "URI": "ScreenSpace.ECCO_temp-colorbar.Enabled",
+            "label":"ECCO colorbar",
             "defaultvalue": true
           }],
           "local":[]
@@ -113,8 +118,13 @@
             "defaultvalue": true
           },
           {
-            "URI":"Scene.Earth.Renderable.Layers.ColorLayers.GRACE_temp.Enabled",
+            "URI":"Scene.Earth.Renderable.Layers.ColorLayers.GRACE_temp-layer.Enabled",
             "label":"Grace",
+            "defaultvalue": true
+          },
+          {
+            "URI": "ScreenSpace.GRACE_temp-colorbar.Enabled",
+            "label":"ECCO colorbar",
             "defaultvalue": true
           }],
           "local":[]

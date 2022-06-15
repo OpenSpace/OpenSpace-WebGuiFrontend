@@ -23,7 +23,7 @@ class DisplaylocalStory extends Component{
     climateStorys.toggleboolproperties.map((layer) => {
         storyGetLayer(luaApi, layer )
     });
-    storyGetLocation(luaApi, climateStorys.pos);
+    storyGetLocation(luaApi, climateStorys.pos, climateStorys.date);
     storyGetIdleBehavior(luaApi, orbitAtConstantLatiude);
 
     return (

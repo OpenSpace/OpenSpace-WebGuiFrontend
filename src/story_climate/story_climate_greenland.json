@@ -48,7 +48,7 @@
       },
       {
         "title": "Show detailed currents",
-        "storyinfo": "Climate Climate Climate Climate Climate Climate Climate Climate Climate",
+        "storyinfo": "Here you can see the ocean currents more in detail. This visualization is a combination of all ocean and sea ice data that is available on a global scale. The colors of the ocean currents in this visualization correspond to the sea surface temperature which is displayed in the color bar below.",
         "date": "2021-06-18T12:00:00.00",
         "id": 1,
         "pos": {
@@ -91,7 +91,7 @@
       },
       {
         "title": "Show ice melt on Greenland",
-        "storyinfo": "Greenland is melting both from above and below at the same time. During summer, warmer air melts the ice. Then the meltwater bores holes through the ice all the way down to the bottom of the glacier. The meltwater then runs beneath the glacier until it reaches the ocean. Meltwater doesn’t contain any salt and therefore it weighs less than ocean water and rises to the front of the glacier. Near the surface, the ocean water is fresh and cold and at depth, the water is warmer and salty. The warmer, salty water starts melting the glacier face from the bottom and up. Eventually a piece of the glacier then breaks off and creates an iceberg. \n \n This visualization displays how many melting days Greenland had a specific year between 1989 and 2006. In 2006 Greenland had more melting days than average when comparing it to the other years that have been studied. The blue color in the visualization corresponds to 10 melting days, and the red color corresponds to 60 or more melting days. ",
+        "storyinfo": "Between 2012 and 2016 was the yearly ice loss at Greenland about 247 billion tons, which is a seven-fold increment from 34 billion tons, which was the annual ice loss between 1992 and 2001. \n \n This visualization displays how many melting days Greenland had a specific year between 1989 and 2006. In 2006 Greenland had more melting days than average when comparing it to the other years that have been studied. The blue color in the visualization corresponds to 10 melting days, and the red color corresponds to 60 or more melting days. ",
         "date": "1989-07-18T12:00:00.00",
         "id": 2,
         "pos": {
@@ -127,7 +127,7 @@
       {
         "id" : 3,
         "title": "Consequences from sea level rise",
-        "storyinfo": "Climate Climate Climate Climate Climate Climate Climate Climate Climate.",
+        "storyinfo": "The problem that arises when glaciers and sea ice melts is that the sea level rises. 8 of the 10 biggest cities in the world are close to the coast. Therefore, a lot of people's lives are affected by a sea-level rise since it plays a part in hazards from storms, flooding, and shoreline erosion.  The sea level is expected to rise 25 to 30 centimeters between 2020 and 2050 in the US. In other parts of the world, the sea level is presumed to rise even more, which could be 40 to 45 centimeters.",
         "date": "2021-12-18T05:09:00.00",
         "pos": {
           "anchor": "Earth",
