@@ -20,7 +20,6 @@ import Sidebar from '../components/Sidebar/Sidebar';
 import NodeMetaContainer from '../components/NodeMetaPanel/NodeMetaContainer';
 import NodePopOverContainer from '../components/NodePropertiesPanel/NodePopOverContainer';
 import ExploreClimate from '../components/climate/ExploreClimate'
-import HomeButtonContainer from '../components/TouchBar/UtilitiesMenu/containers/HomeButtonContainer';
 import {
   setPropertyValue, startConnection, fetchData, addStoryTree, subscribeToProperty,
   unsubscribeToProperty, addStoryInfo, resetStoryInfo,
@@ -31,6 +30,9 @@ import {
   ValuePlaceholder, DefaultStory, ScaleKey,
   NavigationAnchorKey,InfoIconKey, ZoomInLimitKey, ZoomOutLimitKey,
 } from '../api/keys'
+import {
+  storyResetLayer
+} from '../utils/storyHelpers';
 
 
 import StartJourney from '../components/Climate/startJourney'
@@ -141,6 +143,7 @@ class OnClimateGui extends Component {
     this.setStory(DefaultStory);
     //remove satelites from start profile
     satelliteToggle(luaApi, true);
+    storyResetLayer(luaApi);
     luaApi.setPropertyValue("NavigationHandler.OrbitalNavigator.IdleBehavior.ApplyIdleBehavior", true);
     // get orginal story position
     climate_stories.startpage.map((story) => {
@@ -149,6 +152,7 @@ class OnClimateGui extends Component {
           storyGetLayer(luaApi, story.toggleboolproperties) // works when this is gone too?
           );
         });
+
   }
 
 

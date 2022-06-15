@@ -19,6 +19,9 @@ import Slider from '../BottomBar/Slider';
 import SkyBrowserPanel from '../BottomBar/SkyBrowserPanel';
 import TimePlayerController from '../TouchBar/UtilitiesMenu/presentational/TimePlayerController'
 import Instructions from './Instructions/Instructions'
+import {
+  storyResetLayer
+} from '../../utils/storyHelpers';
 
 let BottomBar = ({
   showExoplanets,

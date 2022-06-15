@@ -20,6 +20,8 @@
   height: 100%;
   width: 100%;
 }
+
+//Doesn't do anything, remove?
 .HomeButton{
   //top: 100px;
   display: flex;
@@ -53,6 +55,7 @@
   z-index: 999;
   color: lightgrey;
   font-size: 16px;
+  white-space: pre-line;
 }
 
 /*.StoryPosistion{

@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import React,{ Component } from 'react';
-import HomeButtonContainer from '../TouchBar/UtilitiesMenu/containers/HomeButtonContainer';
 import styles from './exploreClimate.scss';
 import stylesButton from '../Climate/Button.scss';
 import Icon from '../common/MaterialIcon/MaterialIcon';

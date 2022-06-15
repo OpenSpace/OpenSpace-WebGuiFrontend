@@ -23,7 +23,8 @@ export const setStoryStart = (luaApi, startPosition, startTime) => {
     Yaw:startPosition.yaw
   });
 
-setDate(luaApi, startTime);
+  setDate(luaApi, startTime);
+
 };
 
 // Function to toggle the shading on a node, value = 'true' equals shading enabled
@@ -85,7 +86,12 @@ export const storyGetLocation = (luaApi, position) => {
     Up: [position.up.x,position.up.y,position.up.z],
     Yaw: position.yaw
   })
-}
+};
+
+/*export const storyGetDate = (luaApi, date) => {
+
+  luaApi.time.setTime(date);
+};*/
 
 export const satelliteToggle = (luaApi, toggleBool) => {
 
@@ -107,7 +113,7 @@ export const storyResetLayer = (luaApi) => {
 
   luaApi.setPropertyValue("Scene.Earth.Renderable.Layers.ColorLayers.*.Enabled", false);
   luaApi.setPropertyValue("Scene.Earth.Renderable.Layers.Overlays.*.Enabled", false);
-
+  luaApi.setPropertyValue("ScreenSpace.noaa-sos-oceans-ecco2_sst-veg_land-colorbar.Enabled", false);
 };
 
 

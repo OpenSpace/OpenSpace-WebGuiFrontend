@@ -3,7 +3,7 @@
       {
         "id": 1,
         "title": "Climate change",
-        "info": "Global climate change is an important topic that has major effects on the environment. Some consequences from climate change are  loss of sea ice, an acceleration of sea level rise and longer and more intense heat waves. According to scientists the global temperature will continue to increase for decades.             ...Something satellite...",
+        "info": "Global climate change is an important topic that has major effects on the environment. Some consequences from climate change are  loss of sea ice, an acceleration of sea level rise and longer and more intense heat waves. According to scientists the global temperature will continue to increase for decades. \n \n A challenge is to measure the thickness of the ice sheets to see how much ice that has melted. But a way to solve this problem is to use satellites to measure the thickness. ",
         "identifier": "startpage",
         "pos": {
           "anchor": "Earth",
@@ -26,12 +26,6 @@
             "URI":"Scene.Earth.Renderable.Layers.ColorLayers.ESRI_VIIRS_Combo.Enabled",
             "label":"ESRI VIIRS Combo",
             "defaultvalue": true
-          },
-        "toggleboolproperties_noshow":
-          {
-            "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-ecco2_sst-veg_land-layer.Enabled",
-            "label":"Detailed currents, ECCO",
-            "defaultvalue": false
           }
       }
     ],

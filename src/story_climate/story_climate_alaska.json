@@ -11,7 +11,7 @@
   "journey":  [
       {
         "title": "Show overview of currents",
-        "storyinfo": "Climate Climate Climate Climate Climate Climate Climate Climate Climate",
+        "storyinfo": "In the ocean there are both colder and warmer currents where the blue color visualizes the colder currents in this visualization and red color indicates warmer currents. The arrows show the direction of the currents in the ocean. If the circulation of the currents would change there could be huge impacts on the climate. When the glaciers and ice sheets melt, the fresh water will enter the ocean. Because of this melt water there is a risk the ocean circulation will slow down or even stop.",
         "date": "2021-06-18T22:00:00.00",
         "id" : 0,
           "pos": {
@@ -51,7 +51,7 @@
       },
       {
         "title": "Show detailed currents",
-        "storyinfo": "Climate Climate Climate Climate Climate Climate Climate Climate Climate",
+        "storyinfo": "Here you can see the ocean currents more in detail. This visualization is a combination of all ocean and sea ice data that is available on a global scale. The colors of the ocean currents in this visualization correspond to the sea surface temperature which is displayed in the color bar below.",
         "date": "2021-06-18T22:00:00.00",
         "id" : 1,
         "pos": {
@@ -78,8 +78,8 @@
             "defaultvalue": true
           },
           {
-            "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-ecco2_sst-veg_land-layer.Enabled",
-            "label":"Detailed currents, ECCO",
+            "URI":"Scene.Earth.Renderable.Layers.ColorLayers.ECCO_temp.Enabled",
+            "label":"Own ECCO",
             "defaultvalue": true
           }],
           "local":[]
@@ -110,6 +110,11 @@
           {
             "URI":"Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled",
             "label":"Background of Earth",
+            "defaultvalue": true
+          },
+          {
+            "URI":"Scene.Earth.Renderable.Layers.ColorLayers.GRACE_temp.Enabled",
+            "label":"Grace",
             "defaultvalue": true
           }],
           "local":[]

@@ -10,7 +10,7 @@
   "journey":  [
       {
         "title": "Show overview of currents",
-        "storyinfo": "The air temperatures in the Arctic increase faster than anywhere else on Earth every year. The balance at Greenland is therefore disturbed since the amount of ice that melts is not equal to the amount that falls at the surface. Greenland is surrounded by warmer ocean water which also is a problem for the glacier to maintain. ",
+        "storyinfo": "In the ocean there are both colder and warmer currents where the blue color visualizes the colder currents in this visualization and red color indicates warmer currents. The arrows show the direction of the currents in the ocean. If the circulation of the currents would change there could be huge impacts on the climate. When the glaciers and ice sheets melt, the fresh water will enter the ocean. Because of this melt water there is a risk the ocean circulation will slow down or even stop. \n \n The air temperatures in the Arctic increase faster than anywhere else on Earth every year. The balance at Greenland is therefore disturbed since the amount of ice that melts is not equal to the amount that falls at the surface. Greenland is surrounded by warmer ocean water which also is a problem for the glacier to maintain. ",
         "date": "2021-06-18T12:00:00.00",
         "id": 0,
         "pos": {
@@ -81,13 +81,18 @@
             "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-ecco2_sst-veg_land-layer.Enabled",
             "label":"Detailed currents, ECCO",
             "defaultvalue": true
-            }],
+          },
+          {
+            "URI": "ScreenSpace.noaa-sos-oceans-ecco2_sst-veg_land-colorbar.Enabled",
+            "label":"ECCO colorbar",
+            "defaultvalue": true
+          }],
           "local": []
       },
       {
         "title": "Show ice melt on Greenland",
-        "storyinfo": "Climate Climate Climate Climate Climate Climate Climate Climate Climate",
-        "date": "2021-06-18T12:00:00.00",
+        "storyinfo": "Greenland is melting both from above and below at the same time. During summer, warmer air melts the ice. Then the meltwater bores holes through the ice all the way down to the bottom of the glacier. The meltwater then runs beneath the glacier until it reaches the ocean. Meltwater doesn’t contain any salt and therefore it weighs less than ocean water and rises to the front of the glacier. Near the surface, the ocean water is fresh and cold and at depth, the water is warmer and salty. The warmer, salty water starts melting the glacier face from the bottom and up. Eventually a piece of the glacier then breaks off and creates an iceberg. \n \n This visualization displays how many melting days Greenland had a specific year between 1989 and 2006. In 2006 Greenland had more melting days than average when comparing it to the other years that have been studied. The blue color in the visualization corresponds to 10 melting days, and the red color corresponds to 60 or more melting days. ",
+        "date": "1989-07-18T12:00:00.00",
         "id": 2,
         "pos": {
           "anchor": "Earth",
@@ -105,16 +110,18 @@
           },
           "yaw": -0.2251189038007127
         },
-        "IdleBehavior": {
-          "URI" : "NavigationHandler.OrbitalNavigator.IdleBehavior.IdleBehavior",
-          "value": 1
-        },
         "toggleboolproperties":[
           {
             "URI":"Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled",
             "label":"Background of Earth",
             "defaultvalue": true
-          }],
+          },
+          {
+            "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-greenland_melt.Enabled",
+            "label":"Melting on Greenland",
+            "defaultvalue": true
+          }
+        ],
           "local": []
       },
       {
