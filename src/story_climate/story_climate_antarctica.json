@@ -43,6 +43,11 @@
               "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
               "label":"Overview of currents",
               "defaultvalue": true
+            },
+            {
+              "URI": "ScreenSpace.noaa-sos-oceans-currents-legend.Enabled",
+              "label":"Overview colorbar",
+              "defaultvalue": true
             }
           ],
 
@@ -224,20 +229,20 @@
           "storyinfo": "There is a risk that the sea level will rise 2 meters by 2100. The area that would go under water is equivalent to the area of Spain, France, Britain and Germany combined which would result in more than 180 million people having to move. In this visualization it is possible to see which places in the world that would be below sea level if it rises by two meters.",
           "date": "2021-12-18T15:15:00.00",
           "pos":{
-            "anchor": "Earth",
-            "pitch": -0.022558471991152986,
-            "position": {
-              "x": -39121.401130186394,
-              "y": -261304.86831871886,
-              "z": -18336843.09999675
-            },
-            "type": "setNavigationState",
-            "up": {
-              "x": 0.9526825958195455,
-              "y": -0.3039581985290602,
-              "z": 0.0022989496518204255
-            },
-            "yaw": -0.20582220095513115
+             "anchor":"Earth",
+             "pitch":-0.03651119926122576,
+             "position":{
+                "x":-1152145.3978969743,
+                "y":-15271036.370115351,
+                "z":9682927.443411129
+             },
+             "type":"setNavigationState",
+             "up":{
+                "x":-0.20400852731965874,
+                "y":0.5351667325265219,
+                "z":0.819742086986968
+             },
+             "yaw":-0.2376877039313796
           },
           "toggleboolproperties":[
             {
