@@ -127,7 +127,7 @@
       {
         "id" : 3,
         "title": "Consequences from sea level rise",
-        "storyinfo": "The problem that arises when glaciers and sea ice melts is that the sea level rises. 8 of the 10 biggest cities in the world are close to the coast. Therefore, a lot of people's lives are affected by a sea-level rise since it plays a part in hazards from storms, flooding, and shoreline erosion.  The sea level is expected to rise 25 to 30 centimeters between 2020 and 2050 in the US. In other parts of the world, the sea level is presumed to rise even more, which could be 40 to 45 centimeters.",
+        "storyinfo": "The problem that arises when glaciers and sea ice melts is that the sea level rises. 8 of the 10 biggest cities in the world are close to the coast. Therefore, a lot of people's lives are affected by a sea-level rise since it plays a part in hazards from storms, flooding, and shoreline erosion.  The sea level is expected to rise 25 to 30 centimeters between 2020 and 2050 in the US. In other parts of the world, the sea level is presumed to rise even more, which could be 40 to 45 centimeters. \n\n If all the ice on Greenland would melt, the sea level would rise by 7 meters, and because Greenland is closer to the equator, the temperature is higher, and there is a bigger risk the ice will melt than at Antarctica. \n\n Below you can choose to see a visualization of what areas in the world that would be under sea level if it rises by 2, 4 and 6 meters.",
         "date": "2021-12-18T05:09:00.00",
         "pos": {
           "anchor": "Earth",
@@ -159,7 +159,7 @@
           {
           "title": "2 meters rise",
           "id" : 2,
-          "storyinfo": "This happened when the sea level rised with 2 meter.",
+          "storyinfo": "There is a risk that the sea level will rise 2 meters by 2100. The area that would go under water is equivalent to the area of Spain, France, Britain and Germany combined which would result in more than 180 million people having to move. In this visualization it is possible to see which places in the world that would be below sea level if it rises by two meters.",
           "date": "2021-12-18T15:15:00.00",
           "pos":{
             "anchor": "Earth",
@@ -192,7 +192,7 @@
         {
           "title": "4 meters rise",
           "id" : 1,
-          "storyinfo": "This happened when the sea level rised with 4 meter.",
+          "storyinfo": "In this visualization it is possible to see which places in the world that would be below sea level if it rises by four meters.",
           "date": "2021-12-18T15:15:00.00",
           "pos":{
              "anchor":"Earth",
@@ -226,7 +226,7 @@
         {
           "title": "6 meters rise",
           "id" : 0,
-          "storyinfo": "This happened when the sea level rised with 6 meter",
+          "storyinfo": "In this visualization it is possible to see which places in the world that would be below sea level if it rises by six meters. ",
           "date": "2021-12-18T15:15:00.00",
           "pos":{
              "anchor":"Earth",
