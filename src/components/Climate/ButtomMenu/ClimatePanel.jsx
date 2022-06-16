@@ -1,42 +1,39 @@
 import React, { Component, useState } from "react";
 import { connect } from "react-redux";
 import {
-  setActionsPath,
+
   setPopoverVisibility,
-  triggerAction,
-} from "../../api/Actions";
-import {
-  refreshSessionRecording,
-  subscribeToSessionRecording,
-  unsubscribeToSessionRecording,
-} from "../../api/Actions";
+
+} from "../../../api/Actions";
+
 import PropTypes from 'prop-types';
 import {
   sessionStateIdle,
   sessionStatePaused,
   sessionStatePlaying,
   sessionStateRecording,
-} from "../../api/keys";
-import subStateToProps from "../../utils/subStateToProps";
-import InfoBox from "../common/InfoBox/InfoBox";
-import Button from "../common/Input/Button/Button";
-import Input from "../common/Input/Input/Input";
-import Select from "../common/Input/Select/Select";
-import MaterialIcon from "../common/MaterialIcon/MaterialIcon";
-import climateButton from '../../../images/climateButton.png'
-import glac from '../../../images/glac.png'
-import glac2 from '../../../images/glac2.png'
-import newGlac from '../../../images/newGlac.png'
-import cur from '../../../images/cur.png'
-import cons from '../../../images/cons.png'
-import SmallLabel from '../common/SmallLabel/SmallLabel';
-import Popover from "../common/Popover/Popover";
-import Row from "../common/Row/Row";
+} from "../../../api/keys";
+import subStateToProps from "../../../utils/subStateToProps";
+import InfoBox from "../../common/InfoBox/InfoBox";
+import Button from "../../common/Input/Button/Button";
+import Input from "../../common/Input/Input/Input";
+import Select from "../../common/Input/Select/Select";
+import MaterialIcon from "../../common/MaterialIcon/MaterialIcon";
+import climateButton from '../../../../images/climateButton.png'
+import glac from '../../../../images/glac.png'
+import cur from '../../../../images/cur.png'
+import newGlac from '../../../../images/newGlac.png'
+import cons from '../../../../images/cons.png'
+import SmallLabel from '../../common/SmallLabel/SmallLabel';
+import Popover from "../../common/Popover/Popover";
+import Row from "../../common/Row/Row";
 import styles from "./ClimatePanel.scss";
-import Picker from "./Picker";
+import Picker from "../../BottomBar/Picker";
+
+
 import {
   storyResetLayer
-} from '../../utils/storyHelpers';
+} from '../../../utils/storyHelpers';
 
 class ClimatePanel extends Component {
 

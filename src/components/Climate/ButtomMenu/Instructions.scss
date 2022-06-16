@@ -28,7 +28,7 @@
   border-bottom: 3px solid $ui-highlight-secondary;
 }
 
-$icon-size: 32px;
+$icon-size: 25px;
 .Test{
 
   color: red;
@@ -46,11 +46,27 @@ $icon-size: 32px;
   align-items: center;
 }
 
+.Text {
+  font-size: $icon-size;
+  display: table-cell;
+  align-items: center;
+}
+
+.TextCTRL {
+  font-size: 16;
+  display: table-cell;
+  align-items: center;
+  border-style: solid;
+  border-color: lightgray;
+  border-radius: 6px;
+  padding:  0px 30px 0px 0px;;
+}
+
 .Instructions {
   position: absolute;
   align-items: center;
-  top: 80%;
-  left: 50%;
+  top: 60%;
+  left: 70%;
   transform: translate(-50%, -50%);
   z-index:9999;
   height: 80%;

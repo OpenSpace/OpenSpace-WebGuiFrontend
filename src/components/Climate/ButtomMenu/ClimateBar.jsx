@@ -4,24 +4,20 @@ import PropTypes from 'prop-types';
 import {
   subscribeToProperty,
   unsubscribeToProperty,
-} from '../../api/Actions';
-import { ExoplanetsModuleEnabledKey, SkyBrowserModuleEnabledKey } from '../../api/keys';
-import { getBoolPropertyValue } from '../../utils/propertyTreeHelpers';
+} from '../../../api/Actions';
+import { ExoplanetsModuleEnabledKey, SkyBrowserModuleEnabledKey } from '../../../api/keys';
+import { getBoolPropertyValue } from '../../../utils/propertyTreeHelpers';
 
-import styles from '../BottomBar/BottomBar.scss';
-import HomeButtonContainer from '../TouchBar/UtilitiesMenu/containers/HomeButtonContainer';
+import styles from '../../BottomBar/BottomBar.scss';
+import HomeButtonContainer from './showStory';
 
-
-import SessionRec from '../BottomBar/SessionRec';
-import TimePicker from '../BottomBar/TimePicker';
-import ClimatePanel from '../BottomBar/ClimatePanel';
-import Slider from '../BottomBar/Slider';
-import SkyBrowserPanel from '../BottomBar/SkyBrowserPanel';
-import TimePlayerController from '../TouchBar/UtilitiesMenu/presentational/TimePlayerController'
-import Instructions from './Instructions/Instructions'
-import {
-  storyResetLayer
-} from '../../utils/storyHelpers';
+import SessionRec from '../../BottomBar/SessionRec';
+import TimePicker from '../../BottomBar/TimePicker';
+import ClimatePanel from './ClimatePanel';
+import Slider from '../../BottomBar/Slider';
+import SkyBrowserPanel from '../../BottomBar/SkyBrowserPanel';
+import TimePlayerController from '../../TouchBar/UtilitiesMenu/presentational/TimePlayerController'
+import Instructions from './Instructions'
 
 let BottomBar = ({
   showExoplanets,
@@ -30,7 +26,8 @@ let BottomBar = ({
   startListening,
   stopListening,
   resetStory,
-  setNoShow
+  setNoShow,
+  showTimeController
 }) => {
 
   useEffect(() => {
@@ -47,14 +44,14 @@ let BottomBar = ({
     <ClimatePanel  setNoShow = {setNoShow}/>
     <HomeButtonContainer resetStory={resetStory}/>
     <TimePicker />
-
-
+    {showTimeController && <TimePlayerController/> }
     {showFlightController && <FlightControlPanel />}
 
   </div>
 };
 
 BottomBar.propTypes = {
+  showFlightController : PropTypes.bool,
   showFlightController: PropTypes.bool,
   resetStory: PropTypes.func.isRequired,
 
@@ -62,6 +59,7 @@ BottomBar.propTypes = {
 
 BottomBar.defaultProps = {
   showFlightController: false,
+  showTimeController: true,
 };
 
 const mapStateToProps = (state) => {

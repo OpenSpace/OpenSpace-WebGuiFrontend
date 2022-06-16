@@ -51,7 +51,7 @@ class OnScreenGui extends Component {
   }
 
   reloadGui() {
-    location.reload();  
+    location.reload();
   }
 
   render() {

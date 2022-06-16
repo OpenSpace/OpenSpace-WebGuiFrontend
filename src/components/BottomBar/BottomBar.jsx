@@ -15,7 +15,7 @@ import OriginPicker from './Origin/OriginPicker';
 import ScreenSpaceRenderablePanel from './ScreenSpaceRenderablePanel';
 import SessionRec from './SessionRec';
 import TimePicker from './TimePicker';
-import ClimatePanel from './ClimatePanel';
+import ClimatePanel from '../Climate/ButtomMenu/ClimatePanel';
 import Slider from './Slider';
 import SkyBrowserPanel from './SkyBrowserPanel';
 import TimePlayerController from '../TouchBar/UtilitiesMenu/presentational/TimePlayerController'
@@ -42,6 +42,7 @@ let BottomBar = ({
     <ClimatePanel />
     <OriginPicker />
     <TimePicker />
+    <TimePlayerController/>
     <ScreenSpaceRenderablePanel />
     {showExoplanets && <ExoplanetsPanel />}
 

@@ -1,0 +1,67 @@
+@import "../../styles/all";
+
+.generalBSmall{
+  position: absolute;
+  color: #fff;
+  height: 35px;
+  padding: 3px 4%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(24, 24, 24, 0.9);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform ease-in 0.1s;
+}
+
+.generalB{
+  position: absolute;
+  color: #fff;
+  height: 35px;
+  width: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: $ui-background;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform ease-in .1s;
+
+  &:hover {
+    transition: transform ease-in .1s;
+     background:darken($ui-background,8%);
+  }
+}
+
+.next{
+  position: absolute;
+  color: #fff;
+  height: 35px;
+  width: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: $ui-background;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform ease-in .1s;
+
+  &:hover {
+    transition: transform ease-in .1s;
+     background:darken($ui-background,8%);
+  }
+}
+
+
+$icon-size: 20px;
+
+.IconPrev {
+  font-size: $icon-size;
+  position: absolute;;
+  left: 10px;
+}
+.Icon {
+  font-size: $icon-size;
+  position: absolute;;
+  right: 10px;
+}

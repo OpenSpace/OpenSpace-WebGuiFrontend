@@ -102,7 +102,7 @@
       {
         "id" : 2,
         "title": "Show zoomed Antarctica, choose west or east",
-        "storyinfo": "Antarctica is separated by two regions, East Antarctica and West Antarctica. Between 2012 and 2016 was the yearly ice loss at Antarctica about 199 billion tons, which is nearly quadruple 51 billion tons, which was the annual ice loss between 1992 and 2001. \n\n The reason for the biggest loss of the ice is because the currents start to bring warmer water to the Glaciers by the coast. You may have thought that it was the warmer air temperature, which it is not. Antarctica is very cold! The air temperature has to rise a lot before the ice would start to melt on the continent. This data set shows how much loss of ice we have had in Antarctica since 2002.",
+        "storyinfo": "Antarctica is separated by two regions, East Antarctica and West Antarctica. Between 2012 and 2016 was the yearly ice loss at Antarctica about 199 billion tons, which is nearly quadruple 51 billion tons, which was the annual ice loss between 1992 and 2001. \n\n The reason for the biggest loss of the ice is because the currents start to bring warmer water to the Glaciers by the coast. You may have thought that it was the warmer air temperature, which it is not. Antarctica is very cold! The air temperature has to rise a lot before the ice would start to melt on the continent. /n/n This data set shows how much loss of ice we have had in Antarctica since 2002.",
         "date": "2021-12-18T05:09:00.00",
         "pos": {
           "anchor": "Earth",
@@ -131,6 +131,11 @@
             "defaultvalue": true
           },
           {
+            "URI":"Scene.Earth.Renderable.Layers.Overlays.Coastlines.Enabled",
+            "label":"Coastlines",
+            "defaultvalue": true
+          },
+          {
             "URI": "ScreenSpace.GRACE_temp-colorbar.Enabled",
             "label":"Grace colorbar",
             "defaultvalue": true
@@ -144,18 +149,18 @@
             "date": "2021-12-18T15:15:00.00",
             "pos": {
               "anchor": "Earth",
-              "pitch":-0.07628754947440182,
+              "pitch":0.09214824978449467,
               "position": {
-                "x": 3104618.506161256,
-                "y": -4473994.576754474,
-                "z": -6139431.104908226
+                "x": -121803.13645408954,
+                "y": -2915451.804359639,
+                "z": -14084955.907478765
               },
               "up": {
-                "x": 0.9554527959733778,
-                "y": 0.2654110663886267,
-                "z": 0.12910042798189394
+                "x": 0.8525187574570234,
+                "y": 0.5103344443960209,
+                "z": -0.11300673894479937
               },
-              "yaw": -0.24549208215976548
+              "yaw": -0.2400860147973645
             },
             "toggleboolproperties":[
               {

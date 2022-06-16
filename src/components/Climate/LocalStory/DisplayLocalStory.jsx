@@ -15,6 +15,7 @@ class DisplaylocalStory extends Component{
     super(props);
   }
 
+
   render() {
     const { climateStorys, setShowLocalStory, luaApi} = this.props;
     var orbitAtConstantLatiude = 1 //placment in IdleBehavior scrollbar
@@ -23,8 +24,9 @@ class DisplaylocalStory extends Component{
     climateStorys.toggleboolproperties.map((layer) => {
         storyGetLayer(luaApi, layer )
     });
+    
     storyGetLocation(luaApi, climateStorys.pos, climateStorys.date);
-    storyGetIdleBehavior(luaApi, orbitAtConstantLatiude);
+    storyGetIdleBehavior(luaApi, orbitAtConstantLatiude, false);
 
     return (
             <div key = {climateStorys.id}>

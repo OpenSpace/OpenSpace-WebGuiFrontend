@@ -10,8 +10,12 @@ import SmallLabel from '../../../common/SmallLabel/SmallLabel';
 import styles from '../style/TimeController.scss';
 import buttonStyles from '../style/UtilitiesButtons.scss';
 
-const FastSpeed = 86400;
-const Speed = 3600;
+
+
+// const Speed = 3600; //OnTouch
+//const FastSpeed = 86400; //OnTouchGui
+const FastSpeed = 10086400
+const Speed = 186400
 
 class TimePlayerController extends Component {
   constructor(props) {
@@ -33,7 +37,8 @@ class TimePlayerController extends Component {
   }
 
   get time() {
-    return this.props.time.toUTCString();
+    console.log(this.props.time)
+    return this.props.time && this.props.time.toUTCString();
   }
 
   setDate(time) {
@@ -88,21 +93,9 @@ class TimePlayerController extends Component {
 
     return (
       <div className={styles.TimeController}>
-        <div className={styles.ButtonContainer}>
-          <div
-            className={buttonStyles.UtilitiesButton}
-            onClick={() => timeHelpers.setDateToNow(luaApi)}
-            role="button"
-            tabIndex="0"
-          >
-            <Icon icon="replay" className={styles.Icon} />
-            <SmallLabel>Time</SmallLabel>
-          </div>
-        </div>
+
         <div className={styles.SimulationIncrement}>
-          <div className={styles.TimeText}>
-            {new Date(this.time).toUTCString()}
-          </div>
+
           <div className={styles.PlayerContainer}>
             <Icon
               icon="fast_rewind"
@@ -134,6 +127,18 @@ class TimePlayerController extends Component {
               className={`${styles.Icon} ${(deltaTime === FastSpeed) && styles.active}`}
               onClick={this.clickPlayer}
             />
+          </div>
+
+        </div>
+        <div className={styles.ButtonContainer}>
+          <div
+            className={buttonStyles.UtilitiesButton}
+            onClick={() => timeHelpers.setDateToNow(luaApi)}
+            role="button"
+            tabIndex="0"
+          >
+            <Icon icon="replay" className={styles.Icon} />
+            <SmallLabel>Time</SmallLabel>
           </div>
         </div>
       </div>
