@@ -10,6 +10,7 @@ export const realtime = (luaApi) => {
 
 export const setDateToNow = (luaApi) => {
   const now = new Date();
+  console.log("tjena")
   setDate(luaApi, now);
   UpdateDeltaTimeNow(luaApi, 1);
 };

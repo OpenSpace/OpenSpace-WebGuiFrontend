@@ -14,11 +14,6 @@ import stories from "../../story_climate/climate_stories.json";
 import climate_stories from "../../story_climate/pick_story.json";
 import { icons } from '../../api/resources';
 
-
-import {
-  satelliteToggle
-} from '../../utils/storyHelpers';
-
 class StartJourney extends Component {
 
   constructor(props) {
@@ -58,7 +53,7 @@ class StartJourney extends Component {
     if (!this.state.storiesArray) {
       return null;
     }
-    
+
 
     return (
 

@@ -22,14 +22,7 @@
             "URI":"Scene.Earth.Renderable.Layers.ColorLayers.OSCAR_Sea_Surface_Currents_Zonal.Enabled",
             "label":"Detailed currents, OSCAR",
             "defaultvalue":true
-         },
-         "toggleboolproperties_noshow":[
-            {
-               "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
-               "label":"Overview of currents",
-               "defaultvalue":false
-            }
-         ]
+         }
       }
    ],
    "greenland":[
@@ -55,14 +48,7 @@
             "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
             "label":"Overview of currents",
             "defaultvalue":true
-         },
-         "toggleboolproperties_noshow":[
-            {
-               "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
-               "label":"Overview of currents",
-               "defaultvalue":false
-            }
-         ]
+         }
       }
    ],
    "alaska":[
@@ -89,14 +75,7 @@
             "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
             "label":"Overview of currents",
             "defaultvalue":true
-         },
-         "toggleboolproperties_noshow":[
-            {
-               "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
-               "label":"Overview of currents",
-               "defaultvalue":false
-            }
-         ]
+         }
       }
    ],
    "overviewCurrents":[
@@ -123,14 +102,7 @@
             "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
             "label":"Overview of currents",
             "defaultvalue":true
-         },
-         "toggleboolproperties_noshow":[
-            {
-               "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-ecco2_sst-veg_land-layer.Enabled",
-               "label":"Detailed currents, ECCO",
-               "defaultvalue":false
-            }
-         ]
+         }
       }
    ],
    "detailedCurrents":[
@@ -157,18 +129,11 @@
             "URI":"Scene.Earth.Renderable.Layers.ColorLayers.OSCAR_Sea_Surface_Currents_Zonal.Enabled",
             "label":"Detailed currents, OSCAR",
             "defaultvalue":true
-         },
-         "toggleboolproperties_noshow":[
-            {
-               "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
-               "label":"Overview of currents",
-               "defaultvalue":false
-            }
-         ]
+         }
       }
    ],
    "firstCons":[
-     
+
       {
          "id":"consequenceHide1",
          "date":"2021-06-18T12:00:00.00",
@@ -192,19 +157,7 @@
             "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-2m.Enabled.Enabled",
             "label":"2m",
             "defaultvalue":true
-         },
-         "toggleboolproperties_noshow":[
-            {
-               "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-4m.Enabled",
-               "label":"4m",
-               "defaultvalue":false
-            },
-            {
-               "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-6m.Enabled",
-               "label":"6m",
-               "defaultvalue":false
-            }
-         ]
+         }
       }
    ],
    "secondCons":[
@@ -232,19 +185,7 @@
             "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-4m.Enabled",
             "label":"4m",
             "defaultvalue":true
-         },
-         "toggleboolproperties_noshow":[
-            {
-               "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-6m.Enabled",
-               "label":"6m",
-               "defaultvalue":false
-            },
-            {
-               "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-2m.Enabled",
-               "label":"2m",
-               "defaultvalue":false
-            }
-         ]
+         }
       }
    ],
    "thirdCons":[
@@ -272,19 +213,7 @@
             "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-6m.Enabled",
             "label":"6m",
             "defaultvalue":true
-         },
-         "toggleboolproperties_noshow":[
-            {
-               "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-4m.Enabled",
-               "label":"4m",
-               "defaultvalue":false
-            },
-            {
-               "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-2m.Enabled",
-               "label":"2m",
-               "defaultvalue":false
-            }
-         ]
+         }
       }
    ]
 }

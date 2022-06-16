@@ -22,12 +22,15 @@ import MaterialIcon from "../../common/MaterialIcon/MaterialIcon";
 import climateButton from '../../../../images/climateButton.png'
 import glac from '../../../../images/glac.png'
 import cur from '../../../../images/cur.png'
+import newGlac from '../../../../images/newGlac.png'
 import cons from '../../../../images/cons.png'
 import SmallLabel from '../../common/SmallLabel/SmallLabel';
 import Popover from "../../common/Popover/Popover";
 import Row from "../../common/Row/Row";
 import styles from "./ClimatePanel.scss";
 import Picker from "../../BottomBar/Picker";
+
+
 import {
   storyResetLayer
 } from '../../../utils/storyHelpers';
@@ -206,7 +209,7 @@ getSurfaceLayerAlaska() {
         className={styles.menuButton}
       >
         <div>
-          <img src = {glac} alt = "glac" />
+          <img src = {newGlac} alt = "glac" />
         </div>
         <div>
           Glaciers
@@ -220,6 +223,7 @@ getSurfaceLayerAlaska() {
         block
         smalltext
         onClick={() => {
+
               storyResetLayer(luaApi);
               this.getSurfaceLayerAntarctica();
         }}

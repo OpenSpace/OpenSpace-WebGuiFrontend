@@ -20,7 +20,6 @@ import Sidebar from '../components/Sidebar/Sidebar';
 import NodeMetaContainer from '../components/NodeMetaPanel/NodeMetaContainer';
 import NodePopOverContainer from '../components/NodePropertiesPanel/NodePopOverContainer';
 import ExploreClimate from '../components/climate/ExploreClimate'
-
 import {
   setPropertyValue, startConnection, fetchData, addStoryTree, subscribeToProperty,
   unsubscribeToProperty, addStoryInfo, resetStoryInfo,
@@ -148,7 +147,7 @@ class OnClimateGui extends Component {
 
     climate_stories.startpage.map((story) => {
       return (
-          storyGetLocation(luaApi, story.pos, setDateToNow(luaApi)),
+          storyGetLocation(luaApi, story.pos, UpdateDeltaTimeNow(luaApi, 1)),
           storyGetLayer(luaApi, story.toggleboolproperties)
           );
         });
@@ -160,9 +159,7 @@ class OnClimateGui extends Component {
     const {  connectionLost,  } = this.props;
     const { currentStory, json, luaApi, NoShow } = this.state;
 
-    //console.log(NoShow)
-    //console.log("cur " + currentStory)
-    //console.log("def " + DefaultStory)
+
     return (
 
       <div className={styles.app}>
@@ -186,8 +183,8 @@ class OnClimateGui extends Component {
         : <ExploreClimate resetStory = {this.resetStory} json = {json} currentStory= {currentStory}/>
         }
 
+        <Sidebar/>
 
-        
 
         </section>
         <section className={styles.Grid__Right}>

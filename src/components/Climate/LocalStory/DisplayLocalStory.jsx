@@ -14,7 +14,7 @@ class DisplaylocalStory extends Component{
   constructor(props) {
     super(props);
   }
-  
+
 
   render() {
     const { climateStorys, setShowLocalStory, luaApi} = this.props;
@@ -24,6 +24,7 @@ class DisplaylocalStory extends Component{
     climateStorys.toggleboolproperties.map((layer) => {
         storyGetLayer(luaApi, layer )
     });
+    
     storyGetLocation(luaApi, climateStorys.pos, climateStorys.date);
     storyGetIdleBehavior(luaApi, orbitAtConstantLatiude, false);
 

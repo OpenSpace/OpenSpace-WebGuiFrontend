@@ -3,7 +3,7 @@
       {
         "id": 1,
         "title": "Climate change",
-        "info": "Global climate change is an important topic that has major effects on the environment. Some consequences from climate change are  loss of sea ice, an acceleration of sea level rise and longer and more intense heat waves. According to scientists the global temperature will continue to increase for decades.             ...Something satellite...",
+        "info": "Global climate change is an important topic that has major effects on the environment. Some consequences from climate change are  loss of sea ice, an acceleration of sea level rise and longer and more intense heat waves. According to scientists the global temperature will continue to increase for decades. \n \n Many glaciers are melting both from above and below at the same time. During summer, warmer air melts the ice. Then the meltwater bores holes through the ice all the way down to the bottom of the glacier. The meltwater then runs beneath the glacier until it reaches the ocean. Meltwater doesn’t contain any salt and therefore it weighs less than ocean water and rises to the front of the glacier. Near the surface, the ocean water is fresh and cold and at depth, the water is warmer and salty. The warmer, salty water starts melting the glacier face from the bottom and up. Eventually a piece of the glacier then breaks off and creates an iceberg. \n \n A challenge is to measure the thickness of the ice sheets to see how much ice that has melted. But a way to solve this problem is to use satellites to measure the thickness. ",
         "identifier": "startpage",
         "pos": {
           "anchor": "Earth",
@@ -26,12 +26,6 @@
             "URI":"Scene.Earth.Renderable.Layers.ColorLayers.ESRI_VIIRS_Combo.Enabled",
             "label":"ESRI VIIRS Combo",
             "defaultvalue": true
-          },
-        "toggleboolproperties_noshow":
-          {
-            "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-ecco2_sst-veg_land-layer.Enabled",
-            "label":"Detailed currents, ECCO",
-            "defaultvalue": false
           }
       }
     ],

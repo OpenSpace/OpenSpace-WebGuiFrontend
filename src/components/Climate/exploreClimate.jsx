@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import React,{ Component } from 'react';
-import HomeButtonContainer from '../TouchBar/UtilitiesMenu/containers/HomeButtonContainer';
 import styles from './exploreClimate.scss';
 import stylesButton from '../Climate/Button.scss';
 import Icon from '../common/MaterialIcon/MaterialIcon';
@@ -12,7 +11,7 @@ import subStateToProps from "../../utils/subStateToProps";
 import {
   storyGetLayer, storyGetLocation, storyGetIdleBehavior, storyResetLayer, storyGetScreenSpace
 } from '../../utils/storyHelpers';
-import { setDate } from '../../utils/timeHelpers';
+//import { setDate } from '../../utils/timeHelpers';
 class ExploreClimate extends Component{
   constructor(props) {
     super(props);
@@ -54,7 +53,6 @@ class ExploreClimate extends Component{
 
     return(
       filePath.map((story) => {
-
         if(story.id == StoryStep){
           story.toggleboolproperties.map((layer) => {
           //  console.log("Layer!!!!!");
@@ -62,9 +60,10 @@ class ExploreClimate extends Component{
               storyGetLayer(luaApi, layer )
           });
           console.log(story.date)
+
           storyGetLocation(luaApi, story.pos, story.date);
-          storyGetIdleBehavior(luaApi, orbitAtConstantLatiude, false);
-          storyGetScreenSpace(luaApi, story.screenSpace)
+          storyGetIdleBehavior(luaApi, orbitAtConstantLatiude, true);
+          //storyGetScreenSpace(luaApi, story.screenSpace)
 
 
 
@@ -90,9 +89,8 @@ class ExploreClimate extends Component{
     const { json, storyInfo, currentStory, luaApi } = this.props;
     const { StoryStep, showStory, currentStoryLocal } = this.state;
     var stepThroughJourney = this.stepThroughStory(StoryStep, json.journey);
+
     //var getToggleboolproperties = this.getToggleboolproperties(StoryStep, json.journey)
-
-
     //noSow -> we don't want to show the story if pressing the climate icon in the bar
     // see ClimatePanel
     return (
@@ -110,7 +108,6 @@ class ExploreClimate extends Component{
             <br/>
 
               { json.journey[StoryStep].local.length > 0 && (currentStory != "noShow") &&
-
                   json.journey[StoryStep].local.map((story, index) => {
                     return(
                         <div key = {index} >

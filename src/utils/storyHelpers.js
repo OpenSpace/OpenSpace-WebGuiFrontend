@@ -25,7 +25,8 @@ export const setStoryStart = (luaApi, startPosition, startTime) => {
     Yaw:startPosition.yaw
   });
 
-setDate(luaApi, startTime);
+  setDate(luaApi, startTime);
+
 };
 
 // Function to toggle the shading on a node, value = 'true' equals shading enabled
@@ -79,6 +80,7 @@ export const storyGetLayer = (luaApi, layer) => {
 };
 
 
+
 export const storyGetLocation = (luaApi, position, startTime) => {
 
   //set date and time
@@ -93,6 +95,7 @@ export const storyGetLocation = (luaApi, position, startTime) => {
   })
 
 }
+
 
 export const satelliteToggle = (luaApi, toggleBool) => {
 
@@ -114,7 +117,7 @@ export const storyResetLayer = (luaApi) => {
 
   luaApi.setPropertyValue("Scene.Earth.Renderable.Layers.ColorLayers.*.Enabled", false);
   luaApi.setPropertyValue("Scene.Earth.Renderable.Layers.Overlays.*.Enabled", false);
-
+  luaApi.setPropertyValue("ScreenSpace.*.Enabled", false);
 };
 
 export const storyGetScreenSpace = (luaApi, screenSpace) => {
