@@ -97,7 +97,7 @@
       {
         "id" : 2,
         "title": "Show zoomed Antarctica, choose west or east",
-        "storyinfo": "Antarctica is separated by two regions, East Antarctica and West Antarctica. Between 2012 and 2016 was the yearly ice loss at Antarctica about 199 billion tons, which is nearly quadruple 51 billion tons, which was the annual ice loss between 1992 and 2001. ",
+        "storyinfo": "Antarctica is separated by two regions, East Antarctica and West Antarctica. Between 2012 and 2016 was the yearly ice loss at Antarctica about 199 billion tons, which is nearly quadruple 51 billion tons, which was the annual ice loss between 1992 and 2001. \n\n The reason for the biggest loss of the ice is because the currents start to bring warmer water to the Glaciers by the coast. You may have thought that it was the warmer air temperature, which it is not. Antarctica is very cold! The air temperature has to rise a lot before the ice would start to melt on the continent. This data set shows how much loss of ice we have had in Antarctica since 2002.",
         "date": "2021-12-18T05:09:00.00",
         "pos": {
           "anchor": "Earth",
@@ -135,7 +135,7 @@
             "title": "West Antarctica",
             "identifier": "westAntarctica",
             "id" : 0,
-            "storyinfo": "West Antarctica has thinner ice than East Antarctica, and there are ice sheets on the bedrock that are below sea level. This makes West Antarctica more unstable. There is a layer of warmer water in the ocean below the colder freshwater.",
+            "storyinfo": "West Antarctica has thinner ice than East Antarctica and there are ice sheets on the bedrock that’s below sea level. This makes West Antarctica unstable. The ocean currents transports the water underneath the ice sheets and when currents start to transport warmer, salty water, the ice will start to melt. The ice contains freshwater, meaning that the melted water will contain less salt and also be colder when mixed. The newly melted water will then be transported out to the oceans and leading to sea level rise.",
             "date": "2021-12-18T15:15:00.00",
             "pos": {
               "anchor": "Earth",

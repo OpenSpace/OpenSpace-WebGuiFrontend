@@ -51,7 +51,7 @@
       },
       {
         "title": "Show detailed currents",
-        "storyinfo": "Here you can see the ocean currents more in detail. This visualization is a combination of all ocean and sea ice data that is available on a global scale. The colors of the ocean currents in this visualization correspond to the sea surface temperature which is displayed in the color bar below.",
+        "storyinfo": "With the help of satellites and instruments in the water it is possible to create models of the velocity of the currents and how and how fast the currents are moving around our Earth through the years. The colors show how fast the currents are moving, but remember, it takes up to 1,000 years. ",
         "date": "2021-06-18T22:00:00.00",
         "id" : 1,
         "pos": {
@@ -124,7 +124,7 @@
           },
           {
             "URI": "ScreenSpace.GRACE_temp-colorbar.Enabled",
-            "label":"ECCO colorbar",
+            "label":"Grace colorbar",
             "defaultvalue": true
           }],
           "local":[]
