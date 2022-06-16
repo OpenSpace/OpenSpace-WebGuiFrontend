@@ -36,7 +36,7 @@ import {
 import StartJourney from '../components/Climate/startJourney'
 
 import styles from './OnClimateGui.scss';
-import { UpdateDeltaTimeNow } from '../utils/timeHelpers';
+import { UpdateDeltaTimeNow, setDateToNow } from '../utils/timeHelpers';
 
 import {
   storyGetLayer, storyGetLocation, satelliteToggle, toggleShowNode,
@@ -119,7 +119,7 @@ class OnClimateGui extends Component {
   }
 
   noShow(){
-    console.log("hej")
+
     const { luaApi } = this.props;
     const {currentStory, NoShow} = this.state;
 
@@ -141,14 +141,14 @@ class OnClimateGui extends Component {
     this.setStory(DefaultStory);
     //remove satelites from start profile
     satelliteToggle(luaApi, true);
-    time = setDateToNow(luaApi)
+
     //spin earth
     storyGetIdleBehavior(luaApi, 0, true);
     // get orginal story position
 
     climate_stories.startpage.map((story) => {
       return (
-          storyGetLocation(luaApi, story.pos, time),
+          storyGetLocation(luaApi, story.pos, setDateToNow(luaApi)),
           storyGetLayer(luaApi, story.toggleboolproperties)
           );
         });
@@ -187,13 +187,13 @@ class OnClimateGui extends Component {
         }
 
 
-        <Sidebar/>
+        
 
         </section>
         <section className={styles.Grid__Right}>
           <NodePopOverContainer/>
         <NodeMetaContainer/>
-          <BottomBar resetStory={this.resetStory} setNoShow = {this.noShow}/>
+          <BottomBar resetStory={this.resetStory} setNoShow = {this.noShow} showTimeController ={true} />
         <KeybindingPanel />
         </section>
 

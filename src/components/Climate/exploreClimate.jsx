@@ -57,13 +57,17 @@ class ExploreClimate extends Component{
 
         if(story.id == StoryStep){
           story.toggleboolproperties.map((layer) => {
-            console.table(layer);
+          //  console.log("Layer!!!!!");
+          //  console.table(layer);
               storyGetLayer(luaApi, layer )
           });
+          console.log(story.date)
           storyGetLocation(luaApi, story.pos, story.date);
-          storyGetIdleBehavior(luaApi, orbitAtConstantLatiude, true);
+          storyGetIdleBehavior(luaApi, orbitAtConstantLatiude, false);
           storyGetScreenSpace(luaApi, story.screenSpace)
-          
+
+
+
 
           return (
             <div key = {story.id}>
@@ -98,9 +102,7 @@ class ExploreClimate extends Component{
             { StoryStep <  stepThroughJourney.length && showStory && (currentStory != "noShow") &&
               <div  >
                 {stepThroughJourney}
-
               </div>
-
             }
 
             <br/>
@@ -126,7 +128,6 @@ class ExploreClimate extends Component{
                        </div>
                       );
                     })
-
                 }
                 <br/>
                 <br/>
@@ -155,7 +156,6 @@ class ExploreClimate extends Component{
                         iconNextPrev = "chevron_left"
                         iconPlacement = {styles.Icon}
                         />
-
                     </section>
                   }
           </div>

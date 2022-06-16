@@ -1,15 +1,11 @@
 import React, { Component, useState } from "react";
 import { connect } from "react-redux";
 import {
-  setActionsPath,
+
   setPopoverVisibility,
-  triggerAction,
+
 } from "../../../api/Actions";
-import {
-  refreshSessionRecording,
-  subscribeToSessionRecording,
-  unsubscribeToSessionRecording,
-} from "../../../api/Actions";
+
 import PropTypes from 'prop-types';
 import {
   sessionStateIdle,
@@ -23,6 +19,10 @@ import Button from "../../common/Input/Button/Button";
 import Input from "../../common/Input/Input/Input";
 import Select from "../../common/Input/Select/Select";
 import MaterialIcon from "../../common/MaterialIcon/MaterialIcon";
+import climateButton from '../../../../images/climateButton.png'
+import glac from '../../../../images/glac.png'
+import cur from '../../../../images/cur.png'
+import cons from '../../../../images/cons.png'
 import SmallLabel from '../../common/SmallLabel/SmallLabel';
 import Popover from "../../common/Popover/Popover";
 import Row from "../../common/Row/Row";
@@ -205,10 +205,12 @@ getSurfaceLayerAlaska() {
         }}
         className={styles.menuButton}
       >
-        <p>
-          <MaterialIcon className={styles.buttonIcon} icon="ac_unit" />
-        </p>
-        Glaciers
+        <div>
+          <img src = {glac} alt = "glac" />
+        </div>
+        <div>
+          Glaciers
+        </div>
       </Button>
     );
 
@@ -271,13 +273,12 @@ getSurfaceLayerAlaska() {
         }}
         className={styles.menuButton}
       >
-        <p>
-          <MaterialIcon
-            className={styles.buttonIcon}
-            icon="import_export"
-          />
-        </p>
-        Currents
+        <div className={styles.flex}>
+          <img src = {cur} alt = "cur" />
+        </div>
+        <div>
+          Currents
+        </div>
       </Button>
     );
 
@@ -322,13 +323,12 @@ getSurfaceLayerAlaska() {
         }}
         className={styles.menuButton}
       >
-        <p>
-          <MaterialIcon
-            className={styles.buttonIcon}
-            icon="flood"
-          />
-        </p>
-        Consequences
+        <div className={styles.flex}>
+          <img src = {cons} alt = "cons" />
+        </div>
+        <div>
+          Consequences
+        </div>
       </Button>
     );
 
@@ -419,7 +419,7 @@ getSurfaceLayerAlaska() {
       <div className={Picker.Wrapper}>
         <Picker onClick={this.togglePopover}>
           <div className= {styles.iconButton}>
-            <MaterialIcon className={styles.bottomBarIcon} icon="ac_unit" />
+            <img src = {climateButton} alt = "climateButton" />
             <SmallLabel>Climate change</SmallLabel>
           </div>
         </Picker>

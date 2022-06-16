@@ -17,6 +17,8 @@ export const setStoryStart = (luaApi, startPosition, startTime) => {
 
   luaApi.pathnavigation.flyToNavigationState({
     Anchor: startPosition.anchor,
+    Aim: "Earth",
+    referenceFrame: "Earth",
     Pitch:startPosition.pitch,
     Position:startPosition.position,
     Up:startPosition.up,
@@ -149,13 +151,11 @@ export const storyFileParser = (story) => {
   return parsedJSON;
 };
 
-
 export const infoFileParser = (infoFile) => {
   const info = require(`../stories/${infoFile}.json`);
   const parsedInfo = info;
   return parsedInfo;
 };
-
 
 export const storyFileParserClimate = (story) => {
   const json = require(`../story_climate/story_climate_${story}.json`);

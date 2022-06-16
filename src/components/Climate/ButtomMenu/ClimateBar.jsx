@@ -26,7 +26,8 @@ let BottomBar = ({
   startListening,
   stopListening,
   resetStory,
-  setNoShow
+  setNoShow,
+  showTimeController
 }) => {
 
   useEffect(() => {
@@ -43,14 +44,14 @@ let BottomBar = ({
     <ClimatePanel  setNoShow = {setNoShow}/>
     <HomeButtonContainer resetStory={resetStory}/>
     <TimePicker />
-
-  
+    {showTimeController && <TimePlayerController/> }
     {showFlightController && <FlightControlPanel />}
 
   </div>
 };
 
 BottomBar.propTypes = {
+  showFlightController : PropTypes.bool,
   showFlightController: PropTypes.bool,
   resetStory: PropTypes.func.isRequired,
 
@@ -58,6 +59,7 @@ BottomBar.propTypes = {
 
 BottomBar.defaultProps = {
   showFlightController: false,
+  showTimeController: true,
 };
 
 const mapStateToProps = (state) => {

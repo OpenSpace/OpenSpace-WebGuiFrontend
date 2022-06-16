@@ -33,7 +33,6 @@ class PickStoryLocal extends Component {
 
   render() {
     const {storyInfo, currentStory } = this.props;
-
     return (
       <div>
           <div className = {styles.button}>
@@ -43,7 +42,7 @@ class PickStoryLocal extends Component {
                   pickStory = {this.handleStory}
                   storyIdentifier= {storyInfo.title}
                 />
-            
+
               </div>
           </div>
           <div>

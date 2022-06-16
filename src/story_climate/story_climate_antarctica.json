@@ -1,4 +1,5 @@
 {
+
    "identifier":"climate_antarctica",
    "title":"Climate on Antarctica",
    "storyinfo":"Climate Climate",
@@ -6,7 +7,7 @@
    "focusbuttons":[
       "Earth"
    ],
-   "timecontroller":true,
+
    "actions":[
       "climate_mode"
    ],
@@ -16,6 +17,7 @@
          "title":"Show overview of currents",
          "storyinfo":"This dataset shows the direction of warm surface waters in red and cold bottom waters in blue as arrows showing direction of movement. Changes in ocean circulation could have drastic impacts on the climate. The transport of heat associated with the ocean conveyor belt partially moderates the cold temperatures in the North. As the poles warm due to climate change, melt water from ice and glaciers enters the ocean. This fresh melt water has the potential to slow or even shut off the ocean circulation,  which is dependent on temperature and salinity. The density of the fresh melt water is less than that of salty ocean water. This causes the fresh melt water to form a layer on the surface that can block the warm, salty ocean water from transporting heat to the atmosphere. The effect would be a cooling of the higher latitudes. If the warm water is not able to give off heat, it can not cool and sink to the bottom of the ocean. This would disturb the circulation of the entire ocean conveyor belt and have a noticeable impact on the climate in the northern latitudes.",
          "date":"2002-12-18T15:00:00.00",
+         "timecontroller":false,
          "pos":{
             "anchor":"Earth",
             "pitch":-0.02249910974253141,
@@ -23,6 +25,7 @@
                "x":19305329.039923728,
                "y":11257097.687918952,
                "z":-9011652.821980316
+
             },
             "type":"setNavigationState",
             "up":{
@@ -30,6 +33,7 @@
                "y":0.14743360618608958,
                "z":0.9264022018909281
             },
+
             "yaw":-0.2558781145796229
          },
          "IdleBehavior":{
@@ -59,6 +63,7 @@
       {
          "id":1,
          "title":"Show detailed currents",
+         "timecontroller":false,
          "storyinfo":"Climate Climate Climate Climate Climate Climate Climate Climate Climate",
          "date":"2003-12-18T05:00:00.00",
          "pos":{
@@ -98,9 +103,10 @@
       },
       {
          "id":2,
+         "timecontroller":true,
          "title":"Show zoomed Antarctica, choose west or east",
          "storyinfo":"Antarctica, the southernmost continent and site of the South Pole, is a virtually uninhabited, ice-covered landmass. Most cruises to the continent visit the Antarctic Peninsula, which stretches toward South America. It’s known for the Lemaire Channel and Paradise Harbor, striking, iceberg-flanked passageways, and Port Lockroy, a former British research station turned museum. The peninsula’s isolated terrain also shelters rich wildlife, including many penguins.",
-         "date":"2021-12-18T05:09:00.00",
+         "date":"2002-04-18T05:09:00.00",
          "pos":{
             "anchor":"Earth",
             "pitch":-0.01365814920841428,
@@ -126,7 +132,12 @@
          },
          "toggleboolproperties":[
             {
-               "URI":"Scene.Earth.Renderable.Layers.ColorLayers.BMNG_Utah.Enabled",
+              "URI":"Scene.Earth.Renderable.Layers.ColorLayers.GRACE_temp.Enabled",
+              "label":"GRACE",
+              "defaultvalue":true
+            },
+            {
+               "URI":"Scene.Earth.Renderable.Layers.Overlays.Coastlines.Enabled",
                "label":"Overview of currents",
                "defaultvalue":true
             }
@@ -136,6 +147,7 @@
                "title":"West Antarctica",
                "identifier":"westAntarctica",
                "id":0,
+               "timecontroller":false,
                "storyinfo":"Climate Climate Climate Climate Climate Climate Climate Climate Climate",
                "date":"2021-12-18T15:15:00.00",
                "pos":{
@@ -165,6 +177,7 @@
                "title":"East Antarctica",
                "identifier":"eastAntarctica",
                "id":1,
+               "timecontroller":false,
                "storyinfo":"Climate Climate Climate Climate Climate Climate Climate Climate Climate",
                "date":"2021-12-18T15:15:00.00",
                "pos":{
@@ -197,6 +210,7 @@
          "title":"Consequences from sea level rise",
          "storyinfo":"Global mean sea level has risen about 8–9 inches (21–24 centimeters) since 1880, with about a third of that coming in just the last two and a half decades. The rising water level is mostly due to a combination of melt water from glaciers and ice sheets and thermal expansion of seawater as it warms. In 2020, global mean sea level was 91.3 millimeters (3.6 inches) above the 1993 average, making it the highest annual average in the satellite record (1993-present).",
          "date":"2021-12-18T05:09:00.00",
+         "timecontroller":false,
          "pos":{
             "anchor":"Earth",
             "pitch":-0.07628754944400731,
@@ -233,6 +247,7 @@
                "id":0,
                "storyinfo":"Climate Climate Climate Climate Climate Climate Climate Climate Climate",
                "date":"2021-12-18T15:15:00.00",
+               "timecontroller":false,
                "pos":{
                   "anchor":"Earth",
                   "pitch":5,
@@ -267,6 +282,7 @@
                "id":1,
                "storyinfo":"Climate Climate Climate Climate Climate Climate Climate Climate Climate",
                "date":"2021-12-18T15:15:00.00",
+               "timecontroller":false,
                "pos":{
                   "anchor":"Earth",
                   "pitch":-0.03651119926122576,
@@ -296,6 +312,7 @@
                "id":2,
                "storyinfo":"Climate Climate Climate Climate Climate Climate Climate Climate Climate",
                "date":"2021-12-18T15:15:00.00",
+               "timecontroller":false,
                "pos":{
                   "anchor":"Earth",
                   "pitch":-0.03651119926122576,
