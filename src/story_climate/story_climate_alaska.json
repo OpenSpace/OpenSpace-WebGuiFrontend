@@ -10,7 +10,7 @@
   "actions": ["climate_mode"],
   "journey":  [
       {
-        "title": "Show overview of currents",
+        "title": "Overviewing currents",
         "storyinfo": "In the ocean there are both colder and warmer currents where the blue color visualizes the colder currents in this visualization and red color indicates warmer currents. The arrows show the direction of the currents in the ocean. If the circulation of the currents would change there could be huge impacts on the climate. When the glaciers and ice sheets melt, the fresh water will enter the ocean. Because of this melt water there is a risk the ocean circulation will slow down or even stop.",
         "date": "2021-06-18T22:00:00.00",
         "id" : 0,
@@ -45,12 +45,17 @@
             "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
             "label":"Overview of currents",
             "defaultvalue": true
+          },
+          {
+            "URI": "ScreenSpace.noaa-sos-oceans-currents-legend.Enabled",
+            "label":"Overview colorbar",
+            "defaultvalue": true
           }],
           "local":[]
 
       },
       {
-        "title": "Show detailed currents",
+        "title": "Detailed currents",
         "storyinfo": "With the help of satellites and instruments in the water it is possible to create models of the velocity of the currents and how and how fast the currents are moving around our Earth through the years. The colors show how fast the currents are moving, but remember, it takes up to 1,000 years. ",
         "date": "2021-06-18T22:00:00.00",
         "id" : 1,
@@ -131,7 +136,7 @@
       },
       {
         "id" : 3,
-        "title": "Consequences from sea level rise",
+        "title": "Sea level rise",
         "storyinfo": "The problem that arises when glaciers and sea ice melts is that the sea level rises. 8 of the 10 biggest cities in the world are close to the coast. Therefore, a lot of people's lives are affected by a sea-level rise since it plays a part in hazards from storms, flooding, and shoreline erosion. The sea level is expected to rise 25 to 30 centimeters between 2020 and 2050 in the US. In other parts of the world, the sea level is presumed to rise even more, which could be 40 to 45 centimeters. \n \n Below you can choose to see a visualization of what areas in the world that would be under sea level if it rises by 2, 4 and 6 meters.",
         "date": "2021-12-18T05:09:00.00",
         "pos": {
