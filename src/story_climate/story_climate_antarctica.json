@@ -126,6 +126,11 @@
             "defaultvalue": true
           },
           {
+            "URI":"Scene.Earth.Renderable.Layers.Overlays.Coastlines.Enabled",
+            "label":"Coastlines",
+            "defaultvalue": true
+          },
+          {
             "URI": "ScreenSpace.GRACE_temp-colorbar.Enabled",
             "label":"Grace colorbar",
             "defaultvalue": true
