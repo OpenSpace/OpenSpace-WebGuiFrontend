@@ -1,71 +1,181 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { setPopoverVisibility } from '../../api/Actions';
 import subStateToProps from '../../utils/subStateToProps';
 import Button from '../common/Input/Button/Button';
-import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
+import { Icon } from '@iconify/react';
 import Popover from '../common/Popover/Popover';
 import styles from './GeoPositionPanel.scss';
 import Picker from './Picker';
 import Input from '../common/Input/Input/Input';
-import Geocode from "react-geocode";
+import FilterList from '../common/FilterList/FilterList'
+import {
+  setPopoverVisibility,
+  subscribeToProperty,
+  unsubscribeToProperty,
+} from '../../api/Actions';
+import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
+import { getBoolPropertyValue } from '../../utils/propertyTreeHelpers';
 
-function GeoPositionPanel({ luaApi, popoverVisible, setPopoverVisibilityProp }) {
-  const [long, setLong] = React.useState(50);
-  const [lat, setLat] = React.useState(30);
+function MultiStateToggle({title, labels, checked, setChecked}) {
+  return <div className={styles.wrapper}>
+    <p className={`${styles.toggleTitle} ${styles.resultsTitle}`}>Mode</p>
+    <div className={styles.toggles}>
+    {labels.map(label => 
+      <React.Fragment key ={`${label}fragment`}>
+        <input id={label} key={label} className={styles.toggle_option} name="state-d" type="radio" onChange={() => setChecked(label)} checked={ label === checked ? "checked" : ""} />
+        <label htmlFor={label} key={`${label}label`} onClick={() => setChecked(label)}>{label}</label>
+      </React.Fragment>)}
+    <div className={styles.toggle_option_slider}>
+    </div>
+  </div>
+  </div>;
+}
+
+
+function useLocalStorageState(
+  key,
+  defaultValue = '',
+  // the = {} fixes the error we would get from destructuring when no argument was passed
+  // Check https://jacobparis.com/blog/destructure-arguments for a detailed explanation
+  {serialize = JSON.stringify, deserialize = JSON.parse} = {},
+) {
+  const [state, setState] = React.useState(() => {
+    const valueInLocalStorage = window.localStorage.getItem(key)
+    if (valueInLocalStorage) {
+      // the try/catch is here in case the localStorage value was set before
+      // we had the serialization in place (like we do in previous extra credits)
+      try {
+        return deserialize(valueInLocalStorage)
+      } catch (error) {
+        window.localStorage.removeItem(key)
+      }
+    }
+    return typeof defaultValue === 'function' ? defaultValue() : defaultValue
+  })
+
+  const prevKeyRef = React.useRef(key)
+
+  // Check the example at src/examples/local-state-key-change.js to visualize a key change
+  React.useEffect(() => {
+    const prevKey = prevKeyRef.current
+    if (prevKey !== key) {
+      window.localStorage.removeItem(prevKey)
+    }
+    prevKeyRef.current = key
+    window.localStorage.setItem(key, serialize(state))
+  }, [key, state, serialize])
+
+  return [state, setState]
+}
+
+
+function Place({address, location, interactionFunc}) {
+  return <Button className={styles.place} onClick={() => interactionFunc(location.y, location.x)}>
+    <p>{address}</p>
+  </Button>;
+}
+
+const Interaction = {
+  flyTo : "Fly To",
+  jumpTo: "Jump To",
+  addFocus: "Add Focus"
+};
+
+function GeoPositionPanel({ luaApi, popoverVisible, setPopoverVisibilityProp, currentAnchor, startListeningToFocusNode, stopListeningToFocusNode }) {
+  const [inputValue, setInputValue] = useLocalStorageState('inputValue',"");
+  const [places, setPlaces] = useLocalStorageState('places', undefined);
+  const [altitude, setAltitude] = useLocalStorageState('altitude', 800000);
+  const [interaction, setInteraction] = useLocalStorageState('interaction', Interaction.flyTo);
+
+  let interactionFunc;
+  switch(interaction) {
+    case Interaction.flyTo: {
+      interactionFunc = (lat, long) => luaApi?.globebrowsing?.flyToGeo(currentAnchor, lat, long, altitude);
+      break;
+    }
+    case Interaction.jumpTo: {
+      interactionFunc = (lat, long) => luaApi?.globebrowsing?.goToGeo(currentAnchor, lat, long, altitude);
+      break;
+
+    }
+    case Interaction.addFocus: {
+      interactionFunc = (lat, long ) => { 
+        // TODO: implement adding scene graph node  
+        //luaApi?.addSceneGraphNode
+      };
+      break;
+    }
+    default: {
+      interactionFunc = (lat, long) => luaApi?.globebrowsing?.flyToGeo(currentAnchor, lat, long, altitude);
+      ;
+      break;
+    }
+  }
 
   React.useEffect(() => {
-    // GET request using fetch inside useEffect React hook
-    fetch('https://geocode-api.arcgis.com/arcgis/rest/services/World/GeocodeServer/<request>?<parameters>')
-        .then(response => console.log(response.json()))
-        .then(data => console.log(setTotalReactPackages(data.total)));
+    startListeningToFocusNode();
+    return stopListeningToFocusNode();
+  }, []);
 
-// empty dependency array means this effect will only run once (like componentDidMount in classes)
-}, []);
+  function getPlaces()  {
+    const searchString = inputValue.replaceAll(" ", "%");
+    fetch(`https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?SingleLine=${searchString}&category=&outFields=*&forStorage=false&f=json`)
+        .then(response => response.json())
+        .then(json => setPlaces(json))
+        .catch(error => console.log("Error fetching: ", error));
+  };
 
-  function getLongLat(address) {
-    // Get latitude & longitude from address.
-    Geocode.fromAddress(address).then(
-      (response) => {
-        const { lat, lng } = response.results[0].geometry.location;
-        console.log(lat, lng);
-        setLong(lng);
-        setLat(lat);
-      },
-      (error) => {
-        console.error(error);
-      }
-    );
-  }
-  
   function togglePopover() {
     setPopoverVisibilityProp(!popoverVisible);
   }
- 
+
   function popover() {
     return (
       <Popover
-        className={`${Picker.Popover} ${styles.actionsPanel}`}
-        title="Geo Position"
+        className={`${Picker.Popover} ${styles.geoPositionPanel}`}
+        title={`Geo location: ${currentAnchor}`}
         closeCallback={() => togglePopover()}
         detachable
         attached={true}
-      >        
-        <Input placeholder={"Search..."} onChange={(value) => getLongLat(value)}></Input>
-        long lat
-        <Button onClick={() => luaApi.globebrowsing.flyToGeo("Earth", lat, long, 8000000)}>Go to position</Button>
+      >
+        <div className={styles.content}>
+        {currentAnchor === 'Earth' ? 
+        <>
+        <div className={styles.searchField}>
+          <Input placeholder={"Search places..."} onChange={(e) => setInputValue(e.target.value)}></Input>
+          <Button onClick={() => getPlaces() }>Search</Button>
+        </div>
+        <MultiStateToggle 
+          title={"Mode"}
+          labels={Object.values(Interaction)} 
+          checked={interaction} 
+          setChecked={setInteraction}
+        />
+        <p className={styles.resultsTitle}>Results</p>
+          {places?.candidates && 
+          <FilterList 
+            searchText={"Filter results..."}
+            data={places.candidates}
+            viewComponent={Place}
+            viewComponentProps={{interactionFunc}}
+            key={`${places.x} ${places.y}`}
+            height={'270px'}
+          />}
+          </> : <CenteredLabel>{`Currently there is no data for locations on ${currentAnchor}`}</CenteredLabel>
+          }
+        </div>
       </Popover>
     );
   }
 
   return (
     <div className={Picker.Wrapper}>
-      <Picker 
-        className={`${popoverVisible && Picker.Active}`} 
+      <Picker
+        className={`${popoverVisible && Picker.Active}`}
         onClick={() => togglePopover() }
       >
-        <div>
-          <MaterialIcon className={styles.bottomBarIcon} icon="public" />
+        <div style={{height: '100%'}}>
+          <Icon style={{height : '100%', width: '30px'}} icon="entypo:location-pin" />
         </div>
       </Picker>
       { popoverVisible && popover() }
@@ -73,16 +183,18 @@ function GeoPositionPanel({ luaApi, popoverVisible, setPopoverVisibilityProp }) 
   );
 }
 
-const mapSubStateToProps = ({popoverVisible, luaApi}) => {
+const mapSubStateToProps = ({popoverVisible, luaApi, currentAnchor}) => {
   return {
     popoverVisible: popoverVisible,
     luaApi: luaApi,
+    currentAnchor: currentAnchor
   }
 };
 
 const mapStateToSubState = (state) => ({
   popoverVisible: state.local.popovers.geoposition.visible,
   luaApi: state.luaApi,
+  currentAnchor: getBoolPropertyValue(state, "NavigationHandler.OrbitalNavigator.Anchor")
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -91,6 +203,12 @@ const mapDispatchToProps = dispatch => ({
       popover: 'geoposition',
       visible
     }));
+  },
+  startListeningToFocusNode: () => {
+    dispatch(subscribeToProperty("NavigationHandler.OrbitalNavigator.Anchor"));
+  },
+  stopListeningToFocusNode: () => {
+    dispatch(unsubscribeToProperty("NavigationHandler.OrbitalNavigator.Anchor"));
   },
 })
 
