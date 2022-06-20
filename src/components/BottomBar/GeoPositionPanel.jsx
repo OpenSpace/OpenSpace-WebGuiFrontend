@@ -70,7 +70,7 @@ function useLocalStorageState(
 
 
 function Place({address, location, interactionFunc}) {
-  return <Button className={styles.place} onClick={() => interactionFunc(location.y, location.x)}>
+  return <Button className={styles.place} onClick={() => interactionFunc(location.y, location.x, address)}>
     <p>{address}</p>
   </Button>;
 }
@@ -81,10 +81,32 @@ const Interaction = {
   addFocus: "Add Focus"
 };
 
+function createSceneGraphNodeTable(globe, label, lat, long, alt) {
+  const position = {
+      Identifier : label,
+      Parent : globe,
+      Transform : {
+        Translation : {
+          Type : "GlobeTranslation",
+          Globe : globe,
+          Latitude : lat,
+          Longitude : long,
+          Altitude : 0
+        }
+      },
+      InteractionSphere : alt,
+      GUI : {
+        Path : "/GeoLocation"
+      }
+  };
+  console.table(position);
+  return position;
+}
+
 function GeoPositionPanel({ luaApi, popoverVisible, setPopoverVisibilityProp, currentAnchor, startListeningToFocusNode, stopListeningToFocusNode }) {
   const [inputValue, setInputValue] = useLocalStorageState('inputValue',"");
   const [places, setPlaces] = useLocalStorageState('places', undefined);
-  const [altitude, setAltitude] = useLocalStorageState('altitude', 800000);
+  const [altitude, setAltitude] = useLocalStorageState('altitude', 300000);
   const [interaction, setInteraction] = useLocalStorageState('interaction', Interaction.flyTo);
 
   let interactionFunc;
@@ -99,9 +121,8 @@ function GeoPositionPanel({ luaApi, popoverVisible, setPopoverVisibilityProp, cu
 
     }
     case Interaction.addFocus: {
-      interactionFunc = (lat, long ) => { 
-        // TODO: implement adding scene graph node  
-        //luaApi?.addSceneGraphNode
+      interactionFunc = (lat, long, label) => { 
+        luaApi?.addSceneGraphNode(createSceneGraphNodeTable(currentAnchor, label, lat, long, altitude))
       };
       break;
     }
