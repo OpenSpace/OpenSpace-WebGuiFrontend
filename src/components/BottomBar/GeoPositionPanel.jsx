@@ -12,6 +12,7 @@ import {
   setPopoverVisibility,
   subscribeToProperty,
   unsubscribeToProperty,
+  reloadPropertyTree
 } from '../../api/Actions';
 import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
 import { getBoolPropertyValue } from '../../utils/propertyTreeHelpers';
@@ -103,7 +104,7 @@ function createSceneGraphNodeTable(globe, label, lat, long, alt) {
   return position;
 }
 
-function GeoPositionPanel({ luaApi, popoverVisible, setPopoverVisibilityProp, currentAnchor, startListeningToFocusNode, stopListeningToFocusNode }) {
+function GeoPositionPanel({ refresh, luaApi, popoverVisible, setPopoverVisibilityProp, currentAnchor, startListeningToFocusNode, stopListeningToFocusNode }) {
   const [inputValue, setInputValue] = useLocalStorageState('inputValue',"");
   const [places, setPlaces] = useLocalStorageState('places', undefined);
   const [altitude, setAltitude] = useLocalStorageState('altitude', 300000);
@@ -122,7 +123,12 @@ function GeoPositionPanel({ luaApi, popoverVisible, setPopoverVisibilityProp, cu
     }
     case Interaction.addFocus: {
       interactionFunc = (lat, long, label) => { 
-        luaApi?.addSceneGraphNode(createSceneGraphNodeTable(currentAnchor, label, lat, long, altitude))
+        luaApi?.addSceneGraphNode(createSceneGraphNodeTable(currentAnchor, label, lat, long, altitude));
+        // TODO: Once we have a proper way to subscribe to additions and removals
+        // of property owners, this 'hard' refresh should be removed.
+        setTimeout(() => {
+          refresh();
+        }, 500);
       };
       break;
     }
@@ -219,6 +225,9 @@ const mapStateToSubState = (state) => ({
 });
 
 const mapDispatchToProps = dispatch => ({
+  refresh: () => {
+    dispatch(reloadPropertyTree());
+  },
   setPopoverVisibilityProp: visible => {
     dispatch(setPopoverVisibility({
       popover: 'geoposition',
