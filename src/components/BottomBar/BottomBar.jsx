@@ -39,10 +39,10 @@ let BottomBar = ({
     <OriginPicker />
     <TimePicker />
     <SessionRec />
+    <GeoPositionPanel />
     <ScreenSpaceRenderablePanel />
     {showExoplanets && <ExoplanetsPanel />}
     <ActionsPanel />
-    <GeoPositionPanel />
     {showFlightController && <FlightControlPanel />}
     {showSkyBrowser && <SkyBrowserPanel />}
   </div>
