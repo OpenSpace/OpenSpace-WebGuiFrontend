@@ -55,7 +55,9 @@ class FilterList extends Component {
       searchText,
       showFavorites,
       viewComponent,
+      viewComponentProps
     } = this.props;
+
     const { search } = this.state;
     const entries = this.filtered;
 
@@ -102,7 +104,7 @@ class FilterList extends Component {
             {entries.map((entry, index) => (
               <EntryComponent
                 {...entry}
-                {...this.props.viewComponentProps}
+                {...viewComponentProps}
                 key={entry.key || index}
                 onSelect={onSelect}
                 active={active}
