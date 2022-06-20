@@ -21,7 +21,7 @@ class OnScreenGui extends Component {
   constructor(props) {
     super(props);
     this.checkedVersion = false;
-    this.showFlightController = props.showFlightController;
+    this.showFlightController = props.isInBrowser;
   }
 
   componentDidMount() {
@@ -86,7 +86,7 @@ class OnScreenGui extends Component {
           <LuaConsole />
           <NodePopOverContainer />
           <NodeMetaContainer />
-          <BottomBar showFlightController={this.props.showFlightController}/>
+          <BottomBar showFlightController={this.showFlightController}/>
           <KeybindingPanel />
         </section>
       </div>
