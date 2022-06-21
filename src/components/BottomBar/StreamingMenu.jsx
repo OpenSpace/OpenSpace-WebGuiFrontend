@@ -76,16 +76,6 @@ class StreamingMenu extends Component {
             <Button
               block
               smalltext
-              onClick={() => {hostSession()}}
-              className={styles.actionButton}
-            >
-              <p>Host session</p>
-            </Button>
-
-
-            <Button
-              block
-              smalltext
               onClick={() => {joinSession()}}
               className={styles.actionButton}
             >
