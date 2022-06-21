@@ -18,7 +18,15 @@ export const hostSession = () => {
     // Dynamic constraints
     //default_constraints = {video: true};
     //1080p
-    default_constraints = {video: {width: 1920}, height: {exact: 1080}};
+    default_constraints = 
+        {
+            'video': {
+                'width': 1680, 
+                'height': 1050,
+                'frameRate': {max: 60}
+            }
+        }
+
     //720p
     //default_constraints = {video: {width: 1280}, height: {exact: 720}};
     //480p
@@ -31,7 +39,12 @@ export const hostSession = () => {
 
 export const joinSession = () => {
     peerID = '2';
-    default_constraints = {video: false, frameRate: {max: 60}};
+    default_constraints = 
+        {
+            'width': 1680, 
+            'height': 1050,
+            'video': false,
+        }
     websocketServerConnect();
 }
 

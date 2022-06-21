@@ -21,7 +21,7 @@ class Checkbox extends Component {
     const { checked, label, wide, left, className } = this.props;
 
     return (
-      <div onClick={this.onClick} className={`${styles.wrapper} ${className} ${wide ? styles.wide : ''} ${left ? styles.left : ''}`}>
+      <div onMouseDown={this.onClick} className={`${styles.wrapper} ${className} ${wide ? styles.wide : ''} ${left ? styles.left : ''}`}>
         <MaterialIcon className={styles.checkbox} icon={checked ? "check_box" : "check_box_outline_blank"} />
         { label && <label>{ label }</label> }
       </div>
