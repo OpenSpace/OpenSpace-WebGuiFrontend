@@ -20,12 +20,29 @@ import styles from './OnScreenGui.scss';
 class OnScreenGui extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      luaConsoleVisible : false
+    }
     this.checkedVersion = false;
     this.showFlightController = props.isInBrowser;
+    this.toggleConsole = this.toggleConsole.bind(this);
   }
 
   componentDidMount() {
     this.props.startConnection();
+    window.addEventListener("keydown", this.toggleConsole);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('keydown', this.toggleConsole);
+  }
+
+  toggleConsole(e) {
+      if(e.code === "Backquote") {
+        this.setState({
+          luaConsoleVisible : !this.state.luaConsoleVisible
+        });
+      }
   }
 
   checkVersion() {
@@ -56,6 +73,7 @@ class OnScreenGui extends Component {
   }
 
   render() {
+    const {isInBrowser} = this.props;
     this.checkVersion();
     return (
       <div className={styles.app}>
@@ -83,7 +101,7 @@ class OnScreenGui extends Component {
           <Sidebar />
         </section>
         <section className={styles.Grid__Right}>
-          <LuaConsole />
+          {isInBrowser && this.state.luaConsoleVisible && <LuaConsole />}
           <NodePopOverContainer />
           <NodeMetaContainer />
           <BottomBar showFlightController={this.showFlightController}/>
