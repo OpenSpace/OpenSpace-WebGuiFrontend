@@ -1,3 +1,11 @@
+/**********************************************************
+OpenSpace Streaming Thesis (2022)
+----------------------------------------------
+This component is the bottom bar menu that accessed the
+streaming functionality through the WebRTCStreaming.jsx 
+functions. 
+**********************************************************/
+
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { setShowAbout } from '../../api/Actions';
@@ -49,6 +57,8 @@ class StreamingMenu extends Component {
 
 
   // Render function
+  // TODO: For the GStreamer solution, the "Host" button can be removed, as that was only needed
+  // for the Spout and WebRTC Screen Share solutions. 
   render() {
     const { showPopover } = this.state;
     return (

@@ -1,3 +1,11 @@
+/**********************************************************
+OpenSpace Streaming Thesis (2022)
+----------------------------------------------
+This component is the same as the "Control Area" 
+div in the FlightControlPanel component, but is spanned 
+over the entire screen.
+**********************************************************/
+
 import React, { Component } from 'react';
  import { connect } from 'react-redux';
  import { 

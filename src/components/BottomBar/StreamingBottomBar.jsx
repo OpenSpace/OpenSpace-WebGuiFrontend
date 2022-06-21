@@ -1,3 +1,12 @@
+/**********************************************************
+OpenSpace Streaming Thesis (2022)
+----------------------------------------------
+This component is basically the same as the BottomBar
+component, with the StreamingMenu component added, and menu
+items that access the host's computer removed for security
+reasons
+**********************************************************/
+
 import React from 'react';
 import PropTypes from 'prop-types';
 import ActionsPanel from './ActionsPanel';

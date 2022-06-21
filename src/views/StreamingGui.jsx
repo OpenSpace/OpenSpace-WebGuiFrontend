@@ -1,3 +1,9 @@
+/**********************************************************
+OpenSpace Streaming Thesis (2022)
+----------------------------------------------
+The GUI that is used with the streaming functionality
+**********************************************************/
+
 import React, { Component, useRef } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
@@ -28,8 +34,6 @@ class StreamingGui extends Component {
 
   componentDidMount() {
     this.props.startConnection();
-    //Automatically join WebRTC session on load
-    //joinSession();
   }
 
   checkVersion() {

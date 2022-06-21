@@ -6,7 +6,7 @@ import NotFound from './views/NotFound';
 import OnScreenGui from './views/OnScreenGui';
 import OnTouchGui from './views/OnTouchGui';
 import RemoteGui from './views/RemoteGui';
-import StreamingGui from './views/StreamingGui';
+import StreamingGui from './views/StreamingGui'; 
 import HostGui from './views/HostGui';
 
 const App = () => (
@@ -18,7 +18,7 @@ const App = () => (
       <Route path="/actions" component={ActionsGui} />
       {/* Here, more GUI variations can be added. */}
       {/* <Route path="/tablet" component={TabletGui} /> */}
-      <Route path="/streaming" component={StreamingGui} />
+      <Route path="/streaming" component={StreamingGui} /> 
       <Route path="/host" component={HostGui} />
       <Route path="/" component={BrowserGui} />
       <Route component={NotFound} />

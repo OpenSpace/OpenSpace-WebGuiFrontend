@@ -1,3 +1,12 @@
+/**********************************************************
+OpenSpace Streaming Thesis (2022)
+----------------------------------------------
+This component is the same as the "Flight Control" 
+Popover in the FlightControlPanel component, but without 
+the Control Area (which has been replaced with the 
+  NavigationLayer component).
+**********************************************************/
+
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';

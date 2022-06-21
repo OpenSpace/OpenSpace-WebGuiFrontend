@@ -1,3 +1,11 @@
+/**********************************************************
+OpenSpace Streaming Thesis (2022)
+----------------------------------------------
+This component contains the incoming video feed that has 
+been streamed from OpenSpace
+**********************************************************/
+
+
 import React, { Component } from 'react';
 import styles from  './StreamedVideo.scss';
 

@@ -1,22 +1,21 @@
-const wsPort = 8443;
-//const wsAdress = "localhost";
-const wsAdress = "192.168.1.39";
+// 
+// OpenSpace Streaming Thesis
+//
 
-// Nisse trials:
+const signalingPort = 8443;
 const { WebSocketServer } = require('ws');
-const ws = new WebSocketServer({port: wsPort});
+const ws = new WebSocketServer({port: signalingPort});
+
+// Variables that contain information about what peers are on the server and are connected to each other
 let peers = [];
 let sessions = [];
 let queuedCalls = [];
-console.log("Signaling server started, listening at port: ", wsPort);
+
+printServerStatus("Signaling server started, listening at port: " + signalingPort);
 
 ws.on('connection', function connection(ws, req) {
 
     ws.on('message', function message(data) {
-        console.log("----------------------");
-        console.log("MESSAGE INCOMING: ");
-        console.log(data.toString());
-
         let msg = JSON.parse(data.toString());
         let msg_type = msg.type;
         
@@ -27,7 +26,7 @@ ws.on('connection', function connection(ws, req) {
         switch(msg_type) {
             // Register the clients on the server
             case "REGISTER":
-                console.log("Caller **" + caller_id + "** has joined the session.");
+                printServerStatus("Caller **" + caller_id + "** has joined the session.");
                 
                 peers[caller_id] = ({
                     ws: ws,
@@ -41,7 +40,7 @@ ws.on('connection', function connection(ws, req) {
                     console.log("Found queued calls");
                     for (let i = 0; i < queuedCalls.length; i += 2) {
                         if (parseInt(caller_id) == queuedCalls[i+1]) {
-                            console.log("Found a call request from ", queuedCalls[i]);
+                            printServerStatus("Found a call request from " + queuedCalls[i]);
                             wso = peers[queuedCalls[i]].ws;
 
                             sessions[queuedCalls[i]] = queuedCalls[i+1];
@@ -52,58 +51,55 @@ ws.on('connection', function connection(ws, req) {
                         }
                     }
                 }
-
-                console.log("----------------------");
                 return;
 
             // Start a session between two clients
             case "SESSION":
                 recipient_id = parseInt(msg.content);
 
-                console.log(caller_id + " is requesting session with " + recipient_id)
+                printServerStatus(caller_id + " is requesting a session with " + recipient_id)
 
                 if(peers[recipient_id]){
+                    // TODO: Right now, this array is the object that keeps the record of who has contacted who
+                    // through the server. This could be optimized in a number of ways, for example:
+                    // * Create a nested array so that a peer can have more than one connection registered
+                    // * Index the array in some more efficient way than just the ID. For "bigger" ID numbers
+                    //   this structure might not be the best 
                     sessions[caller_id] = recipient_id;
                     sessions[recipient_id] = caller_id;
 
                     ws.send(("SESSION_OK").toString());
                 }
                 else {
-                    console.log("Recipient ", recipient_id, " not found, added to queue.")
+                    printServerStatus("Recipient " + recipient_id + " not found, added to queue.")
                     queuedCalls.push(caller_id, recipient_id);
                 }
-
-                console.log("----------------------");
-                
                 return;
-
+            
+            // Relay SDP between peers
             case "SDP":
                 recipient_id = sessions[caller_id];
                 if (recipient_id == caller_id) return;
                 wso = peers[recipient_id].ws;
-                console.log("**SDP** received from peer " + caller_id + ", sending to peer", recipient_id);
+                printServerStatus("**SDP** received from peer " + caller_id + ", sending to peer " + recipient_id);
                 wso.send(JSON.stringify(msg));
-
-                console.log("----------------------");
                 
                 return;
 
+            // Relay ICE between peers
             case "ICE":
                 recipient_id = sessions[caller_id];
                 if (recipient_id == caller_id) return;
                 wso = peers[recipient_id].ws;
-                console.log("--ICE-- received from peer " + caller_id + ", sending to peer", recipient_id);
-
-                //ws.send(JSON.stringify(msg.content));
+                printServerStatus("--ICE-- received from peer " + caller_id + ", sending to peer " + recipient_id);
                 wso.send(JSON.stringify(msg));
-                console.log("----------------------");
 
                 return;
 
-            default:  
-                console.log("Unknown message received from peer" + caller_id + ": " + msg);
-                console.log("----------------------");
+            // TODO: Create a case for UNREGISTER, so that a peer can unregister/leave the server properly
 
+            default:  
+                printServerStatus("Unknown message received from peer" + caller_id + ": " + msg);
             
         }
 
@@ -111,61 +107,7 @@ ws.on('connection', function connection(ws, req) {
     })
 })
 
-
-//----------------------------------------------------- STOP NOTHING TO SEE HERE ------------------------------------------------------------------------------------
-
-
-
-
-/*const { WebSocketServer } = require('ws');
-
-const WebSocket = require('ws').Server;
-
-const wsPort = 1337;
-const wsAdress = 'localhost';
-
-const ws = new WebSocketServer({port: wsPort});
-
-let peers = [];
-
-let sessions = [];
-let currID;
-
-ws.on('connection', function connection(ws, req) {
-    let ip = req.socket.remoteAddress;
-    console.log("User connected from: " + ip + " with client: ");
-
-    ws.on('message', function message(data) {
-        let msg = data.toString().replace('"', '').split(" "); //toString node function for buffer-messages
-        console.log("Fick medd: " + msg);
-        currID = msg[1].trim();
-        if(peers[currID]) console.log(peers[currID].status);
-
-        switch(msg[0]) {
-            case "HELLO": 
-                console.log("It's hello from: ", msg[1].trim());
-                peers[currID] = ({
-                    ws: ws,
-                })
-                ws.send(("HELLO").toString())
-                return;
-            case "SESSION":
-                let calleeID = msg[2].trim();
-                console.log("Requesting session between: ", currID, calleeID)
-                peers[currID].status = 'session';
-                peers[calleeID].status = 'session';
-                ws.send(("SESSION_OK").toString())
-                //Add check if not connected etc.
-                return;
-            case "sdp":
-                console.log("SDP received!")
-            default:
-                console.log("It ain't hello")
-
-        }
-
-    })
-})
-
-//TODO: peers, sessions, rooms. Find way to receive peer status and get the other peer in session.
-*/
+function printServerStatus(text) {
+    console.log(text);
+    console.log("----------------------");
+}

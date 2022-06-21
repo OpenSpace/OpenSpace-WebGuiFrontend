@@ -1,6 +1,6 @@
 // TODO: Städa upp bland dessa variabler
 //var signalingServer = 'localhost';
-var signalingServer = '192.168.1.39';
+var signalingServer = 'localhost';
 var signalingPort = 8443;
 var peerID = 0;
 var rtc_configuration = {iceServers: [{urls: "stun:stun.services.mozilla.com"},
@@ -199,9 +199,6 @@ function onServerMessage(event) {
             // Incoming JSON signals the beginning of a call
             if (!peer_connection) 
                 createCall(msg);
-            
-            console.log("Incoming msg:\n"); 
-            console.log(msg);
 
             if (msg.type == "SDP") {
                 onIncomingSDP(msg.content.sdp);
