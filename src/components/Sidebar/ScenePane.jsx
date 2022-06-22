@@ -7,7 +7,9 @@ import subStateToProps from '../../utils/subStateToProps';
 import {FilterList, FilterListData, FilterListFavorites} from '../common/FilterList/FilterList';
 import LoadingBlocks from '../common/LoadingBlock/LoadingBlocks';
 import Pane from './Pane';
-import ScenePaneListItem from './ScenePaneListItem';
+import ContextSection from './ContextSection';
+import PropertyOwner from './Properties/PropertyOwner';
+import Group from './Group';
 
 class ScenePane extends Component {
   constructor(props) {
@@ -18,19 +20,14 @@ class ScenePane extends Component {
     let favorites = [];
     const entries = this.props.propertyOwners.map(uri => ({
       key: uri,
-      type: 'propertyOwner',
-      uri: uri
+      uri: uri,
+      expansionIdentifier: 'scene-search/' + uri
     }));
-
-    favorites.push({
-      key: 'context',
-      type: 'context',
-    });
 
     favorites = favorites.concat(this.props.groups.map(item => ({
       key: item,
       path: item,
-      type: 'group'
+      expansionIdentifier: 'scene/' + item 
     })));
 
     return (
@@ -41,10 +38,13 @@ class ScenePane extends Component {
         {entries.length > 0 && (
           <FilterList matcher={this.props.matcher}>
             <FilterListFavorites>
-            { favorites.map(favorite => <ScenePaneListItem {...favorite}/> ) }
+            {<ContextSection expansionIdentifier="context" />}
+            { favorites.map(favorite => 
+              <Group {...favorite} />) 
+            }
             </FilterListFavorites>
             <FilterListData>
-            { entries.map(entry => <ScenePaneListItem {...entry}/>) }
+            { entries.map(entry => <PropertyOwner {...entry} />) }
             </FilterListData>
           </FilterList> 
         )}
@@ -99,12 +99,9 @@ const mapSubStateToProps = ({ groups, properties, propertyOwners }) => {
   sortedGroups = sortedGroups.map(path => '/' + path);
 
   const matcher = (test, search) => {
-    if (test.type === 'propertyOwner') {
-      const node = propertyOwners[test.uri] || {};
-      const guiHidden = isPropertyOwnerHidden(properties, test.uri);
-      return ObjectWordBeginningSubstring(node, search) && !guiHidden;
-    }
-    return false;
+    const node = propertyOwners[test.uri] || {};
+    const guiHidden = isPropertyOwnerHidden(properties, test.uri);
+    return ObjectWordBeginningSubstring(node, search) && !guiHidden;
   };
 
   const sceneOwner = propertyOwners.Scene || {};
