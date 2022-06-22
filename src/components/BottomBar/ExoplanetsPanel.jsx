@@ -10,7 +10,7 @@ import { NavigationAimKey, NavigationAnchorKey } from '../../api/keys';
 import propertyDispatcher from '../../api/propertyDispatcher';
 import subStateToProps from '../../utils/subStateToProps';
 import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
-import FilterList from '../common/FilterList/FilterList';
+import {FilterList, FilterListData, FilterListFavorites} from '../common/FilterList/FilterList';
 import Button from '../common/Input/Button/Button';
 import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import Popover from '../common/Popover/Popover';
@@ -92,7 +92,6 @@ class ExoplanetsPanel extends Component {
                        expansionIdentifier={"P:" + prop} />
       )
     }
-
     return (
       <Popover
         className={Picker.Popover}
@@ -104,15 +103,20 @@ class ExoplanetsPanel extends Component {
         <div className={Popover.styles.content}>
           <Row>
             { this.props.hasSystems ? (
-              <FilterList
-                data={this.props.systemList}
-                className={styles.list}
+              <FilterList 
+                className={styles.list} 
                 searchText={"Star name..."}
-                viewComponent={FocusEntry}
-                onSelect={this.onSelect}
-                active={this.state.starName}
-                searchAutoFocus
-              />
+              >
+                <FilterListData>
+                  {this.props.systemList.map(system =>
+                    <FocusEntry 
+                      onSelect={this.onSelect} 
+                      active={this.state.starName}
+                      {...system}
+                    />
+                  )}
+                </FilterListData>
+              </FilterList>
             ) : (
               <CenteredLabel className={styles.redText}>
                 No exoplanet data was loaded

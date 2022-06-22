@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { isPropertyOwnerHidden } from './../../utils/propertyTreeHelpers';
 import { ObjectWordBeginningSubstring } from '../../utils/StringMatchers';
 import subStateToProps from '../../utils/subStateToProps';
-import FilterList from '../common/FilterList/FilterList';
+import {FilterList, FilterListData, FilterListFavorites} from '../common/FilterList/FilterList';
 import LoadingBlocks from '../common/LoadingBlock/LoadingBlocks';
 import Pane from './Pane';
 import ScenePaneListItem from './ScenePaneListItem';
@@ -38,13 +38,15 @@ class ScenePane extends Component {
         { (entries.length === 0) && (
           <LoadingBlocks className={Pane.styles.loading} />
         )}
-
-        { entries.length > 0 && (
-          <FilterList favorites={favorites}
-                      matcher={this.props.matcher}
-                      data={entries}
-                      viewComponent={ScenePaneListItem}
-                      searchAutoFocus />
+        {entries.length > 0 && (
+          <FilterList matcher={this.props.matcher}>
+            <FilterListFavorites>
+            { favorites.map(favorite => <ScenePaneListItem {...favorite}/> ) }
+            </FilterListFavorites>
+            <FilterListData>
+            { entries.map(entry => <ScenePaneListItem {...entry}/>) }
+            </FilterListData>
+          </FilterList> 
         )}
       </Pane>
     );

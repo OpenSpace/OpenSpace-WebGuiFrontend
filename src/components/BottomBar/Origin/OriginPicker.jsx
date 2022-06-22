@@ -29,7 +29,7 @@ import {
 } from '../../../api/keys';
 import propertyDispatcher from '../../../api/propertyDispatcher';
 import subStateToProps from '../../../utils/subStateToProps';
-import FilterList from '../../common/FilterList/FilterList';
+import {FilterList, FilterListData, FilterListFavorites} from '../../common/FilterList/FilterList';
 import Button from '../../common/Input/Button/Button';
 import LoadingString from '../../common/LoadingString/LoadingString';
 import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
@@ -266,6 +266,7 @@ function OriginPicker({ favorites, setShowFavorites, nodes, showFavorites, engin
     };
 
     const isInFocusMode = navigationAction === NavigationActions.Focus;
+    const active = navigationAction === NavigationActions.Aim ? aim : anchor;
 
     return (
       <Popover
@@ -302,17 +303,31 @@ function OriginPicker({ favorites, setShowFavorites, nodes, showFavorites, engin
           </Button>
         </div>
         <FilterList
-          data={sortedNodes}
-          favorites={sortedDefaultList}
-          showFavorites={showFavorites}
-          setShowFavorites={setShowFavorites}
           className={styles.list}
           searchText={searchPlaceholder}
-          viewComponent={isInFocusMode ? FocusEntryWithNavigation : FocusEntry}
-          onSelect={onSelect}
-          active={navigationAction === NavigationActions.Aim ? aim : anchor}
-          searchAutoFocus
-        />
+          showMoreButton
+        >
+          <FilterListFavorites>
+            {sortedDefaultList.map((entry) => {
+              if(isInFocusMode) {
+                return <FocusEntryWithNavigation onSelect={onSelect} active={active} {...entry} />;
+              }
+              else {
+                return <FocusEntry onSelect={onSelect} active={active} {...entry}/>
+              }
+            })}
+          </FilterListFavorites>
+          <FilterListData>
+            {sortedNodes.map((entry) => {
+              if(isInFocusMode) {
+                return <FocusEntryWithNavigation onSelect={onSelect} active={active} {...entry} />;
+              }
+              else {
+                return <FocusEntry onSelect={onSelect} active={active} {...entry}/>
+              }
+            })}
+          </FilterListData>
+        </FilterList>
       </Popover>
     );
   }

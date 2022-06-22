@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { SceneKey } from '../../api/keys';
 import { CaseInsensitiveSubstring, ListCaseInsensitiveSubstring } from '../../utils/StringMatchers';
 import subStateToProps from '../../utils/subStateToProps';
-import FilterList from '../common/FilterList/FilterList';
+import {FilterList, FilterListData, FilterListFavorites} from '../common/FilterList/FilterList';
 import LoadingBlocks from '../common/LoadingBlock/LoadingBlocks';
 import { getLastWordOfUri, isDeadEnd, isPropertyOwnerHidden, isPropertyVisible } from './../../utils/propertyTreeHelpers';
 import Pane from './Pane';
@@ -67,12 +67,15 @@ class SettingsPane extends Component {
 
         {(defaultEntries.length > 0) && (
           <FilterList
-            favorites={defaultEntries}
-            data={searchEntries}
-            viewComponent={SettingsPaneListItem}
             matcher={matcher}
-            searchAutoFocus
-          />
+          >
+            <FilterListFavorites>
+              {defaultEntries.map((entry) => <SettingsPaneListItem {...entry}/>)}
+            </FilterListFavorites>
+            <FilterListData>
+              {searchEntries.map((entry) => <SettingsPaneListItem {...entry}/>)}
+            </FilterListData>
+          </FilterList>
         )}
       </Pane>
     );

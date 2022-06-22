@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import CenteredLabel from '../../common/CenteredLabel/CenteredLabel';
-import FilterList from '../../common/FilterList/FilterList';
+import {FilterList, FilterListData} from '../../common/FilterList/FilterList';
 import styles from './SkyBrowserImageList.scss';
 import SkyBrowserFocusEntry from './SkyBrowserFocusEntry';
 
@@ -98,17 +98,20 @@ class SkyBrowserImageList extends Component {
       <FilterList
         className={styles.filterList}
         height={height} // TODO: prevent rerendering every time height changes
-        data={list}
         searchText={`Search from ${list.length.toString()} images...`}
-        viewComponent={SkyBrowserFocusEntry}
-        viewComponentProps={{
-          luaApi: luaApi,
-          currentBrowserColor: currentBrowserColor,
-        }}
-        onSelect={selectImage}
-        active={activeImage}
-        searchAutoFocus
-      />
+      >
+        <FilterListData>
+          {list.map(item => {
+            return <SkyBrowserFocusEntry 
+                {...item}
+                luaApi={luaApi} 
+                currentBrowserColor={currentBrowserColor}
+                onSelect={selectImage}
+                active={activeImage}
+              />
+          })}
+        </FilterListData>
+      </FilterList>
     );
   }
 }
