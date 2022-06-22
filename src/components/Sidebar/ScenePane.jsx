@@ -37,7 +37,7 @@ class ScenePane extends Component {
         {entries.length > 0 && (
           <FilterList matcher={this.props.matcher}>
             <FilterListFavorites>
-              {<ContextSection expansionIdentifier="context" />}
+              <ContextSection expansionIdentifier="context" />
               {favorites.map(favorite => <Group {...favorite} />)}
             </FilterListFavorites>
             <FilterListData>
