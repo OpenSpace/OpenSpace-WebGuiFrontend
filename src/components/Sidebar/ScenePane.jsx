@@ -17,18 +17,17 @@ class ScenePane extends Component {
   }
 
   render() {
-    let favorites = [];
     const entries = this.props.propertyOwners.map(uri => ({
       key: uri,
       uri: uri,
       expansionIdentifier: 'scene-search/' + uri
     }));
 
-    favorites = favorites.concat(this.props.groups.map(item => ({
+    const favorites = this.props.groups.map(item => ({
       key: item,
       path: item,
       expansionIdentifier: 'scene/' + item 
-    })));
+    }));
 
     return (
       <Pane title="Scene" closeCallback={this.props.closeCallback}>
@@ -38,13 +37,11 @@ class ScenePane extends Component {
         {entries.length > 0 && (
           <FilterList matcher={this.props.matcher}>
             <FilterListFavorites>
-            {<ContextSection expansionIdentifier="context" />}
-            { favorites.map(favorite => 
-              <Group {...favorite} />) 
-            }
+              {<ContextSection expansionIdentifier="context" />}
+              {favorites.map(favorite => <Group {...favorite} />)}
             </FilterListFavorites>
             <FilterListData>
-            { entries.map(entry => <PropertyOwner {...entry} />) }
+              {entries.map(entry => <PropertyOwner {...entry} />)}
             </FilterListData>
           </FilterList> 
         )}
