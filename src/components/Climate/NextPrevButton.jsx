@@ -8,7 +8,7 @@ const NextStepButton = ({next, NextStepId, string, setShowStory, iconNextPrev, i
 
   <div className={styles.next} onClick={next} >
 
-        {string == "Previus" &&
+        {string == "Previous" &&
           <div>
             <SmallLabel>{string}</SmallLabel>
             <Icon icon= {iconNextPrev} className={styles.IconPrev} />

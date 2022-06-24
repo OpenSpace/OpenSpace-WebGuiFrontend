@@ -149,7 +149,7 @@ class ExploreClimate extends Component{
                         next = {this.Decrement}
                         storyStep = {StoryStep}
                         currentStory = { currentStory }
-                        string = {"Previus"}
+                        string = {"Previous"}
                         iconNextPrev = "chevron_left"
                         iconPlacement = {styles.Icon}
                         />

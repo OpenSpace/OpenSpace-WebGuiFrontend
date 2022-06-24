@@ -1,42 +1,39 @@
 import React, { Component, useState } from "react";
 import { connect } from "react-redux";
 import {
-  setActionsPath,
+
   setPopoverVisibility,
-  triggerAction,
-} from "../../api/Actions";
-import {
-  refreshSessionRecording,
-  subscribeToSessionRecording,
-  unsubscribeToSessionRecording,
-} from "../../api/Actions";
+
+} from "../../../api/Actions";
+
 import PropTypes from 'prop-types';
 import {
   sessionStateIdle,
   sessionStatePaused,
   sessionStatePlaying,
   sessionStateRecording,
-} from "../../api/keys";
-import subStateToProps from "../../utils/subStateToProps";
-import InfoBox from "../common/InfoBox/InfoBox";
-import Button from "../common/Input/Button/Button";
-import Input from "../common/Input/Input/Input";
-import Select from "../common/Input/Select/Select";
-import MaterialIcon from "../common/MaterialIcon/MaterialIcon";
-import climateButton from '../../../images/climateButton.png'
-import glac from '../../../images/glac.png'
-import glac2 from '../../../images/glac2.png'
-import newGlac from '../../../images/newGlac.png'
-import cur from '../../../images/cur.png'
-import cons from '../../../images/cons.png'
-import SmallLabel from '../common/SmallLabel/SmallLabel';
-import Popover from "../common/Popover/Popover";
-import Row from "../common/Row/Row";
+} from "../../../api/keys";
+import subStateToProps from "../../../utils/subStateToProps";
+import InfoBox from "../../common/InfoBox/InfoBox";
+import Button from "../../common/Input/Button/Button";
+import Input from "../../common/Input/Input/Input";
+import Select from "../../common/Input/Select/Select";
+import MaterialIcon from "../../common/MaterialIcon/MaterialIcon";
+import climateButton from '../../../../images/climateButton.png'
+import glac from '../../../../images/glac.png'
+import cur from '../../../../images/cur.png'
+import newGlac from '../../../../images/newGlac.png'
+import cons from '../../../../images/cons.png'
+import SmallLabel from '../../common/SmallLabel/SmallLabel';
+import Popover from "../../common/Popover/Popover";
+import Row from "../../common/Row/Row";
 import styles from "./ClimatePanel.scss";
-import Picker from "./Picker";
+import Picker from "../../BottomBar/Picker";
+
+
 import {
   storyResetLayer
-} from '../../utils/storyHelpers';
+} from '../../../utils/storyHelpers';
 
 class ClimatePanel extends Component {
 
@@ -54,7 +51,9 @@ togglePopover() {
   }
 
 getSurfaceLayerAlaska() {
-    this.props.luaApi.time.setTime("2021-06-18T19:00:00");
+    this.props.luaApi.time.setTime("2002-06-18T19:00:00");
+    this.props.luaApi.setPropertyValueSingle(
+      "Scene.Earth.Renderable.Layers.Overlays.Coastlines.Enabled", true)
     this.props.luaApi.setPropertyValueSingle(
       "Scene.Earth.Renderable.Layers.ColorLayers.GRACE_temp-layer.Enabled", true)
     this.props.luaApi.setPropertyValueSingle(
@@ -71,6 +70,8 @@ getSurfaceLayerAlaska() {
   getSurfaceLayerGreenland() {
     this.props.luaApi.time.setTime("1990-06-18T13:00:00");
     this.props.luaApi.setPropertyValueSingle(
+        "ScreenSpace.noaa-sos-oceans-greenland_meltingdays-legend.Enabled", true);
+    this.props.luaApi.setPropertyValueSingle(
         "Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-greenland_melt.Enabled", true);
     this.props.luaApi.pathnavigation.flyToNavigationState({
       Anchor: "Earth",
@@ -82,7 +83,9 @@ getSurfaceLayerAlaska() {
   }
 
   getSurfaceLayerAntarctica() {
-    this.props.luaApi.time.setTime("2021-12-18T09:00:00");
+    this.props.luaApi.time.setTime("2002-12-18T09:00:00");
+    this.props.luaApi.setPropertyValueSingle(
+      "Scene.Earth.Renderable.Layers.Overlays.Coastlines.Enabled", true)
     this.props.luaApi.setPropertyValueSingle(
       "Scene.Earth.Renderable.Layers.ColorLayers.GRACE_temp-layer.Enabled", true)
     this.props.luaApi.setPropertyValueSingle(
@@ -95,33 +98,33 @@ getSurfaceLayerAlaska() {
   }
 
   getSurfaceLayerCurrentsDetailed() {
-    /*this.setState((prevState) => ({
-      isToggleOn: !prevState.isToggleOn,
-    }));
-    this.props.luaApi.setPropertyValueSingle(
-      "Scene.Earth.Renderable.Layers.ColorLayers.OSCAR_Sea_Surface_Currents_Zonal.Enabled",
-      this.state.isToggleOn
-    );*/
     this.props.luaApi.setPropertyValueSingle(
       "Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-ecco2_sst-veg_land-layer.Enabled", true)
     this.props.luaApi.setPropertyValueSingle(
+      "ScreenSpace.noaa-sos-oceans-ecco2_sst-veg_land-colorbar.Enabled", true)
+    this.props.luaApi.setPropertyValueSingle(
       "Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled", true)
-    }
+  }
+
+  getSurfaceLayerCurrentsHalfDetailed() {
+    this.props.luaApi.setPropertyValueSingle(
+      "Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled", true)
+    this.props.luaApi.setPropertyValueSingle(
+      "Scene.Earth.Renderable.Layers.ColorLayers.ECCO_temp-layer.Enabled", true)
+    this.props.luaApi.setPropertyValueSingle(
+      "ScreenSpace.ECCO_temp-colorbar.Enabled", true)
+    this.props.luaApi.setPropertyValueSingle(
+      "Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled", true)
+  }
 
   getSurfaceLayerCurrentsOverview() {
-      /*this.setState((prevState) => ({
-        isToggleOn: !prevState.isToggleOn,
-      }));
-      this.props.luaApi.setPropertyValueSingle(
-        "Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
-        this.state.isToggleOn   //noaa-sos-overlays-currents
-      );
-      */
       this.props.luaApi.setPropertyValueSingle(
         "Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled", true)
       this.props.luaApi.setPropertyValueSingle(
+        "ScreenSpace.noaa-sos-oceans-currents-legend.Enabled", true)
+      this.props.luaApi.setPropertyValueSingle(
         "Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled", true)
-    }
+  }
 
   getSurfaceLayerCons(showNode){
     console.log("shoNode: " + showNode)
@@ -131,13 +134,8 @@ getSurfaceLayerAlaska() {
           `Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-${showNode}.Enabled`,
         true
       );
-  /*this.props.luaApi.pathnavigation.flyToNavigationState({
-    Anchor: "Earth",
-    Pitch: -0.03608261848856605,
-    Position: [2293604.0205524014,-11653043.468794724,5311440.30260426],
-    Up: [-0.38875661674058404,0.317676461452206,0.8648410020226956],
-    Yaw: -0.03951464745807516
-  })*/
+    this.props.luaApi.setPropertyValueSingle(
+      "Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-city_names.Enabled", true)
 }
 
   ShowHideButton(node, pos, opacity){
@@ -190,13 +188,14 @@ getSurfaceLayerAlaska() {
     var alaska;
     var currents;
     var overviewCurrents;
+    var halfDetailedCurrents;
     var detailedCurrents;
     var consequences;
     var firstCons;
     var secondCons;
     var thirdCons;
 
-    var currentHide = [ 'curentsHide1', 'curentsHide2' ];
+    var currentHide = ['currentsHide1', 'currentsHide2','currentsHide3'];
     var consequenceHide = ['consequenceHide1', 'consequenceHide2', 'consequenceHide3'];
     var glaciersHide = ['glaciersHide1', 'glaciersHide2', 'glaciersHide3']
     const {luaApi} = this.props;
@@ -295,9 +294,10 @@ getSurfaceLayerAlaska() {
 
     overviewCurrents = (
       <Button
-        id = "curentsHide1"
+        id = "currentsHide1"
         block
-        className={styles.actionButton2}
+        //className={styles.actionButton2}
+        className={styles.actionButton}
         smalltext
         onClick={() => {
           storyResetLayer(luaApi);
@@ -308,14 +308,29 @@ getSurfaceLayerAlaska() {
       </Button>
     );
 
+    halfDetailedCurrents = (
+      <Button
+        id = "currentsHide2"
+        onClick={() => {
+          storyResetLayer(luaApi);
+          this.getSurfaceLayerCurrentsHalfDetailed();
+        }}
+        //className={styles.actionButton2}
+        className={styles.actionButton}
+      >
+        Half detailed
+      </Button>
+    );
+
     detailedCurrents = (
       <Button
-        id = "curentsHide2"
+        id = "currentsHide3"
         onClick={() => {
           storyResetLayer(luaApi);
           this.getSurfaceLayerCurrentsDetailed();
         }}
-        className={styles.actionButton2}
+        //className={styles.actionButton2}
+        className={styles.actionButton}
       >
         Detailed
       </Button>
@@ -402,6 +417,7 @@ getSurfaceLayerAlaska() {
             {greenland}
             {alaska}
             {overviewCurrents}
+            {halfDetailedCurrents}
             {detailedCurrents}
             {firstCons}
             {secondCons}
