@@ -9,7 +9,7 @@ import PropertyOwner, {
   displayName as propertyOwnerName, 
   nodeExpansionIdentifier as propertyOwnerNodeExpansionIdentifier 
 } from './Properties/PropertyOwner';
-import SoftwareIntegrationSession from "./SoftwareIntegrationSession/SoftwareIntegrationSession";
+import SoftwareIntegrationSession from "./SoftwareIntegration/SoftwareIntegrationSession";
 
 const displayName = path => {
   const splitPath = path.split('/');

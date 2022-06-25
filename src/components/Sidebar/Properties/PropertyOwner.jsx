@@ -23,6 +23,7 @@ import {
 } from '../../../utils/propertyTreeHelpers';
 import Property from './Property';
 import PropertyOwnerHeader from './PropertyOwnerHeader';
+import RemoveSoftwareIntegrationSgn from "../SoftwareIntegration/RemoveSoftwareIntegrationSgn";
 
 /**
  * Return an identifier for the tree expansion state.
@@ -192,6 +193,11 @@ class PropertyOwnerComponent extends Component {
     const sortedSubowners = sort
       ? (subowners.slice(0).sort((a, b) => subownerNames[a].localeCompare(subownerNames[b], 'en')))
       : subowners;
+    
+    if (expansionIdentifier.includes("Software Integration") && subowners.length) {
+      const identifier = subowners[0].split(".")[1]
+      sortedSubowners.unshift(`${identifier}.removesoftwareintegrationsgn`)
+    }
 
     return (
       <ToggleContent
@@ -201,6 +207,10 @@ class PropertyOwnerComponent extends Component {
       >
         { this.renderLayersList() }
         { sortedSubowners.map((uri) => {
+          if (uri.includes("removesoftwareintegrationsgn")) {
+            return <RemoveSoftwareIntegrationSgn key={uri} identifier={uri.split(".")[0]} />
+          }
+
           let autoExpand = sortedSubowners.length + properties.length === 1 ? true : undefined;
           const splitUri = uri.split('.');
           if (splitUri.length > 0 && splitUri[splitUri.length - 1] === 'Renderable') {

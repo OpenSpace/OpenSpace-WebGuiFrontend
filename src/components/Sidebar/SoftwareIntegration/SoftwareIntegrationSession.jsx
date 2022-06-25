@@ -124,7 +124,7 @@ const SaveSession = () => {
             disabled={!sessionName || errorMessage || loading || hasSavedButNotChanged}
           >
             {loading ?
-              <div class={styles.LoadingSpinner}>
+              <div className={styles.LoadingSpinner}>
                 <div /><div /><div /><div />
               </div>
               :

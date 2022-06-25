@@ -74,7 +74,11 @@ const propertyOwners = (state = {}, action) => {
     }
     case actionTypes.removePropertyOwners: {
       const newState = {...state};
-      action.payload.uris.forEach(uri => {
+      let uris = action.payload.uris;
+      if (!Array.isArray(uris)) {
+        uris = [uris];
+      }
+      uris.forEach(uri => {
         delete newState[uri];
       });
       return newState;

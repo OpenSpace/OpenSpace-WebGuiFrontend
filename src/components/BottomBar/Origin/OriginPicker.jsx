@@ -393,7 +393,7 @@ const mapSubStateToProps = ({
     key: uri,
   }));
 
-  const favorites = uris.filter(uri => propertyOwners[uri].tags.some(tag => tag.includes(REQUIRED_TAG))).map(uri => ({
+  const favorites = uris.filter(uri => propertyOwners[uri]?.tags.some(tag => tag.includes(REQUIRED_TAG))).map(uri => ({
     ...propertyOwners[uri],
     key: uri,
   }));

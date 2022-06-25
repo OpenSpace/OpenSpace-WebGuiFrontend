@@ -23,6 +23,13 @@ export const addPropertyOwners = propertyOwners => ({
   },
 });
 
+export const removePropertyOwners = uris => ({
+  type: actionTypes.removePropertyOwners,
+  payload: {
+    uris,
+  },
+});
+
 export const addProperties = properties => ({
   type: actionTypes.addProperties,
   payload: {
