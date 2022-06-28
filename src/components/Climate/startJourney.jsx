@@ -37,7 +37,6 @@ class StartJourney extends Component {
        climate_stories: climate_stories,
        stories: stories.stories,
        storiesArray: []
-
     };
     this.onChangeStory = this.onChangeStory.bind(this);
   }
@@ -47,14 +46,11 @@ class StartJourney extends Component {
   }
 
   render() {
-
     if (!this.state.storiesArray) {
       return null;
     }
 
-
     return (
-
     <div className={styles.StoryPosistion}>
       <div className = {styles.TellStory}>
         <div>
@@ -68,10 +64,6 @@ class StartJourney extends Component {
             );
           })
         }
-        <br/>
-        <br/>
-        <br/>
-        <br/>
         <br/>
         {this.state.stories.map((story, index) => {
             return(

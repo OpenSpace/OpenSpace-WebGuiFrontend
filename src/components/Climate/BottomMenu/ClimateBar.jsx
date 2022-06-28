@@ -44,11 +44,8 @@ let BottomBar = ({
 
   return <div className={styles.BottomBar}>
     <Instructions/>
+    <HomeButtonContainer resetStory={resetStory}/>
     <ClimatePanel  setNoShow = {setNoShow}/>
-
-      <HomeButtonContainer resetStory={resetStory}/>
-    
-
     <TimePicker />
     {showFlightController && <FlightControlPanel />}
 

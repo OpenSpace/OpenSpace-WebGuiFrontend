@@ -12,7 +12,7 @@ import KeybindingPanel from '../components/BottomBar/KeybindingPanel';
 import '../styles/base.scss';
 import Error from '../components/common/Error/Error';
 import Overlay from '../components/common/Overlay/Overlay';
-import BottomBar from '../components/Climate/ButtomMenu/ClimateBar';
+import BottomBar from '../components/Climate/BottomMenu/ClimateBar';
 import Button from '../components/common/Input/Button/Button';
 
 import ActionsPanel from '../components/BottomBar/ActionsPanel';
@@ -132,7 +132,7 @@ class OnClimateGui extends Component {
 
 
   resetStory() {
-    //pressing climate story button 
+    //pressing climate story button
     const { luaApi } = this.props;
     const { currentStory } = this.state;
     storyResetLayer(luaApi);
@@ -270,16 +270,6 @@ OnClimateGui = withRouter(connect(
   mapStateToProps,
   mapDispatchToProps,
 )(OnClimateGui));
-
-
-
-
-
-
-
-
-
-
 
 
 
