@@ -11,7 +11,6 @@ import { getBoolPropertyValue } from '../../../utils/propertyTreeHelpers';
 import styles from '../../BottomBar/BottomBar.scss';
 import HomeButtonContainer from './showStory';
 import SessionRec from '../../BottomBar/SessionRec';
-import ScreenSpaceRenderablePanel from '../../BottomBar/ScreenSpaceRenderablePanel';
 import TimePicker from '../../BottomBar/TimePicker';
 import ClimatePanel from './ClimatePanel';
 import Slider from '../../BottomBar/Slider';
@@ -41,10 +40,9 @@ let BottomBar = ({
 
   return <div className={styles.BottomBar}>
     <Instructions/>
-    <ClimatePanel  setNoShow = {setNoShow}/>
     <HomeButtonContainer resetStory={resetStory}/>
+    <ClimatePanel  setNoShow = {setNoShow}/>
     <TimePicker />
-    <ScreenSpaceRenderablePanel />
     {showTimeController && <TimePlayerController/> }
     {showFlightController && <FlightControlPanel />}
 

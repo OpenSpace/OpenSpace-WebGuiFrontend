@@ -402,7 +402,6 @@ getSurfaceLayerAlaska() {
         className={`${Picker.Popover} ${styles.climatepanel}`}
         title="What do you want to explore?"
         closeCallback={this.togglePopover}
-        detachable
         attached={true}
       >
         <div
@@ -447,7 +446,7 @@ getSurfaceLayerAlaska() {
         <Picker onClick={this.togglePopover}>
           <div className= {styles.iconButton}>
             <img src = {climateButton} alt = "climateButton" />
-            <SmallLabel>Climate change</SmallLabel>
+            <SmallLabel>Explore</SmallLabel>
           </div>
         </Picker>
         {popoverVisible && this.popover}

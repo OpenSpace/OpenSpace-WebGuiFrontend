@@ -2,7 +2,7 @@
   "startpage": [
       {
         "id": 1,
-        "title": "Climate change",
+        "title": "What will happen if the glaciers continue to melt?",
         "info": "Global climate change is an important topic that has major effects on the environment. Some consequences from climate change are  loss of sea ice, an acceleration of sea level rise and longer and more intense heat waves. According to scientists the global temperature will continue to increase for decades. \n \n Many glaciers are melting both from above and below at the same time. During summer, warmer air melts the ice. Then the meltwater bores holes through the ice all the way down to the bottom of the glacier. The meltwater then runs beneath the glacier until it reaches the ocean. Meltwater doesn’t contain any salt and therefore it weighs less than ocean water and rises to the front of the glacier. Near the surface, the ocean water is fresh and cold and at depth, the water is warmer and salty. The warmer, salty water starts melting the glacier face from the bottom and up. Eventually a piece of the glacier then breaks off and creates an iceberg. \n \n A challenge is to measure the thickness of the ice sheets to see how much ice that has melted. But a way to solve this problem is to use satellites to measure the thickness. ",
         "identifier": "startpage",
         "pos": {
@@ -32,32 +32,24 @@
   "pickstory": [
       {
         "id": 2,
-        "title": "Which glacier do you want to explore?",
-        "info": "climate climate climate satellite satellite climate",
         "identifier": "pick_story"
       }
     ],
     "alaska":[
       {
           "id": 3,
-          "title": "Explore the climate on Alaska",
-          "info": "alaska alaska alaska alaska.",
           "identifier": "Alaska"
       }
     ],
     "antarctica":[
       {
           "id": 4,
-          "title": "Explore the climate on west Antarctica",
-          "info": " antarctica antarctica antarctica antarctica.",
           "identifier": "Antarctica"
       }
     ],
     "greenland":[
       {
           "id": 5,
-          "title": "Explore the climate at Greenland",
-          "info": "Greenland Greenland Greenland Greenland.",
           "identifier": "Greenland"
       }
     ]

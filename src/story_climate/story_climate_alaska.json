@@ -14,26 +14,21 @@
         "storyinfo": "In the ocean there are both colder and warmer currents where the blue color visualizes the colder currents in this visualization and red color indicates warmer currents. The arrows show the direction of the currents in the ocean. If the circulation of the currents would change there could be huge impacts on the climate. When the glaciers and ice sheets melt, the fresh water will enter the ocean. Because of this melt water there is a risk the ocean circulation will slow down or even stop.",
         "date": "2021-06-18T22:00:00.00",
         "id" : 0,
-          "pos": {
+        "pos": {
           "anchor": "Earth",
-          "pitch": 0.036809269173964765,
-          "location": {
-            "latitude": -12473141.755951669,
-            "longitude": -9114685.955448685,
-            "altitude": 11168199.8503709
-          },
+          "pitch": -0.0188793211165021,
           "position": {
-            "x": -12473141.755951669,
-            "y": -9114685.955448685,
-            "z": 11168199.8503709
+            "x": -7857171.711164808,
+            "y": -3375965.14425832,
+            "z": 15920868.541830312
           },
           "type": "setNavigationState",
           "up": {
-            "x": 0.3361430784904903,
-            "y": 0.5100890660539397,
-            "z": 0.7917177372493026
+            "x": 0.7478819677717577,
+            "y": 0.47003865828598373,
+            "z": 0.4687603033518907
           },
-          "yaw": -0.3332731785454855
+          "yaw": -0.10510102349086267
         },
         "toggleboolproperties":[
           {
@@ -54,25 +49,25 @@
           "local":[]
       },
       {
-        "title": "More detailed Currents",
+        "title": "Zonal velocity",
         "storyinfo": "With the help of satellites and instruments in the water it is possible to create models of the velocity of the currents and how and how fast the currents are moving around our Earth through the years. The colors show how fast the currents are moving, but remember, it takes up to 1,000 years for a water molecule to travel around the globe. ",
         "date": "1992-01-18T22:00:00.00",
         "id" : 1,
         "pos": {
           "anchor": "Earth",
-          "pitch": 0.05726826173823074,
+          "pitch": -0.006700016059690168,
           "position": {
-            "x": -5342373.150739659,
-            "y": -3926203.3135169805,
-            "z": 12486323.301335737
+            "x": -15606319.825949587,
+            "y": -8276675.5275416225,
+            "z": 6591136.059759035
           },
           "type": "setNavigationState",
           "up": {
-            "x": 0.5685856717092868,
-            "y": 0.6832561527415348,
-            "z": 0.4581171942502654
+            "x": 0.28365191824136776,
+            "y": 0.21021875848705168,
+            "z": 0.9356012306843954
           },
-          "yaw": -0.3337957410554049
+          "yaw": -0.1515105494357617
         },
         "toggleboolproperties":[
           {
@@ -89,20 +84,59 @@
             "URI": "ScreenSpace.ECCO_temp-colorbar.Enabled",
             "label":"ECCO colorbar",
             "defaultvalue": true
-          },
-          {
-            "URI":"Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled",
-            "label":"Overview of currents",
-            "defaultvalue": true
           }
         ],
           "local":[]
       },
       {
+        "id" : 2,
+        "title": "More detailed Currents",
+        "storyinfo": "Here you can see the ocean currents more in detail. This visualization is a combination of all ocean and sea ice data that is available on a global scale. The colors of the ocean currents in this visualization correspond to the sea surface temperature which is displayed in the color bar below.",
+        "date": "2021-12-18T05:00:00.00",
+        "pos": {
+          "anchor": "Earth",
+          "pitch": -0.006700016059690168,
+          "position": {
+            "x": -15606319.825949587,
+            "y": -8276675.5275416225,
+            "z": 6591136.059759035
+          },
+          "type": "setNavigationState",
+          "up": {
+            "x": 0.28365191824136776,
+            "y": 0.21021875848705168,
+            "z": 0.9356012306843954
+          },
+          "yaw": -0.1515105494357617
+        },
+        "IdleBehavior": {
+          "URI" : "NavigationHandler.OrbitalNavigator.IdleBehavior.IdleBehavior",
+          "defaultvalue": 1
+        },
+        "toggleboolproperties":[
+          {
+            "URI":"Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled",
+            "label":"Background of Earth",
+            "defaultvalue": true
+          },
+          {
+            "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-ecco2_sst-veg_land-layer.Enabled",
+            "label":"Detailed currents, ECCO",
+            "defaultvalue": true
+          },
+          {
+            "URI": "ScreenSpace.noaa-sos-oceans-ecco2_sst-veg_land-colorbar.Enabled",
+            "label":"ECCO colorbar",
+            "defaultvalue": true
+          }
+        ],
+          "local": []
+    },
+      {
         "title": "Alaska",
         "storyinfo": "Alaska warms twice as fast as the rest of the US, and half the sea ice has disappeared since 1979. The glacier in Alaska has the fastest loss of glacier ice in the world. The warmer summers in Alaska have also increased the number of large fires in the last ten years. ",
         "date": "2021-06-18T22:00:00.00",
-        "id" : 2,
+        "id" : 3,
         "pos": {
           "anchor": "Earth",
           "pitch": 0.057268261672115586,
@@ -143,7 +177,7 @@
           "local":[]
       },
       {
-        "id" : 3,
+        "id" : 4,
         "title": "Consequences from sea level rise",
         "storyinfo": "The problem that arises when glaciers and sea ice melts is that the sea level rises. 8 of the 10 biggest cities in the world are close to the coast. Therefore, a lot of people's lives are affected by a sea-level rise since it plays a part in hazards from storms, flooding, and shoreline erosion. The sea level is expected to rise 25 to 30 centimeters between 2020 and 2050 in the US. In other parts of the world, the sea level is presumed to rise even more, which could be 40 to 45 centimeters. \n \n Below you can choose to see a visualization of what areas in the world that would be under sea level if it rises by 2, 4 and 6 meters.",
         "date": "2021-12-18T05:09:00.00",
