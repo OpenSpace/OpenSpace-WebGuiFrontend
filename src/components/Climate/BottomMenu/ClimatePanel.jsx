@@ -20,9 +20,8 @@ import Input from "../../common/Input/Input/Input";
 import Select from "../../common/Input/Select/Select";
 import MaterialIcon from "../../common/MaterialIcon/MaterialIcon";
 import climateButton from '../../../../images/climateButton.png'
-import glac from '../../../../images/glac.png'
 import cur from '../../../../images/cur.png'
-import newGlac from '../../../../images/newGlac.png'
+import glac from '../../../../images/glac.png'
 import cons from '../../../../images/cons.png'
 import SmallLabel from '../../common/SmallLabel/SmallLabel';
 import Popover from "../../common/Popover/Popover";
@@ -215,7 +214,7 @@ getSurfaceLayerAlaska() {
         className={styles.menuButton}
       >
         <div>
-          <img src = {newGlac} alt = "glac" />
+          <img src = {glac} alt = "glac" />
         </div>
         <div>
           Glaciers
