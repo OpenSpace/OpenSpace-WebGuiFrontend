@@ -54,10 +54,9 @@ const Instructions = props => {
           </div>
         </div>
       }
-      <SmallLabel>Help</SmallLabel>
+      <SmallLabel>Instructions</SmallLabel>
     </div>
   );
-
 }
 
 export default Instructions;

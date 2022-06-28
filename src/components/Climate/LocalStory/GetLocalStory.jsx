@@ -9,26 +9,21 @@ class Pick extends Component {
     super(props);
 
     this.handleStory = this.handleStory.bind(this);
-
   }
 
   handleStory(e) {
-
     this.props.changeStory(e.target.id);
     this.props.setShowStory(false);
     this.props.setShowLocalStory(true);
   }
-  
-  render() {
 
+  render() {
     const { climateStorys } = this.props;
     return (
-
-            <StoryButton
-              pickStory={this.handleStory}
-              storyIdentifier= {climateStorys.title}
-            />
-
+      <StoryButton
+        pickStory={this.handleStory}
+        storyIdentifier= {climateStorys.title}
+      />
     );
   }
 }

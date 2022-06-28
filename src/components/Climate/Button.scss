@@ -11,7 +11,6 @@
   background: rgba(24, 24, 24, 0.9);
   border-radius: 12px;
   cursor: pointer;
-  transition: transform ease-in 0.1s;
 }
 
 .generalB{
@@ -25,10 +24,7 @@
   background: $ui-background;
   border-radius: 12px;
   cursor: pointer;
-  transition: transform ease-in .1s;
-
   &:hover {
-    transition: transform ease-in .1s;
      background:darken($ui-background,8%);
   }
 }
@@ -44,10 +40,7 @@
   background: $ui-background;
   border-radius: 12px;
   cursor: pointer;
-  transition: transform ease-in .1s;
-
   &:hover {
-    transition: transform ease-in .1s;
      background:darken($ui-background,8%);
   }
 }

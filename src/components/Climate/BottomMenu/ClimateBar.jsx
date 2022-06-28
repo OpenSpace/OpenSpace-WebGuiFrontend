@@ -7,7 +7,6 @@ import {
 } from '../../../api/Actions';
 import { ExoplanetsModuleEnabledKey, SkyBrowserModuleEnabledKey } from '../../../api/keys';
 import { getBoolPropertyValue } from '../../../utils/propertyTreeHelpers';
-
 import styles from '../../BottomBar/BottomBar.scss';
 import HomeButtonContainer from './showStory';
 import SessionRec from '../../BottomBar/SessionRec';
@@ -53,7 +52,6 @@ BottomBar.propTypes = {
   showFlightController : PropTypes.bool,
   showFlightController: PropTypes.bool,
   resetStory: PropTypes.func.isRequired,
-
 };
 
 BottomBar.defaultProps = {

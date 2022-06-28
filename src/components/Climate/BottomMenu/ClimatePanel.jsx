@@ -1,11 +1,8 @@
 import React, { Component, useState } from "react";
 import { connect } from "react-redux";
 import {
-
   setPopoverVisibility,
-
 } from "../../../api/Actions";
-
 import PropTypes from 'prop-types';
 import {
   sessionStateIdle,
@@ -28,22 +25,17 @@ import Popover from "../../common/Popover/Popover";
 import Row from "../../common/Row/Row";
 import styles from "./ClimatePanel.scss";
 import Picker from "../../BottomBar/Picker";
-
-
 import {
   storyResetLayer
 } from '../../../utils/storyHelpers';
 
 class ClimatePanel extends Component {
-
   constructor(props) {
-
     super(props);
     this.state = { isToggleOn: true };
     this.togglePopover = this.togglePopover.bind(this); //makes it possible to click at climate button
   }
 
-  //same in all jsx files
 togglePopover() {
     this.props.setPopoverVisibility(!this.props.popoverVisible);
     this.props.setNoShow();
@@ -147,7 +139,6 @@ getSurfaceLayerAlaska() {
   var g = document.getElementById(button);
 
   if(g.value=="HIDE"){
-
     document.getElementById("glacierButton").style.border = 'none';
     document.getElementById("currentButton").style.border = 'none';
     document.getElementById("consequenceButton").style.border = 'none';
@@ -193,12 +184,10 @@ getSurfaceLayerAlaska() {
     var firstCons;
     var secondCons;
     var thirdCons;
-
     var currentHide = ['currentsHide1', 'currentsHide2','currentsHide3'];
     var consequenceHide = ['consequenceHide1', 'consequenceHide2', 'consequenceHide3'];
     var glaciersHide = ['glaciersHide1', 'glaciersHide2', 'glaciersHide3']
     const {luaApi} = this.props;
-
 
     glaciers = (
       <Button
@@ -228,7 +217,6 @@ getSurfaceLayerAlaska() {
         block
         smalltext
         onClick={() => {
-
               storyResetLayer(luaApi);
               this.getSurfaceLayerAntarctica();
         }}
@@ -251,7 +239,6 @@ getSurfaceLayerAlaska() {
       >
         Greenland
       </Button>
-
     );
 
     alaska = (
@@ -295,7 +282,6 @@ getSurfaceLayerAlaska() {
       <Button
         id = "currentsHide1"
         block
-        //className={styles.actionButton2}
         className={styles.actionButton}
         smalltext
         onClick={() => {
@@ -314,10 +300,9 @@ getSurfaceLayerAlaska() {
           storyResetLayer(luaApi);
           this.getSurfaceLayerCurrentsHalfDetailed();
         }}
-        //className={styles.actionButton2}
         className={styles.actionButton}
       >
-        Half detailed
+        Zonal velocity
       </Button>
     );
 
@@ -328,7 +313,6 @@ getSurfaceLayerAlaska() {
           storyResetLayer(luaApi);
           this.getSurfaceLayerCurrentsDetailed();
         }}
-        //className={styles.actionButton2}
         className={styles.actionButton}
       >
         Detailed
@@ -420,7 +404,6 @@ getSurfaceLayerAlaska() {
             {firstCons}
             {secondCons}
             {thirdCons}
-
           </div>
         </div>
       </Popover>
@@ -481,7 +464,6 @@ ClimatePanel = connect(
   subStateToProps(mapSubStateToProps, mapStateToSubState),
   mapDispatchToProps
 )(ClimatePanel);
-
 
 ClimatePanel.propTypes = {
  setNoShow: PropTypes.func.isRequired,

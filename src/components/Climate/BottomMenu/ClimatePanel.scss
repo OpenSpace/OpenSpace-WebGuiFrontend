@@ -7,67 +7,16 @@
 .Grid {
     display: flex;
     flex-wrap: wrap;
-    justify-content: flex-start;
-  &:before,
-    &:after {
-      display: none;
-    }
-}
-
-.buttonIconGlacier {
-    font-size: 0em;
-}
-.buttonIcon {
-    font-size: 2em;
-}
-
-.bottomBarIcon {
-    font-size: 2em;
 }
 
 .menuButton {
   width: 130px;
   margin-bottom: 5px;
   margin: 2px;
-  z-index: 1;
-  border: 2px;
-  background-color: #1f1f1f;
 }
+
 .actionButton {
-  width: 130px; // 105 is good
-  //margin-bottom: 5px;
-  margin: 2px;
-  background-color: #2b2b2b;
-  //position: absolute;
-  hover: black;
-  position: absolute;
-  opacity: 0;
-}
-.actionButtonGlacier {
-  width: 0px;
-  margin-bottom: 5px;
-  margin: 2px;
-  position: absolute;
-  //opacity: 0;
-  background-color: #1f1f1f;
-  //background-color: var(--blue);
-  color: blue;
-//  font-size: 0px;
-}
-#actionButtonGlacierID {
-  width: 0px;
-  margin-bottom: 5px;
-  margin: 2px;
-  position: absolute;
-  hover: black;
-  //opacity: 0;
-  //background-color: var(--blue);
-  color: pink;
-  z-index: -1;
-}
-.actionButton2 {
-  width: 197px;
-  margin-bottom: 5px;
+  width: 130px;
   margin: 2px;
   background-color: #2b2b2b;
   position: absolute;
@@ -78,7 +27,5 @@
   padding: 7px 14px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  flex-grow: 1;
   align-items: center;
 }

@@ -29,7 +29,6 @@ class HomeButtonContainer extends Component {
         <Icon icon="import_contacts" className={styles.Icon} />
         <SmallLabel>Start Stories</SmallLabel>
       </div>
-
     );
   }
 }

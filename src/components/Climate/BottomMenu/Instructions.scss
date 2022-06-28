@@ -37,13 +37,6 @@ $icon-size: 25px;
 }
 .Icon {
   font-size: $icon-size;
-
-}
-
-.Text {
-  font-size: $icon-size;
-  display: table-cell;
-  align-items: center;
 }
 
 .Text {
@@ -82,7 +75,6 @@ $icon-size: 25px;
   background-color: rgba(black, 0.5);
 
 }
-
 
 .Row {
     display: table;
