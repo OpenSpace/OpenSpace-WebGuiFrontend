@@ -8,7 +8,10 @@ import {
 import { ExoplanetsModuleEnabledKey, SkyBrowserModuleEnabledKey } from '../../../api/keys';
 import { getBoolPropertyValue } from '../../../utils/propertyTreeHelpers';
 import styles from '../../BottomBar/BottomBar.scss';
-import HomeButtonContainer from './showStory';
+
+import stylesB from '../../TouchBar/UtilitiesMenu/style/UtilitiesButtons.scss';
+import HomeButtonContainer from '../ButtomMenu/ShowStoryButton';
+
 import SessionRec from '../../BottomBar/SessionRec';
 import TimePicker from '../../BottomBar/TimePicker';
 import ClimatePanel from './ClimatePanel';
@@ -37,12 +40,12 @@ let BottomBar = ({
     }
   });
 
+
   return <div className={styles.BottomBar}>
     <Instructions/>
     <HomeButtonContainer resetStory={resetStory}/>
     <ClimatePanel  setNoShow = {setNoShow}/>
     <TimePicker />
-    {showTimeController && <TimePlayerController/> }
     {showFlightController && <FlightControlPanel />}
 
   </div>

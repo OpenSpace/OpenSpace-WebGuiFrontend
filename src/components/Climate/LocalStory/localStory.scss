@@ -26,14 +26,14 @@
 .button{
   font-family: $font-family;
   height: 1%;
-  width: 210%;
+  width: 206%;
   display: flex;
   align-items: center;
   justify-content: center;
   position: absolute;
-  top: 220%;
-  left: -82%;
-  display: flex;
+  top: 410%;
+  left: 0px;
+
 
 }
 .flex {
@@ -41,9 +41,18 @@
   vertical-align: middle;
 }
 
+.right{
+  width: -400px;
+
+}
 
 .test{
   background: blue;
   top: 30%;
 
+}
+.Row {
+    display: table;
+    table-layout: fixed; /*Optional*/
+    border-spacing: 14px; /*Optional*/
 }

@@ -18,17 +18,18 @@ class HomeButtonContainer extends Component {
     this.props.resetStory();
   }
 
+
   render() {
     return (
       <div
-        className={`${styles.UtilitiesButton}`}
-        onClick={this.goToMenu}
-        role="button"
-        tabIndex="0"
-      >
+      className={styles .UtilitiesButton}
+      onClick={this.goToMenu}
+      role="button"
+      tabIndex="0">
         <Icon icon="import_contacts" className={styles.Icon} />
         <SmallLabel>Start Stories</SmallLabel>
       </div>
+
     );
   }
 }
@@ -43,6 +44,7 @@ HomeButtonContainer = connect(
   null,
   mapDispatchToProps,
 )(HomeButtonContainer);
+
 
 HomeButtonContainer.propTypes = {
   ResetStoryTree: PropTypes.func,

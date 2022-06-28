@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { resetStoryTree } from '../../../api/Actions';
-import styles from '../../TouchBar/UtilitiesMenu/style/UtilitiesButtons.scss';
-import Icon from '../../common/MaterialIcon/MaterialIcon';
-import SmallLabel from '../../common/SmallLabel/SmallLabel';
-
+import { resetStoryTree } from '../../api/Actions';
+import styles from '../Climate/Button.scss'
+import Icon from '../common/MaterialIcon/MaterialIcon';
+import SmallLabel from '../common/SmallLabel/SmallLabel';
+import ButtonStyles from '../Climate/Button.scss';
 class HomeButtonContainer extends Component {
   constructor(props) {
     super(props);
@@ -18,17 +18,20 @@ class HomeButtonContainer extends Component {
     this.props.resetStory();
   }
 
+
   render() {
     return (
       <div
-        className={`${styles.UtilitiesButton}`}
-        onClick={this.goToMenu}
-        role="button"
-        tabIndex="0"
-      >
-        <Icon icon="import_contacts" className={styles.Icon} />
-        <SmallLabel>Start Stories</SmallLabel>
+      className = {styles.next}
+      onClick={this.goToMenu}
+      role="button"
+      tabIndex="0">
+      <div className = {ButtonStyles.next}>
+        <Icon icon="replay" className={styles.Icon} />
+        <SmallLabel>New Story</SmallLabel>
       </div>
+    </div>
+
     );
   }
 }
@@ -43,6 +46,7 @@ HomeButtonContainer = connect(
   null,
   mapDispatchToProps,
 )(HomeButtonContainer);
+
 
 HomeButtonContainer.propTypes = {
   ResetStoryTree: PropTypes.func,

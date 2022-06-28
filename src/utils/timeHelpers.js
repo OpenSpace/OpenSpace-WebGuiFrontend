@@ -10,7 +10,6 @@ export const realtime = (luaApi) => {
 
 export const setDateToNow = (luaApi) => {
   const now = new Date();
-  console.log("tjena")
   setDate(luaApi, now);
   UpdateDeltaTimeNow(luaApi, 1);
 };
@@ -25,7 +24,7 @@ export const setDate = (luaApi, date) => {
   // date.toJSON returns a UTC format string including timezone 'Z'
   // but the lua api only accepts a UTC string without time zone
   const fixedDateString = JSON.stringify(date).replace('Z', '');
-  luaApi.time.setTime(fixedDateString);
+
 };
 
 /**

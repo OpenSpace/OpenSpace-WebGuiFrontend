@@ -9,8 +9,9 @@
   "journey":  [
         {
           "id" : 0,
-          "title": "A simple model of Currents",
-          "storyinfo": "In the ocean there are both colder and warmer currents where the blue color visualizes the colder currents in this visualization and red color indicates warmer currents. The arrows show the direction of the currents in the ocean. If the circulation of the currents would change there could be huge impacts on the climate. When the glaciers and ice sheets melt, the fresh water will enter the ocean. Because of this melt water there is a risk the ocean circulation will slow down or even stop.",
+          "title": "A simple model of surface Currents",
+          "storyinfo": "In the ocean there are both colder and warmer surface currents where the blue color visualizes the colder currents in this visualization and red color indicates warmer currents. The arrows show the direction of the currents in the ocean. If the circulation of the currents would change there could be huge impacts on the climate. When the glaciers and ice sheets melt, the fresh water will enter the ocean. Because of this melt water there is a risk the ocean circulation will slow down or even stop.",
+          "timeSpeed": 0,
           "date": "2021-12-18T05:00:00.00",
           "pos":
           {
@@ -53,7 +54,7 @@
             "local": []
         },
         {
-          "title": "Zonal velocity",
+          "title": "Velocity around the globe",
           "storyinfo": "With the help of satellites and instruments in the water it is possible to create models of the velocity of the currents and how and how fast the currents are moving around our Earth through the years. The colors show how fast the currents are moving, but remember, it takes up to 1,000 years for a water molecule to travel around the globe. \n\n This dataset contains the currents velocity between 1992 and 1998  ",
           "date": "1992-01-18T22:00:00.00",
           "id" : 1,
@@ -93,7 +94,7 @@
         },
         {
           "id" : 2,
-          "title": "More detailed Currents",
+          "title": "More detailed surface Currents",
           "storyinfo": "Here you can see the ocean currents more in detail. This visualization is a combination of all ocean and sea ice data that is available on a global scale. The colors of the ocean currents in this visualization correspond to the sea surface temperature which is displayed in the color bar below.",
           "date": "2021-12-18T05:00:00.00",
           "pos": {
@@ -137,9 +138,11 @@
       },
       {
         "id" : 3,
-        "title": "Antarctica",
-        "storyinfo": "Antartica is roughly the same size as Mexico and the U.S.A combined where the continent is almost coverd in Ice. Antarctica is separated by two regions, East Antarctica and West Antarctica. Between 2012 and 2016 was the yearly ice loss at Antarctica about 199 billion tons, which is nearly quadruple 51 billion tons, which was the annual ice loss between 1992 and 2001. \n\n The reason for the biggest loss of the ice is because the currents start to bring warmer water to the Glaciers by the coast. You may have thought that it was the warmer air temperature, which it is not. Antarctica is very cold! The air temperature has to rise a lot before the ice would start to melt on the continent. \n\n This data set shows how much loss of ice we have had in Antarctica since 2002.",
+        "title": "Ice loss on Antarctica",
+        "storyinfo": "Antartica is ruffly the same size as Mexico and the U.S.A compined where the continent is almost coverd in Ice. Antarctica is separated by two regions, East Antarctica and West Antarctica. Between 2012 and 2016 was the yearly ice loss at Antarctica about 199 billion tons, which is nearly quadruple 51 billion tons, which was the annual ice loss between 1992 and 2001. \n\n The reason for the biggest loss of the ice is because the currents start to bring warmer water to the Glaciers by the coast. You may have thought that it was the warmer air temperature, which it is not. Antarctica is very cold! The air temperature has to rise a lot before the ice would start to melt on the continent. \n\n This data set shows how much loss of ice we have had in Antarctica since 2002.",
         "date": "2002-02-18T05:09:00.00",
+        "timeSpeed": 10086400,
+
         "pos": {
           "anchor": "Earth",
           "pitch": -0.01365814920841428,
@@ -180,7 +183,7 @@
           {
             "title": "West Antarctica",
             "identifier": "westAntarctica",
-            "id" : 0,
+            "id" : 4,
             "storyinfo": "West Antarctica has thinner ice than East Antarctica and there are ice sheets on the bedrock that’s below sea level. This makes West Antarctica unstable. The ocean currents transports the water underneath the ice sheets and when currents start to transport warmer, salty water, the ice will start to melt. The ice contains freshwater, meaning that the melted water will contain less salt and also be colder when mixed. The newly melted water will then be transported out to the oceans and leading to sea level rise.",
             "date": "2021-12-18T15:15:00.00",
             "pos": {
@@ -208,7 +211,7 @@
           {
             "title": "East Antarctica",
             "identifier": "eastAntarctica",
-            "id" : 1,
+            "id" : 3,
             "storyinfo": "East Antarctica is located east of the Transantarctic Mountains and has the thickest ice on Earth. The east side of Antarctica is quite stable. This is due to both the thickness of the ice sheet and also because the bedrock underneath the ice sheet is mostly above sea level. ",
             "date": "2021-12-18T15:15:00.00",
             "pos": {
@@ -240,6 +243,7 @@
         "title": "Consequences from sea level rise",
         "storyinfo": "The problem that arises when glaciers and sea ice melts is that the sea level rises. 8 of the 10 biggest cities in the world are close to the coast. Therefore, a lot of people's lives are affected by a sea-level rise since it plays a part in hazards from storms, flooding, and shoreline erosion. The sea level is expected to rise 25 to 30 centimeters between 2020 and 2050 in the US. In other parts of the world, the sea level is presumed to rise even more, which could be 40 to 45 centimeters. \n \n 90 percent of the world's ice is located in Antarctica, and if all the ice on Antarctica melted the sea level would rise by about 61 meters. The sea level does not have to rise much at all though to make a big impact on the world and the people. \n \n Below you can choose to see a visualization of what areas in the world that would be under sea level if it rises by 2, 4 and 6 meters.",
         "date": "2021-12-18T05:09:00.00",
+        "timeSpeed": 0,
         "pos": {
           "anchor": "Earth",
           "pitch": -0.07628754944400731,
@@ -262,107 +266,234 @@
             "defaultvalue": true
           }
           ],
-        "local":[
+          "local":[
+            {
+              "title": "Shanghai",
+              "id" : 8,
+              "storyinfo": "Press 2m, 4m or 6m rise to see a model of how the city Shanghai in China",
+              "date": "2021-12-18T15:15:00.00",
+              "pos": {
+                "anchor": "Earth",
+                "pitch":0.03758040501806181,
+                "position": {
+                  "x": -5496129.519936268,
+                  "y": 6756344.14205497,
+                  "z": 6003910.594290871
+                },
+                "up": {
+                  "x": 0.3120289812989021,
+                  "y": -0.4765493977640315,
+                  "z": 0.8219115440972389
+                },
+                "yaw":-0.19063501469201166
+              },
+              "toggleboolproperties":[
+                {
+                  "URI":"Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled",
+                  "label":"Background of Earth",
+                  "defaultvalue": true
+                }
+              ]
+            },
+            {
+              "title": "Jakarta",
+              "id" : 7,
+              "storyinfo":  "Press 2m, 4m or 6m rise to see a model of how the city Jakarta in Indonesia",
+              "date": "2021-12-18T15:15:00.00",
+              "pos": {
+                "anchor": "Earth",
+                "pitch":0.03758040467984077,
+                "position": {
+                  "x": 176364.42067172565,
+                  "y": 10098082.623045066,
+                  "z": 4390889.96841195
+                },
+                "up": {
+                  "x": 0.08425675979290703,
+                  "y": -0.39857738231393197,
+                  "z": 0.9132561900896012
+                },
+                "yaw": -0.19063497199827
+              },
+              "toggleboolproperties":[
+                {
+                  "URI":"Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled",
+                  "label":"Background of Earth",
+                  "defaultvalue": true
+                }
+              ]
+            },
+
+            {
+               "title": "Calcutta",
+               "id" : 5,
+               "storyinfo": "Press 2m, 4m or 6m rise to see a model of how the city Calcutta in India",
+               "date": "2021-12-18T15:15:00.00",
+               "pos":{
+                  "anchor":"Earth",
+                  "pitch":0.03758040499234484,
+                  "position":{
+                     "x":-2782033.088130799,
+                     "y":9660948.448397938,
+                     "z":426568.1365155531
+                  },
+                  "type":"setNavigationState",
+                  "up":{
+                     "x":0.17276981901234173,
+                     "y":0.006262981878404239,
+                     "z":0.9849423154156967
+                  },
+                  "yaw":-0.19063501475646477
+               },
+               "toggleboolproperties":[
+                 {
+                   "URI":"Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled",
+                   "label":"Background of Earth",
+                   "defaultvalue": true
+                 }
+               ]
+            },
+
+            {
+              "title": "Belém",
+              "id" : 4,
+              "storyinfo": "Press 2m, 4m or 6m rise to see a model of how the city Belém in Brazil",
+              "date": "2021-12-18T15:15:00.00",
+              "pos": {
+                "anchor": "Earth",
+                "pitch":0.03294175174143252,
+                "position": {
+                  "x": 6700433.071163539,
+                  "y": -8008535.907826297,
+                  "z": -235758.78570681065
+                },
+                "up": {
+                  "x":0.05876962708201833,
+                  "y": 0.01978849884385231,
+                  "z":0.9980754211211432
+                },
+                "yaw": -0.00443305527300577
+              },
+              "toggleboolproperties":[
+                {
+                  "URI":"Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled",
+                  "label":"Background of Earth",
+                  "defaultvalue": true
+                }
+              ]
+            },
+            {
+              "title": "Miami",
+              "id" : 2,
+              "storyinfo": "Press 2m, 4m or 6m rise to see a model of how the city Miami in Florida, U.S.A",
+              "date": "2021-12-18T15:15:00.00",
+              "pos": {
+                "anchor": "Earth",
+                "pitch": 0.03294175171829833,
+                "position": {
+                  "x": 928705.8659753734,
+                  "y":-8727836.289777298,
+                  "z":5661308.0715583535
+                },
+                "up": {
+                  "x":-0.24249043155439085,
+                  "y": 0.5096567879027217,
+                  "z":0.8254988486662145
+                },
+                "yaw": -0.0044330552167109695
+              },
+              "toggleboolproperties":[
+                {
+                  "URI":"Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled",
+                  "label":"Background of Earth",
+                  "defaultvalue": true
+                }
+              ]
+            },
+            {
+              "title": "Amsterdam",
+              "id" : 1,
+              "storyinfo": "Press 2m, 4m or 6m rise to see a model of how the city Amsterdam in the Netherlands",
+              "date": "2021-12-18T15:15:00.00",
+              "pos": {
+                "anchor": "Earth",
+                "pitch": 0.03294175167778245,
+                "position": {
+                  "x": 5009360.533513165,
+                  "y": 590049.692065808,
+                  "z": 6810284.205654955
+                },
+                "up": {
+                  "x": -0.8065957100747513,
+                  "y": 0.04620215116869103,
+                  "z": 0.5892951057970812
+                },
+                "yaw": -0.004433055190083359
+              },
+              "toggleboolproperties":[
+                {
+                  "URI":"Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled",
+                  "label":"Background of Earth",
+                  "defaultvalue": true
+                }
+              ]
+            },
+            {
+            "title": "2 m rise",
+            "id" : 6,
+            "storyinfo": "There is a risk that the sea level will rise 2 meters by 2100. The area that would go under water is equivalent to the area of Spain, France, Britain and Germany combined which would result in more than 180 million people having to move. In this visualization it is possible to see which places in the world that would be below sea level if it rises by two meters.",
+            "date": "2021-12-18T15:15:00.00",
+            "pos":{  },
+            "toggleboolproperties":[
+              {
+                "URI":"Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled",
+                "label":"Background of Earth",
+                "defaultvalue": true
+              },
+              {
+                "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-2m.Enabled",
+                "label":"Sea level rise, 2m",
+                "defaultvalue": true
+              }]
+          },
           {
-          "title": "2 meters rise",
-          "id" : 2,
-          "storyinfo": "There is a risk that the sea level will rise 2 meters by 2100. The area that would go under water is equivalent to the area of Spain, France, Britain and Germany combined which would result in more than 180 million people having to move. In this visualization it is possible to see which places in the world that would be below sea level if it rises by two meters.",
-          "date": "2021-12-18T15:15:00.00",
-          "pos":{
-             "anchor":"Earth",
-             "pitch":-0.03651119926122576,
-             "position":{
-                "x":-1152145.3978969743,
-                "y":-15271036.370115351,
-                "z":9682927.443411129
-             },
-             "type":"setNavigationState",
-             "up":{
-                "x":-0.20400852731965874,
-                "y":0.5351667325265219,
-                "z":0.819742086986968
-             },
-             "yaw":-0.2376877039313796
+            "title": "4 m rise",
+            "id" : 3,
+            "storyinfo": "In this visualization it is possible to see which places in the world that would be below sea level if it rises by four meters.",
+            "date": "2021-12-18T15:15:00.00",
+            "pos":{    },
+            "toggleboolproperties":[
+              {
+                "URI":"Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled",
+                "label":"Background of Earth",
+                "defaultvalue": true
+              },
+              {
+                "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-4m.Enabled",
+                "label":"Sea level rise, 4m",
+                "defaultvalue": true
+              }]
+
           },
-          "toggleboolproperties":[
-            {
-              "URI":"Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled",
-              "label":"Background of Earth",
-              "defaultvalue": true
-            },
-            {
-              "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-2m.Enabled",
-              "label":"Sea level rise, 2m",
-              "defaultvalue": true
-            }]
-        },
-        {
-          "title": "4 meters rise",
-          "id" : 1,
-          "storyinfo": "In this visualization it is possible to see which places in the world that would be below sea level if it rises by four meters.",
-          "date": "2021-12-18T15:15:00.00",
-          "pos":{
-             "anchor":"Earth",
-             "pitch":-0.03651119926122576,
-             "position":{
-                "x":-1152145.3978969743,
-                "y":-15271036.370115351,
-                "z":9682927.443411129
-             },
-             "type":"setNavigationState",
-             "up":{
-                "x":-0.20400852731965874,
-                "y":0.5351667325265219,
-                "z":0.819742086986968
-             },
-             "yaw":-0.2376877039313796
-          },
-          "toggleboolproperties":[
-            {
-              "URI":"Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled",
-              "label":"Background of Earth",
-              "defaultvalue": true
-            },
-            {
-              "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-4m.Enabled",
-              "label":"Sea level rise, 4m",
-              "defaultvalue": true
-            }]
-        },
-        {
-          "title": "6 meters rise",
-          "id" : 0,
-          "storyinfo": "In this visualization it is possible to see which places in the world that would be below sea level if it rises by six meters.",
-          "date": "2021-12-18T15:15:00.00",
-          "pos":{
-             "anchor":"Earth",
-             "pitch":-0.03651119926122576,
-             "position":{
-                "x":-1152145.3978969743,
-                "y":-15271036.370115351,
-                "z":9682927.443411129
-             },
-             "type":"setNavigationState",
-             "up":{
-                "x":-0.20400852731965874,
-                "y":0.5351667325265219,
-                "z":0.819742086986968
-             },
-             "yaw":-0.2376877039313796
-          },
-          "toggleboolproperties":[
-            {
-              "URI":"Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled",
-              "label":"Background of Earth",
-              "defaultvalue": true
-            },
-            {
-              "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-6m.Enabled",
-              "label":"Sea level rise, 6m",
-              "defaultvalue": true
-            }]
-        }
-      ]
+          {
+            "title": "6 m rise",
+            "id" : 0,
+            "storyinfo": "In this visualization it is possible to see which places in the world that would be below sea level if it rises by six meters.",
+            "date": "2021-12-18T15:15:00.00",
+            "pos":{  },
+            "toggleboolproperties":[
+              {
+                "URI":"Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled",
+                "label":"Background of Earth",
+                "defaultvalue": true
+              },
+              {
+                "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-6m.Enabled",
+                "label":"Sea level rise, 6m",
+                "defaultvalue": true
+              }]
+          }
+        ]
       }
     ]
   }

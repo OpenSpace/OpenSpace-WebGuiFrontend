@@ -11,7 +11,7 @@
 
 .menuButton {
   width: 130px;
-  margin-bottom: 5px;
+  margin-bottom: 2px;
   margin: 2px;
 }
 
@@ -28,4 +28,11 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+
+.Row {
+    display: table;
+    table-layout: fixed; /*Optional*/
+    border-spacing: 14px; /*Optional*/
 }

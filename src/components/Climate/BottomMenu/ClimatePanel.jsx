@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, { Component } from "react";
 import { connect } from "react-redux";
 import {
   setPopoverVisibility,
@@ -34,6 +34,7 @@ class ClimatePanel extends Component {
     super(props);
     this.state = { isToggleOn: true };
     this.togglePopover = this.togglePopover.bind(this); //makes it possible to click at climate button
+
   }
 
 togglePopover() {
@@ -336,19 +337,22 @@ getSurfaceLayerAlaska() {
           <img src = {cons} alt = "cons" />
         </div>
         <div>
-          Consequences
+          Sea level rise
+
         </div>
+
+
       </Button>
     );
 
     firstCons = (
       <Button
         id = "consequenceHide1"
+        className={styles.actionButton}
         onClick={() => {
           storyResetLayer(luaApi);
           this.getSurfaceLayerCons("2m");
         }}
-        className={styles.actionButton}
       >
         2 meters
       </Button>

@@ -77,8 +77,6 @@ class StartJourney extends Component {
     </div>
   </div>
     );
-
-
   }
 }
 

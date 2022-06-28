@@ -56,6 +56,7 @@ class OnClimateGui extends Component {
       startJourney: "default",
       climate_stories: climate_stories,
       NoShow: "noShow",
+      timeBool: true
     };
     this.addStoryTree = this.addStoryTree.bind(this);
     this.setStory = this.setStory.bind(this);
@@ -118,10 +119,9 @@ class OnClimateGui extends Component {
   }
 
   noShow(){
-
+    //dont show story when using explore option in BottomBar
     const { luaApi } = this.props;
     const {currentStory, NoShow} = this.state;
-
 
     this.setState({
       currentStory: NoShow
@@ -132,11 +132,12 @@ class OnClimateGui extends Component {
 
 
   resetStory() {
+    //pressing climate story button
     const { luaApi } = this.props;
     const { currentStory } = this.state;
     storyResetLayer(luaApi);
     this.setState({startJourney: currentStory});
-    UpdateDeltaTimeNow(luaApi, 1);
+
     this.setStory(DefaultStory);
     //remove satelites from start profile
     satelliteToggle(luaApi, true);
@@ -144,10 +145,9 @@ class OnClimateGui extends Component {
     //spin earth
     storyGetIdleBehavior(luaApi, 0, true);
     // get orginal story position
-
     climate_stories.startpage.map((story) => {
       return (
-          storyGetLocation(luaApi, story.pos, UpdateDeltaTimeNow(luaApi, 1)),
+          storyGetLocation(luaApi, story.pos, story.time),
           storyGetLayer(luaApi, story.toggleboolproperties)
           );
         });
@@ -156,8 +156,8 @@ class OnClimateGui extends Component {
 
   render() {
     //let storyIdentifier = [];
-    const {  connectionLost,  } = this.props;
-    const { currentStory, json, luaApi, NoShow } = this.state;
+    const {  connectionLost  } = this.props;
+    const { currentStory, json, luaApi, NoShow, timeBool } = this.state;
 
 
     return (
@@ -180,7 +180,7 @@ class OnClimateGui extends Component {
 
         {(currentStory === DefaultStory )
           ? <StartJourney changeStory = {this.setStory}/>
-        : <ExploreClimate resetStory = {this.resetStory} json = {json} currentStory= {currentStory}/>
+        : <ExploreClimate resetStory = {this.resetStory} json = {json} currentStory= {currentStory} showTimeController ={timeBool}/>
         }
 
         <Sidebar/>
@@ -190,7 +190,7 @@ class OnClimateGui extends Component {
         <section className={styles.Grid__Right}>
           <NodePopOverContainer/>
         <NodeMetaContainer/>
-          <BottomBar resetStory={this.resetStory} setNoShow = {this.noShow} showTimeController ={true} />
+          <BottomBar resetStory={this.resetStory} setNoShow = {this.noShow} showTimeController ={timeBool} />
         <KeybindingPanel />
         </section>
 
@@ -270,16 +270,6 @@ OnClimateGui = withRouter(connect(
   mapStateToProps,
   mapDispatchToProps,
 )(OnClimateGui));
-
-
-
-
-
-
-
-
-
-
 
 
 
