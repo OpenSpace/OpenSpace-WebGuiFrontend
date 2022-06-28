@@ -5,21 +5,23 @@
         "title": "Climate change",
         "info": "Global climate change is an important topic that has major effects on the environment. Some consequences from climate change are  loss of sea ice, an acceleration of sea level rise and longer and more intense heat waves. According to scientists the global temperature will continue to increase for decades. \n \n Many glaciers are melting both from above and below at the same time. During summer, warmer air melts the ice. Then the meltwater bores holes through the ice all the way down to the bottom of the glacier. The meltwater then runs beneath the glacier until it reaches the ocean. Meltwater doesn’t contain any salt and therefore it weighs less than ocean water and rises to the front of the glacier. Near the surface, the ocean water is fresh and cold and at depth, the water is warmer and salty. The warmer, salty water starts melting the glacier face from the bottom and up. Eventually a piece of the glacier then breaks off and creates an iceberg. \n \n A challenge is to measure the thickness of the ice sheets to see how much ice that has melted. But a way to solve this problem is to use satellites to measure the thickness. ",
         "identifier": "startpage",
+        "time" :  "2021-12-18T05:00:00.00",
         "pos": {
-          "anchor": "Earth",
-          "pitch": -0.007498,
-          "position": {
-            "x": -83426054.392562,
-            "y": 42954152.501045,
-            "z": 105033828.63916
+         "anchor": "Earth",
+         "frame": "Root",
+         "pitch": -0.023468976961600933,
+         "position": {
+           "x": -129415211.85232544,
+           "y": 110588420.70340157,
+           "z": -12020262.16662693
+         },
+         "type": "setNavigationState",
+         "up": {
+           "x": 0.622860219364803,
+           "y": 0.7522508430572294,
+           "z": 0.21485766510068313
           },
-          "type": "setNavigationState",
-          "up": {
-            "x": -0.090692,
-            "y": 0.89447,
-            "z": -0.43783300000000003
-          },
-          "yaw":-0.376108
+         "yaw": -0.12915962677809972
         },
         "toggleboolproperties":
           {

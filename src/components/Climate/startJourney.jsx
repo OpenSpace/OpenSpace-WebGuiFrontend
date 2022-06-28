@@ -46,8 +46,6 @@ class StartJourney extends Component {
 
   }
 
-
-
   render() {
 
     if (!this.state.storiesArray) {
@@ -69,15 +67,12 @@ class StartJourney extends Component {
               </div>
             );
           })
-
         }
         <br/>
         <br/>
         <br/>
         <br/>
         <br/>
-
-
         {this.state.stories.map((story, index) => {
             return(
               <PickStory key = {index}
@@ -90,8 +85,6 @@ class StartJourney extends Component {
     </div>
   </div>
     );
-
-
   }
 }
 

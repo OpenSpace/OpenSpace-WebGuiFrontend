@@ -13,7 +13,7 @@ const Instructions = props => {
     if(showInstructions){
       const timeout = setTimeout(() => {
           setShowInstructions(false)
-      }, 9500); // match with animation-delay in UtilitiesButtons.scss
+      }, 10100); // match with animation-delay in UtilitiesButtons.scss
       return () => { clearTimeout(timeout); };
     }
   }, [showInstructions]);
@@ -26,7 +26,7 @@ const Instructions = props => {
       role="button"
       tabIndex="0"
     >
-    <Icon icon="help_outline" className={styles.Icon} />
+    <Icon icon="info" className={styles.Icon} />
       { showInstructions &&
         <div className = {styles.Background}>
           <div className = {styles.Instructions}>
@@ -35,7 +35,7 @@ const Instructions = props => {
             </div>
             <div className = {styles.Row}>
               <img src = {imagesleft} alt = "imagesleft" />
-              <div className = {styles.Text}><p>: Spin around Earth</p></div>
+              <div className = {styles.Text}><p>: Orbit around Earth</p></div>
             </div>
             <div className = {styles.Row}>
               <img src = {imageright} alt = "imageright" />
@@ -54,7 +54,7 @@ const Instructions = props => {
           </div>
         </div>
       }
-      <SmallLabel>Help</SmallLabel>
+      <SmallLabel>Instructions</SmallLabel>
     </div>
   );
 

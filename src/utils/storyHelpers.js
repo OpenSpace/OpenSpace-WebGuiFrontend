@@ -1,4 +1,4 @@
-import { setDate } from './timeHelpers';
+import { setDate, togglePause } from './timeHelpers';
 
 // TODO evaluate flyTo vs toggleZoomOut
 
@@ -13,11 +13,12 @@ export const flyTo = (luaApi, distance, duration = undefined) => {
 
 // Function to set the time and location for the start of a story
 export const setStoryStart = (luaApi, startPosition, startTime) => {
-
+  setDate(luaApi, startTime);
 
   luaApi.pathnavigation.flyToNavigationState({
     Anchor: startPosition.anchor,
     Aim: "Earth",
+    frame: "Root",
     referenceFrame: "Earth",
     Pitch:startPosition.pitch,
     Position:startPosition.position,
@@ -25,7 +26,9 @@ export const setStoryStart = (luaApi, startPosition, startTime) => {
     Yaw:startPosition.yaw
   });
 
-  setDate(luaApi, startTime);
+    console.log("kanske har")
+
+
 
 };
 
@@ -81,18 +84,28 @@ export const storyGetLayer = (luaApi, layer) => {
 
 
 
-export const storyGetLocation = (luaApi, position, startTime) => {
+export const storyGetLocation = (luaApi, toPosition, startTime) => {
 
-  //set date and time
-  luaApi.time.setTime(startTime);
+  console.log("time " + startTime)
+  setDate(luaApi, startTime);
+  {Object.keys(toPosition).length > 0 &&
 
-  luaApi.pathnavigation.flyToNavigationState({
-    Anchor: position.anchor,
-    Pitch: position.pitch,
-    Position: [position.position.x,position.position.y,position.position.z],
-    Up: [position.up.x,position.up.y,position.up.z],
-    Yaw: position.yaw
-  })
+
+      luaApi.pathnavigation.flyToNavigationState({
+        Anchor: toPosition.anchor,
+        Aim: "Earth",
+        frame: "Root",
+        referenceFrame: "Earth",
+        Pitch: toPosition.pitch,
+        Position: [toPosition.position.x, toPosition.position.y, toPosition.position.z],
+        Up: [toPosition.up.x, toPosition.up.y, toPosition.up.z],
+        Yaw: toPosition.yaw
+      })
+      
+      //set date and time
+      console.log("eller kanske har")
+  }
+
 
 }
 
@@ -111,6 +124,7 @@ export const satelliteToggle = (luaApi, toggleBool) => {
 export const storyGetIdleBehavior = (luaApi, scrollValue, toggleBool)=>{
   luaApi.setPropertyValue("NavigationHandler.OrbitalNavigator.IdleBehavior.ApplyIdleBehavior", toggleBool);
   luaApi.setPropertyValue("NavigationHandler.OrbitalNavigator.IdleBehavior.IdleBehavior", scrollValue);
+  luaApi.setPropertyValue("NavigationHandler.OrbitalNavigator.IdleBehavior.SpeedFactor", 0.3);
 };
 
 export const storyResetLayer = (luaApi) => {

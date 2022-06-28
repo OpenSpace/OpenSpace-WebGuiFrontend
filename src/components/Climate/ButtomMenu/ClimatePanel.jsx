@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, { Component } from "react";
 import { connect } from "react-redux";
 import {
 
@@ -42,7 +42,7 @@ class ClimatePanel extends Component {
     super(props);
     this.state = { isToggleOn: true };
     this.togglePopover = this.togglePopover.bind(this); //makes it possible to click at climate button
-    this.getSurfaceLayerCons = this.getSurfaceLayerCons.bind()
+
   }
 
   //same in all jsx files
@@ -67,7 +67,7 @@ getSurfaceLayerAlaska() {
   getSurfaceLayerGreenland() {
     this.props.luaApi.time.setTime("1990-06-18T13:00:00");
     this.props.luaApi.setPropertyValueSingle(
-        "Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-greenland_melt.Enabled", true);
+        "Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled", true);
     this.props.luaApi.pathnavigation.flyToNavigationState({
       Anchor: "Earth",
       Pitch: 0.014254640432675488,
@@ -80,7 +80,9 @@ getSurfaceLayerAlaska() {
   getSurfaceLayerAntarctica() {
     this.props.luaApi.time.setTime("2021-12-18T09:00:00");
     this.props.luaApi.setPropertyValueSingle(
-      "Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled", true)
+      "Scene.Earth.Renderable.Layers.Overlays.Coastlines.Enabled", true)
+    this.props.luaApi.setPropertyValueSingle(
+      "Scene.Earth.Renderable.Layers.ColorLayers.GRACE_temp-layer.Enabled", true)
     this.props.luaApi.pathnavigation.flyToNavigationState({
       Anchor: "Earth",
       Position: [-104705.15622399468,1251800.0000400436,-13308985.999998953],
@@ -96,10 +98,10 @@ getSurfaceLayerAlaska() {
       "Scene.Earth.Renderable.Layers.ColorLayers.OSCAR_Sea_Surface_Currents_Zonal.Enabled",
       this.state.isToggleOn
     );*/
-    this.props.luaApi.setPropertyValueSingle(
-      "Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-ecco2_sst-veg_land-layer.Enabled", true)
-    this.props.luaApi.setPropertyValueSingle(
-      "Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled", true)
+      this.props.luaApi.setPropertyValueSingle(
+        "Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-ecco2_sst-veg_land-layer.Enabled", true)
+      this.props.luaApi.setPropertyValueSingle(
+        "Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled", true)
     }
 
   getSurfaceLayerCurrentsOverview() {
@@ -121,9 +123,7 @@ getSurfaceLayerAlaska() {
   this.props.luaApi.setPropertyValueSingle(
     "Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled", true)
   this.props.luaApi.setPropertyValueSingle(
-        `Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-${showNode}.Enabled`,
-      true
-    );
+        `Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-${showNode}.Enabled`,true);
   /*this.props.luaApi.pathnavigation.flyToNavigationState({
     Anchor: "Earth",
     Pitch: -0.03608261848856605,
@@ -304,11 +304,12 @@ getSurfaceLayerAlaska() {
     detailedCurrents = (
       <Button
         id = "curentsHide2"
+          className={styles.actionButton2}
         onClick={() => {
           storyResetLayer(luaApi);
           this.getSurfaceLayerCurrentsDetailed();
         }}
-        className={styles.actionButton2}
+
       >
         Detailed
       </Button>
@@ -331,19 +332,22 @@ getSurfaceLayerAlaska() {
           <img src = {cons} alt = "cons" />
         </div>
         <div>
-          Consequences
+          Sea level rise
+        
         </div>
+
+
       </Button>
     );
 
     firstCons = (
       <Button
         id = "consequenceHide1"
+        className={styles.actionButton}
         onClick={() => {
           storyResetLayer(luaApi);
-          this.getSurfaceLayerCons("2m", "6m", "4m");
+          this.getSurfaceLayerCons("2m");
         }}
-        className={styles.actionButton}
       >
         2 meters
       </Button>
@@ -354,7 +358,7 @@ getSurfaceLayerAlaska() {
         id = "consequenceHide2"
         onClick={() => {
           storyResetLayer(luaApi);
-          this.getSurfaceLayerCons("4m", "2m", "6m");
+          this.getSurfaceLayerCons("4m");
         }}
         className={styles.actionButton}
       >
@@ -367,7 +371,7 @@ getSurfaceLayerAlaska() {
         id = "consequenceHide3"
         onClick={() => {
           storyResetLayer(luaApi);
-          this.getSurfaceLayerCons("6m", "4m", "2m");
+          this.getSurfaceLayerCons("6m");
         }}
         className={styles.actionButton}
       >

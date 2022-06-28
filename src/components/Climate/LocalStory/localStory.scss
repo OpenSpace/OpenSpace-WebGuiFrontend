@@ -35,9 +35,9 @@
   align-items: center;
   justify-content: center;
   position: absolute;
-  top: 220%;
-  left: -82%;
-  display: flex;
+  top: 370%;
+  left: 0px;
+  
 
 }
 .flex {
@@ -45,9 +45,18 @@
   vertical-align: middle;
 }
 
+.right{
+  width: -400px;
+
+}
 
 .test{
   background: blue;
   top: 30%;
 
+}
+.Row {
+    display: table;
+    table-layout: fixed; /*Optional*/
+    border-spacing: 14px; /*Optional*/
 }

@@ -8,6 +8,7 @@
   flex-grow: 1;
   align-items: center;
 
+
   &:hover {
     background: $ui-background-hover;
     outline: 0;
@@ -29,12 +30,7 @@
 }
 
 $icon-size: 25px;
-.Test{
 
-  color: red;
-  margin-left: 600px;
-
-}
 .Icon {
   font-size: $icon-size;
 
@@ -46,11 +42,7 @@ $icon-size: 25px;
   align-items: center;
 }
 
-.Text {
-  font-size: $icon-size;
-  display: table-cell;
-  align-items: center;
-}
+
 
 .TextCTRL {
   font-size: 16;

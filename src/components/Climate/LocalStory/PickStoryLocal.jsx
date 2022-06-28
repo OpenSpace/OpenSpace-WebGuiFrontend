@@ -25,26 +25,52 @@ class PickStoryLocal extends Component {
   }
 
    handleStory(e) {
-     const {storyInfo, setShowStory, setCurrentStory, luaApi} = this.props
+     const {storyInfo, setShowStory, setCurrentStory, luaApi } = this.props
      setShowStory(false);
-     setCurrentStory(e.target.id)
+     setCurrentStory(e.target.id);
 
    }
 
   render() {
     const {storyInfo, currentStory } = this.props;
+
     return (
       <div>
+        {
           <div className = {styles.button}>
-
-              <div style={{height: 100*storyInfo.id}} >
-                <StoryButton
-                  pickStory = {this.handleStory}
-                  storyIdentifier= {storyInfo.title}
-                />
-
+            {storyInfo.id <= 2 &&
+              <div style={{height: 700 +  100*storyInfo.id}} >
+                <div style={{width:400 }} >
+                  <StoryButton
+                    pickStory = {this.handleStory}
+                    storyIdentifier = {storyInfo.title}
+                  />
               </div>
+            </div>
+            }
+            {storyInfo.id > 5 &&
+
+                <div style={{height: 100 +  100*storyInfo.id}} >
+                  <div style={{width: 1152}} >
+                    <StoryButton
+                      pickStory = {this.handleStory}
+                      storyIdentifier = {storyInfo.title}
+                    />
+                </div>
+              </div>
+              }
+              {storyInfo.id > 2 && storyInfo.id <= 5 &&
+                    <div style={{height: 400 +  100 * storyInfo.id}} >
+                      <div style={{  width: 777}} >
+                      <StoryButton
+                        pickStory = {this.handleStory}
+                        storyIdentifier= {storyInfo.title}
+                      />
+                    </div>
+                  </div>
+              }
           </div>
+        }
           <div>
             {(currentStory == storyInfo.title) &&
                 <DisplaylocalStory
@@ -53,6 +79,7 @@ class PickStoryLocal extends Component {
                   />
             }
 
+
           </div></div>
     );
   }
@@ -60,10 +87,12 @@ class PickStoryLocal extends Component {
 
 PickStoryLocal.propTypes = {
   setShowStory: PropTypes.func.isRequired,
+
   storyInfo: PropTypes.shape({
     title: PropTypes.string,
     info: PropTypes.string,
     luaApi: PropTypes.object,
+    StoryStep: PropTypes.int
   }).isRequired,
 
 };

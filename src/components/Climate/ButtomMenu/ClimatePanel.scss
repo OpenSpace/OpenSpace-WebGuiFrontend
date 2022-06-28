@@ -15,31 +15,15 @@
     }
 }
 
-.buttonIconGlacier {
-    font-size: 0em;
-}
-.buttonIcon {
-    font-size: 2em;
-}
-
-
-
-.bottomBarIcon {
-    font-size: 2em;
-}
-
-/*:root {
-  --blue: #1e90ff;
-  --white: #ffffff;
-}*/
 
 .menuButton {
   width: 130px;
-  margin-bottom: 5px;
+  margin-bottom: 2px;
   margin: 2px;
   z-index: 1;
   background-color: #1f1f1f;
 }
+
 .actionButton {
   width: 130px; // 105 is good
   //margin-bottom: 5px;
@@ -50,28 +34,8 @@
   position: absolute;
   opacity: 0;
 }
-.actionButtonGlacier {
-  width: 0px;
-  margin-bottom: 5px;
-  margin: 2px;
-  position: absolute;
-  //opacity: 0;
-  background-color: #1f1f1f;
-  //background-color: var(--blue);
-  color: blue;
-//  font-size: 0px;
-}
-#actionButtonGlacierID {
-  width: 0px;
-  margin-bottom: 5px;
-  margin: 2px;
-  position: absolute;
-  hover: black;
-  //opacity: 0;
-  //background-color: var(--blue);
-  color: pink;
-  z-index: -1;
-}
+
+
 .actionButton2 {
   width: 197px;
   margin-bottom: 5px;
@@ -88,4 +52,11 @@
   justify-content: center;
   flex-grow: 1;
   align-items: center;
+}
+
+
+.Row {
+    display: table;
+    table-layout: fixed; /*Optional*/
+    border-spacing: 14px; /*Optional*/
 }

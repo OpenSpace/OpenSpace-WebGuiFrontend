@@ -10,7 +10,8 @@
   "actions": ["climate_mode"],
   "journey":  [
       {
-        "title": "Show overview of currents",
+        "title": "A simple model of Currents",
+        "timeSpeed": 0,
         "storyinfo": "In the ocean there are both colder and warmer currents where the blue color visualizes the colder currents in this visualization and red color indicates warmer currents. The arrows show the direction of the currents in the ocean. If the circulation of the currents would change there could be huge impacts on the climate. When the glaciers and ice sheets melt, the fresh water will enter the ocean. Because of this melt water there is a risk the ocean circulation will slow down or even stop.",
         "date": "2021-06-18T22:00:00.00",
         "id" : 0,
@@ -50,9 +51,10 @@
 
       },
       {
-        "title": "Show detailed currents",
-        "storyinfo": "With the help of satellites and instruments in the water it is possible to create models of the velocity of the currents and how and how fast the currents are moving around our Earth through the years. The colors show how fast the currents are moving, but remember, it takes up to 1,000 years. ",
-        "date": "2021-06-18T22:00:00.00",
+        "title": "More detailed Currents",
+        "storyinfo": "With the help of satellites and instruments in the water it is possible to create models of the velocity of the currents and how and how fast the currents are moving around our Earth through the years. The colors show how fast the currents are moving, but remember, it takes up to 1,000 years for a water molecule to travel around the globe. ",
+        "date": "1992-01-18T22:00:00.00",
+        "timeSpeed": 10086400,
         "id" : 1,
         "pos": {
           "anchor": "Earth",
@@ -94,6 +96,7 @@
         "storyinfo": "Alaska warms twice as fast as the rest of the US, and half the sea ice has disappeared since 1979. The glacier in Alaska has the fastest loss of glacier ice in the world. The warmer summers in Alaska have also increased the number of large fires in the last ten years. ",
         "date": "2021-06-18T22:00:00.00",
         "id" : 2,
+        "timeSpeed": 0,
         "pos": {
           "anchor": "Earth",
           "pitch": 0.057268261672115586,
@@ -123,6 +126,11 @@
             "defaultvalue": true
           },
           {
+            "URI":"Scene.Earth.Renderable.Layers.Overlays.Coastlines.Enabled",
+            "label":"Coastlines",
+            "defaultvalue": true
+          },
+          {
             "URI": "ScreenSpace.GRACE_temp-colorbar.Enabled",
             "label":"Grace colorbar",
             "defaultvalue": true
@@ -134,6 +142,7 @@
         "title": "Consequences from sea level rise",
         "storyinfo": "The problem that arises when glaciers and sea ice melts is that the sea level rises. 8 of the 10 biggest cities in the world are close to the coast. Therefore, a lot of people's lives are affected by a sea-level rise since it plays a part in hazards from storms, flooding, and shoreline erosion. The sea level is expected to rise 25 to 30 centimeters between 2020 and 2050 in the US. In other parts of the world, the sea level is presumed to rise even more, which could be 40 to 45 centimeters. \n \n Below you can choose to see a visualization of what areas in the world that would be under sea level if it rises by 2, 4 and 6 meters.",
         "date": "2021-12-18T05:09:00.00",
+        "timeSpeed": 0,
         "pos": {
           "anchor": "Earth",
           "pitch": -0.07628754944400731,
@@ -160,108 +169,108 @@
             "defaultvalue": true
           }
           ],
-        "local":[
+          "local":[
+            {
+            "title": "2 meters rise",
+            "id" : 2,
+            "storyinfo": "There is a risk that the sea level will rise 2 meters by 2100. The area that would go under water is equivalent to the area of Spain, France, Britain and Germany combined which would result in more than 180 million people having to move. In this visualization it is possible to see which places in the world that would be below sea level if it rises by two meters. ",
+            "date": "2021-12-18T15:15:00.00",
+            "pos":{
+              "anchor": "Earth",
+              "pitch": -0.022558471991152986,
+              "position": {
+                "x": -39121.401130186394,
+                "y": -261304.86831871886,
+                "z": -18336843.09999675
+              },
+              "type": "setNavigationState",
+              "up": {
+                "x": 0.9526825958195455,
+                "y": -0.3039581985290602,
+                "z": 0.0022989496518204255
+              },
+              "yaw": -0.20582220095513115
+            },
+            "toggleboolproperties":[
+              {
+                "URI":"Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled",
+                "label":"Background of Earth",
+                "defaultvalue": true
+              },
+              {
+                "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-2m.Enabled",
+                "label":"Sea level rise, 2m",
+                "defaultvalue": true
+              }]
+          },
           {
-          "title": "2 meters rise",
-          "id" : 2,
-          "storyinfo": "There is a risk that the sea level will rise 2 meters by 2100. The area that would go under water is equivalent to the area of Spain, France, Britain and Germany combined which would result in more than 180 million people having to move. In this visualization it is possible to see which places in the world that would be below sea level if it rises by two meters. ",
-          "date": "2021-12-18T15:15:00.00",
-          "pos":{
-            "anchor": "Earth",
-            "pitch": -0.022558471991152986,
-            "position": {
-              "x": -39121.401130186394,
-              "y": -261304.86831871886,
-              "z": -18336843.09999675
+            "title": "4 meters rise",
+            "id" : 1,
+            "storyinfo": "In this visualization it is possible to see which places in the world that would be below sea level if it rises by four meters. ",
+            "date": "2021-12-18T15:15:00.00",
+            "pos":{
+               "anchor":"Earth",
+               "pitch":-0.03651119926122576,
+               "position":{
+                  "x":-1152145.3978969743,
+                  "y":-15271036.370115351,
+                  "z":9682927.443411129
+               },
+               "type":"setNavigationState",
+               "up":{
+                  "x":-0.20400852731965874,
+                  "y":0.5351667325265219,
+                  "z":0.819742086986968
+               },
+               "yaw":-0.2376877039313796
             },
-            "type": "setNavigationState",
-            "up": {
-              "x": 0.9526825958195455,
-              "y": -0.3039581985290602,
-              "z": 0.0022989496518204255
-            },
-            "yaw": -0.20582220095513115
-          },
-          "toggleboolproperties":[
-            {
-              "URI":"Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled",
-              "label":"Background of Earth",
-              "defaultvalue": true
-            },
-            {
-              "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-2m.Enabled",
-              "label":"Sea level rise, 2m",
-              "defaultvalue": true
-            }]
-        },
-        {
-          "title": "4 meters rise",
-          "id" : 1,
-          "storyinfo": "In this visualization it is possible to see which places in the world that would be below sea level if it rises by four meters. ",
-          "date": "2021-12-18T15:15:00.00",
-          "pos":{
-             "anchor":"Earth",
-             "pitch":-0.03651119926122576,
-             "position":{
-                "x":-1152145.3978969743,
-                "y":-15271036.370115351,
-                "z":9682927.443411129
-             },
-             "type":"setNavigationState",
-             "up":{
-                "x":-0.20400852731965874,
-                "y":0.5351667325265219,
-                "z":0.819742086986968
-             },
-             "yaw":-0.2376877039313796
-          },
-          "toggleboolproperties":[
-            {
-              "URI":"Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled",
-              "label":"Background of Earth",
-              "defaultvalue": true
-            },
-            {
-              "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-4m.Enabled",
-              "label":"Sea level rise, 4m",
-              "defaultvalue": true
-            }]
+            "toggleboolproperties":[
+              {
+                "URI":"Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled",
+                "label":"Background of Earth",
+                "defaultvalue": true
+              },
+              {
+                "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-4m.Enabled",
+                "label":"Sea level rise, 4m",
+                "defaultvalue": true
+              }]
 
-        },
-        {
-          "title": "6 meters rise",
-          "id" : 0,
-          "storyinfo": "In this visualization it is possible to see which places in the world that would be below sea level if it rises by six meters. ",
-          "date": "2021-12-18T15:15:00.00",
-          "pos":{
-             "anchor":"Earth",
-             "pitch":-0.03651119926122576,
-             "position":{
-                "x":-1152145.3978969743,
-                "y":-15271036.370115351,
-                "z":9682927.443411129
-             },
-             "type":"setNavigationState",
-             "up":{
-                "x":-0.20400852731965874,
-                "y":0.5351667325265219,
-                "z":0.819742086986968
-             },
-             "yaw":-0.2376877039313796
           },
-          "toggleboolproperties":[
-            {
-              "URI":"Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled",
-              "label":"Background of Earth",
-              "defaultvalue": true
+          {
+            "title": "6 meters rise",
+            "id" : 0,
+            "storyinfo": "In this visualization it is possible to see which places in the world that would be below sea level if it rises by six meters. ",
+            "date": "2021-12-18T15:15:00.00",
+            "pos":{
+               "anchor":"Earth",
+               "pitch":-0.03651119926122576,
+               "position":{
+                  "x":-1152145.3978969743,
+                  "y":-15271036.370115351,
+                  "z":9682927.443411129
+               },
+               "type":"setNavigationState",
+               "up":{
+                  "x":-0.20400852731965874,
+                  "y":0.5351667325265219,
+                  "z":0.819742086986968
+               },
+               "yaw":-0.2376877039313796
             },
-            {
-              "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-6m.Enabled",
-              "label":"Sea level rise, 6m",
-              "defaultvalue": true
-            }]
-        }
-      ]
+            "toggleboolproperties":[
+              {
+                "URI":"Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled",
+                "label":"Background of Earth",
+                "defaultvalue": true
+              },
+              {
+                "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-6m.Enabled",
+                "label":"Sea level rise, 6m",
+                "defaultvalue": true
+              }]
+          }
+        ]
       }
 
     ]

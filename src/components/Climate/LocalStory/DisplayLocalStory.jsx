@@ -20,15 +20,23 @@ class DisplaylocalStory extends Component{
     const { climateStorys, setShowLocalStory, luaApi} = this.props;
     var orbitAtConstantLatiude = 1 //placment in IdleBehavior scrollbar
 
-    storyResetLayer(luaApi);
-    climateStorys.toggleboolproperties.map((layer) => {
-        storyGetLayer(luaApi, layer )
-    });
-    
-    storyGetLocation(luaApi, climateStorys.pos, climateStorys.date);
-    storyGetIdleBehavior(luaApi, orbitAtConstantLatiude, false);
+    {  Object.keys(climateStorys.toggleboolproperties).length > 0 &&
+        storyResetLayer(luaApi);
+        climateStorys.toggleboolproperties.map((layer) => {
+            storyGetLayer(luaApi, layer )
+        });
+    }
+    {  Object.keys(climateStorys.pos).length > 0 &&
+
+      luaApi.setPropertyValueSingle(
+        "Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled", true)
+      storyGetLocation(luaApi, climateStorys.pos, climateStorys.date);
+
+    }
+    storyGetIdleBehavior(luaApi, orbitAtConstantLatiude, true);
 
     return (
+
             <div key = {climateStorys.id}>
                 <h1>
                   {climateStorys.title}
@@ -37,7 +45,7 @@ class DisplaylocalStory extends Component{
                   {climateStorys.storyinfo}
                 </p>
               </div>
-    );
+  );
   }
 }
 

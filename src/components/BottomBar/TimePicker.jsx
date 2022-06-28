@@ -55,6 +55,7 @@ class TimePicker extends Component {
 
   get timeLabel() {
     const { time } = this.props;
+
     return time && time.toUTCString();
   }
 
@@ -116,7 +117,6 @@ class TimePicker extends Component {
   get calendar() {
     const { showCalendar } = this.state;
     const { time } = this.props;
-
     return showCalendar && (
     <div>
       <hr className={Popover.styles.delimiter} />
