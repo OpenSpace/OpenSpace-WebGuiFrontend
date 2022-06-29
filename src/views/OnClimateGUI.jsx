@@ -149,6 +149,9 @@ class OnClimateGui extends Component {
           storyGetLayer(luaApi, story.toggleboolproperties)
           );
         });
+
+        //spin earth
+      storyGetIdleBehavior(luaApi, 1, true);
   }
 
 
@@ -156,7 +159,6 @@ class OnClimateGui extends Component {
     //let storyIdentifier = [];
     const {  connectionLost  } = this.props;
     const { currentStory, json, luaApi, NoShow, timeBool } = this.state;
-
 
     return (
 
@@ -182,8 +184,6 @@ class OnClimateGui extends Component {
         }
 
         <Sidebar/>
-
-
         </section>
         <section className={styles.Grid__Right}>
           <NodePopOverContainer/>

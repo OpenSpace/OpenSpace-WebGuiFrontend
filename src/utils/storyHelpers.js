@@ -78,9 +78,10 @@ export const storyGetLayer = (luaApi, layer) => {
 };
 
 export const storyGetLocation = (luaApi, toPosition, startTime) => {
+
+
   setDate(luaApi, startTime);
   {Object.keys(toPosition).length > 0 &&
-
       luaApi.pathnavigation.flyToNavigationState({
         Anchor: toPosition.anchor,
         Aim: "Earth",
@@ -91,7 +92,7 @@ export const storyGetLocation = (luaApi, toPosition, startTime) => {
         Up: [toPosition.up.x, toPosition.up.y, toPosition.up.z],
         Yaw: toPosition.yaw
       })
-  }
+        }
 }
 
 

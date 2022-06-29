@@ -94,14 +94,9 @@ $icon-size: 30px;
   vertical-align: bottom;
 }
 
-.frameBorder{
-  background-color: rgba(0,0,0,.6);
+  .frameBorder{
+  background-color: rgba(0,0,0,0.6);
   border-radius: 16px;
-  padding: 20px;
-}
+  padding-left: 20px;
 
-.flex{
-  display: flex;
-  flex-direction: row;
-  align-items: center;
 }

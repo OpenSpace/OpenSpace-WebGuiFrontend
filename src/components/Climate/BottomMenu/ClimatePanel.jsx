@@ -36,9 +36,19 @@ class ClimatePanel extends Component {
     this.togglePopover = this.togglePopover.bind(this); //makes it possible to click at climate button
   }
 
+  //appears when cliked in buttom menu
 togglePopover() {
     this.props.setPopoverVisibility(!this.props.popoverVisible);
     this.props.setNoShow();
+
+    this.props.luaApi.pathnavigation.flyToNavigationState({
+      Anchor: "Earth",
+      Pitch: -0.025697526978135675,
+      Position: [2314072.2457855055,-13824807.97957724,10089542.198761959],
+      Up: [-0.48458829410384396,0.461299844968446,0.7432204506400601],
+      Yaw: -0.021084089833419275
+    })
+
   }
 
 getSurfaceLayerAlaska() {
@@ -336,7 +346,7 @@ getSurfaceLayerAlaska() {
           <img src = {cons} alt = "cons" />
         </div>
         <div>
-          Consequences
+          Sea level rise
         </div>
       </Button>
     );
@@ -414,15 +424,10 @@ getSurfaceLayerAlaska() {
   render() {
 
     const { popoverVisible, setNoShow } = this.props;
+
+
     this.props.luaApi.setPropertyValueSingle(
       "Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled", true)
-    this.props.luaApi.pathnavigation.flyToNavigationState({
-      Anchor: "Earth",
-      Pitch: -0.025697526978135675,
-      Position: [2314072.2457855055,-13824807.97957724,10089542.198761959],
-      Up: [-0.48458829410384396,0.461299844968446,0.7432204506400601],
-      Yaw: -0.021084089833419275
-    })
 
     return (
       <div className={Picker.Wrapper}>
@@ -433,7 +438,10 @@ getSurfaceLayerAlaska() {
           </div>
         </Picker>
         {popoverVisible && this.popover}
+
       </div>
+
+
     );
   }
 }

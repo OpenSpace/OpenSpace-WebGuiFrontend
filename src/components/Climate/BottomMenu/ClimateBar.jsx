@@ -14,6 +14,8 @@ import SessionRec from '../../BottomBar/SessionRec';
 import TimePicker from '../../BottomBar/TimePicker';
 import ClimatePanel from './ClimatePanel';
 import SkyBrowserPanel from '../../BottomBar/SkyBrowserPanel';
+import TimePlayerController from '../../TouchBar/UtilitiesMenu/presentational/TimePlayerController'
+import TimePlayerClimate from '../../Climate/TimePlayerClimate'
 import Instructions from './Instructions'
 
 let BottomBar = ({
@@ -36,13 +38,15 @@ let BottomBar = ({
     }
   });
 
-
+  {console.log("no " + setNoShow)}
   return <div className={styles.BottomBar}>
     <Instructions/>
     <HomeButtonContainer resetStory={resetStory}/>
     <ClimatePanel  setNoShow = {setNoShow}/>
     <TimePicker />
-    {showFlightController && <FlightControlPanel />}
+    <TimePlayerController/>
+
+    {showFlightController && <FlightControlPanel/>}
 
   </div>
 };

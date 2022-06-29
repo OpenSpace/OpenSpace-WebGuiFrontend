@@ -12,7 +12,7 @@ import {
   storyGetLayer, storyGetLocation, storyGetIdleBehavior, storyResetLayer, storyGetScreenSpace
 } from '../../utils/storyHelpers';
 import { setDate, togglePause } from '../../utils/timeHelpers';
-import TimePlayerController from './TimePlayerClimate';
+import TimePlayerClimate from '../Climate/TimePlayerClimate';
 import NewStoryButton from './resetStoryButton';
 
 //import { setDate } from '../../utils/timeHelpers';
@@ -97,7 +97,7 @@ class ExploreClimate extends Component{
                   {showMore && <p>{story.storyinfo}</p>}
                 </div>
                 {story.timeSpeed != 0 &&
-                <TimePlayerController timeSpeedController = {story.timeSpeed}/>
+                <TimePlayerClimate timeSpeedController = {story.timeSpeed}/>
                 }
             </div>
             );
@@ -122,10 +122,9 @@ class ExploreClimate extends Component{
     return (
       <div className={styles.StoryPosistion}>
         <div className = {styles.TellStory}>
-
-
             { StoryStep <  stepThroughJourney.length && showStory && (currentStory != "noShow") &&
               <div className = {styles.frameBorder}>
+
                 {stepThroughJourney}
               </div>
             }
@@ -182,9 +181,9 @@ class ExploreClimate extends Component{
                       <NewStoryButton resetStory = {resetStory}/>
                     </section>
                   }
-          </div>
-        </div>
 
+        </div>
+        </div>
       );
   }
 }

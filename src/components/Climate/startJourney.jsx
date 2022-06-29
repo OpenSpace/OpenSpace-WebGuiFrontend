@@ -57,7 +57,7 @@ class StartJourney extends Component {
         {
           climate_stories.startpage.map((story) => {
             return (
-              <div key = {story.id}>
+              <div key = {story.id} className = {styles.frameBorder}>
                 <h1 key = {story.title}>{story.title}</h1>
                 <p key= {story.info}>{story.info}</p>
               </div>
