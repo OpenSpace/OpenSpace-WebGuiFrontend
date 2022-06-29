@@ -57,6 +57,7 @@
           "title": "Velocity around the globe",
           "storyinfo": "With the help of satellites and instruments in the water it is possible to create models of the velocity of the currents and how and how fast the currents are moving around our Earth through the years. The colors show how fast the currents are moving, but remember, it takes up to 1,000 years for a water molecule to travel around the globe. \n\n This dataset contains the currents velocity between 1992 and 1998  ",
           "date": "1992-01-18T22:00:00.00",
+          "timeSpeed": 10086400,
           "id" : 1,
           "pos": {
             "anchor": "Earth",
@@ -97,6 +98,7 @@
           "title": "More detailed surface Currents",
           "storyinfo": "Here you can see the ocean currents more in detail. This visualization is a combination of all ocean and sea ice data that is available on a global scale. The colors of the ocean currents in this visualization correspond to the sea surface temperature which is displayed in the color bar below.",
           "date": "2021-12-18T05:00:00.00",
+          "timeSpeed": 0,
           "pos": {
             "anchor": "Earth",
             "pitch": -0.02249910974253141,

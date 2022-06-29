@@ -7,18 +7,26 @@
   justify-content: center;
   flex-grow: 1;
   align-items: center;
-
+  z-index: 1;
+  -webkit-animation: glow 1s 20 alternate;
 
   &:hover {
     background: $ui-background-hover;
     outline: 0;
   }
-
+  @-webkit-keyframes glow {
+      to {
+           color: $ui-highlight-secondary;
+          text-shadow: 0 0 90px  $ui-highlight-secondary;
+      }
+}
   &.active {
     background: rgba(black, 0.5);
     border-bottom: 3px solid $ui-highlight-secondary;
   }
 }
+
+
 
 .UtilitiesButton:active {
   background: rgba(black, 0.5);
