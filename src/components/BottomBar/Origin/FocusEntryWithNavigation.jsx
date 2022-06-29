@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import styles from './FocusEntryWithNavigation.scss';
 import Button from '../../common/Input/Button/Button';
 import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
+import { useTutorial } from '../../GettingStartedTour/GettingStartedContext';
 
 function FocusEntry({ luaApi, name, identifier, onSelect, active }) {
 
@@ -27,11 +28,14 @@ function FocusEntry({ luaApi, name, identifier, onSelect, active }) {
     event.stopPropagation();
   };
 
+  const refs = useTutorial();
+
   return (
     <li
       className={`${styles.entryWithNavigation} ${isActive() && styles.active}`}
       onClick={select}
       key={name}
+      ref={el => refs.current[name] = el}
     >
       <span className={styles.title}>
         { name || identifier }

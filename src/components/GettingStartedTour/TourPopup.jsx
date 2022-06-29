@@ -15,10 +15,10 @@ import {
 } from "../../api/Actions";
 import { getBoolPropertyValue } from '../../utils/propertyTreeHelpers';
 import openspaceLogo from "./openspace-color-transparent.png";
-import { useTutorial } from "./GettingStartedContext"; 
 import MaterialIcon from "../common/MaterialIcon/MaterialIcon";
 import Checkbox from "../common/Input/Checkbox/Checkbox";
-import Row from "../common/Row/Row";
+import {useTutorial} from "./GettingStartedContext";
+import reactSelect from "react-select";
 
 function AnimatedCheckmark({...props}) {
   return <div className={styles.centerContent}>
@@ -183,15 +183,14 @@ function isConditionFulfilled(content, property, cameraPosition, valueStart, tim
         break;
       case 'time':
         if (content.changeValue === 'year') {
-          conditionIsFulfilled[i] = valueStart[i]?.getFullYear?.() !== time.getFullYear();
+          conditionIsFulfilled[i] = valueStart?.[i]?.getFullYear?.() !== time.getFullYear();
         }
         break;
       case 'deltaTime':
-        conditionIsFulfilled[i] = valueStart[i] !== deltaTime;
+        conditionIsFulfilled[i] = valueStart?.[i] !== deltaTime;
         break;
       case 'changeUri':
         if (!valueStart) {
-          console.log("INDEIFOEW", property?.value)
           conditionIsFulfilled[i] = false;
           break;
         }
@@ -199,18 +198,13 @@ function isConditionFulfilled(content, property, cameraPosition, valueStart, tim
           conditionIsFulfilled[i] = !(Math.abs(valueStart[i] - property.value) < Number.EPSILON);
         }
         else if (typeof valueStart[i] === object) {
-          console.log(valueStart[i], property.value)
           let hasChanged = true;
-          console.log(valueStart[i], property.value);
           valueStart[i].map(channel, j => {
-            console.log(valueStart[i], property.value);
             hasChanged &= !(Math.abs(channel[j] - property.value[j]) < Number.EPSILON);
           })
           conditionIsFulfilled[i] = hasChanged;
         }
         else {
-          console.log(valueStart[i], property?.value)
-
           conditionIsFulfilled[i] = valueStart[i] !== property?.value;
         }
         break;
@@ -239,19 +233,18 @@ function TourPopup({ properties, cameraPosition, marsTrailColor, startSubscripti
   const [showTutorialOnStart, setShowTutorialOnStart] = useLocalStorageState('showTutorialOnStart', true); // To do: put in storage on disk somewhere
   const [currentSlide, setCurrentSlide] = useLocalStorageState('currentSlide', 0);
   const [valueStart, setValueStart] = React.useState(undefined);
-  const [tutorial, setTutorial] = useTutorial();
-
-  React.useEffect(() => {
-    startSubscriptions();
-    return () => stopSubscriptions();
-  }, [startSubscriptions]);
 
   const content = contents[currentSlide];
   const property = properties[content.uri];
   const isLastSlide = currentSlide === contents.length - 1;
   const isFirstSlide = currentSlide === 0;
   const hasGoals = Boolean(content.goalType);
-  
+
+  React.useEffect(() => {
+    startSubscriptions();
+    return () => stopSubscriptions();
+  }, [startSubscriptions]);
+
   // Save start values
   React.useEffect(() => {
     if (content.goalType) {
@@ -275,37 +268,28 @@ function TourPopup({ properties, cameraPosition, marsTrailColor, startSubscripti
     }
   }, [content]);
   
-  // Animated border effect between slides
-  const prevIndexRef = React.useRef(0)
-  const prevKeyRef = React.useRef(undefined)
-  const previousIndex = prevIndexRef.current;
-  const previousKey = prevKeyRef.current;
-
-  React.useEffect(() => {
-    prevIndexRef.current = 0;
-  }, [content])
-
-  React.useEffect(() => {
-    const refHasChanged = previousKey !== content.key?.[previousIndex];
-    if (refHasChanged) {
-      tutorial[previousKey]?.current?.classList?.remove(styles.animatedBorder);
-      tutorial[content?.key?.[previousIndex]]?.current?.classList?.add(styles.animatedBorder);
-      prevKeyRef.current = content.key?.[previousIndex];
-    }
-    //console.log("previous index " + previousIndex, "previous key " + previousKey);
-  }, [content, previousIndex]);
-  
-  // Animated border effect on the same slide
-  const nextKey = content.key?.[previousIndex + 1];
-  if (tutorial?.[nextKey]?.current) {
-    prevIndexRef.current++;
-  }
-  if (!tutorial[content.key?.[previousIndex]]) {
-    prevIndexRef.current--;
-  }
-  
   const conditionIsFulfilled = hasGoals ? isConditionFulfilled(content, property, cameraPosition, valueStart, new Date(time), targetDeltaTime) : false;
   const allConditionsAreFulfilled = hasGoals ? !conditionIsFulfilled.includes(false) : false;
+
+  // Create animated click
+  const tutorial = useTutorial();
+  let lastKey = null;
+  const newElement = document.createElement('div');
+  const animationDiv = React.useRef(newElement);
+
+  if(content?.key && !allConditionsAreFulfilled) {
+    // Find last ref that is not null
+    const keyCopy = [...content.key].reverse();
+    lastKey = keyCopy.find(key => Boolean(tutorial.current[key]));
+  }
+  
+  React.useEffect(() => {
+    newElement.className = styles.clickEffect;
+    tutorial.current[lastKey]?.appendChild(animationDiv.current);
+
+    return () => {
+      tutorial.current[lastKey]?.removeChild(animationDiv.current);
+    }}, [content, lastKey]);  
 
   return (isVisible && <>
     {Boolean(content.position) && !allConditionsAreFulfilled &&

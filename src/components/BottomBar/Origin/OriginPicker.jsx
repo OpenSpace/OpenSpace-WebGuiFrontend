@@ -40,6 +40,7 @@ import Picker from '../Picker';
 import FocusEntry from './FocusEntry';
 import FocusEntryWithNavigation from './FocusEntryWithNavigation';
 import styles from './OriginPicker.scss';
+import { useTutorial } from '../../GettingStartedTour/GettingStartedContext';
 
 // tag that each focusable node must have
 const REQUIRED_TAG = 'GUI.Interesting';
@@ -352,8 +353,9 @@ function OriginPicker({ favorites, setShowFavorites, nodes, showFavorites, engin
     enabled ? '' : pickerStyle,
   ].join(' ');
 
+  const refs = useTutorial();
   return (
-    <div className={Picker.Wrapper}>
+    <div ref={el => refs.current["Origin"] = el} className={Picker.Wrapper}>
       <Picker onClick={() => togglePopover()} className={pickerClasses}>
         {pickerContent()}
       </Picker>

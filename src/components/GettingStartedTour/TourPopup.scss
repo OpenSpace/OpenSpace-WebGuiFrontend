@@ -175,6 +175,38 @@ $animated-border-length : 15px;
     }
 }
 
+.clickEffect {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    bottom: 50%;
+    right: 50%;
+    box-sizing: border-box;
+    border-style: solid;
+    border-color: $highlight-color;
+    border-radius: 50%;
+    animation: clickEffect 1s ease-out infinite;
+    pointer-events: none;
+    z-index: 10;
+}
+
+@keyframes clickEffect{
+    0%{
+        opacity:1;
+        width:0.5em; height:0.5em;
+        margin:-0.25em;
+        border-width:0.5em;
+    }
+    100%{
+        opacity:0.2;
+        width: 15em; height:15em;
+        margin:-7.5em;
+        border-width:0.03em;
+    }
+}
+
+
+
 /* Animated arrow style */
 
 .icon {

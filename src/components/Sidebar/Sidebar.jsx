@@ -79,7 +79,7 @@ class Sidebar extends Component {
             <SystemMenu />
             <TabMenuItem active={this.isActive('scene')} onClick={this.selectView('scene')}>
               <MaterialIcon className={styles.icon} icon="layers" />
-              <SmallLabel>Scene</SmallLabel>
+              <SmallLabel refKey={'Scene'}>Scene</SmallLabel>
             </TabMenuItem>
             <TabMenuItem active={this.isActive('settings')} onClick={this.selectView('settings')}>
               <MaterialIcon className={styles.icon} icon="settings" />

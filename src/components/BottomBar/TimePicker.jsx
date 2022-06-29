@@ -23,12 +23,14 @@ import SmallLabel from '../common/SmallLabel/SmallLabel';
 import Picker from './Picker';
 import SimulationIncrement from './SimulationIncrement';
 import styles from './TimePicker.scss';
+import { useTutorial } from '../GettingStartedTour/GettingStartedContext';
 
 function TimePicker({ startSubscriptions, stopSubscriptions, time, isPaused, targetDeltaTime, luaApi, popoverVisible, setPopoverVisibility, engineMode, sessionRecordingState }) {
 
   const [pendingTime, setPendingTime] = React.useState(new Date());
   const [showCalendar, setShowCalendar] = React.useState(false);
   const [useLock, setUseLock] = React.useState(false);
+  const refs = useTutorial();
 
   React.useEffect(() => {
     startSubscriptions();
@@ -114,7 +116,6 @@ function TimePicker({ startSubscriptions, stopSubscriptions, time, isPaused, tar
   }
 
   function popover() {
-
     return (
       <Popover
         className={`${styles.timePopover} ${Picker.Popover}`}
@@ -141,7 +142,7 @@ function TimePicker({ startSubscriptions, stopSubscriptions, time, isPaused, tar
         {lockOptions()}
 
         <div className={Popover.styles.title}>Simulation speed</div>
-        <div className={Popover.styles.content}>
+        <div className={Popover.styles.content} ref={el => refs.current["SimulationSpeed"] = el}>
           <SimulationIncrement />
         </div>
         <hr className={Popover.styles.delimiter} />
@@ -275,7 +276,7 @@ function TimePicker({ startSubscriptions, stopSubscriptions, time, isPaused, tar
   ].join(' ');
 
   return (
-    <div className={Picker.Wrapper}>
+    <div ref={el => refs.current["Time"] = el} className={Picker.Wrapper}>
       <Picker onClick={enabled ? () => togglePopover() : undefined} className={pickerClasses}>
         <div className={Picker.Title}>
           <span className={Picker.Name}>
