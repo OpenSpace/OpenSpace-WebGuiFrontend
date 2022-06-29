@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import { connect } from "react-redux";
 import {
   setPopoverVisibility,
@@ -34,7 +34,6 @@ class ClimatePanel extends Component {
     super(props);
     this.state = { isToggleOn: true };
     this.togglePopover = this.togglePopover.bind(this); //makes it possible to click at climate button
-
   }
 
 togglePopover() {
@@ -52,10 +51,10 @@ getSurfaceLayerAlaska() {
       "ScreenSpace.GRACE_temp-colorbar.Enabled", true)
     this.props.luaApi.pathnavigation.flyToNavigationState({
       Anchor: "Earth",
-      Pitch: -0.012375098376340654,
-      Position: [-3393660.2275227755,-2148409.0635887426,8741045.139887046],
-      Up: [0.1605747175864971,0.9422423951092073,0.2939303130520595],
-      Yaw: 0.00454623459293006
+      Pitch: -0.011183821067911243,
+      Position: [-4368490.801656256,-2765540.6263565496,11251914.667710423],
+      Up: [0.6652907568635162,0.622995748851844,0.4114176779679014],
+      Yaw: -0.006981005084270052
     })
   }
 
@@ -84,8 +83,10 @@ getSurfaceLayerAlaska() {
       "ScreenSpace.GRACE_temp-colorbar.Enabled", true)
     this.props.luaApi.pathnavigation.flyToNavigationState({
       Anchor: "Earth",
-      Position: [-104705.15622399468,1251800.0000400436,-13308985.999998953],
-      Up: [0.9707838373933274,-0.23806926465116995,-0.030029423643085362],
+      Pitch: -0.05148877171176595,
+      Position: [-129323.86949850991,1546128.4331422765,-16438250.262302065],
+      Up: [0.6632136390360268,-0.7446369805197193,-0.07525580535125864],
+      Yaw: 0.025502724534127174
     })
   }
 
@@ -126,8 +127,6 @@ getSurfaceLayerAlaska() {
           `Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-6m_sea_level_rise-red-${showNode}.Enabled`,
         true
       );
-    this.props.luaApi.setPropertyValueSingle(
-      "Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-city_names.Enabled", true)
 }
 
   ShowHideButton(node, pos, opacity){
@@ -337,22 +336,19 @@ getSurfaceLayerAlaska() {
           <img src = {cons} alt = "cons" />
         </div>
         <div>
-          Sea level rise
-
+          Consequences
         </div>
-
-
       </Button>
     );
 
     firstCons = (
       <Button
         id = "consequenceHide1"
-        className={styles.actionButton}
         onClick={() => {
           storyResetLayer(luaApi);
           this.getSurfaceLayerCons("2m");
         }}
+        className={styles.actionButton}
       >
         2 meters
       </Button>
@@ -408,6 +404,7 @@ getSurfaceLayerAlaska() {
             {firstCons}
             {secondCons}
             {thirdCons}
+
           </div>
         </div>
       </Popover>
@@ -468,6 +465,7 @@ ClimatePanel = connect(
   subStateToProps(mapSubStateToProps, mapStateToSubState),
   mapDispatchToProps
 )(ClimatePanel);
+
 
 ClimatePanel.propTypes = {
  setNoShow: PropTypes.func.isRequired,

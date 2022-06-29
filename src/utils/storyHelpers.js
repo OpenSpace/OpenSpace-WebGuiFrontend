@@ -25,11 +25,6 @@ export const setStoryStart = (luaApi, startPosition, startTime) => {
     Up:startPosition.up,
     Yaw:startPosition.yaw
   });
-
-    console.log("kanske har")
-
-
-
 };
 
 // Function to toggle the shading on a node, value = 'true' equals shading enabled
@@ -82,14 +77,9 @@ export const storyGetLayer = (luaApi, layer) => {
   luaApi.setPropertyValue(layer.URI, layer.defaultvalue);
 };
 
-
-
 export const storyGetLocation = (luaApi, toPosition, startTime) => {
-
-  console.log("time " + startTime)
   setDate(luaApi, startTime);
   {Object.keys(toPosition).length > 0 &&
-
 
       luaApi.pathnavigation.flyToNavigationState({
         Anchor: toPosition.anchor,
@@ -101,12 +91,7 @@ export const storyGetLocation = (luaApi, toPosition, startTime) => {
         Up: [toPosition.up.x, toPosition.up.y, toPosition.up.z],
         Yaw: toPosition.yaw
       })
-      
-      //set date and time
-      console.log("eller kanske har")
   }
-
-
 }
 
 
@@ -121,10 +106,10 @@ export const satelliteToggle = (luaApi, toggleBool) => {
   luaApi.setPropertyValue("Scene.stations.Renderable.Enabled", toggleBool); //Spacestation
 };
 
-export const storyGetIdleBehavior = (luaApi, scrollValue, toggleBool)=>{
+export const storyGetIdleBehavior = (luaApi, scrollValue, toggleBool, speedValue)=>{
   luaApi.setPropertyValue("NavigationHandler.OrbitalNavigator.IdleBehavior.ApplyIdleBehavior", toggleBool);
   luaApi.setPropertyValue("NavigationHandler.OrbitalNavigator.IdleBehavior.IdleBehavior", scrollValue);
-  luaApi.setPropertyValue("NavigationHandler.OrbitalNavigator.IdleBehavior.SpeedFactor", 0.3);
+  luaApi.setPropertyValue("NavigationHandler.OrbitalNavigator.IdleBehavior.SpeedFactor", speedValue);
 };
 
 export const storyResetLayer = (luaApi) => {

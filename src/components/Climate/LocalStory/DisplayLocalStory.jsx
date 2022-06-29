@@ -30,7 +30,7 @@ class DisplaylocalStory extends Component{
       storyGetLocation(luaApi, climateStorys.pos, climateStorys.date);
 
     }
-    storyGetIdleBehavior(luaApi, orbitAtConstantLatiude, true);
+    storyGetIdleBehavior(luaApi, orbitAtConstantLatiude, true, climateStorys.speedValue);
 
     return (
 

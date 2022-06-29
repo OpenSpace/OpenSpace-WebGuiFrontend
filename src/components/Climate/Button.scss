@@ -59,3 +59,31 @@ $icon-size: 20px;
   position: absolute;;
   right: 10px;
 }
+
+// TIME CONTROLLER --------------------------------------------
+
+.TimeController {
+  display: flex;
+}
+
+.SimulationIncrement {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.PlayerContainer {
+  display: flex;
+  justify-content: space-around;
+  width: 80%;
+  margin-top: 10px;
+}
+
+.IconPlay {
+  font-size: $icon-size;
+
+  &.active {
+    color: $ui-highlight-secondary;
+  }
+}

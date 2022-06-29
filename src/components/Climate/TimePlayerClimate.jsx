@@ -7,7 +7,7 @@ import {
 import * as timeHelpers from '../../utils/timeHelpers';
 import Icon from '../common/MaterialIcon/MaterialIcon';
 import SmallLabel from '../common/SmallLabel/SmallLabel';
-import styles from '../TouchBar/UtilitiesMenu/style/TimeController.scss';
+import styles from '../Climate/Button.scss';
 import buttonStyles from '../TouchBar/UtilitiesMenu/style/UtilitiesButtons.scss';
 
 
@@ -95,19 +95,19 @@ class TimePlayerClimate extends Component {
             <Icon
               icon="fast_rewind"
               id={Rewind}
-              className={`${styles.Icon} ${(deltaTime === -this.props.timeSpeedController) && styles.active}`}
+              className={`${styles.IconPlay} ${(deltaTime === -this.props.timeSpeedController) && styles.active}`}
               onClick={this.clickPlayer}
             />
             <Icon
               icon={isPaused ? 'pause' : 'play_arrow'}
               id={Play}
-              className={`${styles.Icon} ${(deltaTime === 0 || deltaTime === 1) && styles.active}`}
+              className={`${styles.IconPlay} ${(deltaTime === 0 || deltaTime === 1) && styles.active}`}
               onClick={this.clickPlayer}
             />
             <Icon
               icon="fast_forward"
               id={Forward}
-              className={`${styles.Icon} ${(deltaTime === this.props.timeSpeedController) && styles.active}`}
+              className={`${styles.IconPlay} ${(deltaTime === this.props.timeSpeedController) && styles.active}`}
               onClick={this.clickPlayer}
             />
 

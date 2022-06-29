@@ -41,8 +41,6 @@ import {
   storyGetLayer, storyGetLocation, satelliteToggle, toggleShowNode,
   storyFileParserClimate, storyResetLayer, storyGetIdleBehavior
 } from '../utils/storyHelpers';
-//import  climate_stories from "../../stories/stories.json";
-//------------------------------------------------------------------------------//
 
 
 class OnClimateGui extends Component {
@@ -143,7 +141,7 @@ class OnClimateGui extends Component {
     satelliteToggle(luaApi, true);
 
     //spin earth
-    storyGetIdleBehavior(luaApi, 0, true);
+    storyGetIdleBehavior(luaApi, 0, true, story.speedValue);
     // get orginal story position
     climate_stories.startpage.map((story) => {
       return (
