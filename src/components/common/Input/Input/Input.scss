@@ -14,7 +14,7 @@ $padding-bottom-loading: $padding-vertical - $padding-top - $loading-border-widt
 
 // different states
 $padding: $padding-top $padding-horizontal $padding-bottom;
-$padding-empty: ($padding-vertical / 2) $padding-horizontal;
+$padding-empty: calc($padding-vertical / 2) $padding-horizontal;
 $padding-loading: $padding-top $padding-horizontal $padding-bottom-loading;
 
 .group {
