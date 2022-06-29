@@ -113,45 +113,40 @@ export function removeLastWordFromUri(uri) {
 export function isPropertyVisible(properties, uri) {
   const property = properties[uri];
   const visibility = properties['OpenSpaceEngine.PropertyVisibility'];
-
+  if (!property?.description?.MetaData?.Visibility) {
+    return false;
+  }
+  // Don't show the property "Enabled"
   const splitUri = uri.split('.');
-  if (splitUri.length > 1) {
-    if (splitUri[splitUri.length - 1] === 'Enabled')
+  if (splitUri.length > 1 && splitUri[splitUri.length - 1] === 'Enabled') {
       return false;
   }
 
-  if (property && property.description && property.description.MetaData &&
-      property.description.MetaData.Visibility) {
-    let propertyVisibility = "";
-    switch(property.description.MetaData.Visibility) {
-      case 'Hidden':
-        propertyVisibility = 5;
-        break;
-      case 'Developer':
-        propertyVisibility = 4;
-        break;
-      case 'AdvancedUser':
-        propertyVisibility = 3;
-        break;
-      case 'User':
-        propertyVisibility = 2;
-        break;
-      case 'NoviceUser':
-        propertyVisibility = 1;
-        break;
-      case 'Always':
-        propertyVisibility = 0;
-        break;
-      default:
-        propertyVisibility = 0;
-        break;
-    }
-
-    return visibility.value >= propertyVisibility;
+  let propertyVisibility = "";
+  switch (property.description.MetaData.Visibility) {
+    case 'Hidden':
+      propertyVisibility = 5;
+      break;
+    case 'Developer':
+      propertyVisibility = 4;
+      break;
+    case 'AdvancedUser':
+      propertyVisibility = 3;
+      break;
+    case 'User':
+      propertyVisibility = 2;
+      break;
+    case 'NoviceUser':
+      propertyVisibility = 1;
+      break;
+    case 'Always':
+      propertyVisibility = 0;
+      break;
+    default:
+      propertyVisibility = 0;
+      break;
   }
-  else {
-    return false;
-  }
+  return visibility.value >= propertyVisibility;
 }
 
 // Returns whether a property owner should be hidden in the gui
