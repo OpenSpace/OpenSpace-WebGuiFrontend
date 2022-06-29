@@ -3,51 +3,41 @@ import React, { Component } from 'react';
 import styles from './ToggleContent.scss';
 import ToggleHeader from './ToggleHeader';
 
-class ToggleContent extends Component {
-  constructor(props) {
-    super(props);
+function ToggleContent({setExpanded, children, header, title, expanded, showEnabled}) {
+  const [hovered, setHovered] = React.useState(false);
 
-    this.state = {
-      hovered: false
-    };
-
-    this.toggleExpanded = this.toggleExpanded.bind(this);
-    this.mouseEntered = this.mouseEntered.bind(this);
-    this.mouseLeft = this.mouseLeft.bind(this);
+  function toggleExpanded() {
+    setExpanded(!expanded);
   }
 
-  toggleExpanded() {
-    this.props.setExpanded(!this.props.expanded);
+  function mouseEntered() {
+    setHovered(true);
   }
 
-  mouseEntered() {
-    this.setState({ hovered: true });
+  function mouseLeft() {
+    setHovered(false);
   }
 
-  mouseLeft() {
-    this.setState({ hovered: false });
+  if(!(children.length !== 0 && ((children[0].length != 0) || (children[1].length != 0)))) {
+    return null;
   }
-
-  render() {
-    const { children, header, title, expanded, showEnabled } = this.props;
-
-    return ( (children.length !== 0) && ((children[0].length != 0) || (children[1].length != 0)) ) ? (
-      <div className={styles.toggleContent}
-           onMouseEnter={this.mouseEntered}
-           onMouseLeave={this.mouseLeft}>
-        { header ? header : 
-          <ToggleHeader
-            title={title}
-            onClick={this.toggleExpanded}
-            showEnabled={showEnabled}
-            expanded={expanded}
-          />
-        }
-        <div className={styles.content}>
-          { expanded && children }
-        </div>
+  else {
+    return (
+    <div className={styles.toggleContent}
+          onMouseEnter={mouseEntered}
+          onMouseLeave={mouseLeft}>
+      { header ? header : 
+        <ToggleHeader
+          title={title}
+          onClick={toggleExpanded}
+          showEnabled={showEnabled}
+          expanded={expanded}
+        />
+      }
+      <div className={styles.content}>
+        { expanded && children }
       </div>
-    ) : null;
+    </div>);
   }
 }
 
