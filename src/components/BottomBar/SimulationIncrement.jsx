@@ -68,6 +68,7 @@ Object.freeze(Limits);
 function SimulationIncrement({hasNextDeltaTimeStep, hasPrevDeltaTimeStep, nextDeltaTimeStep, 
   prevDeltaTimeStep, startSubscriptions, targetDeltaTime, isPaused, stopSubscriptions, luaApi}) {
   const [stepSize, setStepSize] = React.useState(Steps.seconds);
+  const [beforeAdjust, setBeforeAdjust] = React.useState(undefined);
   const refs = useTutorial();
   
   React.useEffect(() => {
@@ -109,7 +110,7 @@ function SimulationIncrement({hasNextDeltaTimeStep, hasPrevDeltaTimeStep, nextDe
       return;
     }
     if (value !== 0) {
-      beforeAdjust = beforeAdjust || targetDeltaTime;
+      setBeforeAdjust(beforeAdjust || targetDeltaTime);
       const quickAdjust = beforeAdjust + StepSizes[stepSize] * (value ** 5);
       updateDeltaTimeNow(luaApi, quickAdjust);
     } else {
@@ -117,24 +118,23 @@ function SimulationIncrement({hasNextDeltaTimeStep, hasPrevDeltaTimeStep, nextDe
       if(beforeAdjust) {
         updateDeltaTimeNow(luaApi, beforeAdjust);
       }
-      beforeAdjust = null;
+      setBeforeAdjust(null);
     }
   }
 
-  function nextDeltaTimeStep(event) {
+  function setNextDeltaTimeStep(event) {
     luaApi.time.interpolateNextDeltaTimeStep();
   }
 
-  function prevDeltaTimeStep(event) {
+  function setPrevDeltaTimeStep(event) {
     luaApi.time.interpolatePreviousDeltaTimeStep();
   }
 
   function deltaTimeStepsContol() {
     const adjustedNextDelta =
-      round10(nextDeltaTimeStep() / StepSizes[stepSize], StepPrecisions[stepSize]);
-
+      round10(nextDeltaTimeStep / StepSizes[stepSize], StepPrecisions[stepSize]);
     const adjustedPrevDelta =
-      round10(prevDeltaTimeStep() / StepSizes[stepSize], StepPrecisions[stepSize]);
+      round10(prevDeltaTimeStep / StepSizes[stepSize], StepPrecisions[stepSize]);
 
     const nextLabel = hasNextDeltaTimeStep ? `${adjustedNextDelta} ${stepSize} / second` : 'None';
     const prevLabel = hasPrevDeltaTimeStep ? `${adjustedPrevDelta} ${stepSize} / second` : 'None';
@@ -144,7 +144,7 @@ function SimulationIncrement({hasNextDeltaTimeStep, hasPrevDeltaTimeStep, nextDe
           <Button 
             block 
             disabled={!hasPrevDeltaTimeStep}
-            onClick={prevDeltaTimeStep}
+            onClick={setPrevDeltaTimeStep}
           >
             <MaterialIcon icon="fast_rewind" />
           </Button>
@@ -161,7 +161,7 @@ function SimulationIncrement({hasNextDeltaTimeStep, hasPrevDeltaTimeStep, nextDe
           <Button 
             block 
             disabled={!hasNextDeltaTimeStep}
-            onClick={nextDeltaTimeStep}
+            onClick={setNextDeltaTimeStep}
           >
             <MaterialIcon icon="fast_forward" />
           </Button>

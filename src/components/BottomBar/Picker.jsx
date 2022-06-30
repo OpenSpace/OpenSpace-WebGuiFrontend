@@ -3,8 +3,7 @@ import React from 'react';
 import { useTutorial } from '../GettingStartedTour/GettingStartedContext';
 import styles from './Picker.scss';
 
-const Picker = (props) => {
-  const { children, className, refKey } = props;
+const Picker = ({children, className, refKey, ...props}) => {
   const refs = useTutorial();
   return (
     <div ref={refKey ? el => refs.current[refKey] = el : null} {...props} className={`${styles.Picker} ${className}`}>

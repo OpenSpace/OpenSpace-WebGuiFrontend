@@ -104,55 +104,13 @@ function AnimatedMouse({ button, ...props }) {
   </div> 
 }
 
-function AnimatedArrow({ rotation = 0, position, ...props }) {
-  const arrowRef = React.useRef(null);
-  
-  let degrees = 0;
-  switch (rotation) {
-    case 'right':
-      degrees = 0;
-      break;
-    case 'down':
-      degrees = 90;
-      break;
-    case 'left':
-      degrees = 180;
-      break;
-    case 'up':
-      degrees = 270;
-      break;
-    default:
-      degrees = rotation;
-      break;
-  }
-
-  React.useEffect(() => {
-    arrowRef.current.animate([
-      { left: '0' },
-      { left: '10px' },
-      { left: '0' }
-    ], {
-      duration: 700,
-      iterations: Infinity
-    });
-  }, [arrowRef])
-  
-  return (
-    <div
-      className={styles.icon}
-      style={{ transform: `rotate(${degrees}deg)`, top  : position.y, left: position.x }}
-      {...props} >
-      <div ref={arrowRef} className={styles.arrow}></div>
-    </div>);
-}
-
 const GoalTypes = {
   uri : "uri", 
   geoPosition : "geoPosition", 
   changeTime : "changeTime",
   changeDeltaTime : "changeDeltaTime",
   changeUri : "changeUri",
-
+  pauseTime : "pauseTime"
 }
 
 function isConditionFulfilled(content, property, cameraPosition, valueStart, time, isPaused, deltaTime) {
@@ -276,7 +234,6 @@ function TourPopup({ isPaused, properties, cameraPosition, changeUriValues, star
             break;
         }
       });
-      console.log(startValues);
       setValueStart(startValues);
     }
   }, [content]);
@@ -308,12 +265,8 @@ function TourPopup({ isPaused, properties, cameraPosition, changeUriValues, star
     {Boolean(content.position) && !allConditionsAreFulfilled &&
       <div className={`${styles.animatedBorder} ${styles.geoPositionBox}`} />}
     <ResizeableDraggable
-      default={{
-        x: 500,
-        y: 360,
-      }}
-      minWidth={500}
-      minHeight={360}
+      minWidth={400}
+      minHeight={320}
       bounds="window"
       className={styles.window}
     >

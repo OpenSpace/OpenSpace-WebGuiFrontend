@@ -155,6 +155,7 @@ $animated-border-width : 3px;
 $animated-border-length : 15px;
 
 .animatedBorder {
+    pointer-events: none;
     background-image: linear-gradient(90deg, $highlight-color 50%, transparent 50%), 
                       linear-gradient(90deg, $highlight-color 50%, transparent 50%), 
                       linear-gradient(0deg, $highlight-color 50%, transparent 50%), 
@@ -203,50 +204,6 @@ $animated-border-length : 15px;
         margin:-7.5em;
         border-width:0.03em;
     }
-}
-
-
-
-/* Animated arrow style */
-
-.icon {
-    position: fixed;
-    bottom: 200px;
-    left: 500px;
-    width: 80px;
-    height: 60px;
-    margin: 10px;
-}
-
-.arrow {
-    position: absolute;
-    top: 25px;
-    width: 90%;
-    height: 10px;
-    background-color: $highlight-color;
-    box-shadow: 0 3px 5px rgba(0, 0, 0, .2);
-    animation: arrow 700ms linear infinite;
-}
-
-.arrow::after,
-.arrow::before {
-    content: '';
-    position: absolute;
-    width: 60%;
-    height: 10px;
-    right: -8px;
-    background-color: $highlight-color;
-}
-
-.arrow::after {
-    top: -12px;
-    transform: rotate(45deg);
-}
-
-.arrow::before {
-    top: 12px;
-    box-shadow: 0 3px 5px rgba(0, 0, 0, .2);
-    transform: rotate(-45deg);
 }
 
 /* Keyboard button */
