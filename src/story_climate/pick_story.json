@@ -25,11 +25,11 @@
          "yaw": -0.12915962677809972
         },
         "toggleboolproperties":
-          {
-            "URI":"Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled",
-            "label":"ESRI VIIRS Combo",
-            "defaultvalue": true
-          }
+        {
+          "URI":"Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled",
+          "label":"Background of Earth",
+          "defaultvalue": true
+        }
       }
     ],
   "pickstory": [

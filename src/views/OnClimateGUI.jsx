@@ -4,17 +4,13 @@ import React, { Component } from 'react';
 import {
   withRouter, HashRouter as Router, Route, Link,
 } from 'react-router-dom';
-
 import { formatVersion, isCompatible, RequiredOpenSpaceVersion, RequiredSocketApiVersion } from '../api/Version';
-
 import KeybindingPanel from '../components/BottomBar/KeybindingPanel';
-
 import '../styles/base.scss';
 import Error from '../components/common/Error/Error';
 import Overlay from '../components/common/Overlay/Overlay';
 import BottomBar from '../components/Climate/BottomMenu/ClimateBar';
 import Button from '../components/common/Input/Button/Button';
-
 import ActionsPanel from '../components/BottomBar/ActionsPanel';
 import Sidebar from '../components/Sidebar/Sidebar';
 import NodeMetaContainer from '../components/NodeMetaPanel/NodeMetaContainer';
@@ -24,24 +20,18 @@ import {
   setPropertyValue, startConnection, fetchData, addStoryTree, subscribeToProperty,
   unsubscribeToProperty, addStoryInfo, resetStoryInfo,
 } from '../api/Actions';
-
 import climate_stories from "../story_climate/pick_story.json";
 import {
   ValuePlaceholder, DefaultStory, ScaleKey,
   NavigationAnchorKey,InfoIconKey, ZoomInLimitKey, ZoomOutLimitKey,
 } from '../api/keys'
-
-
 import StartJourney from '../components/Climate/startJourney'
-
 import styles from './OnClimateGui.scss';
 import { UpdateDeltaTimeNow, setDateToNow } from '../utils/timeHelpers';
-
 import {
   storyGetLayer, storyGetLocation, satelliteToggle, toggleShowNode,
   storyFileParserClimate, storyResetLayer, storyGetIdleBehavior
 } from '../utils/storyHelpers';
-
 
 class OnClimateGui extends Component {
   constructor(props) {
