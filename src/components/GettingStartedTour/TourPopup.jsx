@@ -18,7 +18,6 @@ import openspaceLogo from "./openspace-color-transparent.png";
 import MaterialIcon from "../common/MaterialIcon/MaterialIcon";
 import Checkbox from "../common/Input/Checkbox/Checkbox";
 import {useTutorial} from "./GettingStartedContext";
-import reactSelect from "react-select";
 
 function AnimatedCheckmark({...props}) {
   return <div className={styles.centerContent}>
@@ -69,7 +68,6 @@ function useLocalStorageState(
 
   const prevKeyRef = React.useRef(key)
 
-  // Check the example at src/examples/local-state-key-change.js to visualize a key change
   React.useEffect(() => {
     const prevKey = prevKeyRef.current
     if (prevKey !== key) {
@@ -148,14 +146,23 @@ function AnimatedArrow({ rotation = 0, position, ...props }) {
     </div>);
 }
 
+const GoalTypes = {
+  uri : "uri", 
+  geoPosition : "geoPosition", 
+  changeTime : "changeTime",
+  changeDeltaTime : "changeDeltaTime",
+  changeUri : "changeUri",
+
+}
+
 function isConditionFulfilled(content, property, cameraPosition, valueStart, time, isPaused, deltaTime) {
   let conditionIsFulfilled = new Array(content.goalType.length); 
   content.goalType.map((goal, i) => {
     switch (goal) {
-      case 'uri':
+      case GoalTypes.uri:
         conditionIsFulfilled[i] = content.uriValue === property?.value;
         break;
-      case 'geoPosition':
+      case GoalTypes.geoPosition:
         let isTrue = true;
         Object.keys(content.position).map((dimension) => {
           const { operator, value, unit } = content.position[dimension];
@@ -181,18 +188,18 @@ function isConditionFulfilled(content, property, cameraPosition, valueStart, tim
         })
         conditionIsFulfilled[i] = isTrue;
         break;
-      case 'time':
+      case GoalTypes.changeTime:
         if (content.changeValue === 'year') {
           conditionIsFulfilled[i] = valueStart?.[i]?.getFullYear?.() !== time.getFullYear();
         }
         break;
-      case 'deltaTime':
+      case GoalTypes.changeDeltaTime:
         conditionIsFulfilled[i] = valueStart?.[i] !== deltaTime;
         break;
-      case 'pauseTime':
+      case GoalTypes.pauseTime:
         conditionIsFulfilled[i] = isPaused === true;
         break;
-      case 'changeUri':
+      case GoalTypes.changeUri:
         if (!valueStart) {
           conditionIsFulfilled[i] = false;
           break;
@@ -232,7 +239,7 @@ function MouseDescriptions({ button, info, description, keyboardButton}) {
   </div>;
 }
 
-function TourPopup({ isPaused, properties, cameraPosition, marsTrailColor, startSubscriptions, stopSubscriptions, setVisibility, isVisible, time, targetDeltaTime }) {
+function TourPopup({ isPaused, properties, cameraPosition, changeUriValues, startSubscriptions, stopSubscriptions, setVisibility, isVisible, time, targetDeltaTime }) {
   const [showTutorialOnStart, setShowTutorialOnStart] = useLocalStorageState('showTutorialOnStart', true); // To do: put in storage on disk somewhere
   const [currentSlide, setCurrentSlide] = useLocalStorageState('currentSlide', 0);
   const [valueStart, setValueStart] = React.useState(undefined);
@@ -250,23 +257,26 @@ function TourPopup({ isPaused, properties, cameraPosition, marsTrailColor, start
 
   // Save start values
   React.useEffect(() => {
-    if (content.goalType === "changeUri") {
+    const changeGoalTypes = [GoalTypes.changeTime, GoalTypes.changeDeltaTime, GoalTypes.changeUri];
+    const changeGoals = content?.goalType?.filter(goal => changeGoalTypes.includes(goal))
+    if (changeGoals?.length > 0) {
       let startValues = new Array(content.goalType.length);
       content.goalType.map((goal, i) => {
         switch (goal) {
-          case 'time':
+          case GoalTypes.changeTime:
             startValues[i] = new Date(time);
             break;
-            case 'deltaTime':
-              startValues[i] = targetDeltaTime;
-              break;
-              case 'changeUri':
-                startValues[i] = marsTrailColor;
-                break;
+          case GoalTypes.changeDeltaTime:
+            startValues[i] = targetDeltaTime;
+            break;
+          case GoalTypes.changeUri:
+            startValues[i] = changeUriValues[content.uri];
+            break;
           default:
             break;
         }
       });
+      console.log(startValues);
       setValueStart(startValues);
     }
   }, [content]);
@@ -385,7 +395,7 @@ const mapStateToProps = (state) => ({
   isPaused: state.time.isPaused,
   time: state.time.time,
   targetDeltaTime: state.time.targetDeltaTime,
-  marsTrailColor : getBoolPropertyValue(state, "Scene.MarsTrail.Renderable.Appearance.Color"),
+  changeUriValues : { "Scene.MarsTrail.Renderable.Appearance.Color" : getBoolPropertyValue(state, "Scene.MarsTrail.Renderable.Appearance.Color")},
 });
 
 const mapDispatchToProps = dispatch => ({

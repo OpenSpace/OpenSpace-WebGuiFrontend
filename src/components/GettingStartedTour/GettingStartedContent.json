@@ -86,7 +86,7 @@
         "arrowRotation" : "down"
     },
     {
-        "goalType" : ["time"],
+        "goalType" : ["changeTime"],
         "changeValue" : "year",
         "title" : "Time",
         "key" : ["Time", "FullYear"],
@@ -97,7 +97,7 @@
         "arrowRotation" : "down"
     },
     {
-        "goalType" : ["deltaTime"],
+        "goalType" : ["changeDeltaTime"],
         "title" : "Time",
         "key" : ["Time", "SimulationSpeed"],
         "firstText" : "You can also change how fast time is playing.",
