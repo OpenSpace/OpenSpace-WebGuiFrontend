@@ -175,12 +175,6 @@ class OnClimateGui extends Component {
         <p className={styles.storyTitle}>
           {this.state.data}
         </p>
-        <section className={styles.Grid__Left}>
-
-
-
-
-        </section>
         <section className={styles.Grid__Right}>
           <NodePopOverContainer/>
         <NodeMetaContainer/>
