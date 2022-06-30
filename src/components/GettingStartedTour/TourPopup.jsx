@@ -148,7 +148,7 @@ function AnimatedArrow({ rotation = 0, position, ...props }) {
     </div>);
 }
 
-function isConditionFulfilled(content, property, cameraPosition, valueStart, time, deltaTime) {
+function isConditionFulfilled(content, property, cameraPosition, valueStart, time, isPaused, deltaTime) {
   let conditionIsFulfilled = new Array(content.goalType.length); 
   content.goalType.map((goal, i) => {
     switch (goal) {
@@ -188,6 +188,9 @@ function isConditionFulfilled(content, property, cameraPosition, valueStart, tim
         break;
       case 'deltaTime':
         conditionIsFulfilled[i] = valueStart?.[i] !== deltaTime;
+        break;
+      case 'pauseTime':
+        conditionIsFulfilled[i] = isPaused === true;
         break;
       case 'changeUri':
         if (!valueStart) {
@@ -229,7 +232,7 @@ function MouseDescriptions({ button, info, description, keyboardButton}) {
   </div>;
 }
 
-function TourPopup({ properties, cameraPosition, marsTrailColor, startSubscriptions, stopSubscriptions, setVisibility, isVisible, time, targetDeltaTime }) {
+function TourPopup({ isPaused, properties, cameraPosition, marsTrailColor, startSubscriptions, stopSubscriptions, setVisibility, isVisible, time, targetDeltaTime }) {
   const [showTutorialOnStart, setShowTutorialOnStart] = useLocalStorageState('showTutorialOnStart', true); // To do: put in storage on disk somewhere
   const [currentSlide, setCurrentSlide] = useLocalStorageState('currentSlide', 0);
   const [valueStart, setValueStart] = React.useState(undefined);
@@ -247,7 +250,7 @@ function TourPopup({ properties, cameraPosition, marsTrailColor, startSubscripti
 
   // Save start values
   React.useEffect(() => {
-    if (content.goalType) {
+    if (content.goalType === "changeUri") {
       let startValues = new Array(content.goalType.length);
       content.goalType.map((goal, i) => {
         switch (goal) {
@@ -268,7 +271,7 @@ function TourPopup({ properties, cameraPosition, marsTrailColor, startSubscripti
     }
   }, [content]);
   
-  const conditionIsFulfilled = hasGoals ? isConditionFulfilled(content, property, cameraPosition, valueStart, new Date(time), targetDeltaTime) : false;
+  const conditionIsFulfilled = hasGoals ? isConditionFulfilled(content, property, cameraPosition, valueStart, new Date(time), isPaused, targetDeltaTime) : false;
   const allConditionsAreFulfilled = hasGoals ? !conditionIsFulfilled.includes(false) : false;
 
   // Create animated click
@@ -313,6 +316,7 @@ function TourPopup({ properties, cameraPosition, marsTrailColor, startSubscripti
         </div>
         {isFirstSlide && <div className={styles.centerContent}><img src={openspaceLogo} className={styles.logo} /></div>}
         <p className={styles.text}>{content.firstText}</p>
+        {<p className={` ${styles.text} ${styles.infoText}`}>{content.infoText}</p>}
         {allConditionsAreFulfilled && content.goalText ?
           <AnimatedCheckmark style={{ marginTop: '80px', width: '56px', height: '56px' }} /> :
           <>{hasGoals && content.goalText.map((goal, i) => {
@@ -333,7 +337,6 @@ function TourPopup({ properties, cameraPosition, marsTrailColor, startSubscripti
             }
           </>
         }
-        {!allConditionsAreFulfilled && <p className={` ${styles.text} ${styles.infoText}`}>{content.infoText}</p>}
         {content.bulletList && content.bulletList.map(text => <li key={text} className={styles.text}>{text}</li>)}
         {isLastSlide && <>
           <div style={{ display: 'flex'}}>
@@ -379,6 +382,7 @@ const mapStateToProps = (state) => ({
     altitude: state.camera.altitude,
     altitudeUnit: state.camera.altitudeUnit
   },
+  isPaused: state.time.isPaused,
   time: state.time.time,
   targetDeltaTime: state.time.targetDeltaTime,
   marsTrailColor : getBoolPropertyValue(state, "Scene.MarsTrail.Renderable.Appearance.Color"),
