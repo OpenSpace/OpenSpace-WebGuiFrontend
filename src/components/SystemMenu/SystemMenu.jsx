@@ -31,7 +31,10 @@ class SystemMenu extends Component {
                 About OpenSpace
               </button>
               <button onClick={this.props.openTutorials}>
-                Open Tutorials
+                Open Web Tutorials
+              </button>
+              <button onClick={() => this.props.showTutorial(true)}>
+                Open Getting Started Tour
               </button>
               {
                 environment.developmentMode ?

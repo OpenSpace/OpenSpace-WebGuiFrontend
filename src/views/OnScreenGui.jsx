@@ -85,7 +85,7 @@ class OnScreenGui extends Component {
           </Overlay>
         )}
         <section className={styles.Grid__Left}>
-          <Sidebar />
+          <Sidebar showTutorial={ (show) => this.setState({ showTutorial : show })}/>
         </section>
         <section className={styles.Grid__Right}>
           <NodePopOverContainer />
