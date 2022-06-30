@@ -162,7 +162,7 @@
     },
     {
         "title" : "Content",
-        "firstText" : "Planets can have multiple maps and height maps, which show elevation. The maps can have different resolutions or show different data.",
+        "firstText" : "Planets can have multiple maps which show different data. Planets also have height maps, which show elevation. Different maps can have different resolutions.",
         "infoText" : "All the default layers in OpenSpace are named after the satellite that captured the map. The name [Utah] or [Sweden] states which server the map is located on. It is usually faster to choose the server closest to you."
     },
     {
