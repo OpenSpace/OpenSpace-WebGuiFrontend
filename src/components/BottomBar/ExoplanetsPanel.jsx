@@ -153,6 +153,7 @@ class ExoplanetsPanel extends Component {
         <Picker 
           className={`${popoverVisible && Picker.Active}`} 
           onClick={this.togglePopover}
+          refKey={"Exoplanets"}
         >
           <div>
             <MaterialIcon className={styles.photoIcon} icon="hdr_strong" />

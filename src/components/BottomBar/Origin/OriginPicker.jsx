@@ -353,10 +353,9 @@ function OriginPicker({ favorites, setShowFavorites, nodes, showFavorites, engin
     enabled ? '' : pickerStyle,
   ].join(' ');
 
-  const refs = useTutorial();
   return (
-    <div ref={el => refs.current["Origin"] = el} className={Picker.Wrapper}>
-      <Picker onClick={() => togglePopover()} className={pickerClasses}>
+    <div className={Picker.Wrapper}>
+      <Picker refKey={"Origin"} onClick={() => togglePopover()} className={pickerClasses}>
         {pickerContent()}
       </Picker>
       {popoverEnabledAndVisible && popover()}
