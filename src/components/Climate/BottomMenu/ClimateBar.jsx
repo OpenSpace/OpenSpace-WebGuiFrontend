@@ -45,7 +45,6 @@ let BottomBar = ({
     <ClimatePanel  setNoShow = {setNoShow}/>
     <TimePicker />
     <TimePlayerController/>
-
     {showFlightController && <FlightControlPanel/>}
 
   </div>

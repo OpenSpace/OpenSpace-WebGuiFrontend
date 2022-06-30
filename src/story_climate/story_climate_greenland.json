@@ -55,7 +55,7 @@
       },
       {
         "title":  "Velocity around the globe",
-        "storyinfo": "Press the fast forward button to see the speed of water at 25 m depth in the sea. \n\n With the help of satellites and instruments in the water it is possible to create models of the velocity of the currents and how and how fast the currents are moving around our Earth through the years. The colors show how fast the currents are moving, and according to NASA Science, it takes up to 1,000 years for a water molecule to travel around the globe.",
+        "storyinfo": "Press the fast forward button to see the speed of water at 25 m depth in the sea between 1992 and 2000. \n\n With the help of satellites and instruments in the water it is possible to create models of the velocity of the currents and how and how fast the currents are moving around our Earth through the years. The colors show how fast the currents are moving, and according to NASA Science, it takes up to 1,000 years for a water molecule to travel around the globe.",
         "source": "https://science.nasa.gov/earth-science/oceanography/ocean-earth-system/ocean-water-cycle",
         "date": "1992-01-18T22:00:00.00",
         "timeSpeed": 10086400,
@@ -102,19 +102,19 @@
         "date": "2021-12-18T05:00:00.00",
         "pos": {
           "anchor": "Earth",
-          "pitch": -0.02249910974253141,
+          "pitch": 0.01859314835679376,
           "position": {
-            "x": 19305329.039923728,
-            "y": 11257097.687918952,
-            "z": -9011652.821980316
+            "x": 11829554.827842832,
+            "y": -13522336.666797535,
+            "z": 8725797.084431268
           },
           "type": "setNavigationState",
           "up": {
-            "x": 0.34647119952256505,
-            "y": 0.14743360618608958,
-            "z": 0.9264022018909281
+            "x": -0.26490362548248503,
+            "y": 0.34844699238417637,
+            "z": 0.8991166568942307
           },
-          "yaw": -0.2558781145796229
+          "yaw": -0.18794626453978064
         },
         "toggleboolproperties":[
           {

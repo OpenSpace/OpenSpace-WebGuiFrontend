@@ -54,6 +54,8 @@ togglePopover() {
 getSurfaceLayerAlaska() {
     this.props.luaApi.time.setTime("2002-06-18T19:00:00");
     this.props.luaApi.setPropertyValueSingle(
+      "Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled", true)
+    this.props.luaApi.setPropertyValueSingle(
       "Scene.Earth.Renderable.Layers.Overlays.Coastlines.Enabled", true)
     this.props.luaApi.setPropertyValueSingle(
       "Scene.Earth.Renderable.Layers.ColorLayers.GRACE_temp-layer.Enabled", true)
@@ -85,6 +87,8 @@ getSurfaceLayerAlaska() {
 
   getSurfaceLayerAntarctica() {
     this.props.luaApi.time.setTime("2002-12-18T09:00:00");
+    this.props.luaApi.setPropertyValueSingle(
+      "Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled", true)
     this.props.luaApi.setPropertyValueSingle(
       "Scene.Earth.Renderable.Layers.Overlays.Coastlines.Enabled", true)
     this.props.luaApi.setPropertyValueSingle(

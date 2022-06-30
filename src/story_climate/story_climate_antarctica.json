@@ -52,7 +52,7 @@
         },
         {
           "title": "Velocity around the globe",
-          "storyinfo": "Press the fast forward button to see the speed of water at 25 m depth in the sea. \n\n With the help of satellites and instruments in the water it is possible to create models of the velocity of the currents and how and how fast the currents are moving around our Earth through the years. The colors show how fast the currents are moving, and according to NASA Science, it takes up to 1,000 years for a water molecule to travel around the globe.",
+          "storyinfo": "Press the fast forward button to see the speed of water at 25 m depth in the sea between 1992 and 2000. \n\n With the help of satellites and instruments in the water it is possible to create models of the velocity of the currents and how and how fast the currents are moving around our Earth through the years. The colors show how fast the currents are moving, and according to NASA Science, it takes up to 1,000 years for a water molecule to travel around the globe.",
           "source": "https://science.nasa.gov/earth-science/oceanography/ocean-earth-system/ocean-water-cycle",
           "date": "1992-01-18T22:00:00.00",
           "timeSpeed": 10086400,
@@ -136,7 +136,7 @@
       {
         "id" : 3,
         "title": "Ice loss on Antarctica",
-        "storyinfo": "Press the fast forward button to see how much ice loss Antarctica has had since 2002. \n\n Antarctica is divided into two regions, East Antarctica and West Antarctica. \n\n Between 2012 and 2016, the yearly ice loss in Antarctica was about 199 billion tons according to Rebecca Lindsey at Climate.gov. That is nearly quadruple 51 billion tons, which was the annual ice loss between 1992 and 2001. \n\n The main reason for the ice loss is the currents that bring warmer water to the glaciers. You may have thought that it was the warmer air temperature, which it's not. Antarctica is very cold! The air temperature has to rise a lot before the ice melt on the continent would melt enough to make a big difference. \n\n This data set shows how much ice loss we have had in Antarctica since 2002 and is an observation from the Gravity Recovery and Climate Experiment (GRACE) satellites.",
+        "storyinfo": "Press the fast forward button to see how much ice loss Antarctica has had since 2002. \n\n Antarctica is divided into two regions, East Antarctica and West Antarctica. Between 2012 and 2016, the yearly ice loss in Antarctica was about 199 billion tons according to Rebecca Lindsey at Climate.gov. That is nearly quadruple 51 billion tons, which was the annual ice loss between 1992 and 2001. The main reason for the ice loss is the currents that bring warmer water to the glaciers. You may have thought that it was the warmer air temperature, which it's not. Antarctica is very cold! The air temperature has to rise a lot before the ice melt on the continent would melt enough to make a big difference. This data set shows how much ice loss we have had in Antarctica since 2002 and is an observation from the Gravity Recovery and Climate Experiment (GRACE) satellites.",
         "source": "https://climate.nasa.gov/news/3038/the-anatomy-of-glacial-ice-loss/ https://www.climate.gov/news-features/understanding-climate/climate-change-global-sea-level https://grace.jpl.nasa.gov/resources/31/antarctic-ice-loss-2002-2020/",
         "timeSpeed": 10086400,
         "date": "2021-12-18T05:00:00.00",
