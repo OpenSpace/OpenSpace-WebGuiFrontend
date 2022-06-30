@@ -109,7 +109,7 @@
     {
         "goalType" : ["pauseTime"],
         "title" : "Time",
-        "key" : ["Time", "SimulationSpeed"],
+        "key" : ["Time", "Pause"],
         "firstText" : "You can pause the time.",
         "infoText" : "Note: simulation speed is not set to 0 when you pause",
         "goalText" : ["Pause the time"],

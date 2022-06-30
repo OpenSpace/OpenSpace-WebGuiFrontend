@@ -9,6 +9,7 @@ import ScaleInput from '../common/Input/ScaleInput/ScaleInput';
 import Select from '../common/Input/Select/Select';
 import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import Row from '../common/Row/Row';
+import { useTutorial } from '../GettingStartedTour/GettingStartedContext';
 import styles from './SimulationIncrement.scss';
 
 const updateDelayMs = 1000;
@@ -67,6 +68,7 @@ Object.freeze(Limits);
 function SimulationIncrement({hasNextDeltaTimeStep, hasPrevDeltaTimeStep, nextDeltaTimeStep, 
   prevDeltaTimeStep, startSubscriptions, targetDeltaTime, isPaused, stopSubscriptions, luaApi}) {
   const [stepSize, setStepSize] = React.useState(Steps.seconds);
+  const refs = useTutorial();
   
   React.useEffect(() => {
     startSubscriptions();
@@ -150,7 +152,7 @@ function SimulationIncrement({hasNextDeltaTimeStep, hasPrevDeltaTimeStep, nextDe
             {prevLabel}
           </label>
         </div>
-        <div style={{flex: 2}}>
+        <div style={{flex: 2}} ref={el => refs.current["Pause"] = el}>
           <Button block onClick={togglePause}>
               {isPaused ? <MaterialIcon icon="play_arrow" /> : <MaterialIcon icon="pause" />}
           </Button>
