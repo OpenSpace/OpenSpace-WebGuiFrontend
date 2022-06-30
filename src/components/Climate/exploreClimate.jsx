@@ -86,7 +86,7 @@ class ExploreClimate extends Component{
             }
 
         return (
-            <div key = {story.id} >
+            <div key = {story.id} className = {styles.left}>
 
 
               <h1>

@@ -179,16 +179,16 @@ class OnClimateGui extends Component {
         <section className={styles.Grid__Left}>
 
 
-        {(currentStory === DefaultStory )
-          ? <StartJourney changeStory = {this.setStory}/>
-        : <ExploreClimate resetStory = {this.resetStory} json = {json} currentStory= {currentStory} showTimeController ={timeBool}/>
-        }
 
-        <Sidebar/>
+
         </section>
         <section className={styles.Grid__Right}>
           <NodePopOverContainer/>
         <NodeMetaContainer/>
+          {(currentStory === DefaultStory )
+            ? <StartJourney changeStory = {this.setStory}/>
+          : <ExploreClimate resetStory = {this.resetStory} json = {json} currentStory= {currentStory} showTimeController ={timeBool}/>
+          }
           <BottomBar resetStory={this.resetStory} setNoShow = {this.noShow} showTimeController ={timeBool} />
         <KeybindingPanel />
         </section>

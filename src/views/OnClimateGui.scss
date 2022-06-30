@@ -17,3 +17,34 @@
   justify-content: flex-end;
   height: 100%;
 }
+.Sidebar {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+
+.Sidebar {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.active {
+  height: 100%;
+}
+
+
+
+.rightHandle {
+  background: transparent;
+  border-radius: 2px;
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  margin-left: 5px;
+
+  &:hover, &:active{
+    background: $ui-background-solid;
+  }
+}

@@ -36,12 +36,20 @@
 }
 .StoryPosistion{
   position: relative;
-  width: 200%;
+  width: 80%;
   margin: 0 auto;
   height: 100%;
   overflow: hidden;
+  left: -80px
 //  background-color: #D3D3D3;
 }
+
+.left{
+
+  left: 100px
+
+}
+
 .TellStory{
   font-family: $font-family;
   height: 20%;
@@ -86,7 +94,7 @@
   justify-content: center;
   position: absolute;
   top: 270%;
-  left: -30%;
+  left: -23%;
   display: flex;
 }
 
@@ -107,7 +115,7 @@
   justify-content: center;
   position: absolute;
   top: 270%;
-  left: -90%;
+  left: -87%;
   display: flex;
 
 }
@@ -122,6 +130,7 @@ $icon-size: 20px;
   .frameBorder{
   background-color: rgba(0,0,0,0.6);
   border-radius: 16px;
-  padding-left: 20px;
+  padding: 20px;
+  left:10px;
 
 }

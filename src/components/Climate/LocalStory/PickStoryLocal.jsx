@@ -40,7 +40,7 @@ class PickStoryLocal extends Component {
           <div className = {styles.button}>
             {storyInfo.id <= 2 &&
               <div style={{height: 700 +  100*storyInfo.id}} >
-                <div style={{width:400 }} >
+                <div style={{width:383 }} >
                   <StoryButton
                     pickStory = {this.handleStory}
                     storyIdentifier = {storyInfo.title}
@@ -51,7 +51,7 @@ class PickStoryLocal extends Component {
             {storyInfo.id > 5 &&
 
                 <div style={{height: 100 +  100*storyInfo.id}} >
-                  <div style={{width: 1152}} >
+                  <div style={{width: 1145}} >
                     <StoryButton
                       pickStory = {this.handleStory}
                       storyIdentifier = {storyInfo.title}
@@ -61,7 +61,7 @@ class PickStoryLocal extends Component {
               }
               {storyInfo.id > 2 && storyInfo.id <= 5 &&
                     <div style={{height: 400 +  100 * storyInfo.id}} >
-                      <div style={{  width: 777}} >
+                      <div style={{  width: 761}} >
                       <StoryButton
                         pickStory = {this.handleStory}
                         storyIdentifier= {storyInfo.title}
