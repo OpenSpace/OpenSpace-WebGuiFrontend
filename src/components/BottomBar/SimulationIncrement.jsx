@@ -64,119 +64,75 @@ Object.freeze(StepSizes);
 Object.freeze(StepPrecisions);
 Object.freeze(Limits);
 
-class SimulationIncrement extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      stepSize: Steps.seconds,
-      quickAdjust: 1,
-    };
+function SimulationIncrement({hasNextDeltaTimeStep, hasPrevDeltaTimeStep, nextDeltaTimeStep, 
+  prevDeltaTimeStep, startSubscriptions, targetDeltaTime, isPaused, stopSubscriptions, luaApi}) {
+  const [stepSize, setStepSize] = React.useState(Steps.seconds);
+  
+  React.useEffect(() => {
+    startSubscriptions();
+    return stopSubscriptions();
+  }, []);
 
-    this.togglePause = this.togglePause.bind(this);
-    this.setPositiveDeltaTime = this.setPositiveDeltaTime.bind(this);
-    this.setNegativeDeltaTime = this.setNegativeDeltaTime.bind(this);
-    this.setStepSize = this.setStepSize.bind(this);
-    this.setQuickAdjust = this.setQuickAdjust.bind(this);
-    this.nextDeltaTimeStep = this.nextDeltaTimeStep.bind(this);
-    this.prevDeltaTimeStep = this.prevDeltaTimeStep.bind(this)
-  }
-
-  togglePause(e) {
-    const openspace = this.props.luaApi;
+  function togglePause(e) {
     const shift = e.getModifierState("Shift");
     if (shift) {
-      openspace.time.togglePause();
+      luaApi.time.togglePause();
     } else {
-      openspace.time.interpolateTogglePause();
+      luaApi.time.interpolateTogglePause();
     }
   }
 
-  componentDidMount() {
-    this.props.startSubscriptions();
-  }
-
-  componentWillUnmount() {
-    this.props.stopSubscriptions();
-  }
-
-  get stepSize() {
-    const { stepSize } = this.state;
-    return StepSizes[stepSize];
-  }
-
-  get limits() {
-    const { stepSize } = this.state;
-    return Limits[stepSize];
-  }
-
-  setDeltaTime(value) {
-    const deltaTime = parseFloat(value) * this.stepSize;
+  function setDeltaTime(value) {
+    const deltaTime = parseFloat(value) * StepSizes[stepSize];
     if (isNaN(deltaTime)) {
       return;
     }
-    if (this.props.luaApi) {
-      updateDeltaTimeNow(this.props.luaApi, deltaTime);
+    if (luaApi) {
+      updateDeltaTimeNow(luaApi, deltaTime);
     }
   }
 
-  setPositiveDeltaTime(value) {
+  function setPositiveDeltaTime(value) {
     const dt = value;
-    this.setDeltaTime(dt);
+    setDeltaTime(dt);
   }
 
-  setNegativeDeltaTime(value) {
+  function setNegativeDeltaTime(value) {
     const dt = -value;
-    this.setDeltaTime(dt);
+    setDeltaTime(dt);
   }
 
-  setStepSize({ value }) {
-    if (!Object.values(Steps).includes(value)) return;
-
-    this.setState({ stepSize: value });
-  }
-
-  setQuickAdjust(value) {
-    if (!this.props.luaApi) {
+  function setQuickAdjust(value) {
+    if (!luaApi) {
       return;
     }
     if (value !== 0) {
-      this.beforeAdjust = this.beforeAdjust || this.props.targetDeltaTime;
-      const quickAdjust = this.beforeAdjust + this.stepSize * (value ** 5);
-      updateDeltaTimeNow(this.props.luaApi, quickAdjust);
+      beforeAdjust = beforeAdjust || targetDeltaTime;
+      const quickAdjust = beforeAdjust + StepSizes[stepSize] * (value ** 5);
+      updateDeltaTimeNow(luaApi, quickAdjust);
     } else {
       updateDeltaTime.cancel();
-      if(this.beforeAdjust) {
-        updateDeltaTimeNow(this.props.luaApi, this.beforeAdjust);
+      if(beforeAdjust) {
+        updateDeltaTimeNow(luaApi, beforeAdjust);
       }
-      this.beforeAdjust = null;
+      beforeAdjust = null;
     }
   }
 
-  nextDeltaTimeStep(event) {
-    const openspace = this.props.luaApi;
-    openspace.time.interpolateNextDeltaTimeStep();
+  function nextDeltaTimeStep(event) {
+    luaApi.time.interpolateNextDeltaTimeStep();
   }
 
-  prevDeltaTimeStep(event) {
-    const openspace = this.props.luaApi;
-    openspace.time.interpolatePreviousDeltaTimeStep();
+  function prevDeltaTimeStep(event) {
+    luaApi.time.interpolatePreviousDeltaTimeStep();
   }
 
-  get deltaTimeStepsContol() {
-    const { stepSize } = this.state;
-    const { 
-      hasNextDeltaTimeStep, 
-      hasPrevDeltaTimeStep, 
-      nextDeltaTimeStep, 
-      prevDeltaTimeStep, 
-      isPaused 
-    } = this.props;
-
+  function deltaTimeStepsContol() {
     const adjustedNextDelta =
-      round10(nextDeltaTimeStep / this.stepSize, StepPrecisions[stepSize]);
+      round10(nextDeltaTimeStep() / StepSizes[stepSize], StepPrecisions[stepSize]);
 
     const adjustedPrevDelta =
-      round10(prevDeltaTimeStep / this.stepSize, StepPrecisions[stepSize]);
+      round10(prevDeltaTimeStep() / StepSizes[stepSize], StepPrecisions[stepSize]);
 
     const nextLabel = hasNextDeltaTimeStep ? `${adjustedNextDelta} ${stepSize} / second` : 'None';
     const prevLabel = hasPrevDeltaTimeStep ? `${adjustedPrevDelta} ${stepSize} / second` : 'None';
@@ -186,7 +142,7 @@ class SimulationIncrement extends Component {
           <Button 
             block 
             disabled={!hasPrevDeltaTimeStep}
-            onClick={this.prevDeltaTimeStep}
+            onClick={prevDeltaTimeStep}
           >
             <MaterialIcon icon="fast_rewind" />
           </Button>
@@ -195,7 +151,7 @@ class SimulationIncrement extends Component {
           </label>
         </div>
         <div style={{flex: 2}}>
-          <Button block onClick={this.togglePause}>
+          <Button block onClick={togglePause}>
               {isPaused ? <MaterialIcon icon="play_arrow" /> : <MaterialIcon icon="pause" />}
           </Button>
         </div>
@@ -203,7 +159,7 @@ class SimulationIncrement extends Component {
           <Button 
             block 
             disabled={!hasNextDeltaTimeStep}
-            onClick={this.nextDeltaTimeStep}
+            onClick={nextDeltaTimeStep}
           >
             <MaterialIcon icon="fast_forward" />
           </Button>
@@ -214,59 +170,55 @@ class SimulationIncrement extends Component {
     </Row>
   }
 
-  render() {
-    const { stepSize } = this.state;
-    const { targetDeltaTime } = this.props;
-    const adjustedDelta =
-      round10(targetDeltaTime / this.stepSize, StepPrecisions[stepSize]);
+  const adjustedDelta =
+    round10(targetDeltaTime / StepSizes[stepSize], StepPrecisions[stepSize]);
 
-    const options = Object.values(Steps)
-      .map(step => ({ value: step, label: step, isSelected: step === stepSize }));
+  const options = Object.values(Steps)
+    .map(step => ({ value: step, label: step, isSelected: step === stepSize }));
 
-    return (
-      <div>
-        <Row>
-          <Select
-            label="Display unit"
-            menuPlacement="top"
-            onChange={this.setStepSize}
-            options={options}
-            value={stepSize}
-          />
-        </Row>
-        <div style={{ height: '10px' }} />
-        <Row>
-          <NumericInput
-            {...this.limits}
-            disabled={!this.props.luaApi}
-            onValueChanged={this.setNegativeDeltaTime}
-            placeholder={`Negative ${stepSize} / second`}
-            value={-adjustedDelta}
-            reverse
-            noValue={adjustedDelta >= 0}
-          />
-          <NumericInput
-            {...this.limits}
-            disabled={!this.props.luaApi}
-            onValueChanged={this.setPositiveDeltaTime}
-            placeholder={`${stepSize} / second`}
-            value={adjustedDelta}
-            noValue={adjustedDelta < 0}
-          />
-        </Row>
-        <div style={{ height: '10px' }} />
-        <ScaleInput
-          defaultValue={0}
-          label="Quick adjust"
-          min={-10}
-          max={10}
-          onChange={this.setQuickAdjust}
+  return (
+    <div>
+      <Row>
+        <Select
+          label="Display unit"
+          menuPlacement="top"
+          onChange={({value}) => Object.values(Steps).includes(value) ? setStepSize(value) : null}
+          options={options}
+          value={stepSize}
         />
-        <div style={{ height: '10px' }} />
-        {this.deltaTimeStepsContol}
-      </div>
-    );
-  }
+      </Row>
+      <div style={{ height: '10px' }} />
+      <Row>
+        <NumericInput
+          {...Limits[stepSize]}
+          disabled={!luaApi}
+          onValueChanged={setNegativeDeltaTime}
+          placeholder={`Negative ${stepSize} / second`}
+          value={-adjustedDelta}
+          reverse
+          noValue={adjustedDelta >= 0}
+        />
+        <NumericInput
+          {...Limits[stepSize]}
+          disabled={!luaApi}
+          onValueChanged={setPositiveDeltaTime}
+          placeholder={`${stepSize} / second`}
+          value={adjustedDelta}
+          noValue={adjustedDelta < 0}
+        />
+      </Row>
+      <div style={{ height: '10px' }} />
+      <ScaleInput
+        defaultValue={0}
+        label="Quick adjust"
+        min={-10}
+        max={10}
+        onChange={setQuickAdjust}
+      />
+      <div style={{ height: '10px' }} />
+      {deltaTimeStepsContol()}
+    </div>
+  );
 }
 
 const mapStateToProps = (state) => {
