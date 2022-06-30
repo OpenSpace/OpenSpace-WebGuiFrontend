@@ -9,9 +9,11 @@
   "journey":  [
       {
         "title": "Show overview of surface currents",
-        "storyinfo": "In the ocean there are both colder and warmer surface currents where the blue color visualizes the colder currents in this visualization and red color indicates warmer currents. The arrows show the direction of the currents in the ocean. If the circulation of the currents would change there could be huge impacts on the climate. When the glaciers and ice sheets melt, the fresh water will enter the ocean. Because of this melt water there is a risk the ocean circulation will slow down or even stop. \n \n The air temperatures in the Arctic increase faster than anywhere else on Earth every year. The balance at Greenland is therefore disturbed since the amount of ice that melts is not equal to the amount that falls at the surface. Greenland is surrounded by warmer ocean water which also is a problem for the glacier to maintain. ",
+        "storyinfo": "Here you see a simple model of how surface currents are moving around Earth. \n \n In the ocean, there are both colder and warmer currents. The blue color visualizes the colder currents in this visualization from Science On a Sphere, and the red color indicates warmer currents. The arrows show a simplified model of the direction of the currents in the ocean. If the circulation of the currents would change there could be huge impacts on the climate. When the glaciers and ice sheets melt, freshwater will enter the ocean. Because of this meltwater, there is a risk that ocean circulation will slow down or even stop. \n\n  According to NASA, the air temperatures in the Arctic increase faster than anywhere else on Earth every year. The balance at Greenland is therefore disturbed since the amount of ice that melts is not equal to the amount of snow that falls at the surface. Greenland is surrounded by warmer ocean water which also is a problem for the glacier to maintain.",
+        "source": "https://sos.noaa.gov/catalog/datasets/ocean-circulation-labeled-currents/ https://climate.nasa.gov/news/3038/the-anatomy-of-glacial-ice-loss/",
         "date": "2021-06-18T12:00:00.00",
         "timeSpeed": 0,
+        "speedValue": 0.3,
         "id": 0,
         "pos": {
           "anchor": "Earth",
@@ -53,7 +55,8 @@
       },
       {
         "title":  "Velocity around the globe",
-        "storyinfo": "With the help of satellites and instruments in the water it is possible to create models of the velocity of the currents and how and how fast the currents are moving around our Earth through the years. The colors show how fast the currents are moving, but remember, it takes up to 1,000 years for a water molecule to travel around the globe. \n\n This dataset contains the currents velocity between 1992 and 1998  ",
+        "storyinfo": "Press the fast forward button to see the speed of water at 25 m depth in the sea. \n\n With the help of satellites and instruments in the water it is possible to create models of the velocity of the currents and how and how fast the currents are moving around our Earth through the years. The colors show how fast the currents are moving, and according to NASA Science, it takes up to 1,000 years for a water molecule to travel around the globe.",
+        "source": "https://science.nasa.gov/earth-science/oceanography/ocean-earth-system/ocean-water-cycle",
         "date": "1992-01-18T22:00:00.00",
         "timeSpeed": 10086400,
         "id" : 1,
@@ -92,28 +95,27 @@
           "local":[]
       },
       {
-        "title": "Show detailed surface currents",
-        "storyinfo": "With the help of satellites and instruments in the water it is possible to create models of the velocity of the currents and how and how fast the currents are moving around our Earth through the years. The colors show how fast the currents are moving, but remember, it takes up to 1,000 years for a water molecule to travel around the globe. /n/n This dataset contains the currents velocity between 1992 and 1998  ",
-        "date": "1992-01-18T22:00:00.00",
-        "timeSpeed": 0,
         "id" : 2,
+        "title": "More detailed surface Currents",
+        "storyinfo": "Sea surface currents in more detail showing the temperature and how water circulates around earth. \n \n This visualization is a combination of all ocean and sea ice data that is available on a global scale. The colors of the ocean currents in this visualization correspond to the sea surface temperature which is displayed in the color bar below. This data comes from the project Estimating the Circulation and Climate of the Ocean, Phase II (ECCO2).",
+        "source": "https://sos.noaa.gov/catalog/datasets/sea-surface-currents-and-temperature-vegetation-on-land/",
+        "date": "2021-12-18T05:00:00.00",
         "pos": {
           "anchor": "Earth",
-          "pitch": 0.05726826173823074,
+          "pitch": -0.02249910974253141,
           "position": {
-            "x": -5342373.150739659,
-            "y": -3926203.3135169805,
-            "z": 12486323.301335737
+            "x": 19305329.039923728,
+            "y": 11257097.687918952,
+            "z": -9011652.821980316
           },
           "type": "setNavigationState",
           "up": {
-            "x": 0.5685856717092868,
-            "y": 0.6832561527415348,
-            "z": 0.4581171942502654
+            "x": 0.34647119952256505,
+            "y": 0.14743360618608958,
+            "z": 0.9264022018909281
           },
-          "yaw": -0.3337957410554049
+          "yaw": -0.2558781145796229
         },
-
         "toggleboolproperties":[
           {
             "URI":"Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled",
@@ -121,21 +123,22 @@
             "defaultvalue": true
           },
           {
-            "URI":"Scene.Earth.Renderable.Layers.ColorLayers.ECCO_temp-layer.Enabled",
-            "label":"Own ECCO",
+            "URI":"Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-ecco2_sst-veg_land-layer.Enabled",
+            "label":"Detailed currents, ECCO",
             "defaultvalue": true
           },
           {
-            "URI": "ScreenSpace.ECCO_temp-colorbar.Enabled",
+            "URI": "ScreenSpace.noaa-sos-oceans-ecco2_sst-veg_land-colorbar.Enabled",
             "label":"ECCO colorbar",
             "defaultvalue": true
           }
         ],
           "local": []
-      },
+    },
       {
         "title": "Ice melt on Greenland",
-        "storyinfo": "Between 2012 and 2016 was the yearly ice loss at Greenland about 247 billion tons, which is a seven-fold increment from 34 billion tons, which was the annual ice loss between 1992 and 2001. \n \n This visualization displays how many melting days Greenland had a specific year between 1989 and 2006. In 2006 Greenland had more melting days than average when comparing it to the other years that have been studied. The blue color in the visualization corresponds to 10 melting days, and the red color corresponds to 60 or more melting days. ",
+        "storyinfo": "Greenland is the world's biggest island where around 80% of the island is covered in ice. \n\n Between 2012 and 2016 was the yearly ice loss at Greenland about 247 billion tons according to Rebecca Lindsey at Climate.gov, which is a seven-fold increment from 34 billion tons, which was the annual ice loss between 1992 and 2001. \n\n This visualization from Science On a Sphere displays how many melting days Greenland had a specific year between 1989 and 2006. In 2006 Greenland had more melting days than average when comparing it to the other years that have been studied. The blue color in the visualization corresponds to 10 melting days, and the red color corresponds to 60 or more melting days.",
+        "source": "https://www.climate.gov/news-features/understanding-climate/climate-change-global-sea-level ",
         "date": "1989-07-18T12:00:00.00",
         "timeSpeed": 0,
         "id": 3,
@@ -177,7 +180,8 @@
       {
 
         "title": "Consequences from sea level rise",
-        "storyinfo": "The problem that arises when glaciers and sea ice melts is that the sea level rises. 8 of the 10 biggest cities in the world are close to the coast. Therefore, a lot of people's lives are affected by a sea-level rise since it plays a part in hazards from storms, flooding, and shoreline erosion. The sea level is expected to rise 25 to 30 centimeters between 2020 and 2050 in the US. In other parts of the world, the sea level is presumed to rise even more, which could be 40 to 45 centimeters. \n \n 90 percent of the world's ice is located in Antarctica, and if all the ice on Antarctica melted the sea level would rise by about 61 meters. The sea level does not have to rise much at all though to make a big impact on the world and the people. \n \n Below you can choose to see a visualization of what areas in the world that would be under sea level if it rises by 2, 4 and 6 meters.",
+        "storyinfo": "One of many consequences from warmer temperatures in the ocean and the ice melting of our glaciers is sea level rise that will affect a lot of people around the globe. \n\n The problem that arises when glaciers and sea ice melts is that the sea level rises. 8 of the 10 biggest cities in the world are close to the coast. Therefore, a lot of people's lives are affected by a sea-level rise since it plays a part in hazards from storms, flooding, and shoreline erosion. The sea level is expected to rise 25 to 30 centimeters between 2020 and 2050 in the US according to Rebecca Lindsey at Climate.gov. In other parts of the world, the sea level is presumed to rise even more, which could be 40 to 45 centimeters. \n\n If all the ice on Greenland would melt, the sea level would rise by 7 meters according to Marshall Brain at howstuffworks, and because Greenland is closer to the equator, the temperature is higher, and there is a bigger risk the ice will melt than at Antarctica. \n\n Below you can choose to see a visualization of what areas in the world that would be under sea level if it rises by 2, 4 and 6 meters.",
+        "source": "https://www.climate.gov/news-features/understanding-climate/climate-change-global-sea-level https://science.howstuffworks.com/environmental/earth/geophysics/question473.htm",
         "date": "2021-12-18T05:09:00.00",
         "id" : 4,
         "timeSpeed": 0,
@@ -209,6 +213,7 @@
               "id" : 8,
               "storyinfo": "Press 2m, 4m or 6m rise to see a model of how the city Shanghai in China",
               "date": "2021-12-18T15:15:00.00",
+              "speedValue": 0.05,
               "pos": {
                 "anchor": "Earth",
                 "pitch":0.03758040501806181,
@@ -231,44 +236,46 @@
               "id" : 7,
               "storyinfo":  "Press 2m, 4m or 6m rise to see a model of how the city Jakarta in Indonesia",
               "date": "2021-12-18T15:15:00.00",
-              "pos": {
-                "anchor": "Earth",
-                "pitch":0.03758040467984077,
-                "position": {
-                  "x": 176364.42067172565,
-                  "y": 10098082.623045066,
-                  "z": 4390889.96841195
-                },
-                "up": {
-                  "x": 0.08425675979290703,
-                  "y": -0.39857738231393197,
-                  "z": 0.9132561900896012
-                },
-                "yaw": -0.19063497199827
+              "speedValue": 0.05,
+              "pos":{
+                 "anchor":"Earth",
+                 "pitch":0.03758040499234484,
+                 "position":{
+                    "x":-2782033.088130799,
+                    "y":9660948.448397938,
+                    "z":426568.1365155531
+                 },
+                 "type":"setNavigationState",
+                 "up":{
+                    "x":0.17276981901234173,
+                    "y":0.006262981878404239,
+                    "z":0.9849423154156967
+                 },
+                 "yaw":-0.19063501475646477
               },
               "toggleboolproperties":[]
             },
 
             {
-               "title": "Calcutta",
+               "title": "Kolkata",
                "id" : 5,
-               "storyinfo": "Press 2m, 4m or 6m rise to see a model of how the city Calcutta in India",
+               "storyinfo": "Press 2m, 4m or 6m rise to see a model of how the city Kolkata in India",
                "date": "2021-12-18T15:15:00.00",
-               "pos":{
-                  "anchor":"Earth",
-                  "pitch":0.03758040499234484,
-                  "position":{
-                     "x":-2782033.088130799,
-                     "y":9660948.448397938,
-                     "z":426568.1365155531
-                  },
-                  "type":"setNavigationState",
-                  "up":{
-                     "x":0.17276981901234173,
-                     "y":0.006262981878404239,
-                     "z":0.9849423154156967
-                  },
-                  "yaw":-0.19063501475646477
+               "speedValue": 0.05,
+               "pos": {
+                 "anchor": "Earth",
+                 "pitch":0.03758040467984077,
+                 "position": {
+                   "x": 176364.42067172565,
+                   "y": 10098082.623045066,
+                   "z": 4390889.96841195
+                 },
+                 "up": {
+                   "x": 0.08425675979290703,
+                   "y": -0.39857738231393197,
+                   "z": 0.9132561900896012
+                 },
+                 "yaw": -0.19063497199827
                },
                "toggleboolproperties":[]
             },
@@ -278,6 +285,7 @@
               "id" : 4,
               "storyinfo": "Press 2m, 4m or 6m rise to see a model of how the city Belém in Brazil",
               "date": "2021-12-18T15:15:00.00",
+              "speedValue": 0.05,
               "pos": {
                 "anchor": "Earth",
                 "pitch":0.03294175174143252,
@@ -300,6 +308,7 @@
               "id" : 2,
               "storyinfo": "Press 2m, 4m or 6m rise to see a model of how the city Miami in Florida, U.S.A",
               "date": "2021-12-18T15:15:00.00",
+              "speedValue": 0.05,
               "pos": {
                 "anchor": "Earth",
                 "pitch": 0.03294175171829833,
@@ -322,6 +331,7 @@
               "id" : 1,
               "storyinfo": "Press 2m, 4m or 6m rise to see a model of how the city Amsterdam in the Netherlands",
               "date": "2021-12-18T15:15:00.00",
+              "speedValue": 0.05,
               "pos": {
                 "anchor": "Earth",
                 "pitch": 0.03294175167778245,
@@ -342,8 +352,8 @@
             {
             "title": "2 m rise",
             "id" : 6,
-            "storyinfo": "There is a risk that the sea level will rise 2 meters by 2100. The area that would go under water is equivalent to the area of Spain, France, Britain and Germany combined which would result in more than 180 million people having to move. In this visualization it is possible to see which places in the world that would be below sea level if it rises by two meters.",
-            "date": "2021-12-18T15:15:00.00",
+            "storyinfo": "There is a risk that the sea level will rise 2 meters by 2100 according to phys.org. The area that would go under water is equivalent to the area of Spain, France, Britain and Germany combined which would result in more than 180 million people having to move.",
+            "source": "https://phys.org/news/2019-05-metre-sea-plausible.html",
             "pos":{  },
             "toggleboolproperties":[
               {

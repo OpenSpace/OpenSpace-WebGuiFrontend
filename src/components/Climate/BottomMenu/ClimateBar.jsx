@@ -7,16 +7,12 @@ import {
 } from '../../../api/Actions';
 import { ExoplanetsModuleEnabledKey, SkyBrowserModuleEnabledKey } from '../../../api/keys';
 import { getBoolPropertyValue } from '../../../utils/propertyTreeHelpers';
-
 import styles from '../../BottomBar/BottomBar.scss';
-
 import stylesB from '../../TouchBar/UtilitiesMenu/style/UtilitiesButtons.scss';
 import HomeButtonContainer from '../ButtomMenu/ShowStoryButton';
-
 import SessionRec from '../../BottomBar/SessionRec';
 import TimePicker from '../../BottomBar/TimePicker';
 import ClimatePanel from './ClimatePanel';
-import Slider from '../../BottomBar/Slider';
 import SkyBrowserPanel from '../../BottomBar/SkyBrowserPanel';
 import TimePlayerController from '../../TouchBar/UtilitiesMenu/presentational/TimePlayerController'
 import TimePlayerClimate from '../../Climate/TimePlayerClimate'
@@ -59,7 +55,6 @@ BottomBar.propTypes = {
   showFlightController : PropTypes.bool,
   showFlightController: PropTypes.bool,
   resetStory: PropTypes.func.isRequired,
-
 };
 
 BottomBar.defaultProps = {

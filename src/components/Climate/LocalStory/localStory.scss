@@ -1,15 +1,11 @@
 @import "../../../styles/all";
 
-
-
 .StoryPosistion{
   position: relative;
   width: 450%;
   margin: 0 auto;
   height: 100%;
   overflow: hidden;
-  background: white;
-//  background-color: #d3d3d3;
 }
 
 .TellStory{
@@ -30,14 +26,14 @@
 .button{
   font-family: $font-family;
   height: 1%;
-  width: 210%;
+  width: 206%;
   display: flex;
   align-items: center;
   justify-content: center;
   position: absolute;
-  top: 370%;
+  top: 410%;
   left: 0px;
-  
+
 
 }
 .flex {

@@ -12,7 +12,6 @@
   background: rgba(24, 24, 24, 0.9);
   border-radius: 12px;
   cursor: pointer;
-  transition: transform ease-in 0.1s;
 }
 
 .generalB{
@@ -26,10 +25,7 @@
   background: $ui-background;
   border-radius: 12px;
   cursor: pointer;
-  transition: transform ease-in .1s;
-
   &:hover {
-    transition: transform ease-in .1s;
      background:darken($ui-background,8%);
   }
 }
@@ -45,10 +41,7 @@
   background: $ui-background;
   border-radius: 12px;
   cursor: pointer;
-  transition: transform ease-in .1s;
-
   &:hover {
-    transition: transform ease-in .1s;
      background:darken($ui-background,8%);
   }
 }
@@ -65,4 +58,32 @@ $icon-size: 20px;
   font-size: $icon-size;
   position: absolute;;
   right: 10px;
+}
+
+// TIME CONTROLLER --------------------------------------------
+
+.TimeController {
+  display: flex;
+}
+
+.SimulationIncrement {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.PlayerContainer {
+  display: flex;
+  justify-content: space-around;
+  width: 80%;
+  margin-top: 10px;
+}
+
+.IconPlay {
+  font-size: $icon-size;
+
+  &.active {
+    color: $ui-highlight-secondary;
+  }
 }

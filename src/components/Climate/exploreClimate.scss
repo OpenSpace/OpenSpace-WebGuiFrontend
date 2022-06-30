@@ -23,11 +23,8 @@
 
 //Doesn't do anything, remove?
 .HomeButton{
-  //top: 100px;
   display: flex;
-  //height: 10%;
   background: $ui-background;
-  //opacity: 20%;
   color: white;
   border-right: 3px solid $ui-background-hover;
   z-index: 99;
@@ -66,26 +63,7 @@
   white-space: pre-line;
 }
 
-/*.StoryPosistion{
-  position: absolute;
-  width: calc(-5vw + 40% + 10px );
-  margin: 0% 5%;
-  height: 100%;
-  top: calc(20vw - 10% - 50px );
-//  background-color: #D3D3D3;
-}
-.TellStory{
-  font-family: $font-family;
-  margin: 0% 0% 50% 0%;
-  color: lightgrey;
-  font-size: 16px;
-}
-*/
 .NextStepButton{
-  //top: 80px;
-  //display: flex;
-  //position: absolute;
-  //left: 50%;
   font-family: $font-family;
   height: 1%;
   width: 210%;
@@ -98,15 +76,7 @@
   display: flex;
 }
 
-
-
 .PrevStepButton{
-//  top: 80px;
-  //display: flex;
-  //position: absolute;
-  //left: 5%;
-  //bottom: 10px;
-
   font-family: $font-family;
   height: 1%;
   width: 210%;
@@ -119,13 +89,19 @@
   display: flex;
 
 }
-$icon-size: 20px;
+$icon-size: 30px;
 .Icon {
   font-size: $icon-size;
-  position: absolute;;
-  right: 10px;
+  color: white;
+  vertical-align: bottom;
 }
 
+.buttonTransparent{
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  vertical-align: bottom;
+}
 
   .frameBorder{
   background-color: rgba(0,0,0,0.6);

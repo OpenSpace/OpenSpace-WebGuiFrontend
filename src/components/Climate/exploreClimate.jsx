@@ -40,7 +40,7 @@ class ExploreClimate extends Component{
           showStory: true,
           currentStory: "default",
           currentStoryLocal: "default",
-          showMore: true
+          showMore: false
     }));
   }
   PrevStep = () => {
@@ -80,7 +80,7 @@ class ExploreClimate extends Component{
                 });
                 togglePause(luaApi);
                 storyGetLocation(luaApi, story.pos, story.date);
-                storyGetIdleBehavior(luaApi, orbitAtConstantLatiude, true);
+                storyGetIdleBehavior(luaApi, orbitAtConstantLatiude, true, story.speedValue);
                 togglePause(luaApi);
                 //storyGetScreenSpace(luaApi, story.screenSpace)
             }
@@ -88,14 +88,11 @@ class ExploreClimate extends Component{
         return (
             <div key = {story.id} className = {styles.left}>
 
-
               <h1>
-                {story.title} <button onClick={()=> this.setState({showMore: !showMore })}>
-                  {showMore ?   <Icon icon= {"expand_more"}/> : <Icon icon= {"expand_less"}/>}
-
+                {story.title} <button onClick={()=> this.setState({showMore: !showMore })} className={styles.buttonTransparent}>
+                  {showMore ?   <Icon icon= {"expand_less"} className={styles.Icon}/> : <Icon icon= {"expand_more"} className={styles.Icon}/>}
                 </button>
               </h1>
-
               <div>
                 {!showMore  && <p> {story.storyinfo.split('\n', 1)[0]}</p>}
                   {showMore && <p>{story.storyinfo}</p>}
@@ -103,7 +100,6 @@ class ExploreClimate extends Component{
                 {story.timeSpeed != 0 &&
                 <TimePlayerClimate timeSpeedController = {story.timeSpeed}/>
                 }
-
             </div>
             );
           }
@@ -127,16 +123,14 @@ class ExploreClimate extends Component{
     return (
       <div className={styles.StoryPosistion}>
         <div className = {styles.TellStory}>
-
             { StoryStep <  stepThroughJourney.length && showStory && (currentStory != "noShow") &&
-              <div  className = {styles.frameBorder}>
+              <div className = {styles.frameBorder}>
+
                 {stepThroughJourney}
               </div>
             }
 
-            <br/>
-            <br/>
-            <br/>
+
 
               { json.journey[StoryStep].local.length > 0 && (currentStory != "noShow") &&
                   json.journey[StoryStep].local.map((story, index) => {
@@ -158,10 +152,6 @@ class ExploreClimate extends Component{
                       );
                     })
                 }
-                <br/>
-                <br/>
-                <br/>
-
                 { StoryStep <  stepThroughJourney.length -1 && (currentStory != "noShow") &&
                     <div>
                       <section className = {styles.NextStepButton}>
@@ -187,8 +177,6 @@ class ExploreClimate extends Component{
                         />
                     </section>
                   }
-
-
                   { StoryStep ==  stepThroughJourney.length-1   && (currentStory != "noShow") &&
                     <section   className = {styles.NextStepButton} >
                       <NewStoryButton resetStory = {resetStory}/>
@@ -196,7 +184,7 @@ class ExploreClimate extends Component{
                   }
 
         </div>
-      </div>
+        </div>
       );
   }
 }

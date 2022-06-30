@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-
 import styles from '../../Climate/Button.scss';
 import {
  DefaultStory,
@@ -10,11 +9,9 @@ import {
 } from '../../../utils/storyHelpers';
 
 class DisplaylocalStory extends Component{
-
   constructor(props) {
     super(props);
   }
-
 
   render() {
     const { climateStorys, setShowLocalStory, luaApi} = this.props;
@@ -30,10 +27,11 @@ class DisplaylocalStory extends Component{
 
       luaApi.setPropertyValueSingle(
         "Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled", true)
+      console.log(climateStorys.date)
       storyGetLocation(luaApi, climateStorys.pos, climateStorys.date);
 
     }
-    storyGetIdleBehavior(luaApi, orbitAtConstantLatiude, true);
+    storyGetIdleBehavior(luaApi, orbitAtConstantLatiude, true, climateStorys.speedValue);
 
     return (
 

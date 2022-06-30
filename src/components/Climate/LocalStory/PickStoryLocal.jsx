@@ -39,8 +39,8 @@ class PickStoryLocal extends Component {
         {
           <div className = {styles.button}>
             {storyInfo.id <= 2 &&
-              <div style={{height: 700 +  100*storyInfo.id}} >
-                <div style={{width:383 }} >
+              <div style={{height: 900 +  100*storyInfo.id}} >
+                <div style={{width:403 }} >
                   <StoryButton
                     pickStory = {this.handleStory}
                     storyIdentifier = {storyInfo.title}
@@ -50,8 +50,8 @@ class PickStoryLocal extends Component {
             }
             {storyInfo.id > 5 &&
 
-                <div style={{height: 100 +  100*storyInfo.id}} >
-                  <div style={{width: 1145}} >
+                <div style={{height: 300 +  100*storyInfo.id}} >
+                  <div style={{width: 1165}} >
                     <StoryButton
                       pickStory = {this.handleStory}
                       storyIdentifier = {storyInfo.title}
@@ -60,8 +60,8 @@ class PickStoryLocal extends Component {
               </div>
               }
               {storyInfo.id > 2 && storyInfo.id <= 5 &&
-                    <div style={{height: 400 +  100 * storyInfo.id}} >
-                      <div style={{  width: 761}} >
+                    <div style={{height: 600 +  100 * storyInfo.id}} >
+                      <div style={{  width: 781}} >
                       <StoryButton
                         pickStory = {this.handleStory}
                         storyIdentifier= {storyInfo.title}
@@ -91,8 +91,8 @@ PickStoryLocal.propTypes = {
   storyInfo: PropTypes.shape({
     title: PropTypes.string,
     info: PropTypes.string,
-    luaApi: PropTypes.object,
-    StoryStep: PropTypes.int
+    luaApi: PropTypes.object
+
   }).isRequired,
 
 };

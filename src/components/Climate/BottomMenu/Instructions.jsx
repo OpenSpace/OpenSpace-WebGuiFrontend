@@ -57,7 +57,6 @@ const Instructions = props => {
       <SmallLabel>Instructions</SmallLabel>
     </div>
   );
-
 }
 
 export default Instructions;
