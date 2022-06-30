@@ -80,7 +80,7 @@
               "defaultvalue": true
             },
             {
-              "URI":"Scen e.Earth.Renderable.Layers.ColorLayers.ECCO_temp-layer.Enabled",
+              "URI":"Scene.Earth.Renderable.Layers.ColorLayers.ECCO_temp-layer.Enabled",
               "label":"Own ECCO",
               "defaultvalue": true
             },
