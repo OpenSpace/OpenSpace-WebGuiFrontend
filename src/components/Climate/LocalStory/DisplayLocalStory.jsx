@@ -27,6 +27,7 @@ class DisplaylocalStory extends Component{
 
       luaApi.setPropertyValueSingle(
         "Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled", true)
+      console.log(climateStorys.date)
       storyGetLocation(luaApi, climateStorys.pos, climateStorys.date);
 
     }

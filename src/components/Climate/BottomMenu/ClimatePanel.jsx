@@ -104,27 +104,27 @@ getSurfaceLayerAlaska() {
     this.props.luaApi.setPropertyValueSingle(
       "Scene.Earth.Renderable.Layers.ColorLayers.noaa-sos-oceans-ecco2_sst-veg_land-layer.Enabled", true)
     this.props.luaApi.setPropertyValueSingle(
-      "ScreenSpace.noaa-sos-oceans-ecco2_sst-veg_land-colorbar.Enabled", true)
+      "ScreenSpace.noaa-sos-oceans-ecco2_sst-veg_land-colorbar.Enabled", false)
     this.props.luaApi.setPropertyValueSingle(
-      "Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled", true)
+      "Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled", false)
   }
 
   getSurfaceLayerCurrentsHalfDetailed() {
     this.props.luaApi.setPropertyValueSingle(
-      "Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled", true)
+      "Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled", false)
     this.props.luaApi.setPropertyValueSingle(
       "Scene.Earth.Renderable.Layers.ColorLayers.ECCO_temp-layer.Enabled", true)
     this.props.luaApi.setPropertyValueSingle(
       "ScreenSpace.ECCO_temp-colorbar.Enabled", true)
     this.props.luaApi.setPropertyValueSingle(
-      "Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled", true)
+      "Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled", false)
   }
 
   getSurfaceLayerCurrentsOverview() {
       this.props.luaApi.setPropertyValueSingle(
         "Scene.Earth.Renderable.Layers.Overlays.noaa-sos-overlays-currents-currents.Enabled", true)
       this.props.luaApi.setPropertyValueSingle(
-        "ScreenSpace.noaa-sos-oceans-currents-legend.Enabled", true)
+        "ScreenSpace.noaa-sos-oceans-currents-legend.Enabled", false)
       this.props.luaApi.setPropertyValueSingle(
         "Scene.Earth.Renderable.Layers.ColorLayers.ESRI_World_Imagery.Enabled", true)
   }
@@ -438,7 +438,6 @@ getSurfaceLayerAlaska() {
           </div>
         </Picker>
         {popoverVisible && this.popover}
-
       </div>
 
 

@@ -99,6 +99,7 @@
         "title": "More detailed surface Currents",
         "storyinfo": "Sea surface currents in more detail showing the temperature and how water circulates around earth. \n \n This visualization is a combination of all ocean and sea ice data that is available on a global scale. The colors of the ocean currents in this visualization correspond to the sea surface temperature which is displayed in the color bar below. This data comes from the project Estimating the Circulation and Climate of the Ocean, Phase II (ECCO2).",
         "source": "https://sos.noaa.gov/catalog/datasets/sea-surface-currents-and-temperature-vegetation-on-land/",
+        "date": "2021-12-18T05:00:00.00",
         "pos": {
           "anchor": "Earth",
           "pitch": -0.02249910974253141,

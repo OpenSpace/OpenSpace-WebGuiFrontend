@@ -131,7 +131,7 @@ class OnClimateGui extends Component {
     satelliteToggle(luaApi, true);
 
     //spin earth
-    storyGetIdleBehavior(luaApi, 0, true, story.speedValue);
+    storyGetIdleBehavior(luaApi, 0, true, 0.6);
     // get orginal story position
     climate_stories.startpage.map((story) => {
       return (
@@ -168,16 +168,16 @@ class OnClimateGui extends Component {
         <section className={styles.Grid__Left}>
 
 
-        {(currentStory === DefaultStory )
-          ? <StartJourney changeStory = {this.setStory}/>
-        : <ExploreClimate resetStory = {this.resetStory} json = {json} currentStory= {currentStory} showTimeController ={timeBool}/>
-        }
 
-        <Sidebar/>
+
         </section>
         <section className={styles.Grid__Right}>
           <NodePopOverContainer/>
         <NodeMetaContainer/>
+          {(currentStory === DefaultStory )
+            ? <StartJourney changeStory = {this.setStory}/>
+          : <ExploreClimate resetStory = {this.resetStory} json = {json} currentStory= {currentStory} showTimeController ={timeBool}/>
+          }
           <BottomBar resetStory={this.resetStory} setNoShow = {this.noShow} showTimeController ={timeBool} />
         <KeybindingPanel />
         </section>

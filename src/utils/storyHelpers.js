@@ -79,7 +79,7 @@ export const storyGetLayer = (luaApi, layer) => {
 
 export const storyGetLocation = (luaApi, toPosition, startTime) => {
 
-
+  console.log("stard " + startTime )
   setDate(luaApi, startTime);
   {Object.keys(toPosition).length > 0 &&
       luaApi.pathnavigation.flyToNavigationState({

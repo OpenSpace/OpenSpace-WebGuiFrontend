@@ -40,7 +40,7 @@ class ExploreClimate extends Component{
           showStory: true,
           currentStory: "default",
           currentStoryLocal: "default",
-          showMore: true
+          showMore: false
     }));
   }
   PrevStep = () => {
@@ -86,10 +86,11 @@ class ExploreClimate extends Component{
             }
 
         return (
-            <div key = {story.id} >
+            <div key = {story.id} className = {styles.left}>
+
               <h1>
                 {story.title} <button onClick={()=> this.setState({showMore: !showMore })} className={styles.buttonTransparent}>
-                  {showMore ?   <Icon icon= {"expand_more"} className={styles.Icon}/> : <Icon icon= {"expand_less"} className={styles.Icon}/>}
+                  {showMore ?   <Icon icon= {"expand_less"} className={styles.Icon}/> : <Icon icon= {"expand_more"} className={styles.Icon}/>}
                 </button>
               </h1>
               <div>

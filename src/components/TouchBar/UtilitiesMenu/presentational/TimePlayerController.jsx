@@ -103,24 +103,14 @@ class TimePlayerController extends Component {
               className={`${styles.Icon} ${(deltaTime === -FastSpeed) && styles.active}`}
               onClick={this.clickPlayer}
             />
-            <Icon
-              icon="fast_rewind"
-              id={Rewind}
-              className={`${styles.Icon} ${(deltaTime === -Speed) && styles.active}`}
-              onClick={this.clickPlayer}
-            />
+
             <Icon
               icon={isPaused ? 'pause' : 'play_arrow'}
               id={Play}
               className={`${styles.Icon} ${(deltaTime === 0 || deltaTime === 1) && styles.active}`}
               onClick={this.clickPlayer}
             />
-            <Icon
-              icon="fast_forward"
-              id={Forward}
-              className={`${styles.Icon} ${(deltaTime === Speed) && styles.active}`}
-              onClick={this.clickPlayer}
-            />
+        
             <Icon
               icon="fast_forward"
               id={FastForward}
@@ -130,17 +120,7 @@ class TimePlayerController extends Component {
           </div>
 
         </div>
-        <div className={styles.ButtonContainer}>
-          <div
-            className={buttonStyles.UtilitiesButton}
-            onClick={() => timeHelpers.setDateToNow(luaApi)}
-            role="button"
-            tabIndex="0"
-          >
-            <Icon icon="replay" className={styles.Icon} />
-            <SmallLabel>Time</SmallLabel>
-          </div>
-        </div>
+
       </div>
     );
   }
