@@ -10,10 +10,7 @@ import {
   unsubscribeToCamera,
   subscribeToTime,
   unsubscribeToTime,
-  subscribeToProperty,
-  unsubscribeToProperty
 } from "../../api/Actions";
-import { getBoolPropertyValue } from '../../utils/propertyTreeHelpers';
 import openspaceLogo from "./openspace-color-transparent.png";
 import MaterialIcon from "../common/MaterialIcon/MaterialIcon";
 import Checkbox from "../common/Input/Checkbox/Checkbox";
@@ -48,15 +45,15 @@ function AnimatedArrows({ ...props }) {
 function useLocalStorageState(
   key,
   defaultValue = '',
-  // the = {} fixes the error we would get from destructuring when no argument was passed
+  // The = {} fixes the error we would get from destructuring when no argument was passed
   // Check https://jacobparis.com/blog/destructure-arguments for a detailed explanation
   {serialize = JSON.stringify, deserialize = JSON.parse} = {},
 ) {
   const [state, setState] = React.useState(() => {
     const valueInLocalStorage = window.localStorage.getItem(key)
     if (valueInLocalStorage) {
-      // the try/catch is here in case the localStorage value was set before
-      // we had the serialization in place (like we do in previous extra credits)
+      // The try/catch is here in case the localStorage value was set before
+      // the serialization was in place 
       try {
         return deserialize(valueInLocalStorage)
       } catch (error) {
@@ -113,17 +110,18 @@ const GoalTypes = {
   pauseTime : "pauseTime"
 }
 
-function isConditionFulfilled(content, property, cameraPosition, valueStart, time, isPaused, deltaTime) {
-  let conditionIsFulfilled = new Array(content.goalType.length); 
+function checkConditionsStatus(content, valueStart, currentValue) {
+  let conditionsStatus = new Array(content.goalType.length); 
   content.goalType.map((goal, i) => {
     switch (goal) {
       case GoalTypes.uri:
-        conditionIsFulfilled[i] = content.uriValue === property?.value;
+        conditionsStatus[i] = content.uriValue === currentValue[i];
         break;
       case GoalTypes.geoPosition:
         let isTrue = true;
         Object.keys(content.position).map((dimension) => {
           const { operator, value, unit } = content.position[dimension];
+          const cameraPosition = currentValue[i];
           if (unit && unit !== cameraPosition.altitudeUnit) {
             isTrue = false;
           }
@@ -144,47 +142,40 @@ function isConditionFulfilled(content, property, cameraPosition, valueStart, tim
               break;
           }
         })
-        conditionIsFulfilled[i] = isTrue;
-        break;
-      case GoalTypes.changeTime:
-        if (content.changeValue === 'year') {
-          conditionIsFulfilled[i] = valueStart?.[i]?.getFullYear?.() !== time.getFullYear();
-        }
-        break;
-      case GoalTypes.changeDeltaTime:
-        conditionIsFulfilled[i] = valueStart?.[i] !== deltaTime;
+        conditionsStatus[i] = isTrue;
         break;
       case GoalTypes.pauseTime:
-        conditionIsFulfilled[i] = isPaused === true;
-        break;
+          conditionsStatus[i] = currentValue[i] === true;
+          break;
+      case GoalTypes.changeTime:
+      case GoalTypes.changeDeltaTime:
       case GoalTypes.changeUri:
-        if (!valueStart) {
-          conditionIsFulfilled[i] = false;
+        if (!valueStart?.[i]) {
+          conditionsStatus[i] = false;
           break;
         }
         if (typeof valueStart[i] === Number) {
-          conditionIsFulfilled[i] = !(Math.abs(valueStart[i] - property.value) < Number.EPSILON);
+          conditionsStatus[i] = !(Math.abs(valueStart[i] - currentValue[i]) < Number.EPSILON);
         }
         else if (typeof valueStart[i] === object) {
           let hasChanged = true;
           valueStart[i].map(channel, j => {
-            hasChanged &= !(Math.abs(channel[j] - property.value[j]) < Number.EPSILON);
+            hasChanged &= !(Math.abs(channel[j] - currentValue[i][j]) < Number.EPSILON);
           })
-          conditionIsFulfilled[i] = hasChanged;
+          conditionsStatus[i] = hasChanged;
         }
         else {
-          conditionIsFulfilled[i] = valueStart[i] !== property?.value;
+          conditionsStatus[i] = valueStart[i] !== currentValue[i];
         }
         break;
       default:
-        conditionIsFulfilled[i] = true;
+        conditionsStatus[i] = true;
         break;
           
     }
   });
-  return conditionIsFulfilled;
+  return conditionsStatus;
 }
-        
           
 function MouseDescriptions({ button, info, description, keyboardButton}) {
   return <div className={styles.mouseDescription}>
@@ -197,57 +188,42 @@ function MouseDescriptions({ button, info, description, keyboardButton}) {
   </div>;
 }
 
-function TourPopup({ isPaused, properties, cameraPosition, changeUriValues, startSubscriptions, stopSubscriptions, setVisibility, isVisible, time, targetDeltaTime }) {
-  const [showTutorialOnStart, setShowTutorialOnStart] = useLocalStorageState('showTutorialOnStart', true); // To do: put in storage on disk somewhere
-  const [currentSlide, setCurrentSlide] = useLocalStorageState('currentSlide', 0);
+function Goal({ startSubscriptions, setIsFulfilled, hasGoals, stopSubscriptions, content, currentValue}) {
   const [valueStart, setValueStart] = React.useState(undefined);
-
-  const content = contents[currentSlide];
-  const property = properties[content.uri];
-  const isLastSlide = currentSlide === contents.length - 1;
-  const isFirstSlide = currentSlide === 0;
-  const hasGoals = Boolean(content.goalType);
-
+  
+  // Subscribe to topics
   React.useEffect(() => {
     startSubscriptions();
     return () => stopSubscriptions();
   }, [startSubscriptions]);
 
-  // Save start values
+  // Save start values, if the goal is to change the values
   React.useEffect(() => {
     const changeGoalTypes = [GoalTypes.changeTime, GoalTypes.changeDeltaTime, GoalTypes.changeUri];
     const changeGoals = content?.goalType?.filter(goal => changeGoalTypes.includes(goal))
     if (changeGoals?.length > 0) {
       let startValues = new Array(content.goalType.length);
       content.goalType.map((goal, i) => {
-        switch (goal) {
-          case GoalTypes.changeTime:
-            startValues[i] = new Date(time);
-            break;
-          case GoalTypes.changeDeltaTime:
-            startValues[i] = targetDeltaTime;
-            break;
-          case GoalTypes.changeUri:
-            startValues[i] = changeUriValues[content.uri];
-            break;
-          default:
-            break;
-        }
+        startValues[i] = currentValue[i];
       });
       setValueStart(startValues);
     }
   }, [content]);
-  
-  const conditionIsFulfilled = hasGoals ? isConditionFulfilled(content, property, cameraPosition, valueStart, new Date(time), isPaused, targetDeltaTime) : false;
-  const allConditionsAreFulfilled = hasGoals ? !conditionIsFulfilled.includes(false) : false;
 
-  // Create animated click
+  // Check status of goal conditions
+  const conditionsStatus = hasGoals ? checkConditionsStatus(content, valueStart, currentValue) : false;
+  const areAllConditionsFulfilled = hasGoals ? !conditionsStatus.includes(false) : false;
+  
+  React.useEffect(() => {
+    setIsFulfilled(areAllConditionsFulfilled);
+  },[areAllConditionsFulfilled]);
+
+  // Create animated click - it requires the component to be render fairly often
   const tutorial = useTutorial();
   let lastKey = null;
   const newElement = document.createElement('div');
   const animationDiv = React.useRef(newElement);
-
-  if(content?.key && !allConditionsAreFulfilled) {
+  if(content?.key && !areAllConditionsFulfilled) {
     // Find last ref that is not null
     const keyCopy = [...content.key].reverse();
     lastKey = keyCopy.find(key => Boolean(tutorial.current[key]));
@@ -258,11 +234,46 @@ function TourPopup({ isPaused, properties, cameraPosition, changeUriValues, star
     tutorial.current[lastKey]?.appendChild(animationDiv.current);
 
     return () => {
-      tutorial.current[lastKey]?.removeChild(animationDiv.current);
-    }}, [content, lastKey]);  
+      try {
+        tutorial.current[lastKey]?.removeChild(animationDiv.current);
+      }
+      catch(e) {
+        console.error("Error: " + e);
+      }
+      }}, [content, lastKey]);  
+
+  return (areAllConditionsFulfilled && hasGoals ?
+    <AnimatedCheckmark style={{ marginTop: '70px', width: '56px', height: '56px' }} /> :
+    <>{hasGoals && content.goalText.map((goal, i) => {
+      return <div style={{ display: 'flex' }} key={goal}>
+          <div>
+            <p className={`${styles.goalText} ${styles.text}`}>{goal}</p>
+          </div>
+        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center'}}>
+          {conditionsStatus[i] && <AnimatedCheckmark style={{ width: '20px', height: '20px'}}/> }
+          </div>
+        </div>
+      }
+      )}
+      {content.showMouse &&
+        <div className={ styles.scroll } >
+          {content.showMouse.map(mouseData => <MouseDescriptions key={mouseData.info} {...mouseData} />)}
+        </div>
+      }
+    </>
+  );
+}
+
+function TourPopup({ setVisibility, isVisible }) {
+  const [currentSlide, setCurrentSlide] = useLocalStorageState('currentSlide', 0);
+  const [isFulfilled, setIsFulfilled] = React.useState(false);
+
+  const content = contents[currentSlide];
+  const isLastSlide = currentSlide === contents.length - 1;
+  const isFirstSlide = currentSlide === 0;
 
   return (isVisible && <>
-    {Boolean(content.position) && !allConditionsAreFulfilled &&
+    {Boolean(content.position) && !isFulfilled &&
       <div className={`${styles.animatedBorder} ${styles.geoPositionBox}`} />}
     <ResizeableDraggable
       minWidth={400}
@@ -271,62 +282,67 @@ function TourPopup({ isPaused, properties, cameraPosition, changeUriValues, star
       className={styles.window}
     >
       <div className={styles.content} >
-      <div className={styles.spaceBetweenContent}>
-        <h1 className={styles.title}>{content.title}</h1>
-        <Button onClick={() => setVisibility(false)} transparent small>
-          <MaterialIcon icon="close" />
-        </Button>
+        <div className={styles.spaceBetweenContent}>
+          <h1 className={styles.title}>{content.title}</h1>
+          <Button onClick={() => setVisibility(false)} transparent small>
+            <MaterialIcon icon="close" />
+          </Button>
         </div>
-        {isFirstSlide && <div className={styles.centerContent}><img src={openspaceLogo} className={styles.logo} /></div>}
+        {isFirstSlide && <div className={styles.centerContent}>
+            <img src={openspaceLogo} className={styles.logo} />
+          </div>}
         <p className={styles.text}>{content.firstText}</p>
         {<p className={` ${styles.text} ${styles.infoText}`}>{content.infoText}</p>}
-        {allConditionsAreFulfilled && content.goalText ?
-          <AnimatedCheckmark style={{ marginTop: '80px', width: '56px', height: '56px' }} /> :
-          <>{hasGoals && content.goalText.map((goal, i) => {
-            return <div style={{ display: 'flex' }} key={goal}>
-                <div>
-                  <p className={`${styles.goalText} ${styles.text}`}>{goal}</p>
-                </div>
-              <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center'}}>
-                {conditionIsFulfilled[i] && <AnimatedCheckmark style={{ width: '20px', height: '20px'}}/> }
-                </div>
-              </div>
-            }
-            )}
-            {content.showMouse &&
-              <div className={ styles.scroll } >
-                {content.showMouse.map(mouseData => <MouseDescriptions key={mouseData.info} {...mouseData} />)}
-              </div>
-            }
-          </>
-        }
-        {content.bulletList && content.bulletList.map(text => <li key={text} className={styles.text}>{text}</li>)}
+        <Goal content={content} setIsFulfilled={setIsFulfilled}/>
+        {content.bulletList && content.bulletList.map(text => 
+          <li key={text} className={styles.text}>{text}</li>
+        )}
         {isLastSlide && <>
           <div style={{ display: 'flex'}}>
             <p className={styles.text}>Click 
-              <Button style={{ margin: '10px' }} onClick={() => window.open("http://wiki.openspaceproject.com/docs/tutorials/users/", "Tutorials")} >
+              <Button 
+                style={{ margin: '10px' }} 
+                onClick={() => 
+                  window.open("http://wiki.openspaceproject.com/docs/tutorials/users/", "Tutorials")
+                } 
+                >
                 here
               </Button>
                for more in-depth tutorials</p>
           </div>
-          <Checkbox label={"Don't show the tutorial again"} checked={!showTutorialOnStart} setChecked={(value) => setShowTutorialOnStart(!value)} style={{marginTop: 'auto'}} />
+          <Checkbox 
+            label={"Don't show the tutorial again"} 
+            checked={true} 
+            setChecked={(value) => console.log("Don't show on start")} 
+            style={{marginTop: 'auto'}} 
+          />
         </>}
-        <div className={`${styles.buttonContainer} ${styles.spaceBetweenContent}`} style={isFirstSlide ? { justifyContent: "flex-end" } : {}}>
+        <div 
+          className={`${styles.buttonContainer} ${styles.spaceBetweenContent}`} 
+          style={isFirstSlide ? { justifyContent: "flex-end" } : {}}
+        >
           {!isFirstSlide && <Button
             onClick={() => setCurrentSlide(currentSlide - 1)}
           >
             Previous
           </Button>}
           {<Button
-            onClick={() => isLastSlide ? setVisibility(false) : setCurrentSlide(currentSlide + 1)}
-            //disabled={!(conditionIsFulfilled && currentSlide < contents.length - 1)}
+            onClick={() => isLastSlide ? () => {
+              setVisibility(false);
+              setCurrentSlide(0); 
+            } : setCurrentSlide(currentSlide + 1)}
             className={styles.nextButton}
             >
             {!isLastSlide ? "Next" : "Finish"}
           </Button>}
         </div>
       </div>
-      <div className={styles.progressBarContent} style={{ width: `${100 * currentSlide / (contents.length - 1)}%`, borderBottomRightRadius : `${isLastSlide ? 3 : 0}px`}}></div>
+      <div 
+        className={styles.progressBarContent} 
+        style={{ 
+          width: `${100 * currentSlide / (contents.length - 1)}%`, 
+          borderBottomRightRadius : `${isLastSlide ? 3 : 0}px`}}
+      />
     </ResizeableDraggable>
   </>)
 }
@@ -337,34 +353,70 @@ TourPopup.propTypes = {
 TourPopup.defaultProps = {
 };
 
-const mapStateToProps = (state) => ({
-  properties: state.propertyTree.properties,
-  cameraPosition: {
-    latitude: state.camera.latitude,
-    longitude: state.camera.longitude,
-    altitude: state.camera.altitude,
-    altitudeUnit: state.camera.altitudeUnit
-  },
-  isPaused: state.time.isPaused,
-  time: state.time.time,
-  targetDeltaTime: state.time.targetDeltaTime,
-  changeUriValues : { "Scene.MarsTrail.Renderable.Appearance.Color" : getBoolPropertyValue(state, "Scene.MarsTrail.Renderable.Appearance.Color")},
-});
+const mapStateToProps = (state, ownProps) => {
+  const { content } = ownProps;
+  const hasGoals = Boolean(content.goalType);
+  let currentValue = undefined;
+
+  if(hasGoals) {
+    currentValue = new Array(content.goalType.length); 
+    content.goalType.map((goal, i) => {
+      switch(goal) {
+        case GoalTypes.geoPosition: {
+          currentValue[i] = {
+            latitude: state.camera.latitude,
+            longitude: state.camera.longitude,
+            altitude: state.camera.altitude,
+            altitudeUnit: state.camera.altitudeUnit
+          }
+          break;
+        }
+        case GoalTypes.changeDeltaTime: {
+          currentValue[i] = state.time.targetDeltaTime
+          break;
+        }
+        case GoalTypes.changeTime: {
+          currentValue[i] = new Date(state.time.time).getFullYear();
+          break;
+        }
+        case GoalTypes.changeUri: 
+        case GoalTypes.uri: {
+          currentValue[i] = state.propertyTree.properties[content.uri]?.value;
+          break;
+        }
+        case GoalTypes.pauseTime: {
+          currentValue[i] = state.time.isPaused;
+          break;
+        }
+        default: {
+          currentValue[i] = undefined;
+          break;
+        }  
+      }
+    }); 
+  }
+  return {
+    currentValue,
+    goalType : ownProps?.content?.goalType,
+    content,
+    hasGoals
+  }
+};
 
 const mapDispatchToProps = dispatch => ({
   startSubscriptions: () => {
     dispatch(subscribeToCamera());
     dispatch(subscribeToTime());
-    dispatch(subscribeToProperty("Scene.MarsTrail.Renderable.Appearance.Color"))
   },
   stopSubscriptions: () => {
     dispatch(unsubscribeToCamera());
     dispatch(unsubscribeToTime());
-    dispatch(unsubscribeToProperty("Scene.MarsTrail.Renderable.Appearance.Color"));
   }
 });
 
-TourPopup = connect(mapStateToProps, mapDispatchToProps)
-  (TourPopup);
+Goal = connect(
+  mapStateToProps,
+  mapDispatchToProps)
+  (Goal);
 
 export default TourPopup;
