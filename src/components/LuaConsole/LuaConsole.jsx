@@ -20,10 +20,10 @@ function LuaConsole({luaApi}) {
 
   function parse(currentBuffer) {
     // Split at . and remove first item "openspace"
-    const input = currentBuffer.split(".") ?? currentBuffer;
-    if (typeof input === 'object') {
-      const functionAndArgs = input.pop(); // remove function and args
-      const [functionName, args] = functionAndArgs?.split("(") ?? [undefined, undefined];
+    const [input, args] = currentBuffer?.split("(") ?? [currentBuffer, undefined];
+    const functionNameArray = input.split(".") ?? currentBuffer;
+    console.log(functionNameArray);
+    if (typeof functionNameArray === 'object') {
       const result = args?.replace?.(/[()"]/g, "");
       console.log(args, result);
       const parameters = result?.split(",").map(parameter => {
@@ -33,10 +33,13 @@ function LuaConsole({luaApi}) {
         if(parameter === "false") {
           return false;
         }
+        if(Number(parameter)) {
+          return Number(parameter);
+        }
         else return parameter;
       });
-      
-      const namespaces = input;
+      const functionName = functionNameArray.pop();
+      const namespaces = functionNameArray;
       return [namespaces, functionName, parameters];
     }
     return [[], input, undefined];
