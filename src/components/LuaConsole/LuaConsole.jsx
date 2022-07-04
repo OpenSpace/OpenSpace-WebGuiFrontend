@@ -22,10 +22,8 @@ function LuaConsole({luaApi}) {
     // Split at . and remove first item "openspace"
     const [input, args] = currentBuffer?.split("(") ?? [currentBuffer, undefined];
     const functionNameArray = input.split(".") ?? currentBuffer;
-    console.log(functionNameArray);
     if (typeof functionNameArray === 'object') {
       const result = args?.replace?.(/[()"]/g, "");
-      console.log(args, result);
       const parameters = result?.split(",").map(parameter => {
         if(parameter === "true") {
           return true;
