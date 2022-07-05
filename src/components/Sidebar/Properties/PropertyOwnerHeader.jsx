@@ -71,12 +71,14 @@ class PropertyOwnerHeader extends Component {
     evt.stopPropagation();
   };
 
-  onToggleCheckboxClick = (shouldBeChecked) => {
+  onToggleCheckboxClick = (shouldBeChecked, event) => {
     const { fadeUri, fadeDuration, luaApi, enabledUri } = this.props;
     if (!enabledUri) return;
 
+    const holdingShift = event.getModifierState('Shift');
+
     // Should not fade
-    if (!fadeUri) {
+    if (!fadeUri || holdingShift) {
       this.props.getPropertyDispatcher(enabledUri).set(shouldBeChecked);
       return;
     }

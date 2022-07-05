@@ -111,7 +111,7 @@ class SkyBrowserSettings extends Component {
             checked={entry.show}
             left={false}
             disabled={false}
-            setChecked={(value) => {
+            setChecked={(value, event) => {
               const displayCopyId = Object.keys(displayCopies)[indexCopy];
               const uriBrowser = `ScreenSpace.${selectedBrowserId}.${entry.idShowProperty}`;
               luaApi.setPropertyValueSingle(uriBrowser, value);
