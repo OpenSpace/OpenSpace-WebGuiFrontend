@@ -29,16 +29,16 @@ class PropertyOwnerHeader extends Component {
   }
 
   componentDidMount() {
-    const { quickToggleUri } = this.props;
-    if (quickToggleUri) {
-      this.props.getPropertyDispatcher(quickToggleUri).subscribe();
+    const { enabledUri } = this.props;
+    if (enabledUri) {
+      this.props.getPropertyDispatcher(enabledUri).subscribe();
     }
   }
 
   componentWillUnmount() {
-    const { quickToggleUri } = this.props;
-    if (quickToggleUri) {
-      this.props.getPropertyDispatcher(quickToggleUri).unsubscribe();
+    const { enabledUri } = this.props;
+    if (enabledUri) {
+      this.props.getPropertyDispatcher(enabledUri).unsubscribe();
     }
   }
 
@@ -71,12 +71,12 @@ class PropertyOwnerHeader extends Component {
   };
 
   onToggleCheckboxClick = (shouldBeChecked) => {
-    const { fadeUri, luaApi, quickToggleUri } = this.props;
-    if (!quickToggleUri) return;
+    const { fadeUri, luaApi, enabledUri } = this.props;
+    if (!enabledUri) return;
 
     // Should not fade
     if (!fadeUri) {
-      this.props.getPropertyDispatcher(quickToggleUri).set(shouldBeChecked);
+      this.props.getPropertyDispatcher(enabledUri).set(shouldBeChecked);
       return;
     }
 
@@ -88,13 +88,14 @@ class PropertyOwnerHeader extends Component {
     if (shouldFadeIn) {
       luaApi.setPropertyValueSingle(fadeUri, 0.0);
       luaApi.setPropertyValueSingle(fadeUri, 1.0, FadeDuration);
-      this.props.getPropertyDispatcher(quickToggleUri).set(shouldBeChecked);
+      this.props.getPropertyDispatcher(enabledUri).set(shouldBeChecked);
     }
-    else {
+    else { // fade out
       luaApi.setPropertyValueSingle(fadeUri, 0.0, FadeDuration);
-      setTimeout(() => {
-        this.props.getPropertyDispatcher(quickToggleUri).set(shouldBeChecked);
-      }, FadeDuration * 1000);
+      setTimeout(
+        () => { this.props.getPropertyDispatcher(enabledUri).set(shouldBeChecked); },
+        FadeDuration * 1000
+      );
     }
   };
 
@@ -106,7 +107,7 @@ class PropertyOwnerHeader extends Component {
       onIcon,
       offIcon,
       title,
-      quickToggleUri
+      enabledUri
     } = this.props;
 
     const popoutButton = (
@@ -133,7 +134,7 @@ class PropertyOwnerHeader extends Component {
       titleClass = enabled ? styles.enabledLayerTitle : styles.disabledLayerTitle;
     }
     // And additionally for height layers
-    const isHeightLayer = isLayer && quickToggleUri.includes('Layers.HeightLayers.');
+    const isHeightLayer = isLayer && enabledUri.includes('Layers.HeightLayers.');
 
     return (
       <header
@@ -146,7 +147,7 @@ class PropertyOwnerHeader extends Component {
           icon={expanded ? onIcon : offIcon}
           className={toggleHeaderStyles.icon}
         />
-        { quickToggleUri && (
+        { enabledUri && (
           <span className={styles.leftButtonContainer}>
             <Checkbox
               wide={false}
@@ -195,25 +196,30 @@ const mapStateToProps = (state, ownProps) => {
   // layers green and have different behavior on hover)
   const isLayer = isGlobeBrowsingLayer(uri);
 
-  let quickToggleUri;
-  let fadeUri = undefined;
+  let enabledUri = undefined;
   const isRenderable = splitUri.length > 1 && splitUri[splitUri.length - 1] === 'Renderable';
   if (state.propertyTree.properties[`${uri}.Enabled`] && !isRenderable) {
-    quickToggleUri = `${uri}.Enabled`;
+    enabledUri = `${uri}.Enabled`;
   } else if (state.propertyTree.properties[`${uri}.Renderable.Enabled`]) {
-    quickToggleUri = `${uri}.Renderable.Enabled`;
+    enabledUri = `${uri}.Renderable.Enabled`;
   }
 
   // Check if this property owner has a renderable that can be faded
-  if (state.propertyTree.properties[`${uri}.Renderable.Fade`] !== undefined)  {
+  let fadeUri = undefined;
+  if (state.propertyTree.properties[`${uri}.Renderable.Fade`] !== undefined) {
     fadeUri = `${uri}.Renderable.Fade`;
   }
 
-  const enabled = quickToggleUri && state.propertyTree.properties[quickToggleUri].value;
+  let enabled = enabledUri && state.propertyTree.properties[enabledUri].value;
+
+  // Make fade == 0 correspond to disabled, according to the checkbox
+  if (fadeUri && state.propertyTree.properties[fadeUri].value === 0) {
+    enabled = false;
+  }
 
   return {
     title: title || displayName(state, uri),
-    quickToggleUri,
+    enabledUri,
     fadeUri,
     enabled,
     isLayer,
@@ -225,18 +231,19 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   const { uri } = ownProps;
   const splitUri = uri.split('.');
+  const identifier = splitUri[1];
 
   let focusAction = undefined;
   let shiftFocusAction = undefined;
 
   if (splitUri.length === 2 && splitUri[0] === 'Scene') {
     focusAction = () => {
-      propertyDispatcher(dispatch, NavigationAnchorKey).set(splitUri[1]);
+      propertyDispatcher(dispatch, NavigationAnchorKey).set(identifier);
       propertyDispatcher(dispatch, NavigationAimKey).set('');
       propertyDispatcher(dispatch, RetargetAnchorKey).set(null);
     };
     shiftFocusAction = () => {
-      propertyDispatcher(dispatch, NavigationAnchorKey).set(splitUri[1]);
+      propertyDispatcher(dispatch, NavigationAnchorKey).set(identifier);
       propertyDispatcher(dispatch, NavigationAimKey).set('');
     };
   }
