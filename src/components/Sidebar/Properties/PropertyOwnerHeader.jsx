@@ -76,9 +76,9 @@ class PropertyOwnerHeader extends Component {
     if (!enabledUri) return;
 
     const holdingShift = event.getModifierState('Shift');
+    const shouldNotFade = !fadeUri || (fadeDuration < 0.001) || holdingShift;
 
-    // Should not fade
-    if (!fadeUri || holdingShift) {
+    if (shouldNotFade) {
       this.props.getPropertyDispatcher(enabledUri).set(shouldBeChecked);
       return;
     }
