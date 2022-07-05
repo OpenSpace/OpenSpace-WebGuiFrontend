@@ -1,7 +1,7 @@
 // TODO: Revisit these functions and determine if any should be
 // kept since most of this functionality is now more easily handled
 // by the lua API
-import { LayerGroupKeys } from '../api/keys';
+import { LayerGroupKeys, Engine_PropertyVisibilityKey } from '../api/keys';
 
 export const getIdOfProperty = (uri) => {
   const a = splitUri(uri);
@@ -112,7 +112,7 @@ export function removeLastWordFromUri(uri) {
 // Returns whether a property should be visible in the gui
 export function isPropertyVisible(properties, uri) {
   const property = properties[uri];
-  const visibility = properties['OpenSpaceEngine.PropertyVisibility'];
+  const visibility = properties[Engine_PropertyVisibilityKey];
   if (!property?.description?.MetaData?.Visibility) {
     return false;
   }

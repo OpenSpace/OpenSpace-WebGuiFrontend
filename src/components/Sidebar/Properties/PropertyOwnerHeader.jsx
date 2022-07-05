@@ -14,6 +14,7 @@ import {
   NavigationAnchorKey,
   NavigationAimKey,
   RetargetAnchorKey,
+  Engine_FadeDurationKey,
 } from '../../../api/keys';
 import { isGlobeBrowsingLayer } from '../../../utils/propertyTreeHelpers';
 
@@ -71,7 +72,7 @@ class PropertyOwnerHeader extends Component {
   };
 
   onToggleCheckboxClick = (shouldBeChecked) => {
-    const { fadeUri, luaApi, enabledUri } = this.props;
+    const { fadeUri, fadeDuration, luaApi, enabledUri } = this.props;
     if (!enabledUri) return;
 
     // Should not fade
@@ -80,21 +81,19 @@ class PropertyOwnerHeader extends Component {
       return;
     }
 
-    // TODO: make this a property in the Engine
-    const FadeDuration = 0.5; //seconds
     const shouldFadeIn = shouldBeChecked;
 
     // If fade in, first set fade value to 0 to make sure it's fully hidden
     if (shouldFadeIn) {
       luaApi.setPropertyValueSingle(fadeUri, 0.0);
-      luaApi.setPropertyValueSingle(fadeUri, 1.0, FadeDuration);
+      luaApi.setPropertyValueSingle(fadeUri, 1.0, fadeDuration);
       this.props.getPropertyDispatcher(enabledUri).set(shouldBeChecked);
     }
     else { // fade out
-      luaApi.setPropertyValueSingle(fadeUri, 0.0, FadeDuration);
+      luaApi.setPropertyValueSingle(fadeUri, 0.0, fadeDuration);
       setTimeout(
         () => { this.props.getPropertyDispatcher(enabledUri).set(shouldBeChecked); },
-        FadeDuration * 1000
+        fadeDuration * 1000
       );
     }
   };
@@ -217,10 +216,13 @@ const mapStateToProps = (state, ownProps) => {
     enabled = false;
   }
 
+  const fadeDuration = state.propertyTree.properties[Engine_FadeDurationKey].value;
+
   return {
     title: title || displayName(state, uri),
     enabledUri,
     fadeUri,
+    fadeDuration,
     enabled,
     isLayer,
     identifier,
