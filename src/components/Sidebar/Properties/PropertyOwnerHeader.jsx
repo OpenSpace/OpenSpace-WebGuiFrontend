@@ -16,7 +16,7 @@ import {
   RetargetAnchorKey,
 } from '../../../api/keys';
 import { isGlobeBrowsingLayer } from '../../../utils/propertyTreeHelpers';
-import { useTutorial } from '../../GettingStartedTour/GettingStartedContext';
+import { useContextRefs } from '../../GettingStartedTour/GettingStartedContext';
 
 function PropertyOwnerHeader({
   title, identifier, expanded, setExpanded, onIcon, offIcon,
@@ -76,7 +76,7 @@ function PropertyOwnerHeader({
   }
   // And additionally for height layers
   const isHeightLayer = isLayer && quickToggleUri.includes('Layers.HeightLayers.');
-  const refs = useTutorial();
+  const refs = useContextRefs();
 
   return (
     <header

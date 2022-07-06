@@ -40,7 +40,7 @@ import Picker from '../Picker';
 import FocusEntry from './FocusEntry';
 import FocusEntryWithNavigation from './FocusEntryWithNavigation';
 import styles from './OriginPicker.scss';
-import { useTutorial } from '../../GettingStartedTour/GettingStartedContext';
+import { useContextRefs } from '../../GettingStartedTour/GettingStartedContext';
 
 // tag that each focusable node must have
 const REQUIRED_TAG = 'GUI.Interesting';

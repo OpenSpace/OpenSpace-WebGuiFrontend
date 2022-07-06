@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { useTutorial } from '../../GettingStartedTour/GettingStartedContext';
+import { useContextRefs } from '../../GettingStartedTour/GettingStartedContext';
 import MaterialIcon from '../MaterialIcon/MaterialIcon';
 import styles from './ToggleHeader.scss';
 
 function ToggleHeader({ title, expanded, onClick, onIcon, offIcon, showEnabled }) {
-  const refs = useTutorial();
+  const refs = useContextRefs();
 
   return <header 
     ref={el => refs.current["Group " + title] = el} 

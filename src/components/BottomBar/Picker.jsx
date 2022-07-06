@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { useTutorial } from '../GettingStartedTour/GettingStartedContext';
+import { useContextRefs } from '../GettingStartedTour/GettingStartedContext';
 import styles from './Picker.scss';
 
 const Picker = ({children, className, refKey, ...props}) => {
-  const refs = useTutorial();
+  const refs = useContextRefs();
   return (
     <div ref={refKey ? el => refs.current[refKey] = el : null} {...props} className={`${styles.Picker} ${className}`}>
       { children }

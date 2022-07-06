@@ -14,7 +14,7 @@ import {
 import openspaceLogo from "./openspace-color-transparent.png";
 import MaterialIcon from "../common/MaterialIcon/MaterialIcon";
 import Checkbox from "../common/Input/Checkbox/Checkbox";
-import {useTutorial} from "./GettingStartedContext";
+import {useContextRefs} from "./GettingStartedContext";
 
 function AnimatedCheckmark({...props}) {
   return <div className={styles.centerContent}>
@@ -219,7 +219,7 @@ function Goal({ startSubscriptions, setIsFulfilled, hasGoals, stopSubscriptions,
   },[areAllConditionsFulfilled]);
 
   // Create animated click - it requires the component to be render fairly often
-  const tutorial = useTutorial();
+  const tutorial = useContextRefs();
   let lastKey = null;
   const newElement = document.createElement('div');
   const animationDiv = React.useRef(newElement);
