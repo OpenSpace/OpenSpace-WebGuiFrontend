@@ -15,10 +15,15 @@ import Sidebar from '../components/Sidebar/Sidebar';
 import '../styles/base.scss';
 import About from './About/About';
 import styles from './OnScreenGui.scss';
+import TourPopup from '../components/GettingStartedTour/TourPopup'
+import { RefsProvider } from '../components/GettingStartedTour/GettingStartedContext';
 
 class OnScreenGui extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      showTutorial : true
+    }
     this.checkedVersion = false;
     this.showFlightController = props.showFlightController;
   }
@@ -58,7 +63,8 @@ class OnScreenGui extends Component {
     this.checkVersion();
     return (
       <div className={styles.app}>
-        { this.props.showAbout && (
+        <RefsProvider>
+          {this.props.showAbout && (
           <Overlay>
             <Stack style={{ maxWidth: '500px' }}>
               <Button style={{ alignSelf: 'flex-end', color: 'white' }} onClick={this.props.hideAbout}>
@@ -79,14 +85,16 @@ class OnScreenGui extends Component {
           </Overlay>
         )}
         <section className={styles.Grid__Left}>
-          <Sidebar />
+          <Sidebar showTutorial={ (show) => this.setState({ showTutorial : show })}/>
         </section>
         <section className={styles.Grid__Right}>
           <NodePopOverContainer />
           <NodeMetaContainer />
           <BottomBar showFlightController={this.props.showFlightController}/>
           <KeybindingPanel />
+          <TourPopup isVisible={this.state.showTutorial} setVisibility = { (show) => this.setState({ showTutorial : show })}/>
         </section>
+      </RefsProvider>
       </div>
     );
   }

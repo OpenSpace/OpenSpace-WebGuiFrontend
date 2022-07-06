@@ -7,69 +7,63 @@ import subStateToProps from '../../utils/subStateToProps';
 import Button from '../common/Input/Button/Button';
 import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import Popover from '../common/Popover/Popover';
+import { useContextRefs } from '../GettingStartedTour/GettingStartedContext';
 import styles from './SystemMenu.scss';
 
-class SystemMenu extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { showMenu: false };
-    this.toggleMenu = this.toggleMenu.bind(this);
-  }
+function SystemMenu({showAbout, openTutorials, showTutorial, console, nativeGui, quit, saveChange}) {
+  const [showMenu, setShowMenu] = React.useState(false);
+  const refs = useContextRefs();
+  return (
+    <div className={styles.SystemMenu}>
+      { showMenu && (
+        <Popover className={styles.popover} arrow="arrow bottom leftside" attached={true}>
+          <nav className={styles.links} onClick={() => setShowMenu(!showMenu)}>
 
-  toggleMenu() {
-    this.setState({ showMenu: !this.state.showMenu });
-  }
+            <button onClick={showAbout}>
+              About OpenSpace
+            </button>
+            <button onClick={openTutorials}>
+              Open Web Tutorials
+            </button>
+            <button style={{position : 'relative'}} onClick={() => showTutorial(true)} ref={el => refs.current["Tutorial"] = el}>
+              Open Getting Started Tour
+            </button>
+            {
+              environment.developmentMode ?
+                <div>
+                  <hr className={Popover.styles.delimiter} />
+                  <div className={styles.devModeNotifier}>GUI running in dev mode</div>
+                </div> : null
+            }
+            <hr className={Popover.styles.delimiter} />
 
-  render() {
-    return (
-      <div className={styles.SystemMenu}>
-        { this.state.showMenu && (
-          <Popover className={styles.popover} arrow="arrow bottom leftside" attached={true}>
-            <nav className={styles.links} onClick={this.toggleMenu}>
+            <button onClick={console}>
+              Toggle console <span className={styles.shortcut}>~</span>
+            </button>
+            <button onClick={nativeGui}>
+              Toggle native GUI <span className={styles.shortcut}>F1</span>
+            </button>
 
-              <button onClick={this.props.showAbout}>
-                About OpenSpace
-              </button>
-              <button onClick={this.props.openTutorials}>
-                Open Tutorials
-              </button>
-              {
-                environment.developmentMode ?
-                  <div>
-                    <hr className={Popover.styles.delimiter} />
-                    <div className={styles.devModeNotifier}>GUI running in dev mode</div>
-                  </div> : null
-              }
-              <hr className={Popover.styles.delimiter} />
-
-              <button onClick={this.props.console}>
-                Toggle console <span className={styles.shortcut}>~</span>
-              </button>
-              <button onClick={this.props.nativeGui}>
-                Toggle native GUI <span className={styles.shortcut}>F1</span>
-              </button>
-
-{/*              <button onClick={this.props.saveChange}>
-                Save settings to profile
-              </button>*/}
+{/*              <button onClick={saveChange}>
+              Save settings to profile
+            </button>*/}
 
 
-              <hr className={Popover.styles.delimiter} />
+            <hr className={Popover.styles.delimiter} />
 
-              <button onClick={this.props.quit}>
-                <MaterialIcon icon="exit_to_app" className={styles.linkIcon} />
-                Quit OpenSpace <span className={styles.shortcut}>ESC</span>
-              </button>
-            </nav>
-          </Popover>
-        )}
+            <button onClick={quit}>
+              <MaterialIcon icon="exit_to_app" className={styles.linkIcon} />
+              Quit OpenSpace <span className={styles.shortcut}>ESC</span>
+            </button>
+          </nav>
+        </Popover>
+      )}
 
-        <Button className={styles.button} transparent onClick={this.toggleMenu}>
-          <MaterialIcon icon="more_vert" className={styles.icon} />
-        </Button>
-      </div>
-    );
-  }
+      <Button ref={el => refs.current["System"] = el} className={styles.button} transparent onClick={() => setShowMenu(!showMenu)}>
+        <MaterialIcon icon="more_vert" className={styles.icon} />
+      </Button>
+    </div>
+  );
 }
 
 const mapStateToSubState = (state) => ({

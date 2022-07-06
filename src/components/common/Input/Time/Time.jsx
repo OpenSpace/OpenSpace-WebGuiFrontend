@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import { useContextRefs } from '../../../GettingStartedTour/GettingStartedContext';
 import MaterialIcon from '../../MaterialIcon/MaterialIcon';
 import Button from '../Button/Button';
 import InlineInput from '../InlineInput/InlineInput';
@@ -34,44 +35,37 @@ const Interpretors = {
   }
 }
 
-class Time extends Component {
-  static zeroPad(number) {
-    return number < 10 ? `0${number}` : number;
-  }
+function zeroPad(number) {
+  return number < 10 ? `0${number}` : number;
+}
 
-  constructor(props) {
-    super(props);
-
-    this.onClick = this.onClick.bind(this);
-    this.onInput = this.onInput.bind(this);
-  }
-
-  onClick(what, change) {
+function Time({elements, onChange, time}) {
+  function onClick(what, change) {
     const getterFunc = `getUTC${what}`;
     const setterFunc = `setUTC${what}`;
 
     return (e) => {
-      const newTime = new Date(this.props.time);
+      const newTime = new Date(time);
       newTime[setterFunc](newTime[getterFunc]() + change);
       const shift = e.getModifierState("Shift");
 
-      if (this.hasCallback) {
-        this.props.onChange({
+      if (hasCallback) {
+        onChange({
           time: newTime,
           interpolate: !shift,
-          delta: (newTime - this.props.time)/1000,
+          delta: (newTime - time)/1000,
           relative: true
         });
       }
     };
   }
 
-  onInput(what) {
+  function onInput(what) {
     const setterFunc = `setUTC${what}`;
     const interpretFunc = Interpretors[what] || Number.parseFloat;
 
     return (event) => {
-      const newTime = new Date(this.props.time);
+      const newTime = new Date(time);
       const { value } = event.currentTarget;
       const param = interpretFunc(value);
       if (isNaN(param)) {
@@ -79,26 +73,24 @@ class Time extends Component {
       }
       newTime[setterFunc](param);
 
-      if (this.hasCallback) {
-        this.props.onChange({
+      if (hasCallback) {
+        onChange({
           time: newTime,
           interpolate: false,
-          delta: (newTime - this.props.time)/1000,
+          delta: (newTime - time)/1000,
           relative: false
         });
       }
     };
   }
 
-  get fullYear() {
-    const { time } = this.props;
-    const month = this.shouldInclude(Elements.Month);
-    return this.wrap(`${Time.zeroPad(time.getUTCFullYear())}`, 'FullYear', month && ':');
+  function fullYear() {
+    const month = shouldInclude(Elements.Month);
+    return wrap(`${zeroPad(time.getUTCFullYear())}`, 'FullYear', month && ':');
   }
 
-  get month() {
-    const { time } = this.props;
-    const date = this.shouldInclude(Elements.Date);
+  function month() {
+    const date = shouldInclude(Elements.Date);
 
     let month = Months[time.getUTCMonth()];
     if (!month) {
@@ -106,53 +98,48 @@ class Time extends Component {
     }
     month = month.substring(0, 3);
 
-    return this.wrap(month, 'Month', date && ':');
+    return wrap(month, 'Month', date && ':');
   }
 
-  get date() {
-    const { time } = this.props;
-    const hours = this.shouldInclude(Elements.Hours);
+  function date() {
+    const hours = shouldInclude(Elements.Hours);
     const d = time.getUTCDate();
-    const zpd = Time.zeroPad(d);
-    return this.wrap(`${zpd}`, 'Date', hours && ':');
+    const zpd = zeroPad(d);
+    return wrap(`${zpd}`, 'Date', hours && ':');
   }
 
-  get hours() {
-    const { time } = this.props;
-    const minutes = this.shouldInclude(Elements.Minutes);
+  function hours() {
+    const minutes = shouldInclude(Elements.Minutes);
     const h = time.getUTCHours();
-    const zph = Time.zeroPad(h);
-    return this.wrap(`${zph}`, 'Hours', minutes && ':');
+    const zph = zeroPad(h);
+    return wrap(`${zph}`, 'Hours', minutes && ':');
   }
 
-  get minutes() {
-    const { time } = this.props;
-    const seconds = this.shouldInclude(Elements.Seconds);
+  function minutes() {
+    const seconds = shouldInclude(Elements.Seconds);
     const m = time.getUTCMinutes();
-    const zpm = Time.zeroPad(m);
-    return this.wrap(`${zpm}`, 'Minutes', seconds && ':');
+    const zpm = zeroPad(m);
+    return wrap(`${zpm}`, 'Minutes', seconds && ':');
   }
 
-  get seconds() {
-    const { time } = this.props;
-    const milliseconds = this.shouldInclude(Elements.Milliseconds);
+  function seconds() {
+    const milliseconds = shouldInclude(Elements.Milliseconds);
     const s = time.getUTCSeconds();
-    const zps = Time.zeroPad(s);
-    return this.wrap(`${zps}`, 'Seconds', milliseconds && '.');
+    const zps = zeroPad(s);
+    return wrap(`${zps}`, 'Seconds', milliseconds && '.');
   }
 
-  get milliseconds() {
-    const { time } = this.props;
+  function milliseconds() {
     const ms = time.getUTCMilliseconds();
-    return this.wrap(ms, 'Milliseconds');
+    return wrap(ms, 'Milliseconds');
   }
 
-  get hasCallback() {
-    return this.props.onChange !== null;
+  function hasCallback() {
+    return onChange !== null;
   }
 
-  shouldInclude(what) {
-    return this.props.elements.includes(what);
+  function shouldInclude(what) {
+    return elements.includes(what);
   }
 
   /**
@@ -162,28 +149,28 @@ class Time extends Component {
    * @param after
    * @returns {XML}
    */
-  wrap(inner, what, after = '') {
+  function wrap(inner, what, after = '') {
     // make it editable with input and such?
-    if (this.hasCallback) {
+    if (hasCallback) {
       const width = (what === 'Milliseconds' || what === 'Month') ? 3 : 2;
       const type = (what === 'Month') ? "text" : "number";
-
+      const ref = useContextRefs();
       return (
         <div key={what} className={styles.element}>
-          <Button nopadding transparent onClick={this.onClick(what, 1)}>
+          <Button nopadding transparent onClick={onClick(what, 1)}>
             <MaterialIcon icon="expand_less" />
           </Button>
-          <span>
+          <span key={`span${what}`} ref={ el => ref.current[what] = el}>
             <InlineInput
               value={inner}
               size={width}
               className={styles.textInput}
-              onEnter={this.onInput(what)}
+              onEnter={onInput(what)}
               type={type}
               noExtraWidth
             />
           </span>
-          <Button nopadding transparent onClick={this.onClick(what, -1)}>
+          <Button nopadding transparent onClick={onClick(what, -1)}>
             <MaterialIcon icon="expand_more" />
           </Button>
         </div>
@@ -197,21 +184,28 @@ class Time extends Component {
     );
   }
 
-  render() {
-    return (
-      <div className={styles.clock}>
-      {
-        this.props.elements.map((getterName, n) => {
-          const value = this[getterName];
-          if (!value) {
-            return <div key={n} className={styles.padding}></div>
-          }
-          return value;
-        })
-      }
-      </div>
-    );
-  }
+  const functionMapping = { 
+    fullYear,
+    month, 
+    date,
+    hours, 
+    seconds,
+    minutes, 
+    milliseconds 
+  };
+  return (
+    <div className={styles.clock}>
+    {
+      elements.map((getterName) => {
+        const value = functionMapping?.[getterName]?.();
+        if (!value) {
+          return <div key={getterName} className={styles.padding}></div>
+        }
+        return value;
+      })
+    }
+    </div>
+  );
 }
 
 Time.Elements = Elements;

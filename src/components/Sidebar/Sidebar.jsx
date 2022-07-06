@@ -76,10 +76,10 @@ class Sidebar extends Component {
         <section className={`${styles.Sidebar} ${view ? styles.active : ''}`}>
           { SelectedView && (<SelectedView closeCallback={this.selectView} />)}
           <TabMenu>
-            <SystemMenu />
+            <SystemMenu showTutorial={this.props.showTutorial}/>
             <TabMenuItem active={this.isActive('scene')} onClick={this.selectView('scene')}>
               <MaterialIcon className={styles.icon} icon="layers" />
-              <SmallLabel>Scene</SmallLabel>
+              <SmallLabel refKey={'Scene'}>Scene</SmallLabel>
             </TabMenuItem>
             <TabMenuItem active={this.isActive('settings')} onClick={this.selectView('settings')}>
               <MaterialIcon className={styles.icon} icon="settings" />

@@ -1,10 +1,18 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { useContextRefs } from '../../GettingStartedTour/GettingStartedContext';
 import MaterialIcon from '../MaterialIcon/MaterialIcon';
 import styles from './ToggleHeader.scss';
 
-const ToggleHeader = ({ title, expanded, onClick, onIcon, offIcon, showEnabled }) => (
-  <header className={styles.toggle} onClick={onClick} role="button" tabIndex={0}>
+function ToggleHeader({ title, expanded, onClick, onIcon, offIcon, showEnabled }) {
+  const refs = useContextRefs();
+
+  return <header 
+    ref={el => refs.current["Group " + title] = el} 
+    className={styles.toggle} 
+    onClick={onClick} 
+    role="button" tabIndex={0}>
+
     <MaterialIcon
       icon={expanded ? onIcon : offIcon}
       className={styles.icon}
@@ -12,8 +20,8 @@ const ToggleHeader = ({ title, expanded, onClick, onIcon, offIcon, showEnabled }
     <span className={`${styles.title}`} >
       { title }
     </span>
-  </header>
-);
+  </header>;
+}
 
 ToggleHeader.propTypes = {
   offIcon: PropTypes.string,

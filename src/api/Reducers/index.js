@@ -13,6 +13,7 @@ import { engineMode } from './engineMode';
 import { sessionRecording } from './sessionRecording';
 import { local } from './local';
 import { luaApi } from './luaApi';
+import { camera } from './camera';
 
 // Add more reducers here
 const openspaceApp = (state = {}, action) => {
@@ -24,6 +25,7 @@ const openspaceApp = (state = {}, action) => {
     groups: groups(state.groups, action, propertyTreeReducer, shortcutsReducer),
     time: time(state.time, action),
     connection: connection(state.connection, action),
+    camera: camera(state.camera, action),
     documentation: documentation(state.documentation, action),
     exoplanets: exoplanets(state.exoplanets, action),
     skybrowser: skybrowser(state.skybrowser, action),

@@ -16,6 +16,7 @@ import {
   RetargetAnchorKey,
 } from '../../../api/keys';
 import { isGlobeBrowsingLayer } from '../../../utils/propertyTreeHelpers';
+import { useContextRefs } from '../../GettingStartedTour/GettingStartedContext';
 
 function PropertyOwnerHeader({
   title, identifier, expanded, setExpanded, onIcon, offIcon,
@@ -75,6 +76,7 @@ function PropertyOwnerHeader({
   }
   // And additionally for height layers
   const isHeightLayer = isLayer && quickToggleUri.includes('Layers.HeightLayers.');
+  const refs = useContextRefs();
 
   return (
     <header
@@ -82,6 +84,7 @@ function PropertyOwnerHeader({
       onClick={onClick}
       role="button"
       tabIndex={0}
+      ref={el => refs.current["PropertyOwner " + title] = el}
     >
       <MaterialIcon
         icon={expanded ? onIcon : offIcon}

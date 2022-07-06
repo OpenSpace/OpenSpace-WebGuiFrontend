@@ -135,6 +135,7 @@ class ScreenSpaceRenderablePanel extends Component {
         <Picker
           className={`${popoverVisible && Picker.Active}`}
           onClick={this.togglePopover}
+          refKey={"ScreenSpaceRenderable"}
         >
           <div>
             <MaterialIcon className={styles.photoIcon} icon="insert_photo" />
