@@ -1,72 +1,67 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import { useLocation } from "react-router-dom";
 import { startConnection } from '../api/Actions';
 import { formatVersion, isCompatible, RequiredOpenSpaceVersion, RequiredSocketApiVersion } from '../api/Version';
 import ActionsPanel from '../components/BottomBar/ActionsPanel';
 import '../styles/base.scss';
 import styles from './ActionsGui.scss';
 
-class ActionsGui extends Component {
-  constructor(props) {
-    super(props);
-    this.checkedVersion = false;
-  }
+function ActionsGui({startConnection, version, connectionLost}) {
+  const [checkedVersion, setCheckedVersion] = React.useState(false);
+  let location = useLocation();
 
-  componentDidMount() {
-    this.props.startConnection();
-  }
+  React.useEffect(() => {
+    startConnection();
+  }, []);
 
-  checkVersion() {
-    if (!this.checkedVersion && this.props.version.isInitialized) {
-      const versionData = this.props.version.data;
-      if (!isCompatible(
-        versionData.openSpaceVersion, RequiredOpenSpaceVersion))
-      {
-        console.warn(
-          'Possible incompatibility: \nRequired OpenSpace version: ' +
-          formatVersion(RequiredOpenSpaceVersion) +
-          '. Currently controlling OpenSpace version ' +
-          formatVersion(versionData.openSpaceVersion) + '.'
-        );
-      }
-      if (!isCompatible(
-        versionData.socketApiVersion, RequiredSocketApiVersion))
-      {
-        console.warn(
-          "Possible incompatibility: \nRequired Socket API version: " +
-          formatVersion(RequiredSocketApiVersion) +
-          ". Currently operating over API version " +
-          formatVersion(versionData.socketApiVersion) + '.'
-        );
-      }
-      this.checkedVersion = true;
+
+  if (!checkedVersion && version.isInitialized) {
+    const versionData = version.data;
+    if (!isCompatible(
+      versionData.openSpaceVersion, RequiredOpenSpaceVersion))
+    {
+      console.warn(
+        'Possible incompatibility: \nRequired OpenSpace version: ' +
+        formatVersion(RequiredOpenSpaceVersion) +
+        '. Currently controlling OpenSpace version ' +
+        formatVersion(versionData.openSpaceVersion) + '.'
+      );
     }
+    if (!isCompatible(
+      versionData.socketApiVersion, RequiredSocketApiVersion))
+    {
+      console.warn(
+        "Possible incompatibility: \nRequired Socket API version: " +
+        formatVersion(RequiredSocketApiVersion) +
+        ". Currently operating over API version " +
+        formatVersion(versionData.socketApiVersion) + '.'
+      );
+    }
+    setCheckedVersion(true);
   }
-
-  reloadGui() {
+  
+  function reloadGui() {
     location.reload();
   }
 
-  render() {
-    this.checkVersion();
-    return (
-      <div className={styles.app}>
-        { this.props.connectionLost && (
-          <Overlay>
-            <Error>
-              <h2>Houston, we've had a...</h2>
-              <p>...disconnection between the user interface and OpenSpace.</p>
-              <p>Trying to reconnect automatically, but you may want to...</p>
-              <Button className={Error.styles.errorButton} onClick={this.reloadGui}>Reload the user interface</Button>
-            </Error>
-          </Overlay>
-        )}
-        <ActionsPanel singlewindow />
-      </div>
-    );
-  }
+  return (
+    <div className={styles.app}>
+      { connectionLost && (
+        <Overlay>
+          <Error>
+            <h2>Houston, we've had a...</h2>
+            <p>...disconnection between the user interface and OpenSpace.</p>
+            <p>Trying to reconnect automatically, but you may want to...</p>
+            <Button className={Error.styles.errorButton} onClick={reloadGui}>Reload the user interface</Button>
+          </Error>
+        </Overlay>
+      )}
+      <ActionsPanel singlewindow />
+    </div>
+  );
 }
+
 
 const mapStateToProps = state => ({
   connectionLost: state.connection.connectionLost,
@@ -79,9 +74,9 @@ const mapDispatchToProps = dispatch => ({
   },
 });
 
-ActionsGui = withRouter(connect(
+ActionsGui = connect(
   mapStateToProps,
   mapDispatchToProps,
-)(ActionsGui));
+)(ActionsGui);
 
 export default ActionsGui;

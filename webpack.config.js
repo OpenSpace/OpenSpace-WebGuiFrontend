@@ -7,7 +7,6 @@ module.exports = {
   mode: 'development',
   context: resolve(__dirname, 'src'),
   entry: [
-    'react-hot-loader/patch',
     'webpack-dev-server/client?http://localhost:4690',
     'webpack/hot/only-dev-server',
     './devmode.js',
@@ -72,22 +71,16 @@ module.exports = {
         ],
       },
       {
-        test: /\.css$/,
+        test: /\.css$/i,
         use: ['style-loader', 'css-loader'],
       },
       {
-        test: /\.(woff|woff2|ttf|eot)$/,
-        loader: 'file-loader',
-        options: {
-          name: 'fonts/[name].[ext]',
-        },
+        test: /\.(woff|woff2|ttf|eot)$/i,
+        type: 'asset/resource',
       },
       {
         test: /\.(png)$/,
-        loader: 'file-loader',
-        options: {
-          name: 'img/[name].[ext]',
-        },
+        type: 'asset/resource',
       },
     ],
   },
