@@ -3,7 +3,7 @@ import { actionTypes } from '../Actions/actionTypes';
 const defaultState = {
   isConnected: false,
   connectedLost: false,
-}
+};
 
 export const connection = (state = defaultState, action) => { // state refers to connection
   switch (action.type) {

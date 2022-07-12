@@ -60,7 +60,7 @@ class OriginPicker extends Component {
   }
 
   componentDidMount() {
-    const { aimDispatcher, anchorDispatcher, startSubscriptions: startSubscriptions } = this.props;
+    const { aimDispatcher, anchorDispatcher, startSubscriptions } = this.props;
     anchorDispatcher.subscribe();
     aimDispatcher.subscribe();
     startSubscriptions();
@@ -177,7 +177,7 @@ class OriginPicker extends Component {
     };
 
     return (
-      <div 
+      <div
         className={`${styles.Grid} ${styles.cancelButton}`}
         onClick={cancelFlight}
       >
@@ -216,10 +216,10 @@ class OriginPicker extends Component {
   get pickerStyle() {
     const { engineMode, sessionRecordingState } = this.props;
 
-    const isSessionRecordingPlaying = (engineMode === EngineModeSessionRecordingPlayback) 
+    const isSessionRecordingPlaying = (engineMode === EngineModeSessionRecordingPlayback)
       && (sessionRecordingState === SessionStatePlaying);
 
-    const isSessionRecordingPaused = (engineMode === EngineModeSessionRecordingPlayback) 
+    const isSessionRecordingPaused = (engineMode === EngineModeSessionRecordingPlayback)
       && (sessionRecordingState === SessionStatePaused);
 
     const isCameraPathPlaying = (engineMode === EngineModeCameraPath);
@@ -250,16 +250,16 @@ class OriginPicker extends Component {
     const defaultList = favorites.slice();
 
     // Make sure current anchor is in the default list
-    if (anchor !== undefined && !defaultList.find(node => node.identifier === anchor)) {
-      const anchorNode = nodes.find(node => node.identifier === anchor);
+    if (anchor !== undefined && !defaultList.find((node) => node.identifier === anchor)) {
+      const anchorNode = nodes.find((node) => node.identifier === anchor);
       if (anchorNode) {
         defaultList.push(anchorNode);
       }
     }
 
     // Make sure current aim is in the default list
-    if (this.hasDistinctAim() && !defaultList.find(node => node.identifier === aim)) {
-      const aimNode = nodes.find(node => node.identifier === aim);
+    if (this.hasDistinctAim() && !defaultList.find((node) => node.identifier === aim)) {
+      const aimNode = nodes.find((node) => node.identifier === aim);
       if (aimNode) {
         defaultList.push(aimNode);
       }
@@ -388,12 +388,12 @@ const mapSubStateToProps = ({
   const scene = propertyOwners.Scene;
   const uris = scene ? scene.subowners : [];
 
-  const nodes = uris.map(uri => ({
+  const nodes = uris.map((uri) => ({
     ...propertyOwners[uri],
     key: uri,
   }));
 
-  const favorites = uris.filter(uri => propertyOwners[uri].tags.some(tag => tag.includes(REQUIRED_TAG))).map(uri => ({
+  const favorites = uris.filter((uri) => propertyOwners[uri].tags.some((tag) => tag.includes(REQUIRED_TAG))).map((uri) => ({
     ...propertyOwners[uri],
     key: uri,
   }));
@@ -432,7 +432,7 @@ const mapSubStateToProps = ({
   };
 };
 
-const mapStateToSubState = state => ({
+const mapStateToSubState = (state) => ({
   engineMode: state.engineMode,
   luaApi: state.luaApi,
   propertyOwners: state.propertyTree.propertyOwners,
@@ -442,7 +442,7 @@ const mapStateToSubState = state => ({
   sessionRecordingState: state.sessionRecording.recordingState,
 });
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   setNavigationAction: (action) => {
     dispatch(setNavigationAction(action));
   },

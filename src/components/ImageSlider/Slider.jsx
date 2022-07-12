@@ -15,15 +15,13 @@ class Slider extends Component {
     const { startSlider } = this.props;
 
     let startIndex = stories.stories.findIndex(
-      function (element) {
-        return startSlider === element.identifier;
-      }
-    )
-    
+      (element) => startSlider === element.identifier,
+    );
+
     // if startSlider was not in the listed stories, pick the first
-    if (startIndex < 0) { 
-      startIndex = 0
-    };
+    if (startIndex < 0) {
+      startIndex = 0;
+    }
 
     this.state = {
       index: startIndex,

@@ -5,25 +5,25 @@ import styles from './Button.scss';
 
 /* eslint-disable react/no-unused-prop-types */
 
-const Button = (props) => {
+function Button(props) {
   const specialClasses = 'onClick block small transparent uppercase smalltext nopadding largetext';
   const inheritProps = excludeKeys(props, specialClasses);
 
   const extraClass = specialClasses.split(' ')
-    .filter(c => props[c])
-    .map(c => styles[c])
+    .filter((c) => props[c])
+    .map((c) => styles[c])
     .join(' ');
 
   let buttonElement = null;
 
-  const onClick = evt => {
+  const onClick = (evt) => {
     props.onClick(evt);
     if (buttonElement) {
       buttonElement.blur();
     }
   };
 
-  const ref = domElement => {
+  const ref = (domElement) => {
     buttonElement = domElement;
   };
 
@@ -37,7 +37,7 @@ const Button = (props) => {
       { props.children }
     </button>
   );
-};
+}
 
 Button.propTypes = {
   block: PropTypes.bool,

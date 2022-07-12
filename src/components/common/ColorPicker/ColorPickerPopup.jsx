@@ -4,7 +4,8 @@ import Button from '../Input/Button/Button';
 import Tooltip from '../Tooltip/Tooltip';
 import ColorPicker from './ColorPicker';
 import styles from './ColorPickerPopup.scss';
-var { Checkboard } = require('react-color/lib/components/common');
+
+const { Checkboard } = require('react-color/lib/components/common');
 
 class ColorPickerPopup extends Component {
   constructor(props) {
@@ -63,14 +64,16 @@ class ColorPickerPopup extends Component {
   }
 
   render() {
-    const { className, color, disableAlpha, disabled, onChange } = this.props;
+    const {
+      className, color, disableAlpha, disabled, onChange,
+    } = this.props;
 
     const colorSwatchBg = {
-      background: `rgba(${ color.r }, ${ color.g }, ${ color.b }, ${ color.a })`
+      background: `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`,
     };
 
     const customTooltipCss = {
-      paddingRight: '4px', paddingLeft: '4px', maxWidth: '200px'
+      paddingRight: '4px', paddingLeft: '4px', maxWidth: '200px',
     };
 
     return (
@@ -80,24 +83,24 @@ class ColorPickerPopup extends Component {
       >
         <Button block small onClick={this.togglePopup} nopadding>
           <div className={styles.colorSwatch}>
-            <div className={styles.colorOverlay} style={colorSwatchBg}/>
+            <div className={styles.colorOverlay} style={colorSwatchBg} />
             <div className={styles.checkboard}>
-              <Checkboard size={ 10 } white="#fff" grey="#ccc" />
+              <Checkboard size={10} white="#fff" grey="#ccc" />
             </div>
           </div>
-          </Button>
+        </Button>
         { !disabled && this.state.showPopup && (
-            <Tooltip
-              fixed
-              placement="right" // TODO: fix so placement can be set from property
-              style={{...this.position, ...customTooltipCss}}
-            >
-              <ColorPicker
-                disableAlpha={disableAlpha}
-                color={color}
-                onChange={onChange}
-              />
-            </Tooltip>
+        <Tooltip
+          fixed
+          placement="right" // TODO: fix so placement can be set from property
+          style={{ ...this.position, ...customTooltipCss }}
+        >
+          <ColorPicker
+            disableAlpha={disableAlpha}
+            color={color}
+            onChange={onChange}
+          />
+        </Tooltip>
         )}
       </span>
     );
@@ -113,7 +116,7 @@ ColorPickerPopup.propTypes = {
 };
 
 ColorPickerPopup.defaultProps = {
-  className: "",
+  className: '',
   disableAlpha: false,
   disabled: false,
 };

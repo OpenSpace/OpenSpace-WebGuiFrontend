@@ -32,7 +32,8 @@ class MarkerInfoIcon extends Component {
           icon="info_outline"
           style={positionStyles.Icon}
         />
-        {this.state.showInfoWindow &&
+        {this.state.showInfoWindow
+          && (
           <Popover
             className={styles.InfoPopover}
             arrow=""
@@ -40,11 +41,12 @@ class MarkerInfoIcon extends Component {
             closeCallback={() => this.toggleInfoWindow()}
           >
             <p className={styles.InfoText}>
-              {infoText ? infoText : 'No data available'}
+              {infoText || 'No data available'}
             </p>
           </Popover>
-        }
-      </div>);
+          )}
+      </div>
+    );
   }
 }
 

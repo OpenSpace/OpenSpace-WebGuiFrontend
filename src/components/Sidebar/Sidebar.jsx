@@ -19,7 +19,7 @@ class Sidebar extends Component {
     super(props);
     this.state = {
       view: null,
-      width: 300
+      width: 300,
     };
 
     this.selectView = this.selectView.bind(this);
@@ -29,15 +29,15 @@ class Sidebar extends Component {
 
   onResizeStop(e, direction, ref, delta) {
     this.setState({
-      width: this.state.width + delta.width
-    })
+      width: this.state.width + delta.width,
+    });
   }
 
   selectView(selectedView) {
     return () => {
       this.setState((previous) => {
         const view = (previous.view === selectedView ? null : selectedView);
-        return Object.assign({}, previous, { view });
+        return { ...previous, view };
       });
     };
   }
@@ -50,7 +50,7 @@ class Sidebar extends Component {
     const { view } = this.state;
     const SelectedView = views[view];
 
-    const size = {height: this.state.view ? '100%' : 60, width: this.state.width};
+    const size = { height: this.state.view ? '100%' : 60, width: this.state.width };
 
     return (
       <Resizable
@@ -63,14 +63,14 @@ class Sidebar extends Component {
           bottomRight: false,
           bottomLeft: false,
           topLeft: false,
-          right: !!this.state.view
+          right: !!this.state.view,
         }}
         size={size}
         minHeight={size.height}
         maxHeight={size.height}
         minWidth={200}
         maxWidth={window.innerWidth - 50}
-        handleClasses={{right: styles.rightHandle}}
+        handleClasses={{ right: styles.rightHandle }}
         onResizeStop={this.onResizeStop}
       >
         <section className={`${styles.Sidebar} ${view ? styles.active : ''}`}>

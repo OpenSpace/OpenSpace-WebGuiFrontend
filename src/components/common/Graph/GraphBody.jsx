@@ -21,10 +21,8 @@ class GraphBody extends Component {
   renderWithLinearGradient(data) {
     return (
       <g>
-        <linearGradient id="linear-gradient" gradientUnits="userSpaceOnUse" x1="0" y1={this.props.height} x2={this.props.width} y2={this.props.height} >
-          {this.props.points.map((point, index) =>
-            <stop key={index} offset={point.x / this.props.width} stopColor={point.color} stopOpacity="0%" />,
-          )}
+        <linearGradient id="linear-gradient" gradientUnits="userSpaceOnUse" x1="0" y1={this.props.height} x2={this.props.width} y2={this.props.height}>
+          {this.props.points.map((point, index) => <stop key={index} offset={point.x / this.props.width} stopColor={point.color} stopOpacity="0%" />)}
         </linearGradient>
         <path
           d={data}

@@ -12,28 +12,32 @@ import Stack from './components/common/Stack/Stack';
 import About from './views/About/About';
 
 function OnTouchAbout() {
-  return <Overlay>
-    <Stack style={{ maxWidth: '500px' }}>
+  return (
+    <Overlay>
+      <Stack style={{ maxWidth: '500px' }}>
         Close
-      <About />
-    </Stack>
-  </Overlay>;
+        <About />
+      </Stack>
+    </Overlay>
+  );
 }
 
-const App = () => (
-  <Router>
-    <Routes>
-      <Route path="/onscreen" element={<OnScreenGui />} />
-      <Route path="/remote" element={<RemoteGui />} />
-      <Route path="/ontouch" element={<OnTouchGui />} />
-      <Route path="/ontouch/about" element={<OnTouchAbout />} />
-      <Route path="/actions" element={<ActionsGui />} />
-      {/* Here, more GUI variations can be added. */}
-      {/* <Route path="/tablet" element={TabletGui} /> */}
-      <Route path="/" element={<BrowserGui />} />
-      <Route element={<NotFound />} />
-    </Routes>
-  </Router>
-);
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/onscreen" element={<OnScreenGui />} />
+        <Route path="/remote" element={<RemoteGui />} />
+        <Route path="/ontouch" element={<OnTouchGui />} />
+        <Route path="/ontouch/about" element={<OnTouchAbout />} />
+        <Route path="/actions" element={<ActionsGui />} />
+        {/* Here, more GUI variations can be added. */}
+        {/* <Route path="/tablet" element={TabletGui} /> */}
+        <Route path="/" element={<BrowserGui />} />
+        <Route element={<NotFound />} />
+      </Routes>
+    </Router>
+  );
+}
 
 export default App;

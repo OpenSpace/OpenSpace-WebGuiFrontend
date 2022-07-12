@@ -7,7 +7,7 @@ import Input from './Input';
 /* globals module */
 
 storiesOf('Input/Input', module)
-  .addDecorator(story => (
+  .addDecorator((story) => (
     <div style={{ background: '#252525', padding: '20px' }}>
       { story() }
     </div>
@@ -18,7 +18,5 @@ storiesOf('Input/Input', module)
   .add('disabled', () => (<Input placeholder="Input" value="value" disabled />))
   .add('clearable', () => (<Input placeholder="Input" value="value" clearable />))
   .add('loading', () => (<Input placeholder="Input" value="value" loading />))
-  .add('label + placeholder', () =>
-    (<Input label="Special label" placeholder="Input placeholder!" value="remove this to see" />))
-  .add('with callback', () =>
-    (<Input placeholder="Input" value="change me" onChange={action('input')} />));
+  .add('label + placeholder', () => (<Input label="Special label" placeholder="Input placeholder!" value="remove this to see" />))
+  .add('with callback', () => (<Input placeholder="Input" value="change me" onChange={action('input')} />));

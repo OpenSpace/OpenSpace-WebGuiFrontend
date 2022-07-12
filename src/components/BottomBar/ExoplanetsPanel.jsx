@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { 
+import {
   reloadPropertyTree,
   removeExoplanets,
   setPopoverVisibility,
@@ -41,25 +41,25 @@ class ExoplanetsPanel extends Component {
   }
 
   togglePopover() {
-    this.props.setPopoverVisibility(!this.props.popoverVisible)
+    this.props.setPopoverVisibility(!this.props.popoverVisible);
   }
 
   updateStarName(evt) {
     this.setState({
-      starName: evt.target.value
+      starName: evt.target.value,
     });
-  }  
+  }
 
   onSelect(identifier, evt) {
     this.setState({
-      starName: identifier
+      starName: identifier,
     });
   }
 
   removeExoplanetSystem(systemName) {
-    const matchingAnchor =  (this.props.anchor.value.indexOf(systemName) == 0);
-    const matchingAim =  (this.props.aim.value.indexOf(systemName) == 0);
-    if ( matchingAnchor || matchingAim ) {
+    const matchingAnchor = (this.props.anchor.value.indexOf(systemName) == 0);
+    const matchingAim = (this.props.aim.value.indexOf(systemName) == 0);
+    if (matchingAnchor || matchingAim) {
       this.props.anchorDispatcher.set('Sun');
       this.props.aimDispatcher.set('');
     }
@@ -84,13 +84,15 @@ class ExoplanetsPanel extends Component {
     if (renderables.length === 0) {
       panelContent = noContentLabel;
     } else {
-      panelContent = renderables.map(prop =>
-        <PropertyOwner autoExpand={false}
-                       key={prop}
-                       uri={prop}
-                       trashAction={this.removeExoplanetSystem}
-                       expansionIdentifier={"P:" + prop} />
-      )
+      panelContent = renderables.map((prop) => (
+        <PropertyOwner
+          autoExpand={false}
+          key={prop}
+          uri={prop}
+          trashAction={this.removeExoplanetSystem}
+          expansionIdentifier={`P:${prop}`}
+        />
+      ));
     }
 
     return (
@@ -99,15 +101,15 @@ class ExoplanetsPanel extends Component {
         title="Exoplanet Systems"
         closeCallback={this.togglePopover}
         detachable
-        attached={true}
-      >        
+        attached
+      >
         <div className={Popover.styles.content}>
           <Row>
             { this.props.hasSystems ? (
               <FilterList
                 data={this.props.systemList}
                 className={styles.list}
-                searchText={"Star name..."}
+                searchText="Star name..."
                 viewComponent={FocusEntry}
                 onSelect={this.onSelect}
                 active={this.state.starName}
@@ -117,15 +119,16 @@ class ExoplanetsPanel extends Component {
               <CenteredLabel className={styles.redText}>
                 No exoplanet data was loaded
               </CenteredLabel>
-            )
-            }
+            )}
             <div className={Popover.styles.row}>
-              <Button onClick={this.addSystem}
-                      title="Add system"
-                      style={{width: 90}}
-                      disabled={!this.state.starName}>
+              <Button
+                onClick={this.addSystem}
+                title="Add system"
+                style={{ width: 90 }}
+                disabled={!this.state.starName}
+              >
                 <MaterialIcon icon="public" />
-                <span style={{marginLeft: 5}}>Add System</span>
+                <span style={{ marginLeft: 5 }}>Add System</span>
               </Button>
             </div>
           </Row>
@@ -146,8 +149,8 @@ class ExoplanetsPanel extends Component {
 
     return (
       <div className={Picker.Wrapper}>
-        <Picker 
-          className={`${popoverVisible && Picker.Active}`} 
+        <Picker
+          className={`${popoverVisible && Picker.Active}`}
           onClick={this.togglePopover}
         >
           <div>
@@ -167,27 +170,26 @@ const mapSubStateToProps = ({
   isDataInitialized,
   exoplanetsData,
   anchor,
-  aim
-}) => 
-{
+  aim,
+}) => {
   // Find already existing systems
-  var systems = [];
+  const systems = [];
   for (const [key, value] of Object.entries(propertyOwners)) {
     if (value.tags.includes('exoplanet_system')) {
-      systems.push("Scene." + value.identifier);
+      systems.push(`Scene.${value.identifier}`);
     }
   }
 
   return {
-    popoverVisible: popoverVisible,
+    popoverVisible,
     exoplanetSystems: systems,
     isDataInitialized,
-    luaApi: luaApi,
+    luaApi,
     systemList: exoplanetsData,
     hasSystems: (exoplanetsData && exoplanetsData.length > 0),
-    anchor: anchor,
-    aim: aim
-  }
+    anchor,
+    aim,
+  };
 };
 
 const mapStateToSubState = (state) => ({
@@ -200,14 +202,14 @@ const mapStateToSubState = (state) => ({
   aim: state.propertyTree.properties[NavigationAimKey],
 });
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   loadData: (luaApi) => {
     dispatch(loadExoplanetsData(luaApi));
   },
-  setPopoverVisibility: visible => {
+  setPopoverVisibility: (visible) => {
     dispatch(setPopoverVisibility({
       popover: 'exoplanets',
-      visible
+      visible,
     }));
   },
   refresh: () => {
@@ -217,12 +219,12 @@ const mapDispatchToProps = dispatch => ({
     dispatch(removeExoplanets({ system }));
   },
   anchorDispatcher: propertyDispatcher(dispatch, NavigationAnchorKey),
-  aimDispatcher: propertyDispatcher(dispatch, NavigationAimKey),  
-})
+  aimDispatcher: propertyDispatcher(dispatch, NavigationAimKey),
+});
 
 ExoplanetsPanel = connect(
   subStateToProps(mapSubStateToProps, mapStateToSubState),
-  mapDispatchToProps
+  mapDispatchToProps,
 )(ExoplanetsPanel);
 
 export default ExoplanetsPanel;

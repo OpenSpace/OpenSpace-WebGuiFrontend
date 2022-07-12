@@ -31,24 +31,21 @@ PropertyString.propTypes = {
 };
 
 PropertyString.defaultProps = {
-  defaultValue: 'loading'
+  defaultValue: 'loading',
 };
-
 
 const mapStateToProps = (state, { uri }) => {
   const property = state.propertyTree.properties[uri] || {};
 
   return {
     value: property.value,
-    description: property.description
-  }
-}
+    description: property.description,
+  };
+};
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-  return {
-    dispatcher: propertyDispatcher(dispatch, ownProps.uri)
-  }
-}
+const mapDispatchToProps = (dispatch, ownProps) => ({
+  dispatcher: propertyDispatcher(dispatch, ownProps.uri),
+});
 
 PropertyString = connect(mapStateToProps, mapDispatchToProps)(PropertyString);
 

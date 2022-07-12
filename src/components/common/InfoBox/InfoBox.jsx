@@ -23,14 +23,13 @@ class InfoBox extends Component {
   get position() {
     if (!this.wrapper) return { top: '0px', left: '0px' };
     if (this.props.inpanel) {
-      var scrollParent = document.getElementById(this.props.panelscroll);
-      var buttonScroll = scrollParent.scrollTop;
-      var rect = this.wrapper.getBoundingClientRect();
+      const scrollParent = document.getElementById(this.props.panelscroll);
+      const buttonScroll = scrollParent.scrollTop;
+      const rect = this.wrapper.getBoundingClientRect();
       return { top: `${this.wrapper.offsetTop - buttonScroll}px`, left: `${this.wrapper.offsetLeft + rect.width}px` };
-    } else {
-      const { top, right } = this.wrapper.getBoundingClientRect();
-      return { position: "fixed", top: `${top}px`, left: `${right}px` };
     }
+    const { top, right } = this.wrapper.getBoundingClientRect();
+    return { position: 'fixed', top: `${top}px`, left: `${right}px` };
   }
 
   showPopup() {
@@ -48,9 +47,11 @@ class InfoBox extends Component {
       <span
         ref={this.setRef('wrapper')}
       >
-        <MaterialIcon icon={icon}
-         onMouseEnter={this.showPopup}
-         onMouseLeave={this.hidePopup} />
+        <MaterialIcon
+          icon={icon}
+          onMouseEnter={this.showPopup}
+          onMouseLeave={this.hidePopup}
+        />
         { showPopup && (
           <Tooltip fixed placement="right" style={this.position}>
             { text }

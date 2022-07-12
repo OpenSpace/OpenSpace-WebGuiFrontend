@@ -72,8 +72,9 @@ class PropertyOwnerComponent extends Component {
   }
 
   get header() {
-    const { uri, name, isExpanded, setExpanded, popOut, metaAction, trashAction,
-      isRenderable, isSceneGraphNodeOrLayer, dragHandleTitleProps
+    const {
+      uri, name, isExpanded, setExpanded, popOut, metaAction, trashAction,
+      isRenderable, isSceneGraphNodeOrLayer, dragHandleTitleProps,
     } = this.props;
 
     const popOutAction = isRenderable ? popOut : undefined;
@@ -92,7 +93,12 @@ class PropertyOwnerComponent extends Component {
     );
 
     if (dragHandleTitleProps) {
-      return <div {...dragHandleTitleProps}> { header }</div>
+      return (
+        <div {...dragHandleTitleProps}>
+          {' '}
+          { header }
+        </div>
+      );
     }
     return header;
   }
@@ -154,11 +160,11 @@ class PropertyOwnerComponent extends Component {
       <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
         { this.state.isDragging && overlay }
         <Droppable droppableId="layers">
-          { provided => (
+          { (provided) => (
             <div {...provided.droppableProps} ref={provided.innerRef}>
               { shownLayers.map((uri, index) => (
                 <Draggable key={uri} draggableId={uri} index={index}>
-                  {provided => (
+                  {(provided) => (
                     <div {...provided.draggableProps} ref={provided.innerRef}>
                       <PropertyOwner
                         dragHandleTitleProps={provided.dragHandleProps}
@@ -214,9 +220,8 @@ class PropertyOwnerComponent extends Component {
               autoExpand={autoExpand}
             />
           );
-        })
-        }
-        { properties.map(uri => <Property key={uri} uri={uri} />) }
+        })}
+        { properties.map((uri) => <Property key={uri} uri={uri} />) }
       </ToggleContent>
     );
   }
@@ -254,8 +259,8 @@ const mapSubStateToProps = (
   let subowners = data ? data.subowners : [];
   let subProperties = data ? data.properties : [];
 
-  const layers = subowners.filter(uri => (isGlobeBrowsingLayer(uri)));
-  subowners = subowners.filter(uri => (
+  const layers = subowners.filter((uri) => (isGlobeBrowsingLayer(uri)));
+  subowners = subowners.filter((uri) => (
     !isPropertyOwnerHidden(properties, uri) && !isDeadEnd(propertyOwners, properties, uri) && !isGlobeBrowsingLayer(uri)
   ));
 
@@ -263,7 +268,7 @@ const mapSubStateToProps = (
   subowners.forEach((uri) => {
     subownerNames[uri] = displayName(propertyOwners, properties, uri);
   });
-  subProperties = subProperties.filter(uri => isPropertyVisible(properties, uri));
+  subProperties = subProperties.filter((uri) => isPropertyVisible(properties, uri));
 
   const sort = shouldSortAlphabetically(uri);
 
@@ -294,7 +299,7 @@ const mapSubStateToProps = (
   };
 };
 
-const mapStateToSubState = state => ({
+const mapStateToSubState = (state) => ({
   luaApi: state.luaApi,
   propertyOwners: state.propertyTree.propertyOwners,
   properties: state.propertyTree.properties,
@@ -340,9 +345,8 @@ const PropertyOwner = connect(
   mapDispatchToProps,
 )(PropertyOwnerComponent);
 
-
 PropertyOwner.propTypes = {
-  dragHandleTitleProps: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]), 
+  dragHandleTitleProps: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
   uri: PropTypes.string.isRequired,
   autoExpand: PropTypes.bool,
 };

@@ -4,12 +4,11 @@ import { connect } from 'react-redux';
 import { setPropertyValue, subscribeToProperty, unsubscribeToProperty } from '../../../../api/Actions';
 import { NavigationAnchorKey, ScaleKey, ValuePlaceholder } from '../../../../api/keys';
 import { UpdateDeltaTimeNow } from '../../../../utils/timeHelpers';
-import DateController from './../presentational/DateController';
-import ScaleController from './../presentational/ScaleController';
-import SightsController from './../presentational/SightsController';
-import TimePlayerController from './../presentational/TimePlayerController';
-import ToggleBoolButtons from './../presentational/ToggleBoolButtons';
-
+import DateController from '../presentational/DateController';
+import ScaleController from '../presentational/ScaleController';
+import SightsController from '../presentational/SightsController';
+import TimePlayerController from '../presentational/TimePlayerController';
+import ToggleBoolButtons from '../presentational/ToggleBoolButtons';
 
 class Controllers extends Component {
   constructor(props) {
@@ -22,14 +21,14 @@ class Controllers extends Component {
   componentDidMount() {
     const { scaleNodes, startListening } = this.props;
     if (scaleNodes.length !== 0) {
-      scaleNodes.forEach(n => startListening(n.description.Identifier));
+      scaleNodes.forEach((n) => startListening(n.description.Identifier));
     }
   }
 
   componentWillUnmount() {
     const { scaleNodes, stopListening } = this.props;
     if (scaleNodes.length !== 0) {
-      scaleNodes.forEach(n => stopListening(n.description.Identifier));
+      scaleNodes.forEach((n) => stopListening(n.description.Identifier));
     }
   }
 
@@ -45,14 +44,14 @@ class Controllers extends Component {
     luaApi.globebrowsing.goToGeo(
       selected.location.latitude,
       selected.location.longitude,
-      selected.location.altitude
+      selected.location.altitude,
     );
   }
 
   onChangeScale() {
     const { changePropertyValue, scaleNodes, story } = this.props;
 
-    const scale = story.scalenodes.scale;
+    const { scale } = story.scalenodes;
     const currentScale = scaleNodes[0].value;
 
     if (Number(currentScale) !== Number(scale)) {
@@ -129,7 +128,7 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   changePropertyValue: (uri, value) => {
     dispatch(setPropertyValue(uri, value));
   },

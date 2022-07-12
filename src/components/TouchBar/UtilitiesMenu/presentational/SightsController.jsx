@@ -33,7 +33,7 @@ class SightsController extends Component {
   }
 
   get sightsButtons() {
-    return (this.props.sightsList.map(sight => (
+    return (this.props.sightsList.map((sight) => (
       <Button
         className={styles.sightsLabel}
         key={sight.info}
@@ -42,8 +42,10 @@ class SightsController extends Component {
         onClick={this.selectSight}
         id={sight.info}
       >
-        <SmallLabel id={sight.info} >
-          {sight.planet},{sight.info}
+        <SmallLabel id={sight.info}>
+          {sight.planet}
+          ,
+          {sight.info}
         </SmallLabel>
       </Button>
     )));
@@ -51,7 +53,7 @@ class SightsController extends Component {
 
   selectSight(e) {
     this.togglePopover();
-    const selectedSight = this.props.sightsList.find(sight => sight.info === e.target.id);
+    const selectedSight = this.props.sightsList.find((sight) => sight.info === e.target.id);
     this.props.onChangeSight(selectedSight);
   }
 
@@ -61,7 +63,7 @@ class SightsController extends Component {
 
   render() {
     return (
-      <div className={Picker.Wrapper} >
+      <div className={Picker.Wrapper}>
         <Picker
           onClick={this.togglePopover}
           className={`${styles.sightsController} ${this.state.showPopover && styles.active}
@@ -91,6 +93,5 @@ SightsController.defaultProps = {
   onChangeSight: () => {},
   sightsList: [],
 };
-
 
 export default SightsController;

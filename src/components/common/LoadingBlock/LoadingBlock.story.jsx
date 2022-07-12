@@ -6,10 +6,16 @@ import LoadingBlock from './LoadingBlock';
 /* globals module */
 
 storiesOf('LoadingBlock', module)
-  .addDecorator(story => (
+  .addDecorator((story) => (
     <div style={{ background: '#252525', padding: '20px', color: 'white' }}>
       { story() }
     </div>
   ))
   .add('default', () => (<LoadingBlock />))
-  .add('several', () => (<div><LoadingBlock /><LoadingBlock /><LoadingBlock /></div>));
+  .add('several', () => (
+    <div>
+      <LoadingBlock />
+      <LoadingBlock />
+      <LoadingBlock />
+    </div>
+  ));

@@ -39,7 +39,7 @@ class FilterList extends Component {
     search = search.toLowerCase();
     const matcherFunc = matcher || defaultMatcher;
 
-    return data.filter(entry => matcherFunc(entry, search));
+    return data.filter((entry) => matcherFunc(entry, search));
   }
 
   changeSearch({ currentTarget }) {
@@ -182,7 +182,7 @@ FilterList.defaultProps = {
   setShowFavorites: undefined,
   searchText: 'Search...',
   searchAutoFocus: false,
-  viewComponent: props => <li>{JSON.stringify(props)}</li>,
+  viewComponent: (props) => <li>{JSON.stringify(props)}</li>,
   viewComponentProps: {},
 };
 

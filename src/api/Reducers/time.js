@@ -6,9 +6,7 @@ import { actionTypes } from '../Actions/actionTypes';
  * @param zone - the time zone in ISO 8601 format
  * @constructor
  */
-const dateStringWithTimeZone = (date, zone = 'Z') =>
-  (!date.includes('Z') ? `${date}${zone}` : date);
-
+const dateStringWithTimeZone = (date, zone = 'Z') => (!date.includes('Z') ? `${date}${zone}` : date);
 
 const defaultState = {
   time: undefined,
@@ -19,22 +17,22 @@ const defaultState = {
   hasPrevStep: undefined,
   nextStep: undefined,
   prevStep: undefined,
-  deltaTimeSteps: undefined
+  deltaTimeSteps: undefined,
 };
 
 export const time = (state = defaultState, action = {}) => {
   switch (action.type) {
     case actionTypes.updateTime:
-      const time = action.payload.time;
-      const deltaTime = action.payload.deltaTime;
-      const targetDeltaTime = action.payload.targetDeltaTime;
-      const isPaused = action.payload.isPaused;
-      const hasNextStep = action.payload.hasNextStep;
-      const hasPrevStep = action.payload.hasPrevStep;
-      const nextStep = action.payload.nextStep;
-      const prevStep = action.payload.prevStep;
-      const deltaTimeSteps = action.payload.deltaTimeSteps;
-      const newState = {...state};
+      const { time } = action.payload;
+      const { deltaTime } = action.payload;
+      const { targetDeltaTime } = action.payload;
+      const { isPaused } = action.payload;
+      const { hasNextStep } = action.payload;
+      const { hasPrevStep } = action.payload;
+      const { nextStep } = action.payload;
+      const { prevStep } = action.payload;
+      const { deltaTimeSteps } = action.payload;
+      const newState = { ...state };
 
       if (time !== undefined) {
         // The date constructor only accepts a small array of the different types that we
@@ -42,22 +40,21 @@ export const time = (state = defaultState, action = {}) => {
         // have exactly four digits.
         // So we parse the date string manually and call the correct function on the date
         // object instead
-        let date = new Date(dateStringWithTimeZone(time));
+        const date = new Date(dateStringWithTimeZone(time));
 
-        let wholeParts = time.split('T');
+        const wholeParts = time.split('T');
         console.assert(wholeParts.length === 2);
 
         //
         // Dealing with the year
-        let dayParts = wholeParts[0].split('-');
+        const dayParts = wholeParts[0].split('-');
         console.assert(dayParts.length === 3 || dayParts.length === 4);
         // If the length is 4, we have a leading - meaning that the date is negative
         if (dayParts.length === 4) {
           console.assert(dayParts[0].trim() === '');
           dayParts.shift();
           date.setFullYear(-parseInt(dayParts[0]));
-        }
-        else {
+        } else {
           date.setFullYear(parseInt(dayParts[0]));
         }
 

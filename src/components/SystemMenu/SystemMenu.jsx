@@ -24,7 +24,7 @@ class SystemMenu extends Component {
     return (
       <div className={styles.SystemMenu}>
         { this.state.showMenu && (
-          <Popover className={styles.popover} arrow="arrow bottom leftside" attached={true}>
+          <Popover className={styles.popover} arrow="arrow bottom leftside" attached>
             <nav className={styles.links} onClick={this.toggleMenu}>
 
               <button onClick={this.props.showAbout}>
@@ -34,31 +34,38 @@ class SystemMenu extends Component {
                 Open Tutorials
               </button>
               {
-                environment.developmentMode ?
-                  <div>
-                    <hr className={Popover.styles.delimiter} />
-                    <div className={styles.devModeNotifier}>GUI running in dev mode</div>
-                  </div> : null
+                environment.developmentMode
+                  ? (
+                    <div>
+                      <hr className={Popover.styles.delimiter} />
+                      <div className={styles.devModeNotifier}>GUI running in dev mode</div>
+                    </div>
+                  ) : null
               }
               <hr className={Popover.styles.delimiter} />
 
               <button onClick={this.props.console}>
-                Toggle console <span className={styles.shortcut}>~</span>
+                Toggle console
+                {' '}
+                <span className={styles.shortcut}>~</span>
               </button>
               <button onClick={this.props.nativeGui}>
-                Toggle native GUI <span className={styles.shortcut}>F1</span>
+                Toggle native GUI
+                {' '}
+                <span className={styles.shortcut}>F1</span>
               </button>
 
-{/*              <button onClick={this.props.saveChange}>
+              {/*              <button onClick={this.props.saveChange}>
                 Save settings to profile
-              </button>*/}
-
+              </button> */}
 
               <hr className={Popover.styles.delimiter} />
 
               <button onClick={this.props.quit}>
                 <MaterialIcon icon="exit_to_app" className={styles.linkIcon} />
-                Quit OpenSpace <span className={styles.shortcut}>ESC</span>
+                Quit OpenSpace
+                {' '}
+                <span className={styles.shortcut}>ESC</span>
               </button>
             </nav>
           </Popover>
@@ -83,21 +90,21 @@ const mapSubStateToProps = ({ luaApi }) => {
   return {
     quit: () => luaApi.toggleShutdown(),
     console: async () => {
-      const data = await luaApi.getPropertyValue("LuaConsole.IsVisible");
+      const data = await luaApi.getPropertyValue('LuaConsole.IsVisible');
       const visible = data[1] || false;
-      luaApi.setPropertyValue("LuaConsole.IsVisible", !visible);
+      luaApi.setPropertyValue('LuaConsole.IsVisible', !visible);
     },
     nativeGui: async () => {
-      const data = await luaApi.getPropertyValue("Modules.ImGUI.Enabled");
+      const data = await luaApi.getPropertyValue('Modules.ImGUI.Enabled');
       const visible = data[1] || false;
-      luaApi.setPropertyValue("Modules.ImGUI.Enabled", !visible);
+      luaApi.setPropertyValue('Modules.ImGUI.Enabled', !visible);
     },
     openTutorials: () => {
-      var startString = "open";
+      let startString = 'open';
       if (navigator.platform == 'Win32') {
-        startString = 'start'
+        startString = 'start';
       }
-      api.executeLuaScript("os.execute('" + startString + " http://wiki.openspaceproject.com/docs/tutorials/users/')")
+      api.executeLuaScript(`os.execute('${startString} http://wiki.openspaceproject.com/docs/tutorials/users/')`);
     },
     saveChange: async () => {
       luaApi.saveSettingsToProfile();
@@ -105,11 +112,9 @@ const mapSubStateToProps = ({ luaApi }) => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    showAbout: () => dispatch(setShowAbout(true))
-  }
-}
+const mapDispatchToProps = (dispatch) => ({
+  showAbout: () => dispatch(setShowAbout(true)),
+});
 
 SystemMenu = connect(
   subStateToProps(mapSubStateToProps, mapStateToSubState),

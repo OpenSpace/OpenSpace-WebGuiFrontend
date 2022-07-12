@@ -16,14 +16,14 @@ export const setPropertyValue = (uri, value) => ({
   },
 });
 
-export const addPropertyOwners = propertyOwners => ({
+export const addPropertyOwners = (propertyOwners) => ({
   type: actionTypes.addPropertyOwners,
   payload: {
     propertyOwners,
   },
 });
 
-export const addProperties = properties => ({
+export const addProperties = (properties) => ({
   type: actionTypes.addProperties,
   payload: {
     properties,
@@ -35,14 +35,14 @@ export const refreshGroups = () => ({
   payload: {},
 });
 
-export const subscribeToProperty = uri => ({
+export const subscribeToProperty = (uri) => ({
   type: actionTypes.subscribeToProperty,
   payload: {
     uri,
   },
 });
 
-export const unsubscribeToProperty = uri => ({
+export const unsubscribeToProperty = (uri) => ({
   type: actionTypes.unsubscribeToProperty,
   payload: {
     uri,
@@ -59,7 +59,7 @@ export const unsubscribeToTime = () => ({
   payload: {},
 });
 
-export const updateTime = timeData => ({
+export const updateTime = (timeData) => ({
   type: actionTypes.updateTime,
   payload: timeData,
 });
@@ -74,7 +74,7 @@ export const disconnectFlightController = () => ({
   payload: {},
 });
 
-export const sendFlightControl = flightControl => ({
+export const sendFlightControl = (flightControl) => ({
   type: actionTypes.sendFlightControl,
   payload: flightControl,
 });
@@ -103,14 +103,14 @@ export const onCloseConnection = () => ({
   },
 });
 
-export const changeConnectionWait = value => ({
+export const changeConnectionWait = (value) => ({
   type: actionTypes.changeConnectionWait,
   payload: {
     value,
   },
 });
 
-export const fetchData = id => ({
+export const fetchData = (id) => ({
   type: actionTypes.fetchData,
   payload: {
     id,
@@ -125,28 +125,28 @@ export const fetchDataDone = (data, id) => ({
   },
 });
 
-export const fetchDataFailed = id => ({
+export const fetchDataFailed = (id) => ({
   type: actionTypes.fetchDataFailed,
   payload: {
     id,
   },
 });
 
-export const addStoryTree = story => ({
+export const addStoryTree = (story) => ({
   type: actionTypes.addStoryTree,
   payload: {
     story,
   },
 });
 
-export const resetStoryTree = reset => ({
+export const resetStoryTree = (reset) => ({
   type: actionTypes.resetStoryTree,
   payload: {
     reset,
   },
 });
 
-export const addStoryInfo = info => ({
+export const addStoryInfo = (info) => ({
   type: actionTypes.addStoryInfo,
   payload: {
     info,
@@ -169,62 +169,62 @@ export const getDocumentation = () => ({
   payload: {},
 });
 
-export const initializeLuaApi = data => ({
+export const initializeLuaApi = (data) => ({
   type: actionTypes.initializeLuaApi,
   payload: data,
 });
 
-export const initializeVersion = data => ({
+export const initializeVersion = (data) => ({
   type: actionTypes.initializeVersion,
   payload: data,
 });
 
-export const initializeDocumentation = data => ({
+export const initializeDocumentation = (data) => ({
   type: actionTypes.initializeDocumentation,
   payload: data,
 });
 
-export const loadExoplanetsData = luaApi => ({
+export const loadExoplanetsData = (luaApi) => ({
   type: actionTypes.loadExoplanetsData,
   payload: luaApi,
 });
 
-export const initializeExoplanets = data => ({
+export const initializeExoplanets = (data) => ({
   type: actionTypes.initializeExoplanets,
   payload: data,
 });
 
-export const addExoplanets = data => ({
+export const addExoplanets = (data) => ({
   type: actionTypes.addExoplanets,
   payload: data,
 });
 
-export const removeExoplanets = data => ({
+export const removeExoplanets = (data) => ({
   type: actionTypes.removeExoplanets,
   payload: data,
 });
 
-export const loadSkyBrowserData = luaApi => ({
+export const loadSkyBrowserData = (luaApi) => ({
   type: actionTypes.loadSkyBrowserData,
   payload: luaApi,
 });
 
-export const initializeSkyBrowser = data => ({
+export const initializeSkyBrowser = (data) => ({
   type: actionTypes.initializeSkyBrowser,
-  payload: data
+  payload: data,
 });
 
-export const subscribeToSkyBrowser = data => ({
+export const subscribeToSkyBrowser = (data) => ({
   type: actionTypes.subscribeToSkyBrowser,
-  payload: data
+  payload: data,
 });
 
-export const unsubscribeToSkyBrowser = data => ({
+export const unsubscribeToSkyBrowser = (data) => ({
   type: actionTypes.unsubscribeToSkyBrowser,
-  payload: data
+  payload: data,
 });
 
-export const updateSkyBrowser = data => ({
+export const updateSkyBrowser = (data) => ({
   type: actionTypes.updateSkyBrowser,
   payload: data,
 });
@@ -239,84 +239,82 @@ export const unsubscribeToShortcuts = () => ({
   payload: {},
 });
 
-export const initializeShortcuts = data => ({
+export const initializeShortcuts = (data) => ({
   type: actionTypes.initializeShortcuts,
   payload: data,
 });
 
-export const triggerAction = data => ({
+export const triggerAction = (data) => ({
   type: actionTypes.triggerAction,
   payload: data,
 });
 
-export const setActionsPath = data => ({
+export const setActionsPath = (data) => ({
   type: actionTypes.setActionsPath,
   payload: data,
 });
 
-export const toggleKeybindViewer = data => ({
+export const toggleKeybindViewer = (data) => ({
   type: actionTypes.toggleKeybindViewer,
   payload: data,
 });
 
-
-export const setNavigationAction = data => ({
+export const setNavigationAction = (data) => ({
   type: actionTypes.setNavigationAction,
   payload: data,
 });
 
-export const setOriginPickerShowFavorites = showFavorites => ({
+export const setOriginPickerShowFavorites = (showFavorites) => ({
   type: actionTypes.setOriginPickerShowFavorites,
   payload: showFavorites,
 });
 
-export const setPopoverVisibility = data => ({
+export const setPopoverVisibility = (data) => ({
   type: actionTypes.setPopoverVisibility,
   payload: data,
 });
 
-export const setShowAbout = show => ({
+export const setShowAbout = (show) => ({
   type: actionTypes.setShowAbout,
   payload: show,
 });
 
-export const setPopoverAttachment = data => ({
+export const setPopoverAttachment = (data) => ({
   type: actionTypes.setPopoverPosition,
   payload: data,
 });
 
-export const setPopoverPosition = data => ({
+export const setPopoverPosition = (data) => ({
   type: actionTypes.setPopoverPosition,
   payload: data,
 });
 
-export const addNodePropertyPopover = data => ({
+export const addNodePropertyPopover = (data) => ({
   type: actionTypes.addNodePropertyPopover,
   payload: data,
 });
 
-export const removeNodePropertyPopover = data => ({
+export const removeNodePropertyPopover = (data) => ({
   type: actionTypes.removeNodePropertyPopover,
   payload: data,
 });
 
-export const addNodeMetaPopover = data => ({
+export const addNodeMetaPopover = (data) => ({
   type: actionTypes.addNodeMetaPopover,
   payload: data,
 });
 
-export const removeNodeMetaPopover = data => ({
+export const removeNodeMetaPopover = (data) => ({
   type: actionTypes.removeNodeMetaPopover,
   payload: data,
 });
 
-
-export const setPopoverActiveTab = data => ({
+export const setPopoverActiveTab = (data) => ({
   type: actionTypes.setPopoverActiveTab,
   payload: data,
 });
 
-export const setPropertyTreeExpansion = data => ({
+export const setPropertyTreeExpansion = (data) => ({
   type: actionTypes.setPropertyTreeExpansion,
   payload: data,
 });
@@ -336,7 +334,7 @@ export const refreshEngineMode = () => ({
   payload: {},
 });
 
-export const updateEngineMode = data => ({
+export const updateEngineMode = (data) => ({
   type: actionTypes.updateEngineMode,
   payload: data,
 });
@@ -356,7 +354,7 @@ export const refreshSessionRecording = () => ({
   payload: {},
 });
 
-export const updateSessionRecording = data => ({
+export const updateSessionRecording = (data) => ({
   type: actionTypes.updateSessionRecording,
   payload: data,
 });

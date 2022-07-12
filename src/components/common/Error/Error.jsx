@@ -2,11 +2,13 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import styles from './Error.scss';
 
-const Error = ({ children, className }) => (
-  <div className={`${className} ${styles.ErrorBox}`}>
-    { children }
-  </div>
-);
+function Error({ children, className }) {
+  return (
+    <div className={`${className} ${styles.ErrorBox}`}>
+      { children }
+    </div>
+  );
+}
 
 Error.propTypes = {
   children: PropTypes.node.isRequired,

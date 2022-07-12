@@ -14,11 +14,12 @@ class Pane extends Component {
             { title }
           </div>
 
-          { closeCallback && 
+          { closeCallback
+            && (
             <button onClick={closeCallback(false)} className={styles.close}>
               <MaterialIcon icon="close" className="small" />
             </button>
-          }
+            )}
         </header>
         <div className={styles.content}>
           { children }

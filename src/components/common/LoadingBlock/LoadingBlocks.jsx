@@ -6,7 +6,7 @@ import LoadingBlock from './LoadingBlock';
 // eslint-disable-next-line no-mixed-operators
 const rand = (min, max) => Math.random() * (max - min) + min;
 
-const LoadingBlocks = (props) => {
+function LoadingBlocks(props) {
   const { min, max, fixed } = props;
   const count = fixed || Math.round(rand(min, max));
   const inherit = excludeKeys(props, 'fixed max min loading');
@@ -17,7 +17,7 @@ const LoadingBlocks = (props) => {
       )) }
     </div>
   );
-};
+}
 
 LoadingBlocks.propTypes = {
   fixed: PropTypes.number,

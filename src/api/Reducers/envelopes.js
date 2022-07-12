@@ -40,9 +40,7 @@ const envelope = (state = {}, action) => { // state refers to individual envelop
       return [...state];
     case actionTypes.addEnvelope: {
       let counter = 0;
-      const points = action.payload.points.map(value =>
-        point(undefined, action, value, counter++),
-      );
+      const points = action.payload.points.map((value) => point(undefined, action, value, counter++));
       return {
         id: action.payload.id,
         points,
@@ -52,14 +50,13 @@ const envelope = (state = {}, action) => { // state refers to individual envelop
     case actionTypes.addPoint: {
       const pointPos = Math.ceil(state.points.length / 2);
       const pointId = state.points.length;
-      const pointValue = Object.assign({},
-        {
-          position: {
-            x: (state.points[pointPos - 1].position.x + state.points[pointPos].position.x) / 2,
-            y: (state.points[pointPos - 1].position.y + state.points[pointPos].position.y) / 2,
-          },
-          color: action.payload.color,
-        });
+      const pointValue = {
+        position: {
+          x: (state.points[pointPos - 1].position.x + state.points[pointPos].position.x) / 2,
+          y: (state.points[pointPos - 1].position.y + state.points[pointPos].position.y) / 2,
+        },
+        color: action.payload.color,
+      };
       // TODO Clean up
       state.points.splice(pointPos, 0, point(undefined, action, pointValue, pointId));
       return {
@@ -70,10 +67,10 @@ const envelope = (state = {}, action) => { // state refers to individual envelop
       };
     }
     case actionTypes.movePoint: {
-      const points = state.points.map(point => ({
+      const points = state.points.map((point) => ({
         ...point,
-        position: (point.id === action.payload.id) ?
-          {
+        position: (point.id === action.payload.id)
+          ? {
             x: point.position.x + action.payload.deltaPosition.x,
             y: point.position.y + action.payload.deltaPosition.y,
           }
@@ -92,19 +89,20 @@ const envelope = (state = {}, action) => { // state refers to individual envelop
     case actionTypes.changeColor:
       return {
         ...state,
-        points: state.points.map(point => ({
+        points: state.points.map((point) => ({
           ...point,
-          color: (point.active || state.active) ?
-            action.payload.color
-            : point.color })),
+          color: (point.active || state.active)
+            ? action.payload.color
+            : point.color,
+        })),
       };
     case actionTypes.toggleActiveEnvelope:
       return {
         ...state,
-        active: (state.id === action.payload.envelopeId) ?
-          !state.active
+        active: (state.id === action.payload.envelopeId)
+          ? !state.active
           : false,
-        points: state.points.map(point => ({
+        points: state.points.map((point) => ({
           ...point,
           active: false,
         })),
@@ -113,20 +111,20 @@ const envelope = (state = {}, action) => { // state refers to individual envelop
       return {
         ...state,
         active: false,
-        points: state.points.map(point => ({
+        points: state.points.map((point) => ({
           ...point,
-          active: (point.id === action.payload.pointId) ?
-            !point.active
+          active: (point.id === action.payload.pointId)
+            ? !point.active
             : false,
         })),
       };
     case actionTypes.setClickablePoint:
       return {
         ...state,
-        points: state.points.map(point => ({
+        points: state.points.map((point) => ({
           ...point,
-          clickable: (point.id === action.payload.pointId) ?
-            action.payload.isClickable
+          clickable: (point.id === action.payload.pointId)
+            ? action.payload.isClickable
             : true,
         })),
       };
@@ -142,7 +140,7 @@ const envelopes = (state = [], action) => { // state refers to array of envelope
     case actionTypes.clearEnvelopes:
       return [];
     case actionTypes.deleteEnvelope:
-      return state.filter(envelope => envelope.active !== true);
+      return state.filter((envelope) => envelope.active !== true);
     case actionTypes.addPoint:
       return state.map((element) => {
         if (element.active === true) {
@@ -161,7 +159,7 @@ const envelopes = (state = [], action) => { // state refers to array of envelope
       });
     case actionTypes.toggleActiveEnvelope:
     case actionTypes.changeColor:
-      return state.map(element => envelope(element, action));
+      return state.map((element) => envelope(element, action));
     default:
       return state;
   }

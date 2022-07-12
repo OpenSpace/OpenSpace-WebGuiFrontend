@@ -7,17 +7,17 @@ import Point from './Point';
 const pointsForEnvelopeGraph = (data, height) => {
   const convertedData = [];
   data.forEach((point) => {
-    const tmpObject = Object.assign({},
-      { x: point.position.x,
-        y: height - point.position.y,
-        color: point.color },
-    );
+    const tmpObject = {
+      x: point.position.x,
+      y: height - point.position.y,
+      color: point.color,
+    };
     convertedData.push(tmpObject);
   });
   return convertedData;
 };
 
-const EnvelopeCanvas = ({
+function EnvelopeCanvas({
   handleClick,
   handleDrag,
   height,
@@ -26,9 +26,10 @@ const EnvelopeCanvas = ({
   pointPositions,
   minValue,
   maxValue,
-}) => (
-  <div>
-    {(envelopes.length !== 0) && (
+}) {
+  return (
+    <div>
+      {(envelopes.length !== 0) && (
       <div>
         <PointPosition
           className={styles.Line}
@@ -39,8 +40,8 @@ const EnvelopeCanvas = ({
           minValue={minValue}
           maxValue={maxValue}
         />
-        {envelopes.map(envelope =>
-          (<div key={envelope.id}>
+        {envelopes.map((envelope) => (
+          <div key={envelope.id}>
             <svg className={styles.Line} height={height} width={width}>
               <GraphBody
                 UseLinearGradient
@@ -48,12 +49,12 @@ const EnvelopeCanvas = ({
                 x={0}
                 y={600}
                 width={width}
-                fillOpacity={'0'}
+                fillOpacity="0"
                 strokeWidth={2}
               />
             </svg>
-            {envelope.points.map((point, index) =>
-              (<Point
+            {envelope.points.map((point, index) => (
+              <Point
                 className={styles.Envelope}
                 key={point.id}
                 handleClick={() => handleClick(envelope, point.id)}
@@ -61,18 +62,19 @@ const EnvelopeCanvas = ({
                 height={height}
                 width={width}
                 {...point}
-                bounds={(index === 0) ? { x1: 0, x2: envelope.points[1].position.x } :
-                  (index === envelope.points.length - 1) ? { x1: envelope.points[envelope.points.length - 2].position.x, x2: width } :
-                    { x1: envelope.points[0].position.x, x2: envelope.points[envelope.points.length - 1].position.x }}
+                bounds={(index === 0) ? { x1: 0, x2: envelope.points[1].position.x }
+                  : (index === envelope.points.length - 1) ? { x1: envelope.points[envelope.points.length - 2].position.x, x2: width }
+                    : { x1: envelope.points[0].position.x, x2: envelope.points[envelope.points.length - 1].position.x }}
                 active={!!((point.active || envelope.active))}
-              />),
-            )}
-          </div>),
-        )}
+              />
+            ))}
+          </div>
+        ))}
       </div>
-    )}
-  </div>
-);
+      )}
+    </div>
+  );
+}
 /* EnvelopeCanvas.propTypes = {
   HandleDrag: PropTypes.func.isRequired,
   handleClick: PropTypes.func.isRequired,

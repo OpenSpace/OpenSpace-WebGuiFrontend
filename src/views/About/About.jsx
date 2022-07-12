@@ -7,64 +7,80 @@ import styles from './About.scss';
 import logo from './logo.png';
 
 const openSpaceVersion = (props) => {
-  const currentVersion = <p>OpenSpace version: {
-    props.hasVersion ?
-      formatVersion(props.version.openSpaceVersion) :
-      <LoadingString loading={true}/>
+  const currentVersion = (
+    <p>
+      OpenSpace version:
+      {
+    props.hasVersion
+      ? formatVersion(props.version.openSpaceVersion)
+      : <LoadingString loading />
     }
-  </p>
+    </p>
+  );
 
   let latestAvailableVersion = null;
 
-  const newerExists = props.hasVersion &&
-                      props.version.latestOpenSpaceVersion &&
-                      isOlder(props.version.openSpaceVersion, props.version.latestOpenSpaceVersion);
+  const newerExists = props.hasVersion
+                      && props.version.latestOpenSpaceVersion
+                      && isOlder(props.version.openSpaceVersion, props.version.latestOpenSpaceVersion);
 
   if (newerExists) {
-    latestAvailableVersion = <p className={styles.notification}>
-      Version {formatVersion(props.version.latestOpenSpaceVersion)} is available at openspaceproject.com
-    </p>;
+    latestAvailableVersion = (
+      <p className={styles.notification}>
+        Version
+        {' '}
+        {formatVersion(props.version.latestOpenSpaceVersion)}
+        {' '}
+        is available at openspaceproject.com
+      </p>
+    );
   }
 
-  return <>
-    { currentVersion }
-    { latestAvailableVersion }
-  </>
+  return (
+    <>
+      { currentVersion }
+      { latestAvailableVersion }
+    </>
+  );
+};
 
-}
-
-/*const socketApiVersion = (props) =>
+/* const socketApiVersion = (props) =>
   <p>Socket API version: {props.hasVersion ?
       formatVersion(props.version.socketApiVersion) :
       <LoadingString loading={true}/>}
-  </p>*/
+  </p> */
 
-let About = (props) => (
-  <Row className={styles.about}>
-    <section>
-      <img src={logo} alt="OpenSpace Logo" className={styles.img} />
-    </section>
-    <section>
-      <h1>OpenSpace</h1>
-      <p>
-        OpenSpace is open source interactive data
-        visualization software designed to visualize
-        the entire known universe and portray our
-        ongoing efforts to investigate the cosmos.
-      </p>
-      {openSpaceVersion(props)}
-      <p>
-        &copy; 2014 - { (new Date()).getUTCFullYear() }
-        &nbsp; OpenSpace Development Team<br/>
-        openspaceproject.com
-      </p>
-    </section>
-  </Row>
-);
+function About(props) {
+  return (
+    <Row className={styles.about}>
+      <section>
+        <img src={logo} alt="OpenSpace Logo" className={styles.img} />
+      </section>
+      <section>
+        <h1>OpenSpace</h1>
+        <p>
+          OpenSpace is open source interactive data
+          visualization software designed to visualize
+          the entire known universe and portray our
+          ongoing efforts to investigate the cosmos.
+        </p>
+        {openSpaceVersion(props)}
+        <p>
+          &copy; 2014 -
+          {' '}
+          { (new Date()).getUTCFullYear() }
+        &nbsp; OpenSpace Development Team
+          <br />
+          openspaceproject.com
+        </p>
+      </section>
+    </Row>
+  );
+}
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   hasVersion: state.version.isInitialized,
-  version: state.version.data
+  version: state.version.data,
 });
 
 About = connect(

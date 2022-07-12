@@ -12,7 +12,7 @@ class SkyBrowserInfoBox extends Component {
     super(props);
     this.state = {
       isPopupShowing: false,
-      tooltipActive: false
+      tooltipActive: false,
     };
 
     this.setRef = this.setRef.bind(this);
@@ -34,8 +34,10 @@ class SkyBrowserInfoBox extends Component {
     if (!this.wrapper) {
       return { top: '0px', left: '0px' };
     }
-    const { top, left, right, bottom } = this.wrapper.getBoundingClientRect();
-    return { top: `${top}`, left: `${right}`};
+    const {
+      top, left, right, bottom,
+    } = this.wrapper.getBoundingClientRect();
+    return { top: `${top}`, left: `${right}` };
   }
 
   openImageUrl(imageUrl) {
@@ -67,18 +69,20 @@ class SkyBrowserInfoBox extends Component {
   }
 
   openEsaSky(ra, dec, fov) {
-    let esaSkyUrl = "http://sky.esa.int/?target="+ra+"%"+dec+"&hips=DSS2+color&fov="+fov+"&cooframe=J2000&sci=true&lang=en";
-    window.open(esaSkyUrl, "EsaSky");
+    const esaSkyUrl = `http://sky.esa.int/?target=${ra}%${dec}&hips=DSS2+color&fov=${fov}&cooframe=J2000&sci=true&lang=en`;
+    window.open(esaSkyUrl, 'EsaSky');
   }
 
   render() {
-    const { icon, text, title, textUrl, ra, dec, fov, hasCelestialCoords} = this.props;
+    const {
+      icon, text, title, textUrl, ra, dec, fov, hasCelestialCoords,
+    } = this.props;
     const { isPopupShowing } = this.state;
     const esaSkyButton = hasCelestialCoords ? (
-      <Button onClick={() => {this.openEsaSky(ra,dec,fov)}} className={styles.tooltipButton} transparent small>
-        <img src={esaSkyLogo} alt="EsaSky" style={{width:'100%'}} />
+      <Button onClick={() => { this.openEsaSky(ra, dec, fov); }} className={styles.tooltipButton} transparent small>
+        <img src={esaSkyLogo} alt="EsaSky" style={{ width: '100%' }} />
       </Button>
-    ) : "";
+    ) : '';
 
     return (
       <span ref={this.setRef('wrapper')}>
@@ -87,7 +91,7 @@ class SkyBrowserInfoBox extends Component {
           small
           onClick={this.togglePopup}
         >
-          <MaterialIcon icon={icon} style={{fontSize: '15px'}}/>
+          <MaterialIcon icon={icon} style={{ fontSize: '15px' }} />
         </Button>
         {isPopupShowing && (
           <SkyBrowserTooltip
@@ -96,8 +100,8 @@ class SkyBrowserInfoBox extends Component {
           >
             <span className={styles.tooltipTitle}>{ title }</span>
             {text}
-            {textUrl !== "" && (
-              <Button className={styles.tooltipButton} onClick={ () => this.openImageUrl(textUrl) }>
+            {textUrl !== '' && (
+              <Button className={styles.tooltipButton} onClick={() => this.openImageUrl(textUrl)}>
                 Read more
               </Button>
             )}
@@ -113,7 +117,7 @@ SkyBrowserInfoBox.propTypes = {
   icon: PropTypes.string,
   title: PropTypes.string.isRequired,
   text: PropTypes.string,
-  textUrl: PropTypes.string
+  textUrl: PropTypes.string,
 };
 
 SkyBrowserInfoBox.defaultProps = {

@@ -27,8 +27,10 @@ import {
 
 const KEYCODE_D = 68;
 
-function OnTouchGui({ luaApi, FetchData, StartConnection, anchorNode, changePropertyValue, triggerActionDispatcher,
-  scaleNodes, connectionLost, story, storyIdentifier, version, AddStoryTree, AddStoryInfo, ResetStoryInfo, startListening, stopListening }) {
+function OnTouchGui({
+  luaApi, FetchData, StartConnection, anchorNode, changePropertyValue, triggerActionDispatcher,
+  scaleNodes, connectionLost, story, storyIdentifier, version, AddStoryTree, AddStoryInfo, ResetStoryInfo, startListening, stopListening,
+}) {
   const [developerMode, setDeveloperMode] = React.useState(false);
   const [currentStory, setCurrentStory] = React.useState(DefaultStory);
   const [sliderStartStory, setSliderStartStory] = React.useState();
@@ -37,15 +39,13 @@ function OnTouchGui({ luaApi, FetchData, StartConnection, anchorNode, changeProp
   React.useEffect(() => {
     if (!hasCheckedVersion && version?.isInitialized) {
       const versionData = version.data;
-      if (!isCompatible(
-        versionData.openSpaceVersion, RequiredOpenSpaceVersion
-      )) {
+      if (!isCompatible(versionData.openSpaceVersion, RequiredOpenSpaceVersion)) {
         console.warn(
           `Possible incompatibility: \nRequired OpenSpace version: ${
             formatVersion(RequiredOpenSpaceVersion)
           }. Currently controlling OpenSpace version ${
             formatVersion(versionData.openSpaceVersion)
-          }.`
+          }.`,
         );
       }
       if (!isCompatible(versionData.socketApiVersion, RequiredSocketApiVersion)) {
@@ -54,14 +54,13 @@ function OnTouchGui({ luaApi, FetchData, StartConnection, anchorNode, changeProp
             formatVersion(RequiredSocketApiVersion)
           }. Currently operating over API version ${
             formatVersion(versionData.socketApiVersion)
-          }.`
+          }.`,
         );
       }
       setHasCheckedVersion(true);
     }
-
   }, [version]);
-  
+
   React.useEffect(() => {
     StartConnection();
     FetchData(InfoIconKey);
@@ -115,16 +114,14 @@ function OnTouchGui({ luaApi, FetchData, StartConnection, anchorNode, changeProp
     // If the previous story toggled bool properties reset them to default value
     if (story.toggleboolproperties) {
       story.toggleboolproperties.forEach((property) => {
-        const defaultValue = property.defaultvalue ? true : false;
+        const defaultValue = !!property.defaultvalue;
         if (property.isAction) {
           if (defaultValue) {
             triggerActionDispatcher(property.actionEnabled);
-          }
-          else {
+          } else {
             triggerActionDispatcher(property.actionDisabled);
           }
-        }
-        else {
+        } else {
           changePropertyValue(property.URI, defaultValue);
         }
       });
@@ -141,13 +138,13 @@ function OnTouchGui({ luaApi, FetchData, StartConnection, anchorNode, changeProp
     const oppositeValue = !value;
 
     if (story.hidenodes) {
-      story.hidenodes.forEach(node => toggleShowNode(luaApi, node, value));
+      story.hidenodes.forEach((node) => toggleShowNode(luaApi, node, value));
     }
     if (story.highresplanets) {
-      story.highresplanets.forEach(node => toggleHighResolution(luaApi, node, oppositeValue));
+      story.highresplanets.forEach((node) => toggleHighResolution(luaApi, node, oppositeValue));
     }
     if (story.noshadingplanets) {
-      story.noshadingplanets.forEach(node => toggleShading(luaApi, node, value));
+      story.noshadingplanets.forEach((node) => toggleShading(luaApi, node, value));
     }
     if (story.galaxies) {
       toggleGalaxies(luaApi, oppositeValue);
@@ -204,18 +201,16 @@ function OnTouchGui({ luaApi, FetchData, StartConnection, anchorNode, changeProp
       </p>
       {(currentStory === DefaultStory)
         ? <Slider startSlider={sliderStartStory} changeStory={setStory} />
-        : <TouchBar resetStory={resetStory} />
-      }
+        : <TouchBar resetStory={resetStory} />}
     </div>
   );
 }
-
 
 const mapStateToProps = (state) => {
   let storyIdentifier = [];
   let anchorNode;
   const scaleNodes = [];
-  const story = state.storyTree.story;
+  const { story } = state.storyTree;
 
   if (state.propertyTree !== undefined) {
     storyIdentifier = story.identifier;
@@ -244,7 +239,7 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   changePropertyValue: (uri, value) => {
     dispatch(setPropertyValue(uri, value));
   },
@@ -279,19 +274,19 @@ OnTouchGui = connect(
 // Because some of the functionality in OnTouch Gui requires the luaApi
 // we wrap it up in another component that only renders the gui after
 // luaApi has been connected
-function RequireLuaApi({StartConnection, luaApi, children }) {
+function RequireLuaApi({ StartConnection, luaApi, children }) {
   React.useEffect(() => {
     StartConnection();
   }, []);
 
-  return !luaApi ? <></> : <>{children}</>
+  return !luaApi ? <></> : <>{children}</>;
 }
 
-const mapState = state => ({
+const mapState = (state) => ({
   luaApi: state.luaApi,
 });
 
-const mapDispatch = dispatch => ({
+const mapDispatch = (dispatch) => ({
   StartConnection: () => {
     dispatch(startConnection());
   },
@@ -299,7 +294,9 @@ const mapDispatch = dispatch => ({
 
 RequireLuaApi = connect(mapState, mapDispatch)(RequireLuaApi);
 
-const WrappedOnTouchGui = props => <RequireLuaApi><OnTouchGui {...props} /></RequireLuaApi>;
+function WrappedOnTouchGui(props) {
+  return <RequireLuaApi><OnTouchGui {...props} /></RequireLuaApi>;
+}
 
 OnTouchGui.propTypes = {
   StartConnection: PropTypes.func,
@@ -326,7 +323,7 @@ OnTouchGui.defaultProps = {
   story: {},
   anchorNode: {},
   scaleNodes: {},
-  connectionLost: null
+  connectionLost: null,
 };
 
 export default WrappedOnTouchGui;

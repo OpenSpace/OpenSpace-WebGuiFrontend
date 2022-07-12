@@ -1,7 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import EnvelopeCanvas from '../presentational/EnvelopeCanvas';
-import { toggleActiveEnvelope, toggleActivePoint, movePoint, setClickablePoint } from '../../../../api/Actions/transferFunctionActions';
+import {
+  toggleActiveEnvelope, toggleActivePoint, movePoint, setClickablePoint,
+} from '../../../../api/Actions/transferFunctionActions';
 
 const hasActiveChild = (envelope) => {
   let hasActiveChild = false;
@@ -14,26 +16,22 @@ const hasActiveChild = (envelope) => {
 const getPointPositions = (envelopes, height) => {
   const convertedPoints = [];
   if (envelopes.length !== 0) {
-    envelopes.map(envelope =>
-      envelope.points.map(point =>
-        convertedPoints.push(
-          Object.assign({},
-            { x1: point.position.x,
-              y1: point.position.y,
-              x2: point.position.x,
-              y2: height },
-          ),
-        ),
-      ),
-    );
+    envelopes.map((envelope) => envelope.points.map((point) => convertedPoints.push(
+      {
+        x1: point.position.x,
+        y1: point.position.y,
+        x2: point.position.x,
+        y2: height,
+      },
+    )));
     return convertedPoints;
   }
 };
 
 const mapStateToProps = (state, ownProps) => {
-  const envelopes = ownProps.activeVolume.properties.find(obj => obj.id === 'TransferFunction').Value.map(envelope => ({
+  const envelopes = ownProps.activeVolume.properties.find((obj) => obj.id === 'TransferFunction').Value.map((envelope) => ({
     ...envelope,
-    points: envelope.points.map(point => ({
+    points: envelope.points.map((point) => ({
       ...point,
       position: {
         x: point.position.x * ownProps.width,
@@ -42,8 +40,8 @@ const mapStateToProps = (state, ownProps) => {
     })),
   }));
 
-  const minValue = Number(ownProps.activeVolume.properties.find(obj => obj.id === 'MinValue').Value);
-  const maxValue = Number(ownProps.activeVolume.properties.find(obj => obj.id === 'MaxValue').Value);
+  const minValue = Number(ownProps.activeVolume.properties.find((obj) => obj.id === 'MinValue').Value);
+  const maxValue = Number(ownProps.activeVolume.properties.find((obj) => obj.id === 'MaxValue').Value);
 
   const pointPositions = getPointPositions(envelopes, ownProps.height);
 
@@ -57,7 +55,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
   handleDrag: (e, ui, index, envelope) => {
-    const id = envelope.points[index].id;
+    const { id } = envelope.points[index];
     if (ui.deltaX !== 0 && ui.deltaY !== 0) {
       dispatch(setClickablePoint(false, envelope.id, id, ownProps.URI));
     }

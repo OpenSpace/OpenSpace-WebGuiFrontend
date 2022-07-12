@@ -5,21 +5,29 @@ import PropertyOwner from './Properties/PropertyOwner';
 
 class ContextSection extends Component {
   render() {
-    const focusOrAnchor = this.props.aim ? "Anchor" : "Focus";
-    return <>
-      {this.props.anchor &&
-        <PropertyOwner expansionIdentifier={this.props.expansionIdentifier + '/anchor'}
-                       name={"Current " + focusOrAnchor + ": " + this.props.anchorName}
-                       uri={this.props.anchor}
-                       autoExpand={false} />
-      }
-      {this.props.aim &&
-        <PropertyOwner expansionIdentifier={this.props.expansionIdentifier + '/aim'}
-                       name={"Current Aim: " + this.props.aimName}
-                       uri={this.props.aim}
-                       autoExpand={false} />
-      }
-    </>
+    const focusOrAnchor = this.props.aim ? 'Anchor' : 'Focus';
+    return (
+      <>
+        {this.props.anchor
+        && (
+        <PropertyOwner
+          expansionIdentifier={`${this.props.expansionIdentifier}/anchor`}
+          name={`Current ${focusOrAnchor}: ${this.props.anchorName}`}
+          uri={this.props.anchor}
+          autoExpand={false}
+        />
+        )}
+        {this.props.aim
+        && (
+        <PropertyOwner
+          expansionIdentifier={`${this.props.expansionIdentifier}/aim`}
+          name={`Current Aim: ${this.props.aimName}`}
+          uri={this.props.aim}
+          autoExpand={false}
+        />
+        )}
+      </>
+    );
   }
 }
 
@@ -29,25 +37,25 @@ ContextSection.propTypes = {
 ContextSection.defaultProps = {
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const anchorProp = state.propertyTree.properties[NavigationAnchorKey];
   const aimProp = state.propertyTree.properties[NavigationAimKey];
 
-  const anchor = anchorProp &&
-                 anchorProp.value !== '' &&
-                 (ScenePrefixKey + anchorProp.value);
+  const anchor = anchorProp
+                 && anchorProp.value !== ''
+                 && (ScenePrefixKey + anchorProp.value);
 
-  const aim = aimProp &&
-              aimProp.value !== '' &&
-              (ScenePrefixKey + aimProp.value);
+  const aim = aimProp
+              && aimProp.value !== ''
+              && (ScenePrefixKey + aimProp.value);
 
-  let anchorName = "";
+  let anchorName = '';
   if (anchor) {
     const anchorNode = state.propertyTree.propertyOwners[anchor];
     anchorName = anchorNode ? anchorNode.name : anchor;
   }
 
-  let aimName = "";
+  let aimName = '';
   if (aim) {
     const aimNode = state.propertyTree.propertyOwners[aim];
     aimName = aimNode ? aimNode.name : aim;
@@ -57,9 +65,9 @@ const mapStateToProps = state => {
     anchor,
     anchorName,
     aim,
-    aimName
+    aimName,
   };
-}
+};
 
 ContextSection = connect(
   mapStateToProps,

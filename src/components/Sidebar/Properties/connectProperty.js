@@ -5,9 +5,9 @@ import subStateToProps from '../../../utils/subStateToProps';
 const mapDispatchToProps = (dispatch, ownProps) => {
   const { uri } = ownProps;
   return {
-    dispatcher: propertyDispatcher(dispatch, uri)
-  }
-}
+    dispatcher: propertyDispatcher(dispatch, uri),
+  };
+};
 
 const mapStateToSubState = (state) => ({
   properties: state.propertyTree.properties,
@@ -19,12 +19,11 @@ const mapSubStateToProps = ({ properties }, ownProps) => {
 
   return {
     value: property.value,
-    description: property.description
-  }
-}
+    description: property.description,
+  };
+};
 
-export const connectProperty =
-  Property => connect(
-    subStateToProps(mapSubStateToProps, mapStateToSubState),
-    mapDispatchToProps
-  )(Property);
+export const connectProperty = (Property) => connect(
+  subStateToProps(mapSubStateToProps, mapStateToSubState),
+  mapDispatchToProps,
+)(Property);

@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { isPropertyOwnerHidden } from './../../utils/propertyTreeHelpers';
+import { isPropertyOwnerHidden } from '../../utils/propertyTreeHelpers';
 import { ObjectWordBeginningSubstring } from '../../utils/StringMatchers';
 import subStateToProps from '../../utils/subStateToProps';
 import FilterList from '../common/FilterList/FilterList';
@@ -16,10 +16,10 @@ class ScenePane extends Component {
 
   render() {
     let favorites = [];
-    const entries = this.props.propertyOwners.map(uri => ({
+    const entries = this.props.propertyOwners.map((uri) => ({
       key: uri,
       type: 'propertyOwner',
-      uri: uri
+      uri,
     }));
 
     favorites.push({
@@ -27,10 +27,10 @@ class ScenePane extends Component {
       type: 'context',
     });
 
-    favorites = favorites.concat(this.props.groups.map(item => ({
+    favorites = favorites.concat(this.props.groups.map((item) => ({
       key: item,
       path: item,
-      type: 'group'
+      type: 'group',
     })));
 
     return (
@@ -40,11 +40,13 @@ class ScenePane extends Component {
         )}
 
         { entries.length > 0 && (
-          <FilterList favorites={favorites}
-                      matcher={this.props.matcher}
-                      data={entries}
-                      viewComponent={ScenePaneListItem}
-                      searchAutoFocus />
+          <FilterList
+            favorites={favorites}
+            matcher={this.props.matcher}
+            data={entries}
+            viewComponent={ScenePaneListItem}
+            searchAutoFocus
+          />
         )}
       </Pane>
     );
@@ -66,35 +68,34 @@ const mapStateToSubState = (state) => ({
 });
 
 const mapSubStateToProps = ({ groups, properties, propertyOwners }) => {
-  const topLevelGroups = Object.keys(groups).filter(path => {
+  const topLevelGroups = Object.keys(groups).filter((path) => {
     // Get the number of slashes in the path
     const depth = (path.match(/\//g) || []).length;
     return depth <= 1;
-  }).map(path =>
-    path.slice(1) // Remove leading slash
+  }).map((path) => path.slice(1), // Remove leading slash
   ).reduce((obj, key) => ({ // Convert back to object
-      ...obj,
-      [key]: true
+    ...obj,
+    [key]: true,
   }), {});
 
   // Reorder properties based on SceneProperties ordering property
   let sortedGroups = [];
   const ordering = properties['Modules.ImGUI.Main.SceneProperties.Ordering'];
   if (ordering && ordering.value) {
-    ordering.value.forEach(item => {
+    ordering.value.forEach((item) => {
       if (topLevelGroups[item]) {
         sortedGroups.push(item);
         delete topLevelGroups[item];
       }
-    })
+    });
   }
   // Add the remaining items to the end.
-  Object.keys(topLevelGroups).forEach(item => {
+  Object.keys(topLevelGroups).forEach((item) => {
     sortedGroups.push(item);
   });
 
   // Add back the leading slash
-  sortedGroups = sortedGroups.map(path => '/' + path);
+  sortedGroups = sortedGroups.map((path) => `/${path}`);
 
   const matcher = (test, search) => {
     if (test.type === 'propertyOwner') {
@@ -110,13 +111,12 @@ const mapSubStateToProps = ({ groups, properties, propertyOwners }) => {
   return {
     groups: sortedGroups,
     propertyOwners: sceneOwner.subowners || [],
-    matcher
+    matcher,
   };
 };
 
-
 ScenePane = connect(
-  subStateToProps(mapSubStateToProps, mapStateToSubState)
+  subStateToProps(mapSubStateToProps, mapStateToSubState),
 )(ScenePane);
 
 export default ScenePane;

@@ -2,11 +2,13 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import styles from './Row.scss';
 
-const Row = props => (
-  <div {...props} className={`${styles.row} ${props.className}`}>
-    { props.children }
-  </div>
-);
+function Row(props) {
+  return (
+    <div {...props} className={`${styles.row} ${props.className}`}>
+      { props.children }
+    </div>
+  );
+}
 
 Row.propTypes = {
   children: PropTypes.node.isRequired,

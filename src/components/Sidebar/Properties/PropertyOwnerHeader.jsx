@@ -92,8 +92,7 @@ function PropertyOwnerHeader({
         <span className={styles.leftButtonContainer}>
           <Property uri={quickToggleUri} checkBoxOnly />
         </span>
-        )
-      }
+        )}
       <span className={`${toggleHeaderStyles.title} ${titleClass}`}>
         { title }
         { isHeightLayer && <MaterialIcon className={styles.heightLayerIcon} icon="landscape" /> }
@@ -105,8 +104,7 @@ function PropertyOwnerHeader({
           <div className={styles.rightButton} onClick={onClickFocus}>
             <SvgIcon><Focus /></SvgIcon>
           </div>
-          )
-        }
+          )}
         {
           popOutAction && popoutButton
         }
@@ -119,7 +117,7 @@ function PropertyOwnerHeader({
       </span>
     </header>
   );
-};
+}
 
 const mapStateToProps = (state, ownProps) => {
   const { uri, title } = ownProps;
@@ -175,7 +173,6 @@ PropertyOwnerHeader = connect(
   mapStateToProps,
   mapDispatchToProps,
 )(PropertyOwnerHeader);
-
 
 PropertyOwnerHeader.propTypes = {
   expanded: PropTypes.bool.isRequired,

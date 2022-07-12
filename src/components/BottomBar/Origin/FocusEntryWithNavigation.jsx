@@ -59,7 +59,7 @@ class FocusEntry extends Component {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   luaApi: state.luaApi,
 });
 

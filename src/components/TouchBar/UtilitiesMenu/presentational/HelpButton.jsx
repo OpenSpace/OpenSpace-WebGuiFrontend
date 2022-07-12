@@ -4,13 +4,13 @@ import Icon from '../../../common/MaterialIcon/MaterialIcon';
 import SmallLabel from '../../../common/SmallLabel/SmallLabel';
 import styles from '../style/UtilitiesButtons.scss';
 
-const HelpButton = props => {
+function HelpButton(props) {
   const [showInstructions, setShowInstructions] = useState(false);
 
   useEffect(() => {
-    if(showInstructions){
+    if (showInstructions) {
       const timeout = setTimeout(() => {
-          setShowInstructions(false)
+        setShowInstructions(false);
       }, 9500); // match with animation-delay in UtilitiesButtons.scss
       return () => { clearTimeout(timeout); };
     }
@@ -25,11 +25,10 @@ const HelpButton = props => {
       tabIndex="0"
     >
       <Icon icon="help_outline" className={styles.Icon} />
-      { showInstructions && <img src={instructionImage} className={styles.Instructions} alt={'instructions'} />}
+      { showInstructions && <img src={instructionImage} className={styles.Instructions} alt="instructions" />}
       <SmallLabel>Help</SmallLabel>
     </div>
   );
-
 }
 
 export default HelpButton;

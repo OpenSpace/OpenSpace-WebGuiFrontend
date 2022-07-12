@@ -39,7 +39,7 @@ class VectorProperty extends Component {
   }
 
   get isColor() {
-    if(this.props.value.length < 3 || this.props.value.length > 4) {
+    if (this.props.value.length < 3 || this.props.value.length > 4) {
       return false;
     }
     return this.props.description.MetaData.ViewOptions.Color;
@@ -58,15 +58,15 @@ class VectorProperty extends Component {
   }
 
   valueToColor() {
-    if(!this.isColor) { return null; }
-    const {value} = this.props;
+    if (!this.isColor) { return null; }
+    const { value } = this.props;
 
     return {
-        r: value[0] * 255,
-        g: value[1] * 255,
-        b: value[2] * 255,
-        a: this.hasAlpha ? value[3]: 1.0
-    }
+      r: value[0] * 255,
+      g: value[1] * 255,
+      b: value[2] * 255,
+      a: this.hasAlpha ? value[3] : 1.0,
+    };
   }
 
   onChange(index) {
@@ -79,12 +79,12 @@ class VectorProperty extends Component {
   }
 
   onColorPickerChange(color) {
-    const rgb = color.rgb;
+    const { rgb } = color;
     let newValue = [rgb.r / 255, rgb.g / 255, rgb.b / 255];
-    if(this.hasAlpha) {
+    if (this.hasAlpha) {
       newValue[3] = rgb.a;
     }
-    
+
     // Avoid creating numbers with lots of decimals
     newValue = newValue.map((v) => parseFloat(v.toFixed(3)));
 
@@ -95,10 +95,16 @@ class VectorProperty extends Component {
     if (!this.isMinMaxRange) return;
 
     const { description } = this.props;
-    const { SteppingValue, MaximumValue, MinimumValue, Exponent } = description.AdditionalData;
-    const label = (<span onClick={this.copyUri}>
-      { description.Name } { this.descriptionPopup }
-    </span>);
+    const {
+      SteppingValue, MaximumValue, MinimumValue, Exponent,
+    } = description.AdditionalData;
+    const label = (
+      <span onClick={this.copyUri}>
+        { description.Name }
+        {' '}
+        { this.descriptionPopup }
+      </span>
+    );
     const values = this.props.value;
 
     // Different step sizes does not make sense here, so just use the minimum
@@ -124,10 +130,16 @@ class VectorProperty extends Component {
 
   render() {
     const { description } = this.props;
-    const { SteppingValue, MaximumValue, MinimumValue, Exponent } = description.AdditionalData;
-    const firstLabel = (<span onClick={this.copyUri}>
-      { description.Name } { this.descriptionPopup }
-    </span>);
+    const {
+      SteppingValue, MaximumValue, MinimumValue, Exponent,
+    } = description.AdditionalData;
+    const firstLabel = (
+      <span onClick={this.copyUri}>
+        { description.Name }
+        {' '}
+        { this.descriptionPopup }
+      </span>
+    );
 
     // eslint-disable-next-line react/no-array-index-key
     const values = this.props.value
@@ -138,7 +150,7 @@ class VectorProperty extends Component {
     }
 
     return (
-      <Row className={`${styles.vectorProperty} ${this.disabled ? styles.disabled : ''}`}>        
+      <Row className={`${styles.vectorProperty} ${this.disabled ? styles.disabled : ''}`}>
         { values.map((component, index) => (
           <NumericInput
             key={component.key}

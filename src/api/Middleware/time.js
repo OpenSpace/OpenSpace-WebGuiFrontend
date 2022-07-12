@@ -3,7 +3,7 @@ import { actionTypes } from '../Actions/actionTypes';
 
 import api from '../api';
 
-let timeTopic = undefined;
+let timeTopic;
 let nSubscribers = 0;
 
 function handleData(store, data) {
@@ -24,12 +24,12 @@ function tearDownSubscription() {
     return;
   }
   timeTopic.talk({
-    event: 'stop_subscription'
+    event: 'stop_subscription',
   });
   timeTopic.cancel();
 }
 
-export const time = store => next => action => {
+export const time = (store) => (next) => (action) => {
   const result = next(action);
   const state = store.getState();
   switch (action.type) {
@@ -57,6 +57,5 @@ export const time = store => next => action => {
   }
   return result;
 };
-
 
 export default time;

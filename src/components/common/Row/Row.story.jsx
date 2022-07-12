@@ -5,7 +5,9 @@ import { storiesOf } from '@storybook/react';
 import React from 'react';
 import Row from './Row';
 
-const Block = ({ children }) => (<div style={{ background: 'lightgray' }}>{ children }</div>);
+function Block({ children }) {
+  return <div style={{ background: 'lightgray' }}>{ children }</div>;
+}
 
 storiesOf('Row', module)
   .add('default', () => (
@@ -14,4 +16,5 @@ storiesOf('Row', module)
       <Block>another block in a row</Block>
       <Block>the third block in a row.</Block>
       <Block>nr 4. margin to the left of things!</Block>
-    </Row>));
+    </Row>
+  ));

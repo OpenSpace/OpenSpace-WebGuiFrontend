@@ -6,8 +6,8 @@ import MaterialIcon from '../MaterialIcon/MaterialIcon';
 import Window from '../Window/Window';
 import styles from './Popover.scss';
 
-const findStyles = arr => arr.split(' ')
-  .map(style => styles[style] || style)
+const findStyles = (arr) => arr.split(' ')
+  .map((style) => styles[style] || style)
   .join(' ');
 
 class Popover extends Component {

@@ -33,10 +33,10 @@ class FocusButton extends Component {
   render() {
     const { identifier } = this.props;
     return (
-      <div 
-        className={`${styles.FocusButton} ${this.isActive && styles.active}`} 
-        onClick={this.select} 
-        role="button" 
+      <div
+        className={`${styles.FocusButton} ${this.isActive && styles.active}`}
+        onClick={this.select}
+        role="button"
         tabIndex="0"
       >
         { this.icon }

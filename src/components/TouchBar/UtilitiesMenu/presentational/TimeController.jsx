@@ -27,7 +27,6 @@ class TimeController extends Component {
     this.setSimulationSpeed = this.setSimulationSpeed.bind(this);
   }
 
-
   componentDidMount() {
     this.mounted = true;
     // subscribe to data

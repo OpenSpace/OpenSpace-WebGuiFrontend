@@ -1,19 +1,19 @@
 import { actionTypes } from '../Actions/actionTypes';
 
 import {
-  updateSessionRecording
-} from '../Actions'
+  updateSessionRecording,
+} from '../Actions';
 
 import api from '../api';
 
-let topic = undefined;
-let dataCallback = undefined;
+let topic;
+let dataCallback;
 let nSubscribers = 0;
 
 const subscribe = () => {
   topic = api.startTopic('sessionRecording', {
     event: 'start_subscription',
-    properties: ['state', 'files']
+    properties: ['state', 'files'],
   });
   (async () => {
     for await (const data of topic.iterator()) {
@@ -27,21 +27,21 @@ const unsubscribe = () => {
     return;
   }
   topic.talk({
-    event: 'stop_subscription'
+    event: 'stop_subscription',
   });
   topic.cancel();
-}
+};
 
 const refresh = () => {
   if (topic) {
     topic.talk({
-      event: 'refresh'
+      event: 'refresh',
     });
   } else {
     // If we do not have a subscription, we need to create a new topic.
     const tempTopic = api.startTopic('sessionRecording', {
       event: 'refresh',
-      properties: ['state', 'files']
+      properties: ['state', 'files'],
     });
     (async () => {
       const data = await topic.iterator().next();
@@ -49,9 +49,9 @@ const refresh = () => {
       tempTopic.cancel();
     })();
   }
-}
+};
 
-export const sessionRecording = store => next => action => {
+export const sessionRecording = (store) => (next) => (action) => {
   const result = next(action);
   const state = store.getState();
 

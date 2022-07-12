@@ -142,22 +142,18 @@ class TimePlayerController extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    time: state.time.time,
-    deltaTime: state.time.deltaTime,
-    targetDeltaTime: state.time.targetDeltaTime,
-    isPaused: state.time.isPaused,
-    luaApi: state.luaApi
-  }
-}
+const mapStateToProps = (state) => ({
+  time: state.time.time,
+  deltaTime: state.time.deltaTime,
+  targetDeltaTime: state.time.targetDeltaTime,
+  isPaused: state.time.isPaused,
+  luaApi: state.luaApi,
+});
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    startSubscription: () => dispatch(subscribeToTime()),
-    stopSubscription: () => dispatch(unsubscribeToTime())
-  }
-}
+const mapDispatchToProps = (dispatch) => ({
+  startSubscription: () => dispatch(subscribeToTime()),
+  stopSubscription: () => dispatch(unsubscribeToTime()),
+});
 
 TimePlayerController = connect(mapStateToProps, mapDispatchToProps)(TimePlayerController);
 

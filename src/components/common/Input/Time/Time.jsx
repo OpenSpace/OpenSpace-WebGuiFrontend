@@ -12,7 +12,7 @@ const Elements = {
   Hours: 'hours',
   Minutes: 'minutes',
   Seconds: 'seconds',
-  Milliseconds: 'milliseconds'
+  Milliseconds: 'milliseconds',
 };
 Elements.Time = [Elements.Hours, Elements.Minutes, Elements.Seconds];
 Elements.PreciseTime = [Elements.Hours, Elements.Minutes, Elements.Seconds, Elements.Milliseconds];
@@ -20,19 +20,17 @@ Elements.FullDate = [Elements.FullYear, Elements.Month, Elements.Date];
 Elements.DateAndTime = Elements.FullDate.concat(null).concat(Elements.Time);
 Object.freeze(Elements);
 
-const Months = "January February March April May June July August September October November December".split(" ");
+const Months = 'January February March April May June July August September October November December'.split(' ');
 
 const Interpretors = {
   Month: (input) => {
-    const index = Months.findIndex((month) => {
-      return month.toLowerCase().indexOf(input.toLowerCase()) === 0
-    });
+    const index = Months.findIndex((month) => month.toLowerCase().indexOf(input.toLowerCase()) === 0);
     if (index !== -1) {
       return index;
     }
     return Number.parseFloat(index);
-  }
-}
+  },
+};
 
 class Time extends Component {
   static zeroPad(number) {
@@ -53,14 +51,14 @@ class Time extends Component {
     return (e) => {
       const newTime = new Date(this.props.time);
       newTime[setterFunc](newTime[getterFunc]() + change);
-      const shift = e.getModifierState("Shift");
+      const shift = e.getModifierState('Shift');
 
       if (this.hasCallback) {
         this.props.onChange({
           time: newTime,
           interpolate: !shift,
-          delta: (newTime - this.props.time)/1000,
-          relative: true
+          delta: (newTime - this.props.time) / 1000,
+          relative: true,
         });
       }
     };
@@ -83,8 +81,8 @@ class Time extends Component {
         this.props.onChange({
           time: newTime,
           interpolate: false,
-          delta: (newTime - this.props.time)/1000,
-          relative: false
+          delta: (newTime - this.props.time) / 1000,
+          relative: false,
         });
       }
     };
@@ -166,7 +164,7 @@ class Time extends Component {
     // make it editable with input and such?
     if (this.hasCallback) {
       const width = (what === 'Milliseconds' || what === 'Month') ? 3 : 2;
-      const type = (what === 'Month') ? "text" : "number";
+      const type = (what === 'Month') ? 'text' : 'number';
 
       return (
         <div key={what} className={styles.element}>
@@ -192,7 +190,8 @@ class Time extends Component {
 
     return (
       <div className={styles.element}>
-        { inner }{after}
+        { inner }
+        {after}
       </div>
     );
   }
@@ -200,11 +199,11 @@ class Time extends Component {
   render() {
     return (
       <div className={styles.clock}>
-      {
+        {
         this.props.elements.map((getterName, n) => {
           const value = this[getterName];
           if (!value) {
-            return <div key={n} className={styles.padding}></div>
+            return <div key={n} className={styles.padding} />;
           }
           return value;
         })

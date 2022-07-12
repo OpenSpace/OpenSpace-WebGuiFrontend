@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 import shallowEqualArrays from 'shallow-equal/arrays';
 import shallowEqualObjects from 'shallow-equal/objects';
 import Picker from '../Picker';
-import FloatingWindow from './WindowThreeStates/FloatingWindow'
-import styles from './WorldWideTelescope.scss'
+import FloatingWindow from './WindowThreeStates/FloatingWindow';
+import styles from './WorldWideTelescope.scss';
 import { SkyBrowser_ShowTitleInBrowserKey, SkyBrowser_InverseZoomDirectionKey } from '../../../api/keys';
 import { getBoolPropertyValue } from '../../../utils/propertyTreeHelpers';
 
@@ -14,7 +14,7 @@ class WorldWideTelescope extends Component {
     this.iframe = React.createRef();
     this.state = {
       isDragging: false,
-      startDragPosition: [0,0],
+      startDragPosition: [0, 0],
       topBarHeight: 25,
     };
     this.sendMessageToWwt = this.sendMessageToWwt.bind(this);
@@ -32,12 +32,12 @@ class WorldWideTelescope extends Component {
 
   componentDidMount() {
     this.props.setMessageFunction(this.sendMessageToWwt);
-    window.addEventListener("message", this.handleCallbackMessage);
+    window.addEventListener('message', this.handleCallbackMessage);
     this.props.setImageCollectionIsLoaded(false);
   }
 
   componentWillUnmount() {
-    window.removeEventListener("message", this.handleCallbackMessage);
+    window.removeEventListener('message', this.handleCallbackMessage);
   }
 
   componentDidUpdate(prevProps) {
@@ -56,28 +56,28 @@ class WorldWideTelescope extends Component {
     const { browserAimInfo, browserColor, browserId } = this.props;
 
     return (
-      !shallowEqualObjects(nextProps.browserAimInfo, browserAimInfo) ||
-      nextProps.browserId !== browserId ||
-      !shallowEqualArrays(nextProps.browserColor,browserColor)
+      !shallowEqualObjects(nextProps.browserAimInfo, browserAimInfo)
+      || nextProps.browserId !== browserId
+      || !shallowEqualArrays(nextProps.browserColor, browserColor)
     );
   }
 
   handleCallbackMessage(event) {
     const { browserId, url } = this.props;
-    if (event.data == "wwt_has_loaded") {
+    if (event.data == 'wwt_has_loaded') {
       this.sendMessageToWwt({
-        event: "modify_settings",
-        settings: [["hideAllChrome", true]],
-        target: "app"
+        event: 'modify_settings',
+        settings: [['hideAllChrome', true]],
+        target: 'app',
       });
       this.sendMessageToWwt({
-        event: "load_image_collection",
-        url: url,
-        loadChildFolders: true
+        event: 'load_image_collection',
+        url,
+        loadChildFolders: true,
       });
       this.setBorderColor(this.props.browserColor);
     }
-    if (event.data == "load_image_collection_completed") {
+    if (event.data == 'load_image_collection_completed') {
       this.props.setImageCollectionIsLoaded(true);
       this.props.addAllSelectedImages(browserId, false);
     }
@@ -86,16 +86,16 @@ class WorldWideTelescope extends Component {
   setBorderColor(color) {
     this.color = color;
     this.sendMessageToWwt({
-      event: "set_background_color",
-      data: color
+      event: 'set_background_color',
+      data: color,
     });
   }
 
   sendMessageToWwt(message) {
     try {
-      let frame = this.iframe.current.contentWindow;
+      const frame = this.iframe.current.contentWindow;
       if (frame) {
-        frame.postMessage(message, "*");
+        frame.postMessage(message, '*');
       }
     } catch (error) {
       // Do nothing
@@ -104,12 +104,12 @@ class WorldWideTelescope extends Component {
 
   setAim(aimInfo) {
     this.sendMessageToWwt({
-      "event": "center_on_coordinates",
-      "ra": aimInfo.ra,
-      "dec": aimInfo.dec,
-      "fov": aimInfo.fov,
-      "roll": aimInfo.roll,
-      "instant": true
+      event: 'center_on_coordinates',
+      ra: aimInfo.ra,
+      dec: aimInfo.dec,
+      fov: aimInfo.fov,
+      roll: aimInfo.roll,
+      instant: true,
     });
   }
 
@@ -119,7 +119,7 @@ class WorldWideTelescope extends Component {
       this.props.skybrowserApi.finetuneTargetPosition(
         this.props.browserId,
         this.state.startDragPosition,
-        end
+        end,
       );
     }
   }
@@ -129,13 +129,13 @@ class WorldWideTelescope extends Component {
     const position = [mouse.clientX, mouse.clientY];
     this.setState({
       isDragging: true,
-      startDragPosition: position
+      startDragPosition: position,
     });
     this.props.skybrowserApi.stopAnimations(this.props.browserId);
   }
 
   mouseUp(mouse) {
-    this.setState({isDragging: false});
+    this.setState({ isDragging: false });
   }
 
   scroll(e) {
@@ -160,29 +160,34 @@ class WorldWideTelescope extends Component {
   }
 
   render() {
-    const { browserName, showTitle, size, position, setPosition } = this.props;
+    const {
+      browserName, showTitle, size, position, setPosition,
+    } = this.props;
 
-    const topBar =
+    const topBar = (
       <header className={`header ${styles.topMenu}`}>
         <div className={styles.title}>{showTitle && browserName}</div>
-      </header>;
+      </header>
+    );
 
     // Covering div to handle interaction
-    const interactionDiv = <div
-      className={styles.container}
-      onMouseMove={this.handleDrag}
-      onMouseDown={this.mouseDown}
-      onMouseUp={this.mouseUp}
-      onMouseLeave={this.mouseUp}
-      onWheel = {(e) => this.scroll(e)}
-    />
+    const interactionDiv = (
+      <div
+        className={styles.container}
+        onMouseMove={this.handleDrag}
+        onMouseDown={this.mouseDown}
+        onMouseUp={this.mouseUp}
+        onMouseLeave={this.mouseUp}
+        onWheel={(e) => this.scroll(e)}
+      />
+    );
 
     return (
       <FloatingWindow
         className={`${Picker.Popover}`}
         title={browserName}
         closeCallback={this.togglePopover}
-        defaultSize={{ height: `425px`, width: `400px` }}
+        defaultSize={{ height: '425px', width: '400px' }}
         size={{ height: `${size.height}px`, width: `${size.width}px` }}
         position={position}
         handleStop={setPosition}
@@ -193,7 +198,7 @@ class WorldWideTelescope extends Component {
           {interactionDiv}
           <iframe
             id="webpage"
-            name = "wwt"
+            name="wwt"
             ref={this.iframe}
             src="http://wwt.openspaceproject.com/1/gui/"
             allow="accelerometer; clipboard-write; gyroscope"
@@ -210,14 +215,12 @@ class WorldWideTelescope extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    showTitle: getBoolPropertyValue(state, SkyBrowser_ShowTitleInBrowserKey),
-    inverseZoom: getBoolPropertyValue(state, SkyBrowser_InverseZoomDirectionKey),
-  }
-};
+const mapStateToProps = (state) => ({
+  showTitle: getBoolPropertyValue(state, SkyBrowser_ShowTitleInBrowserKey),
+  inverseZoom: getBoolPropertyValue(state, SkyBrowser_InverseZoomDirectionKey),
+});
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   startListeningToProperties: () => {
     dispatch(subscribeToProperty(SkyBrowser_ShowTitleInBrowserKey));
     dispatch(subscribeToProperty(SkyBrowser_InverseZoomDirectionKey));
@@ -226,11 +229,11 @@ const mapDispatchToProps = dispatch => ({
     dispatch(unsubscribeToProperty(SkyBrowser_ShowTitleInBrowserKey));
     dispatch(unsubscribeToProperty(SkyBrowser_InverseZoomDirectionKey));
   },
-})
+});
 
 WorldWideTelescope = connect(
   mapStateToProps,
-  mapDispatchToProps)
-(WorldWideTelescope);
+  mapDispatchToProps,
+)(WorldWideTelescope);
 
 export default WorldWideTelescope;

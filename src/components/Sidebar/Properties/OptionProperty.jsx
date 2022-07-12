@@ -40,17 +40,19 @@ class OptionProperty extends Component {
     const { description, value } = this.props;
     const label = (
       <span onClick={this.copyUri}>
-        { description.Name } { this.descriptionPopup }
+        { description.Name }
+        {' '}
+        { this.descriptionPopup }
       </span>
     );
-    
+
     const options = description.AdditionalData.Options
-      .map(option => ({
+      .map((option) => ({
         label: Object.values(option)[0],
-        value: ('' + Object.keys(option)[0]),
-        isSelected: ('' + Object.keys(option)[0]) === ('' + value)
+        value: (`${Object.keys(option)[0]}`),
+        isSelected: (`${Object.keys(option)[0]}`) === (`${value}`),
       }));
-      
+
     return (
       <div className={`${this.disabled ? styles.disabled : ''}`}>
         <Select

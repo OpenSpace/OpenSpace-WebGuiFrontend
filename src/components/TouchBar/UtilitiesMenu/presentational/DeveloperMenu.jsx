@@ -4,8 +4,8 @@ import Button from '../../../common/Input/Button/Button';
 import stories from '../../../../stories/stories.json';
 import styles from '../style/DeveloperMenu.scss';
 
-const DeveloperMenu = (props) => {
-  const buttons = stories.stories.map(story => (
+function DeveloperMenu(props) {
+  const buttons = stories.stories.map((story) => (
     <Button
       onClick={props.changeStory}
       id={story.identifier}
@@ -21,7 +21,7 @@ const DeveloperMenu = (props) => {
       {buttons}
     </div>
   );
-};
+}
 
 DeveloperMenu.propTypes = {
   changeStory: PropTypes.func.isRequired,

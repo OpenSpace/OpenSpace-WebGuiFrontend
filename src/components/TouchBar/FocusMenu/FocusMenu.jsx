@@ -83,12 +83,12 @@ class FocusMenu extends Component {
 
   createFocusButtons() {
     const { anchor, focusNodes } = this.props;
-    const focusPicker = focusNodes.map(node => (
+    const focusPicker = focusNodes.map((node) => (
       <FocusButton
         key={node.identifier}
         identifier={node.identifier}
         active={anchor.value}
-        onChangeFocus={origin => this.onChangeFocus({ origin })}
+        onChangeFocus={(origin) => this.onChangeFocus({ origin })}
       />
     ));
     return (focusPicker);
@@ -115,9 +115,7 @@ const mapStateToProps = (state) => {
   if (Object.keys(state.propertyTree).length !== 0) {
     const buttons = state.storyTree.story.focusbuttons;
     if (buttons) {
-      focusNodes = buttons.map(button => 
-        state.propertyTree.propertyOwners[ScenePrefixKey + button]
-      );
+      focusNodes = buttons.map((button) => state.propertyTree.propertyOwners[ScenePrefixKey + button]);
     }
 
     anchor = state.propertyTree.properties[NavigationAnchorKey];
@@ -131,16 +129,12 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   changePropertyValue: (uri, value) => {
     dispatch(setPropertyValue(uri, value));
   },
-  anchorDispatcher: propertyDispatcher(
-    dispatch, NavigationAnchorKey
-  ),
-  retargetAnchorDispatcher: propertyDispatcher(
-    dispatch, RetargetAnchorKey
-  )
+  anchorDispatcher: propertyDispatcher(dispatch, NavigationAnchorKey),
+  retargetAnchorDispatcher: propertyDispatcher(dispatch, RetargetAnchorKey),
 });
 
 FocusMenu = connect(

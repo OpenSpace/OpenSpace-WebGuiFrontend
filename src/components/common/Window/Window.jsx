@@ -6,8 +6,10 @@ import Button from '../Input/Button/Button';
 import MaterialIcon from '../MaterialIcon/MaterialIcon';
 import styles from './Window.scss';
 
-const Window = (props) => {
-  const { children, title, closeCallback, className, size, position } = props;
+function Window(props) {
+  const {
+    children, title, closeCallback, className, size, position,
+  } = props;
   return (
     <Draggable defaultPosition={position} handle=".header">
       <section
@@ -56,7 +58,7 @@ Window.defaultProps = {
   closeCallback: null,
   className: '',
   position: { x: 10, y: 10 },
-  size: {width: '300px' },
+  size: { width: '300px' },
   title: 'Window',
 };
 

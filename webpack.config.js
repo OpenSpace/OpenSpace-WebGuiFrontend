@@ -23,20 +23,19 @@ module.exports = {
     hot: true,
     static: {
       directory: resolve(__dirname, 'dist'),
-      publicPath: PublicPath
+      publicPath: PublicPath,
     },
     proxy: {
       '/': {
         target: 'http://localhost:4680',
-        bypass: function(req, res, proxyOptions) {
-          if (req.originalUrl.indexOf('/frontend') === 0 ||
-              req.originalUrl.indexOf('/environment.js') === 0)
-          {
+        bypass(req, res, proxyOptions) {
+          if (req.originalUrl.indexOf('/frontend') === 0
+              || req.originalUrl.indexOf('/environment.js') === 0) {
             return req.originalUrl;
           }
-        }
-      }
-    }
+        },
+      },
+    },
   },
   module: {
     rules: [
@@ -59,8 +58,8 @@ module.exports = {
               sourceMap: true,
               importLoaders: 2,
               modules: {
-                localIdentName: "[path][name]__[local]--[hash:base64:7]",
-              }
+                localIdentName: '[path][name]__[local]--[hash:base64:7]',
+              },
             },
           }, {
             loader: 'sass-loader',

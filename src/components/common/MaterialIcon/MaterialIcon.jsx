@@ -8,9 +8,9 @@ import styles from './MaterialIcon.scss';
  * @returns {XML}
  * @constructor
  */
-const MaterialIcon = ({ icon, className, ...props }) => {
+function MaterialIcon({ icon, className, ...props }) {
   return <span className={`${styles.base} ${className}`} {...props}>{ icon }</span>;
-};
+}
 
 MaterialIcon.propTypes = {
   icon: PropTypes.string.isRequired,

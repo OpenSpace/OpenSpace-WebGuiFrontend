@@ -3,17 +3,21 @@ import React from 'react';
 import MaterialIcon from '../MaterialIcon/MaterialIcon';
 import styles from './ToggleHeader.scss';
 
-const ToggleHeader = ({ title, expanded, onClick, onIcon, offIcon, showEnabled }) => (
-  <header className={styles.toggle} onClick={onClick} role="button" tabIndex={0}>
-    <MaterialIcon
-      icon={expanded ? onIcon : offIcon}
-      className={styles.icon}
-    />
-    <span className={`${styles.title}`} >
-      { title }
-    </span>
-  </header>
-);
+function ToggleHeader({
+  title, expanded, onClick, onIcon, offIcon, showEnabled,
+}) {
+  return (
+    <header className={styles.toggle} onClick={onClick} role="button" tabIndex={0}>
+      <MaterialIcon
+        icon={expanded ? onIcon : offIcon}
+        className={styles.icon}
+      />
+      <span className={`${styles.title}`}>
+        { title }
+      </span>
+    </header>
+  );
+}
 
 ToggleHeader.propTypes = {
   offIcon: PropTypes.string,
@@ -21,7 +25,7 @@ ToggleHeader.propTypes = {
   onIcon: PropTypes.string,
   title: PropTypes.oneOfType([
     PropTypes.string,
-    PropTypes.object
+    PropTypes.object,
   ]).isRequired,
   showEnabled: PropTypes.bool,
   expanded: PropTypes.bool.isRequired,

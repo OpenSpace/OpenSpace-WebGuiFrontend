@@ -9,19 +9,26 @@ class ScenePaneListItem extends Component {
   }
 
   render() {
-    const props = this.props;
+    const { props } = this;
 
     if (props.type === 'group') {
-      return <Group path={this.props.path}
-                    expansionIdentifier={'scene/' + this.props.path} />;
+      return (
+        <Group
+          path={this.props.path}
+          expansionIdentifier={`scene/${this.props.path}`}
+        />
+      );
     }
     if (props.type === 'context') {
       return <ContextSection expansionIdentifier="context" />;
     }
     if (props.type === 'propertyOwner') {
-      return <PropertyOwner
-              uri={this.props.uri}
-              expansionIdentifier={'scene-search/' + this.props.uri} />
+      return (
+        <PropertyOwner
+          uri={this.props.uri}
+          expansionIdentifier={`scene-search/${this.props.uri}`}
+        />
+      );
     }
     return null;
   }

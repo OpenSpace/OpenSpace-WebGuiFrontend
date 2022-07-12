@@ -4,14 +4,14 @@ const defaultState = {
   isInitialized: false,
   data: {},
   imageList: [],
-  selectedBrowserId: "",
+  selectedBrowserId: '',
   cameraIsInSolarSystem: true,
   targets: {},
-  url: ""
+  url: '',
 };
 
 export const skybrowser = (state = defaultState, action) => {
-  const newState = {...state};
+  const newState = { ...state };
   switch (action.type) {
     case actionTypes.initializeSkyBrowser:
       newState.isInitialized = true;

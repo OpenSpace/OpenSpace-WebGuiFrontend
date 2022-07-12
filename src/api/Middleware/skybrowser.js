@@ -2,7 +2,7 @@ import { initializeSkyBrowser, updateSkyBrowser } from '../Actions';
 import { actionTypes } from '../Actions/actionTypes';
 import api from '../api';
 
-let skybrowserTopic = undefined;
+let skybrowserTopic;
 let nSubscribers = 0;
 
 function handleData(store, data) {
@@ -14,7 +14,7 @@ function tearDownSubscription() {
     return;
   }
   skybrowserTopic.talk({
-    event: 'stop_subscription'
+    event: 'stop_subscription',
   });
   skybrowserTopic.cancel();
 }
@@ -28,33 +28,30 @@ const getWwtData = async (luaApi, callback) => {
     let url = await luaApi.skybrowser.getWwtImageCollectionUrl();
     if (url) {
       url = url[1].url;
-    }
-    else {
+    } else {
       throw new Error('No AAS WorldWide Telescope image collection!');
     }
     if (imgData) {
       imgData = Object.values(imgData[1]);
-      if(imgData.length === 0) {
+      if (imgData.length === 0) {
         callback([]);
-      }
-      else {
-        const imgDataWithKey = imgData.map(image => ({
+      } else {
+        const imgDataWithKey = imgData.map((image) => ({
           ...image,
           key: image.identifier,
         }));
-        callback({imageList: imgDataWithKey, url: url});
+        callback({ imageList: imgDataWithKey, url });
       }
     } else {
       throw new Error('No AAS WorldWide Telescope images!');
     }
-  }
-  catch(e) {
+  } catch (e) {
     console.error(e);
   }
 };
 
 async function setupSubscription(store) {
-  console.log("Set up skybrowser subscription");
+  console.log('Set up skybrowser subscription');
   skybrowserTopic = api.startTopic('skybrowser', {
     event: 'start_subscription',
   });
@@ -63,7 +60,7 @@ async function setupSubscription(store) {
   }
 }
 
-export const skybrowser = store => next => (action) => {
+export const skybrowser = (store) => (next) => (action) => {
   const result = next(action);
   const state = store.getState();
   switch (action.type) {

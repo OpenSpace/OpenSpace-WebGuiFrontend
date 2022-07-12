@@ -8,7 +8,7 @@ class ToggleContent extends Component {
     super(props);
 
     this.state = {
-      hovered: false
+      hovered: false,
     };
 
     this.toggleExpanded = this.toggleExpanded.bind(this);
@@ -29,20 +29,24 @@ class ToggleContent extends Component {
   }
 
   render() {
-    const { children, header, title, expanded, showEnabled } = this.props;
+    const {
+      children, header, title, expanded, showEnabled,
+    } = this.props;
 
-    return ( (children.length !== 0) && ((children[0].length != 0) || (children[1].length != 0)) ) ? (
-      <div className={styles.toggleContent}
-           onMouseEnter={this.mouseEntered}
-           onMouseLeave={this.mouseLeft}>
-        { header ? header : 
-          <ToggleHeader
-            title={title}
-            onClick={this.toggleExpanded}
-            showEnabled={showEnabled}
-            expanded={expanded}
-          />
-        }
+    return ((children.length !== 0) && ((children[0].length != 0) || (children[1].length != 0))) ? (
+      <div
+        className={styles.toggleContent}
+        onMouseEnter={this.mouseEntered}
+        onMouseLeave={this.mouseLeft}
+      >
+        { header || (
+        <ToggleHeader
+          title={title}
+          onClick={this.toggleExpanded}
+          showEnabled={showEnabled}
+          expanded={expanded}
+        />
+        )}
         <div className={styles.content}>
           { expanded && children }
         </div>
@@ -59,13 +63,13 @@ ToggleContent.propTypes = {
   showEnabled: PropTypes.bool,
   title: PropTypes.oneOfType([
     PropTypes.string,
-    PropTypes.object
-  ])
+    PropTypes.object,
+  ]),
 };
 
 ToggleContent.defaultProps = {
   children: '',
-  expanded: false
+  expanded: false,
 };
 
 export default ToggleContent;

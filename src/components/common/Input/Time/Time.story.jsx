@@ -7,7 +7,7 @@ import Time from './Time';
 /* globals module */
 
 storiesOf('Input/Time', module)
-  .addDecorator(story => (
+  .addDecorator((story) => (
     <div style={{ background: '#d8d8d8' }}>
       { story() }
     </div>

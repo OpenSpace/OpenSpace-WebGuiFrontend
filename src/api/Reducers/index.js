@@ -2,7 +2,7 @@ import { propertyTree } from './propertyTree';
 import { groups } from './groups';
 import { time } from './time';
 import { connection } from './connection';
-import { fetchData} from './fetchData';
+import { fetchData } from './fetchData';
 import { storyTree } from './storyTree';
 import { shortcuts } from './shortcuts';
 import { version } from './version';

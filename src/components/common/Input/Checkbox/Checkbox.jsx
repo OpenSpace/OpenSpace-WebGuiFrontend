@@ -10,7 +10,7 @@ class Checkbox extends Component {
   }
 
   onClick(evt) {
-    if(this.props.disabled) {
+    if (this.props.disabled) {
       return;
     }
     this.props.setChecked(!this.props.checked);
@@ -18,11 +18,13 @@ class Checkbox extends Component {
   }
 
   render() {
-    const { checked, label, wide, left, className } = this.props;
+    const {
+      checked, label, wide, left, className,
+    } = this.props;
 
     return (
       <div onClick={this.onClick} className={`${styles.wrapper} ${className} ${wide ? styles.wide : ''} ${left ? styles.left : ''}`}>
-        <MaterialIcon className={styles.checkbox} icon={checked ? "check_box" : "check_box_outline_blank"} />
+        <MaterialIcon className={styles.checkbox} icon={checked ? 'check_box' : 'check_box_outline_blank'} />
         { label && <label>{ label }</label> }
       </div>
     );

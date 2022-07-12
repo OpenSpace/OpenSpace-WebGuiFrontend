@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import styles from './SkyBrowserTooltip.scss';
 import { excludeKeys } from '../../../utils/helpers';
 
-const SkyBrowserTooltip = (props) => {
+function SkyBrowserTooltip(props) {
   const { children, placement, fixed } = props;
   return (
     <div
@@ -15,7 +15,7 @@ const SkyBrowserTooltip = (props) => {
       </div>
     </div>
   );
-};
+}
 
 SkyBrowserTooltip.propTypes = {
   children: PropTypes.node.isRequired,

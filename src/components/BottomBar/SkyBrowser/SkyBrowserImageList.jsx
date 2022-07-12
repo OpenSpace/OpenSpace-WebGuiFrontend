@@ -9,7 +9,7 @@ class SkyBrowserImageList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      distanceSortThreshold: 0.1
+      distanceSortThreshold: 0.1,
     };
     this.lastUpdateTime = new Date().getTime();
     this.getNearestImages = this.getNearestImages.bind(this);
@@ -20,9 +20,9 @@ class SkyBrowserImageList extends Component {
       // TODO: this can probably be made more efficient. We don't need to
       // rerender if nothing changed.
       // @micahnyc - I added throttling for now, so we dont update more then twice per second.
-      var time = new Date().getTime();
-      var timeSinceLastUpdate = time - this.lastUpdateTime;
-      var updateInterval = 500;
+      const time = new Date().getTime();
+      const timeSinceLastUpdate = time - this.lastUpdateTime;
+      const updateInterval = 500;
       if (timeSinceLastUpdate > updateInterval) {
         this.lastUpdateTime = time;
         return true;
@@ -30,15 +30,14 @@ class SkyBrowserImageList extends Component {
     }
     // Prevent rerendering unless important properties actually changed
     return (
-      this.props.showOnlyNearest !== nextProps.showOnlyNearest ||
-      this.props.height !== nextProps.height ||
-      this.props.selectImage !== nextProps.selectImage ||
-      this.props.activeImage !== nextProps.activeImage
+      this.props.showOnlyNearest !== nextProps.showOnlyNearest
+      || this.props.height !== nextProps.height
+      || this.props.selectImage !== nextProps.selectImage
+      || this.props.activeImage !== nextProps.activeImage
     );
   }
 
   getNearestImages() {
-
     const { imageList, selectedBrowserData } = this.props;
     const { distanceSortThreshold } = this.state;
 
@@ -74,9 +73,9 @@ class SkyBrowserImageList extends Component {
       let result = distA > distB;
       // If both the images are within a certain distance of each other
       // assume they are taken of the same object and sort on fov.
-      if (euclidianDistance(a, selectedBrowserData) < distanceSortThreshold &&
-          euclidianDistance(b, selectedBrowserData) < distanceSortThreshold ) {
-        result = a.fov > b.fov
+      if (euclidianDistance(a, selectedBrowserData) < distanceSortThreshold
+          && euclidianDistance(b, selectedBrowserData) < distanceSortThreshold) {
+        result = a.fov > b.fov;
       }
       return result ? 1 : -1;
     });
@@ -85,13 +84,14 @@ class SkyBrowserImageList extends Component {
   }
 
   render() {
-
-    const { activeImage, height, imageList, luaApi, showOnlyNearest, selectImage, currentBrowserColor } = this.props;
+    const {
+      activeImage, height, imageList, luaApi, showOnlyNearest, selectImage, currentBrowserColor,
+    } = this.props;
     const list = showOnlyNearest ? this.getNearestImages() : imageList !== undefined ? imageList : [];
 
     const showNoImagesHint = (showOnlyNearest && list.length === 0);
     if (showNoImagesHint) {
-      return <CenteredLabel>No images within the current view. Zoom out or move the target to look at another portion of the sky</CenteredLabel>
+      return <CenteredLabel>No images within the current view. Zoom out or move the target to look at another portion of the sky</CenteredLabel>;
     }
 
     return (
@@ -102,8 +102,8 @@ class SkyBrowserImageList extends Component {
         searchText={`Search from ${list.length.toString()} images...`}
         viewComponent={SkyBrowserFocusEntry}
         viewComponentProps={{
-          luaApi: luaApi,
-          currentBrowserColor: currentBrowserColor,
+          luaApi,
+          currentBrowserColor,
         }}
         onSelect={selectImage}
         active={activeImage}

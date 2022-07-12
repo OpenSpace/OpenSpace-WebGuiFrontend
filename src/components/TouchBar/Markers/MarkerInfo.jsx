@@ -4,9 +4,9 @@ import SmallLabel from '../../common/SmallLabel/SmallLabel';
 import styles from './MarkerInfo.scss';
 import MarkerInfoIcon from './MarkerInfoIcon';
 
-const MarkerInfo = (props) => {
+function MarkerInfo(props) {
   const {
-    position, size, showInfoIcon, identifier, showLabel, offset, infoText
+    position, size, showInfoIcon, identifier, showLabel, offset, infoText,
   } = props;
 
   const positionStyles = {
@@ -38,7 +38,7 @@ const MarkerInfo = (props) => {
       )}
     </div>
   );
-};
+}
 
 MarkerInfo.propTypes = {
   position: PropTypes.array,

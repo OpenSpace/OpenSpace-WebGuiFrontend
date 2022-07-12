@@ -5,7 +5,7 @@
   "main": "src/index.jsx",
   "private": true,
   "scripts": {
-    "lint-fix": "eslint --fix --ext .js,.jsx .",
+    "lint-fix": "eslint --fix --ext .js,.jsx src",
     "lint": "eslint --ext .jsx --ext .js src",
     "lint-nice": "eslint --ext .jsx --ext .js src || exit 0;",
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -41,7 +41,11 @@
     "sass": "^1.49.9",
     "shallow-equal": "^1.2.1",
     "simple-keyboard-layouts": "^3.0.176",
-    "svg-react-loader": "^0.4.6"
+    "svg-react-loader": "^0.4.6",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.3.0",
+    "redux": "^4.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.14.0",
@@ -61,11 +65,7 @@
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-react": "^7.23.2",
     "flow-bin": "^0.182.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-router-dom": "^6.3.0",
     "react-select": "^5.4.0",
-    "redux": "^4.2.0",
     "rimraf": "^3.0.2",
     "sass-loader": "^13.0.2",
     "style-loader": "^3.3.1",

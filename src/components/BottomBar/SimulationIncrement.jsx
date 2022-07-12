@@ -78,12 +78,12 @@ class SimulationIncrement extends Component {
     this.setStepSize = this.setStepSize.bind(this);
     this.setQuickAdjust = this.setQuickAdjust.bind(this);
     this.nextDeltaTimeStep = this.nextDeltaTimeStep.bind(this);
-    this.prevDeltaTimeStep = this.prevDeltaTimeStep.bind(this)
+    this.prevDeltaTimeStep = this.prevDeltaTimeStep.bind(this);
   }
 
   togglePause(e) {
     const openspace = this.props.luaApi;
-    const shift = e.getModifierState("Shift");
+    const shift = e.getModifierState('Shift');
     if (shift) {
       openspace.time.togglePause();
     } else {
@@ -145,7 +145,7 @@ class SimulationIncrement extends Component {
       updateDeltaTimeNow(this.props.luaApi, quickAdjust);
     } else {
       updateDeltaTime.cancel();
-      if(this.beforeAdjust) {
+      if (this.beforeAdjust) {
         updateDeltaTimeNow(this.props.luaApi, this.beforeAdjust);
       }
       this.beforeAdjust = null;
@@ -164,27 +164,26 @@ class SimulationIncrement extends Component {
 
   get deltaTimeStepsContol() {
     const { stepSize } = this.state;
-    const { 
-      hasNextDeltaTimeStep, 
-      hasPrevDeltaTimeStep, 
-      nextDeltaTimeStep, 
-      prevDeltaTimeStep, 
-      isPaused 
+    const {
+      hasNextDeltaTimeStep,
+      hasPrevDeltaTimeStep,
+      nextDeltaTimeStep,
+      prevDeltaTimeStep,
+      isPaused,
     } = this.props;
 
-    const adjustedNextDelta =
-      round10(nextDeltaTimeStep / this.stepSize, StepPrecisions[stepSize]);
+    const adjustedNextDelta = round10(nextDeltaTimeStep / this.stepSize, StepPrecisions[stepSize]);
 
-    const adjustedPrevDelta =
-      round10(prevDeltaTimeStep / this.stepSize, StepPrecisions[stepSize]);
+    const adjustedPrevDelta = round10(prevDeltaTimeStep / this.stepSize, StepPrecisions[stepSize]);
 
     const nextLabel = hasNextDeltaTimeStep ? `${adjustedNextDelta} ${stepSize} / second` : 'None';
     const prevLabel = hasPrevDeltaTimeStep ? `${adjustedPrevDelta} ${stepSize} / second` : 'None';
 
-    return <Row> 
-        <div style={{flex: 3}}>
-          <Button 
-            block 
+    return (
+      <Row>
+        <div style={{ flex: 3 }}>
+          <Button
+            block
             disabled={!hasPrevDeltaTimeStep}
             onClick={this.prevDeltaTimeStep}
           >
@@ -194,14 +193,14 @@ class SimulationIncrement extends Component {
             {prevLabel}
           </label>
         </div>
-        <div style={{flex: 2}}>
+        <div style={{ flex: 2 }}>
           <Button block onClick={this.togglePause}>
-              {isPaused ? <MaterialIcon icon="play_arrow" /> : <MaterialIcon icon="pause" />}
+            {isPaused ? <MaterialIcon icon="play_arrow" /> : <MaterialIcon icon="pause" />}
           </Button>
         </div>
-        <div style={{flex: 3}}>
-          <Button 
-            block 
+        <div style={{ flex: 3 }}>
+          <Button
+            block
             disabled={!hasNextDeltaTimeStep}
             onClick={this.nextDeltaTimeStep}
           >
@@ -211,17 +210,17 @@ class SimulationIncrement extends Component {
             {nextLabel}
           </label>
         </div>
-    </Row>
+      </Row>
+    );
   }
 
   render() {
     const { stepSize } = this.state;
     const { targetDeltaTime } = this.props;
-    const adjustedDelta =
-      round10(targetDeltaTime / this.stepSize, StepPrecisions[stepSize]);
+    const adjustedDelta = round10(targetDeltaTime / this.stepSize, StepPrecisions[stepSize]);
 
     const options = Object.values(Steps)
-      .map(step => ({ value: step, label: step, isSelected: step === stepSize }));
+      .map((step) => ({ value: step, label: step, isSelected: step === stepSize }));
 
     return (
       <div>
@@ -269,29 +268,25 @@ class SimulationIncrement extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    deltaTime: state.time.deltaTime,
-    targetDeltaTime: state.time.targetDeltaTime,
-    isPaused: state.time.isPaused,
-    hasNextDeltaTimeStep: state.time.hasNextDeltaTimeStep,
-    hasPrevDeltaTimeStep: state.time.hasPrevDeltaTimeStep,
-    nextDeltaTimeStep: state.time.nextDeltaTimeStep,
-    prevDeltaTimeStep: state.time.prevDeltaTimeStep,
-    luaApi: state.luaApi
-  }
-}
+const mapStateToProps = (state) => ({
+  deltaTime: state.time.deltaTime,
+  targetDeltaTime: state.time.targetDeltaTime,
+  isPaused: state.time.isPaused,
+  hasNextDeltaTimeStep: state.time.hasNextDeltaTimeStep,
+  hasPrevDeltaTimeStep: state.time.hasPrevDeltaTimeStep,
+  nextDeltaTimeStep: state.time.nextDeltaTimeStep,
+  prevDeltaTimeStep: state.time.prevDeltaTimeStep,
+  luaApi: state.luaApi,
+});
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    startSubscriptions: () => {
-      dispatch(subscribeToTime());
-    },
-    stopSubscriptions: () => {
-      dispatch(unsubscribeToTime());
-    }
-  }
-}
+const mapDispatchToProps = (dispatch) => ({
+  startSubscriptions: () => {
+    dispatch(subscribeToTime());
+  },
+  stopSubscriptions: () => {
+    dispatch(unsubscribeToTime());
+  },
+});
 
 SimulationIncrement = connect(mapStateToProps, mapDispatchToProps)(SimulationIncrement);
 export default SimulationIncrement;

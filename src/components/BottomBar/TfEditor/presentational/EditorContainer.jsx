@@ -3,25 +3,27 @@ import styles from '../style/EditorCanvas.scss';
 import Histogram from '../containers/Histogram';
 import Envelope from '../containers/Envelope';
 
-const EditorContainer = ({
+function EditorContainer({
   height,
   width,
   activeVolume,
   URI,
-}) => (
-  <div className={styles.EditorContainer}>
-    <div className={styles.EnvelopeContainer}>
-      <Envelope
-        height={height}
-        width={width}
-        activeVolume={activeVolume}
-        URI={URI}
-      />
+}) {
+  return (
+    <div className={styles.EditorContainer}>
+      <div className={styles.EnvelopeContainer}>
+        <Envelope
+          height={height}
+          width={width}
+          activeVolume={activeVolume}
+          URI={URI}
+        />
+      </div>
+      <div className={styles.HistogramContainer}>
+        <Histogram height={height} width={width} activeVolume={activeVolume} />
+      </div>
     </div>
-    <div className={styles.HistogramContainer}>
-      <Histogram height={height} width={width} activeVolume={activeVolume} />
-    </div>
-  </div>
-);
+  );
+}
 
 export default EditorContainer;

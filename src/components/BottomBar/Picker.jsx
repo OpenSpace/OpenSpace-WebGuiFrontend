@@ -2,14 +2,14 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import styles from './Picker.scss';
 
-const Picker = (props) => {
+function Picker(props) {
   const { children, className } = props;
   return (
     <div {...props} className={`${styles.Picker} ${className}`}>
       { children }
     </div>
   );
-};
+}
 
 Picker.propTypes = {
   children: PropTypes.node.isRequired,

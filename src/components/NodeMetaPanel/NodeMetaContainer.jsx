@@ -12,11 +12,12 @@ class NodeMetaContainer extends Component {
     const { activeNodeMetaPanels } = this.props;
     return (
       <div className={styles.NodePopOverContainer}>
-      { activeNodeMetaPanels.map(uri => (
-              <NodeMetaPanel
-                uri={uri}
-                key={uri}
-              />)) }
+        { activeNodeMetaPanels.map((uri) => (
+          <NodeMetaPanel
+            uri={uri}
+            key={uri}
+          />
+        )) }
 
       </div>
     );
@@ -24,10 +25,8 @@ class NodeMetaContainer extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const activeNodeMetaPanels = state.local.popovers.activeNodeMetaPanels;
-  const panels = Object.keys(activeNodeMetaPanels).map(function(key) {
-      return key;
-  });
+  const { activeNodeMetaPanels } = state.local.popovers;
+  const panels = Object.keys(activeNodeMetaPanels).map((key) => key);
 
   return {
     activeNodeMetaPanels: panels,

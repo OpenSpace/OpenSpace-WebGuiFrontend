@@ -3,16 +3,16 @@ import { actionTypes } from '../Actions/actionTypes';
 const emptyGroup = () => ({
   subgroups: [],
   propertyOwners: [],
-})
+});
 
 const computeGroups = (propertyTree) => {
   const { propertyOwners, properties } = propertyTree;
   const groups = {};
 
   // Create links to property owners.
-  Object.keys(propertyOwners).forEach(uri => {
-    const guiPathProp = properties[uri + '.GuiPath'];
-    let guiPath = guiPathProp ? guiPathProp.value : '';
+  Object.keys(propertyOwners).forEach((uri) => {
+    const guiPathProp = properties[`${uri}.GuiPath`];
+    const guiPath = guiPathProp ? guiPathProp.value : '';
 
     // Only scene graph nodes can use the group feature.
     // Match children (but not grandchildren) of Scene:
@@ -20,12 +20,12 @@ const computeGroups = (propertyTree) => {
       return;
     }
 
-    const group = groups[guiPath] = groups[guiPath] || emptyGroup()
+    const group = groups[guiPath] = groups[guiPath] || emptyGroup();
     group.propertyOwners.push(uri);
   });
 
   // Create links from parent groups to subgroups.
-  Object.keys(groups).forEach(group => {
+  Object.keys(groups).forEach((group) => {
     const path = group.split('/');
     for (let i = 1; i < path.length; ++i) {
       const parentPath = path.slice(0, i).join('/');
@@ -38,7 +38,7 @@ const computeGroups = (propertyTree) => {
   });
 
   return groups;
-}
+};
 
 export const groups = (state = {}, action, propertyTree) => {
   switch (action.type) {
@@ -48,5 +48,3 @@ export const groups = (state = {}, action, propertyTree) => {
       return state;
   }
 };
-
-

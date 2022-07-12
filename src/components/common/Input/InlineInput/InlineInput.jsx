@@ -10,8 +10,8 @@ class InlineInput extends Component {
     super(props);
     this.state = {
       value: props.value,
-      focus: false
-    }
+      focus: false,
+    };
 
     this.onFocus = this.onFocus.bind(this);
     this.onBlur = this.onBlur.bind(this);
@@ -21,17 +21,19 @@ class InlineInput extends Component {
 
   render() {
     const { props, state, onKeyUp } = this;
-    return <AutosizeInput
-      {...excludeKeys(props, "noExtraWidth onEnter")}
-      id={props.id || `inlineinput-${Input.nextId}`}
-      value={state.value}
-      onChange={this.onChange}
-      onKeyUp={onKeyUp}
-      onBlur={this.onBlur}
-      onFocus={this.onFocus}
-      className={`${styles.input} ${props.className}`}
-      extraWidth={props.noExtraWidth ? 0 : undefined}
-    />
+    return (
+      <AutosizeInput
+        {...excludeKeys(props, 'noExtraWidth onEnter')}
+        id={props.id || `inlineinput-${Input.nextId}`}
+        value={state.value}
+        onChange={this.onChange}
+        onKeyUp={onKeyUp}
+        onBlur={this.onBlur}
+        onFocus={this.onFocus}
+        className={`${styles.input} ${props.className}`}
+        extraWidth={props.noExtraWidth ? 0 : undefined}
+      />
+    );
   }
 
   componentDidUpdate() {
@@ -43,19 +45,19 @@ class InlineInput extends Component {
       return;
     }
     this.setState({
-      value: props.value
+      value: props.value,
     });
   }
 
   onFocus() {
     this.setState({
-      focus: true
+      focus: true,
     });
   }
 
   onBlur(event) {
     this.setState({
-      focus: false
+      focus: false,
     });
     this.props.onEnter(event);
   }
@@ -70,7 +72,7 @@ class InlineInput extends Component {
     const { props, state } = this;
     const { value } = event.currentTarget;
     this.setState({
-      value
+      value,
     });
     this.props.onChange(event);
   }
@@ -83,7 +85,7 @@ InlineInput.propTypes = {
   onEnter: PropTypes.func,
   type: PropTypes.string,
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  noExtraWidth: PropTypes.bool
+  noExtraWidth: PropTypes.bool,
 };
 
 InlineInput.defaultProps = {
@@ -93,7 +95,7 @@ InlineInput.defaultProps = {
   onEnter: () => {},
   type: 'text',
   value: '',
-  noExtraWidth: false
+  noExtraWidth: false,
 };
 
 export default InlineInput;

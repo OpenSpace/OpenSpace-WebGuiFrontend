@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import InfoButton from './../presentational/InfoButton';
+import InfoButton from '../presentational/InfoButton';
 
 class InfoButtonController extends Component {
   constructor(props) {
@@ -15,18 +15,19 @@ class InfoButtonController extends Component {
   render() {
     return (
       <div>
-        {this.props.story.title &&
+        {this.props.story.title
+          && (
           <InfoButton
             storyTitle={this.props.story.title}
             storyInfo={this.props.story.storyinfo}
           />
-        }
+          )}
       </div>
     );
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   story: state.storyTree.story,
 });
 

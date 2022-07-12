@@ -34,15 +34,19 @@ class StringProperty extends Component {
   }
 
   onChange(evt) {
-    const value = evt.target.value;
+    const { value } = evt.target;
     this.props.dispatcher.set(value);
   }
 
   render() {
     const { description, value } = this.props;
-    const label = (<span onClick={this.copyUri}>
-      { description.Name } { this.descriptionPopup }
-    </span>);
+    const label = (
+      <span onClick={this.copyUri}>
+        { description.Name }
+        {' '}
+        { this.descriptionPopup }
+      </span>
+    );
     return (
       <div className={`${this.disabled ? styles.disabled : ''}`}>
         <Input
@@ -66,7 +70,7 @@ StringProperty.propTypes = {
     }),
     description: PropTypes.string,
   }).isRequired,
-  value: PropTypes.any
+  value: PropTypes.any,
 };
 
 export default StringProperty;

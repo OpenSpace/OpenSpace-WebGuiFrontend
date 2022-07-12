@@ -26,7 +26,7 @@ export const addPoint = (color, URI) => ({
   },
 });
 
-export const deleteEnvelope = URI => ({
+export const deleteEnvelope = (URI) => ({
   type: actionTypes.changePropertyTreeNode,
   payload: {
     type: actionTypes.deleteEnvelope,
@@ -34,7 +34,7 @@ export const deleteEnvelope = URI => ({
   },
 });
 
-export const clearEnvelopes = URI => ({
+export const clearEnvelopes = (URI) => ({
   type: actionTypes.changePropertyTreeNode,
   payload: {
     type: actionTypes.clearEnvelopes,

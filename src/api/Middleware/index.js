@@ -15,7 +15,7 @@ import { skybrowser } from './skybrowser';
 import logger from './logger';
 
 const middleware = applyMiddleware(
-  //logger, // middleWare for logging state change
+  // logger, // middleWare for logging state change
   propertyTree,
   time,
   engineMode,

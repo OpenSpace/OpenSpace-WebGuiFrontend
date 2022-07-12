@@ -244,7 +244,7 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   setPopoverVisibility: (visible) => {
     dispatch(setPopoverVisibility({
       popover: 'flightController',

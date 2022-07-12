@@ -22,7 +22,7 @@ class PaneRightHandSide extends Component {
   }
 
   componentWillUnmount() {
-    window.removeEventListener('resize', this.handleResize)
+    window.removeEventListener('resize', this.handleResize);
   }
 
   render() {

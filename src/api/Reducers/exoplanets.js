@@ -2,16 +2,16 @@ import { actionTypes } from '../Actions/actionTypes';
 
 const defaultState = {
   isInitialized: false,
-  data: {}
-}
+  data: {},
+};
 
 export const exoplanets = (state = defaultState, action) => {
   switch (action.type) {
     case actionTypes.initializeExoplanets:
       return {
         isInitialized: true,
-        data: action.payload
-      }
+        data: action.payload,
+      };
     default:
       return state;
   }

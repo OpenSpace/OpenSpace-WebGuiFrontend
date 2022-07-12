@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { 
+import {
   refreshSessionRecording,
   subscribeToEngineMode,
   subscribeToSessionRecording,
   unsubscribeToEngineMode,
-  unsubscribeToSessionRecording
+  unsubscribeToSessionRecording,
 } from '../../api/Actions';
 import {
   EngineModeCameraPath,
@@ -71,25 +71,21 @@ class SessionRec extends Component {
     const classes = [];
     let onClick = this.togglePopover;
 
-    // The picker works and looks differently depending on the 
+    // The picker works and looks differently depending on the
     // different states and modes
     if (engineMode === EngineModeCameraPath) {
       classes.push(Picker.DisabledBlue);
       onClick = undefined;
-    }
-    else if (recordingState === SessionStateRecording) {
+    } else if (recordingState === SessionStateRecording) {
       classes.push(Picker.Red);
       onClick = this.toggleRecording;
-    } 
-    else if (recordingState === SessionStatePlaying) {
+    } else if (recordingState === SessionStatePlaying) {
       classes.push(Picker.Blue);
       onClick = undefined;
-    } 
-    else if (recordingState === SessionStatePaused) {
+    } else if (recordingState === SessionStatePaused) {
       classes.push(Picker.Orange);
       onClick = undefined;
-    } 
-    else if (showPopover) {
+    } else if (showPopover) {
       classes.push(Picker.Active);
     }
 
@@ -156,7 +152,7 @@ class SessionRec extends Component {
     } = this.state;
 
     const options = Object.values(fileList)
-      .map(fname => ({ value: fname, label: fname }));
+      .map((fname) => ({ value: fname, label: fname }));
 
     const fileNameLabel = <span>Name of recording</span>;
     const fpsLabel = <span>FPS</span>;
@@ -181,7 +177,7 @@ class SessionRec extends Component {
               value={filenameRecording}
               label={fileNameLabel}
               placeholder="Enter recording filename..."
-              onChange={evt => this.updateRecordingFilename(evt)}
+              onChange={(evt) => this.updateRecordingFilename(evt)}
             />
 
             <div className={Popover.styles.row}>
@@ -227,7 +223,7 @@ class SessionRec extends Component {
                 placeholder="framerate"
                 className={styles.fpsInput}
                 visible={shouldOutputFrames}
-                onChange={evt => this.updateOutputFramerate(evt)}
+                onChange={(evt) => this.updateOutputFramerate(evt)}
               />
             )}
           </Row>
@@ -316,8 +312,13 @@ class SessionRec extends Component {
       loopPlayback,
     } = this.state;
 
-    this.props.startPlaybackLua(filenamePlayback,
-      forceTime, shouldOutputFrames, outputFramerate, loopPlayback);
+    this.props.startPlaybackLua(
+      filenamePlayback,
+      forceTime,
+      shouldOutputFrames,
+      outputFramerate,
+      loopPlayback,
+    );
   }
 
   setUseTextFormat(useTextFormat) {
@@ -406,14 +407,14 @@ const mapSubStateToProps = ({ engineMode, sessionRecording, luaApi }) => {
   };
 };
 
-const mapStateToSubState = state => ({
+const mapStateToSubState = (state) => ({
   engineMode: state.engineMode,
   sessionRecording: state.sessionRecording,
   originPickerPopover: state.local.popovers.sessionRecording,
   luaApi: state.luaApi,
 });
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   subscribe: () => {
     dispatch(subscribeToSessionRecording());
     dispatch(subscribeToEngineMode());
@@ -426,7 +427,6 @@ const mapDispatchToProps = dispatch => ({
     dispatch(unsubscribeToEngineMode());
   },
 });
-
 
 SessionRec = connect(
   subStateToProps(mapSubStateToProps, mapStateToSubState),

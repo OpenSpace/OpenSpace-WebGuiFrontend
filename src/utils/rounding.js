@@ -34,7 +34,6 @@ export const round10 = (value, exponent) => decimalAdjust('round', value, expone
 export const floor10 = (value, exponent) => decimalAdjust('floor', value, exponent);
 export const ciel10 = (value, exponent) => decimalAdjust('ciel', value, exponent);
 
-
 /**
  * Compute the precision of a number. Any value larger than 0 returns
  * precision 0.
@@ -43,15 +42,16 @@ export const ciel10 = (value, exponent) => decimalAdjust('ciel', value, exponent
 export function precision(value: number) {
   if (!isFinite(value)) return 0;
 
-  var e = 1, precision = 0;
-  while ((Math.round(value * e) / e) !== value) { 
-    e *= 10; precision++; 
+  let e = 1; let
+    precision = 0;
+  while ((Math.round(value * e) / e) !== value) {
+    e *= 10; precision++;
   }
   return precision;
 }
 
 /**
- * Round a floating point value to a nice number with a given precision 
+ * Round a floating point value to a nice number with a given precision
  * (without floating point shenanigans)
  * https://www.kirupa.com/html5/rounding_numbers_in_javascript.htm
  * @param value - value to round
@@ -59,7 +59,7 @@ export function precision(value: number) {
  */
 export function roundToNiceNumber(value: number, precision: number) {
   // const p = Math.pow(10, precision(step));
-  const p = Math.pow(10, precision);
+  const p = 10 ** precision;
   return Math.round(value * p) / p;
 }
 

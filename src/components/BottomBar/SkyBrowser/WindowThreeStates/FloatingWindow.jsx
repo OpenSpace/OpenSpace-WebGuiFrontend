@@ -11,7 +11,7 @@ class FloatingWindow extends Component {
 
   render() {
     const {
-      children, defaultSize, position, setNewHeight, size, handleStop
+      children, defaultSize, position, setNewHeight, size, handleStop,
     } = this.props;
 
     return (
@@ -25,13 +25,13 @@ class FloatingWindow extends Component {
           <Resizable
             enable={{ right: true, bottom: true, bottomRight: true }}
             defaultSize={{ width: defaultSize.width, height: defaultSize.height }}
-            size={size ? size : undefined}
+            size={size || undefined}
             minWidth={280}
             minHeight={this.props.minHeight}
             handleClasses={{ right: styles.rightHandle, bottom: styles.bottomHandle }}
             onResizeStop={() => {
               if (setNewHeight) {
-                setNewHeight(this.windowDiv.clientWidth, this.windowDiv.clientHeight)
+                setNewHeight(this.windowDiv.clientWidth, this.windowDiv.clientHeight);
               }
             }}
           >

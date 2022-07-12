@@ -23,7 +23,7 @@ class HomeButtonContainer extends Component {
   }
 }
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   ResetStoryTree: (reset) => {
     dispatch(resetStoryTree(reset));
   },
@@ -33,7 +33,6 @@ HomeButtonContainer = connect(
   null,
   mapDispatchToProps,
 )(HomeButtonContainer);
-
 
 HomeButtonContainer.propTypes = {
   ResetStoryTree: PropTypes.func,

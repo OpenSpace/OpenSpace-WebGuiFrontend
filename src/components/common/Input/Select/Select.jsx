@@ -11,42 +11,42 @@ const selectStyles = {
     backgroundColor: '#222',
     borderWidth: 0,
     boxShadow: 'none',
-    height: 41
+    height: 41,
   }),
   menu: (provided) => ({
     ...provided,
     backgroundColor: '#222',
     margin: 0,
-    zIndex: 10
+    zIndex: 10,
   }),
   placeholder: (provided) => ({
     ...provided,
-    color: '#D9DA6D'
+    color: '#D9DA6D',
   }),
   indicatorSeparator: () => ({
   }),
   dropdownIndicator: (provided) => ({
     ...provided,
     ':hover': {
-      color: '#fff'
+      color: '#fff',
     },
     color: '#999',
-    paddingRight: 8
+    paddingRight: 8,
   }),
   option: (provided, state) => ({
     ...excludeKeys(provided, ':active'),
     color: '#FFF',
-    backgroundColor: state.isFocused ? '#333' : '#222'
+    backgroundColor: state.isFocused ? '#333' : '#222',
   }),
   singleValue: (provided, state) => ({
     ...provided,
     color: 'inherited',
     paddingTop: 10,
-    marginLeft: 0
-  })
+    marginLeft: 0,
+  }),
 };
 
-const Select = (props) => {
+function Select(props) {
   const { value, label } = props;
   const inheritedProps = excludeKeys(props, 'label');
   const id = props.id || `select-${Input.nextId}`;
@@ -58,13 +58,13 @@ const Select = (props) => {
         id={id}
         placeholder={label}
         styles={selectStyles}
-        value={inheritedProps.options.filter(opt => opt.value == value)}
+        value={inheritedProps.options.filter((opt) => opt.value == value)}
         blurInputOnSelect
       />
       { props.value !== undefined && <label htmlFor={id} className={styles.selectlabel}>{ label }</label> }
     </div>
   );
-};
+}
 
 Select.propTypes = {
   clearable: PropTypes.bool,
@@ -74,7 +74,8 @@ Select.propTypes = {
     PropTypes.shape({
       value: PropTypes.string,
       label: PropTypes.string,
-    })).isRequired,
+    }),
+  ).isRequired,
   searchable: PropTypes.bool,
 };
 

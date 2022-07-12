@@ -3,7 +3,7 @@ import React from 'react';
 import { excludeKeys } from '../../../utils/helpers';
 import styles from './Tooltip.scss';
 
-const Tooltip = (props) => {
+function Tooltip(props) {
   const { children, placement, fixed } = props;
   return (
     <div
@@ -13,7 +13,7 @@ const Tooltip = (props) => {
       { children }
     </div>
   );
-};
+}
 
 Tooltip.propTypes = {
   children: PropTypes.node.isRequired,

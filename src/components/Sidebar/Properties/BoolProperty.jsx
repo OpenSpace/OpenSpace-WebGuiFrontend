@@ -25,9 +25,11 @@ class BoolProperty extends Component {
 
   get descriptionPopup() {
     const { description } = this.props.description;
-    return description ? <span onClick={this.copyUri}>
-      <InfoBox onClick={this.copyUri} text={description} />
-    </span> : '';
+    return description ? (
+      <span onClick={this.copyUri}>
+        <InfoBox onClick={this.copyUri} text={description} />
+      </span>
+    ) : '';
   }
 
   copyUri(e) {
@@ -48,7 +50,13 @@ class BoolProperty extends Component {
         <Checkbox
           wide={!this.props.checkBoxOnly}
           checked={value}
-          label={showText ? (<span>{description.Name} {this.descriptionPopup}</span>) : null}
+          label={showText ? (
+            <span>
+              {description.Name}
+              {' '}
+              {this.descriptionPopup}
+            </span>
+          ) : null}
           setChecked={this.onChange}
           disabled={this.disabled}
         />

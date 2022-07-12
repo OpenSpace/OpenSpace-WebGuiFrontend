@@ -1,16 +1,15 @@
 import React, { Component } from 'react';
-import { useLocation } from "react-router-dom";
+import { useLocation } from 'react-router-dom';
 import OnScreenGui from './OnScreenGui';
 
 function BrowserGui() {
-  let location = useLocation();
+  const location = useLocation();
 
   return (
-    <div style={{backgroundColor: '#050505'}}>
+    <div style={{ backgroundColor: '#050505' }}>
       <OnScreenGui showFlightController />
     </div>
   );
-  
 }
 
 export default BrowserGui;

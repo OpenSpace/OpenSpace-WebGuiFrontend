@@ -20,7 +20,7 @@ class Slide extends Component {
 
     return (
       <div className={styles.Container}>
-        <img src={image} className={styles.Slide} alt={'Story'} />
+        <img src={image} className={styles.Slide} alt="Story" />
         <div className={styles.StoryInfo}>
           <CenteredLabel className={styles.StoryName}>{storyInfo.title}</CenteredLabel>
           <CenteredLabel className={styles.Description}>{storyInfo.info}</CenteredLabel>

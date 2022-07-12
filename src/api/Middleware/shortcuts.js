@@ -3,9 +3,9 @@ import { actionTypes } from '../Actions/actionTypes';
 
 import api from '../api';
 
-let topic = undefined;
+let topic;
 
-const subscribeToShortcuts = callback => {
+const subscribeToShortcuts = (callback) => {
   topic = api.startTopic('shortcuts', {
     event: 'start_subscription',
   });
@@ -21,12 +21,12 @@ const unsubscribeToShortcuts = () => {
     return;
   }
   topic.talk({
-    event: 'stop_subscription'
+    event: 'stop_subscription',
   });
   topic.cancel();
-}
+};
 
-export const shortcuts = store => next => (action) => {
+export const shortcuts = (store) => (next) => (action) => {
   const result = next(action);
   switch (action.type) {
     case actionTypes.onOpenConnection:
@@ -42,7 +42,7 @@ export const shortcuts = store => next => (action) => {
       console.log(api);
       store.getState().luaApi.action.triggerAction(actionName);
       break;
-    break;
+      break;
     default:
       break;
   }

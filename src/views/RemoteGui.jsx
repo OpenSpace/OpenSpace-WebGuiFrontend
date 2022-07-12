@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { setShowAbout, startConnection } from '../api/Actions';
-import { formatVersion, isCompatible, RequiredOpenSpaceVersion, RequiredSocketApiVersion } from '../api/Version';
+import {
+  formatVersion, isCompatible, RequiredOpenSpaceVersion, RequiredSocketApiVersion,
+} from '../api/Version';
 import BottomBar from '../components/BottomBar/BottomBar';
 import Error from '../components/common/Error/Error';
 import Button from '../components/common/Input/Button/Button';
@@ -14,37 +16,35 @@ import '../styles/base.scss';
 import About from './About/About';
 import styles from './RemoteGui.scss';
 
-function RemoteGui({ startConnection, version, hideAbout, connectionLost, showAbout }) {
+function RemoteGui({
+  startConnection, version, hideAbout, connectionLost, showAbout,
+}) {
   let hasCheckedVersion = false;
-  
+
   React.useEffect(() => {
     startConnection();
   }, []);
-  
+
   function reloadGui() {
     location.reload();
   }
-  
+
   if (!hasCheckedVersion && version.isInitialized) {
     const versionData = version.data;
-    if (!isCompatible(
-      versionData.openSpaceVersion, RequiredOpenSpaceVersion))
-    {
+    if (!isCompatible(versionData.openSpaceVersion, RequiredOpenSpaceVersion)) {
       console.warn(
-        'Possible incompatibility: \nRequired OpenSpace version: ' +
-        formatVersion(RequiredOpenSpaceVersion) +
-        '. Currently controlling OpenSpace version ' +
-        formatVersion(versionData.openSpaceVersion) + '.'
+        `Possible incompatibility: \nRequired OpenSpace version: ${
+          formatVersion(RequiredOpenSpaceVersion)
+        }. Currently controlling OpenSpace version ${
+          formatVersion(versionData.openSpaceVersion)}.`,
       );
     }
-    if (!isCompatible(
-      versionData.socketApiVersion, RequiredSocketApiVersion))
-    {
+    if (!isCompatible(versionData.socketApiVersion, RequiredSocketApiVersion)) {
       console.warn(
-        "Possible incompatibility: \nRequired Socket API version: " +
-        formatVersion(RequiredSocketApiVersion) +
-        ". Currently operating over API version " +
-        formatVersion(versionData.socketApiVersion) + '.'
+        `Possible incompatibility: \nRequired Socket API version: ${
+          formatVersion(RequiredSocketApiVersion)
+        }. Currently operating over API version ${
+          formatVersion(versionData.socketApiVersion)}.`,
       );
     }
     hasCheckedVersion = true;
@@ -78,25 +78,25 @@ function RemoteGui({ startConnection, version, hideAbout, connectionLost, showAb
       <section className={styles.Grid__Right}>
         <NodePopOverContainer />
         <NodeMetaContainer />
-        <BottomBar showFlightController={true}/>
+        <BottomBar showFlightController />
       </section>
     </div>
   );
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   connectionLost: state.connection.connectionLost,
   version: state.version,
-  showAbout: state.local.showAbout
+  showAbout: state.local.showAbout,
 });
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   startConnection: () => {
     dispatch(startConnection());
   },
   hideAbout: () => {
-    dispatch(setShowAbout(false))
-  }
+    dispatch(setShowAbout(false));
+  },
 });
 
 RemoteGui = connect(

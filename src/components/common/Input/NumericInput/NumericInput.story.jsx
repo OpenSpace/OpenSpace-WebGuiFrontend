@@ -7,7 +7,7 @@ import NumericInput from './NumericInput';
 /* globals module */
 
 storiesOf('Input/NumericInput', module)
-  .addDecorator(story => (
+  .addDecorator((story) => (
     <div style={{ background: '#252525', padding: '20px' }}>
       { story() }
     </div>
@@ -19,7 +19,6 @@ storiesOf('Input/NumericInput', module)
   .add('inputOnly ', () => (<NumericInput placeholder="Number!" value={33.3} inputOnly />))
   .add('noHoverHint ', () => (<NumericInput placeholder="Number!" value={33.3} noHoverHint />))
   .add('noTooltip ', () => (<NumericInput placeholder="Number!" value={33.3} noTooltip />))
-  .add('with callback', () =>
-    (<NumericInput placeholder="Input" value="change me" onChange={action('input')} />));
+  .add('with callback', () => (<NumericInput placeholder="Input" value="change me" onChange={action('input')} />));
 // OBS! The onChange property of the NumericInput has been renamed and updated.
 // @TODO: When this code is picked up again it needs to be adapted to the updated NumericProperty

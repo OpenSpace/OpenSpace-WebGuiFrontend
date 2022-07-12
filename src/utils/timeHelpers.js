@@ -1,4 +1,4 @@
-import {SetDeltaTimeScript, TogglePauseScript, ValuePlaceholder} from "../api/keys";
+import { SetDeltaTimeScript, TogglePauseScript, ValuePlaceholder } from '../api/keys';
 
 export const togglePause = (luaApi) => {
   luaApi.time.togglePause();
@@ -36,9 +36,7 @@ export const setDate = (luaApi, date) => {
  * @param zone - the time zone in ISO 8601 format
  * @constructor
  */
-export const DateStringWithTimeZone = (date, zone = 'Z') => {
-  return (!date.includes('Z') ? `${date}${zone}` : date);
-};
+export const DateStringWithTimeZone = (date, zone = 'Z') => (!date.includes('Z') ? `${date}${zone}` : date);
 
 export const UpdateDeltaTimeNow = (luaApi, value) => {
   luaApi.time.setDeltaTime(value);

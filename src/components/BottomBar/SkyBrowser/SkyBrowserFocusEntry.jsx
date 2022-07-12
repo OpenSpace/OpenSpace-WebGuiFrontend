@@ -82,10 +82,13 @@ class SkyBrowserFocusEntry extends Component {
   render() {
     const {
       name, identifier, thumbnail, credits, creditsUrl, ra, dec, fov, hasCelestialCoords,
-      luaApi, setOpacity, removeImageSelection, currentBrowserColor, opacity } = this.props;
-    const skySurveyTag = !hasCelestialCoords ? <span className={styles.skySurvey}>
+      luaApi, setOpacity, removeImageSelection, currentBrowserColor, opacity,
+    } = this.props;
+    const skySurveyTag = !hasCelestialCoords ? (
+      <span className={styles.skySurvey}>
         Sky Survey
-    </span> : "";
+      </span>
+    ) : '';
 
     const imageRemoveButton = removeImageSelection && (
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -117,7 +120,7 @@ class SkyBrowserFocusEntry extends Component {
       >
         {imageRemoveButton}
         <div className={styles.image}>
-          <img src={thumbnail} alt={''} loading='lazy' className={styles.imageText} onClick={setOpacity ? this.select : undefined}/>
+          <img src={thumbnail} alt="" loading="lazy" className={styles.imageText} onClick={setOpacity ? this.select : undefined} />
         </div>
         <div className={styles.imageHeader}>
           <span className={styles.imageTitle}>

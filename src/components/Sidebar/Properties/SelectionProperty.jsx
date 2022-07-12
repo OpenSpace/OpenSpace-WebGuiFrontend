@@ -11,7 +11,7 @@ class SelectionProperty extends Component {
     super(props);
 
     this.state = {
-      expanded: false
+      expanded: false,
     };
 
     this.setExpanded = this.setExpanded.bind(this);
@@ -31,7 +31,7 @@ class SelectionProperty extends Component {
   }
 
   setExpanded(expanded) {
-    this.setState({ expanded: expanded });
+    this.setState({ expanded });
   }
 
   get descriptionPopup() {
@@ -56,14 +56,13 @@ class SelectionProperty extends Component {
   }
 
   onCheckboxChange(checked, option) {
-    let selection = this.selection;
-    const index = selection.indexOf(option)
+    const { selection } = this;
+    const index = selection.indexOf(option);
     const isSelected = index != -1;
 
     if (checked && !isSelected) { // add to selection
       selection.push(option);
-    }
-    else if (!checked && isSelected) { // remove from selection
+    } else if (!checked && isSelected) { // remove from selection
       selection.splice(index, 1);
     }
     this.props.dispatcher.set(selection);
@@ -85,20 +84,24 @@ class SelectionProperty extends Component {
 
   render() {
     const { description } = this.props;
-    const options = this.options;
+    const { options } = this;
 
-    const label = (<span onClick={this.copyUri}>
-      { description.Name } { this.descriptionPopup }
-    </span>);
+    const label = (
+      <span onClick={this.copyUri}>
+        { description.Name }
+        {' '}
+        { this.descriptionPopup }
+      </span>
+    );
 
     const helperButtons = (
       <span>
         <Button onClick={this.selectAllClick}> Select All </Button>
         <Button onClick={this.clearSelectionClick}> Clear </Button>
       </span>
-    )
+    );
 
-      console.log(this.disabled);
+    console.log(this.disabled);
 
     return (
       <ToggleContent
@@ -108,9 +111,9 @@ class SelectionProperty extends Component {
       >
         {/* @TODO (emmbr, 2021-05-27): this property type cannot be disabled */}
         {/* <div className={`${this.disabled ? styles.disabled : ''}`}> */}
-          { (options.length > 10) && helperButtons }
-          {
-            options.map(opt => 
+        { (options.length > 10) && helperButtons }
+        {
+            options.map((opt) => (
               <Checkbox
                 key={opt}
                 label={opt}
@@ -118,7 +121,7 @@ class SelectionProperty extends Component {
                 setChecked={(checked) => { this.onCheckboxChange(checked, opt); }}
                 disabled={this.disabled}
               />
-            )
+            ))
           }
         {/* </div> */}
       </ToggleContent>
@@ -135,7 +138,7 @@ SelectionProperty.propTypes = {
     }),
     description: PropTypes.string,
   }).isRequired,
-  value: PropTypes.any
+  value: PropTypes.any,
 };
 
 export default SelectionProperty;

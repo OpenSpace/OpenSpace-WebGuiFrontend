@@ -2,11 +2,13 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import styles from './LoadingString.scss';
 
-const LoadingString = ({ children, loading }) => (
-  <span className={loading ? styles.loading : styles.loaded}>
-    { children }
-  </span>
-);
+function LoadingString({ children, loading }) {
+  return (
+    <span className={loading ? styles.loading : styles.loaded}>
+      { children }
+    </span>
+  );
+}
 
 LoadingString.propTypes = {
   children: PropTypes.node,

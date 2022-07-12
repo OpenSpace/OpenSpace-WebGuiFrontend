@@ -17,7 +17,7 @@ class NumericInput extends Component {
       value: props.value,
       showTextInput: false,
       id: `numericinput-${Input.nextId}`,
-      hoverHint: null
+      hoverHint: null,
     };
 
     this.roundValueToStepSize = this.roundValueToStepSize.bind(this);
@@ -44,10 +44,10 @@ class NumericInput extends Component {
       this.setState({ value: this.props.value });
     }
 
-    const scaleNeedsUpdate = (prevProps.min !== this.props.min) ||
-                             (prevProps.max !== this.props.max) ||
-                             (prevProps.step !== this.props.step) ||
-                             (prevProps.exponent !== this.props.exponent);
+    const scaleNeedsUpdate = (prevProps.min !== this.props.min)
+                             || (prevProps.max !== this.props.max)
+                             || (prevProps.step !== this.props.step)
+                             || (prevProps.exponent !== this.props.exponent);
 
     if (scaleNeedsUpdate) {
       this.scale = this.updateSliderScale();
@@ -59,7 +59,9 @@ class NumericInput extends Component {
   }
 
   updateSliderScale() {
-    const {exponent, min, max, step} = this.props;
+    const {
+      exponent, min, max, step,
+    } = this.props;
 
     // Prevent setting exponent to zero, as it breaks the scale
     const exp = (exponent == 0) ? 1.0 : exponent;
@@ -72,9 +74,9 @@ class NumericInput extends Component {
 
     // The slider is logarithmic, but the scaling of the value increases exponentially
     return Scale.scalePow()
-            .exponent(exp)
-            .domain([0, this.sliderResolution]) // slider pos
-            .range([min, max]); // allowed values
+      .exponent(exp)
+      .domain([0, this.sliderResolution]) // slider pos
+      .range([min, max]); // allowed values
   }
 
   valueToSliderPos(value) {
@@ -103,7 +105,7 @@ class NumericInput extends Component {
 
   onTextBlur(event) {
     const value = Number.parseFloat(event.currentTarget.value);
-    if(!isNaN(value)) {
+    if (!isNaN(value)) {
       this.updateValue(value);
     }
     this.disableTextInput();
@@ -149,7 +151,7 @@ class NumericInput extends Component {
   }
 
   disableTextInput() {
-    this.setState({ showTextInput: false, hoverHint: null});
+    this.setState({ showTextInput: false, hoverHint: null });
   }
 
   render() {
@@ -168,9 +170,11 @@ class NumericInput extends Component {
       );
     }
 
-    const { placeholder, className, label, wide, reverse, noValue } = this.props;
-    const doNotInclude = 'wide reverse onValueChanged value className type min max step exponent ' +
-                         'inputOnly label noHoverHint noTooltip noValue';
+    const {
+      placeholder, className, label, wide, reverse, noValue,
+    } = this.props;
+    const doNotInclude = 'wide reverse onValueChanged value className type min max step exponent '
+                         + 'inputOnly label noHoverHint noTooltip noValue';
     const inheritedProps = excludeKeys(this.props, doNotInclude);
     const hoverHintOffset = reverse ? 1 - hoverHint : hoverHint;
 
@@ -203,7 +207,9 @@ class NumericInput extends Component {
           max={this.sliderResolution}
           step={1}
           className={`${className} ${styles.range}`}
-          style={{ '--min': 0, '--max': this.sliderResolution, '--value': sliderValue, direction: reverse ? "rtl" : "ltr" }}
+          style={{
+            '--min': 0, '--max': this.sliderResolution, '--value': sliderValue, direction: reverse ? 'rtl' : 'ltr',
+          }}
           onChange={this.onSliderChange}
           onMouseMove={this.onHover}
           onMouseLeave={this.onLeave}
@@ -212,7 +218,7 @@ class NumericInput extends Component {
           { label || placeholder }
         </label>
         <span className={styles.value}>
-          {noValue ? "" : value}
+          {noValue ? '' : value}
         </span>
       </div>
     );

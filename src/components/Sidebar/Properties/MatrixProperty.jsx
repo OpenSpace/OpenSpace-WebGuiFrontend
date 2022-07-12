@@ -43,18 +43,22 @@ class MatrixProperty extends Component {
 
   render() {
     const { description, value } = this.props;
-    const { SteppingValue, MaximumValue, MinimumValue, Exponent } = description.AdditionalData;
+    const {
+      SteppingValue, MaximumValue, MinimumValue, Exponent,
+    } = description.AdditionalData;
     const firstLabel = (
       <span onClick={this.copyUri}>
-        { description.Name } { this.descriptionPopup }
+        { description.Name }
+        {' '}
+        { this.descriptionPopup }
       </span>
     );
 
     const values = value.map((value, index) => ({
-        key: `${description.Name}-${index}`,
-        value: parseFloat(value),
-        index,
-      }));
+      key: `${description.Name}-${index}`,
+      value: parseFloat(value),
+      index,
+    }));
     // Find N
     const matrixSize = Math.sqrt(values.length);
     // actually convert into N arrays of N length
@@ -62,10 +66,11 @@ class MatrixProperty extends Component {
 
     // eslint-disable react/no-array-index-key
     return (
-      <div className={`${styles.matrixProperty} ${this.disabled ? styles.disabled : ''}`}>>
+      <div className={`${styles.matrixProperty} ${this.disabled ? styles.disabled : ''}`}>
+        >
         { groups.map((group, index) => (
           <Row key={`row-${index}`}>
-            { group.map(comp => (
+            { group.map((comp) => (
               <NumericInput
                 inputOnly
                 key={comp.key}

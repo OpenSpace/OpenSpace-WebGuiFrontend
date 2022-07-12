@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { useLocation } from "react-router-dom";
+import { useLocation } from 'react-router-dom';
 import { setShowAbout, startConnection } from '../api/Actions';
-import { formatVersion, isCompatible, RequiredOpenSpaceVersion, RequiredSocketApiVersion } from '../api/Version';
+import {
+  formatVersion, isCompatible, RequiredOpenSpaceVersion, RequiredSocketApiVersion,
+} from '../api/Version';
 import BottomBar from '../components/BottomBar/BottomBar';
 import KeybindingPanel from '../components/BottomBar/KeybindingPanel';
 import Error from '../components/common/Error/Error';
@@ -16,9 +18,11 @@ import '../styles/base.scss';
 import About from './About/About';
 import styles from './OnScreenGui.scss';
 
-function OnScreenGui({ showFlightController, connectionLost, startConnection, version, showAbout, hideAbout }) {
+function OnScreenGui({
+  showFlightController, connectionLost, startConnection, version, showAbout, hideAbout,
+}) {
   let hasCheckedVersion = false;
-  let location = useLocation();
+  const location = useLocation();
 
   React.useEffect(() => {
     startConnection();
@@ -29,18 +33,18 @@ function OnScreenGui({ showFlightController, connectionLost, startConnection, ve
     const versionData = version.data;
     if (!isCompatible(versionData.openSpaceVersion, RequiredOpenSpaceVersion)) {
       console.warn(
-        'Possible incompatibility: \nRequired OpenSpace version: ' +
-        formatVersion(RequiredOpenSpaceVersion) +
-        '. Currently controlling OpenSpace version ' +
-        formatVersion(versionData.openSpaceVersion) + '.'
+        `Possible incompatibility: \nRequired OpenSpace version: ${
+          formatVersion(RequiredOpenSpaceVersion)
+        }. Currently controlling OpenSpace version ${
+          formatVersion(versionData.openSpaceVersion)}.`,
       );
     }
     if (!isCompatible(versionData.socketApiVersion, RequiredSocketApiVersion)) {
       console.warn(
-        "Possible incompatibility: \nRequired Socket API version: " +
-        formatVersion(RequiredSocketApiVersion) +
-        ". Currently operating over API version " +
-        formatVersion(versionData.socketApiVersion) + '.'
+        `Possible incompatibility: \nRequired Socket API version: ${
+          formatVersion(RequiredSocketApiVersion)
+        }. Currently operating over API version ${
+          formatVersion(versionData.socketApiVersion)}.`,
       );
     }
     hasCheckedVersion = true;
@@ -78,26 +82,26 @@ function OnScreenGui({ showFlightController, connectionLost, startConnection, ve
       <section className={styles.Grid__Right}>
         <NodePopOverContainer />
         <NodeMetaContainer />
-        <BottomBar showFlightController={showFlightController}/>
+        <BottomBar showFlightController={showFlightController} />
         <KeybindingPanel />
       </section>
     </div>
   );
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   connectionLost: state.connection.connectionLost,
   version: state.version,
-  showAbout: state.local.showAbout
+  showAbout: state.local.showAbout,
 });
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   startConnection: () => {
     dispatch(startConnection());
   },
   hideAbout: () => {
-    dispatch(setShowAbout(false))
-  }
+    dispatch(setShowAbout(false));
+  },
 });
 
 OnScreenGui = connect(

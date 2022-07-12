@@ -22,7 +22,7 @@ class ColorPicker extends Component {
         disableAlpha
         {...this.props}
         color={this.state.color}
-        onChangeComplete={color => this.handleChangeComplete(color)}
+        onChangeComplete={(color) => this.handleChangeComplete(color)}
       />
     );
   }

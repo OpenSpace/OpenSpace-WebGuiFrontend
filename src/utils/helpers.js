@@ -4,7 +4,7 @@ export function excludeKeys(value: Object, keys: string): Object {
   const doNotInclude = keys.split(' ');
   return Object.keys(value)
     // actually filter out the keywords
-    .filter(key => !doNotInclude.includes(key))
+    .filter((key) => !doNotInclude.includes(key))
     // create new object to return
     .reduce((newObj, key) => {
       // eslint-disable-next-line no-param-reassign
@@ -19,8 +19,7 @@ export function excludeKeys(value: Object, keys: string): Object {
  * @param func - the function to call
  * @param args - the arguments to call with
  */
-export const defer = (func: Function, ...args: Array<mixed>): number =>
-  setTimeout(() => func(...args), 0);
+export const defer = (func: Function, ...args: Array<mixed>): number => setTimeout(() => func(...args), 0);
 
 /**
  * rotate the positions in array arr
@@ -36,13 +35,12 @@ export const rotate = (arr: Array<any>, steps: number): Array<any> => {
   return copy;
 };
 
-
 /**
  * Copy a text to the clipboard
  * @param text - text to copy
  */
 export function copyTextToClipboard(text) {
-  var textArea = document.createElement("textarea");
+  const textArea = document.createElement('textarea');
   textArea.style.position = 'fixed';
   textArea.style.top = 0;
   textArea.style.left = 0;
