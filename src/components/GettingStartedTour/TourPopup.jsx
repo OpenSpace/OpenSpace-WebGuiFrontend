@@ -240,7 +240,8 @@ function Goal({ startSubscriptions, setIsFulfilled, hasGoals, stopSubscriptions,
       catch(e) {
         console.error("Error: " + e);
       }
-      }}, [content, lastKey]);  
+    }
+  }, [content, lastKey]);  
 
   return (areAllConditionsFulfilled && hasGoals ?
     <AnimatedCheckmark style={{ marginTop: '70px', width: '56px', height: '56px' }} /> :
