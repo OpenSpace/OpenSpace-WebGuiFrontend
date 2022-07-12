@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Resizable } from 're-resizable';
 import Button from '../../common/Input/Button/Button';
@@ -9,6 +10,9 @@ import SkyBrowserFocusEntry from './SkyBrowserFocusEntry';
 import { Icon } from '@iconify/react';
 import styles from './SkyBrowserTabs.scss';
 import SkyBrowserSettings from './SkyBrowserSettings.jsx'
+import {
+  reloadPropertyTree,
+} from '../../../api/Actions';
 
 class SkyBrowserTabs extends Component {
   constructor(props) {
@@ -187,9 +191,14 @@ class SkyBrowserTabs extends Component {
   }
 
   createTargetBrowserPair() {
-    const {luaApi, setWwtRatio} = this.props;
+    const {luaApi, setWwtRatio, refresh} = this.props;
     luaApi.skybrowser.createTargetBrowserPair();
     setWwtRatio(1);
+    // TODO: Once we have a proper way to subscribe to additions and removals
+    // of property owners, this 'hard' refresh should be removed.
+    setTimeout(() => {
+      refresh();
+    }, 500);
   }
 
   removeTargetBrowserPair(browserId) {
@@ -202,6 +211,12 @@ class SkyBrowserTabs extends Component {
       this.props.setSelectedBrowser(ids[0]);
     }
     this.props.luaApi.skybrowser.removeTargetBrowserPair(browserId);
+    // TODO: Once we have a proper way to subscribe to additions and removals
+    // of property owners, this 'hard' refresh should be removed.
+    setTimeout(() => {
+      refresh();
+    }, 2000);
+    
   }
 
   createTabs() {
@@ -367,5 +382,18 @@ SkyBrowserTabs.defaultProps = {
   children: '',
   viewComponentProps: {},
 };
+
+const mapStateToProps = state => ({
+
+});
+
+const mapDispatchToProps = dispatch => ({
+  refresh: () => {
+    dispatch(reloadPropertyTree());
+  }
+});
+
+SkyBrowserTabs = connect(mapStateToProps, mapDispatchToProps,
+)(SkyBrowserTabs);
 
 export default SkyBrowserTabs;

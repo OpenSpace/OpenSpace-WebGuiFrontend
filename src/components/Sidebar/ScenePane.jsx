@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { isPropertyOwnerHidden } from './../../utils/propertyTreeHelpers';
 import { ObjectWordBeginningSubstring } from '../../utils/StringMatchers';
 import subStateToProps from '../../utils/subStateToProps';
 import {FilterList, FilterListData, FilterListFavorites} from '../common/FilterList/FilterList';
@@ -96,9 +95,12 @@ const mapSubStateToProps = ({ groups, properties, propertyOwners }) => {
   sortedGroups = sortedGroups.map(path => '/' + path);
 
   const matcher = (test, search) => {
-    const node = propertyOwners[test.uri] || {};
-    const guiHidden = isPropertyOwnerHidden(properties, test.uri);
-    return ObjectWordBeginningSubstring(node, search) && !guiHidden;
+    if (test.type === 'propertyOwner') {
+      const node = propertyOwners[test.uri] || {};
+      const guiHidden = isPropertyOwnerHidden(properties, test.uri);
+      return ObjectWordBeginningSubstring(node, search) && !guiHidden;
+    }
+    return false;
   };
 
   const sceneOwner = propertyOwners.Scene || {};
