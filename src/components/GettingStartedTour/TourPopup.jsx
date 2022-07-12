@@ -277,8 +277,8 @@ function TourPopup({ setVisibility, isVisible }) {
     {Boolean(content.position) && !isFulfilled &&
       <div className={`${styles.animatedBorder} ${styles.geoPositionBox}`} />}
     <ResizeableDraggable
-      minWidth={400}
-      minHeight={320}
+      minWidth={500}
+      minHeight={350}
       bounds="window"
       className={styles.window}
     >
@@ -328,10 +328,15 @@ function TourPopup({ setVisibility, isVisible }) {
             Previous
           </Button>}
           {<Button
-            onClick={() => isLastSlide ? () => {
-              setVisibility(false);
-              setCurrentSlide(0); 
-            } : setCurrentSlide(currentSlide + 1)}
+            onClick={() => {
+              if (isLastSlide) {
+                setVisibility(false);
+                setCurrentSlide(0);
+              }
+              else {
+                setCurrentSlide(currentSlide + 1)
+              }
+            }}
             className={styles.nextButton}
             >
             {!isLastSlide ? "Next" : "Finish"}

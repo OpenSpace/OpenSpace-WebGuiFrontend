@@ -22,7 +22,7 @@ class OnScreenGui extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      showTutorial : true
+      showTutorial : false
     }
     this.checkedVersion = false;
     this.showFlightController = props.showFlightController;
