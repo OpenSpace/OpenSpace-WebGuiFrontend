@@ -9,6 +9,7 @@ import Pane from './Pane';
 import ContextSection from './ContextSection';
 import PropertyOwner from './Properties/PropertyOwner';
 import Group from './Group';
+import { isPropertyOwnerHidden } from '../../utils/propertyTreeHelpers';
 
 class ScenePane extends Component {
   constructor(props) {
@@ -28,13 +29,15 @@ class ScenePane extends Component {
       expansionIdentifier: 'scene/' + item 
     }));
 
+    const { matcher } = this.props;
+
     return (
       <Pane title="Scene" closeCallback={this.props.closeCallback}>
         { (entries.length === 0) && (
           <LoadingBlocks className={Pane.styles.loading} />
         )}
         {entries.length > 0 && (
-          <FilterList matcher={this.props.matcher}>
+          <FilterList matcher={matcher}>
             <FilterListFavorites>
               <ContextSection expansionIdentifier="context" />
               {favorites.map(favorite => <Group {...favorite} />)}
@@ -95,12 +98,9 @@ const mapSubStateToProps = ({ groups, properties, propertyOwners }) => {
   sortedGroups = sortedGroups.map(path => '/' + path);
 
   const matcher = (test, search) => {
-    if (test.type === 'propertyOwner') {
-      const node = propertyOwners[test.uri] || {};
-      const guiHidden = isPropertyOwnerHidden(properties, test.uri);
-      return ObjectWordBeginningSubstring(node, search) && !guiHidden;
-    }
-    return false;
+    const node = propertyOwners[test.uri] || {};
+    const guiHidden = isPropertyOwnerHidden(properties, test.uri);
+    return ObjectWordBeginningSubstring(node, search) && !guiHidden;
   };
 
   const sceneOwner = propertyOwners.Scene || {};
