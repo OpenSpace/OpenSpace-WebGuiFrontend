@@ -4,8 +4,6 @@ $padding-horizontal: 0.3rem;
 $padding-vertical: 0.5rem;
 $padding: $padding-horizontal $padding-vertical;
 $highlight-color: #ffb51d;
-$logo-color: #b2d29c;
-$logo-color2: #85c8c4;
 $margin-over-mouse-button: 40px;
 $mouse-color: $text-color-blur;
 
@@ -193,16 +191,16 @@ $animated-border-length : 15px;
 
 @keyframes clickEffect{
     0%{
-        opacity:1;
-        width:0.5em; height:0.5em;
-        margin:-0.25em;
-        border-width:0.5em;
+        width: 0.5em; height: 0.5em;
+        margin: -0.25em;
+        border-width: 0.5em;
+        border-color: $highlight-color;
     }
     100%{
-        opacity:0.2;
-        width: 15em; height:15em;
-        margin:-7.5em;
-        border-width:0.03em;
+        width: 15em; height: 15em;
+        margin: -7.5em;
+        border-width: 0.13em;
+        border-color: darken($highlight-color, 20%);
     }
 }
 

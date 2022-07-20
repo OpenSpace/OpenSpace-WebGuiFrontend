@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import PropTypes, { object } from 'prop-types';
 import { connect } from 'react-redux';
 import { Rnd as ResizeableDraggable } from 'react-rnd';
