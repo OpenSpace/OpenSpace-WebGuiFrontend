@@ -79,7 +79,7 @@
         "position" : { "altitude" : { "operator" : ">" , "value" : 1, "unit" : "Lighthours" }, "latitude": { "operator" : "between", "value" : [60,  90]}}, 
         "title" : "Navigation",
         "firstText" : "Let's take a look at the Solar System from above.",
-        "infoText" : "The order of magnitude is: km < AU < Lighthour. The positio is {latitude, longitude}.",
+        "infoText" : "The order of magnitude is: km < AU < Lighthour. The position is {latitude, longitude}.",
         "goalText" : ["Set the focus node to Sun", "Go to an altitude of at least 1 Lighthour and a latitude of around 80"],
         "arrowPosition" : { "x" : 320, "y" : 70},
         "arrowRotation" : "down"
