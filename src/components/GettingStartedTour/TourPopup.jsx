@@ -157,12 +157,12 @@ function checkConditionsStatus(content, valueStart, currentValue) {
         if (typeof valueStart[i] === Number) {
           conditionsStatus[i] = !(Math.abs(valueStart[i] - currentValue[i]) < Number.EPSILON);
         }
-        else if (typeof valueStart[i] === object) {
+        else if (valueStart[i]?.length) {
           let hasChanged = true;
-          valueStart[i].map(channel, j => {
-            hasChanged &= !(Math.abs(channel[j] - currentValue[i][j]) < Number.EPSILON);
+          valueStart[i].map((channel, j) => {
+            hasChanged &= !(Math.abs(channel - currentValue[i][j]) < Number.EPSILON);
           })
-          conditionsStatus[i] = hasChanged;
+          conditionsStatus[i] = Boolean(hasChanged);
         }
         else {
           conditionsStatus[i] = valueStart[i] !== currentValue[i];
@@ -190,7 +190,7 @@ function MouseDescriptions({ button, info, description, keyboardButton}) {
 
 function Goal({ startSubscriptions, setIsFulfilled, hasGoals, stopSubscriptions, content, currentValue}) {
   const [valueStart, setValueStart] = React.useState(undefined);
-  
+ 
   // Subscribe to topics
   React.useEffect(() => {
     startSubscriptions();
@@ -213,7 +213,7 @@ function Goal({ startSubscriptions, setIsFulfilled, hasGoals, stopSubscriptions,
   // Check status of goal conditions
   const conditionsStatus = hasGoals ? checkConditionsStatus(content, valueStart, currentValue) : false;
   const areAllConditionsFulfilled = hasGoals ? !conditionsStatus.includes(false) : false;
-  
+
   React.useEffect(() => {
     setIsFulfilled(areAllConditionsFulfilled);
   },[areAllConditionsFulfilled]);
@@ -256,11 +256,6 @@ function Goal({ startSubscriptions, setIsFulfilled, hasGoals, stopSubscriptions,
         </div>
       }
       )}
-      {content.showMouse &&
-        <div className={ styles.scroll } >
-          {content.showMouse.map(mouseData => <MouseDescriptions key={mouseData.info} {...mouseData} />)}
-        </div>
-      }
     </>
   );
 }
@@ -268,11 +263,10 @@ function Goal({ startSubscriptions, setIsFulfilled, hasGoals, stopSubscriptions,
 function TourPopup({ setVisibility, isVisible }) {
   const [currentSlide, setCurrentSlide] = useLocalStorageState('currentSlide', 0);
   const [isFulfilled, setIsFulfilled] = React.useState(false);
-
   const content = contents[currentSlide];
   const isLastSlide = currentSlide === contents.length - 1;
   const isFirstSlide = currentSlide === 0;
-
+  
   return (isVisible && <>
     {Boolean(content.position) && !isFulfilled &&
       <div className={`${styles.animatedBorder} ${styles.geoPositionBox}`} />}
@@ -293,11 +287,16 @@ function TourPopup({ setVisibility, isVisible }) {
             <img src={openspaceLogo} className={styles.logo} />
           </div>}
         <p className={styles.text}>{content.firstText}</p>
+        <Goal content={content} setIsFulfilled={setIsFulfilled} />
         {<p className={` ${styles.text} ${styles.infoText}`}>{content.infoText}</p>}
-        <Goal content={content} setIsFulfilled={setIsFulfilled}/>
+        {content.showMouse &&
+        <div className={ styles.scroll } >
+          {content.showMouse.map(mouseData => <MouseDescriptions key={mouseData.info} {...mouseData} />)}
+        </div>
+        }
         {content.bulletList && content.bulletList.map(text => 
           <li key={text} className={styles.text}>{text}</li>
-        )}
+          )}
         {isLastSlide && <>
           <div style={{ display: 'flex'}}>
             <p className={styles.text}>Click 
