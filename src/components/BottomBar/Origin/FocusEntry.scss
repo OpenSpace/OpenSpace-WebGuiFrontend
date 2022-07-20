@@ -2,7 +2,7 @@
 
 .entry {
   padding: $popover-horizontal-padding;
-
+  list-style: none;
   &:hover {
     background: $ui-background-hover;
   }
