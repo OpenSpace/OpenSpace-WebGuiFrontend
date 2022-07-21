@@ -60,10 +60,12 @@ class Property extends Component {
   render() {
     const { description, value } = this.props;
 
+    if (!description) return <></>;
+    
     const ConcreteProperty = concreteProperties[description.Type];
-
+ 
     if (!ConcreteProperty) {
-      console.error("Missing property", description.Type, description);
+      console.error("Missing property", description?.Type, description);
       return null;
     }
 

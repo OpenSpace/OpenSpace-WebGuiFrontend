@@ -97,6 +97,7 @@ class SessionRec extends Component {
       <Picker
         onClick={onClick}
         className={classes.join(' ')}
+        refKey={"SessionRecording"}
       >
         { this.pickerContent }
       </Picker>

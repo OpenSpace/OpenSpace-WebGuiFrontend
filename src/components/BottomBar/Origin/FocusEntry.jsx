@@ -35,8 +35,8 @@ class FocusEntry extends Component {
 FocusEntry.propTypes = {
   identifier: PropTypes.string.isRequired,
   name: PropTypes.string,
-  onSelect: PropTypes.func,
-  active: PropTypes.string,
+  onSelect: PropTypes.func.isRequired,
+  active: PropTypes.string.isRequired,
 };
 
 FocusEntry.defaultProps = {

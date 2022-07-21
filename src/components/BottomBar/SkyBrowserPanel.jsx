@@ -418,7 +418,7 @@ class SkyBrowserPanel extends Component {
   render() {
     return (
       <div className={Picker.Wrapper}>
-        <Picker onClick={this.togglePopover} >
+        <Picker onClick={this.togglePopover} refKey={"SkyBrowser"}>
           <Icon icon="mdi:telescope" color="white" alt="WWT" style={{ fontSize: '2em' }}/>
         </Picker>
         {this.props.popoverVisible && this.popover}

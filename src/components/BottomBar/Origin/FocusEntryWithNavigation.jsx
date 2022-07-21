@@ -1,62 +1,57 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import styles from './FocusEntryWithNavigation.scss';
 import Button from '../../common/Input/Button/Button';
 import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
+import { useTutorial } from '../../GettingStartedTour/GettingStartedContext';
 
-class FocusEntry extends Component {
-  constructor(props) {
-    super(props);
-    this.select = this.select.bind(this);
-  }
+function FocusEntry({ luaApi, name, identifier, onSelect, active }) {
 
-  get isActive() {
-    const { active, identifier } = this.props;
+  function isActive() {
     return identifier === active;
   }
 
-  select(evt) {
-    const { identifier, onSelect } = this.props;
+  function select(evt) {
     if (onSelect) {
       onSelect(identifier, evt);
     }
   }
 
-  render() {
-    const { luaApi, name, identifier } = this.props;
+  const flyTo = (event) => {
+    luaApi.pathnavigation.flyTo(identifier);
+    event.stopPropagation();
+  };
 
-    const flyTo = (event) => {
-      luaApi.pathnavigation.flyTo(identifier);
-      event.stopPropagation();
-    };
+  const zoomToFocus = (event) => {
+    luaApi.pathnavigation.zoomToFocus();
+    event.stopPropagation();
+  };
 
-    const zoomToFocus = (event) => {
-      luaApi.pathnavigation.zoomToFocus();
-      event.stopPropagation();
-    };
+  const refs = useTutorial();
 
-    return (
-      <li
-        className={`${styles.entryWithNavigation} ${this.isActive && styles.active}`}
-        onClick={this.select}
-      >
-        <span className={styles.title}>
-          { name || identifier }
-        </span>
-        <div className={styles.buttonContainer}>
-          { this.isActive && (
-            <Button className={styles.flyToButton} onClick={zoomToFocus} title="Zoom to">
-              <MaterialIcon className={styles.buttonIcon} icon="center_focus_strong" />
-            </Button>
-          )}
-          <Button className={styles.flyToButton} onClick={flyTo} title="Fly to">
-            <MaterialIcon className={styles.buttonIcon} icon="flight" />
+  return (
+    <li
+      className={`${styles.entryWithNavigation} ${isActive() && styles.active}`}
+      onClick={select}
+      key={name}
+      ref={el => refs.current[name] = el}
+    >
+      <span className={styles.title}>
+        { name || identifier }
+      </span>
+      <div className={styles.buttonContainer}>
+        { isActive() && (
+          <Button className={styles.flyToButton} onClick={zoomToFocus} title="Zoom to">
+            <MaterialIcon className={styles.buttonIcon} icon="center_focus_strong" />
           </Button>
-        </div>
-      </li>
-    );
-  }
+        )}
+        <Button className={styles.flyToButton} onClick={flyTo} title="Fly to">
+          <MaterialIcon className={styles.buttonIcon} icon="flight" />
+        </Button>
+      </div>
+    </li>
+  );
 }
 
 const mapStateToProps = state => ({

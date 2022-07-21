@@ -3,10 +3,13 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { ObjectWordBeginningSubstring } from '../../utils/StringMatchers';
 import subStateToProps from '../../utils/subStateToProps';
-import FilterList from '../common/FilterList/FilterList';
+import {FilterList, FilterListData, FilterListFavorites} from '../common/FilterList/FilterList';
 import LoadingBlocks from '../common/LoadingBlock/LoadingBlocks';
 import Pane from './Pane';
-import ScenePaneListItem from './ScenePaneListItem';
+import ContextSection from './ContextSection';
+import PropertyOwner from './Properties/PropertyOwner';
+import Group from './Group';
+import { isPropertyOwnerHidden } from '../../utils/propertyTreeHelpers';
 
 class ScenePane extends Component {
   constructor(props) {
@@ -14,36 +17,35 @@ class ScenePane extends Component {
   }
 
   render() {
-    let favorites = [];
     const entries = this.props.propertyOwners.map(uri => ({
       key: uri,
-      type: 'propertyOwner',
-      uri: uri
+      uri: uri,
+      expansionIdentifier: 'scene-search/' + uri
     }));
 
-    favorites.push({
-      key: 'context',
-      type: 'context',
-    });
-
-    favorites = favorites.concat(this.props.groups.map(item => ({
+    const favorites = this.props.groups.map(item => ({
       key: item,
       path: item,
-      type: 'group'
-    })));
+      expansionIdentifier: 'scene/' + item 
+    }));
+
+    const { matcher } = this.props;
 
     return (
       <Pane title="Scene" closeCallback={this.props.closeCallback}>
         { (entries.length === 0) && (
           <LoadingBlocks className={Pane.styles.loading} />
         )}
-
-        { entries.length > 0 && (
-          <FilterList favorites={favorites}
-                      matcher={this.props.matcher}
-                      data={entries}
-                      viewComponent={ScenePaneListItem}
-                      searchAutoFocus />
+        {entries.length > 0 && (
+          <FilterList matcher={matcher}>
+            <FilterListFavorites>
+              <ContextSection expansionIdentifier="context" />
+              {favorites.map(favorite => <Group {...favorite} />)}
+            </FilterListFavorites>
+            <FilterListData>
+              {entries.map(entry => <PropertyOwner {...entry} />)}
+            </FilterListData>
+          </FilterList> 
         )}
       </Pane>
     );
@@ -96,11 +98,9 @@ const mapSubStateToProps = ({ groups, properties, propertyOwners }) => {
   sortedGroups = sortedGroups.map(path => '/' + path);
 
   const matcher = (test, search) => {
-    if (test.type === 'propertyOwner') {
-      const node = propertyOwners[test.uri] || {};
-      return ObjectWordBeginningSubstring(node, search);
-    }
-    return false;
+    const node = propertyOwners[test.uri] || {};
+    const guiHidden = isPropertyOwnerHidden(properties, test.uri);
+    return ObjectWordBeginningSubstring(node, search) && !guiHidden;
   };
 
   const sceneOwner = propertyOwners.Scene || {};
