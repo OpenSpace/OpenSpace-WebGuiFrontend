@@ -5,6 +5,7 @@ import { setShowAbout, startConnection } from '../api/Actions';
 import { formatVersion, isCompatible, RequiredOpenSpaceVersion, RequiredSocketApiVersion } from '../api/Version';
 import BottomBar from '../components/BottomBar/BottomBar';
 import KeybindingPanel from '../components/BottomBar/KeybindingPanel';
+import environment from '../api/Environment'
 import Error from '../components/common/Error/Error';
 import Button from '../components/common/Input/Button/Button';
 import Overlay from '../components/common/Overlay/Overlay';
@@ -79,7 +80,12 @@ class OnScreenGui extends Component {
     const {isInBrowser} = this.props;
     this.checkVersion();
     return (
-      <div className={styles.app}>
+      <div className={styles.app} style={environment.developmentMode ? { borderStyle: 'solid', borderWidth: '3px', borderColor: 'orange' } : null}>
+        {environment.developmentMode &&
+          <div className={styles.devModeTextBox}>
+            <p>Dev Gui</p>
+          </div>
+        }
         <TutorialProvider>
           {this.props.showAbout && (
           <Overlay>
