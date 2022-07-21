@@ -196,7 +196,7 @@ function Goal({ startSubscriptions, setIsFulfilled, hasGoals, stopSubscriptions,
     startSubscriptions();
     return () => stopSubscriptions();
   }, [startSubscriptions]);
-
+  
   // Save start values, if the goal is to change the values
   React.useEffect(() => {
     const changeGoalTypes = [GoalTypes.changeTime, GoalTypes.changeDeltaTime, GoalTypes.changeUri];
@@ -288,8 +288,8 @@ function TourPopup({ setVisibility, isVisible }) {
           </div>}
         <p className={styles.text}>{content.firstText}</p>
         <Goal content={content} setIsFulfilled={setIsFulfilled} />
-        {<p className={` ${styles.text} ${styles.infoText}`}>{content.infoText}</p>}
-        {content.showMouse &&
+        {<p className={` ${styles.text} ${styles.infoText}`} style={ isFulfilled ? { paddingTop: '40px' } : undefined }>{content.infoText}</p>}
+        {content.showMouse && !isFulfilled &&  
         <div className={ styles.scroll } >
           {content.showMouse.map(mouseData => <MouseDescriptions key={mouseData.info} {...mouseData} />)}
         </div>
