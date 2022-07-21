@@ -9,6 +9,7 @@ import Error from '../components/common/Error/Error';
 import Button from '../components/common/Input/Button/Button';
 import Overlay from '../components/common/Overlay/Overlay';
 import Stack from '../components/common/Stack/Stack';
+import LuaConsole from '../components/LuaConsole/LuaConsole';
 import NodeMetaContainer from '../components/NodeMetaPanel/NodeMetaContainer';
 import NodePopOverContainer from '../components/NodePropertiesPanel/NodePopOverContainer';
 import Sidebar from '../components/Sidebar/Sidebar';
@@ -22,14 +23,29 @@ class OnScreenGui extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      showTutorial : false
+      showTutorial : false,
+      luaConsoleVisible : false
     }
     this.checkedVersion = false;
-    this.showFlightController = props.showFlightController;
+    this.showFlightController = props.isInBrowser;
+    this.toggleConsole = this.toggleConsole.bind(this);
   }
 
   componentDidMount() {
     this.props.startConnection();
+    window.addEventListener("keydown", this.toggleConsole);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('keydown', this.toggleConsole);
+  }
+
+  toggleConsole(e) {
+      if(e.code === "Backquote") {
+        this.setState({
+          luaConsoleVisible : !this.state.luaConsoleVisible
+        });
+      }
   }
 
   checkVersion() {
@@ -60,6 +76,7 @@ class OnScreenGui extends Component {
   }
 
   render() {
+    const {isInBrowser} = this.props;
     this.checkVersion();
     return (
       <div className={styles.app}>
@@ -88,9 +105,10 @@ class OnScreenGui extends Component {
           <Sidebar showTutorial={ (show) => this.setState({ showTutorial : show })}/>
         </section>
         <section className={styles.Grid__Right}>
+          {isInBrowser && this.state.luaConsoleVisible && <LuaConsole />}
           <NodePopOverContainer />
           <NodeMetaContainer />
-          <BottomBar showFlightController={this.props.showFlightController}/>
+          <BottomBar showFlightController={this.showFlightController}/>
           <KeybindingPanel />
           <TourPopup isVisible={this.state.showTutorial} setVisibility = { (show) => this.setState({ showTutorial : show })}/>
         </section>
