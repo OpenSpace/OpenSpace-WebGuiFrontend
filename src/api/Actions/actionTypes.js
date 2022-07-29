@@ -51,6 +51,11 @@ export const actionTypes = {
   unsubscribeToSkyBrowser: 'SKYBROWSER_UNSUBSCRIBE',
   updateSkyBrowser: 'SKYBROWSER_UPDATE',
 
+  // action types for camera topic
+  subscribeToCamera: 'CAMERA_SUBSCRIBE',
+  unsubscribeToCamera: 'CAMERA_UNSUBSCRIBE',
+  updateCamera: 'CAMERA_UPDATE',
+
   // action types for shortcuts
   subscribeToShortcuts: 'SHORTCUTS_SUBSCRIBE',
   unsubscribeToShortcuts: 'SHORTCUTS_UNSUBSCRIBE',

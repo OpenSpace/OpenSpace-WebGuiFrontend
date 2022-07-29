@@ -7,10 +7,9 @@ function BrowserGui() {
 
   return (
     <div style={{backgroundColor: '#050505'}}>
-      <OnScreenGui showFlightController />
+      <OnScreenGui isInBrowser />
     </div>
   );
-  
 }
 
 export default BrowserGui;

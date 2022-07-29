@@ -1,11 +1,12 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import styles from './SmallLabel.scss';
+import {useTutorial} from './../../GettingStartedTour/GettingStartedContext'
 
-const SmallLabel = (props) => {
-  const { children } = props;
+const SmallLabel = ({children, refKey, ...props}) => {
+  const refs = useTutorial();
   return (
-    <span {...props} className={styles.SmallLabel}>
+    <span ref={ el => refKey ? refs.current[refKey] = el : null} {...props} className={styles.SmallLabel}>
       { children }
     </span>
   );

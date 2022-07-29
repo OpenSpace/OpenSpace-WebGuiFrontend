@@ -183,6 +183,7 @@ class ActionsPanel extends Component {
       return (
         <div className={Picker.Wrapper}>
           <Picker 
+            refKey={"Actions"}
             className={`${popoverVisible && Picker.Active}`} 
             onClick={this.togglePopover}
           >
