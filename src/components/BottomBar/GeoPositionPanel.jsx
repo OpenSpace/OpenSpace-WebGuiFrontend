@@ -7,7 +7,7 @@ import Popover from '../common/Popover/Popover';
 import styles from './GeoPositionPanel.scss';
 import Picker from './Picker';
 import Input from '../common/Input/Input/Input';
-import FilterList from '../common/FilterList/FilterList'
+import {FilterList, FilterListData } from '../common/FilterList/FilterList'
 import {
   setPopoverVisibility,
   subscribeToProperty,
@@ -16,6 +16,8 @@ import {
 } from '../../api/Actions';
 import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
 import { getBoolPropertyValue } from '../../utils/propertyTreeHelpers';
+import { useContextRefs } from '../GettingStartedTour/GettingStartedContext';
+import Dropdown from '../common/DropDown/Dropdown';
 
 function MultiStateToggle({title, labels, checked, setChecked}) {
   return <div className={styles.wrapper}>
@@ -31,7 +33,6 @@ function MultiStateToggle({title, labels, checked, setChecked}) {
   </div>
   </div>;
 }
-
 
 function useLocalStorageState(
   key,
@@ -69,13 +70,6 @@ function useLocalStorageState(
   return [state, setState]
 }
 
-
-function Place({address, location, interactionFunc}) {
-  return <Button className={styles.place} onClick={() => interactionFunc(location.y, location.x, address)}>
-    <p>{address}</p>
-  </Button>;
-}
-
 const Interaction = {
   flyTo : "Fly To",
   jumpTo: "Jump To",
@@ -104,40 +98,28 @@ function createSceneGraphNodeTable(globe, label, lat, long, alt) {
   return position;
 }
 
-function GeoPositionPanel({ refresh, luaApi, popoverVisible, setPopoverVisibilityProp, currentAnchor, startListeningToFocusNode, stopListeningToFocusNode }) {
+function Place({address, onClick}) {
+  return <Button 
+    className={styles.place} 
+    onClick={onClick}
+    >
+    <p>{address}</p>
+  </Button>;
+}
+
+function GeoPositionPanel({ refresh, luaApi, popoverVisible, setPopoverVisibilityProp, nodes, currentAnchor, startListeningToFocusNode, stopListeningToFocusNode }) {
   const [inputValue, setInputValue] = useLocalStorageState('inputValue',"");
   const [places, setPlaces] = useLocalStorageState('places', undefined);
   const [altitude, setAltitude] = useLocalStorageState('altitude', 300000);
   const [interaction, setInteraction] = useLocalStorageState('interaction', Interaction.flyTo);
-
-  let interactionFunc;
-  switch(interaction) {
-    case Interaction.flyTo: {
-      interactionFunc = (lat, long) => luaApi?.globebrowsing?.flyToGeo(currentAnchor, lat, long, altitude);
-      break;
-    }
-    case Interaction.jumpTo: {
-      interactionFunc = (lat, long) => luaApi?.globebrowsing?.goToGeo(currentAnchor, lat, long, altitude);
-      break;
-
-    }
-    case Interaction.addFocus: {
-      interactionFunc = (lat, long, label) => { 
-        luaApi?.addSceneGraphNode(createSceneGraphNodeTable(currentAnchor, label, lat, long, altitude));
-        // TODO: Once we have a proper way to subscribe to additions and removals
-        // of property owners, this 'hard' refresh should be removed.
-        setTimeout(() => {
-          refresh();
-        }, 500);
-      };
-      break;
-    }
-    default: {
-      interactionFunc = (lat, long) => luaApi?.globebrowsing?.flyToGeo(currentAnchor, lat, long, altitude);
-      ;
-      break;
-    }
-  }
+  const [anchor, setAnchor] = useLocalStorageState('anchor', 'Earth');
+  const options = ['Earth'];
+  // Create animation to show when a scene graph node has been added
+  const refs = useContextRefs();
+  const originRef = refs?.current?.["Origin"];
+  const newElement = document.createElement('div');
+  newElement.className = styles.addSceneGraphNodeAnimation;
+  const animationDiv = React.useRef(newElement);
 
   React.useEffect(() => {
     startListeningToFocusNode();
@@ -156,16 +138,58 @@ function GeoPositionPanel({ refresh, luaApi, popoverVisible, setPopoverVisibilit
     setPopoverVisibilityProp(!popoverVisible);
   }
 
+  function onClick(location, address) {
+    const lat = location.x;
+    const long = location.y;
+    switch(interaction) {
+      case Interaction.flyTo: {
+        luaApi?.globebrowsing?.flyToGeo(currentAnchor, lat, long, altitude);
+        break;
+      }
+      case Interaction.jumpTo: {
+        luaApi?.globebrowsing?.goToGeo(currentAnchor, lat, long, altitude);
+        break;
+      }
+      case Interaction.addFocus: {
+        luaApi?.addSceneGraphNode(createSceneGraphNodeTable(currentAnchor, address, lat, long, altitude));
+        if(originRef) {
+          const content = document.createTextNode(address);
+          animationDiv.current.textContent = '';
+          animationDiv.current.appendChild(content);
+          originRef.appendChild(animationDiv.current);
+        }
+        
+        // TODO: Once we have a proper way to subscribe to additions and removals
+        // of property owners, this 'hard' refresh should be removed.
+        setTimeout(() => {
+          refresh();
+        }, 500);
+        break;
+      }
+      default: {
+        luaApi?.globebrowsing?.flyToGeo(currentAnchor, lat, long, altitude);
+        ;
+        break;
+      }
+    }
+  }
+
   function popover() {
     return (
       <Popover
         className={`${Picker.Popover} ${styles.geoPositionPanel}`}
-        title={`Geo location: ${currentAnchor}`}
+        title={`Geo location`}
         closeCallback={() => togglePopover()}
         detachable
         attached={true}
       >
         <div className={styles.content}>
+        <Dropdown 
+          options={options} 
+          onChange={(anchor) => setAnchor(anchor.value)} 
+          value={anchor} 
+          placeholder="Select an anchor"
+        />
         {currentAnchor === 'Earth' ? 
         <>
         <div className={styles.searchField}>
@@ -180,14 +204,22 @@ function GeoPositionPanel({ refresh, luaApi, popoverVisible, setPopoverVisibilit
         />
         <p className={styles.resultsTitle}>Results</p>
           {places?.candidates && 
-          <FilterList 
-            searchText={"Filter results..."}
-            data={places.candidates}
-            viewComponent={Place}
-            viewComponentProps={{interactionFunc}}
-            key={`${places.x} ${places.y}`}
-            height={'270px'}
-          />}
+          <FilterList
+            searchString={"Filter results..."}
+            height={'235px'}
+            >
+            <FilterListData>
+            {places.candidates.map( place => 
+              <Place 
+                key={`${place.location.x} ${place.location.y}`} 
+                onClick={ () => 
+                  onClick(place.location, place.address)
+                }
+                address={place.address}
+                />)
+            }
+            </FilterListData>
+          </FilterList>}
           </> : <CenteredLabel>{`Currently there is no data for locations on ${currentAnchor}`}</CenteredLabel>
           }
         </div>
@@ -210,18 +242,27 @@ function GeoPositionPanel({ refresh, luaApi, popoverVisible, setPopoverVisibilit
   );
 }
 
-const mapSubStateToProps = ({popoverVisible, luaApi, currentAnchor}) => {
+const mapSubStateToProps = ({popoverVisible, luaApi, currentAnchor, propertyOwners}) => {
+  const scene = propertyOwners.Scene;
+  const uris = scene ? scene.subowners : [];
+
+  const nodes = uris.map(uri => ({
+    ...propertyOwners[uri],
+    key: uri,
+  }));
   return {
     popoverVisible: popoverVisible,
     luaApi: luaApi,
-    currentAnchor: currentAnchor
+    currentAnchor: currentAnchor,
+    nodes
   }
 };
 
 const mapStateToSubState = (state) => ({
   popoverVisible: state.local.popovers.geoposition.visible,
   luaApi: state.luaApi,
-  currentAnchor: getBoolPropertyValue(state, "NavigationHandler.OrbitalNavigator.Anchor")
+  currentAnchor: getBoolPropertyValue(state, "NavigationHandler.OrbitalNavigator.Anchor"),
+  propertyOwners: state.propertyTree.propertyOwners
 });
 
 const mapDispatchToProps = dispatch => ({

@@ -4,6 +4,35 @@
   font-size: 2em;
 }
 
+.dropDown {
+  background-color: pink;
+}
+
+.addSceneGraphNodeAnimation {
+  height: 30px;
+  width: 350px;
+  padding: 5px;
+  background-color: red;
+  position: absolute;
+  z-index: 20;
+  opacity: 0;
+  animation: flyToPosition 1s ease-in;
+}
+
+@keyframes flyToPosition {
+  0% {
+    transform: translate(200px, -300px);
+    opacity: 1;
+  }
+  99% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(0px, 0px);
+    scale: 0.5;
+  }
+}
+
 .place {
   width: 100%;
   text-align: left;
