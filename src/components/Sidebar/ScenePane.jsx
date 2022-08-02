@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { isPropertyOwnerHidden } from './../../utils/propertyTreeHelpers';
 import { ObjectWordBeginningSubstring } from '../../utils/StringMatchers';
 import subStateToProps from '../../utils/subStateToProps';
 import {FilterList, FilterListData, FilterListFavorites} from '../common/FilterList/FilterList';
@@ -10,6 +9,7 @@ import Pane from './Pane';
 import ContextSection from './ContextSection';
 import PropertyOwner from './Properties/PropertyOwner';
 import Group from './Group';
+import { isPropertyOwnerHidden } from '../../utils/propertyTreeHelpers';
 
 class ScenePane extends Component {
   constructor(props) {
@@ -29,13 +29,15 @@ class ScenePane extends Component {
       expansionIdentifier: 'scene/' + item 
     }));
 
+    const { matcher } = this.props;
+
     return (
       <Pane title="Scene" closeCallback={this.props.closeCallback}>
         { (entries.length === 0) && (
           <LoadingBlocks className={Pane.styles.loading} />
         )}
         {entries.length > 0 && (
-          <FilterList matcher={this.props.matcher}>
+          <FilterList matcher={matcher}>
             <FilterListFavorites>
               <ContextSection expansionIdentifier="context" />
               {favorites.map(favorite => <Group {...favorite} />)}

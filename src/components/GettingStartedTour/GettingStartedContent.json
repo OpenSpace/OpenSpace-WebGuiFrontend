@@ -16,7 +16,7 @@
         "position" : { "altitude" : { "operator" : "<" , "value" : 3500, "unit" : "km" }}, 
         "title" : "Navigation",
         "firstText" : "Let's go closer to Earth!",
-        "goalText" : ["Get down to an altitude of max 3500 km"],
+        "goalText" : ["Go to an altitude of max 3500 km"],
         "showMouse" : [{ "button" : "right", "info" : "Right click + drag", "description" : "Go closer or further away"}], 
         "arrowPosition" : { "x" : 250, "y" : "calc(100% - 150px)"},
         "arrowRotation" : "up"
@@ -61,7 +61,7 @@
         "position" : { "altitude" : { "operator" : "<" , "value" : 3500, "unit" : "km" }}, 
         "title" : "Navigation",
         "firstText" : "Let's go closer to the Moon.",
-        "goalText" : ["Get down to an altitude of max 3500 km"],
+        "goalText" : ["Go to an altitude of max 3500 km"],
         "showMouse" : [{ "button" : "right", "info" : "Right click + drag", "description" : "Go closer or further away"}], 
         "arrowPosition" : { "x" : 250, "y" : "calc(100% - 150px)"},
         "arrowRotation" : "up"
@@ -79,8 +79,8 @@
         "position" : { "altitude" : { "operator" : ">" , "value" : 1, "unit" : "Lighthours" }, "latitude": { "operator" : "between", "value" : [60,  90]}}, 
         "title" : "Navigation",
         "firstText" : "Let's take a look at the Solar System from above.",
-        "infoText" : "The order of magnitude is: km < AU < Lighthour",
-        "goalText" : ["Set the focus node to Sun", "Set the altitude to at least 1 Lighthour and the latitude to around 80"],
+        "infoText" : "The order of magnitude is: km < AU < Lighthour. The position is {latitude, longitude}.",
+        "goalText" : ["Set the focus node to Sun", "Go to an altitude of at least 1 Lighthour and a latitude of around 80"],
         "arrowPosition" : { "x" : 320, "y" : 70},
         "arrowRotation" : "down"
     },
@@ -141,7 +141,7 @@
         "goalType" : ["changeUri"],
         "uri" : "Scene.MarsTrail.Renderable.Appearance.Color",
         "title" : "Content",
-        "key": ["Scene", "Group Solar System", "Group Planets", "Group Mars", "PropertyOwner Mars Trail", "PropertyOwner Appearance", "Color"],
+        "key": ["Scene", "Group Solar System", "Group Planets", "Group Mars", "PropertyOwner Mars Trail", "PropertyOwner Renderable", "PropertyOwner Appearance", "Color"],
         "firstText" : "All objects have properties, which makes it possible to alter the behaviour or appearance of an object.",
         "goalText" : ["Change the color of the trail of Mars"],
         "arrowPosition" : { "x" : 50, "y" : 70},
@@ -156,7 +156,7 @@
         "firstText" : "Let's take a look at the surface of Mars.",
         "key" : ["Origin", "Mars"],
         "showMouse" : [{ "button" : "right", "info" : "Right click + drag", "description" : "Go closer or further away"}], 
-        "goalText" : ["Set the focus node to Mars", "Set the altitude to max 10 000 km"],
+        "goalText" : ["Set the focus node to Mars", "Go to an altitude of max 10 000 km"],
         "arrowPosition" : { "x" : 320, "y" : 70},
         "arrowRotation" : "down"
     },
@@ -172,7 +172,7 @@
         "title" : "Content",
         "firstText" : "The layers are ordered, and the layer furthest down in the menu is shown at the top.",
         "infoText" : "You need access to the internet to display the maps. They might need a few seconds to load.",
-        "key": ["Scene", "Group Solar System", "Group Planets", "Group Mars", "PropertyOwner Mars", "PropertyOwner Layers", "PropertyOwner ColorLayers", "PropertyOwner CTX Mosaic [Utah]"],
+        "key": ["Scene", "Group Solar System", "Group Planets", "Group Mars", "PropertyOwner Mars", "PropertyOwner Renderable", "PropertyOwner Layers", "PropertyOwner ColorLayers", "PropertyOwner CTX Mosaic [Utah]"],
         "goalText" : ["Turn on the ColorLayer 'CTX Mosaic [Utah]'"],
         "arrowPosition" : { "x" : 50, "y" : 70},
         "arrowRotation" : "down"

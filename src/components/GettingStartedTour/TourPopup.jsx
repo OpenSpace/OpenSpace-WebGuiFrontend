@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import PropTypes, { object } from 'prop-types';
 import { connect } from 'react-redux';
 import { Rnd as ResizeableDraggable } from 'react-rnd';
@@ -157,12 +157,12 @@ function checkConditionsStatus(content, valueStart, currentValue) {
         if (typeof valueStart[i] === Number) {
           conditionsStatus[i] = !(Math.abs(valueStart[i] - currentValue[i]) < Number.EPSILON);
         }
-        else if (typeof valueStart[i] === object) {
+        else if (valueStart[i]?.length) {
           let hasChanged = true;
-          valueStart[i].map(channel, j => {
-            hasChanged &= !(Math.abs(channel[j] - currentValue[i][j]) < Number.EPSILON);
+          valueStart[i].map((channel, j) => {
+            hasChanged &= !(Math.abs(channel - currentValue[i][j]) < Number.EPSILON);
           })
-          conditionsStatus[i] = hasChanged;
+          conditionsStatus[i] = Boolean(hasChanged);
         }
         else {
           conditionsStatus[i] = valueStart[i] !== currentValue[i];
@@ -190,13 +190,13 @@ function MouseDescriptions({ button, info, description, keyboardButton}) {
 
 function Goal({ startSubscriptions, setIsFulfilled, hasGoals, stopSubscriptions, content, currentValue}) {
   const [valueStart, setValueStart] = React.useState(undefined);
-  
+ 
   // Subscribe to topics
   React.useEffect(() => {
     startSubscriptions();
     return () => stopSubscriptions();
   }, [startSubscriptions]);
-
+  
   // Save start values, if the goal is to change the values
   React.useEffect(() => {
     const changeGoalTypes = [GoalTypes.changeTime, GoalTypes.changeDeltaTime, GoalTypes.changeUri];
@@ -213,7 +213,7 @@ function Goal({ startSubscriptions, setIsFulfilled, hasGoals, stopSubscriptions,
   // Check status of goal conditions
   const conditionsStatus = hasGoals ? checkConditionsStatus(content, valueStart, currentValue) : false;
   const areAllConditionsFulfilled = hasGoals ? !conditionsStatus.includes(false) : false;
-  
+
   React.useEffect(() => {
     setIsFulfilled(areAllConditionsFulfilled);
   },[areAllConditionsFulfilled]);
@@ -240,7 +240,8 @@ function Goal({ startSubscriptions, setIsFulfilled, hasGoals, stopSubscriptions,
       catch(e) {
         console.error("Error: " + e);
       }
-      }}, [content, lastKey]);  
+    }
+  }, [content, lastKey]);  
 
   return (areAllConditionsFulfilled && hasGoals ?
     <AnimatedCheckmark style={{ marginTop: '70px', width: '56px', height: '56px' }} /> :
@@ -255,11 +256,6 @@ function Goal({ startSubscriptions, setIsFulfilled, hasGoals, stopSubscriptions,
         </div>
       }
       )}
-      {content.showMouse &&
-        <div className={ styles.scroll } >
-          {content.showMouse.map(mouseData => <MouseDescriptions key={mouseData.info} {...mouseData} />)}
-        </div>
-      }
     </>
   );
 }
@@ -267,17 +263,16 @@ function Goal({ startSubscriptions, setIsFulfilled, hasGoals, stopSubscriptions,
 function TourPopup({ setVisibility, isVisible }) {
   const [currentSlide, setCurrentSlide] = useLocalStorageState('currentSlide', 0);
   const [isFulfilled, setIsFulfilled] = React.useState(false);
-
   const content = contents[currentSlide];
   const isLastSlide = currentSlide === contents.length - 1;
   const isFirstSlide = currentSlide === 0;
-
+  
   return (isVisible && <>
     {Boolean(content.position) && !isFulfilled &&
       <div className={`${styles.animatedBorder} ${styles.geoPositionBox}`} />}
     <ResizeableDraggable
-      minWidth={400}
-      minHeight={320}
+      minWidth={500}
+      minHeight={350}
       bounds="window"
       className={styles.window}
     >
@@ -292,11 +287,16 @@ function TourPopup({ setVisibility, isVisible }) {
             <img src={openspaceLogo} className={styles.logo} />
           </div>}
         <p className={styles.text}>{content.firstText}</p>
-        {<p className={` ${styles.text} ${styles.infoText}`}>{content.infoText}</p>}
-        <Goal content={content} setIsFulfilled={setIsFulfilled}/>
+        <Goal content={content} setIsFulfilled={setIsFulfilled} />
+        {<p className={` ${styles.text} ${styles.infoText}`} style={ isFulfilled ? { paddingTop: '40px' } : undefined }>{content.infoText}</p>}
+        {content.showMouse && !isFulfilled &&  
+        <div className={ styles.scroll } >
+          {content.showMouse.map(mouseData => <MouseDescriptions key={mouseData.info} {...mouseData} />)}
+        </div>
+        }
         {content.bulletList && content.bulletList.map(text => 
           <li key={text} className={styles.text}>{text}</li>
-        )}
+          )}
         {isLastSlide && <>
           <div style={{ display: 'flex'}}>
             <p className={styles.text}>Click 
@@ -327,10 +327,15 @@ function TourPopup({ setVisibility, isVisible }) {
             Previous
           </Button>}
           {<Button
-            onClick={() => isLastSlide ? () => {
-              setVisibility(false);
-              setCurrentSlide(0); 
-            } : setCurrentSlide(currentSlide + 1)}
+            onClick={() => {
+              if (isLastSlide) {
+                setVisibility(false);
+                setCurrentSlide(0);
+              }
+              else {
+                setCurrentSlide(currentSlide + 1)
+              }
+            }}
             className={styles.nextButton}
             >
             {!isLastSlide ? "Next" : "Finish"}

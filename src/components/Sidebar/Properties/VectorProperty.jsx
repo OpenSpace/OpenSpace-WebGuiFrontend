@@ -60,12 +60,17 @@ function VectorProperty({dispatcher, description, value}) {
     dispatcher.set(newValue);
   }
 
+  const descriptionPopup = description ? <InfoBox text={description.description} /> : ''; 
+  const firstLabel = (<span onClick={copyUri}>
+    { description.Name } { descriptionPopup }
+  </span>);
+
   function asMinMaxRange() {
     console.log(isMinMaxRange);
     if (!isMinMaxRange) return;
 
     const label = (<span onClick={copyUri}>
-      { description.Name } { descriptionPopup() }
+      { description.Name } { descriptionPopup }
     </span>);
 
     // Different step sizes does not make sense here, so just use the minimum
@@ -88,10 +93,6 @@ function VectorProperty({dispatcher, description, value}) {
       </Row>
     );
   }
-  const descriptionPopup = description ? <InfoBox text={description.description} /> : ''; 
-  const firstLabel = (<span onClick={copyUri}>
-    { description.Name } { descriptionPopup }
-  </span>);
 
   if (isMinMaxRange) {
     return asMinMaxRange();

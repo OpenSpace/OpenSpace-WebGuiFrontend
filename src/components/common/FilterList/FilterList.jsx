@@ -13,6 +13,8 @@ function FilterListFavorites({children}) {
     return children;
 }
 
+FilterListFavorites.displayName = 'FilterListFavorites';
+
 function FilterListData({matcher, searchString, ignorePropsFilter, children}) {
   // Filter the children on their props
   // Most matcher functions are case sensitive, hence toLowerCase
@@ -37,6 +39,8 @@ function FilterListData({matcher, searchString, ignorePropsFilter, children}) {
     return <CenteredLabel>Nothing found. Try another search!</CenteredLabel>;
   }
 }
+
+FilterListData.displayName = 'FilterListData';
 
 function InputButton({children, ...props}) {
   return <div className={styles.favoritesButton} {...props}>
