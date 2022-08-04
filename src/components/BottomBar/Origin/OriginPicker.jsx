@@ -195,7 +195,7 @@ function OriginPicker({ favorites, setShowFavorites, nodes, showFavorites, engin
 
   function pickerContent() {
     if (engineMode === EngineModeCameraPath) {
-      return cameraPathPicker;
+      return cameraPathPicker();
     }
     return (
       <>{hasDistinctAim() ? anchorAndAimPicker() : focusPicker()}</>
