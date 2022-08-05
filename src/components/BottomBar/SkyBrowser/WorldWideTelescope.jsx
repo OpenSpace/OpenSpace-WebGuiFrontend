@@ -115,11 +115,27 @@ class WorldWideTelescope extends Component {
 
   handleDrag(mouse) {
     if (this.state.isDragging) {
+      const { topBarHeight, startDragPosition } = this.state;
+      const { size, browserAimInfo } = this.props;
+      // Calculate pixel translation
       const end = [mouse.clientX, mouse.clientY];
+      const borderWidth = 10;
+      const width = size.width - borderWidth;
+      const height = size.height - borderWidth;
+      const translation = [end[0] - startDragPosition[0], end[1] - startDragPosition[1]];
+      // Calculate [ra, dec] translation without roll
+      const percentageTranslation = [translation[0] / width, translation[1] / height];
+      const ratio = width / (height - topBarHeight);
+      const fovs = [ratio * browserAimInfo.fov, browserAimInfo.fov];
+      const raDecTranslation = [percentageTranslation[0] * fovs[0], percentageTranslation[1] * fovs[1]];
+      // Apply roll
+      const roll = -browserAimInfo.roll * (Math.PI / 180);  
+      const ra = raDecTranslation[0] * Math.cos(roll) - raDecTranslation[1] * Math.sin(roll);
+      const dec = raDecTranslation[0] * Math.sin(roll) + raDecTranslation[1] * Math.cos(roll);
+      // Call lua function
       this.props.skybrowserApi.finetuneTargetPosition(
         this.props.browserId,
-        this.state.startDragPosition,
-        end
+        [ra, dec]
       );
     }
   }
