@@ -94,7 +94,6 @@ function createSceneGraphNodeTable(globe, label, lat, long, alt) {
         Path : "/GeoLocation"
       }
   };
-  console.table(position);
   return position;
 }
 
@@ -107,12 +106,12 @@ function Place({address, onClick}) {
   </Button>;
 }
 
-function GeoPositionPanel({ refresh, luaApi, popoverVisible, setPopoverVisibilityProp, nodes, currentAnchor, startListeningToFocusNode, stopListeningToFocusNode }) {
+function GeoPositionPanel({ refresh, luaApi, popoverVisible, setPopoverVisibilityProp, nodes, startListeningToFocusNode, stopListeningToFocusNode }) {
   const [inputValue, setInputValue] = useLocalStorageState('inputValue',"");
   const [places, setPlaces] = useLocalStorageState('places', undefined);
   const [altitude, setAltitude] = useLocalStorageState('altitude', 300000);
   const [interaction, setInteraction] = useLocalStorageState('interaction', Interaction.flyTo);
-  const [anchor, setAnchor] = useLocalStorageState('anchor', 'Earth');
+  const [currentAnchor, setCurrentAnchor] = useLocalStorageState('anchor', 'Earth');
   const options = ['Earth'];
   // Create animation to show when a scene graph node has been added
   const refs = useContextRefs();
@@ -186,8 +185,8 @@ function GeoPositionPanel({ refresh, luaApi, popoverVisible, setPopoverVisibilit
         <div className={styles.content}>
         <Dropdown 
           options={options} 
-          onChange={(anchor) => setAnchor(anchor.value)} 
-          value={anchor} 
+          onChange={(anchor) => setCurrentAnchor(anchor.value)} 
+          value={currentAnchor} 
           placeholder="Select an anchor"
         />
         {currentAnchor === 'Earth' ? 
@@ -205,7 +204,7 @@ function GeoPositionPanel({ refresh, luaApi, popoverVisible, setPopoverVisibilit
         <p className={styles.resultsTitle}>Results</p>
           {places?.candidates && 
           <FilterList
-            searchString={"Filter results..."}
+            searchText={"Filter results..."}
             height={'235px'}
             >
             <FilterListData>
@@ -242,7 +241,7 @@ function GeoPositionPanel({ refresh, luaApi, popoverVisible, setPopoverVisibilit
   );
 }
 
-const mapSubStateToProps = ({popoverVisible, luaApi, currentAnchor, propertyOwners}) => {
+const mapSubStateToProps = ({popoverVisible, luaApi, propertyOwners}) => {
   const scene = propertyOwners.Scene;
   const uris = scene ? scene.subowners : [];
 
@@ -253,7 +252,6 @@ const mapSubStateToProps = ({popoverVisible, luaApi, currentAnchor, propertyOwne
   return {
     popoverVisible: popoverVisible,
     luaApi: luaApi,
-    currentAnchor: currentAnchor,
     nodes
   }
 };
@@ -261,7 +259,6 @@ const mapSubStateToProps = ({popoverVisible, luaApi, currentAnchor, propertyOwne
 const mapStateToSubState = (state) => ({
   popoverVisible: state.local.popovers.geoposition.visible,
   luaApi: state.luaApi,
-  currentAnchor: getBoolPropertyValue(state, "NavigationHandler.OrbitalNavigator.Anchor"),
   propertyOwners: state.propertyTree.propertyOwners
 });
 
