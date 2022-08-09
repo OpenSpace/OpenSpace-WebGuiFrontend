@@ -138,8 +138,8 @@ function GeoPositionPanel({ refresh, luaApi, popoverVisible, setPopoverVisibilit
   }
 
   function onClick(location, address) {
-    const lat = location.x;
-    const long = location.y;
+    const lat = location.y;
+    const long = location.x;
     switch(interaction) {
       case Interaction.flyTo: {
         luaApi?.globebrowsing?.flyToGeo(currentAnchor, lat, long, altitude);
