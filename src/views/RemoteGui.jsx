@@ -13,6 +13,7 @@ import Sidebar from '../components/Sidebar/Sidebar';
 import '../styles/base.scss';
 import About from './About/About';
 import styles from './RemoteGui.scss';
+import environment from '../api/Environment'
 import { TutorialProvider } from '../components/GettingStartedTour/GettingStartedContext';
 
 function RemoteGui({ startConnection, version, hideAbout, connectionLost, showAbout }) {
@@ -52,7 +53,12 @@ function RemoteGui({ startConnection, version, hideAbout, connectionLost, showAb
   }
 
   return (
-    <div className={styles.app}>
+    <div className={styles.app} style={environment.developmentMode ? { borderStyle: 'solid', borderWidth: '3px', borderColor: 'orange' } : null}>
+      {environment.developmentMode &&
+        <div className={styles.devModeTextBox}>
+          <p>Dev Gui</p>
+        </div>
+      }
       <TutorialProvider>
         { showAbout && (
           <Overlay>
