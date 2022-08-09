@@ -14,18 +14,8 @@ import openspaceLogo from "./openspace-color-transparent.png";
 import MaterialIcon from "../common/MaterialIcon/MaterialIcon";
 import Checkbox from "../common/Input/Checkbox/Checkbox";
 import {useContextRefs} from "./GettingStartedContext";
-import { useLocalStorageState } from "../../utils/customHooks";
-
-function AnimatedCheckmark({...props}) {
-  return <div className={styles.centerContent}>
-    <div {...props}>
-      <svg className={styles.checkmark} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
-        <circle className={styles.checkmark__circle} cx="26" cy="26" r="25" fill="none" />
-        <path className={styles.checkmark__check} fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
-      </svg>
-    </div>
-  </div>;
-}
+import {useLocalStorageState} from "../../utils/customHooks";
+import AnimatedCheckmark from "../common/AnimatedCheckmark/AnimatedCheckmark";
 
 function KeyboardButton({ buttonText, ...props }) {
   return <div className={`${styles.keyboardButton} ${styles.centerContent}`} {...props}>
