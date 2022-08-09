@@ -4,7 +4,7 @@ import styles from './SmallLabel.scss';
 import {useContextRefs} from './../../GettingStartedTour/GettingStartedContext'
 
 const SmallLabel = ({children, refKey, ...props}) => {
-  const refs = useContextRefs();
+  const refs = refKey ? useTutorial() : null;
   return (
     <span ref={ el => refKey ? refs.current[refKey] = el : null} {...props} className={styles.SmallLabel}>
       { children }

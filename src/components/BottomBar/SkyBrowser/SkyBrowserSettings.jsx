@@ -46,6 +46,13 @@ class SkyBrowserSettings extends Component {
     this.setExpandedGeneralSettings = this.setExpandedGeneralSettings.bind(this);
   }
 
+  componentDidMount() {
+    const { browser } = this.props;
+    this.setState({
+      newPosition : browser.isUsingRae ? [2, 0, 0] : [0, 0, -2]
+    });
+  }
+
   setRef(what) {
     return (element) => {
       this[what] = element;
@@ -70,6 +77,9 @@ class SkyBrowserSettings extends Component {
     const { luaApi, browser } = this.props;
     const uriBrowser = `ScreenSpace.${browser.id}.UseRadiusAzimuthElevation`;
     luaApi.setPropertyValueSingle(uriBrowser, !browser.isUsingRae);
+    this.setState({
+      newPosition : !browser.isUsingRae ? [2, 0, 0] : [0, 0, -2]
+    });
   }
 
   valueToColor(color) {

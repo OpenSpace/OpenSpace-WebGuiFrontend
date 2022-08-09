@@ -14,6 +14,7 @@ import Sidebar from '../components/Sidebar/Sidebar';
 import '../styles/base.scss';
 import About from './About/About';
 import styles from './RemoteGui.scss';
+import { TutorialProvider } from '../components/GettingStartedTour/GettingStartedContext';
 
 class RemoteGui extends Component {
   constructor(props) {
@@ -60,34 +61,36 @@ class RemoteGui extends Component {
     this.checkVersion();
     return (
       <div className={styles.app}>
-        { this.props.showAbout && (
-          <Overlay>
-            <Stack style={{ maxWidth: '500px' }}>
-              <Button style={{ alignSelf: 'flex-end', color: 'white' }} onClick={this.props.hideAbout}>
-                Close
-              </Button>
-              <About />
-            </Stack>
-          </Overlay>
-        )}
-        { this.props.connectionLost && (
-          <Overlay>
-            <Error>
-              <h2>Houston, we've had a...</h2>
-              <p>...disconnection between the user interface and OpenSpace.</p>
-              <p>Trying to reconnect automatically, but you may want to...</p>
-              <Button className={Error.styles.errorButton} onClick={this.reloadGui}>Reload the user interface</Button>
-            </Error>
-          </Overlay>
-        )}
-        <section className={styles.Grid__Left}>
-          <Sidebar />
-        </section>
-        <section className={styles.Grid__Right}>
-          <NodePopOverContainer />
-          <NodeMetaContainer />
-          <BottomBar showFlightController="true"/>
-        </section>
+        <TutorialProvider>
+          { this.props.showAbout && (
+            <Overlay>
+              <Stack style={{ maxWidth: '500px' }}>
+                <Button style={{ alignSelf: 'flex-end', color: 'white' }} onClick={this.props.hideAbout}>
+                  Close
+                </Button>
+                <About />
+              </Stack>
+            </Overlay>
+          )}
+          { this.props.connectionLost && (
+            <Overlay>
+              <Error>
+                <h2>Houston, we've had a...</h2>
+                <p>...disconnection between the user interface and OpenSpace.</p>
+                <p>Trying to reconnect automatically, but you may want to...</p>
+                <Button className={Error.styles.errorButton} onClick={this.reloadGui}>Reload the user interface</Button>
+              </Error>
+            </Overlay>
+          )}
+          <section className={styles.Grid__Left}>
+            <Sidebar />
+          </section>
+          <section className={styles.Grid__Right}>
+            <NodePopOverContainer />
+            <NodeMetaContainer />
+            <BottomBar showFlightController={true}/>
+          </section>
+        </TutorialProvider>
       </div>
     );
   }
