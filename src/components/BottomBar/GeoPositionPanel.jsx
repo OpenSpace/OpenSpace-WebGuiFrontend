@@ -169,13 +169,14 @@ function GeoPositionPanel({ refresh, luaApi, popoverVisible, setPopoverVisibilit
             >
             <FilterListData>
             {places.candidates.map((place) => {
-              const found = Boolean(addedSceneGraphNodes.indexOf(place.address) > -1);
+              const address = place.attributes.LongLabel;
+              const found = Boolean(addedSceneGraphNodes.indexOf(address) > -1);
               return <Place 
                 key={`${place.location.x} ${place.location.y}`} 
                 onClick={ () => 
-                  onClick(place.location, place.attributes.LongLabel, pushSceneGraphNode)
+                  onClick(place.location, address, pushSceneGraphNode)
                 }
-                address={place.attributes.LongLabel}
+                address={address}
                 found={found}
                 />
               })
