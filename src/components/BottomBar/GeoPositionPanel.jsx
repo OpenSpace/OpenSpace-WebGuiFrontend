@@ -89,7 +89,20 @@ function GeoPositionPanel({ refresh, luaApi, popoverVisible, setPopoverVisibilit
     const searchString = inputValue.replaceAll(" ", "%");
     fetch(`https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?SingleLine=${searchString}&category=&outFields=*&forStorage=false&f=json`)
         .then(response => response.json())
-        .then(json => setPlaces(json))
+        .then(json => {
+          // Remove duplicates
+          const uniqueLabels = [];
+          const unique = json?.candidates.filter(place => {
+            const isDuplicate = uniqueLabels.includes(place.attributes.LongLabel);
+
+            if (!isDuplicate) {
+              uniqueLabels.push(place.attributes.LongLabel);
+              return true;
+            }
+            return false;
+          });
+          setPlaces(unique)
+        })
         .catch(error => console.log("Error fetching: ", error));
   };
 
@@ -162,17 +175,17 @@ function GeoPositionPanel({ refresh, luaApi, popoverVisible, setPopoverVisibilit
           setChecked={setInteraction}
         />
         <p className={styles.resultsTitle}>Results</p>
-          {places?.candidates && 
+          {places && 
           <FilterList
             searchText={"Filter results..."}
             height={'235px'}
             >
             <FilterListData>
-            {places.candidates.map((place) => {
+            {places?.map?.((place) => {
               const address = place.attributes.LongLabel;
               const found = Boolean(addedSceneGraphNodes.indexOf(address) > -1);
               return <Place 
-                key={`${place.location.x} ${place.location.y}`} 
+                key={place.attributes.LongLabel} 
                 onClick={ () => 
                   onClick(place.location, address, pushSceneGraphNode)
                 }
