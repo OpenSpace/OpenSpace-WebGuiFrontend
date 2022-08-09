@@ -173,9 +173,9 @@ function GeoPositionPanel({ refresh, luaApi, popoverVisible, setPopoverVisibilit
               return <Place 
                 key={`${place.location.x} ${place.location.y}`} 
                 onClick={ () => 
-                  onClick(place.location, place.address, pushSceneGraphNode)
+                  onClick(place.location, place.attributes.LongLabel, pushSceneGraphNode)
                 }
-                address={place.address}
+                address={place.attributes.LongLabel}
                 found={found}
                 />
               })
