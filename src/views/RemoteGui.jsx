@@ -14,7 +14,7 @@ import Sidebar from '../components/Sidebar/Sidebar';
 import '../styles/base.scss';
 import About from './About/About';
 import styles from './RemoteGui.scss';
-import { TutorialProvider } from '../components/GettingStartedTour/GettingStartedContext';
+import { RefsProvider } from '../components/GettingStartedTour/GettingStartedContext';
 
 class RemoteGui extends Component {
   constructor(props) {
@@ -61,7 +61,7 @@ class RemoteGui extends Component {
     this.checkVersion();
     return (
       <div className={styles.app}>
-        <TutorialProvider>
+        <RefsProvider>
           { this.props.showAbout && (
             <Overlay>
               <Stack style={{ maxWidth: '500px' }}>
@@ -90,7 +90,7 @@ class RemoteGui extends Component {
             <NodeMetaContainer />
             <BottomBar showFlightController={true}/>
           </section>
-        </TutorialProvider>
+        </RefsProvider>
       </div>
     );
   }
