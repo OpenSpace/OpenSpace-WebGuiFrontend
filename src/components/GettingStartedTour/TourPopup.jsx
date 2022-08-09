@@ -199,7 +199,9 @@ function Goal({ startSubscriptions, setIsFulfilled, hasGoals, stopSubscriptions,
   }, [content, lastKey]);  
 
   return (areAllConditionsFulfilled && hasGoals ?
-    <AnimatedCheckmark style={{ marginTop: '70px', width: '56px', height: '56px' }} /> :
+    <div className={styles.centerContent}>
+      <AnimatedCheckmark style={{ marginTop: '70px', width: '56px', height: '56px' }} />
+    </div> :
     <>{hasGoals && content.goalText.map((goal, i) => {
       return <div style={{ display: 'flex' }} key={goal}>
           <div>

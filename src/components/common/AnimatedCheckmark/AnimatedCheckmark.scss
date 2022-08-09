@@ -1,23 +1,4 @@
-
-/* Animated checkmark */
 $color : #6fbf39;
-$stroke-width: 5px;
-
-.centerContent {
-    display: flex;
-    justify-content: center;
-}
-
-
-.checkmark__circle {
-    stroke-dasharray: 166;
-    stroke-dashoffset: 166;
-    stroke-width: $stroke-width;
-    stroke-miterlimit: 10;
-    stroke: $color;
-    fill: none;
-    animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
-}
 
 .checkmark {
     width: 100%;
@@ -26,8 +7,19 @@ $stroke-width: 5px;
     stroke-width: 5;
     stroke: white;
     stroke-miterlimit: 10;
-    box-shadow: inset 0px 0px 0px $color;
+    color: $color;
+    box-shadow: inset 0px 0px 0px currentColor;
     animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
+}
+
+.checkmark__circle {
+    stroke-dasharray: 166;
+    stroke-dashoffset: 166;
+    stroke-width: 5px;
+    stroke-miterlimit: 10;
+    stroke: currentColor;
+    fill: none;
+    animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
 }
 
 .checkmark__check {
@@ -56,6 +48,6 @@ $stroke-width: 5px;
 
 @keyframes fill {
     100% {
-        box-shadow: inset 0px 0px 0px 1000px $color;
+        box-shadow: inset 0px 0px 0px 1000px currentColor;
     }
 }

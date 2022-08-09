@@ -15,6 +15,7 @@ import {
 import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
 import Dropdown from '../common/DropDown/Dropdown';
 import { useLocalStorageState } from '../../utils/customHooks';
+import AnimatedCheckmark from '../common/AnimatedCheckmark/AnimatedCheckmark';
 
 function MultiStateToggle({title, labels, checked, setChecked}) {
   return <div className={styles.wrapper}>
@@ -59,12 +60,20 @@ function createSceneGraphNodeTable(globe, label, lat, long, alt) {
 }
 
 function Place({address, onClick, found}) {
-  return <Button 
-    onClick={onClick}
-    className={`${styles.place} ${found ? styles.addedPlace : null}`}
-    >
-    <p>{address}</p>
-  </Button>;
+  return (
+    <Button 
+      onClick={onClick}
+      className={styles.place}
+      >
+      <div className={styles.placeButton}>
+        <p>{address}</p>
+        {found && 
+          <div style={{width : '20px', height : '20px'}}>
+            <AnimatedCheckmark color={'transparent'}/>
+          </div>}
+      </div>
+    </Button>
+  );
 }
 
 function GeoPositionPanel({ refresh, luaApi, popoverVisible, setPopoverVisibilityProp }) {
