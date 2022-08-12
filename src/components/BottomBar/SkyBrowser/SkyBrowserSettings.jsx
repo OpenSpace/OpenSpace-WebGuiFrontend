@@ -265,7 +265,7 @@ class SkyBrowserSettings extends Component {
   }
 
   render() {
-      const { selectedBrowserId, browser, luaApi } = this.props;
+      const { selectedBrowserId, browser, luaApi, setBorderRadius } = this.props;
       if (!browser) {
         return '';
       }
@@ -353,6 +353,18 @@ class SkyBrowserSettings extends Component {
             expanded={this.state.generalSettingsExpanded}
             setExpanded={this.setExpandedGeneralSettings}
           >
+          <NumericInput
+            label="Border Radius"
+            max={1}
+            min={0}
+            onValueChanged={value => {
+              luaApi.skybrowser.setBorderRadius(browser.id, value);
+              setBorderRadius(value);
+            }}
+            step={0.01}
+            value={browser.borderRadius}
+            placeholder="value 2"
+          />
           <Property uri={SkyBrowser_ShowTitleInBrowserKey}/>
           <Property uri={SkyBrowser_AllowCameraRotationKey}/>
           <Property uri={SkyBrowser_CameraRotationSpeedKey}/>

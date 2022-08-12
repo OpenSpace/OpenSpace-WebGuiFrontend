@@ -55,10 +55,11 @@ class SkyBrowserPanel extends Component {
     this.createAddBrowserInterface = this.createAddBrowserInterface.bind(this);
     this.createBrowserContent = this.createBrowserContent.bind(this);
     this.setWwtPosition = this.setWwtPosition.bind(this);
+    this.setBorderRadius = this.setBorderRadius.bind(this);
   }
 
   async componentDidMount() {
-    const { isDataInitialized, loadData, luaApi, startSubscriptions } = this.props;
+    const { isDataInitialized, loadData, luaApi, startSubscriptions, browsers, selectedBrowserId } = this.props;
 
     startSubscriptions();
 
@@ -150,6 +151,13 @@ class SkyBrowserPanel extends Component {
     }
   }
 
+  setBorderRadius(radius) {
+    this.passMessageToWwt({
+      event: "set_border_radius",
+      data: radius
+    });
+  }
+
   setOpacityOfImage(identifier, opacity, passToOs = true) {
     const { luaApi, selectedBrowserId } = this.props;
     if(passToOs) {
@@ -235,6 +243,7 @@ class SkyBrowserPanel extends Component {
           fov: browser.fov,
           roll: browser.roll
         }}
+        borderRadius = {browser.borderRadius}
         browserColor = {browser.color}
         skybrowserApi={this.props.luaApi.skybrowser}
         setMessageFunction={func => this.passMessageToWwt = func}
@@ -341,6 +350,7 @@ class SkyBrowserPanel extends Component {
         setSelectedBrowser={this.setSelectedBrowser}
         setWwtRatio={this.setWwtRatio}
         setOpacityOfImage={this.setOpacityOfImage}
+        setBorderRadius={this.setBorderRadius}
       />
     );
 

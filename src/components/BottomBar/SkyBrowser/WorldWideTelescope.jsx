@@ -26,6 +26,7 @@ class WorldWideTelescope extends Component {
     this.scroll = this.scroll.bind(this);
     this.changeSize = this.changeSize.bind(this);
     this.setBorderColor = this.setBorderColor.bind(this);
+    this.setBorderRadius = this.setBorderRadius.bind(this);
     this.color = [255, 255, 255];
     this.ratio = 1;
   }
@@ -63,7 +64,7 @@ class WorldWideTelescope extends Component {
   }
 
   handleCallbackMessage(event) {
-    const { browserId, url } = this.props;
+    const { browserId, url, browserColor, borderRadius } = this.props;
     if (event.data == "wwt_has_loaded") {
       this.sendMessageToWwt({
         event: "modify_settings",
@@ -75,12 +76,20 @@ class WorldWideTelescope extends Component {
         url: url,
         loadChildFolders: true
       });
-      this.setBorderColor(this.props.browserColor);
+      this.setBorderColor(browserColor);
+      this.setBorderRadius(borderRadius);
     }
     if (event.data == "load_image_collection_completed") {
       this.props.setImageCollectionIsLoaded(true);
       this.props.addAllSelectedImages(browserId, false);
     }
+  }
+
+  setBorderRadius(radius) {
+    this.sendMessageToWwt({
+      event: "set_border_radius",
+      data: radius
+    });
   }
 
   setBorderColor(color) {
@@ -195,7 +204,7 @@ class WorldWideTelescope extends Component {
             id="webpage"
             name = "wwt"
             ref={this.iframe}
-            src="http://wwt.openspaceproject.com/1/gui/"
+            src="http://localhost:8000/gui/"
             allow="accelerometer; clipboard-write; gyroscope"
             allowFullScreen
             frameBorder="0"

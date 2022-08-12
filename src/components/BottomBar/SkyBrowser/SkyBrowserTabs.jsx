@@ -331,7 +331,7 @@ class SkyBrowserTabs extends Component {
 
   render() {
     const {
-      data, maxHeight, minHeight, browsers, selectedBrowserId, height, luaApi
+      data, maxHeight, minHeight, browsers, selectedBrowserId, height, luaApi, setBorderRadius
     } = this.props;
     const { showSettings } = this.state;
 
@@ -342,6 +342,7 @@ class SkyBrowserTabs extends Component {
           browser={browsers[selectedBrowserId]}
           selectedBrowserId={selectedBrowserId}
           luaApi={luaApi}
+          setBorderRadius={setBorderRadius}
         />);
     } else if (data.length === 0) {
       content = <CenteredLabel>There are no selected images in this sky browser.</CenteredLabel>;
