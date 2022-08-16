@@ -47,10 +47,12 @@ class InfoBox extends Component {
     return (
       <span
         ref={this.setRef('wrapper')}
+        {...this.props}
       >
         <MaterialIcon icon={icon}
          onMouseEnter={this.showPopup}
-         onMouseLeave={this.hidePopup} />
+         onMouseLeave={this.hidePopup} 
+        />
         { showPopup && (
           <Tooltip fixed placement="right" style={this.position}>
             { text }
