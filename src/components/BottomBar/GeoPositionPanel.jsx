@@ -172,6 +172,7 @@ function GeoPositionPanel({ refresh, luaApi, popoverVisible, setPopoverVisibilit
                     setInputValue(e.target.value);
                   }
                 }} 
+                clearable
               />
               <Button onClick={() => getPlaces() }>Search</Button>
             </div>
