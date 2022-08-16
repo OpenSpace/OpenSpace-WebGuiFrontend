@@ -80,7 +80,7 @@ function Place({address, onClick, found}) {
         <p>{address}</p>
         {found && 
           <div style={{width : '20px', height : '20px'}}>
-            <AnimatedCheckmark color={'transparent'}/>
+            <AnimatedCheckmark style={{width : '20px', height : '20px'}} color={'transparent'} isAnimated={false} />
           </div>}
       </div>
     </Button>
@@ -141,8 +141,14 @@ function GeoPositionPanel({ refresh, luaApi, popoverVisible, setPopoverVisibilit
         break;
       }
       case Interaction.addFocus: {
-        luaApi?.addSceneGraphNode(createSceneGraphNodeTable(currentAnchor, address, lat, long, altitude));
+        // Don't add if it is already added
+        if (addedSceneGraphNodes.indexOf(address) > -1) {
+          break;
+        }
         pushSceneGraphNode(address);
+        let addressString = address;
+        addressString.replace(/[^\x00-\x7F]/g, "");
+        luaApi?.addSceneGraphNode(createSceneGraphNodeTable(currentAnchor, addressString, lat, long, altitude));
         // TODO: Once we have a proper way to subscribe to additions and removals
         // of property owners, this 'hard' refresh should be removed.
         setTimeout(() => {
