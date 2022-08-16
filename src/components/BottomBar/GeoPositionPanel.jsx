@@ -16,11 +16,13 @@ import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
 import Dropdown from '../common/DropDown/Dropdown';
 import { useLocalStorageState } from '../../utils/customHooks';
 import AnimatedCheckmark from '../common/AnimatedCheckmark/AnimatedCheckmark';
+import InfoBox from '../common/InfoBox/InfoBox';
 
-function MultiStateToggle({labels, checked, setChecked}) {
+function MultiStateToggle({labels, checked, setChecked, infoText}) {
   return (
     <div className={styles.wrapper}>
-      <p className={`${styles.toggleTitle} ${styles.resultsTitle}`}>Mode</p>
+      <p className={`${styles.toggleTitle} ${styles.resultsTitle}`} id={'multiStateToggle'}>Mode</p>
+      <InfoBox inpanel panelscroll={'multiStateToggle'} text={infoText} style={{ paddingTop: '3px', paddingRight: '3px' }} />
       <div className={styles.toggles}>
       {labels.map(label => 
         <React.Fragment key ={`${label}fragment`}>
@@ -187,6 +189,7 @@ function GeoPositionPanel({ refresh, luaApi, popoverVisible, setPopoverVisibilit
               labels={Object.values(Interaction)} 
               checked={interaction} 
               setChecked={setInteraction}
+              infoText={"'Fly to' will fly the camera to the position, 'Jump to' will place the camera at the position instantaneously and 'Add Focus' will add a scene graph node at the position."}
             />
             <p className={styles.resultsTitle}>Results</p>
             {places && (
