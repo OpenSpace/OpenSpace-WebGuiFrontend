@@ -9,7 +9,7 @@ function AnimatedCheckmark({color, ...props}) {
         <path className={styles.checkmark__check} fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
       </svg>
     </div>
-    );
+  );
 }
 
 export default AnimatedCheckmark;

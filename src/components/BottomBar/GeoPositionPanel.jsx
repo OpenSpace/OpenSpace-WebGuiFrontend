@@ -17,43 +17,54 @@ import Dropdown from '../common/DropDown/Dropdown';
 import { useLocalStorageState } from '../../utils/customHooks';
 import AnimatedCheckmark from '../common/AnimatedCheckmark/AnimatedCheckmark';
 
-function MultiStateToggle({title, labels, checked, setChecked}) {
-  return <div className={styles.wrapper}>
-    <p className={`${styles.toggleTitle} ${styles.resultsTitle}`}>Mode</p>
-    <div className={styles.toggles}>
-    {labels.map(label => 
-      <React.Fragment key ={`${label}fragment`}>
-        <input id={label} key={label} className={styles.toggle_option} name="state-d" type="radio" onChange={() => setChecked(label)} checked={ label === checked ? "checked" : ""} />
-        <label htmlFor={label} key={`${label}label`} onClick={() => setChecked(label)}>{label}</label>
-      </React.Fragment>)}
-    <div className={styles.toggle_option_slider}>
-    </div>
-  </div>
-  </div>;
+function MultiStateToggle({labels, checked, setChecked}) {
+  return (
+    <div className={styles.wrapper}>
+      <p className={`${styles.toggleTitle} ${styles.resultsTitle}`}>Mode</p>
+      <div className={styles.toggles}>
+      {labels.map(label => 
+        <React.Fragment key ={`${label}fragment`}>
+          <input
+            id={label}
+            key={label}
+            className={styles.toggle_option}
+            name="state-d"
+            type="radio"
+            onChange={() =>
+              setChecked(label)
+            }
+            checked={label === checked ? "checked" : ""}
+          />
+          <label htmlFor={label} key={`${label}label`} onClick={() => setChecked(label)}>{label}</label>
+        </React.Fragment>)}
+        <div className={styles.toggle_option_slider}>
+        </div>
+      </div>
+    </div>);
 }
 
 const Interaction = {
-  flyTo : "Fly To",
+  flyTo: "Fly To",
   jumpTo: "Jump To",
   addFocus: "Add Focus"
 };
 
 function createSceneGraphNodeTable(globe, label, lat, long, alt) {
   const position = {
-      Identifier : label,
-      Parent : globe,
-      Transform : {
-        Translation : {
-          Type : "GlobeTranslation",
-          Globe : globe,
-          Latitude : lat,
-          Longitude : long,
-          Altitude : 0
+      Identifier: label,
+      Parent: globe,
+      Transform: {
+        Translation: {
+          Type: "GlobeTranslation",
+          Globe: globe,
+          Latitude: lat,
+          Longitude: long,
+          Altitude: 0
         }
       },
-      InteractionSphere : alt,
-      GUI : {
-        Path : "/GeoLocation"
+      InteractionSphere: alt,
+      GUI: {
+        Path: "/GeoLocation"
       }
   };
   return position;
@@ -64,7 +75,7 @@ function Place({address, onClick, found}) {
     <Button 
       onClick={onClick}
       className={styles.place}
-      >
+    >
       <div className={styles.placeButton}>
         <p>{address}</p>
         {found && 
@@ -83,7 +94,7 @@ function GeoPositionPanel({ refresh, luaApi, popoverVisible, setPopoverVisibilit
   const [altitude, setAltitude] = useLocalStorageState('altitude', 300000);
   const [interaction, setInteraction] = useLocalStorageState('interaction', Interaction.flyTo);
   const [currentAnchor, setCurrentAnchor] = useLocalStorageState('anchor', 'Earth');
-  const options = ['Earth'];
+  const options = ['Earth', "Mars", "Test"];
 
   function getPlaces()  {
     const searchString = inputValue.replaceAll(" ", "%");
@@ -146,6 +157,50 @@ function GeoPositionPanel({ refresh, luaApi, popoverVisible, setPopoverVisibilit
     }
   }
 
+  function anchorPanel(anchor) {
+    switch (anchor) {
+      case 'Earth':
+        return <>
+            <div className={styles.searchField}>
+              <Input placeholder={"Search places..."} onChange={(e) => setInputValue(e.target.value)}></Input>
+              <Button onClick={() => getPlaces() }>Search</Button>
+            </div>
+            <MultiStateToggle 
+              title={"Mode"}
+              labels={Object.values(Interaction)} 
+              checked={interaction} 
+              setChecked={setInteraction}
+            />
+            <p className={styles.resultsTitle}>Results</p>
+              {places && 
+                <FilterList
+                  searchText={"Filter results..."}
+                  height={'235px'}
+                >
+                  <FilterListData>
+                  {places?.map?.((place) => {
+                    const address = place.attributes.LongLabel;
+                    const found = Boolean(addedSceneGraphNodes.indexOf(address) > -1);
+                    return (
+                      <Place 
+                        key={place.attributes.LongLabel} 
+                        onClick={ () => 
+                          onClick(place.location, address, pushSceneGraphNode)
+                        }
+                        address={address}
+                        found={found}
+                      />)
+                    })
+                  }
+                  </FilterListData>
+                </FilterList>
+              }
+        </> 
+      default:
+        return <CenteredLabel>{`Currently there is no data for locations on ${currentAnchor}`}</CenteredLabel>;
+    }
+  }
+
   function popover() {
     return (
       <Popover
@@ -162,42 +217,7 @@ function GeoPositionPanel({ refresh, luaApi, popoverVisible, setPopoverVisibilit
           value={currentAnchor} 
           placeholder="Select an anchor"
         />
-        {currentAnchor === 'Earth' ? 
-        <>
-        <div className={styles.searchField}>
-          <Input placeholder={"Search places..."} onChange={(e) => setInputValue(e.target.value)}></Input>
-          <Button onClick={() => getPlaces() }>Search</Button>
-        </div>
-        <MultiStateToggle 
-          title={"Mode"}
-          labels={Object.values(Interaction)} 
-          checked={interaction} 
-          setChecked={setInteraction}
-        />
-        <p className={styles.resultsTitle}>Results</p>
-          {places && 
-          <FilterList
-            searchText={"Filter results..."}
-            height={'235px'}
-            >
-            <FilterListData>
-            {places?.map?.((place) => {
-              const address = place.attributes.LongLabel;
-              const found = Boolean(addedSceneGraphNodes.indexOf(address) > -1);
-              return <Place 
-                key={place.attributes.LongLabel} 
-                onClick={ () => 
-                  onClick(place.location, address, pushSceneGraphNode)
-                }
-                address={address}
-                found={found}
-                />
-              })
-            }
-            </FilterListData>
-          </FilterList>}
-          </> : <CenteredLabel>{`Currently there is no data for locations on ${currentAnchor}`}</CenteredLabel>
-          }
+        {anchorPanel(currentAnchor)}
         </div>
       </Popover>
     );

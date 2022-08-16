@@ -96,29 +96,29 @@ class OnScreenGui extends Component {
               <About />
             </Stack>
           </Overlay>
-        )}
-        { this.props.connectionLost && (
-          <Overlay>
-            <Error>
-              <h2>Houston, we've had a...</h2>
-              <p>...disconnection between the user interface and OpenSpace.</p>
-              <p>Trying to reconnect automatically, but you may want to...</p>
-              <Button className={Error.styles.errorButton} onClick={this.reloadGui}>Reload the user interface</Button>
-            </Error>
-          </Overlay>
-        )}
-        <section className={styles.Grid__Left}>
-          <Sidebar showTutorial={ (show) => this.setState({ showTutorial : show })}/>
-        </section>
-        <section className={styles.Grid__Right}>
-          {isInBrowser && this.state.luaConsoleVisible && <LuaConsole />}
-          <NodePopOverContainer />
-          <NodeMetaContainer />
-          <BottomBar showFlightController={this.showFlightController}/>
-          <KeybindingPanel />
-          <TourPopup isVisible={this.state.showTutorial} setVisibility = { (show) => this.setState({ showTutorial : show })}/>
-        </section>
-      </RefsProvider>
+          )}
+          {this.props.connectionLost && (
+            <Overlay>
+              <Error>
+                <h2>Houston, we've had a...</h2>
+                <p>...disconnection between the user interface and OpenSpace.</p>
+                <p>Trying to reconnect automatically, but you may want to...</p>
+                <Button className={Error.styles.errorButton} onClick={this.reloadGui}>Reload the user interface</Button>
+              </Error>
+            </Overlay>
+          )}
+          <section className={styles.Grid__Left}>
+            <Sidebar showTutorial={ (show) => this.setState({ showTutorial : show })}/>
+          </section>
+          <section className={styles.Grid__Right}>
+            {isInBrowser && this.state.luaConsoleVisible && <LuaConsole />}
+            <NodePopOverContainer />
+            <NodeMetaContainer />
+            <BottomBar showFlightController={this.showFlightController}/>
+            <KeybindingPanel />
+            <TourPopup isVisible={this.state.showTutorial} setVisibility = { (show) => this.setState({ showTutorial : show })}/>
+          </section>
+        </RefsProvider>
       </div>
     );
   }

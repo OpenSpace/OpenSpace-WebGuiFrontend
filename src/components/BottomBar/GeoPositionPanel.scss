@@ -63,7 +63,7 @@
 }
 
 .toggles{
-  background: rgba(255,255,255,.1);
+  background: rgba(255, 255, 255, 0.1);
   margin: 4px;
   padding: 0px;
   -webkit-border-radius: 50px;
@@ -75,10 +75,11 @@
   justify-content: stretch;
 }
 
-.toggles input[type=radio]{
+.toggles input[type=radio] {
   display: none;
 }
-.toggles label{
+
+.toggles label {
   flex: 1;
   text-indent: 0px;
   height: 100%;
