@@ -182,12 +182,9 @@ function GeoPositionPanel({ refresh, luaApi, popoverVisible, setPopoverVisibilit
               setChecked={setInteraction}
             />
             <p className={styles.resultsTitle}>Results</p>
-              {places && 
-                <FilterList
-                  searchText={"Filter results..."}
-                  height={'235px'}
-                >
-                  <FilterListData>
+            {places && (
+              (places.length < 4) ?
+                <>
                   {places?.map?.((place) => {
                     const address = place.attributes.LongLabel;
                     const found = Boolean(addedSceneGraphNodes.indexOf(address) > -1);
@@ -202,9 +199,32 @@ function GeoPositionPanel({ refresh, luaApi, popoverVisible, setPopoverVisibilit
                       />)
                     })
                   }
-                  </FilterListData>
-                </FilterList>
-              }
+                </>
+              : 
+                  <FilterList
+                    searchText={"Filter results..."}
+                    height={'235px'}
+                  >
+                    <FilterListData>
+                    {places?.map?.((place) => {
+                      const address = place.attributes.LongLabel;
+                      const found = Boolean(addedSceneGraphNodes.indexOf(address) > -1);
+                      return (
+                        <Place 
+                          key={place.attributes.LongLabel} 
+                          onClick={ () => 
+                            onClick(place.location, address, pushSceneGraphNode)
+                          }
+                          address={address}
+                          found={found}
+                        />)
+                      })
+                    }
+                    </FilterListData>
+              </FilterList>
+            )
+          } 
+              
         </> 
       default:
         return <CenteredLabel>{`Currently there is no data for locations on ${currentAnchor}`}</CenteredLabel>;
