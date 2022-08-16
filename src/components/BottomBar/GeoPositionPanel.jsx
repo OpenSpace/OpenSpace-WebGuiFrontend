@@ -162,7 +162,17 @@ function GeoPositionPanel({ refresh, luaApi, popoverVisible, setPopoverVisibilit
       case 'Earth':
         return <>
             <div className={styles.searchField}>
-              <Input placeholder={"Search places..."} onChange={(e) => setInputValue(e.target.value)}></Input>
+              <Input
+                placeholder={"Search places..."}
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter') {
+                    getPlaces();
+                  }
+                  else {
+                    setInputValue(e.target.value);
+                  }
+                }} 
+              />
               <Button onClick={() => getPlaces() }>Search</Button>
             </div>
             <MultiStateToggle 
