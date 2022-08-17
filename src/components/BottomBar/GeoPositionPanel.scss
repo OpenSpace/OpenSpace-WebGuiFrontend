@@ -30,7 +30,7 @@
   font-size: 0.8rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  margin-left: 0px;
+  margin-left: 4px;
 }
 
 .content {
@@ -48,6 +48,7 @@
   width: 100%;
   display: flex;
   justify-content: flex-end;
+  padding-left: 4px;
 }
 
 .wrapper input:checked + label {
