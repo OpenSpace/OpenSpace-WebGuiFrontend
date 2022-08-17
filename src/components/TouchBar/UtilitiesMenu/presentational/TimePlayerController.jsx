@@ -52,6 +52,7 @@ class TimePlayerController extends Component {
 
   clickPlayer(e) {
     const { isPaused, luaApi } = this.props;
+
     switch (e.target.id) {
       case FastRewind:
         luaApi.time.setPause(false);
