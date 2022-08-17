@@ -55,7 +55,7 @@ function OriginPicker({ favorites, setShowFavorites, nodes, showFavorites, engin
   setPopoverVisibility, popoverVisible, aim, anchor, aimDispatcher, navigationAction,
   retargetAimDispatcher, retargetAnchorDispatcher, anchorDispatcher, startSubscriptions, stopSubscriptions }) {
 
-  const cappedAnchorName = anchorName.substring(0, 20);
+  const cappedAnchorName = anchorName?.substring(0, 20);
   React.useEffect(() => {
     startSubscriptions();
     return () => stopSubscriptions();

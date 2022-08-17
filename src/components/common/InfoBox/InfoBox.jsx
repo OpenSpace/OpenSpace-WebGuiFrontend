@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import MaterialIcon from '../MaterialIcon/MaterialIcon';
 import Tooltip from '../Tooltip/Tooltip';
+import { excludeKeys } from '../../../utils/helpers';
 
 class InfoBox extends Component {
   constructor(props) {
@@ -42,12 +43,13 @@ class InfoBox extends Component {
   }
 
   render() {
-    const { icon, text, inpanel } = this.props;
+    const { icon, text } = this.props;
     const { showPopup } = this.state;
+    const passOnProps = excludeKeys(this.props, 'inpanel icon text'); 
     return (
       <span
         ref={this.setRef('wrapper')}
-        {...this.props}
+        {...passOnProps}
       >
         <MaterialIcon icon={icon}
          onMouseEnter={this.showPopup}
