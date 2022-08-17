@@ -25,24 +25,22 @@ function MultiStateToggle({labels, checked, setChecked, infoText}) {
       <InfoBox inpanel panelscroll={'multiStateToggle'} text={infoText} style={{ paddingTop: '3px', paddingRight: '3px' }} />
       <div className={styles.toggles}>
       {labels.map(label => 
-        <React.Fragment key ={`${label}fragment`}>
+        <React.Fragment key={`${label}fragment`}>
           <input
             id={label}
             key={label}
             className={styles.toggle_option}
             name="state-d"
             type="radio"
-            onChange={() =>
-              setChecked(label)
-            }
+            onChange={() => setChecked(label)}
             checked={label === checked ? "checked" : ""}
           />
           <label htmlFor={label} key={`${label}label`} onClick={() => setChecked(label)}>{label}</label>
         </React.Fragment>)}
-        <div className={styles.toggle_option_slider}>
-        </div>
+        <div className={styles.toggle_option_slider} />
       </div>
-    </div>);
+    </div>
+  );
 }
 
 const Interaction = {
@@ -83,7 +81,8 @@ function Place({address, onClick, found}) {
         {found && 
           <div style={{width : '20px', height : '20px'}}>
             <AnimatedCheckmark style={{width : '20px', height : '20px'}} color={'transparent'} isAnimated={false} />
-          </div>}
+          </div>
+        }
       </div>
     </Button>
   );
@@ -98,7 +97,11 @@ function GeoPositionPanel({ refresh, luaApi, popoverVisible, setPopoverVisibilit
   const [currentAnchor, setCurrentAnchor] = useLocalStorageState('anchor', 'Earth');
   const options = ['Earth', "Mars", "Test"];
 
-  function getPlaces()  {
+  function getPlaces() {
+    if (inputValue === "") {
+      setPlaces([]);
+      return;
+    }
     const searchString = inputValue.replaceAll(" ", "%");
     fetch(`https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?SingleLine=${searchString}&category=&outFields=*&forStorage=false&f=json`)
         .then(response => response.json())
@@ -153,9 +156,7 @@ function GeoPositionPanel({ refresh, luaApi, popoverVisible, setPopoverVisibilit
         luaApi?.addSceneGraphNode(createSceneGraphNodeTable(currentAnchor, addressString, lat, long, altitude));
         // TODO: Once we have a proper way to subscribe to additions and removals
         // of property owners, this 'hard' refresh should be removed.
-        setTimeout(() => {
-          refresh();
-        });
+        setTimeout(() => refresh());
         break;
       }
       default: {
@@ -172,13 +173,9 @@ function GeoPositionPanel({ refresh, luaApi, popoverVisible, setPopoverVisibilit
             <div className={styles.searchField}>
               <Input
                 placeholder={"Search places..."}
-                onKeyPress={(e) => {
-                  if (e.key === 'Enter') {
-                    getPlaces();
-                  }
-                  else {
-                    setInputValue(e.target.value);
-                  }
+                onEnter={() => getPlaces() }
+                onChange={(e) => {
+                  setInputValue(e.target.value);
                 }} 
                 clearable
               />
@@ -189,7 +186,9 @@ function GeoPositionPanel({ refresh, luaApi, popoverVisible, setPopoverVisibilit
               labels={Object.values(Interaction)} 
               checked={interaction} 
               setChecked={setInteraction}
-              infoText={"'Fly to' will fly the camera to the position, 'Jump to' will place the camera at the position instantaneously and 'Add Focus' will add a scene graph node at the position."}
+              infoText={"'Fly to' will fly the camera to the position, " +
+                "'Jump to' will place the camera at the position instantaneously and " +
+                "'Add Focus' will add a scene graph node at the position."}
             />
             <p className={styles.resultsTitle}>Results</p>
             {places && (
@@ -199,38 +198,38 @@ function GeoPositionPanel({ refresh, luaApi, popoverVisible, setPopoverVisibilit
                     const address = place.attributes.LongLabel;
                     const found = Boolean(addedSceneGraphNodes.indexOf(address) > -1);
                     return (
-                      <Place 
-                        key={place.attributes.LongLabel} 
-                        onClick={ () => 
+                      <Place
+                        key={place.attributes.LongLabel}
+                        onClick={() =>
                           onClick(place.location, address, pushSceneGraphNode)
                         }
                         address={address}
                         found={found}
-                      />)
-                    })
-                  }
+                      />
+                    );
+                  })}
                 </>
               : 
-                  <FilterList
-                    searchText={"Filter results..."}
-                    height={'235px'}
-                  >
-                    <FilterListData>
+                <FilterList
+                  searchText={"Filter results..."}
+                  height={'235px'}
+                >
+                  <FilterListData>
                     {places?.map?.((place) => {
                       const address = place.attributes.LongLabel;
                       const found = Boolean(addedSceneGraphNodes.indexOf(address) > -1);
                       return (
-                        <Place 
-                          key={place.attributes.LongLabel} 
-                          onClick={ () => 
+                        <Place
+                          key={place.attributes.LongLabel}
+                          onClick={() =>
                             onClick(place.location, address, pushSceneGraphNode)
                           }
                           address={address}
                           found={found}
-                        />)
-                      })
-                    }
-                    </FilterListData>
+                        />
+                      );
+                    })}
+                  </FilterListData>
               </FilterList>
             )
           } 
@@ -251,13 +250,13 @@ function GeoPositionPanel({ refresh, luaApi, popoverVisible, setPopoverVisibilit
         attached={true}
       >
         <div className={styles.content}>
-        <Dropdown 
-          options={options} 
-          onChange={(anchor) => setCurrentAnchor(anchor.value)} 
-          value={currentAnchor} 
-          placeholder="Select an anchor"
-        />
-        {anchorPanel(currentAnchor)}
+          <Dropdown 
+            options={options} 
+            onChange={(anchor) => setCurrentAnchor(anchor.value)} 
+            value={currentAnchor} 
+            placeholder="Select an anchor"
+          />
+          {anchorPanel(currentAnchor)}
         </div>
       </Popover>
     );
