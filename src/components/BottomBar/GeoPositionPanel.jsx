@@ -212,7 +212,7 @@ function GeoPositionPanel({ refresh, luaApi, popoverVisible, setPopoverVisibilit
               : 
                 <FilterList
                   searchText={"Filter results..."}
-                  height={'230px'}
+                  height={'220px'}
                 >
                   <FilterListData>
                     {places?.map?.((place) => {
