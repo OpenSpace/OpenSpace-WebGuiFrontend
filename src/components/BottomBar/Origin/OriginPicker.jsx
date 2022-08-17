@@ -55,6 +55,7 @@ function OriginPicker({ favorites, setShowFavorites, nodes, showFavorites, engin
   setPopoverVisibility, popoverVisible, aim, anchor, aimDispatcher, navigationAction,
   retargetAimDispatcher, retargetAnchorDispatcher, anchorDispatcher, startSubscriptions, stopSubscriptions }) {
 
+  const cappedAnchorName = anchorName.substring(0, 20);
   React.useEffect(() => {
     startSubscriptions();
     return () => stopSubscriptions();
@@ -128,7 +129,7 @@ function OriginPicker({ favorites, setShowFavorites, nodes, showFavorites, engin
         <div className={Picker.Title}>
           <span className={Picker.Name}>
             <LoadingString loading={anchor === undefined}>
-              {anchorName}
+              {cappedAnchorName}
             </LoadingString>
           </span>
           <SmallLabel>Focus</SmallLabel>
@@ -144,7 +145,7 @@ function OriginPicker({ favorites, setShowFavorites, nodes, showFavorites, engin
         <div className={Picker.Title}>
           <span className={Picker.Name}>
             <LoadingString loading={anchor === undefined}>
-              {anchorName}
+              {cappedAnchorName}
             </LoadingString>
           </span>
           <SmallLabel>Anchor</SmallLabel>
@@ -184,7 +185,7 @@ function OriginPicker({ favorites, setShowFavorites, nodes, showFavorites, engin
               <SvgIcon><Anchor /></SvgIcon>
               {' '}
               <LoadingString loading={anchor === undefined}>
-                {anchorName}
+                {cappedAnchorName}
               </LoadingString>
             </SmallLabel>
           </div>
