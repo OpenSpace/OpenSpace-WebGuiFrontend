@@ -9,19 +9,23 @@ import Input from '../Input/Input/Input';
 import ScrollOverlay from '../ScrollOverlay/ScrollOverlay';
 import styles from './FilterList.scss';
 
-function FilterListFavorites({children}) {
-    return children;
+function FilterListFavorites({ className, children }) {
+  return (
+    <ScrollOverlay className={`${className}`}>
+      {children}
+    </ScrollOverlay>
+  );
 }
 
 FilterListFavorites.displayName = 'FilterListFavorites';
 
-function FilterListData({matcher, searchString, ignorePropsFilter, children}) {
+function FilterListData({matcher, searchString, ignorePropsFilter, className, children}) {
   // Filter the children on their props
   // Most matcher functions are case sensitive, hence toLowerCase
   const childArray = React.Children.toArray(children); 
   const filteredChildren = childArray.filter(child => {
     let matcherFunc;
-    if(typeof child.props === 'object') {
+    if (typeof child.props === 'object') {
       matcherFunc = ObjectWordBeginningSubstring;    
     }
     else {
@@ -32,12 +36,18 @@ function FilterListData({matcher, searchString, ignorePropsFilter, children}) {
     ignorePropsFilter.map(key => delete searchableChild[key]);
     return finalMatcher(searchableChild, searchString.toLowerCase());
   });
-  if(filteredChildren.length > 0) {
-    return filteredChildren;
+  let content = undefined;
+  if (filteredChildren.length > 0) {
+    content = filteredChildren;
   }
   else {
-    return <CenteredLabel>Nothing found. Try another search!</CenteredLabel>;
+    content = <CenteredLabel>Nothing found. Try another search!</CenteredLabel>;
   }
+  return (
+      <ScrollOverlay className={`${className}`}>
+        { content }
+      </ScrollOverlay>
+    );
 }
 
 FilterListData.displayName = 'FilterListData';
@@ -93,9 +103,7 @@ function FilterList({showMoreButton = false, matcher, ignorePropsFilter, searchT
     >
       {lessMoreToggle}
     </Input>
-    <ScrollOverlay>
-      {filteredChildren}
-    </ScrollOverlay>
+    {filteredChildren}
     </div>;
 }
 
