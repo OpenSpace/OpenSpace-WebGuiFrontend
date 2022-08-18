@@ -202,7 +202,7 @@ class ActionsPanel extends Component {
           <hr className={Popover.styles.delimiter} />
           {backButton}
           <FilterList matcher={this.matcher} height={backButton ? '280px' : '320px'}>
-            <FilterListFavorites>
+            <FilterListFavorites className={styles.Grid}>
               {actionsContent}
               {childrenContent}
               {keybindsContent}
