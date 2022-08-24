@@ -42,6 +42,15 @@
   flex-flow: row;
 }
 
+.latLongInput {
+  display: flex;
+  flex-direction: row;
+}
+
+.latLongButton {
+  white-space: nowrap;
+}
+
 /* Multitoggle switch */
 
 .wrapper {

@@ -50,24 +50,24 @@ const Interaction = {
 };
 
 function createSceneGraphNodeTable(globe, label, lat, long, alt) {
-  const position = {
+  const table = {
       Identifier: label,
       Parent: globe,
       Transform: {
         Translation: {
           Type: "GlobeTranslation",
           Globe: globe,
-          Latitude: lat,
-          Longitude: long,
+          Latitude: Number(lat),
+          Longitude: Number(long),
           Altitude: 0
         }
       },
-      InteractionSphere: alt,
+      InteractionSphere: Number(alt),
       GUI: {
         Path: "/GeoLocation"
       }
   };
-  return position;
+  return table;
 }
 
 function Place({address, onClick, found}) {
@@ -92,10 +92,13 @@ function GeoPositionPanel({ refresh, luaApi, popoverVisible, setPopoverVisibilit
   const [inputValue, setInputValue] = useLocalStorageState('inputValue',"");
   const [places, setPlaces] = useLocalStorageState('places', undefined);
   const [addedSceneGraphNodes, setAddedSceneGraphNodes] = useLocalStorageState('addedSceneGraphNodes', undefined);
-  const [altitude, setAltitude] = useLocalStorageState('altitude', 300000);
+  const [latitude, setLatitude] = useLocalStorageState('latitude', undefined);
+  const [longitude, setLongitude] = useLocalStorageState('longitude', undefined);
+  const [altitude, setAltitude] = useLocalStorageState('altitude', '300000');
   const [interaction, setInteraction] = useLocalStorageState('interaction', Interaction.flyTo);
   const [currentAnchor, setCurrentAnchor] = useLocalStorageState('anchor', 'Earth');
-  const options = ['Earth', "Mars", "Test"];
+  const [customNodeCounter, setCustomNodeCounter] = useLocalStorageState('counter', 0);
+  const options = ['Earth'];
 
   function getPlaces() {
     if (inputValue === "") {
@@ -133,7 +136,7 @@ function GeoPositionPanel({ refresh, luaApi, popoverVisible, setPopoverVisibilit
     setPopoverVisibilityProp(!popoverVisible);
   }
 
-  function onClick(location, address, pushSceneGraphNode) {
+  function selectCoordinate(location, address) {
     const lat = location.y;
     const long = location.x;
     switch(interaction) {
@@ -151,8 +154,12 @@ function GeoPositionPanel({ refresh, luaApi, popoverVisible, setPopoverVisibilit
           break;
         }
         pushSceneGraphNode(address);
-        let addressString = address;
-        addressString.replace(/[^\x00-\x7F]/g, "");
+        let addressString = "";
+        for (let i = 0; i < address.length; i++) {
+            if (address.charCodeAt(i) <= 127) {
+                addressString += address.charAt(i);
+            }
+        }
         luaApi?.addSceneGraphNode(createSceneGraphNodeTable(currentAnchor, addressString, lat, long, altitude));
         // TODO: Once we have a proper way to subscribe to additions and removals
         // of property owners, this 'hard' refresh should be removed.
@@ -166,21 +173,18 @@ function GeoPositionPanel({ refresh, luaApi, popoverVisible, setPopoverVisibilit
     }
   }
 
+  function enterLatLongAlt() {
+    if (!(latitude && longitude && altitude))
+      return;
+    const place = { y: latitude, x: longitude };
+    selectCoordinate(place, "Custom Coordinate " + customNodeCounter);
+    setCustomNodeCounter(customNodeCounter + 1);
+  }
+
   function anchorPanel(anchor) {
     switch (anchor) {
       case 'Earth':
         return <>
-            <div className={styles.searchField}>
-              <Input
-                placeholder={"Search places..."}
-                onEnter={() => getPlaces() }
-                onChange={(e) => {
-                  setInputValue(e.target.value);
-                }} 
-                clearable
-              />
-              <Button onClick={() => getPlaces() }>Search</Button>
-            </div>
             <MultiStateToggle 
               title={"Mode"}
               labels={Object.values(Interaction)} 
@@ -190,6 +194,42 @@ function GeoPositionPanel({ refresh, luaApi, popoverVisible, setPopoverVisibilit
                 "'Jump to' will place the camera at the position instantaneously and " +
                 "'Add Focus' will add a scene graph node at the position."}
             />
+            <div className={styles.latLongInput}>
+              <Input
+                placeholder={"Latitude..."}
+                onChange={(e) => {
+                  setLatitude(e.target.value);
+                }} 
+                value={latitude}
+              />
+              <Input
+                placeholder={"Longitude..."}
+                onChange={(e) => {
+                  setLongitude(e.target.value);
+                }} 
+                value={longitude}
+              />
+              <Input
+                placeholder={"Altitude..."}
+                onChange={(e) => {
+                  setAltitude(e.target.value);
+                }} 
+                value={altitude}
+              />
+              <Button onClick={() => enterLatLongAlt()} className={styles.latLongButton}>{interaction}</Button>
+            </div>
+            <hr className={Popover.styles.delimiter} />
+            <div className={styles.searchField}>
+            <Input
+              placeholder={"Search places..."}
+              onEnter={() => getPlaces() }
+              onChange={(e) => {
+                setInputValue(e.target.value);
+              }} 
+              clearable
+            />
+            <Button onClick={() => getPlaces()}>Search</Button>
+            </div>
             <p className={styles.resultsTitle}>Results</p>
             {places && (
               (places.length < 4) ?
@@ -201,7 +241,7 @@ function GeoPositionPanel({ refresh, luaApi, popoverVisible, setPopoverVisibilit
                       <Place
                         key={place.attributes.LongLabel}
                         onClick={() =>
-                          onClick(place.location, address, pushSceneGraphNode)
+                          selectCoordinate(place.location, address)
                         }
                         address={address}
                         found={found}
@@ -212,7 +252,7 @@ function GeoPositionPanel({ refresh, luaApi, popoverVisible, setPopoverVisibilit
               : 
                 <FilterList
                   searchText={"Filter results..."}
-                  height={'220px'}
+                  height={'160px'}
                 >
                   <FilterListData>
                     {places?.map?.((place) => {
@@ -222,7 +262,7 @@ function GeoPositionPanel({ refresh, luaApi, popoverVisible, setPopoverVisibilit
                         <Place
                           key={place.attributes.LongLabel}
                           onClick={() =>
-                            onClick(place.location, address, pushSceneGraphNode)
+                            selectCoordinate(place.location, address)
                           }
                           address={address}
                           found={found}
