@@ -194,13 +194,13 @@ class ActionsPanel extends Component {
         <div id="actionscroller" className={`${Popover.styles.content}`}>
           <hr className={Popover.styles.delimiter} />
           <Row>
-            <div className={Popover.styles.title}>
+            {backButton}
+            <div style={{ whiteSpace: 'nowrap' }} className={Popover.styles.title}>
               {navPathString}
               {' '}
             </div>
           </Row>
           <hr className={Popover.styles.delimiter} />
-          {backButton}
           <FilterList matcher={this.matcher} height={backButton ? '280px' : '320px'}>
             <FilterListFavorites className={styles.Grid}>
               {actionsContent}
