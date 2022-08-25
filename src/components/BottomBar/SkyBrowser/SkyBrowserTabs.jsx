@@ -345,7 +345,11 @@ class SkyBrowserTabs extends Component {
           setBorderRadius={setBorderRadius}
         />);
     } else if (data.length === 0) {
-      content = <CenteredLabel>There are no selected images in this sky browser.</CenteredLabel>;
+      content = (
+        <CenteredLabel>
+          There are no selected images in this sky browser
+        </CenteredLabel>
+      );
     } else {
       content = this.createImageList();
     }

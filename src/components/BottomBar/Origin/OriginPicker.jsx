@@ -350,7 +350,7 @@ function OriginPicker({ favorites, setShowFavorites, nodes, showFavorites, engin
   const pickerClasses = [
     styles.originPicker,
     popoverEnabledAndVisible ? Picker.Active : '',
-    enabled ? '' : pickerStyle,
+    enabled ? '' : pickerStyle(),
   ].join(' ');
 
   return (

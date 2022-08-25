@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
 import { setShowAbout, startConnection } from '../api/Actions';
 import { formatVersion, isCompatible, RequiredOpenSpaceVersion, RequiredSocketApiVersion } from '../api/Version';
 import BottomBar from '../components/BottomBar/BottomBar';
@@ -14,86 +13,84 @@ import Sidebar from '../components/Sidebar/Sidebar';
 import '../styles/base.scss';
 import About from './About/About';
 import styles from './RemoteGui.scss';
+import environment from '../api/Environment'
 import { TutorialProvider } from '../components/GettingStartedTour/GettingStartedContext';
 
-class RemoteGui extends Component {
-  constructor(props) {
-    super(props);
-    this.checkedVersion = false;
-  }
-
-  componentDidMount() {
-    this.props.startConnection();
-  }
-
-  checkVersion() {
-    if (!this.checkedVersion && this.props.version.isInitialized) {
-      const versionData = this.props.version.data;
-      if (!isCompatible(
-        versionData.openSpaceVersion, RequiredOpenSpaceVersion))
-      {
-        console.warn(
-          'Possible incompatibility: \nRequired OpenSpace version: ' +
-          formatVersion(RequiredOpenSpaceVersion) +
-          '. Currently controlling OpenSpace version ' +
-          formatVersion(versionData.openSpaceVersion) + '.'
-        );
-      }
-      if (!isCompatible(
-        versionData.socketApiVersion, RequiredSocketApiVersion))
-      {
-        console.warn(
-          "Possible incompatibility: \nRequired Socket API version: " +
-          formatVersion(RequiredSocketApiVersion) +
-          ". Currently operating over API version " +
-          formatVersion(versionData.socketApiVersion) + '.'
-        );
-      }
-      this.checkedVersion = true;
-    }
-  }
-
-  reloadGui() {
+function RemoteGui({ startConnection, version, hideAbout, connectionLost, showAbout }) {
+  let hasCheckedVersion = false;
+  
+  React.useEffect(() => {
+    startConnection();
+  }, []);
+  
+  function reloadGui() {
     location.reload();
   }
-
-  render() {
-    this.checkVersion();
-    return (
-      <div className={styles.app}>
-        <TutorialProvider>
-          { this.props.showAbout && (
-            <Overlay>
-              <Stack style={{ maxWidth: '500px' }}>
-                <Button style={{ alignSelf: 'flex-end', color: 'white' }} onClick={this.props.hideAbout}>
-                  Close
-                </Button>
-                <About />
-              </Stack>
-            </Overlay>
-          )}
-          { this.props.connectionLost && (
-            <Overlay>
-              <Error>
-                <h2>Houston, we've had a...</h2>
-                <p>...disconnection between the user interface and OpenSpace.</p>
-                <p>Trying to reconnect automatically, but you may want to...</p>
-                <Button className={Error.styles.errorButton} onClick={this.reloadGui}>Reload the user interface</Button>
-              </Error>
-            </Overlay>
-          )}
-          <section className={styles.Grid__Left}>
-            <Sidebar />
-          </section>
-          <section className={styles.Grid__Right}>
-            <NodePopOverContainer />
-            <NodeMetaContainer />
-            <BottomBar showFlightController={true}/>
-          </section>
-        </TutorialProvider>
-      </div>
-    );
+  
+  if (!hasCheckedVersion && version.isInitialized) {
+    const versionData = version.data;
+    if (!isCompatible(
+      versionData.openSpaceVersion, RequiredOpenSpaceVersion))
+    {
+      console.warn(
+        'Possible incompatibility: \nRequired OpenSpace version: ' +
+        formatVersion(RequiredOpenSpaceVersion) +
+        '. Currently controlling OpenSpace version ' +
+        formatVersion(versionData.openSpaceVersion) + '.'
+      );
+    }
+    if (!isCompatible(
+      versionData.socketApiVersion, RequiredSocketApiVersion))
+    {
+      console.warn(
+        "Possible incompatibility: \nRequired Socket API version: " +
+        formatVersion(RequiredSocketApiVersion) +
+        ". Currently operating over API version " +
+        formatVersion(versionData.socketApiVersion) + '.'
+      );
+    }
+    hasCheckedVersion = true;
   }
+
+  return (
+    <div className={styles.app} style={environment.developmentMode ? { borderStyle: 'solid', borderWidth: '3px', borderColor: 'orange' } : null}>
+      {environment.developmentMode &&
+        <div className={styles.devModeTextBox}>
+          <p>Dev Gui</p>
+        </div>
+      }
+      <TutorialProvider>
+        { showAbout && (
+          <Overlay>
+            <Stack style={{ maxWidth: '500px' }}>
+              <Button style={{ alignSelf: 'flex-end', color: 'white' }} onClick={hideAbout}>
+                Close
+              </Button>
+              <About />
+            </Stack>
+          </Overlay>
+        )}
+        { connectionLost && (
+          <Overlay>
+            <Error>
+              <h2>Houston, we've had a...</h2>
+              <p>...disconnection between the user interface and OpenSpace.</p>
+              <p>Trying to reconnect automatically, but you may want to...</p>
+              <Button className={Error.styles.errorButton} onClick={this.reloadGui}>Reload the user interface</Button>
+            </Error>
+          </Overlay>
+        )}
+        <section className={styles.Grid__Left}>
+          <Sidebar />
+        </section>
+        <section className={styles.Grid__Right}>
+          <NodePopOverContainer />
+          <NodeMetaContainer />
+          <BottomBar showFlightController={true}/>
+        </section>
+      </TutorialProvider>
+    </div>
+  );
 }
 
 const mapStateToProps = state => ({
@@ -111,9 +108,9 @@ const mapDispatchToProps = dispatch => ({
   }
 });
 
-RemoteGui = withRouter(connect(
+RemoteGui = connect(
   mapStateToProps,
   mapDispatchToProps,
-)(RemoteGui));
+)(RemoteGui);
 
 export default RemoteGui;
