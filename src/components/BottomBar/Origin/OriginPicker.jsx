@@ -40,7 +40,6 @@ import Picker from '../Picker';
 import FocusEntry from './FocusEntry';
 import FocusEntryWithNavigation from './FocusEntryWithNavigation';
 import styles from './OriginPicker.scss';
-import { useTutorial } from '../../GettingStartedTour/GettingStartedContext';
 
 // tag that each focusable node must have
 const REQUIRED_TAG = 'GUI.Interesting';
@@ -51,9 +50,9 @@ const NavigationActions = {
   Aim: 'Aim',
 };
 
-function OriginPicker({ favorites, setShowFavorites, nodes, showFavorites, engineMode, anchorName,
-  setPopoverVisibility, popoverVisible, aim, anchor, aimDispatcher, navigationAction,
-  retargetAimDispatcher, retargetAnchorDispatcher, anchorDispatcher, startSubscriptions, stopSubscriptions }) {
+function OriginPicker({ favorites, setShowFavorites, nodes, showFavorites, engineMode, anchorName, luaApi, sessionRecordingState,
+  setPopoverVisibility, popoverVisible, aim, anchor, aimDispatcher, navigationAction, connectFlightController, sendFlightControl,
+  retargetAimDispatcher, retargetAnchorDispatcher, anchorDispatcher, startSubscriptions, stopSubscriptions, setNavigationAction, aimName }) {
 
   React.useEffect(() => {
     startSubscriptions();
@@ -256,16 +255,6 @@ function OriginPicker({ favorites, setShowFavorites, nodes, showFavorites, engin
       Aim: 'Search for a new aim...',
     }[navigationAction];
 
-    const setNavigationActionToFocus = () => {
-      setNavigationAction(NavigationActions.Focus);
-    };
-    const setNavigationActionToAnchor = () => {
-      setNavigationAction(NavigationActions.Anchor);
-    };
-    const setNavigationActionToAim = () => {
-      setNavigationAction(NavigationActions.Aim);
-    };
-
     const isInFocusMode = navigationAction === NavigationActions.Focus;
     const active = navigationAction === NavigationActions.Aim ? aim : anchor;
 
@@ -280,7 +269,7 @@ function OriginPicker({ favorites, setShowFavorites, nodes, showFavorites, engin
         <div>
           <Button
             className={styles.NavigationButton}
-            onClick={setNavigationActionToFocus}
+            onClick={() => setNavigationAction(NavigationActions.Focus)}
             title="Select focus"
             transparent={navigationAction !== NavigationActions.Focus}
           >
@@ -288,7 +277,7 @@ function OriginPicker({ favorites, setShowFavorites, nodes, showFavorites, engin
           </Button>
           <Button
             className={styles.NavigationButton}
-            onClick={setNavigationActionToAnchor}
+            onClick={() => setNavigationAction(NavigationActions.Anchor)}
             title="Select anchor"
             transparent={navigationAction !== NavigationActions.Anchor}
           >
@@ -296,7 +285,7 @@ function OriginPicker({ favorites, setShowFavorites, nodes, showFavorites, engin
           </Button>
           <Button
             className={styles.NavigationButton}
-            onClick={setNavigationActionToAim}
+            onClick={() => setNavigationAction(NavigationActions.Aim)}
             title="Select aim"
             transparent={navigationAction !== NavigationActions.Aim}
           >
