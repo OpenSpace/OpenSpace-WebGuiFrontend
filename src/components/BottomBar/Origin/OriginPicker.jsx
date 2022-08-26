@@ -8,7 +8,6 @@ import {
   connectFlightController,
   sendFlightControl,
   setNavigationAction,
-  setOriginPickerShowFavorites,
   setPopoverVisibility,
   subscribeToEngineMode,
   subscribeToSessionRecording,
@@ -50,7 +49,7 @@ const NavigationActions = {
   Aim: 'Aim',
 };
 
-function OriginPicker({ favorites, setShowFavorites, nodes, showFavorites, engineMode, anchorName, luaApi, sessionRecordingState,
+function OriginPicker({ favorites, nodes, engineMode, anchorName, luaApi, sessionRecordingState,
   setPopoverVisibility, popoverVisible, aim, anchor, aimDispatcher, navigationAction, connectFlightController, sendFlightControl,
   retargetAimDispatcher, retargetAnchorDispatcher, anchorDispatcher, startSubscriptions, stopSubscriptions, setNavigationAction, aimName }) {
 
@@ -375,7 +374,6 @@ const mapSubStateToProps = ({
   }));
 
   const navigationAction = originPicker.action;
-  const { showFavorites } = originPicker;
   const anchorProp = properties[NavigationAnchorKey];
   const aimProp = properties[NavigationAimKey];
 
@@ -401,7 +399,6 @@ const mapSubStateToProps = ({
     engineMode: mode,
     luaApi,
     favorites,
-    showFavorites,
     navigationAction,
     popoverVisible,
     sessionRecordingState,
@@ -421,9 +418,6 @@ const mapStateToSubState = state => ({
 const mapDispatchToProps = dispatch => ({
   setNavigationAction: (action) => {
     dispatch(setNavigationAction(action));
-  },
-  setShowFavorites: (action) => {
-    dispatch(setOriginPickerShowFavorites(action));
   },
   anchorDispatcher: propertyDispatcher(dispatch, NavigationAnchorKey),
   aimDispatcher: propertyDispatcher(dispatch, NavigationAimKey),
@@ -460,7 +454,6 @@ OriginPicker.propTypes = {
   engineMode: PropTypes.string.isRequired,
   favorites: PropTypes.array.isRequired,
   luaApi: PropTypes.object,
-  showFavorites: PropTypes.bool.isRequired,
   navigationAction: PropTypes.string.isRequired,
   popoverVisible: PropTypes.bool.isRequired,
   sessionRecordingState: PropTypes.string.isRequired,
@@ -470,7 +463,6 @@ OriginPicker.propTypes = {
   sendFlightControl: PropTypes.func.isRequired,
   setNavigationAction: PropTypes.func.isRequired,
   setPopoverVisibility: PropTypes.func.isRequired,
-  setShowFavorites: PropTypes.func.isRequired,
   startSubscriptions: PropTypes.func.isRequired,
   stopSubscriptions: PropTypes.func.isRequired,
 
