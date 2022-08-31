@@ -8,7 +8,6 @@ import {
   connectFlightController,
   sendFlightControl,
   setNavigationAction,
-  setOriginPickerShowFavorites,
   setPopoverVisibility,
   subscribeToEngineMode,
   subscribeToSessionRecording,
@@ -40,7 +39,6 @@ import Picker from '../Picker';
 import FocusEntry from './FocusEntry';
 import FocusEntryWithNavigation from './FocusEntryWithNavigation';
 import styles from './OriginPicker.scss';
-import { useContextRefs } from '../../GettingStartedTour/GettingStartedContext';
 
 // tag that each focusable node must have
 const REQUIRED_TAG = 'GUI.Interesting';
@@ -51,9 +49,9 @@ const NavigationActions = {
   Aim: 'Aim',
 };
 
-function OriginPicker({ favorites, setShowFavorites, nodes, showFavorites, engineMode, anchorName,
-  setPopoverVisibility, popoverVisible, aim, anchor, aimDispatcher, navigationAction,
-  retargetAimDispatcher, retargetAnchorDispatcher, anchorDispatcher, startSubscriptions, stopSubscriptions }) {
+function OriginPicker({ favorites, nodes, engineMode, anchorName, luaApi, sessionRecordingState,
+  setPopoverVisibility, popoverVisible, aim, anchor, aimDispatcher, navigationAction, connectFlightController, sendFlightControl,
+  retargetAimDispatcher, retargetAnchorDispatcher, anchorDispatcher, startSubscriptions, stopSubscriptions, setNavigationAction, aimName }) {
 
   const cappedAnchorName = anchorName?.substring(0, 20);
   React.useEffect(() => {
@@ -257,16 +255,6 @@ function OriginPicker({ favorites, setShowFavorites, nodes, showFavorites, engin
       Aim: 'Search for a new aim...',
     }[navigationAction];
 
-    const setNavigationActionToFocus = () => {
-      setNavigationAction(NavigationActions.Focus);
-    };
-    const setNavigationActionToAnchor = () => {
-      setNavigationAction(NavigationActions.Anchor);
-    };
-    const setNavigationActionToAim = () => {
-      setNavigationAction(NavigationActions.Aim);
-    };
-
     const isInFocusMode = navigationAction === NavigationActions.Focus;
     const active = navigationAction === NavigationActions.Aim ? aim : anchor;
 
@@ -281,7 +269,7 @@ function OriginPicker({ favorites, setShowFavorites, nodes, showFavorites, engin
         <div>
           <Button
             className={styles.NavigationButton}
-            onClick={setNavigationActionToFocus}
+            onClick={() => setNavigationAction(NavigationActions.Focus)}
             title="Select focus"
             transparent={navigationAction !== NavigationActions.Focus}
           >
@@ -289,7 +277,7 @@ function OriginPicker({ favorites, setShowFavorites, nodes, showFavorites, engin
           </Button>
           <Button
             className={styles.NavigationButton}
-            onClick={setNavigationActionToAnchor}
+            onClick={() => setNavigationAction(NavigationActions.Anchor)}
             title="Select anchor"
             transparent={navigationAction !== NavigationActions.Anchor}
           >
@@ -297,7 +285,7 @@ function OriginPicker({ favorites, setShowFavorites, nodes, showFavorites, engin
           </Button>
           <Button
             className={styles.NavigationButton}
-            onClick={setNavigationActionToAim}
+            onClick={() => setNavigationAction(NavigationActions.Aim)}
             title="Select aim"
             transparent={navigationAction !== NavigationActions.Aim}
           >
@@ -351,7 +339,7 @@ function OriginPicker({ favorites, setShowFavorites, nodes, showFavorites, engin
   const pickerClasses = [
     styles.originPicker,
     popoverEnabledAndVisible ? Picker.Active : '',
-    enabled ? '' : pickerStyle,
+    enabled ? '' : pickerStyle(),
   ].join(' ');
 
   return (
@@ -387,7 +375,6 @@ const mapSubStateToProps = ({
   }));
 
   const navigationAction = originPicker.action;
-  const { showFavorites } = originPicker;
   const anchorProp = properties[NavigationAnchorKey];
   const aimProp = properties[NavigationAimKey];
 
@@ -413,7 +400,6 @@ const mapSubStateToProps = ({
     engineMode: mode,
     luaApi,
     favorites,
-    showFavorites,
     navigationAction,
     popoverVisible,
     sessionRecordingState,
@@ -433,9 +419,6 @@ const mapStateToSubState = state => ({
 const mapDispatchToProps = dispatch => ({
   setNavigationAction: (action) => {
     dispatch(setNavigationAction(action));
-  },
-  setShowFavorites: (action) => {
-    dispatch(setOriginPickerShowFavorites(action));
   },
   anchorDispatcher: propertyDispatcher(dispatch, NavigationAnchorKey),
   aimDispatcher: propertyDispatcher(dispatch, NavigationAimKey),
@@ -472,7 +455,6 @@ OriginPicker.propTypes = {
   engineMode: PropTypes.string.isRequired,
   favorites: PropTypes.array.isRequired,
   luaApi: PropTypes.object,
-  showFavorites: PropTypes.bool.isRequired,
   navigationAction: PropTypes.string.isRequired,
   popoverVisible: PropTypes.bool.isRequired,
   sessionRecordingState: PropTypes.string.isRequired,
@@ -482,7 +464,6 @@ OriginPicker.propTypes = {
   sendFlightControl: PropTypes.func.isRequired,
   setNavigationAction: PropTypes.func.isRequired,
   setPopoverVisibility: PropTypes.func.isRequired,
-  setShowFavorites: PropTypes.func.isRequired,
   startSubscriptions: PropTypes.func.isRequired,
   stopSubscriptions: PropTypes.func.isRequired,
 
