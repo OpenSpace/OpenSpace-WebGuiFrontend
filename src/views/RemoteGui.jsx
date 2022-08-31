@@ -13,8 +13,9 @@ import Sidebar from '../components/Sidebar/Sidebar';
 import '../styles/base.scss';
 import About from './About/About';
 import styles from './RemoteGui.scss';
+import { RefsProvider } from '../components/GettingStartedTour/GettingStartedContext';
 import environment from '../api/Environment'
-import { TutorialProvider } from '../components/GettingStartedTour/GettingStartedContext';
+
 
 function RemoteGui({ startConnection, version, hideAbout, connectionLost, showAbout }) {
   let hasCheckedVersion = false;
@@ -50,6 +51,7 @@ function RemoteGui({ startConnection, version, hideAbout, connectionLost, showAb
       );
     }
     hasCheckedVersion = true;
+
   }
 
   return (
@@ -59,7 +61,7 @@ function RemoteGui({ startConnection, version, hideAbout, connectionLost, showAb
           <p>Dev Gui</p>
         </div>
       }
-      <TutorialProvider>
+      <RefsProvider>
         { showAbout && (
           <Overlay>
             <Stack style={{ maxWidth: '500px' }}>
@@ -88,7 +90,7 @@ function RemoteGui({ startConnection, version, hideAbout, connectionLost, showAb
           <NodeMetaContainer />
           <BottomBar showFlightController={true}/>
         </section>
-      </TutorialProvider>
+      </RefsProvider>
     </div>
   );
 }

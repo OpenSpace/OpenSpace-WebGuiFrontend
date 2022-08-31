@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes, { object } from 'prop-types';
 import { connect } from 'react-redux';
 import { Rnd as ResizeableDraggable } from 'react-rnd';
 import styles from './TourPopup.scss';
@@ -14,18 +13,9 @@ import {
 import openspaceLogo from "./openspace-color-transparent.png";
 import MaterialIcon from "../common/MaterialIcon/MaterialIcon";
 import Checkbox from "../common/Input/Checkbox/Checkbox";
-import {useTutorial} from "./GettingStartedContext";
-
-function AnimatedCheckmark({...props}) {
-  return <div className={styles.centerContent}>
-    <div {...props}>
-      <svg className={styles.checkmark} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
-        <circle className={styles.checkmark__circle} cx="26" cy="26" r="25" fill="none" />
-        <path className={styles.checkmark__check} fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
-      </svg>
-    </div>
-  </div>;
-}
+import {useContextRefs} from "./GettingStartedContext";
+import {useLocalStorageState} from "../../utils/customHooks";
+import AnimatedCheckmark from "../common/AnimatedCheckmark/AnimatedCheckmark";
 
 function KeyboardButton({ buttonText, ...props }) {
   return <div className={`${styles.keyboardButton} ${styles.centerContent}`} {...props}>
@@ -40,41 +30,6 @@ function AnimatedArrows({ ...props }) {
       <span></span>
     </div>
   </div>;
-}
-
-function useLocalStorageState(
-  key,
-  defaultValue = '',
-  // The = {} fixes the error we would get from destructuring when no argument was passed
-  // Check https://jacobparis.com/blog/destructure-arguments for a detailed explanation
-  {serialize = JSON.stringify, deserialize = JSON.parse} = {},
-) {
-  const [state, setState] = React.useState(() => {
-    const valueInLocalStorage = window.localStorage.getItem(key)
-    if (valueInLocalStorage) {
-      // The try/catch is here in case the localStorage value was set before
-      // the serialization was in place 
-      try {
-        return deserialize(valueInLocalStorage)
-      } catch (error) {
-        window.localStorage.removeItem(key)
-      }
-    }
-    return typeof defaultValue === 'function' ? defaultValue() : defaultValue
-  })
-
-  const prevKeyRef = React.useRef(key)
-
-  React.useEffect(() => {
-    const prevKey = prevKeyRef.current
-    if (prevKey !== key) {
-      window.localStorage.removeItem(prevKey)
-    }
-    prevKeyRef.current = key
-    window.localStorage.setItem(key, serialize(state))
-  }, [key, state, serialize])
-
-  return [state, setState]
 }
 
 function AnimatedMouse({ button, ...props }) {
@@ -219,7 +174,7 @@ function Goal({ startSubscriptions, setIsFulfilled, hasGoals, stopSubscriptions,
   },[areAllConditionsFulfilled]);
 
   // Create animated click - it requires the component to be render fairly often
-  const tutorial = useTutorial();
+  const tutorial = useContextRefs();
   let lastKey = null;
   const newElement = document.createElement('div');
   const animationDiv = React.useRef(newElement);
@@ -244,7 +199,9 @@ function Goal({ startSubscriptions, setIsFulfilled, hasGoals, stopSubscriptions,
   }, [content, lastKey]);  
 
   return (areAllConditionsFulfilled && hasGoals ?
-    <AnimatedCheckmark style={{ marginTop: '70px', width: '56px', height: '56px' }} /> :
+    <div className={styles.centerContent}>
+      <AnimatedCheckmark style={{ marginTop: '70px', width: '56px', height: '56px' }} />
+    </div> :
     <>{hasGoals && content.goalText.map((goal, i) => {
       return <div style={{ display: 'flex' }} key={goal}>
           <div>

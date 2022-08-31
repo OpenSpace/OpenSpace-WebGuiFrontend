@@ -280,11 +280,6 @@ export const setNavigationAction = data => ({
   payload: data,
 });
 
-export const setOriginPickerShowFavorites = showFavorites => ({
-  type: actionTypes.setOriginPickerShowFavorites,
-  payload: showFavorites,
-});
-
 export const setPopoverVisibility = data => ({
   type: actionTypes.setPopoverVisibility,
   payload: data,
