@@ -1,5 +1,5 @@
-import React, { Component, createRef } from 'react'
-import styles from './DropDown.scss'
+import React, { Component, createRef } from 'react';
+import styles from './DropDown.scss';
 
 const DEFAULT_PLACEHOLDER_STRING = 'Select...'
 
