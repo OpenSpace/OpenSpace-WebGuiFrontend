@@ -31,14 +31,16 @@ module.exports = {
           use: [
             {
               loader: 'style-loader',
-            }, {
+            },
+            {
               loader: 'css-loader?modules',
               options: {
                 sourceMap: true,
                 importLoaders: 2,
                 modules: true
               },
-            }, {
+            },
+            {
               loader: 'sass-loader',
               options: {
                 sourceMap: true,

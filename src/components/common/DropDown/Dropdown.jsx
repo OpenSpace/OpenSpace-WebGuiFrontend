@@ -1,7 +1,7 @@
 import React, { Component, createRef } from 'react';
-import styles from './DropDown.scss';
+import styles from './Dropdown.scss';
 
-const DEFAULT_PLACEHOLDER_STRING = 'Select...'
+const DEFAULT_PLACEHOLDER_STRING = 'Select...';
 
 function Dropdown({value, placeholder, options, onFocus, disabled, onChange}) {
   const [selected, setSelected] = React.useState(value || {
