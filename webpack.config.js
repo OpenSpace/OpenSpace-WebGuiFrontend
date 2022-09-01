@@ -53,7 +53,8 @@ module.exports = {
         use: [
           {
             loader: 'style-loader',
-          }, {
+          },
+          {
             loader: 'css-loader?modules',
             options: {
               sourceMap: true,
@@ -62,7 +63,8 @@ module.exports = {
                 localIdentName: "[path][name]__[local]--[hash:base64:7]",
               }
             },
-          }, {
+          },
+          {
             loader: 'sass-loader',
             options: {
               sourceMap: true,
