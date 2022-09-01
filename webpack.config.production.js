@@ -26,7 +26,7 @@ module.exports = {
         },
         // Load SASS!
         {
-          test: /\.scss$/,
+          test: /\.s[ac]ss$/i,
           exclude: /node_modules/,
           use: [
             {
@@ -60,7 +60,6 @@ module.exports = {
         },
       ],
     },
-
     resolve: {
         extensions: ['.js', '.jsx'],
     }
