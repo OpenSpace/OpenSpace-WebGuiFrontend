@@ -173,6 +173,7 @@ class SkyBrowserPanel extends Component {
       event: "image_layer_remove",
       id: String(identifier),
     });
+    luaApi.skybrowser.disableHoverCircle();
   }
 
   setSelectedBrowser(browserId) {
