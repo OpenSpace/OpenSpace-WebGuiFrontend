@@ -56,7 +56,13 @@ $mouse-color: $text-color-blur;
 .scroll {
     overflow-y: auto;
     overflow-x: hidden;
+    scrollbar-color: $text-color-blur transparent;
 }
+
+.scroll::-webkit-scrollbar-thumb {
+    background-color: $text-color-blur;
+}
+
 .centerContent {
     display: flex;
     justify-content: center;
