@@ -145,13 +145,24 @@ function MouseDescriptions({ button, info, description, keyboardButton}) {
 
 function Goal({ startSubscriptions, setIsFulfilled, hasGoals, stopSubscriptions, content, currentValue}) {
   const [valueStart, setValueStart] = React.useState(undefined);
- 
+  const animationDiv = React.useRef(undefined);
+  const tutorial = useContextRefs();
+
+  // Create animation click div upon startup
+  React.useEffect(() => {
+    const div = document.createElement('div');
+    div.className = styles.clickEffect;
+    document.body.appendChild(div);
+    div.style.display = 'none';
+    animationDiv.current = div;
+  }, []);
+
   // Subscribe to topics
   React.useEffect(() => {
     startSubscriptions();
     return () => stopSubscriptions();
   }, [startSubscriptions]);
-  
+
   // Save start values, if the goal is to change the values
   React.useEffect(() => {
     const changeGoalTypes = [GoalTypes.changeTime, GoalTypes.changeDeltaTime, GoalTypes.changeUri];
@@ -173,30 +184,30 @@ function Goal({ startSubscriptions, setIsFulfilled, hasGoals, stopSubscriptions,
     setIsFulfilled(areAllConditionsFulfilled);
   },[areAllConditionsFulfilled]);
 
-  // Create animated click - it requires the component to be render fairly often
-  const tutorial = useContextRefs();
-  let lastKey = null;
-  const newElement = document.createElement('div');
-  const animationDiv = React.useRef(newElement);
-  if(content?.key && !areAllConditionsFulfilled) {
-    // Find last ref that is not null
-    const keyCopy = [...content.key].reverse();
-    lastKey = keyCopy.find(key => Boolean(tutorial.current[key]));
-  }
-  
-  React.useEffect(() => {
-    newElement.className = styles.clickEffect;
-    tutorial.current[lastKey]?.appendChild(animationDiv.current);
-
-    return () => {
-      try {
-        tutorial.current[lastKey]?.removeChild(animationDiv.current);
-      }
-      catch(e) {
-        console.error("Error: " + e);
+  // If animation should be displayed
+  // Update the animation click so it is placed where it should be
+  if(animationDiv.current) {
+    const slideHasClick = content?.key; 
+    if(slideHasClick && !areAllConditionsFulfilled) {
+      // Find last ref that is not null
+      const keyCopy = [...content.key].reverse();
+      const lastKey = keyCopy.find(key => Boolean(tutorial.current[key]));
+      // Get the bounding rect of the last visible ref in the slide
+      let rect = tutorial.current[lastKey]?.getBoundingClientRect();
+      // Set the position of the animation click div 
+      if(rect) {
+        animationDiv.current.style.display = 'block';
+        animationDiv.current.style.top = (rect.top + (rect.height * 0.5)) + "px";
+        animationDiv.current.style.left = (rect.left + (rect.width * 0.5)) + "px";
+        animationDiv.current.style.left = (rect.bottom - (rect.height * 0.5)) + "px";
+        animationDiv.current.style.left = (rect.right - (rect.width * 0.5)) + "px";
       }
     }
-  }, [content, lastKey]);  
+    else {
+      // Hide div if slide doesn't have clicks or all conditions are fulfilled
+      animationDiv.current.style.display = 'none';
+    }
+  }
 
   return (areAllConditionsFulfilled && hasGoals ?
     <div className={styles.centerContent}>
