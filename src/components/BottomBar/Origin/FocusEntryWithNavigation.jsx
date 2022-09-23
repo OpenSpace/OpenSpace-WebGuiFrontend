@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import styles from './FocusEntryWithNavigation.scss';
 import Button from '../../common/Input/Button/Button';
 import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
-import { useTutorial } from '../../GettingStartedTour/GettingStartedContext';
+import { useContextRefs } from '../../GettingStartedTour/GettingStartedContext';
 
 function FocusEntry({ luaApi, name, identifier, onSelect, active }) {
 
@@ -28,7 +28,7 @@ function FocusEntry({ luaApi, name, identifier, onSelect, active }) {
     event.stopPropagation();
   };
 
-  const refs = useTutorial();
+  const refs = useContextRefs();
 
   return (
     <li

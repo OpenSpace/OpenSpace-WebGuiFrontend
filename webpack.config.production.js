@@ -26,19 +26,21 @@ module.exports = {
         },
         // Load SASS!
         {
-          test: /\.scss$/,
+          test: /\.s[ac]ss$/i,
           exclude: /node_modules/,
           use: [
             {
               loader: 'style-loader',
-            }, {
+            },
+            {
               loader: 'css-loader?modules',
               options: {
                 sourceMap: true,
                 importLoaders: 2,
                 modules: true
               },
-            }, {
+            },
+            {
               loader: 'sass-loader',
               options: {
                 sourceMap: true,
@@ -47,26 +49,19 @@ module.exports = {
           ],
         },
         {
-          test: /\.css$/,
+          test: /\.css$/i,
           use: ['style-loader', 'css-loader'],
         },
         {
-          test: /\.(woff|woff2|ttf|eot)$/,
-          loader: 'file-loader',
-          options: {
-            name: 'fonts/[name].[ext]',
-          },
+          test: /\.(woff|woff2|ttf|eot)$/i,
+          type: 'asset/resource',
         },
         {
           test: /\.(png)$/,
-          loader: 'file-loader',
-          options: {
-            name: 'img/[name].[ext]',
-          },
+          type: 'asset/resource',
         },
       ],
     },
-
     resolve: {
         extensions: ['.js', '.jsx'],
     }

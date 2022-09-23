@@ -9,7 +9,7 @@ import ScaleInput from '../common/Input/ScaleInput/ScaleInput';
 import Select from '../common/Input/Select/Select';
 import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import Row from '../common/Row/Row';
-import { useTutorial } from '../GettingStartedTour/GettingStartedContext';
+import { useContextRefs } from '../GettingStartedTour/GettingStartedContext';
 import styles from './SimulationIncrement.scss';
 
 const updateDelayMs = 1000;
@@ -69,7 +69,7 @@ function SimulationIncrement({hasNextDeltaTimeStep, hasPrevDeltaTimeStep, nextDe
   prevDeltaTimeStep, startSubscriptions, targetDeltaTime, isPaused, stopSubscriptions, luaApi}) {
   const [stepSize, setStepSize] = React.useState(Steps.seconds);
   const [beforeAdjust, setBeforeAdjust] = React.useState(undefined);
-  const refs = useTutorial();
+  const refs = useContextRefs();
   
   React.useEffect(() => {
     startSubscriptions();

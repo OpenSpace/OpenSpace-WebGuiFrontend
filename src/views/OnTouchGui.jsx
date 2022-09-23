@@ -1,13 +1,9 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import {
-  withRouter, HashRouter as Router, Route, Link,
-} from 'react-router-dom';
+import React from 'react';
 import { connect } from 'react-redux';
 import '../styles/base.scss';
 import Error from '../components/common/Error/Error';
 import Overlay from '../components/common/Overlay/Overlay';
-import Stack from '../components/common/Stack/Stack';
 import {
   setPropertyValue, startConnection, fetchData, addStoryTree, subscribeToProperty,
   unsubscribeToProperty, addStoryInfo, resetStoryInfo,
@@ -31,106 +27,15 @@ import {
 
 const KEYCODE_D = 68;
 
-class OnTouchGui extends Component {
-  constructor(props) {
-    super(props);
-    this.checkedVersion = false;
-    this.state = {
-      developerMode: false,
-      currentStory: DefaultStory,
-      sliderStartStory: DefaultStory,
-    };
+function OnTouchGui({ luaApi, FetchData, StartConnection, anchorNode, changePropertyValue, triggerActionDispatcher,
+  scaleNodes, connectionLost, story, storyIdentifier, version, AddStoryTree, AddStoryInfo, ResetStoryInfo, startListening, stopListening }) {
+  const [developerMode, setDeveloperMode] = React.useState(false);
+  const [currentStory, setCurrentStory] = React.useState(DefaultStory);
+  const [sliderStartStory, setSliderStartStory] = React.useState();
+  const [hasCheckedVersion, setHasCheckedVersion] = React.useState(false);
 
-    this.addStoryTree = this.addStoryTree.bind(this);
-    this.changeStory = this.changeStory.bind(this);
-    this.setStory = this.setStory.bind(this);
-    this.resetStory = this.resetStory.bind(this);
-    this.checkStorySettings = this.checkStorySettings.bind(this);
-    this.handleKeyPress = this.handleKeyPress.bind(this);
-    this.toggleDeveloperMode = this.toggleDeveloperMode.bind(this);
-  }
-
-  componentDidMount() {
-    const { luaApi, FetchData, StartConnection } = this.props;
-    StartConnection();
-    FetchData(InfoIconKey);
-
-    document.addEventListener('keydown', this.handleKeyPress);
-    showDevInfoOnScreen(luaApi, false);
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener('keydown', this.handleKeyPress);
-  }
-
-  setStory(selectedStory) {
-    const {
-      anchorNode, changePropertyValue, luaApi, scaleNodes, story, storyIdentifier,
-    } = this.props;
-    const previousStory = storyIdentifier;
-
-    this.setState({ currentStory: selectedStory });
-
-    // Return if the selected story is the same as the OpenSpace property value
-    if (previousStory === selectedStory) {
-      return;
-    }
-
-    const json = this.addStoryTree(selectedStory);
-
-    // Set all the story specific properties
-    changePropertyValue(anchorNode.description.Identifier, json.start.planet);
-    setStoryStart(luaApi, json.start.location, json.start.date);
-
-    if (json.overviewlimit) {
-      changePropertyValue(ZoomOutLimitKey, json.overviewlimit);
-    }
-    if (json.inzoomlimit) {
-      changePropertyValue(ZoomInLimitKey, json.inzoomlimit);
-    } else {
-      json.inzoomlimit = 1.0;
-      changePropertyValue(ZoomInLimitKey, 1.0);
-    }
-    if (json.start.overviewzoom) {
-      flyTo(luaApi, json.overviewlimit, 5.0);
-    }
-
-    changePropertyValue(anchorNode.description.Identifier, json.start.planet);
-
-    // Check settings of the previous story and reset values
-    this.checkStorySettings(story, true);
-    // Check and set the settings of the current story
-    this.checkStorySettings(json, false);
-
-    // If the previous story scaled planets reset value
-    if (story.scalenodes) {
-      scaleNodes.forEach((node) => {
-        changePropertyValue(node.description.Identifier, 1);
-      });
-    }
-    // If the previous story toggled bool properties reset them to default value
-    if (this.props.story.toggleboolproperties) {
-      this.props.story.toggleboolproperties.forEach((property) => {
-        const defaultValue = property.defaultvalue ? true : false;
-        if (property.isAction) {
-          if (defaultValue) {
-            this.props.triggerActionDispatcher(property.actionEnabled);
-          }
-          else {
-            this.props.triggerActionDispatcher(property.actionDisabled);
-          }
-        }
-        else {
-          this.props.changePropertyValue(property.URI, defaultValue);
-        }
-      });
-    }
-  }
-
-  checkVersion() {
-    const { version } = this.props;
-
-    if (!this.checkedVersion && version.isInitialized) {
+  React.useEffect(() => {
+    if (!hasCheckedVersion && version?.isInitialized) {
       const versionData = version.data;
       if (!isCompatible(
         versionData.openSpaceVersion, RequiredOpenSpaceVersion
@@ -152,22 +57,87 @@ class OnTouchGui extends Component {
           }.`
         );
       }
-      this.checkedVersion = true;
+      setHasCheckedVersion(true);
+    }
+
+  }, [version]);
+  
+  React.useEffect(() => {
+    StartConnection();
+    FetchData(InfoIconKey);
+
+    document.addEventListener('keydown', handleKeyPress);
+    showDevInfoOnScreen(luaApi, false);
+    return () => document.removeEventListener('keydown', handleKeyPress);
+  }, []);
+
+  function setStory(selectedStory) {
+    const previousStory = storyIdentifier;
+    setCurrentStory(selectedStory);
+
+    // Return if the selected story is the same as the OpenSpace property value
+    if (previousStory === selectedStory) {
+      return;
+    }
+
+    const json = addStoryTree(selectedStory);
+
+    // Set all the story specific properties
+    changePropertyValue(anchorNode.description.Identifier, json.start.planet);
+    setStoryStart(luaApi, json.start.location, json.start.date);
+
+    if (json.overviewlimit) {
+      changePropertyValue(ZoomOutLimitKey, json.overviewlimit);
+    }
+    if (json.inzoomlimit) {
+      changePropertyValue(ZoomInLimitKey, json.inzoomlimit);
+    } else {
+      json.inzoomlimit = 1.0;
+      changePropertyValue(ZoomInLimitKey, 1.0);
+    }
+    if (json.start.overviewzoom) {
+      flyTo(luaApi, json.overviewlimit, 5.0);
+    }
+
+    changePropertyValue(anchorNode.description.Identifier, json.start.planet);
+
+    // Check settings of the previous story and reset values
+    checkStorySettings(story, true);
+    // Check and set the settings of the current story
+    checkStorySettings(json, false);
+
+    // If the previous story scaled planets reset value
+    if (story.scalenodes) {
+      scaleNodes.forEach((node) => {
+        changePropertyValue(node.description.Identifier, 1);
+      });
+    }
+    // If the previous story toggled bool properties reset them to default value
+    if (story.toggleboolproperties) {
+      story.toggleboolproperties.forEach((property) => {
+        const defaultValue = property.defaultvalue ? true : false;
+        if (property.isAction) {
+          if (defaultValue) {
+            triggerActionDispatcher(property.actionEnabled);
+          }
+          else {
+            triggerActionDispatcher(property.actionDisabled);
+          }
+        }
+        else {
+          changePropertyValue(property.URI, defaultValue);
+        }
+      });
     }
   }
 
-  resetStory() {
-    const { luaApi } = this.props;
-    const { currentStory } = this.state;
-
-    this.state.sliderStartStory = currentStory;
+  function resetStory() {
+    setSliderStartStory(currentStory);
     UpdateDeltaTimeNow(luaApi, 1);
-    this.setStory(DefaultStory);
+    setStory(DefaultStory);
   }
 
-  checkStorySettings(story, value) {
-    const { luaApi } = this.props;
-    
+  function checkStorySettings(story, value) {
     const oppositeValue = !value;
 
     if (story.hidenodes) {
@@ -185,8 +155,7 @@ class OnTouchGui extends Component {
   }
 
   // Read in json-file for new story and add it to redux
-  addStoryTree(selectedStory) {
-    const { AddStoryTree, AddStoryInfo, ResetStoryInfo } = this.props;
+  function addStoryTree(selectedStory) {
     const storyFile = storyFileParser(selectedStory);
 
     AddStoryTree(storyFile);
@@ -200,71 +169,47 @@ class OnTouchGui extends Component {
     return storyFile;
   }
 
-  changeStory(e) {
-    this.setStory(e.target.id);
+  function changeStory(e) {
+    setStory(e.target.id);
   }
 
-  handleKeyPress(e) {
+  function handleKeyPress(e) {
     if (e.keyCode === KEYCODE_D) {
-      this.toggleDeveloperMode();
+      toggleDeveloperMode();
     }
   }
 
-  toggleDeveloperMode() {
-    const { developerMode } = this.state;
-    const { luaApi } = this.props;
-    this.setState({ developerMode: !developerMode });
-
+  function toggleDeveloperMode() {
+    setDeveloperMode(!developerMode);
     showDevInfoOnScreen(luaApi, developerMode);
   }
 
-  render() {
-    const { connectionLost, story, storyIdentifier } = this.props;
-    const { currentStory, developerMode, sliderStartStory } = this.state;
-
-    return (
-      <div className={styles.app}>
-        {
-          <Router basename="/ontouch/">
-            <Route
-              path="/about"
-              render={() => (
-                <Overlay>
-                  <Stack style={{ maxWidth: '500px' }}>
-                    <Link style={{ alignSelf: 'flex-end', color: 'white' }} to="/">
-                      Close
-                    </Link>
-                    <About />
-                  </Stack>
-                </Overlay>
-              )}
-            />
-          </Router>
-        }
-        { connectionLost && (
-          <Overlay>
-            <Error>
-              Connection lost. Trying to reconnect again soon.
-            </Error>
-          </Overlay>
-        )}
-        { developerMode && (
-          <DeveloperMenu
-            changeStory={this.changeStory}
-            storyIdentifier={storyIdentifier}
-          />
-        )}
-        <p className={styles.storyTitle}>
-          {story.title}
-        </p>
-        {(currentStory === DefaultStory)
-          ? <Slider startSlider={sliderStartStory} changeStory={this.setStory} />
-          : <TouchBar resetStory={this.resetStory} />
-        }
-      </div>
-    );
-  }
+  return (
+    <div className={styles.app}>
+      { connectionLost && (
+        <Overlay>
+          <Error>
+            Connection lost. Trying to reconnect again soon.
+          </Error>
+        </Overlay>
+      )}
+      { developerMode && (
+        <DeveloperMenu
+          changeStory={changeStory}
+          storyIdentifier={storyIdentifier}
+        />
+      )}
+      <p className={styles.storyTitle}>
+        {story.title}
+      </p>
+      {(currentStory === DefaultStory)
+        ? <Slider startSlider={sliderStartStory} changeStory={setStory} />
+        : <TouchBar resetStory={resetStory} />
+      }
+    </div>
+  );
 }
+
 
 const mapStateToProps = (state) => {
   let storyIdentifier = [];
@@ -326,27 +271,20 @@ const mapDispatchToProps = dispatch => ({
   },
 });
 
-OnTouchGui = withRouter(connect(
+OnTouchGui = connect(
   mapStateToProps,
   mapDispatchToProps,
-)(OnTouchGui));
+)(OnTouchGui);
 
 // Because some of the functionality in OnTouch Gui requires the luaApi
 // we wrap it up in another component that only renders the gui after
 // luaApi has been connected
-class RequireLuaApi extends Component {
-  componentDidMount() {
-    const { StartConnection } = this.props;
+function RequireLuaApi({StartConnection, luaApi, children }) {
+  React.useEffect(() => {
     StartConnection();
-  }
+  }, []);
 
-  render() {
-    const { children, luaApi } = this.props;
-    if (!luaApi) {
-      return null;
-    }
-    return <>{children}</>;
-  }
+  return !luaApi ? <></> : <>{children}</>
 }
 
 const mapState = state => ({
