@@ -5,7 +5,7 @@ import InfoBox from '../../common/InfoBox/InfoBox';
 import MinMaxRangeInput from '../../common/Input/MinMaxRangeInput/MinMaxRangeInput';
 import NumericInput from '../../common/Input/NumericInput/NumericInput';
 import Row from '../../common/Row/Row';
-import { useTutorial } from '../../GettingStartedTour/GettingStartedContext';
+import { useContextRefs } from '../../GettingStartedTour/GettingStartedContext';
 import styles from './Property.scss';
 
 function VectorProperty({dispatcher, description, value}) {
@@ -97,7 +97,7 @@ function VectorProperty({dispatcher, description, value}) {
   if (isMinMaxRange) {
     return asMinMaxRange();
   }
-  const refs = useTutorial();
+  const refs = useContextRefs();
   return (
     <Row ref={ el => refs.current[description.Name] = el} className={`${styles.vectorProperty} ${isDisabled ? styles.disabled : ''}`}>        
       { values.map((component, index) => (

@@ -20,7 +20,7 @@ import '../styles/base.scss';
 import About from './About/About';
 import styles from './OnScreenGui.scss';
 import TourPopup from '../components/GettingStartedTour/TourPopup'
-import { TutorialProvider } from '../components/GettingStartedTour/GettingStartedContext';
+import { RefsProvider } from '../components/GettingStartedTour/GettingStartedContext';
 
 function OnScreenGui({
   showFlightController, connectionLost, startConnection, version, showAbout, hideAbout, isInBrowser
@@ -76,8 +76,9 @@ function OnScreenGui({
           <p>Dev Gui</p>
         </div>
       }
-      <TutorialProvider>
+      <RefsProvider>
         { showAbout && (
+
           <Overlay>
             <Stack style={{ maxWidth: '500px' }}>
               <Button style={{ alignSelf: 'flex-end', color: 'white' }} onClick={hideAbout}>
@@ -108,9 +109,10 @@ function OnScreenGui({
           <KeybindingPanel />
           <TourPopup isVisible={showTutorial} setVisibility = { (show) => setShowTutorial(show)}/>
         </section>
-      </TutorialProvider>
+      </RefsProvider>
     </div>
   );  
+
 }
 
 const mapStateToProps = (state) => ({

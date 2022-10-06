@@ -1,9 +1,9 @@
 import * as React from 'react'
 import contents from './GettingStartedContent.json'
 
-const TutorialContext = React.createContext()
+const RefsContext = React.createContext()
 
-function TutorialProvider(props) {
+function RefsProvider(props) {
   let allRefKeys = {};
   contents.map(content => {
     if(content.key) { 
@@ -15,15 +15,15 @@ function TutorialProvider(props) {
     }
   });
   const newRef = React.useRef(allRefKeys);
-  return <TutorialContext.Provider value={newRef} {...props} />
+  return <RefsContext.Provider value={newRef} {...props} />
 }
 
-function useTutorial() {
-  const context = React.useContext(TutorialContext)
+function useContextRefs() {
+  const context = React.useContext(RefsContext)
   if (!context) {
-    throw new Error('The hook \'useTutorial\' must be used within a TutorialProvider')
+    throw new Error('The hook \'useContextRefs\' must be used within a RefsProvider')
   }
   return context
 }
 
-export { TutorialProvider, useTutorial };
+export { RefsProvider, useContextRefs };

@@ -16,6 +16,7 @@ import ScreenSpaceRenderablePanel from './ScreenSpaceRenderablePanel';
 import SessionRec from './SessionRec';
 import TimePicker from './TimePicker';
 import SkyBrowserPanel from './SkyBrowserPanel';
+import GeoPositionPanel from './GeoPositionPanel'; 
 
 let BottomBar = ({ 
   showExoplanets,
@@ -38,6 +39,7 @@ let BottomBar = ({
     <OriginPicker />
     <TimePicker />
     <SessionRec />
+    <GeoPositionPanel />
     <ScreenSpaceRenderablePanel />
     {showExoplanets && <ExoplanetsPanel />}
     <ActionsPanel />

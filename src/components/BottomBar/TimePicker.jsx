@@ -23,14 +23,14 @@ import SmallLabel from '../common/SmallLabel/SmallLabel';
 import Picker from './Picker';
 import SimulationIncrement from './SimulationIncrement';
 import styles from './TimePicker.scss';
-import { useTutorial } from '../GettingStartedTour/GettingStartedContext';
+import { useContextRefs } from '../GettingStartedTour/GettingStartedContext';
 
 function TimePicker({ startSubscriptions, stopSubscriptions, time, isPaused, targetDeltaTime, luaApi, popoverVisible, setPopoverVisibility, engineMode, sessionRecordingState }) {
 
   const [pendingTime, setPendingTime] = React.useState(new Date());
   const [showCalendar, setShowCalendar] = React.useState(false);
   const [useLock, setUseLock] = React.useState(false);
-  const refs = useTutorial();
+  const refs = useContextRefs();
 
   React.useEffect(() => {
     startSubscriptions();

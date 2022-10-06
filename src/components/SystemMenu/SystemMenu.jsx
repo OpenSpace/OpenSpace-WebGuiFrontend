@@ -7,12 +7,12 @@ import subStateToProps from '../../utils/subStateToProps';
 import Button from '../common/Input/Button/Button';
 import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import Popover from '../common/Popover/Popover';
-import { useTutorial } from '../GettingStartedTour/GettingStartedContext';
+import { useContextRefs } from '../GettingStartedTour/GettingStartedContext';
 import styles from './SystemMenu.scss';
 
 function SystemMenu({showAbout, openTutorials, showTutorial, console, nativeGui, quit, saveChange}) {
   const [showMenu, setShowMenu] = React.useState(false);
-  const refs = useTutorial();
+  const refs = useContextRefs();
   return (
     <div className={styles.SystemMenu}>
       { showMenu && (
