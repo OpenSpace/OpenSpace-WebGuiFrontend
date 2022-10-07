@@ -42,10 +42,14 @@ class WorldWideTelescope extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { browserAimInfo, browserColor } = this.props;
+    const { browserAimInfo, browserColor, borderRadius } = this.props;
     if (prevProps.browserColor !== browserColor) {
       this.setBorderColor(browserColor);
       this.color = browserColor;
+    }
+
+    if (prevProps.borderRadius !== borderRadius) {
+      this.setBorderRadius(borderRadius);
     }
 
     if (!shallowEqualObjects(prevProps.browserAimInfo, browserAimInfo)) {
