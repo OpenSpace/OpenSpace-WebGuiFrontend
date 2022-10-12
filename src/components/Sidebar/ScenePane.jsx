@@ -10,10 +10,14 @@ import ContextSection from './ContextSection';
 import PropertyOwner from './Properties/PropertyOwner';
 import Group from './Group';
 import { isPropertyOwnerHidden } from '../../utils/propertyTreeHelpers';
+import Button from '../common/Input/Button/Button';
 
 class ScenePane extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      showOnlyEnabled: false,
+    };
   }
 
   render() {
@@ -29,7 +33,7 @@ class ScenePane extends Component {
       expansionIdentifier: 'scene/' + item 
     }));
 
-    const { matcher } = this.props;
+    const { matcher, onlyEnabledMatcher } = this.props;
 
     return (
       <Pane title="Scene" closeCallback={this.props.closeCallback}>
@@ -37,15 +41,18 @@ class ScenePane extends Component {
           <LoadingBlocks className={Pane.styles.loading} />
         )}
         {entries.length > 0 && (
-          <FilterList matcher={matcher}>
-            <FilterListFavorites>
-              <ContextSection expansionIdentifier="context" />
-              {favorites.map(favorite => <Group {...favorite} />)}
-            </FilterListFavorites>
-            <FilterListData>
-              {entries.map(entry => <PropertyOwner {...entry} />)}
-            </FilterListData>
-          </FilterList> 
+          <>
+            <Button onClick={ () => this.setState({ showOnlyEnabled : !this.state.showOnlyEnabled }) }>{"Show only enabled"}</Button>
+            <FilterList matcher={this.state.showOnlyEnabled ? onlyEnabledMatcher : matcher } showMoreButton>
+              <FilterListFavorites>
+                <ContextSection expansionIdentifier="context" />
+                {favorites.map(favorite => <Group {...favorite} />)}
+              </FilterListFavorites>
+              <FilterListData>
+                {entries.map(entry => <PropertyOwner {...entry} />)}
+              </FilterListData>
+            </FilterList> 
+          </>
         )}
       </Pane>
     );
@@ -103,12 +110,18 @@ const mapSubStateToProps = ({ groups, properties, propertyOwners }) => {
     return ObjectWordBeginningSubstring(node, search) && !guiHidden;
   };
 
+  const onlyEnabledMatcher = (test, search) => {
+    const isEnabled = properties[`${test.uri}.Renderable.Enabled`]?.value;
+    return isEnabled && matcher(test, search);
+  };
+
   const sceneOwner = propertyOwners.Scene || {};
 
   return {
     groups: sortedGroups,
     propertyOwners: sceneOwner.subowners || [],
-    matcher
+    matcher, 
+    onlyEnabledMatcher
   };
 };
 
