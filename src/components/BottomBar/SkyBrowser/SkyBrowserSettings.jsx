@@ -46,6 +46,13 @@ class SkyBrowserSettings extends Component {
     this.setExpandedGeneralSettings = this.setExpandedGeneralSettings.bind(this);
   }
 
+  componentDidMount() {
+    const { browser } = this.props;
+    this.setState({
+      newPosition : browser.isUsingRae ? [2, 0, 0] : [0, 0, -2]
+    });
+  }
+
   setRef(what) {
     return (element) => {
       this[what] = element;
@@ -70,6 +77,9 @@ class SkyBrowserSettings extends Component {
     const { luaApi, browser } = this.props;
     const uriBrowser = `ScreenSpace.${browser.id}.UseRadiusAzimuthElevation`;
     luaApi.setPropertyValueSingle(uriBrowser, !browser.isUsingRae);
+    this.setState({
+      newPosition : !browser.isUsingRae ? [2, 0, 0] : [0, 0, -2]
+    });
   }
 
   valueToColor(color) {
@@ -255,7 +265,7 @@ class SkyBrowserSettings extends Component {
   }
 
   render() {
-      const { selectedBrowserId, browser, luaApi } = this.props;
+      const { selectedBrowserId, browser, luaApi, setBorderRadius } = this.props;
       if (!browser) {
         return '';
       }
@@ -343,6 +353,18 @@ class SkyBrowserSettings extends Component {
             expanded={this.state.generalSettingsExpanded}
             setExpanded={this.setExpandedGeneralSettings}
           >
+          <NumericInput
+            label="Border Radius"
+            max={1}
+            min={0}
+            onValueChanged={value => {
+              luaApi.skybrowser.setBorderRadius(browser.id, value);
+              setBorderRadius(value);
+            }}
+            step={0.01}
+            value={browser.borderRadius}
+            placeholder="value 2"
+          />
           <Property uri={SkyBrowser_ShowTitleInBrowserKey}/>
           <Property uri={SkyBrowser_AllowCameraRotationKey}/>
           <Property uri={SkyBrowser_CameraRotationSpeedKey}/>

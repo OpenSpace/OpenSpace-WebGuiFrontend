@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { useTutorial } from '../../../GettingStartedTour/GettingStartedContext';
+import { useContextRefs } from '../../../GettingStartedTour/GettingStartedContext';
 import MaterialIcon from '../../MaterialIcon/MaterialIcon';
 import Button from '../Button/Button';
 import InlineInput from '../InlineInput/InlineInput';
@@ -154,7 +154,7 @@ function Time({elements, onChange, time}) {
     if (hasCallback) {
       const width = (what === 'Milliseconds' || what === 'Month') ? 3 : 2;
       const type = (what === 'Month') ? "text" : "number";
-      const ref = useTutorial();
+      const ref = useContextRefs();
       return (
         <div key={what} className={styles.element}>
           <Button nopadding transparent onClick={onClick(what, 1)}>

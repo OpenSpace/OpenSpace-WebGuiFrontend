@@ -6,7 +6,6 @@ import { combineReducers } from 'redux';
  */
 const defaultOriginPicker = {
   action: 'Focus',
-  showFavorites: true
 };
 const originPicker = (state = defaultOriginPicker, action) => {
   switch (action.type) {
@@ -14,11 +13,6 @@ const originPicker = (state = defaultOriginPicker, action) => {
       return {
         ...state,
         action: action.payload
-      };
-    case actionTypes.setOriginPickerShowFavorites:
-      return {
-        ...state,
-        showFavorites: action.payload
       };
     default:
       return state;
@@ -78,6 +72,7 @@ const defaultPopovers = {
   skybrowser: popover(),
   actions: popover(),
   keybinds: popover(),
+  geoposition: popover(),
   focusNodePropertiesPanel: popover({ attached: false }),
   activeNodePropertyPanels: {},
   activeNodeMetaPanels: {},

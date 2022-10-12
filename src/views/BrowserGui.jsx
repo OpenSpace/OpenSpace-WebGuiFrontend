@@ -1,21 +1,15 @@
 import React, { Component } from 'react';
-import { withRouter } from 'react-router-dom';
+import { useLocation } from "react-router-dom";
 import OnScreenGui from './OnScreenGui';
 
-class BrowserGui extends Component {
-  constructor(props) {
-    super(props);
-  }
+function BrowserGui() {
+  let location = useLocation();
 
-  render() {
-    return (
-      <div style={{backgroundColor: '#050505'}}>
-        <OnScreenGui isInBrowser />
-      </div>
-    );
-  }
+  return (
+    <div style={{backgroundColor: '#050505'}}>
+      <OnScreenGui isInBrowser />
+    </div>
+  );
 }
-
-BrowserGui = withRouter(BrowserGui);
 
 export default BrowserGui;
