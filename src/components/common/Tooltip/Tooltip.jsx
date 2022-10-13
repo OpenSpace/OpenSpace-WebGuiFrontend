@@ -4,11 +4,11 @@ import { excludeKeys } from '../../../utils/helpers';
 import styles from './Tooltip.scss';
 
 const Tooltip = (props) => {
-  const { children, placement, fixed } = props;
+  const { children, placement, fixed, className } = props;
   return (
     <div
       {...excludeKeys(props, 'placement fixed')}
-      className={`${styles.tooltip} ${styles[placement]} ${fixed && styles.fixed}`}
+      className={`${styles.tooltip} ${styles[placement]} ${fixed && styles.fixed} ${className}`}
     >
       { children }
     </div>
