@@ -11,12 +11,18 @@ import PropertyOwner from './Properties/PropertyOwner';
 import Group from './Group';
 import { isPropertyOwnerHidden } from '../../utils/propertyTreeHelpers';
 import Button from '../common/Input/Button/Button';
+import Tooltip from '../common/Tooltip/Tooltip';
+import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
+import styles from './ScenePane.scss';
+import { InputButton } from '../common/FilterList/FilterList';
+import Checkbox from '../common/Input/Checkbox/Checkbox';
 
 class ScenePane extends Component {
   constructor(props) {
     super(props);
     this.state = {
       showOnlyEnabled: false,
+      showSearchSettings: false
     };
   }
 
@@ -34,6 +40,25 @@ class ScenePane extends Component {
     }));
 
     const { matcher, onlyEnabledMatcher } = this.props;
+    const settingsButton =<>
+      <InputButton
+        onClick={() => this.setState({ showSearchSettings: !this.state.showSearchSettings })}
+        className={styles.settings}
+      >
+        <MaterialIcon icon="settings" className="small" />
+      </InputButton>
+      {this.state.showSearchSettings &&
+        <Tooltip placement={'right'} className={styles.toolTip}>
+          <Checkbox
+            label="Show Only Enabled"
+            checked={this.state.showOnlyEnabled}
+            left={false}
+            disabled={false}
+            setChecked={() => this.setState({ showOnlyEnabled: !this.state.showOnlyEnabled })}
+            wide
+          />
+        </Tooltip>}
+    </>;
 
     return (
       <Pane title="Scene" closeCallback={this.props.closeCallback}>
@@ -42,8 +67,8 @@ class ScenePane extends Component {
         )}
         {entries.length > 0 && (
           <>
-            <Button onClick={ () => this.setState({ showOnlyEnabled : !this.state.showOnlyEnabled }) }>{"Show only enabled"}</Button>
-            <FilterList matcher={this.state.showOnlyEnabled ? onlyEnabledMatcher : matcher } showMoreButton>
+
+            <FilterList matcher={this.state.showOnlyEnabled ? onlyEnabledMatcher : matcher} customButton={settingsButton} >
               <FilterListFavorites>
                 <ContextSection expansionIdentifier="context" />
                 {favorites.map(favorite => <Group {...favorite} />)}
