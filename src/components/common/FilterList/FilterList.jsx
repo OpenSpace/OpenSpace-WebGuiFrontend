@@ -52,13 +52,13 @@ function FilterListData({matcher, searchString, ignorePropsFilter, className, ch
 
 FilterListData.displayName = 'FilterListData';
 
-function InputButton({children, ...props}) {
-  return <div className={styles.favoritesButton} {...props}>
+function InputButton({children, className, ...props}) {
+  return <div className={`${styles.favoritesButton} ${className}`} {...props}>
     {children}
   </div>;
 }
 
-function FilterList({showMoreButton = false, matcher, ignorePropsFilter, searchText, height, className, searchAutoFocus, children}) {
+function FilterList({showMoreButton = false, matcher, ignorePropsFilter, searchText, height, className, searchAutoFocus, customButton, children}) {
   const [searchString, setSearchString] = React.useState("");
   const [showDataInstead, setShowDataInstead] = React.useState(false);
   const isSearching = searchString !== "";
@@ -101,6 +101,7 @@ function FilterList({showMoreButton = false, matcher, ignorePropsFilter, searchT
       clearable
       autoFocus={searchAutoFocus}
     >
+      {isSearching && customButton}
       {lessMoreToggle}
     </Input>
     {filteredChildren}
@@ -127,7 +128,9 @@ FilterList.propTypes = {
   /**
    * 
    */
-  ignorePropsFilter: PropTypes.array
+  ignorePropsFilter: PropTypes.array,
+
+  customButton: PropTypes.object
 };
 
 FilterList.defaultProps = {
@@ -135,7 +138,8 @@ FilterList.defaultProps = {
   matcher: undefined,
   searchText: 'Search...',
   searchAutoFocus: true,
-  ignorePropsFilter: ['active', 'onSelect']
+  ignorePropsFilter: ['active', 'onSelect'],
+  customButton: null
 };
 
-export {FilterList, FilterListData, FilterListFavorites};
+export {FilterList, FilterListData, InputButton, FilterListFavorites};
