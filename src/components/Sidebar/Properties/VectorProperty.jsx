@@ -66,7 +66,6 @@ function VectorProperty({dispatcher, description, value}) {
   </span>);
 
   function asMinMaxRange() {
-    console.log(isMinMaxRange);
     if (!isMinMaxRange) return;
 
     const label = (<span onClick={copyUri}>
