@@ -187,7 +187,7 @@ function Goal({ startSubscriptions, setIsFulfilled, hasGoals, stopSubscriptions,
 
   // If animation should be displayed
   // Update the animation click so it is placed where it should be
-  if(animationDiv.current) {
+  if (animationDiv.current) {
     const slideHasClick = content?.key; 
     if(slideHasClick && !areAllConditionsFulfilled) {
       // Find last ref that is not null
