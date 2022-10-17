@@ -155,6 +155,7 @@ function Goal({ startSubscriptions, setIsFulfilled, hasGoals, stopSubscriptions,
     document.body.appendChild(div);
     div.style.display = 'none';
     animationDiv.current = div;
+    return () => document.body.removeChild(div);
   }, []);
 
   // Subscribe to topics
