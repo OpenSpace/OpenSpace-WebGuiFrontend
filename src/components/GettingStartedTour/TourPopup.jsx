@@ -223,13 +223,22 @@ function TourPopup({ setVisibility, isVisible }) {
   const content = contents[currentSlide];
   const isLastSlide = currentSlide === contents.length - 1;
   const isFirstSlide = currentSlide === 0;
+  const defaultSize = { width: 500, height: 350 };
+  const offsetFromGrid = 300;
+  const centerX = (window.innerWidth * 0.5) - (defaultSize.width * 0.5) - offsetFromGrid;
+  const centerY = (window.innerHeight * 0.5) - (defaultSize.height * 0.5);
+  const centerOfScreen = { x: centerX, y: centerY };
   
   return (isVisible && <>
     {Boolean(content.position) && !isFulfilled &&
       <div className={`${styles.animatedBorder} ${styles.geoPositionBox}`} />}
     <ResizeableDraggable
-      minWidth={500}
-      minHeight={350}
+      default={{
+        ...centerOfScreen,
+        ...defaultSize
+      }}
+      minWidth={defaultSize.width}
+      minHeight={defaultSize.height}
       bounds="window"
       className={styles.window}
     >
