@@ -145,6 +145,7 @@ function SimulationIncrement({hasNextDeltaTimeStep, hasPrevDeltaTimeStep, nextDe
             block 
             disabled={!hasPrevDeltaTimeStep}
             onClick={setPrevDeltaTimeStep}
+            ref={el => refs.current["SpeedBackward"] = el}
           >
             <MaterialIcon icon="fast_rewind" />
           </Button>
@@ -162,6 +163,7 @@ function SimulationIncrement({hasNextDeltaTimeStep, hasPrevDeltaTimeStep, nextDe
             block 
             disabled={!hasNextDeltaTimeStep}
             onClick={setNextDeltaTimeStep}
+            ref={el => refs.current["SpeedForward"] = el}
           >
             <MaterialIcon icon="fast_forward" />
           </Button>

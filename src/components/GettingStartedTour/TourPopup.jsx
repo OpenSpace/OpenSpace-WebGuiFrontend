@@ -209,14 +209,12 @@ function Goal({ startSubscriptions, setIsFulfilled, hasGoals, stopSubscriptions,
       lastKey = foundLastKey;
     }
   }
-  
   React.useEffect(() => {
     newElement1.className = styles.clickEffect;
     newElement2.className = styles.clickEffect;
     
     if (typeof lastKey !== 'object') {
       tutorial.current[lastKey]?.appendChild(animationDiv1.current);
-      console.log(tutorial.current[lastKey])
     }
     else { 
       tutorial.current?.[lastKey?.[0]]?.appendChild(animationDiv1.current);

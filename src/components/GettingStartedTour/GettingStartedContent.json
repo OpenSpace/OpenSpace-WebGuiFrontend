@@ -98,7 +98,7 @@
     {
         "goalType" : ["changeDeltaTime"],
         "title" : "Time",
-        "key" : ["Time", "SimulationSpeed"],
+        "key" : ["Time", ["SpeedForward", "SpeedBackward"]],
         "firstText" : "You can also change how fast time is playing.",
         "infoText" : "You can reset the simulation speed by pressing 'Real Time'",
         "goalText" : ["Change the simulation speed"],
@@ -172,7 +172,7 @@
         "title" : "Content",
         "firstText" : "The layers are ordered, and the layer furthest down in the menu is shown at the top.",
         "infoText" : "You need access to the internet to display the maps. They might need a few seconds to load.",
-        "key": ["Scene", "Group Solar System", "Group Planets", "Group Mars", "PropertyOwner Mars", "PropertyOwner Renderable Mars", "PropertyOwner Layers Mars", "PropertyOwner ColorLayers Mars", "PropertyOwner CTX Mosaic [Utah] Mars"],
+        "key": ["Scene", "Group Solar System", "Group Planets", "Group Mars", "PropertyOwner Mars", "PropertyOwner Renderable Mars", "PropertyOwner Layers Mars", "PropertyOwner ColorLayers Mars", ["PropertyOwner CTX Mosaic [Utah] Mars", "PropertyOwner CTX Mosaic [Sweden] Mars"]],
         "goalText" : ["Turn on the ColorLayer 'CTX Mosaic [Utah]' or 'CTX Mosaic [Sweden]"],
         "arrowPosition" : { "x" : 50, "y" : 70},
         "arrowRotation" : "down"
