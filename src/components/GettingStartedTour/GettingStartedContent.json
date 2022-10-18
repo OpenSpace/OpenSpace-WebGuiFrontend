@@ -51,7 +51,7 @@
         "uriValue" : "Moon",
         "title" : "Navigation",
         "key": ["Origin", "Moon"],
-        "firstText" : "We can also look at other planets.",
+        "firstText" : "We can also look at other celestial objects.",
         "goalText" : ["Set the navigation focus to the Moon"],
         "arrowPosition" : { "x" : 320, "y" : 70},
         "arrowRotation" : "down"
