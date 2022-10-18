@@ -166,14 +166,14 @@
         "infoText" : "All the default layers in OpenSpace are named after the satellite that captured the map. The name [Utah] or [Sweden] states which server the map is located on. It is usually faster to choose the server closest to you."
     },
     {
-        "goalType" : ["uri"],
-        "uri" : "Scene.Mars.Renderable.Layers.ColorLayers.CTX_Mosaic_Utah.Enabled",
+        "goalType" : ["multiUri"],
+        "uri" : ["Scene.Mars.Renderable.Layers.ColorLayers.CTX_Mosaic_Utah.Enabled", "Scene.Mars.Renderable.Layers.ColorLayers.CTX_Mosaic_Sweden.Enabled"],
         "uriValue" : true,
         "title" : "Content",
         "firstText" : "The layers are ordered, and the layer furthest down in the menu is shown at the top.",
         "infoText" : "You need access to the internet to display the maps. They might need a few seconds to load.",
         "key": ["Scene", "Group Solar System", "Group Planets", "Group Mars", "PropertyOwner Mars", "PropertyOwner Renderable", "PropertyOwner Layers", "PropertyOwner ColorLayers", "PropertyOwner CTX Mosaic [Utah]"],
-        "goalText" : ["Turn on the ColorLayer 'CTX Mosaic [Utah]'"],
+        "goalText" : ["Turn on the ColorLayer 'CTX Mosaic [Utah]' or 'CTX Mosaic [Sweden]"],
         "arrowPosition" : { "x" : 50, "y" : 70},
         "arrowRotation" : "down"
     },
