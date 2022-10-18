@@ -83,7 +83,6 @@ function PropertyOwnerHeader({
   if (titleNoSpaces !== identifier) {
     refName += " " + identifier;
   }
-  console.log(refName);
 
   return (
     <header
