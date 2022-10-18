@@ -62,7 +62,8 @@ const GoalTypes = {
   changeTime : "changeTime",
   changeDeltaTime : "changeDeltaTime",
   changeUri : "changeUri",
-  pauseTime : "pauseTime"
+  pauseTime: "pauseTime",
+  multiUri: "multiUri"
 }
 
 function checkConditionsStatus(content, valueStart, currentValue) {
@@ -122,6 +123,16 @@ function checkConditionsStatus(content, valueStart, currentValue) {
         else {
           conditionsStatus[i] = valueStart[i] !== currentValue[i];
         }
+        break;
+      case GoalTypes.multiUri:
+        // The multi uri will be true if either of the uris are true, equivalent to the OR operator
+        let isFulfilled = false;
+        for (const uri of currentValue[i]) {
+          if (content.uriValue === uri) {
+            isFulfilled = true;
+          }
+        }
+        conditionsStatus[i] = isFulfilled;
         break;
       default:
         conditionsStatus[i] = true;
@@ -353,6 +364,16 @@ const mapStateToProps = (state, ownProps) => {
         case GoalTypes.changeUri: 
         case GoalTypes.uri: {
           currentValue[i] = state.propertyTree.properties[content.uri]?.value;
+          break;
+        }
+        case GoalTypes.multiUri: {
+          currentValue[i] = [];
+          for (const uri of content.uri) {
+            const value = state.propertyTree.properties[uri]?.value;
+            if (value !== undefined) {
+              currentValue[i].push(value);
+            }
+          }
           break;
         }
         case GoalTypes.pauseTime: {
