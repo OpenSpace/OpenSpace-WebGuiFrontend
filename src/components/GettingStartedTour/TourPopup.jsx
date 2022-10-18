@@ -156,13 +156,35 @@ function MouseDescriptions({ button, info, description, keyboardButton}) {
 
 function Goal({ startSubscriptions, setIsFulfilled, hasGoals, stopSubscriptions, content, currentValue}) {
   const [valueStart, setValueStart] = React.useState(undefined);
- 
+  const animationDivs = React.useRef(undefined);
+  const tutorial = useContextRefs();
+
+  // Create animation click div upon startup
+  React.useEffect(() => {
+    const div1 = document.createElement('div');
+    div1.className = styles.clickEffect;
+    document.body.appendChild(div1);
+    div1.style.display = 'none';
+    
+    const div2 = document.createElement('div');
+    div2.className = styles.clickEffect;
+    document.body.appendChild(div2);
+    div2.style.display = 'none';
+
+    animationDivs.current = [div1, div2];
+
+    return () => {
+      document.body.removeChild(div1);
+      document.body.removeChild(div2);
+    } 
+  }, []);
+
   // Subscribe to topics
   React.useEffect(() => {
     startSubscriptions();
     return () => stopSubscriptions();
   }, [startSubscriptions]);
-  
+
   // Save start values, if the goal is to change the values
   React.useEffect(() => {
     const changeGoalTypes = [GoalTypes.changeTime, GoalTypes.changeDeltaTime, GoalTypes.changeUri];
@@ -185,57 +207,46 @@ function Goal({ startSubscriptions, setIsFulfilled, hasGoals, stopSubscriptions,
   },[areAllConditionsFulfilled]);
 
   // Create animated click - it requires the component to be render fairly often
-  const tutorial = useContextRefs();
-  let lastKey = null;
-  const newElement1 = document.createElement('div');
-  const animationDiv1 = React.useRef(newElement1);
-
-  // Support 2 click indicators 
-  const newElement2 = document.createElement('div');
-  const animationDiv2 = React.useRef(newElement2);
-
-  if(content?.key && !areAllConditionsFulfilled) {
-    // Find last ref that is not null
-    const keyCopy = [...content.key].reverse();
-    const foundLastKey = keyCopy.find(key => {
-      if (typeof key === 'object') {
-        return Boolean(tutorial.current[key[0]]) && Boolean(tutorial.current[key[1]]);
+  if (animationDivs.current) {
+    const slideHasClick = content?.key;
+    if (slideHasClick && !areAllConditionsFulfilled) {
+      // Find last ref that is not null
+      const keyCopy = [...content.key].reverse();
+      let lastKey = keyCopy.find(key => {
+        if (typeof key === 'object') {
+          return Boolean(tutorial.current[key[0]]) && Boolean(tutorial.current[key[1]]);
+        }
+        else {
+          return Boolean(tutorial.current[key]);
+        }
+      });
+      if (typeof lastKey !== 'object') {
+        lastKey = [lastKey]
       }
-      else {
-        return Boolean(tutorial.current[key]);
+      for (let i = 0; i < 2; i++) {
+        // Get the bounding rect of the last visible ref in the slide
+        let rect = tutorial.current[lastKey[i]]?.getBoundingClientRect();
+        // Set the position of the animation click div 
+        if(rect) {
+          animationDivs.current[i].style.display = 'block';
+          animationDivs.current[i].style.top = (rect.top + (rect.height * 0.5)) + "px";
+          animationDivs.current[i].style.left = (rect.left + (rect.width * 0.5)) + "px";
+          animationDivs.current[i].style.left = (rect.bottom - (rect.height * 0.5)) + "px";
+          animationDivs.current[i].style.left = (rect.right - (rect.width * 0.5)) + "px";
+        }
+        else {
+          // Hide div if slide doesn't have clicks or all conditions are fulfilled
+          animationDivs.current[i].style.display = 'none';
+        }
       }
-    });
-    if (lastKey !== foundLastKey) {
-      lastKey = foundLastKey;
+    }
+    else {
+      // Hide div if slide doesn't have clicks or all conditions are fulfilled
+      for (let i = 0; i < 2; i++) {
+        animationDivs.current[i].style.display = 'none';
+      }
     }
   }
-  React.useEffect(() => {
-    newElement1.className = styles.clickEffect;
-    newElement2.className = styles.clickEffect;
-    
-    if (typeof lastKey !== 'object') {
-      tutorial.current[lastKey]?.appendChild(animationDiv1.current);
-    }
-    else { 
-      tutorial.current?.[lastKey?.[0]]?.appendChild(animationDiv1.current);
-      tutorial.current?.[lastKey?.[1]]?.appendChild(animationDiv2.current);
-    }
-
-    return () => {
-      try {
-        if (typeof lastKey !== 'object') {
-          tutorial.current[lastKey]?.removeChild(animationDiv1.current);
-        }
-        else { 
-          tutorial.current?.[lastKey?.[0]]?.removeChild(animationDiv1.current);
-          tutorial.current?.[lastKey?.[1]]?.removeChild(animationDiv2.current);
-        }
-      }
-      catch(e) {
-        console.error("Error: " + e);
-      }
-    }
-  }, [content, lastKey]);  
 
   return (areAllConditionsFulfilled && hasGoals ?
     <div className={styles.centerContent}>
