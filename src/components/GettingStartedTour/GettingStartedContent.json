@@ -196,6 +196,11 @@
     },
     {
         "title" : "Content",
+        "key" : ["GeoPositionPanel"],
+        "firstText" : "If you want to search for places on a globe, you can use the Geo Position."
+    },
+    {
+        "title" : "Content",
         "key" : ["ScreenSpaceRenderable"],
         "firstText" : "In the Screen Space Renderable panel you can add images or slides to the scene."
     },
