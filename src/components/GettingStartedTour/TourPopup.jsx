@@ -187,21 +187,51 @@ function Goal({ startSubscriptions, setIsFulfilled, hasGoals, stopSubscriptions,
   // Create animated click - it requires the component to be render fairly often
   const tutorial = useContextRefs();
   let lastKey = null;
-  const newElement = document.createElement('div');
-  const animationDiv = React.useRef(newElement);
+  const newElement1 = document.createElement('div');
+  const animationDiv1 = React.useRef(newElement1);
+
+  // Support 2 click indicators 
+  const newElement2 = document.createElement('div');
+  const animationDiv2 = React.useRef(newElement2);
+
   if(content?.key && !areAllConditionsFulfilled) {
     // Find last ref that is not null
     const keyCopy = [...content.key].reverse();
-    lastKey = keyCopy.find(key => Boolean(tutorial.current[key]));
+    const foundLastKey = keyCopy.find(key => {
+      if (typeof key === 'object') {
+        return Boolean(tutorial.current[key[0]]) && Boolean(tutorial.current[key[1]]);
+      }
+      else {
+        return Boolean(tutorial.current[key]);
+      }
+    });
+    if (lastKey !== foundLastKey) {
+      lastKey = foundLastKey;
+    }
   }
   
   React.useEffect(() => {
-    newElement.className = styles.clickEffect;
-    tutorial.current[lastKey]?.appendChild(animationDiv.current);
+    newElement1.className = styles.clickEffect;
+    newElement2.className = styles.clickEffect;
+    
+    if (typeof lastKey !== 'object') {
+      tutorial.current[lastKey]?.appendChild(animationDiv1.current);
+      console.log(tutorial.current[lastKey])
+    }
+    else { 
+      tutorial.current?.[lastKey?.[0]]?.appendChild(animationDiv1.current);
+      tutorial.current?.[lastKey?.[1]]?.appendChild(animationDiv2.current);
+    }
 
     return () => {
       try {
-        tutorial.current[lastKey]?.removeChild(animationDiv.current);
+        if (typeof lastKey !== 'object') {
+          tutorial.current[lastKey]?.removeChild(animationDiv1.current);
+        }
+        else { 
+          tutorial.current?.[lastKey?.[0]]?.removeChild(animationDiv1.current);
+          tutorial.current?.[lastKey?.[1]]?.removeChild(animationDiv2.current);
+        }
       }
       catch(e) {
         console.error("Error: " + e);
