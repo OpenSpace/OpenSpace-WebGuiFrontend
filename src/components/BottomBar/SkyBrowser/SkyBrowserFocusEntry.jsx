@@ -4,6 +4,7 @@ import Button from '../../common/Input/Button/Button';
 import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
 import SkyBrowserInfoBox from './SkyBrowserInfoBox';
 import styles from './SkyBrowserFocusEntry.scss';
+import { LazyLoadImage } from "react-lazy-load-image-component";
 
 class OpacitySlider extends Component {
   constructor(props) {
@@ -117,7 +118,7 @@ class SkyBrowserFocusEntry extends Component {
       >
         {imageRemoveButton}
         <div className={styles.image}>
-          <img src={thumbnail} alt={''} loading='lazy' className={styles.imageText} onClick={setOpacity ? this.select : undefined}/>
+          <LazyLoadImage src={thumbnail} alt={''} className={styles.imageText} onClick={setOpacity ? this.select : undefined}/>
         </div>
         <div className={styles.imageHeader}>
           <span className={styles.imageTitle}>
