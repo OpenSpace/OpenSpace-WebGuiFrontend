@@ -283,7 +283,7 @@ class SkyBrowserTabs extends Component {
 
   createImageList() {
     const {
-      currentBrowserColor, browsers, selectedBrowserId, selectImage, luaApi, data, removeImageSelection, setOpacityOfImage
+      activeImage, currentBrowserColor, browsers, selectedBrowserId, selectImage, luaApi, data, removeImageSelection, setOpacityOfImage
     } = this.props;
     const images = (
       <ul>
@@ -309,6 +309,7 @@ class SkyBrowserTabs extends Component {
               opacity={browsers[selectedBrowserId].opacities[index]}
               setOpacity={setOpacityOfImage}
               currentBrowserColor={currentBrowserColor}
+              isActive={activeImage === entry.identifier}
             />
             {index === data.length - 1 ? (
               <span className={styles.arrowButtonEmpty} />

@@ -107,7 +107,7 @@ class SkyBrowserImageList extends Component {
                 luaApi={luaApi} 
                 currentBrowserColor={currentBrowserColor}
                 onSelect={selectImage}
-                active={activeImage}
+                isActive={activeImage === item.identifier}
               />
           })}
         </FilterListData>

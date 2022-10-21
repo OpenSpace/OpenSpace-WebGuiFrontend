@@ -353,6 +353,7 @@ class SkyBrowserPanel extends Component {
         setWwtRatio={this.setWwtRatio}
         setOpacityOfImage={this.setOpacityOfImage}
         setBorderRadius={this.setBorderRadius}
+        activeImage={activeImage}
       />
     );
 

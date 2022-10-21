@@ -42,28 +42,30 @@ class OpacitySlider extends Component {
   }
 }
 
-class SkyBrowserFocusEntry extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      showButtonInfo: false,
-    };
-    this.select = this.select.bind(this);
-    this.showTooltip = this.showTooltip.bind(this);
-    this.hideTooltip = this.hideTooltip.bind(this);
+function SkyBrowserFocusEntry({
+  isActive,
+  identifier,
+  setOpacity,
+  onSelect,
+  removeImageSelection,
+  hasCelestialCoords,
+  currentBrowserColor,
+  opacity,
+  thumbnail,
+  credits,
+  creditsUrl,
+  ra,
+  dec,
+  fov,
+  luaApi,
+  name
+}) {
+
+  function isTabEntry() {
+    return !!setOpacity;
   }
 
-  get isActive() {
-    const { active, identifier } = this.props;
-    return identifier === active;
-  }
-
-  get isTabEntry() {
-    return !!this.props.setOpacity;
-  }
-
-  select(e) {
-    const { identifier, onSelect } = this.props;
+  function select(e) {
     if (onSelect && identifier) {
       onSelect(identifier);
     }
@@ -72,23 +74,7 @@ class SkyBrowserFocusEntry extends Component {
     if (e.stopPropagation) e.stopPropagation();
   }
 
-  showTooltip() {
-    this.setState({ showButtonInfo: !this.state.showButtonInfo });
-  }
-
-  hideTooltip() {
-    this.setState({ showButtonInfo: false });
-  }
-
-  render() {
-    const {
-      name, identifier, thumbnail, credits, creditsUrl, ra, dec, fov, hasCelestialCoords,
-      luaApi, setOpacity, removeImageSelection, currentBrowserColor, opacity } = this.props;
-    const skySurveyTag = !hasCelestialCoords ? <span className={styles.skySurvey}>
-        Sky Survey
-    </span> : "";
-
-    const imageRemoveButton = removeImageSelection && (
+  const imageRemoveButton = removeImageSelection && (
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
         {skySurveyTag}
         <Button
@@ -107,18 +93,22 @@ class SkyBrowserFocusEntry extends Component {
       </div>
     );
 
-    const opacitySlider = setOpacity ? <OpacitySlider setOpacity={setOpacity} opacity={opacity} identifier={identifier} /> : '';
-    return (
+  const opacitySlider = setOpacity ? <OpacitySlider setOpacity={setOpacity} opacity={opacity} identifier={identifier} /> : '';
+  const skySurveyTag = !hasCelestialCoords ? <span className={styles.skySurvey}>
+      Sky Survey
+  </span> : "";
+  
+  return (
       <li
-        className={`${styles.entry} ${this.isTabEntry && styles.tabEntry} ${this.isActive && styles.active}`}
+        className={`${styles.entry} ${isTabEntry && styles.tabEntry} ${isActive && styles.active}`}
         style={{ borderLeftColor: currentBrowserColor() }}
         onMouseOver={() => { luaApi.skybrowser.moveCircleToHoverImage(Number(identifier)); }}
         onMouseOut={() => { luaApi.skybrowser.disableHoverCircle(); }}
-        onClick={setOpacity ? undefined : this.select}
+        onClick={setOpacity ? undefined : select}
       >
         {imageRemoveButton}
         <div className={styles.image}>
-          <LazyLoadImage src={thumbnail} alt={''} className={styles.imageText} onClick={setOpacity ? this.select : undefined}/>
+          <LazyLoadImage src={thumbnail} alt={''} className={styles.imageText} onClick={setOpacity ? select : undefined}/>
         </div>
         <div className={styles.imageHeader}>
           <span className={styles.imageTitle}>
@@ -131,7 +121,7 @@ class SkyBrowserFocusEntry extends Component {
             ra={ra}
             dec={dec}
             fov={fov}
-            isTabEntry={this.isTabEntry}
+            isTabEntry={isTabEntry}
             hasCelestialCoords={hasCelestialCoords}
           />
         </div>
@@ -139,18 +129,17 @@ class SkyBrowserFocusEntry extends Component {
         {!setOpacity && skySurveyTag}
       </li>
     );
-  }
 }
 
 SkyBrowserFocusEntry.propTypes = {
   identifier: PropTypes.string.isRequired,
   name: PropTypes.string,
   onSelect: PropTypes.func,
-  active: PropTypes.string,
+  isActive: PropTypes.bool,
 };
 
 SkyBrowserFocusEntry.defaultProps = {
-  active: '',
+  isActive: false,
   onSelect: null,
 };
 
