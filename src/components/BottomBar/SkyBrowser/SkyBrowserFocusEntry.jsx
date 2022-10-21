@@ -6,40 +6,33 @@ import SkyBrowserInfoBox from './SkyBrowserInfoBox';
 import styles from './SkyBrowserFocusEntry.scss';
 import { LazyLoadImage } from "react-lazy-load-image-component";
 
-class OpacitySlider extends Component {
-  constructor(props) {
-    super(props);
-    this.handleChange = this.handleChange.bind(this);
-  }
-
-  handleChange(e) {
+function OpacitySlider({ opacity, setOpacity, identifier }) {
+  
+  function handleChange(e) {
     // Ensure the image has an id, which consists of the index of the image
-    const index = Number(this.props.identifier);
+    const index = Number(identifier);
     const opacity = event.target.value / 100;
     if (index) {
-      this.props.setOpacity(index, opacity);
+      setOpacity(index, opacity);
     }
     if (!e) var e = window.event;
     e.cancelBubble = true;
     if (e.stopPropagation) e.stopPropagation();
   }
 
-  render() {
-    const { opacity } = this.props;
-    return (
-      <div className={styles.slidecontainer}>
-        <input
-          type="range"
-          min="0"
-          max="100"
-          value={opacity * 100}
-          className={styles.slider}
-          onChange={this.handleChange}
-        />
-        {' '}
-      </div>
-    );
-  }
+  return (
+    <div className={styles.slidecontainer}>
+      <input
+        type="range"
+        min="0"
+        max="100"
+        value={opacity * 100}
+        className={styles.slider}
+        onChange={handleChange}
+      />
+      {' '}
+    </div>
+  );
 }
 
 function SkyBrowserFocusEntry({
