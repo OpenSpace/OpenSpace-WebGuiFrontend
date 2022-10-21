@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector, shallowEqual, useDispatch } from 'react-redux';
 import Picker from '../Picker';
 import FloatingWindow from './WindowThreeStates/FloatingWindow'
 import styles from './WorldWideTelescope.scss'
@@ -13,28 +13,45 @@ import {
 function WorldWideTelescope({ 
   setMessageFunction,
   setImageCollectionIsLoaded,
-  showTitle,
-  inverseZoom,
-  startListeningToProperties,
-  stopListeningToProperties,
-  browserId,
-  browserName,
-  browserAimInfo,
-  borderRadius,
-  browserColor,
-  skybrowserApi,
   addAllSelectedImages,
   size,
   setSize,
-  url,
   position,
   togglePopover,
   setPosition
 }) {
   const [isDragging, setIsDragging] = React.useState(false);
   const [startDragPosition, setStartDragPosition] = React.useState([0, 0]);
-  const topBarHeight = 25;
+  const browser = useSelector((state) => {
+    return state.skybrowser.browsers?.[state.skybrowser.selectedBrowserId]
+  }, shallowEqual);
+  const url = useSelector((state) => {
+    return state.skybrowser.url
+  }, shallowEqual);
+  const skybrowserApi = useSelector((state) => {
+    return state.luaApi.skybrowser
+  }, shallowEqual);
+  const showTitle = useSelector((state) => {
+  return getBoolPropertyValue(state, SkyBrowser_ShowTitleInBrowserKey)
+    }, shallowEqual);
+  const inverseZoom = useSelector((state) => {
+    return getBoolPropertyValue(state, SkyBrowser_InverseZoomDirectionKey)
+  }, shallowEqual);
+
+  const dispatch = useDispatch()
+
+  const browserId = browser?.id;
+  const browserName = browser?.name
+  const browserAimInfo = {
+    ra: browser?.ra,
+    dec: browser?.dec,
+    fov: browser?.fov,
+    roll: browser?.roll
+  };
+  const borderRadius = browser?.borderRadius;
+  const browserColor = browser?.color;
   const iframe = React.useRef(null);
+  const topBarHeight = 25;
 
   React.useEffect(() => {
     setMessageFunction(sendMessageToWwt);
@@ -57,14 +74,18 @@ function WorldWideTelescope({
   }, [browserColor]);
 
   React.useEffect(() => {
-    startListeningToProperties();
-    return () => stopListeningToProperties();
+    dispatch(subscribeToProperty(SkyBrowser_ShowTitleInBrowserKey));
+    dispatch(subscribeToProperty(SkyBrowser_InverseZoomDirectionKey));
+    return () => {
+      dispatch(unsubscribeToProperty(SkyBrowser_ShowTitleInBrowserKey));
+      dispatch(unsubscribeToProperty(SkyBrowser_InverseZoomDirectionKey));
+    }; 
   }, []);
 
   function sendMessageToWwt(message) {
     try {
       let frame = iframe.current.contentWindow;
-      if (frame) {
+      if (frame && message) {
         frame.postMessage(message, "*");
       }
     } catch (error) {
@@ -207,28 +228,5 @@ function WorldWideTelescope({
     </FloatingWindow>
   );
 }
-
-const mapStateToProps = (state) => {
-  return {
-    showTitle: getBoolPropertyValue(state, SkyBrowser_ShowTitleInBrowserKey),
-    inverseZoom: getBoolPropertyValue(state, SkyBrowser_InverseZoomDirectionKey),
-  }
-};
-
-const mapDispatchToProps = dispatch => ({
-  startListeningToProperties: () => {
-    dispatch(subscribeToProperty(SkyBrowser_ShowTitleInBrowserKey));
-    dispatch(subscribeToProperty(SkyBrowser_InverseZoomDirectionKey));
-  },
-  stopListeningToProperties: () => {
-    dispatch(unsubscribeToProperty(SkyBrowser_ShowTitleInBrowserKey));
-    dispatch(unsubscribeToProperty(SkyBrowser_InverseZoomDirectionKey));
-  },
-})
-
-WorldWideTelescope = connect(
-  mapStateToProps,
-  mapDispatchToProps)
-(WorldWideTelescope);
 
 export default WorldWideTelescope;

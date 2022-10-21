@@ -236,23 +236,11 @@ class SkyBrowserPanel extends Component {
 
     return (
       <WorldWideTelescope
-        browserId={browser.id}
-        browserName={browser.name}
-        browserAimInfo={{
-          ra: browser.ra,
-          dec: browser.dec,
-          fov: browser.fov,
-          roll: browser.roll
-        }}
-        borderRadius={browser.borderRadius}
-        browserColor={browser.color}
-        skybrowserApi={this.props.luaApi.skybrowser}
         setMessageFunction={func => this.passMessageToWwt = func}
         setImageCollectionIsLoaded={this.setImageCollectionIsLoaded}
         addAllSelectedImages={this.addAllSelectedImages}
         size={this.state.wwtSize}
         setSize={this.setWwtSize}
-        url={url}
         position={this.state.wwtPosition}
         togglePopover={this.togglePopover}
         setPosition={this.setWwtPosition}
