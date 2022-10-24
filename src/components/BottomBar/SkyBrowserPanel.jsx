@@ -48,7 +48,6 @@ class SkyBrowserPanel extends Component {
     this.addAllSelectedImages = this.addAllSelectedImages.bind(this);
     this.removeAllSelectedImages = this.removeAllSelectedImages.bind(this);
     this.currentBrowserColor = this.currentBrowserColor.bind(this);
-    this.getSelectedBrowserImages = this.getSelectedBrowserImages.bind(this);
     this.selectImage = this.selectImage.bind(this);
     this.setOpacityOfImage = this.setOpacityOfImage.bind(this);
     this.removeImageSelection = this.removeImageSelection.bind(this);
@@ -112,20 +111,6 @@ class SkyBrowserPanel extends Component {
     this.setState({
       wwtPosition: { x: data.x, y: data.y}
     });
-  }
-
-  getSelectedBrowserImages() {
-    const { imageList, browsers, selectedBrowserId } = this.props;
-    const browser = browsers[selectedBrowserId];
-    if (!imageList || !browser) {
-      return [];
-    }
-    const images = browser.selectedImages;
-    if (!images) {
-      return [];
-    }
-    const indices = Object.values(images);
-    return indices.map(index => imageList[index.toString()]);
   }
 
   currentBrowserColor() {
@@ -299,7 +284,6 @@ class SkyBrowserPanel extends Component {
       showOnlyNearest,
       minimumTabHeight
     } = this.state;
-    const thisTabsImages = this.getSelectedBrowserImages() || [];
     const currentImageListHeight = currentPopoverHeight - currentTabHeight - menuHeight;
 
     const imageMenu = (
@@ -321,25 +305,20 @@ class SkyBrowserPanel extends Component {
 
     const skybrowserTabs = (
       <SkyBrowserTabs
-        luaApi={luaApi}
-        cameraInSolarSystem={cameraInSolarSystem}
-        selectedBrowserId={selectedBrowserId}
-        browsers={browsers}
-        maxHeight={currentPopoverHeight - menuHeight}
-        minHeight={minimumTabHeight}
         setCurrentTabHeight={this.setCurrentTabHeight}
-        height={currentTabHeight}
-        data={thisTabsImages}
+        removeAllSelectedImages={this.removeAllSelectedImages}
+        passMessageToWwt={this.passMessageToWwt}
+        setWwtRatio={this.setWwtRatio}
+        setSelectedBrowser={this.setSelectedBrowser}
+        activeImage={activeImage}
+        currentBrowserColor={this.currentBrowserColor}
         selectImage={this.selectImage}
         removeImageSelection={this.removeImageSelection}
-        removeAllSelectedImages={this.removeAllSelectedImages}
-        currentBrowserColor={this.currentBrowserColor}
-        passMessageToWwt={this.passMessageToWwt}
-        setSelectedBrowser={this.setSelectedBrowser}
-        setWwtRatio={this.setWwtRatio}
         setOpacityOfImage={this.setOpacityOfImage}
+        maxHeight={currentPopoverHeight - menuHeight}
+        minHeight={minimumTabHeight}
+        height={currentTabHeight}
         setBorderRadius={this.setBorderRadius}
-        activeImage={activeImage}
       />
     );
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { shallowEqual, useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Resizable } from 're-resizable';
 import Button from '../../common/Input/Button/Button';
@@ -16,15 +16,10 @@ import {
 
 function SkyBrowserTabs({ 
   setCurrentTabHeight,
-  luaApi,
-  data,
   removeAllSelectedImages,
   passMessageToWwt,
   setWwtRatio,
-  refresh,
-  browsers,
   setSelectedBrowser,
-  selectedBrowserId,
   activeImage,
   currentBrowserColor,
   selectImage,
@@ -33,7 +28,7 @@ function SkyBrowserTabs({
   maxHeight,
   minHeight,
   height,
-  setBorderRadius,
+  setBorderRadius
 }) {
   const [isShowingInfoButtons, setIsShowingInfoButtons] =
     React.useState([false, false, false, false, false]);
@@ -42,6 +37,33 @@ function SkyBrowserTabs({
 
   const infoButton = React.useRef(null);
   const tabsDiv = React.useRef(null);
+
+  const browsers = useSelector((state) => {
+    return state.skybrowser.browsers
+  }, shallowEqual);
+
+  const luaApi = useSelector((state) => {
+    return state.luaApi
+  }, shallowEqual);
+
+  const selectedBrowserId = useSelector((state) => {
+    return state.skybrowser.selectedBrowserId
+  }, shallowEqual);
+
+  const data = useSelector((state) => {
+    const browser = browsers[selectedBrowserId];
+    if (!state.skybrowser.imageList || !browser) {
+      return [];
+    }
+    const images = browser.selectedImages;
+    if (!images) {
+      return [];
+    }
+    const indices = Object.values(images);
+    return indices.map(index => state.skybrowser.imageList[index.toString()]);
+  }, shallowEqual);
+
+  const dispatch = useDispatch();
 
   React.useEffect(() => {
     if (tabsDiv.current) {
@@ -203,7 +225,7 @@ function SkyBrowserTabs({
     // TODO: Once we have a proper way to subscribe to additions and removals
     // of property owners, this 'hard' refresh should be removed.
     setTimeout(() => {
-      refresh();
+      dispatch(reloadPropertyTree());
     }, 500);
   }
 
@@ -220,7 +242,7 @@ function SkyBrowserTabs({
     // TODO: Once we have a proper way to subscribe to additions and removals
     // of property owners, this 'hard' refresh should be removed.
     setTimeout(() => {
-      refresh();
+      dispatch(reloadPropertyTree());
     }, 2000);
     
   }
@@ -287,8 +309,7 @@ function SkyBrowserTabs({
   }
 
   function createImageList() {
-
-    const images = (
+    return (
       <ul>
         {data.map((entry, index) => (
           <div key={index}>
@@ -329,8 +350,6 @@ function SkyBrowserTabs({
         ))}
       </ul>
     );
-
-    return images;
   }
     
   let content = "";
@@ -385,18 +404,5 @@ SkyBrowserTabs.defaultProps = {
   children: '',
   viewComponentProps: {},
 };
-
-const mapStateToProps = state => ({
-
-});
-
-const mapDispatchToProps = dispatch => ({
-  refresh: () => {
-    dispatch(reloadPropertyTree());
-  }
-});
-
-SkyBrowserTabs = connect(mapStateToProps, mapDispatchToProps,
-)(SkyBrowserTabs);
 
 export default SkyBrowserTabs;
