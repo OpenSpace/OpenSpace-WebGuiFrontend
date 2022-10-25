@@ -16,19 +16,16 @@ import {
 
 function SkyBrowserTabs({ 
   setCurrentTabHeight,
-  removeAllSelectedImages,
   passMessageToWwt,
   setWwtRatio,
-  setSelectedBrowser,
   activeImage,
   currentBrowserColor,
   selectImage,
-  removeImageSelection,
-  setOpacityOfImage,
   maxHeight,
   minHeight,
   height,
-  setBorderRadius
+  setBorderRadius,
+  imageCollectionIsLoaded
 }) {
   const [isShowingInfoButtons, setIsShowingInfoButtons] =
     React.useState([false, false, false, false, false]);
@@ -71,6 +68,71 @@ function SkyBrowserTabs({
       setCurrentTabHeight(newHeight);  
     }
   }, [tabsDiv.current]);
+
+  React.useEffect(() => {
+    if (imageCollectionIsLoaded) {
+      addAllSelectedImages(selectedBrowserId, false);
+    }
+  }, [imageCollectionIsLoaded]);
+
+  function setSelectedBrowser(browserId) {
+    if (browsers === undefined || browsers[browserId] === undefined) {
+      return "";
+    }
+    // Don't pass the selection to OpenSpace as we are only changing images in the GUI
+    // This is a result of only having one instance of the WWT application, but making
+    // it appear as there are many
+    const passToOs = false;
+    removeAllSelectedImages(selectedBrowserId, passToOs);
+    addAllSelectedImages(browserId, passToOs);
+    luaApi.skybrowser.setSelectedBrowser(browserId);
+    setWwtRatio(browsers[browserId].ratio);
+  }
+
+  function setOpacityOfImage(identifier, opacity, passToOs = true) {
+    if(passToOs) {
+      luaApi.skybrowser.setOpacityOfImageLayer(selectedBrowserId, Number(identifier), opacity);
+    }
+    passMessageToWwt({
+      event: "image_layer_set",
+      id: String(identifier),
+      setting: "opacity",
+      value: opacity
+    });
+  }
+
+  function removeImageSelection(identifier, passToOs = true) {
+    if(passToOs) {
+      luaApi.skybrowser.removeSelectedImageInBrowser(selectedBrowserId, Number(identifier));
+    }
+    passMessageToWwt({
+      event: "image_layer_remove",
+      id: String(identifier),
+    });
+    luaApi.skybrowser.disableHoverCircle();
+  }
+
+  function addAllSelectedImages(browserId, passToOs = true) {
+    if (browsers === undefined || browsers[browserId] === undefined) {
+      return "";
+    }
+    // Make deep copies in order to reverse later
+    const reverseImages = [...browsers[browserId].selectedImages];
+    const opacities = [...browsers[browserId].opacities];
+    reverseImages.reverse().map((image, index) => {
+      selectImage(String(image), passToOs);
+      setOpacityOfImage(String(image), opacities.reverse()[index], passToOs);
+    });
+  }
+
+  function removeAllSelectedImages(browserId, passToOs = true) {
+    if (browsers === undefined || browsers[browserId] === undefined) {
+      return "";
+    }
+    browsers[browserId].selectedImages.map(image => {
+      removeImageSelection(Number(image), passToOs);
+    });
+  }
 
   function positionInfo() {
     if (!infoButton) {
@@ -396,7 +458,6 @@ function SkyBrowserTabs({
 
 SkyBrowserTabs.propTypes = {
   children: PropTypes.node,
-  data: PropTypes.array.isRequired,
   viewComponentProps: PropTypes.object,
 };
 

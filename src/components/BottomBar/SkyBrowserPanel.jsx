@@ -44,13 +44,8 @@ class SkyBrowserPanel extends Component {
     this.setCurrentPopoverHeight = this.setCurrentPopoverHeight.bind(this);
     this.setWwtSize = this.setWwtSize.bind(this);
     this.setWwtRatio = this.setWwtRatio.bind(this);
-    this.setSelectedBrowser = this.setSelectedBrowser.bind(this);
-    this.addAllSelectedImages = this.addAllSelectedImages.bind(this);
-    this.removeAllSelectedImages = this.removeAllSelectedImages.bind(this);
     this.currentBrowserColor = this.currentBrowserColor.bind(this);
     this.selectImage = this.selectImage.bind(this);
-    this.setOpacityOfImage = this.setOpacityOfImage.bind(this);
-    this.removeImageSelection = this.removeImageSelection.bind(this);
     this.createWwtBrowser = this.createWwtBrowser.bind(this);
     this.createAddBrowserInterface = this.createAddBrowserInterface.bind(this);
     this.createBrowserContent = this.createBrowserContent.bind(this);
@@ -144,70 +139,6 @@ class SkyBrowserPanel extends Component {
     });
   }
 
-  setOpacityOfImage(identifier, opacity, passToOs = true) {
-    const { luaApi, selectedBrowserId } = this.props;
-    if(passToOs) {
-      luaApi.skybrowser.setOpacityOfImageLayer(selectedBrowserId, Number(identifier), opacity);
-    }
-    this.passMessageToWwt({
-      event: "image_layer_set",
-      id: String(identifier),
-      setting: "opacity",
-      value: opacity
-    });
-  }
-
-  removeImageSelection(identifier, passToOs = true) {
-    const { luaApi, selectedBrowserId } = this.props;
-    if(passToOs) {
-      luaApi.skybrowser.removeSelectedImageInBrowser(selectedBrowserId, Number(identifier));
-    }
-    this.passMessageToWwt({
-      event: "image_layer_remove",
-      id: String(identifier),
-    });
-    luaApi.skybrowser.disableHoverCircle();
-  }
-
-  setSelectedBrowser(browserId) {
-    const {browsers, selectedBrowserId} = this.props;
-    if (browsers === undefined || browsers[browserId] === undefined) {
-      return "";
-    }
-    // Don't pass the selection to OpenSpace as we are only changing images in the GUI
-    // This is a result of only having one instance of the WWT application, but making
-    // it appear as there are many
-    const passToOs = false;
-    this.removeAllSelectedImages(selectedBrowserId, passToOs);
-    this.addAllSelectedImages(browserId, passToOs);
-    this.props.luaApi.skybrowser.setSelectedBrowser(browserId);
-    this.setWwtRatio(browsers[browserId].ratio);
-  }
-
-  addAllSelectedImages(browserId, passToOs = true) {
-    const {browsers} = this.props;
-    if (browsers === undefined || browsers[browserId] === undefined) {
-      return "";
-    }
-    // Make deep copies in order to reverse later
-    const reverseImages = [...browsers[browserId].selectedImages];
-    const opacities = [...browsers[browserId].opacities];
-    reverseImages.reverse().map((image, index) => {
-      this.selectImage(String(image), passToOs);
-      this.setOpacityOfImage(String(image), opacities.reverse()[index], passToOs);
-    });
-  }
-
-  removeAllSelectedImages(browserId, passToOs = true) {
-    const {browsers} = this.props;
-    if (browsers === undefined || browsers[browserId] === undefined) {
-      return "";
-    }
-    browsers[browserId].selectedImages.map(image => {
-      this.removeImageSelection(Number(image), passToOs);
-    });
-  }
-
   createWwtBrowser() {
     const { browsers, selectedBrowserId, url } = this.props;
 
@@ -223,7 +154,6 @@ class SkyBrowserPanel extends Component {
       <WorldWideTelescope
         setMessageFunction={func => this.passMessageToWwt = func}
         setImageCollectionIsLoaded={this.setImageCollectionIsLoaded}
-        addAllSelectedImages={this.addAllSelectedImages}
         size={this.state.wwtSize}
         setSize={this.setWwtSize}
         position={this.state.wwtPosition}
@@ -275,7 +205,7 @@ class SkyBrowserPanel extends Component {
   }
 
   createBrowserContent() {
-    const { luaApi, cameraInSolarSystem, browsers, selectedBrowserId, imageList } = this.props;
+    const { luaApi, browsers, selectedBrowserId, imageList } = this.props;
     const {
       currentPopoverHeight,
       currentTabHeight,
@@ -306,19 +236,16 @@ class SkyBrowserPanel extends Component {
     const skybrowserTabs = (
       <SkyBrowserTabs
         setCurrentTabHeight={this.setCurrentTabHeight}
-        removeAllSelectedImages={this.removeAllSelectedImages}
         passMessageToWwt={this.passMessageToWwt}
         setWwtRatio={this.setWwtRatio}
-        setSelectedBrowser={this.setSelectedBrowser}
         activeImage={activeImage}
         currentBrowserColor={this.currentBrowserColor}
         selectImage={this.selectImage}
-        removeImageSelection={this.removeImageSelection}
-        setOpacityOfImage={this.setOpacityOfImage}
         maxHeight={currentPopoverHeight - menuHeight}
         minHeight={minimumTabHeight}
         height={currentTabHeight}
         setBorderRadius={this.setBorderRadius}
+        imageCollectionIsLoaded={this.state.imageCollectionIsLoaded}
       />
     );
 
