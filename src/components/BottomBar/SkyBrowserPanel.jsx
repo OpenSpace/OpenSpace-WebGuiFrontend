@@ -38,8 +38,9 @@ function SkyBrowserPanel({ }) {
   const wwt = React.useRef();
 
   // Get redux state
-  const browsers = useSelector((state) => {
-    return state.skybrowser.browsers
+  const browsersExist = useSelector((state) => {
+    const browsers = state.skybrowser.browsers;
+    return browsers && Object.keys(browsers)?.length !== 0
   }, shallowEqual);
   const cameraInSolarSystem = useSelector((state) => {
     return state.skybrowser.cameraInSolarSystem
@@ -62,6 +63,10 @@ function SkyBrowserPanel({ }) {
   const hideTargetsBrowsersWithGui = useSelector((state) => {
     return getBoolPropertyValue(state, SkyBrowser_HideTargetsBrowsersWithGuiKey)
   }, shallowEqual);
+  const browsers = useSelector((state) => {
+    return state.skybrowser.browsers;
+  }, shallowEqual);
+
 
   const dispatch = useDispatch();
 
@@ -148,15 +153,7 @@ function SkyBrowserPanel({ }) {
   }
 
   function createWwtBrowser() {
-    if (browsers === undefined) {
-      return "";
-    }
-    const browser = browsers[selectedBrowserId];
-    if (browser === undefined) {
-      return "";
-    }
-
-    return (
+    return (browsersExist && 
       <WorldWideTelescope
         setMessageFunction={func => wwt.current = func}
         setImageCollectionIsLoaded={setImageCollectionIsLoaded}
@@ -268,10 +265,8 @@ function SkyBrowserPanel({ }) {
   }
 
   function popover() {
-    const browsersExist = browsers && (Object.keys(browsers).length !== 0);
-
     let content = "";
-    if (!dataIsLoaded || browsers === undefined) {
+    if (!dataIsLoaded || cameraInSolarSystem === undefined) {
       content = (
         <CenteredLabel>
           Oops! There was a problem loading data from OpenSpace :(
@@ -323,7 +318,6 @@ function SkyBrowserPanel({ }) {
         {popoverVisible && createWwtBrowser()}
       </div>
     );
-
 }
 
 export default SkyBrowserPanel;
