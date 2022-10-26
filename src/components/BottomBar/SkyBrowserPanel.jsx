@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React from 'react';
+import { useSelector, shallowEqual, useDispatch } from 'react-redux';
 import { SkyBrowser_HideTargetsBrowsersWithGuiKey } from '../../api/keys';
 import { getBoolPropertyValue } from '../../utils/propertyTreeHelpers';
 import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
@@ -18,24 +18,12 @@ import {
   setPopoverVisibility,
   subscribeToSkyBrowser,
   unsubscribeToSkyBrowser,
+  subscribeToProperty, 
+  unsubscribeToProperty
 } from '../../api/Actions';
 import styles from './SkyBrowserPanel.scss';
 
-function SkyBrowserPanel({
-  isDataInitialized,
-  loadData,
-  luaApi,
-  startSubscriptions,
-  browsers,
-  selectedBrowserId,
-  stopSubscriptions,
-  setPopoverVisibility,
-  popoverVisible,
-  hideTargetsBrowsersWithGui,
-  cameraInSolarSystem,
-  imageList,
-  refresh
- }) {
+function SkyBrowserPanel({ }) {
   const [activeImage, setActiveImage] = React.useState('');
   const [minimumTabHeight, setMinimumTabHeight] = React.useState(80);
   const [currentTabHeight, setCurrentTabHeight] = React.useState(200);
@@ -49,16 +37,48 @@ function SkyBrowserPanel({
 
   const wwt = React.useRef();
 
+  // Get redux state
+  const browsers = useSelector((state) => {
+    return state.skybrowser.browsers
+  }, shallowEqual);
+  const cameraInSolarSystem = useSelector((state) => {
+    return state.skybrowser.cameraInSolarSystem
+  }, shallowEqual);
+  const imageList = useSelector((state) => {
+    return state.skybrowser.imageList
+  }, shallowEqual);
+  const isDataInitialized = useSelector((state) => {
+    return state.skybrowser.isInitialized
+  }, shallowEqual);
+  const luaApi = useSelector((state) => {
+  return state.luaApi
+  }, shallowEqual);
+  const popoverVisible = useSelector((state) => {
+    return state.local.popovers.skybrowser.visible
+    }, shallowEqual);
+  const selectedBrowserId = useSelector((state) => {
+    return state.skybrowser.selectedBrowserId
+  }, shallowEqual);
+  const hideTargetsBrowsersWithGui = useSelector((state) => {
+    return getBoolPropertyValue(state, SkyBrowser_HideTargetsBrowsersWithGuiKey)
+  }, shallowEqual);
+
+  const dispatch = useDispatch();
+
   React.useEffect(() => {
-    startSubscriptions();
-    return () => stopSubscriptions();
+    dispatch(subscribeToSkyBrowser());
+    dispatch(subscribeToProperty(SkyBrowser_HideTargetsBrowsersWithGuiKey));
+    return () => {
+      dispatch(unsubscribeToSkyBrowser());
+      dispatch(unsubscribeToProperty(SkyBrowser_HideTargetsBrowsersWithGuiKey));
+    }
   }, []);
 
   React.useEffect(() => {
     if (!isDataInitialized) {
       // Declare async data fetching function
       const getData = async () => {
-        await loadData(luaApi);
+        await dispatch(loadSkyBrowserData(luaApi));
         setDataIsLoaded(true);
       }
       // Call the function
@@ -67,7 +87,11 @@ function SkyBrowserPanel({
   }, []);
 
   function togglePopover() {
-    setPopoverVisibility(!popoverVisible);
+    const visibility = {
+        popover: 'skybrowser',
+        visible : !popoverVisible
+      }
+    dispatch(setPopoverVisibility(visibility));
     if(hideTargetsBrowsersWithGui) {
       luaApi.skybrowser.showAllTargetsAndBrowsers(!popoverVisible)
     }
@@ -151,7 +175,7 @@ function SkyBrowserPanel({
     // TODO: Once we have a proper way to subscribe to additions and removals
     // of property owners, this 'hard' refresh should be removed.
     setTimeout(() => {
-      refresh();
+      dispatch(reloadPropertyTree());
     }, 500);
   }
 
@@ -301,49 +325,5 @@ function SkyBrowserPanel({
     );
 
 }
-
-const mapStateToProps = state => ({
-  browsers: state.skybrowser.browsers,
-  cameraInSolarSystem: state.skybrowser.cameraInSolarSystem,
-  imageList: state.skybrowser.imageList,
-  isDataInitialized: state.skybrowser.isInitialized,
-  luaApi: state.luaApi,
-  popoverVisible: state.local.popovers.skybrowser.visible,
-  propertyOwners: state.propertyTree.propertyOwners,
-  selectedBrowserId: state.skybrowser.selectedBrowserId,
-  hideTargetsBrowsersWithGui: getBoolPropertyValue(state, SkyBrowser_HideTargetsBrowsersWithGuiKey)
-});
-
-const mapDispatchToProps = dispatch => ({
-  loadData: (luaApi) => {
-    dispatch(loadSkyBrowserData(luaApi));
-  },
-  refresh: () => {
-    dispatch(reloadPropertyTree());
-  },
-  setPopoverVisibility: (visible) => {
-    dispatch(
-      setPopoverVisibility({
-        popover: 'skybrowser',
-        visible,
-      }),
-    );
-  },
-  startSubscriptions: () => {
-    dispatch(subscribeToSkyBrowser());
-  },
-  stopSubscriptions: () => {
-    dispatch(unsubscribeToSkyBrowser());
-  },
-  startListeningToProperties: () => {
-    dispatch(subscribeToProperty(SkyBrowser_HideTargetsBrowsersWithGuiKey));
-  },
-  stopListeningToProperties: () => {
-    dispatch(unsubscribeToProperty(SkyBrowser_HideTargetsBrowsersWithGuiKey));
-  },
-});
-
-SkyBrowserPanel = connect(mapStateToProps, mapDispatchToProps,
-)(SkyBrowserPanel);
 
 export default SkyBrowserPanel;
