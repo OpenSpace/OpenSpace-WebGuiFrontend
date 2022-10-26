@@ -13,7 +13,7 @@ import {
 function WorldWideTelescope({ 
   setMessageFunction,
   setImageCollectionIsLoaded,
-  addAllSelectedImages,
+  imageCollectionIsLoaded,
   size,
   setSize,
   position,
@@ -22,6 +22,8 @@ function WorldWideTelescope({
 }) {
   const [isDragging, setIsDragging] = React.useState(false);
   const [startDragPosition, setStartDragPosition] = React.useState([0, 0]);
+  const [wwtHasLoaded, setWwtHasLoaded] = React.useState(false);
+
   const browser = useSelector((state) => {
     return state.skybrowser.browsers?.[state.skybrowser.selectedBrowserId]
   }, shallowEqual);
@@ -38,8 +40,7 @@ function WorldWideTelescope({
     return getBoolPropertyValue(state, SkyBrowser_InverseZoomDirectionKey)
   }, shallowEqual);
 
-  const dispatch = useDispatch()
-
+  const dispatch = useDispatch();
   const browserId = browser?.id;
   const browserName = browser?.name
   const browserAimInfo = {
@@ -60,6 +61,13 @@ function WorldWideTelescope({
     
     return () => window.removeEventListener("message", handleCallbackMessage);
   }, []);
+
+  React.useEffect(() => {
+    if (wwtHasLoaded && url !== '' && !imageCollectionIsLoaded) {
+      initialize();
+    }
+  }, [wwtHasLoaded, url]);
+
 
   React.useEffect(() => {
     setAim(browserAimInfo);
@@ -93,9 +101,8 @@ function WorldWideTelescope({
     }
   }
 
-  function handleCallbackMessage(event) {
-    if (event.data == "wwt_has_loaded") {
-      sendMessageToWwt({
+  function initialize() {
+    sendMessageToWwt({
         event: "modify_settings",
         settings: [["hideAllChrome", true]],
         target: "app"
@@ -107,10 +114,14 @@ function WorldWideTelescope({
       });
       setBorderColor(browserColor);
       setBorderRadius(borderRadius);
+  }
+
+  function handleCallbackMessage(event) {
+    if (event.data == "wwt_has_loaded") {
+      setWwtHasLoaded(true);
     }
     if (event.data == "load_image_collection_completed") {
       setImageCollectionIsLoaded(true);
-      addAllSelectedImages(browserId, false);
     }
   }
 

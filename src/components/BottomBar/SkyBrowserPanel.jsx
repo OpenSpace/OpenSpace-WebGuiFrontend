@@ -43,7 +43,7 @@ function SkyBrowserPanel({
   const [showOnlyNearest, setShowOnlyNearest] = React.useState(true);
   const [menuHeight, setMenuHeight] = React.useState(70);
   const [imageCollectionIsLoaded, setImageCollectionIsLoaded] = React.useState(false);
-  const [wwtBrowsers, setWwtBrowsers] = React.useState([]);
+  const [dataIsLoaded, setDataIsLoaded] = React.useState(false);
   const [wwtSize, setWwtSize] = React.useState({width: 400, height: 400});
   const [wwtPosition, setWwtPositionState] = React.useState({ x: -800, y: -600 });
 
@@ -51,10 +51,19 @@ function SkyBrowserPanel({
 
   React.useEffect(() => {
     startSubscriptions();
-    if (!isDataInitialized) {
-      loadData(luaApi);
-    }
     return () => stopSubscriptions();
+  }, []);
+
+  React.useEffect(() => {
+    if (!isDataInitialized) {
+      // Declare async data fetching function
+      const getData = async () => {
+        await loadData(luaApi);
+        setDataIsLoaded(true);
+      }
+      // Call the function
+      getData().catch(console.error);
+    }
   }, []);
 
   function togglePopover() {
@@ -132,6 +141,7 @@ function SkyBrowserPanel({
         position={wwtPosition}
         togglePopover={togglePopover}
         setPosition={setWwtPosition}
+        imageCollectionIsLoaded={imageCollectionIsLoaded}
       />
     );
   }
@@ -237,7 +247,7 @@ function SkyBrowserPanel({
     const browsersExist = browsers && (Object.keys(browsers).length !== 0);
 
     let content = "";
-    if (cameraInSolarSystem === undefined) {
+    if (!dataIsLoaded || browsers === undefined) {
       content = (
         <CenteredLabel>
           Oops! There was a problem loading data from OpenSpace :(
