@@ -43,29 +43,29 @@ function SkyBrowserPanel({ }) {
   const browsersExist = useSelector((state) => {
     const browsers = state.skybrowser.browsers;
     return browsers && Object.keys(browsers)?.length !== 0
-  }, shallowEqual);
+  });
   const cameraInSolarSystem = useSelector((state) => {
     return state.skybrowser.cameraInSolarSystem
-  }, shallowEqual);
+  });
   const imageList = useSelector((state) => {
     return state.skybrowser.imageList
-  }, shallowEqual);
+  });
   const isDataInitialized = useSelector((state) => {
     return state.skybrowser.isInitialized
-  }, shallowEqual);
+  });
   const luaApi = useSelector((state) => {
   return state.luaApi
-  }, shallowEqual);
+  });
   const popoverVisible = useSelector((state) => {
     return state.local.popovers.skybrowser.visible
-    }, shallowEqual);
+    });
   const hideTargetsBrowsersWithGui = useSelector((state) => {
     return getBoolPropertyValue(state, SkyBrowser_HideTargetsBrowsersWithGuiKey)
-  }, shallowEqual);
+  });
   const browserColor = useSelector((state) => {
     const browser = state.skybrowser.browsers?.[state.skybrowser.selectedBrowserId]; 
     return browser ? `rgb(${browser.color})` : 'gray';
-  }, shallowEqual);
+  });
 
   const dispatch = useDispatch();
 
@@ -161,6 +161,7 @@ function SkyBrowserPanel({ }) {
         togglePopover={togglePopover}
         setPosition={setWwtPosition}
         imageCollectionIsLoaded={imageCollectionIsLoaded}
+        browserColor={browserColor}
       />
     );
   }

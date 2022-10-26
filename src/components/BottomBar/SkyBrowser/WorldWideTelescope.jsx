@@ -24,33 +24,52 @@ function WorldWideTelescope({
   const [startDragPosition, setStartDragPosition] = React.useState([0, 0]);
   const [wwtHasLoaded, setWwtHasLoaded] = React.useState(false);
 
-  const browser = useSelector((state) => {
-    return state.skybrowser.browsers?.[state.skybrowser.selectedBrowserId]
+  const fov = useSelector((state) => {
+    return state.skybrowser.browsers[state.skybrowser.selectedBrowserId].fov;
+  });
+  const ra = useSelector((state) => {
+    return state.skybrowser.browsers[state.skybrowser.selectedBrowserId].ra;
+  });
+  const dec = useSelector((state) => {
+    return state.skybrowser.browsers[state.skybrowser.selectedBrowserId].dec;
+  });
+  const roll = useSelector((state) => {
+    return state.skybrowser.browsers[state.skybrowser.selectedBrowserId].roll;
+  });
+  const name = useSelector((state) => {
+    return state.skybrowser.browsers[state.skybrowser.selectedBrowserId].name;
+  });
+  const id = useSelector((state) => {
+    return state.skybrowser.browsers[state.skybrowser.selectedBrowserId].id;
+  });
+  const browserColor = useSelector((state) => {
+    return state.skybrowser.browsers[state.skybrowser.selectedBrowserId].color;
   }, shallowEqual);
+  const borderRadius = useSelector((state) => {
+    return state.skybrowser.browsers[state.skybrowser.selectedBrowserId].borderRadius;
+  });
   const url = useSelector((state) => {
     return state.skybrowser.url
-  }, shallowEqual);
+  });
   const skybrowserApi = useSelector((state) => {
     return state.luaApi.skybrowser
-  }, shallowEqual);
+  });
   const showTitle = useSelector((state) => {
-  return getBoolPropertyValue(state, SkyBrowser_ShowTitleInBrowserKey)
-    }, shallowEqual);
+    return getBoolPropertyValue(state, SkyBrowser_ShowTitleInBrowserKey)
+  });
   const inverseZoom = useSelector((state) => {
     return getBoolPropertyValue(state, SkyBrowser_InverseZoomDirectionKey)
-  }, shallowEqual);
+  });
 
   const dispatch = useDispatch();
-  const browserId = browser?.id;
-  const browserName = browser?.name
+  const browserId = id;
+  const browserName = name
   const browserAimInfo = {
-    ra: browser?.ra,
-    dec: browser?.dec,
-    fov: browser?.fov,
-    roll: browser?.roll
+    ra: ra,
+    dec: dec,
+    fov: fov,
+    roll: roll * 0.01
   };
-  const borderRadius = browser?.borderRadius;
-  const browserColor = browser?.color;
   const iframe = React.useRef(null);
   const topBarHeight = 25;
 
@@ -67,7 +86,6 @@ function WorldWideTelescope({
       initialize();
     }
   }, [wwtHasLoaded, url]);
-
 
   React.useEffect(() => {
     setAim(browserAimInfo);
