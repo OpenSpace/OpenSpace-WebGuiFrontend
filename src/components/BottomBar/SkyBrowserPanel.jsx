@@ -7,10 +7,12 @@ import Picker from './Picker';
 import Button from '../common/Input/Button/Button';
 import LoadingBlock from '../common/LoadingBlock/LoadingBlock';
 import SmallLabel from '../common/SmallLabel/SmallLabel';
-import SkyBrowserImageList from './SkyBrowser/SkyBrowserImageList';
+import SkyBrowserNearestImagesList from './SkyBrowser/SkyBrowserNearestImagesList';
 import SkyBrowserTabs from './SkyBrowser/SkyBrowserTabs';
 import WindowThreeStates from './SkyBrowser/WindowThreeStates/WindowThreeStates';
 import WorldWideTelescope from './SkyBrowser/WorldWideTelescope';
+import { FilterList, FilterListData } from '../common/FilterList/FilterList';
+import SkyBrowserFocusEntry from './SkyBrowser/SkyBrowserFocusEntry';
 import { Icon } from '@iconify/react';
 import {
   loadSkyBrowserData,
@@ -57,16 +59,13 @@ function SkyBrowserPanel({ }) {
   const popoverVisible = useSelector((state) => {
     return state.local.popovers.skybrowser.visible
     }, shallowEqual);
-  const selectedBrowserId = useSelector((state) => {
-    return state.skybrowser.selectedBrowserId
-  }, shallowEqual);
   const hideTargetsBrowsersWithGui = useSelector((state) => {
     return getBoolPropertyValue(state, SkyBrowser_HideTargetsBrowsersWithGuiKey)
   }, shallowEqual);
-  const browsers = useSelector((state) => {
-    return state.skybrowser.browsers;
+  const browserColor = useSelector((state) => {
+    const browser = state.skybrowser.browsers?.[state.skybrowser.selectedBrowserId]; 
+    return browser ? `rgb(${browser.color})` : 'gray';
   }, shallowEqual);
-
 
   const dispatch = useDispatch();
 
@@ -124,8 +123,7 @@ function SkyBrowserPanel({ }) {
   }
 
   function currentBrowserColor() {
-    const browser = browsers[selectedBrowserId];
-    return (browser !== undefined) ? `rgb(${browser.color})` : 'gray';
+    return browserColor;
   }
 
   function selectImage(identifier, passToOs = true) {
@@ -243,19 +241,35 @@ function SkyBrowserPanel({ }) {
       />
     );
 
-    const imageListComponent = (
-      <SkyBrowserImageList
+    const imageListComponent = showOnlyNearest ? 
+      <SkyBrowserNearestImagesList
         luaApi={luaApi}
         imageList={imageList}
-        selectedBrowserData={browsers[selectedBrowserId]}
-        showOnlyNearest={showOnlyNearest}
         activeImage={activeImage}
         currentBrowserColor={currentBrowserColor}
         selectImage={selectImage}
         height={currentImageListHeight}
         passMessageToWwt={passMessageToWwt}
       />
-    );
+      :
+      <FilterList
+        className={styles.filterList}
+        height={currentImageListHeight}
+        searchText={`Search from ${imageList.length.toString()} images...`}
+      >
+        <FilterListData>
+          {imageList.map(item => {
+            return <SkyBrowserFocusEntry 
+                {...item}
+                luaApi={luaApi} 
+                currentBrowserColor={currentBrowserColor}
+                onSelect={selectImage}
+                isActive={activeImage === item.identifier}
+              />
+          })}
+        </FilterListData>
+      </FilterList>
+      ;
 
     return <div className={styles.content}>
         {imageMenu}
