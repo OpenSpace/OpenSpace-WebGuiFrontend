@@ -35,11 +35,11 @@ function WorldWideTelescope({
   });
   const roll = useSelector((state) => {
     return state.skybrowser.browsers[state.skybrowser.selectedBrowserId].roll;
-  });
-  const name = useSelector((state) => {
+  }) * 0.01;
+  const browserName = useSelector((state) => {
     return state.skybrowser.browsers[state.skybrowser.selectedBrowserId].name;
   });
-  const id = useSelector((state) => {
+  const browserId = useSelector((state) => {
     return state.skybrowser.browsers[state.skybrowser.selectedBrowserId].id;
   });
   const browserColor = useSelector((state) => {
@@ -62,14 +62,6 @@ function WorldWideTelescope({
   });
 
   const dispatch = useDispatch();
-  const browserId = id;
-  const browserName = name
-  const browserAimInfo = {
-    ra: ra,
-    dec: dec,
-    fov: fov,
-    roll: roll * 0.01
-  };
   const iframe = React.useRef(null);
   const topBarHeight = 25;
 
@@ -88,8 +80,8 @@ function WorldWideTelescope({
   }, [wwtHasLoaded, url]);
 
   React.useEffect(() => {
-    setAim(browserAimInfo);
-  }, [browserAimInfo]);
+    setAim();
+  }, [ra, dec, fov, roll]);
 
   React.useEffect(() => {
     setBorderRadius(borderRadius);
@@ -157,13 +149,13 @@ function WorldWideTelescope({
     });
   }
 
-  function setAim(aimInfo) {
+  function setAim() {
     sendMessageToWwt({
       "event": "center_on_coordinates",
-      "ra": aimInfo.ra,
-      "dec": aimInfo.dec,
-      "fov": aimInfo.fov,
-      "roll": aimInfo.roll,
+      "ra": ra,
+      "dec": dec,
+      "fov": fov,
+      "roll": roll,
       "instant": true
     });
   }
