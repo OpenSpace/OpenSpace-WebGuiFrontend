@@ -66,7 +66,7 @@ class ActionsPanel extends Component {
       >
         <p><MaterialIcon className={styles.buttonIcon} icon="launch" /></p>
         {action.name}
-        <InfoBox inpanel panelscroll="actionscroller" text={action.documentation} />
+        <InfoBox text={action.documentation} />
       </Button>
     ));
   }
@@ -178,7 +178,7 @@ class ActionsPanel extends Component {
         >
           <p><MaterialIcon className={styles.buttonIcon} icon="launch" /></p>
           Show Keybindings
-          <InfoBox inpanel panelscroll="actionscroller" text="Shows the keybinding vieiwer" />
+          <InfoBox text="Shows the keybinding vieiwer" />
         </Button>
       );
     }
