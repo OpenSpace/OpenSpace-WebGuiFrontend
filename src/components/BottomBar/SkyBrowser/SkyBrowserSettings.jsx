@@ -3,11 +3,10 @@ import PropTypes from 'prop-types';
 import Button from '../../common/Input/Button/Button';
 import Row from '../../common/Row/Row';
 import NumericInput from '../../common/Input/NumericInput/NumericInput';
-import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
 import Checkbox from '../../common/Input/Checkbox/Checkbox';
 import ColorPickerPopup from '../../common/ColorPicker/ColorPickerPopup';
 import ToggleContent from '../../common/ToggleContent/ToggleContent';
-import SkyBrowserTooltip from './SkyBrowserTooltip';
+import InfoBox from '../../common/InfoBox/InfoBox';
 import Property from '../../Sidebar/Properties/Property'
 import {
   SkyBrowser_ShowTitleInBrowserKey,
@@ -23,14 +22,12 @@ import styles from './SkyBrowserSettings.scss';
 
 function SkyBrowserSettings({
    luaApi, selectedBrowserId, browser, setBorderRadius
-  
 }) {
   const [showExpandedCopies, setShowExpandedCopies] = React.useState(false);
   const [showExpandedSettings, setShowExpandedSettings] = React.useState(false);
   const [generalSettingsExpanded, setGeneralSettingsExpanded] = React.useState(false);
   const [newPosition, setNewPosition] = React.useState([0, 0, -2]);
   const [noOfCopies, setNoOfCopies] = React.useState(1);
-  const [showCopiesInfo, setShowCopiesInfo] = React.useState(false);
 
   const precisionLow = 2;
   const precisionHigh = 10;
@@ -171,19 +168,9 @@ function SkyBrowserSettings({
           <header>
             Position for first copy
           </header>
-          <MaterialIcon
-            icon={'info'}
-            onMouseOver={() => setShowCopiesInfo(true)}
-            onMouseOut={() => setShowCopiesInfo(false)}
-            style={{fontSize: '15px'}}>
-          </MaterialIcon>
-          {
-            showCopiesInfo && (
-              <SkyBrowserTooltip placement="bottom-right" >
-                {"This sets the position of the first copy. The additional copies will be evenly spread out on the Azimuth."}
-              </SkyBrowserTooltip>
-            )
-          }
+          <InfoBox
+            text={"This sets the position of the first copy. The additional copies will be evenly spread out on the Azimuth."}
+          />
           </Row>
           <Row className={`${styles.vectorProperty}`}>
             {newPositionVector.map((number, index) => {
