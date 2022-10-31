@@ -131,13 +131,12 @@ class ActionsPanel extends Component {
       <div id="actionscroller" className={`${styles.windowContainer}`}>
         <hr className={Popover.styles.delimiter} />
           <Row>
-            <div className={Popover.styles.title}>
-              {navPathString}
-              {' '}
+            {backButton}
+            <div className={styles.navPathTitle}>
+              {` ${navPathString} `}
             </div>
           </Row>
         <hr className={Popover.styles.delimiter} />
-        {backButton}
         <FilterList matcher={this.matcher} height={'80%'}>
           <FilterListFavorites className={styles.Grid}>
             {actionsContent}
@@ -197,9 +196,8 @@ class ActionsPanel extends Component {
           <hr className={Popover.styles.delimiter} />
           <Row>
             {backButton}
-            <div style={{ whiteSpace: 'nowrap' }} className={Popover.styles.title}>
-              {navPathString}
-              {' '}
+            <div className={styles.navPathTitle}>
+              {` ${navPathString} `}
             </div>
           </Row>
           <hr className={Popover.styles.delimiter} />

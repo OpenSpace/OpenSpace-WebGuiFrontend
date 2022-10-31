@@ -1,5 +1,7 @@
 @import "../../styles/all";
 
+@import "../common/Popover/Popover.scss";
+
 .Grid {
   display: flex;
   flex-wrap: wrap;
@@ -43,6 +45,11 @@
     min-width: 310px;
     min-height: 100px;
   }
+
+  .navPathTitle {
+    font-size: 1em;
+  }
+
   font-size: 3.4em;
   overflow: scroll;
   overflow-y: auto;
@@ -53,6 +60,12 @@
 
 .folderButton {
   background-color: $ui-background-slider-input;
+}
+
+.navPathTitle {
+  @extend .title;
+  display: inline-block;
+  word-break: break-word;
 }
 
 .actionsPanel {
