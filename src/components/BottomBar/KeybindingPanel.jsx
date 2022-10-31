@@ -39,11 +39,11 @@ class KeybindingPanel extends Component {
   onKeyPress = (button) => {
     var action;
     var hadModifier = false;
-    if ( (button === "{shift}") || (button === "{alt}") || (button === "{control}") || (button === "{super}") ) {
+    if ((button === "{shift}") || (button === "{alt}") || (button === "{control}") || (button === "{super}")) {
       /**
-        * handle modifiers
-      */
-      var strippedModifier = button.substr(1,button.length-2);
+       * handle modifiers
+       */
+      var strippedModifier = button.substr(1, button.length-2);
       this.handleModifier(strippedModifier);
       hadModifier = true;
     } else {
@@ -81,7 +81,7 @@ class KeybindingPanel extends Component {
       }
 
       if (action) {
-          this.setState({
+        this.setState({
           ...this.state,
           input: button,
           actionName: action.name,
@@ -89,7 +89,6 @@ class KeybindingPanel extends Component {
           actionPath : action.guiPath,
         });
       }
-
     }
   };
 
@@ -134,7 +133,6 @@ class KeybindingPanel extends Component {
     } else {
       return "{" + key.toLowerCase() + "}";
     }
-    return "";
   }
 
   specialKeyMatch = (key, actionKey) => {
@@ -172,12 +170,11 @@ class KeybindingPanel extends Component {
 
   getActionForKey = (key) => {
     var keyActions = [];
-
     for (var i = 0; i < this.props.actions.data.shortcuts.length; i++) {
       var action = this.props.actions.data.shortcuts[i];
       if (action.key) {
         if (this.checkForModifiers(action)) {
-          if ( (action.key.toLowerCase() == key) || this.specialKeyMatch(key, action.key) ) {
+          if ((action.key.toLowerCase() == key) || this.specialKeyMatch(key, action.key)) {
             keyActions.push(action);
           }
         }
@@ -292,13 +289,22 @@ class KeybindingPanel extends Component {
     //TODO @micahnyc fix colors not from scss
     var mappedButtonString = " ";
     var inputString = " " + this.state.input;
+
     for (var i = 0; i < this.props.actions.data.shortcuts.length; i++) {
       var action = this.props.actions.data.shortcuts[i];
-      if (action.key) {
+      var key = action ? action.key : undefined;
+      if (key) {
         var keyString = "";
-        if (action.key.length === 1 && action.key.match(/[a-z]/i)) {
-          keyString = action.key.toLowerCase();
-        } else {
+        // Alphabetic characters
+        if (key.length === 1 && key.match(/[a-z]/i)) {
+          keyString = key.toLowerCase();
+        }
+        // Any other "simple" characters (with only one char)
+        else if (key.length === 1) {
+          keyString = key;
+        }
+        // The rest (modifiers, numpads, etc)
+        else {
           keyString = this.reverseSpecialKey(action.key);
         }
         if (this.checkForModifiers(action)) {
@@ -307,20 +313,21 @@ class KeybindingPanel extends Component {
       }
     }
     mappedButtonString = mappedButtonString.slice(0, -1);
+
     var toggledModifierString = "";
     for (var i = 0; i < this.state.activeModifiers.length; i++) {
       toggledModifierString += '{' + this.state.activeModifiers[i] + '} ';
     }
-    
+
     var buttonTheme = [];
     if (mappedButtonString != "") {
-      buttonTheme.push({class: "hg-mapped",buttons: mappedButtonString})
+      buttonTheme.push({ class: "hg-mapped", buttons: mappedButtonString })
     }
     if (toggledModifierString != "") {
-      buttonTheme.push({class: "hg-toggled",buttons: toggledModifierString})
+      buttonTheme.push({ class: "hg-toggled", buttons: toggledModifierString })
     }
     if (inputString != "") {
-      buttonTheme.push( {class: "hg-highlight",buttons: inputString})
+      buttonTheme.push({ class: "hg-highlight", buttons: inputString })
     }
 
     return (
@@ -331,17 +338,17 @@ class KeybindingPanel extends Component {
         detachable
         position={{x: -450, y: -150}}
         attached={false}
-      >        
+      >
         <hr className={Popover.styles.delimiter} />
         <div className={Popover.styles.content}>
           <div className="keyboardContainer">
-             <Keyboard
+            <Keyboard
               baseClass={"simple-keyboard-main"}
               keyboardRef={r => (this.keyboard = r)}
               layoutName="default"
               buttonTheme={buttonTheme}
               {...this.keyboardOptions}
-              />
+            />
               <div className="controlArrows">
                 <Keyboard
                   baseClass={"simple-keyboard-control"}
