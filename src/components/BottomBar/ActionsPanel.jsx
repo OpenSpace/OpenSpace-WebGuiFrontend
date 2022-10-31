@@ -154,7 +154,6 @@ class ActionsPanel extends Component {
     let actionsContent;
     let childrenContent;
     let backButton;
-    let keybindsContent;
 
     if (this.props.actionLevel.length == 0) {
       actionsContent = <div>No Actions</div>;
@@ -164,25 +163,6 @@ class ActionsPanel extends Component {
       actionsContent = this.getActionContent(level);
       childrenContent = this.getChildrenContent(level);
       backButton = this.getBackButton();
-    }
-
-    const navPathString = this.props.navigationPath;
-
-    if (navPathString == '/') {
-      // Special button to show keybindings (opens keyboard view)
-      keybindsContent = (
-        <Button
-          block
-          smalltext
-          onClick={this.props.toggleKeybinds}
-          key="showKeybinds"
-          className={styles.actionButton}
-        >
-          <p><MaterialIcon className={styles.buttonIcon} icon="keyboard" /></p>
-          Show Keybindings
-          <InfoBox text="Shows the keybinding viewer" />
-        </Button>
-      );
     }
 
     return (
@@ -206,11 +186,9 @@ class ActionsPanel extends Component {
             <FilterListFavorites className={styles.Grid}>
               {childrenContent}
               {actionsContent}
-              {keybindsContent}
             </FilterListFavorites>
             <FilterListData className={styles.Grid}>
               {this.getAllActions()}
-              {keybindsContent}
             </FilterListData>
           </FilterList>
         </div>
@@ -360,12 +338,6 @@ const mapDispatchToProps = (dispatch) => ({
   },
   actionPath: (action) => {
     dispatch(setActionsPath(action));
-  },
-  toggleKeybinds: (action) => {
-    dispatch(setPopoverVisibility({
-      popover: 'keybinds',
-      visible: true,
-    }));
   },
 });
 
