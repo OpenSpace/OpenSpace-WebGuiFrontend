@@ -1,9 +1,9 @@
 @import "../../styles/all";
 
 .Grid {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
   &:before,
     &:after {
       display: none;
@@ -17,11 +17,11 @@
 }
 
 .buttonIcon {
-    font-size: 1em;
+  font-size: 1em;
 }
 
 .bottomBarIcon {
-    font-size: 2em;
+  font-size: 2em;
 }
 
 .backButton {
@@ -35,6 +35,7 @@
   margin-bottom: 5px;
   margin: 2px;
   max-height: 50%;
+  overflow-wrap: break-word;
 }
 
 .windowContainer {
