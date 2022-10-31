@@ -66,7 +66,7 @@ class ActionsPanel extends Component {
       >
         <p><MaterialIcon className={styles.buttonIcon} icon="launch" /></p>
         {action.name}
-        <InfoBox text={action.documentation} />
+        {action.documentation && <InfoBox text={action.documentation} />}
       </Button>
     ));
   }
