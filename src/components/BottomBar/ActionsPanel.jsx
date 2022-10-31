@@ -106,7 +106,9 @@ class ActionsPanel extends Component {
 
   getBackButton() {
     if (this.props.navigationPath != '/') {
-      return <Button block smalltext className={styles.backButton} onClick={this.goBack} key="backbtn">&lt;- Back</Button>;
+      return <Button block smalltext className={styles.backButton} onClick={this.goBack} key="backbtn">
+        <MaterialIcon className={styles.buttonIcon} icon="arrow_back" /> Back
+      </Button>;
     }
   }
 
@@ -176,9 +178,9 @@ class ActionsPanel extends Component {
           key="showKeybinds"
           className={styles.actionButton}
         >
-          <p><MaterialIcon className={styles.buttonIcon} icon="launch" /></p>
+          <p><MaterialIcon className={styles.buttonIcon} icon="keyboard" /></p>
           Show Keybindings
-          <InfoBox text="Shows the keybinding vieiwer" />
+          <InfoBox text="Shows the keybinding viewer" />
         </Button>
       );
     }
@@ -218,9 +220,7 @@ class ActionsPanel extends Component {
   }
 
   render() {
-    const {
-      popoverVisible, actionLevel, navigationPath, singlewindow,
-    } = this.props;
+    const { popoverVisible, singlewindow } = this.props;
     if (singlewindow) {
       return (this.windowContent);
     }
@@ -285,7 +285,7 @@ const mapSubStateToProps = ({ popoverVisible, luaApi, actions }) => {
   }
 
   const allActions = actions.data.shortcuts.filter(action => {
-    if (navPath.length === 1) { 
+    if (navPath.length === 1) {
       return true;
     }
     else {
@@ -299,7 +299,7 @@ const mapSubStateToProps = ({ popoverVisible, luaApi, actions }) => {
       return true;
     }
   });
-  
+
   return {
     actionLevel: actionsForPath,
     popoverVisible,

@@ -25,7 +25,9 @@
 }
 
 .backButton {
-  width: 25%;
+  width: fit-content;
+  padding-left: 8px !important;
+  padding-right: 10px !important;
 }
 
 .actionButton {
