@@ -106,8 +106,8 @@ class ActionsPanel extends Component {
 
   getBackButton() {
     if (this.props.navigationPath != '/') {
-      return <Button block smalltext className={styles.backButton} onClick={this.goBack} key="backbtn">
-        <MaterialIcon className={styles.buttonIcon} icon="arrow_back" /> Back
+      return <Button block className={styles.backButton} onClick={this.goBack} key="backbtn">
+        <MaterialIcon className={styles.buttonIcon} icon="arrow_back" />
       </Button>;
     }
   }
