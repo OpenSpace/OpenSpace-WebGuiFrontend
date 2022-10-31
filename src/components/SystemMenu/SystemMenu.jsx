@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { setShowAbout } from '../../api/Actions';
+import { setShowAbout, setPopoverVisibility } from '../../api/Actions';
 import api from '../../api/api';
 import environment from '../../api/Environment';
 import subStateToProps from '../../utils/subStateToProps';
@@ -10,7 +10,7 @@ import Popover from '../common/Popover/Popover';
 import { useContextRefs } from '../GettingStartedTour/GettingStartedContext';
 import styles from './SystemMenu.scss';
 
-function SystemMenu({showAbout, openTutorials, showTutorial, console, nativeGui, quit, saveChange}) {
+function SystemMenu({showAbout, openTutorials, showTutorial, toggleKeybinds, console, nativeGui, quit, saveChange}) {
   const [showMenu, setShowMenu] = React.useState(false);
   const refs = useContextRefs();
   return (
@@ -27,6 +27,10 @@ function SystemMenu({showAbout, openTutorials, showTutorial, console, nativeGui,
             </button>
             <button style={{position : 'relative'}} onClick={() => showTutorial(true)} ref={el => refs.current["Tutorial"] = el}>
               Open Getting Started Tour
+            </button>
+            <hr className={Popover.styles.delimiter} />
+            <button onClick={toggleKeybinds}>
+              <MaterialIcon className={styles.linkIcon} icon="keyboard" />Show keybindings 
             </button>
             {
               environment.developmentMode ?
@@ -101,7 +105,13 @@ const mapSubStateToProps = ({ luaApi }) => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    showAbout: () => dispatch(setShowAbout(true))
+    showAbout: () => dispatch(setShowAbout(true)),
+    toggleKeybinds: () => {
+      dispatch(setPopoverVisibility({
+        popover: 'keybinds',
+        visible: true,
+      }));
+    },
   }
 }
 
