@@ -257,6 +257,12 @@ const mapSubStateToProps = ({ popoverVisible, luaApi, actions }) => {
     if (action.key) {
       continue;
     }
+
+    // If there is no backslack at beginning of GUI path, add that manually
+    if (action.guiPath.length > 0 && action.guiPath[0] !== '/') {
+      action.guiPath = '/' + action.guiPath;
+    }
+
     var splits = action.guiPath.split('/');
     splits.shift();
     let parent = actionsMapped['/'];
