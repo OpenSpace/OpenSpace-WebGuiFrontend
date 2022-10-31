@@ -169,6 +169,7 @@ class ActionsPanel extends Component {
     const navPathString = this.props.navigationPath;
 
     if (navPathString == '/') {
+      // Special button to show keybindings (opens keyboard view)
       keybindsContent = (
         <Button
           block
@@ -203,8 +204,8 @@ class ActionsPanel extends Component {
           <hr className={Popover.styles.delimiter} />
           <FilterList matcher={this.matcher} height={backButton ? '280px' : '320px'}>
             <FilterListFavorites className={styles.Grid}>
-              {actionsContent}
               {childrenContent}
+              {actionsContent}
               {keybindsContent}
             </FilterListFavorites>
             <FilterListData className={styles.Grid}>
@@ -264,6 +265,13 @@ const mapSubStateToProps = ({ popoverVisible, luaApi, actions }) => {
     var splits = action.guiPath.split('/');
     splits.shift();
     let parent = actionsMapped['/'];
+
+    // Add to top level actions (no gui path)
+    if (splits.length == 0) {
+      parent.actions.push(action);
+    }
+
+    // Add actions of other levels
     while (splits.length > 0) {
       var index = splits.shift();
       if (parent.children[index] == undefined) {
