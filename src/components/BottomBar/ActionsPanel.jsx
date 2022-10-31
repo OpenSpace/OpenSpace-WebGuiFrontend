@@ -133,7 +133,7 @@ class ActionsPanel extends Component {
           <Row>
             {backButton}
             <div className={styles.navPathTitle}>
-              {` ${navPathString} `}
+              {`${this.props.displayedNavigationPath}`}
             </div>
           </Row>
         <hr className={Popover.styles.delimiter} />
@@ -198,7 +198,7 @@ class ActionsPanel extends Component {
           <Row>
             {backButton}
             <div className={styles.navPathTitle}>
-              {` ${navPathString} `}
+              {`${this.props.displayedNavigationPath}`}
             </div>
           </Row>
           <hr className={Popover.styles.delimiter} />
@@ -248,6 +248,7 @@ const mapSubStateToProps = ({ popoverVisible, luaApi, actions }) => {
       popoverVisible,
       luaApi,
       navigationPath: '/',
+      displayedNavigationPath: '/'
     };
   }
 
@@ -312,11 +313,31 @@ const mapSubStateToProps = ({ popoverVisible, luaApi, actions }) => {
     }
   });
 
+  // Truncate navigation path if too long
+  const NAVPATH_LENGTH_LIMIT = 60;
+  const shouldTruncate = actions.navigationPath.length > NAVPATH_LENGTH_LIMIT;
+
+  let truncatedPath = actions.navigationPath;
+  if (shouldTruncate) {
+    let originalPath = navPath;
+    if (originalPath[0] === '/') {
+      originalPath = originalPath.substring(1);
+    }
+    let pieces = originalPath.split('/');
+    if (pieces.length > 1) {
+      // TODO: maybe keep more pieces of the path, if possible?
+      truncatedPath = `/${pieces[0]}/.../${pieces[pieces.length - 1]}`;
+    } else {
+      truncatedPath = navPath.substring(0, NAVPATH_LENGTH_LIMIT);
+    }
+  }
+
   return {
     actionLevel: actionsForPath,
     popoverVisible,
     luaApi,
     navigationPath: actions.navigationPath,
+    displayedNavigationPath: truncatedPath,
     allActions: allActions,
   };
 };
