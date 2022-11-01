@@ -12,20 +12,25 @@ const Tooltip = (props) => {
     setDomReady(true)
   })
 
-  // @TODO (emmbr, 2022-10-27): Refactor tooltip class to always use the 'fixed' positioning
-
-  // Render tooltips independent from their stacking contexts, by drawing it at root level.
-  // Fixes all problems with positioning, as long as "fixed" positioning (in relation 
-  // to viewport) is used
-  return domReady && ReactDom.createPortal(
+  const tooltip = (
     <div
       {...excludeKeys(props, 'placement fixed')}
       className={`${styles.tooltip} ${styles[placement]} ${fixed && styles.fixed}`}
     >
       { children }
-    </div>,
-    document.getElementById('root')
+    </div>
   );
+
+  if (fixed) {
+    // If ficed positioning, render tooltips independent from their stacking contexts, 
+    // by drawing it at root level. Fixes all problems with positioning for "fixed" 
+    // positioning (in relation to viewport)
+    return domReady && ReactDom.createPortal(tooltip, document.getElementById('root'));
+  }
+  else {
+    // If fixed positioning is not used, just render normally
+    return tooltip; 
+  }
 };
 
 Tooltip.propTypes = {
