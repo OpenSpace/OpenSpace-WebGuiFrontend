@@ -31,8 +31,9 @@ class ActionsPanel extends Component {
   }
 
   addNavPath(e) {
-    let navString = this.props.navigationPath;
-    if (this.props.navigationPath == '/') {
+    const { navigationPath } = this.props;
+    let navString = navigationPath;
+    if (navigationPath == '/') {
       navString += e.currentTarget.getAttribute('foldername');
     } else {
       navString += `/${e.currentTarget.getAttribute('foldername')}`;
@@ -41,7 +42,8 @@ class ActionsPanel extends Component {
   }
 
   goBack(e) {
-    let navString = this.props.navigationPath;
+    const { navigationPath } = this.props;
+    let navString = navigationPath;
     navString = navString.substring(0, navString.lastIndexOf('/'));
     if (navString.length == 0) {
       navString = '/';
@@ -50,8 +52,9 @@ class ActionsPanel extends Component {
   }
 
   sendAction(e) {
+    const { luaApi } = this.props;
     const actionId = e.currentTarget.getAttribute('actionid');
-    this.props.luaApi.action.triggerAction(actionId);
+    luaApi.action.triggerAction(actionId);
   }
 
   getActionContent(level) {
@@ -88,7 +91,8 @@ class ActionsPanel extends Component {
   }
 
   getAllActions() {
-    return this.props.allActions.map((action) => (
+    const { allActions } = this.props;
+    return allActions.map((action) => (
       <Button
         block
         smalltext
@@ -105,7 +109,8 @@ class ActionsPanel extends Component {
   }
 
   getBackButton() {
-    if (this.props.navigationPath != '/') {
+    const { navigationPath } = this.props;
+    if (navigationPath != '/') {
       return <Button block className={styles.backButton} onClick={this.goBack} key="backbtn">
         <MaterialIcon className={styles.buttonIcon} icon="arrow_back" />
       </Button>;
@@ -117,7 +122,7 @@ class ActionsPanel extends Component {
   }
 
   get windowContent() {
-    const level = this.props.actionLevel;
+    const { displayedNavigationPath, level } = this.props;
 
     if (level == undefined) {
       return <div>Loading</div>;
@@ -125,7 +130,6 @@ class ActionsPanel extends Component {
     const actionsContent = this.getActionContent(level);
     const childrenContent = this.getChildrenContent(level);
     const backButton = this.getBackButton();
-    const navPathString = this.props.navigationPath;
     
     return (
       <div id="actionscroller" className={`${styles.windowContainer}`}>
@@ -133,7 +137,7 @@ class ActionsPanel extends Component {
           <Row>
             {backButton}
             <div className={styles.navPathTitle}>
-              {`${this.props.displayedNavigationPath}`}
+              {`${displayedNavigationPath}`}
             </div>
           </Row>
         <hr className={Popover.styles.delimiter} />
@@ -151,15 +155,16 @@ class ActionsPanel extends Component {
   }
 
   get popover() {
+    const { actionLevel, displayedNavigationPath } = this.props;
     let actionsContent;
     let childrenContent;
     let backButton;
 
-    if (this.props.actionLevel.length == 0) {
+    if (actionLevel.length == 0) {
       actionsContent = <div>No Actions</div>;
       childrenContent = <div>No Children</div>;
     } else {
-      const level = this.props.actionLevel;
+      const level = actionLevel;
       actionsContent = this.getActionContent(level);
       childrenContent = this.getChildrenContent(level);
       backButton = this.getBackButton();
@@ -178,7 +183,7 @@ class ActionsPanel extends Component {
           <Row className={styles.navPathRow}>
             {backButton}
             <div className={styles.navPathTitle}>
-              {`${this.props.displayedNavigationPath}`}
+              {`${displayedNavigationPath}`}
             </div>
           </Row>
           <hr className={Popover.styles.delimiter} />
@@ -236,7 +241,7 @@ const mapSubStateToProps = ({ popoverVisible, luaApi, actions }) => {
       continue;
     }
 
-    // If there is no backslack at beginning of GUI path, add that manually
+    // If there is no backslach at beginning of GUI path, add that manually
     if (action.guiPath.length > 0 && action.guiPath[0] !== '/') {
       action.guiPath = '/' + action.guiPath;
     }
