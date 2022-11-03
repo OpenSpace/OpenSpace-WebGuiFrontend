@@ -175,7 +175,7 @@ class ActionsPanel extends Component {
       >
         <div id="actionscroller" className={`${Popover.styles.content}`}>
           <hr className={Popover.styles.delimiter} />
-          <Row>
+          <Row className={styles.navPathRow}>
             {backButton}
             <div className={styles.navPathTitle}>
               {`${this.props.displayedNavigationPath}`}
