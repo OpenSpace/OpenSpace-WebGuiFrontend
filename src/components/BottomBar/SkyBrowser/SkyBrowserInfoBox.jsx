@@ -7,7 +7,7 @@ import styles from './SkyBrowserTooltip.scss';
 import esaSkyLogo from './ESASKY.png';
 
 function SkyBrowserInfoBox({
-  icon, text, title, textUrl, ra, dec, fov, hasCelestialCoords
+  dec, fov, hasCelestialCoords, ra, text, textUrl, title
  }) {
   const [isPopupShowing, setIsPopupShowing] = React.useState(false);
 
@@ -38,17 +38,6 @@ function SkyBrowserInfoBox({
     window.open(esaSkyUrl, "EsaSky");
   }
 
-  const esaSkyButton = hasCelestialCoords ? (
-    <Button
-      onClick={() => {
-        openEsaSky(ra, dec, fov)
-      }}
-      className={styles.tooltipButton} transparent small
-    >
-      <img src={esaSkyLogo} alt="EsaSky" style={{width:'100%'}} />
-    </Button>
-  ) : "";
-
   return (
     <span ref={(el) => ref.current = el}>
       <Button
@@ -56,7 +45,7 @@ function SkyBrowserInfoBox({
         small
         onClick={togglePopup}
       >
-        <MaterialIcon icon={icon} style={{fontSize: '15px'}}/>
+        <MaterialIcon icon={"help"} style={{fontSize: '15px'}}/>
       </Button>
       {isPopupShowing && (
         <SkyBrowserTooltip
@@ -73,7 +62,16 @@ function SkyBrowserInfoBox({
               Read more
             </Button>
           )}
-          { esaSkyButton }
+          {hasCelestialCoords && (
+            <Button
+              onClick={() => { openEsaSky(ra, dec, fov) }}
+              className={styles.tooltipButton}
+              transparent
+              small
+            >
+              <img src={esaSkyLogo} alt="EsaSky" style={{width:'100%'}} />
+            </Button>
+          )}
         </SkyBrowserTooltip>
       )}
     </span>
@@ -81,14 +79,13 @@ function SkyBrowserInfoBox({
 }
 
 SkyBrowserInfoBox.propTypes = {
-  icon: PropTypes.string,
-  title: PropTypes.string.isRequired,
+  dec: PropTypes.number,
+  fov: PropTypes.number,
+  hasCelestialCoords: PropTypes.bool,
+  ra: PropTypes.number,
   text: PropTypes.string,
-  textUrl: PropTypes.string
-};
-
-SkyBrowserInfoBox.defaultProps = {
-  icon: 'help',
+  textUrl: PropTypes.string,
+  title: PropTypes.string.isRequired,
 };
 
 export default SkyBrowserInfoBox;

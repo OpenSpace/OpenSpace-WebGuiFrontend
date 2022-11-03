@@ -7,7 +7,6 @@ import styles from './SkyBrowserFocusEntry.scss';
 import { LazyLoadImage } from "react-lazy-load-image-component";
 
 function OpacitySlider({ opacity, setOpacity, identifier }) {
-  
   function handleChange(e) {
     // Ensure the image has an id, which consists of the index of the image
     const index = Number(identifier);
@@ -36,70 +35,64 @@ function OpacitySlider({ opacity, setOpacity, identifier }) {
 }
 
 function SkyBrowserFocusEntry({
-  isActive,
-  identifier,
-  setOpacity,
-  onSelect,
-  removeImageSelection,
-  hasCelestialCoords,
-  currentBrowserColor,
-  opacity,
-  thumbnail,
   credits,
   creditsUrl,
-  ra,
+  currentBrowserColor,
   dec,
   fov,
+  hasCelestialCoords,
+  identifier,
+  isActive,
   luaApi,
-  name
+  name,
+  onSelect,
+  opacity,
+  ra,
+  removeImageSelection,
+  setOpacity,
+  thumbnail
 }) {
 
-  function isTabEntry() {
-    return !!setOpacity;
-  }
-
+  // The function setOpacity is only sent to the tab entries
+  // Therefore, if the setOpacity function is defined, we are dealing with
+  // a tab entry
+  const isTabEntry = Boolean(setOpacity); 
+  
   function select(e) {
     if (onSelect && identifier) {
       onSelect(identifier);
     }
-    if (!e) var e = window.event;
-    e.cancelBubble = true;
-    if (e.stopPropagation) e.stopPropagation();
+    // Check if there is an event - otherwise choose the event of the window
+    let event = e ?? window.event;
+    event.cancelBubble = true;
+    event?.stopPropagation();
   }
 
-  const imageRemoveButton = removeImageSelection && (
-      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        {skySurveyTag}
-        <Button
-          onClick={(e) => {
-            if (!e) var e = window.event;
-            e.cancelBubble = true;
-            if (e.stopPropagation) e.stopPropagation();
-            removeImageSelection(identifier);
-          }}
-          className={styles.removeImageButton}
-          transparent
-          small
-        >
-          <MaterialIcon icon="close" className="small" />
-        </Button>
-      </div>
-    );
-
-  const opacitySlider = setOpacity ? <OpacitySlider setOpacity={setOpacity} opacity={opacity} identifier={identifier} /> : '';
-  const skySurveyTag = !hasCelestialCoords ? <span className={styles.skySurvey}>
-      Sky Survey
-  </span> : "";
-  
   return (
       <li
         className={`${styles.entry} ${isTabEntry && styles.tabEntry} ${isActive && styles.active}`}
         style={{ borderLeftColor: currentBrowserColor() }}
         onMouseOver={() => { luaApi.skybrowser.moveCircleToHoverImage(Number(identifier)); }}
         onMouseOut={() => { luaApi.skybrowser.disableHoverCircle(); }}
-        onClick={setOpacity ? undefined : select}
+        onClick={isTabEntry ? undefined : select}
       >
-        {imageRemoveButton}
+        {isTabEntry && (
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <Button
+            onClick={(e) => {
+              if (!e) var e = window.event;
+              e.cancelBubble = true;
+              if (e.stopPropagation) e.stopPropagation();
+              removeImageSelection(identifier);
+            }}
+            className={styles.removeImageButton}
+            transparent
+            small
+          >
+            <MaterialIcon icon="close" className="small" />
+          </Button>
+        </div>
+        )}
         <div className={styles.image}>
           <LazyLoadImage src={thumbnail} alt={''} className={styles.imageText} onClick={setOpacity ? select : undefined}/>
         </div>
@@ -114,21 +107,38 @@ function SkyBrowserFocusEntry({
             ra={ra}
             dec={dec}
             fov={fov}
-            isTabEntry={isTabEntry}
             hasCelestialCoords={hasCelestialCoords}
           />
         </div>
-        {opacitySlider}
-        {!setOpacity && skySurveyTag}
+        {isTabEntry && (
+          <OpacitySlider setOpacity={setOpacity} opacity={opacity} identifier={identifier} />
+        )}
+        {(!isTabEntry && !hasCelestialCoords) && (
+          <span className={styles.skySurvey}>
+            Sky Survey
+          </span>
+        )}
       </li>
     );
 }
 
 SkyBrowserFocusEntry.propTypes = {
+  credits: PropTypes.string,
+  creditsUrl: PropTypes.string,
+  currentBrowserColor: PropTypes.func,
+  dec: PropTypes.number,
+  fov: PropTypes.number,
+  hasCelestialCoords: PropTypes.bool,
   identifier: PropTypes.string.isRequired,
+  isActive: PropTypes.bool,
+  luaApi: PropTypes.object,
   name: PropTypes.string,
   onSelect: PropTypes.func,
-  isActive: PropTypes.bool,
+  opacity: PropTypes.number,
+  ra: PropTypes.number,
+  removeImageSelection: PropTypes.func,
+  setOpacity: PropTypes.func,
+  thumbnail: PropTypes.string,
 };
 
 SkyBrowserFocusEntry.defaultProps = {

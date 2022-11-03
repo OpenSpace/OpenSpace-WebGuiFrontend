@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styles from './SkyBrowserTooltip.scss';
 
-function SkyBrowserTooltip({ placement, fixed, children, ...props }) {
+function SkyBrowserTooltip({ children, fixed, placement, ...props }) {
   return (
     <div
       {...props}
@@ -17,8 +17,8 @@ function SkyBrowserTooltip({ placement, fixed, children, ...props }) {
 
 SkyBrowserTooltip.propTypes = {
   children: PropTypes.node.isRequired,
-  placement: PropTypes.oneOf('bottom-left bottom-right'.split(' ')),
   fixed: PropTypes.bool,
+  placement: PropTypes.oneOf('bottom-left bottom-right'.split(' ')),
 };
 
 SkyBrowserTooltip.defaultProps = {

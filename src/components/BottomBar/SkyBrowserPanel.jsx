@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSelector, shallowEqual, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { SkyBrowser_HideTargetsBrowsersWithGuiKey } from '../../api/keys';
 import { getBoolPropertyValue } from '../../utils/propertyTreeHelpers';
 import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
@@ -27,15 +27,15 @@ import styles from './SkyBrowserPanel.scss';
 
 function SkyBrowserPanel({ }) {
   const [activeImage, setActiveImage] = React.useState('');
-  const [minimumTabHeight, setMinimumTabHeight] = React.useState(80);
   const [currentTabHeight, setCurrentTabHeight] = React.useState(200);
   const [currentPopoverHeight, setCurrentPopoverHeightState] = React.useState(440);
   const [showOnlyNearest, setShowOnlyNearest] = React.useState(true);
-  const [menuHeight, setMenuHeight] = React.useState(70);
   const [imageCollectionIsLoaded, setImageCollectionIsLoaded] = React.useState(false);
   const [dataIsLoaded, setDataIsLoaded] = React.useState(false);
   const [wwtSize, setWwtSize] = React.useState({width: 400, height: 400});
   const [wwtPosition, setWwtPositionState] = React.useState({ x: -800, y: -600 });
+  const MenuHeight = 70;
+  const MinimumTabHeight = 80;
 
   const wwt = React.useRef();
 
@@ -44,21 +44,11 @@ function SkyBrowserPanel({ }) {
     const browsers = state.skybrowser.browsers;
     return browsers && Object.keys(browsers)?.length !== 0
   });
-  const cameraInSolarSystem = useSelector((state) => {
-    return state.skybrowser.cameraInSolarSystem
-  });
-  const imageList = useSelector((state) => {
-    return state.skybrowser.imageList
-  });
-  const isDataInitialized = useSelector((state) => {
-    return state.skybrowser.isInitialized
-  });
-  const luaApi = useSelector((state) => {
-  return state.luaApi
-  });
-  const popoverVisible = useSelector((state) => {
-    return state.local.popovers.skybrowser.visible
-    });
+  const cameraInSolarSystem = useSelector((state) => state.skybrowser.cameraInSolarSystem);
+  const imageList = useSelector((state) => state.skybrowser.imageList);
+  const isDataInitialized = useSelector((state) => state.skybrowser.isInitialized);
+  const luaApi = useSelector((state) => state.luaApi);
+  const popoverVisible = useSelector((state) => state.local.popovers.skybrowser.visible);
   const hideTargetsBrowsersWithGui = useSelector((state) => {
     return getBoolPropertyValue(state, SkyBrowser_HideTargetsBrowsersWithGuiKey)
   });
@@ -208,7 +198,7 @@ function SkyBrowserPanel({ }) {
   }
 
   function createBrowserContent() {
-    const currentImageListHeight = currentPopoverHeight - currentTabHeight - menuHeight;
+    const currentImageListHeight = currentPopoverHeight - currentTabHeight - MenuHeight;
     const imageMenu = (
       <div className={styles.row}>
         <Picker
@@ -234,8 +224,8 @@ function SkyBrowserPanel({ }) {
         activeImage={activeImage}
         currentBrowserColor={currentBrowserColor}
         selectImage={selectImage}
-        maxHeight={currentPopoverHeight - menuHeight}
-        minHeight={minimumTabHeight}
+        maxHeight={currentPopoverHeight - MenuHeight}
+        minHeight={MinimumTabHeight}
         height={currentTabHeight}
         setBorderRadius={setBorderRadius}
         imageCollectionIsLoaded={imageCollectionIsLoaded}

@@ -1,6 +1,8 @@
 import React from 'react';
-import { useSelector, shallowEqual, useDispatch } from 'react-redux';
+import { useSelector, useDispatch, shallowEqual } from 'react-redux';
+import { lowPrecisionEqual } from '../../../utils/customHooks';
 import Picker from '../Picker';
+import PropTypes from 'prop-types';
 import FloatingWindow from './WindowThreeStates/FloatingWindow'
 import styles from './WorldWideTelescope.scss'
 import { SkyBrowser_ShowTitleInBrowserKey, SkyBrowser_InverseZoomDirectionKey } from '../../../api/keys';
@@ -11,60 +13,43 @@ import {
 } from '../../../api/Actions';
 
 function WorldWideTelescope({ 
-  setMessageFunction,
-  setImageCollectionIsLoaded,
   imageCollectionIsLoaded,
-  size,
-  setSize,
   position,
-  togglePopover,
-  setPosition
+  setImageCollectionIsLoaded,
+  setMessageFunction,
+  setPosition,
+  setSize,
+  size,
+  togglePopover
 }) {
+  // State
   const [isDragging, setIsDragging] = React.useState(false);
   const [startDragPosition, setStartDragPosition] = React.useState([0, 0]);
   const [wwtHasLoaded, setWwtHasLoaded] = React.useState(false);
+  const TopBarHeight = 25;
+  // Refs
+  const iframe = React.useRef(null);
 
-  const fov = useSelector((state) => {
-    return state.skybrowser.browsers[state.skybrowser.selectedBrowserId].fov;
-  });
-  const ra = useSelector((state) => {
-    return state.skybrowser.browsers[state.skybrowser.selectedBrowserId].ra;
-  });
-  const dec = useSelector((state) => {
-    return state.skybrowser.browsers[state.skybrowser.selectedBrowserId].dec;
-  });
-  const roll = useSelector((state) => {
-    return state.skybrowser.browsers[state.skybrowser.selectedBrowserId].roll;
-  }) * 0.01;
-  const browserName = useSelector((state) => {
-    return state.skybrowser.browsers[state.skybrowser.selectedBrowserId].name;
-  });
-  const browserId = useSelector((state) => {
-    return state.skybrowser.browsers[state.skybrowser.selectedBrowserId].id;
-  });
-  const browserColor = useSelector((state) => {
-    return state.skybrowser.browsers[state.skybrowser.selectedBrowserId].color;
-  }, shallowEqual);
-  const borderRadius = useSelector((state) => {
-    return state.skybrowser.browsers[state.skybrowser.selectedBrowserId].borderRadius;
-  });
-  const url = useSelector((state) => {
-    return state.skybrowser.url
-  });
-  const skybrowserApi = useSelector((state) => {
-    return state.luaApi.skybrowser
-  });
-  const showTitle = useSelector((state) => {
-    return getBoolPropertyValue(state, SkyBrowser_ShowTitleInBrowserKey)
-  });
-  const inverseZoom = useSelector((state) => {
-    return getBoolPropertyValue(state, SkyBrowser_InverseZoomDirectionKey)
-  });
+  // Selectors & dispatch - access Redux store
+  // Get each value separately to reduce unnecessary renders
+  const fov = useSelector((state) => state.skybrowser.browsers[state.skybrowser.selectedBrowserId].fov, lowPrecisionEqual);
+  const ra = useSelector((state) => state.skybrowser.browsers[state.skybrowser.selectedBrowserId].ra, lowPrecisionEqual);
+  const dec = useSelector((state) => state.skybrowser.browsers[state.skybrowser.selectedBrowserId].dec, lowPrecisionEqual);
+  const roll = useSelector((state) => state.skybrowser.browsers[state.skybrowser.selectedBrowserId].roll, lowPrecisionEqual);
+  const borderRadius = useSelector(
+    (state) => state.skybrowser.browsers[state.skybrowser.selectedBrowserId].borderRadius
+  , lowPrecisionEqual);
+  const browserName = useSelector((state) => state.skybrowser.browsers[state.skybrowser.selectedBrowserId].name);
+  const browserId = useSelector((state) => state.skybrowser.browsers[state.skybrowser.selectedBrowserId].id);
+  const browserColor = useSelector((state) => state.skybrowser.browsers[state.skybrowser.selectedBrowserId].color, shallowEqual);
+  const url = useSelector((state) => state.skybrowser.url);
+  const skybrowserApi = useSelector((state) => state.luaApi.skybrowser);
+  const showTitle = useSelector((state) => getBoolPropertyValue(state, SkyBrowser_ShowTitleInBrowserKey));
+  const inverseZoom = useSelector((state) => getBoolPropertyValue(state, SkyBrowser_InverseZoomDirectionKey));
 
   const dispatch = useDispatch();
-  const iframe = React.useRef(null);
-  const topBarHeight = 25;
 
+  // Effects
   React.useEffect(() => {
     setMessageFunction(sendMessageToWwt);
     window.addEventListener("message", handleCallbackMessage);
@@ -78,10 +63,10 @@ function WorldWideTelescope({
       initialize();
     }
   }, [wwtHasLoaded, url]);
-
+ 
   React.useEffect(() => {
     setAim();
-  }, [ra, dec, fov, roll]);
+  }, [fov, roll, ra, dec]);
 
   React.useEffect(() => {
     setBorderRadius(borderRadius);
@@ -194,8 +179,8 @@ function WorldWideTelescope({
 
   function changeSize(widthWwt, heightWwt) {
     const { innerWidth: windowWidth, innerHeight: windowHeight } = window;
-    const ratio = widthWwt / (heightWwt - topBarHeight);
-    const scale = (heightWwt - topBarHeight) / windowHeight;
+    const ratio = widthWwt / (heightWwt - TopBarHeight);
+    const scale = (heightWwt - TopBarHeight) / windowHeight;
     const newWidth = 2 * scale * ratio;
     const newHeight = 2 * scale;
     const id = browserId;
@@ -249,5 +234,16 @@ function WorldWideTelescope({
     </FloatingWindow>
   );
 }
+
+WorldWideTelescope.propTypes = {
+  imageCollectionIsLoaded: PropTypes.bool,
+  position: PropTypes.object,
+  setImageCollectionIsLoaded: PropTypes.func,
+  setMessageFunction: PropTypes.func,
+  setPosition: PropTypes.func,
+  setSize: PropTypes.func,
+  size: PropTypes.object,
+  togglePopover: PropTypes.func
+};
 
 export default WorldWideTelescope;
