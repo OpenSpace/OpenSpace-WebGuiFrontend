@@ -141,7 +141,7 @@
         "goalType" : ["changeUri"],
         "uri" : "Scene.MarsTrail.Renderable.Appearance.Color",
         "title" : "Content",
-        "key": ["Scene", "Group Solar System", "Group Planets", "Group Mars", "PropertyOwner Mars Trail", "PropertyOwner Renderable MarsTrail", "PropertyOwner Appearance MarsTrail", "Color"],
+        "key": ["Scene", "Group Solar System", "Group Planets", "Group Mars", "PropertyOwner Mars Trail", "PropertyOwner Renderable MarsTrail", "PropertyOwner Appearance MarsTrail", "Scene.MarsTrail.Renderable.Appearance.Color"],
         "firstText" : "All objects have properties, which makes it possible to alter the behaviour or appearance of an object.",
         "goalText" : ["Change the color of the trail of Mars"],
         "arrowPosition" : { "x" : 50, "y" : 70},
