@@ -51,7 +51,7 @@ class ColorPickerPopup extends Component {
   }
 
   handleOutsideClick(evt) {
-    if (this.wrapper && !this.wrapper.contains(evt.target)) {
+    if (this.insideClickWrapper && !this.insideClickWrapper.contains(evt.target)) {
       this.closePopup();
     }
   }
@@ -74,7 +74,7 @@ class ColorPickerPopup extends Component {
     };
 
     return (
-      <span
+      <div
         ref={this.setRef('wrapper')}
         className={className}
       >
@@ -86,20 +86,22 @@ class ColorPickerPopup extends Component {
             </div>
           </div>
           </Button>
-        { !disabled && this.state.showPopup && (
+          {!disabled && this.state.showPopup && (
             <Tooltip
               fixed
               placement="right" // TODO: fix so placement can be set from property
               style={{...this.position, ...customTooltipCss}}
             >
-              <ColorPicker
-                disableAlpha={disableAlpha}
-                color={color}
-                onChange={onChange}
-              />
+              <div ref={this.setRef('insideClickWrapper')}>
+                <ColorPicker
+                  disableAlpha={disableAlpha}
+                  color={color}
+                  onChange={onChange}
+                />
+              </div>
             </Tooltip>
         )}
-      </span>
+      </div>
     );
   }
 }
