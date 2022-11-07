@@ -309,7 +309,7 @@ class MinMaxRangeInput extends Component {
           <div className={styles.hoverHint} style={hoverHintStyle} />
         )} 
         { !this.props.noTooltip && hoverHint !== null && (
-          <Tooltip style={{ left: `${100 * hoverHint}%` }}>
+          <Tooltip style={{ left: `${100 * hoverHint}%` }} placement={'top'}>
             { tooltipValue }
           </Tooltip>
         )}

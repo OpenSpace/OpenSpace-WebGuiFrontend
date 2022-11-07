@@ -8,13 +8,7 @@ $menu-height: 40px;
   background: $ui-background-solid;
 }
 
-.filterList :placeholder-shown,
-label {
-  text-indent: 6px;
-}
-
 .filterList input {
-  text-indent: 6px;
   background-color: $list-header;
   border-bottom: 2px solid $ui-background-solid;
   &:hover {

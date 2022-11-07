@@ -35,5 +35,11 @@ function useLocalStorageState(
   
   return [state, setState];
 }
+
+// Used to compare floating point values for selectors
+function lowPrecisionEqual(oldValue, newValue) {
+  const Precision = 1000;
+  return Math.floor(oldValue * Precision) === Math.floor(newValue * Precision)
+}
   
-export { useLocalStorageState };
+export { useLocalStorageState, lowPrecisionEqual };

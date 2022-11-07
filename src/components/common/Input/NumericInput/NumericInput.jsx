@@ -190,7 +190,7 @@ class NumericInput extends Component {
           <div className={styles.hoverHint} style={{ width: `${100 * hoverHintOffset}%` }} />
         )}
         { !this.props.noTooltip && hoverHint !== null && (
-          <Tooltip style={{ left: `${100 * hoverHint}%` }}>
+          <Tooltip style={{ left: `${100 * hoverHint}%` }} placement={'top'}>
             { tooltipValue }
           </Tooltip>
         )}
