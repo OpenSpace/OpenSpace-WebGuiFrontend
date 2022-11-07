@@ -5,16 +5,23 @@
 }
 
 .playbackButton {
-	margin-right: 1em;
+  margin-right: 1em;
 }
 
 .fpsInput {
-  min-width: 50%;
-  margin-bottom: 10px;
+  min-width: 40%;
 }
 
 .fpsCheckbox {
   min-width: 50%;
-  margin-bottom: 10px;
   line-height: 2em;
+}
+
+.lastRow {
+  margin-bottom: 10px;
+}
+
+.infoBox {
+  align-self: center;
+  padding-right: 5px;
 }

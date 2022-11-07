@@ -1,123 +1,91 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { times } from 'lodash';
 import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
 import Button from '../../common/Input/Button/Button';
 import SkyBrowserTooltip from './SkyBrowserTooltip';
 import styles from './SkyBrowserTooltip.scss';
 import esaSkyLogo from './ESASKY.png';
 
-class SkyBrowserInfoBox extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isPopupShowing: false,
-      tooltipActive: false
-    };
+function SkyBrowserInfoBox({
+  dec, fov, hasCelestialCoords, ra, text, textUrl, title
+ }) {
+  const [isPopupShowing, setIsPopupShowing] = React.useState(false);
 
-    this.setRef = this.setRef.bind(this);
-    this.tooltipActive = this.tooltipActive.bind(this);
-    this.checkIfTooltipActive = this.checkIfTooltipActive.bind(this);
-    this.togglePopup = this.togglePopup.bind(this);
-    this.openImageUrl = this.openImageUrl.bind(this);
-    this.handleOutsideClick = this.handleOutsideClick.bind(this);
-    this.openEsaSky = this.openEsaSky.bind(this);
-  }
+  const ref = React.useRef(null);
 
-  setRef(what) {
-    return (element) => {
-      this[what] = element;
-    };
-  }
-
-  get position() {
-    if (!this.wrapper) {
+  function position() {
+    if (!ref.current) {
       return { top: '0px', left: '0px' };
     }
-    const { top, left, right, bottom } = this.wrapper.getBoundingClientRect();
+    const { top, left, right, bottom } = ref.current.getBoundingClientRect();
     return { top: `${top}`, left: `${right}`};
   }
 
-  openImageUrl(imageUrl) {
+  function openImageUrl(imageUrl) {
     const newWindow = window.open(imageUrl, '_blank', 'noopener,noreferrer');
     if (newWindow) newWindow.opener = null;
   }
 
-  handleOutsideClick(evt) {
-    if (this.wrapper && !this.wrapper.contains(evt.target)) {
-      this.hidePopup();
-    }
-  }
-
-  tooltipActive() {
-    this.setState({ tooltipActive: !this.state.tooltipActive });
-  }
-
-  checkIfTooltipActive() {
-    if (!this.state.tooltipActive) {
-      this.hidePopup();
-    }
-  }
-
-  togglePopup(e) {
-    this.setState({ isPopupShowing: !this.state.isPopupShowing });
+  function togglePopup(e) {
+    setIsPopupShowing(!isPopupShowing);
     if (!e) var e = window.event;
     e.cancelBubble = true;
     if (e.stopPropagation) e.stopPropagation();
   }
 
-  openEsaSky(ra, dec, fov) {
+  function openEsaSky(ra, dec, fov) {
     let esaSkyUrl = "http://sky.esa.int/?target="+ra+"%"+dec+"&hips=DSS2+color&fov="+fov+"&cooframe=J2000&sci=true&lang=en";
     window.open(esaSkyUrl, "EsaSky");
   }
 
-  render() {
-    const { icon, text, title, textUrl, ra, dec, fov, hasCelestialCoords} = this.props;
-    const { isPopupShowing } = this.state;
-    const esaSkyButton = hasCelestialCoords ? (
-      <Button onClick={() => {this.openEsaSky(ra,dec,fov)}} className={styles.tooltipButton} transparent small>
-        <img src={esaSkyLogo} alt="EsaSky" style={{width:'100%'}} />
+  return (
+    <span ref={(el) => ref.current = el}>
+      <Button
+        transparent
+        small
+        onClick={togglePopup}
+      >
+        <MaterialIcon icon={"help"} style={{fontSize: '15px'}}/>
       </Button>
-    ) : "";
-
-    return (
-      <span ref={this.setRef('wrapper')}>
-        <Button
-          transparent
-          small
-          onClick={this.togglePopup}
+      {isPopupShowing && (
+        <SkyBrowserTooltip
+          placement="bottom-left"
+          style={position()}
         >
-          <MaterialIcon icon={icon} style={{fontSize: '15px'}}/>
-        </Button>
-        {isPopupShowing && (
-          <SkyBrowserTooltip
-            placement="bottom-left"
-            style={this.position}
-          >
-            <span className={styles.tooltipTitle}>{ title }</span>
-            {text}
-            {textUrl !== "" && (
-              <Button className={styles.tooltipButton} onClick={ () => this.openImageUrl(textUrl) }>
-                Read more
-              </Button>
-            )}
-            { esaSkyButton }
-          </SkyBrowserTooltip>
-        )}
-      </span>
-    );
-  }
+          <span className={styles.tooltipTitle}>{ title }</span>
+          {text}
+          {textUrl !== "" && (
+            <Button
+              className={styles.tooltipButton}
+              onClick={() => openImageUrl(textUrl)}
+            >
+              Read more
+            </Button>
+          )}
+          {hasCelestialCoords && (
+            <Button
+              onClick={() => { openEsaSky(ra, dec, fov) }}
+              className={styles.tooltipButton}
+              transparent
+              small
+            >
+              <img src={esaSkyLogo} alt="EsaSky" style={{width:'100%'}} />
+            </Button>
+          )}
+        </SkyBrowserTooltip>
+      )}
+    </span>
+  );
 }
 
 SkyBrowserInfoBox.propTypes = {
-  icon: PropTypes.string,
-  title: PropTypes.string.isRequired,
+  dec: PropTypes.number,
+  fov: PropTypes.number,
+  hasCelestialCoords: PropTypes.bool,
+  ra: PropTypes.number,
   text: PropTypes.string,
-  textUrl: PropTypes.string
-};
-
-SkyBrowserInfoBox.defaultProps = {
-  icon: 'help',
+  textUrl: PropTypes.string,
+  title: PropTypes.string.isRequired,
 };
 
 export default SkyBrowserInfoBox;
