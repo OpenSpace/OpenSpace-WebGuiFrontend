@@ -300,32 +300,33 @@ function SkyBrowserSettings({
           />
         ))}
       </Row>
+      <Property uri={`Scene.${browser.targetId}.Renderable.ApplyRoll`}/>
       {displayDisplaySection}
       <ToggleContent
         title={"General Settings"}
         expanded={generalSettingsExpanded}
         setExpanded={setGeneralSettingsExpanded}
       >
-      <NumericInput
-        label="Border Radius"
-        max={1}
-        min={0}
-        onValueChanged={value => {
-          luaApi.skybrowser.setBorderRadius(browser.id, value);
-          setBorderRadius(value);
-        }}
-        step={0.01}
-        value={browser.borderRadius}
-        placeholder="value 2"
-      />
-      <Property uri={SkyBrowser_ShowTitleInBrowserKey}/>
-      <Property uri={SkyBrowser_AllowCameraRotationKey}/>
-      <Property uri={SkyBrowser_CameraRotationSpeedKey}/>
-      <Property uri={SkyBrowser_TargetAnimationSpeedKey}/>
-      <Property uri={SkyBrowser_BrowserAnimationSpeedKey}/>
-      <Property uri={SkyBrowser_HideTargetsBrowsersWithGuiKey}/>
-      <Property uri={SkyBrowser_InverseZoomDirectionKey}/>
-      <Property uri={SkyBrowser_SpaceCraftAnimationTimeKey}/>
+        <NumericInput
+          label="Border Radius"
+          max={1}
+          min={0}
+          onValueChanged={value => {
+            luaApi.skybrowser.setBorderRadius(browser.id, value);
+            setBorderRadius(value);
+          }}
+          step={0.01}
+          value={browser.borderRadius}
+          placeholder="value 2"
+        />
+        <Property uri={SkyBrowser_ShowTitleInBrowserKey}/>
+        <Property uri={SkyBrowser_AllowCameraRotationKey}/>
+        <Property uri={SkyBrowser_CameraRotationSpeedKey}/>
+        <Property uri={SkyBrowser_TargetAnimationSpeedKey}/>
+        <Property uri={SkyBrowser_BrowserAnimationSpeedKey}/>
+        <Property uri={SkyBrowser_HideTargetsBrowsersWithGuiKey}/>
+        <Property uri={SkyBrowser_InverseZoomDirectionKey}/>
+        <Property uri={SkyBrowser_SpaceCraftAnimationTimeKey}/>
       </ToggleContent>
     </div>
   );

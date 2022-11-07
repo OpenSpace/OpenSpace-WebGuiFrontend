@@ -46,6 +46,7 @@ function WorldWideTelescope({
   const skybrowserApi = useSelector((state) => state.luaApi.skybrowser);
   const showTitle = useSelector((state) => getBoolPropertyValue(state, SkyBrowser_ShowTitleInBrowserKey));
   const inverseZoom = useSelector((state) => getBoolPropertyValue(state, SkyBrowser_InverseZoomDirectionKey));
+  const BorderWidth = 10;
 
   const dispatch = useDispatch();
 
@@ -147,11 +148,17 @@ function WorldWideTelescope({
 
   function handleDrag(mouse) {
     if (isDragging) {
+      // Calculate pixel translation
       const end = [mouse.clientX, mouse.clientY];
+      const width = size.width - BorderWidth;
+      const height = size.height - BorderWidth;
+      const translation = [end[0] - startDragPosition[0], end[1] - startDragPosition[1]];
+      // Calculate [ra, dec] translation without roll
+      const percentageTranslation = [translation[0] / width, translation[1] / height];  
+      // Call lua function
       skybrowserApi.finetuneTargetPosition(
         browserId,
-        startDragPosition,
-        end
+        percentageTranslation
       );
     }
   }
