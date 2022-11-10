@@ -347,6 +347,7 @@ class SkyBrowserSettings extends Component {
               />
             ))}
           </Row>
+          <Property uri={`Scene.${browser.targetId}.Renderable.ApplyRoll`}/>
           {displayDisplaySection}
           <ToggleContent
             title={"General Settings"}
