@@ -129,7 +129,7 @@ class KeybindingPanel extends Component {
   }
 
   specialKeyMatch = (key, actionKey) => {
-    let strippedKey = key.substr(1,key.indexOf('}') -1);
+    let strippedKey = key.substr(1,key.indexOf('}') - 1);
     if (strippedKey.indexOf("arrow") == 0) {
       strippedKey = strippedKey.substring(5);
     }
@@ -151,15 +151,19 @@ class KeybindingPanel extends Component {
       shift: this.state.activeModifiers.includes('shift'),
       super: this.state.activeModifiers.includes('super')
     }
-    const hasModifier = (action.modifiers["super"] || action.modifiers["alt"] || 
-                         action.modifiers["control"] || action.modifiers["shift"]);
+    const actionHasModifier = (action.modifiers["super"] || action.modifiers["alt"] || 
+                               action.modifiers["control"] || action.modifiers["shift"]);
 
-    const showForModifiers = Object.entries(modifierObject).toString() === Object.entries(action.modifiers).toString();
+    const matchingModifiers = (Object.entries(modifierObject).toString() === 
+                               Object.entries(action.modifiers).toString());
 
-    return showForModifiers || (!hasModifier && this.state.activeModifiers.length == 0);
+    const noActiveModifiers = this.state.activeModifiers.length == 0;
+
+    return matchingModifiers || (!actionHasModifier && noActiveModifiers);
   }
 
   getActionForKey = (key) => {
+    // Find all action identifiers matching the given key and current modifiers
     let keyActions = [];
     for (let i = 0; i < this.props.actions.data.shortcuts.length; i++) {
       let action = this.props.actions.data.shortcuts[i];
@@ -169,17 +173,18 @@ class KeybindingPanel extends Component {
             keyActions.push(action);
           }
         }
-      } 
+      }
     }
 
-    let actionActions = [];
+    // Get the actual information about the action
+    let actions = [];
     for (let keyAction of keyActions) {
       let matched = this.props.actions.data.shortcuts.filter((action) => {
         return (action.identifier == keyAction.action)
       });
-      actionActions = actionActions.concat(matched);
+      actions = actions.concat(matched);
     }
-    return actionActions;
+    return actions;
   }
 
   handleModifier = (modifier) => {
