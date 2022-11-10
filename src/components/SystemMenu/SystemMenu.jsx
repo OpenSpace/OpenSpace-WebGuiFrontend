@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { setShowAbout } from '../../api/Actions';
+import { setShowAbout, setPopoverVisibility } from '../../api/Actions';
 import api from '../../api/api';
 import environment from '../../api/Environment';
 import subStateToProps from '../../utils/subStateToProps';
@@ -10,7 +10,17 @@ import Popover from '../common/Popover/Popover';
 import { useContextRefs } from '../GettingStartedTour/GettingStartedContext';
 import styles from './SystemMenu.scss';
 
-function SystemMenu({showAbout, openTutorials, showTutorial, console, nativeGui, quit, saveChange}) {
+function SystemMenu({
+  console,
+  keybindsIsVisible,
+  nativeGui,
+  openTutorials,
+  saveChange,
+  showAbout,
+  showTutorial,
+  setShowKeybinds,
+  quit
+}) {
   const [showMenu, setShowMenu] = React.useState(false);
   const refs = useContextRefs();
   return (
@@ -28,12 +38,17 @@ function SystemMenu({showAbout, openTutorials, showTutorial, console, nativeGui,
             <button style={{position : 'relative'}} onClick={() => showTutorial(true)} ref={el => refs.current["Tutorial"] = el}>
               Open Getting Started Tour
             </button>
+            <hr className={Popover.styles.delimiter} />
+            <button onClick={() => setShowKeybinds(!keybindsIsVisible)}>
+              <MaterialIcon className={styles.linkIcon} icon="keyboard" />
+              {keybindsIsVisible ? "Hide" : "Show"} keybindings
+            </button>
             {
-              environment.developmentMode ?
+              environment.developmentMode &&
                 <div>
                   <hr className={Popover.styles.delimiter} />
                   <div className={styles.devModeNotifier}>GUI running in dev mode</div>
-                </div> : null
+                </div>
             }
             <hr className={Popover.styles.delimiter} />
 
@@ -68,9 +83,10 @@ function SystemMenu({showAbout, openTutorials, showTutorial, console, nativeGui,
 
 const mapStateToSubState = (state) => ({
   luaApi: state.luaApi,
+  keybindsIsVisible: state.local.popovers.keybinds.visible,
 });
 
-const mapSubStateToProps = ({ luaApi }) => {
+const mapSubStateToProps = ({ luaApi, keybindsIsVisible }) => {
   if (!luaApi) {
     return {};
   }
@@ -96,12 +112,19 @@ const mapSubStateToProps = ({ luaApi }) => {
     saveChange: async () => {
       luaApi.saveSettingsToProfile();
     },
+    keybindsIsVisible
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    showAbout: () => dispatch(setShowAbout(true))
+    showAbout: () => dispatch(setShowAbout(true)),
+    setShowKeybinds: (visible) => {
+      dispatch(setPopoverVisibility({
+        popover: 'keybinds',
+        visible
+      }));
+    },
   }
 }
 
