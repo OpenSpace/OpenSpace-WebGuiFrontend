@@ -37,60 +37,52 @@ class KeybindingPanel extends Component {
   }
 
   onKeyPress = (button) => {
-    var action;
-    var hadModifier = false;
-    if ( (button === "{shift}") || (button === "{alt}") || (button === "{control}") || (button === "{super}") ) {
-      /**
-        * handle modifiers
-      */
-      var strippedModifier = button.substr(1,button.length-2);
+    // Handle modifier clicks
+    if ((button === "{shift}") || (button === "{alt}") || (button === "{control}") || (button === "{super}")) {
+      const strippedModifier = button.substr(1, button.length-2);
       this.handleModifier(strippedModifier);
-      hadModifier = true;
-    } else {
-      var mappedActions = this.getActionForKey(button);
-      if (mappedActions.length == 0) {
-        var modifier = '';
-        if (this.state.activeModifiers.length > 0) {
-          this.state.activeModifiers.map((am) => {
-             modifier += am + ' + ';
-          });
-        }
-        action = {
-          name : "No action for: " + modifier + button,
-          documentation : "",
-          guiPath : ""
-        }
-      } else {
-        action = {
-          name: "",
-          documentation: "",
-          guiPath: ""
-        }
+      return;
+    }
 
-        for (var i = 0; i < mappedActions.length; i++) {
-          var mappedAction = mappedActions[i];
-          action.name += mappedAction.name;
-          action.documentation += mappedAction.documentation;
-          action.guiPath += mappedAction.guiPath;
-          if (i != (mappedActions.length - 1)) {
-            action.name += "  &&  "
-            action.documentation += "  &&  "
-            action.guiPath += "   && "
-          }
-        }
-      }
+    /**
+     * handle other button clicks
+     */
+    let action = {
+      name: "",
+      documentation: "",
+      guiPath: ""
+    }
 
-      if (action) {
-          this.setState({
-          ...this.state,
-          input: button,
-          actionName: action.name,
-          actionDescription : action.documentation,
-          actionPath : action.guiPath,
+    const mappedActions = this.getActionForKey(button);
+    if (mappedActions.length == 0) {
+      let modifier = '';
+      if (this.state.activeModifiers.length > 0) {
+        this.state.activeModifiers.map((am) => {
+            modifier += am + ' + ';
         });
       }
-
+      action.name = "No action for: " + modifier + button;
+    } else {
+      for (let i = 0; i < mappedActions.length; i++) {
+        let mappedAction = mappedActions[i];
+        action.name += mappedAction.name;
+        action.documentation += mappedAction.documentation;
+        action.guiPath += mappedAction.guiPath;
+        if (i != (mappedActions.length - 1)) {
+          action.name += "  &&  "
+          action.documentation += "  &&  "
+          action.guiPath += "  &&  "
+        }
+      }
     }
+
+    this.setState({
+      ...this.state,
+      input: button,
+      actionName: action.name,
+      actionDescription : action.documentation,
+      actionPath : action.guiPath,
+    });
   };
 
   reverseSpecialKey = (key) => {
@@ -100,12 +92,12 @@ class KeybindingPanel extends Component {
       return "{arrowleft}";
     }
     else if (key.indexOf("Keypad") == 0) {
-      var number = key.substring(7);
+      const number = key.substring(7);
       if (!isNaN(number - parseFloat(number))) {
         return "{numpad" + number + "}";
       } else {
-        //keypad but not number
-        var keyswap = "";
+        // keypad but not number
+        let keyswap = "";
         switch (number) {
           case '*':
             keyswap = "multiply";
@@ -129,16 +121,15 @@ class KeybindingPanel extends Component {
         return "{numpad" + keyswap + "}";
       }
     } else if (!isNaN(key - parseFloat(key))) {
-      //is a number
+      // is a number
       return key;
     } else {
       return "{" + key.toLowerCase() + "}";
     }
-    return "";
   }
 
   specialKeyMatch = (key, actionKey) => {
-   var strippedKey = key.substr(1,key.indexOf('}') -1);
+    let strippedKey = key.substr(1,key.indexOf('}') - 1);
     if (strippedKey.indexOf("arrow") == 0) {
       strippedKey = strippedKey.substring(5);
     }
@@ -154,55 +145,57 @@ class KeybindingPanel extends Component {
   }
 
   checkForModifiers = (action) => {
-    var showForModifiers = false;
-    var modifierObject = {
+    let modifierObject = {
       alt: this.state.activeModifiers.includes('alt'),
       control: this.state.activeModifiers.includes('control'),
-      shift: this.state.activeModifiers.includes('shift')
+      shift: this.state.activeModifiers.includes('shift'),
+      super: this.state.activeModifiers.includes('super')
     }
-    modifierObject["super"] = this.state.activeModifiers.includes('super');
-    var hadModifier = (action.modifiers["super"] == false) && (action.modifiers["alt"] == false) && (action.modifiers["control"] == false) && (action.modifiers["shift"] == false);
-    hadModifier = !hadModifier;
-    showForModifiers = Object.entries(modifierObject).toString() === Object.entries(action.modifiers).toString();
-    if (showForModifiers || (!hadModifier && this.state.activeModifiers.length == 0)) {
-      return true;
-    }
-    return false;
+    const actionHasModifier = (action.modifiers["super"] || action.modifiers["alt"] || 
+                               action.modifiers["control"] || action.modifiers["shift"]);
+
+    const matchingModifiers = (Object.entries(modifierObject).toString() === 
+                               Object.entries(action.modifiers).toString());
+
+    const noActiveModifiers = this.state.activeModifiers.length == 0;
+
+    return matchingModifiers || (!actionHasModifier && noActiveModifiers);
   }
 
   getActionForKey = (key) => {
-    var keyActions = [];
-
-    for (var i = 0; i < this.props.actions.data.shortcuts.length; i++) {
-      var action = this.props.actions.data.shortcuts[i];
+    // Find all action identifiers matching the given key and current modifiers
+    let keyActions = [];
+    for (let i = 0; i < this.props.actions.data.shortcuts.length; i++) {
+      let action = this.props.actions.data.shortcuts[i];
       if (action.key) {
         if (this.checkForModifiers(action)) {
-          if ( (action.key.toLowerCase() == key) || this.specialKeyMatch(key, action.key) ) {
+          if ((action.key.toLowerCase() == key) || this.specialKeyMatch(key, action.key)) {
             keyActions.push(action);
           }
         }
-      } 
+      }
     }
 
-    var actionActions = [];
-    for (var keyAction of keyActions) {
-      var matched = this.props.actions.data.shortcuts.filter((action) => {
+    // Get the actual information about the action
+    let actions = [];
+    for (let keyAction of keyActions) {
+      let matched = this.props.actions.data.shortcuts.filter((action) => {
         return (action.identifier == keyAction.action)
       });
-      actionActions = actionActions.concat(matched);
+      actions = actions.concat(matched);
     }
-    return actionActions;
+    return actions;
   }
 
   handleModifier = (modifier) => {
-    var modifiers = this.state.activeModifiers;
+    let modifiers = this.state.activeModifiers;
     if (modifiers.includes(modifier)) {
       modifiers = modifiers.filter(e => e != modifier);
     } else {
       modifiers.push(modifier);
     }
 
-    var newState = {
+    const newState = {
       activeModifiers: modifiers,
       actionName: '',
       actionDescription: '',
@@ -290,15 +283,24 @@ class KeybindingPanel extends Component {
 
   get popover() {
     //TODO @micahnyc fix colors not from scss
-    var mappedButtonString = " ";
-    var inputString = " " + this.state.input;
-    for (var i = 0; i < this.props.actions.data.shortcuts.length; i++) {
-      var action = this.props.actions.data.shortcuts[i];
-      if (action.key) {
-        var keyString = "";
-        if (action.key.length === 1 && action.key.match(/[a-z]/i)) {
-          keyString = action.key.toLowerCase();
-        } else {
+    const inputString = " " + this.state.input;
+    let mappedButtonString = "";
+
+    for (let i = 0; i < this.props.actions.data.shortcuts.length; i++) {
+      let action = this.props.actions.data.shortcuts[i];
+      let key = action ? action.key : undefined;
+      if (key) {
+        let keyString = "";
+        // Alphabetic characters
+        if (key.length === 1 && key.match(/[a-z]/i)) {
+          keyString = key.toLowerCase();
+        }
+        // Any other "simple" characters (with only one char)
+        else if (key.length === 1) {
+          keyString = key;
+        }
+        // The rest (modifiers, numpads, etc)
+        else {
           keyString = this.reverseSpecialKey(action.key);
         }
         if (this.checkForModifiers(action)) {
@@ -307,20 +309,21 @@ class KeybindingPanel extends Component {
       }
     }
     mappedButtonString = mappedButtonString.slice(0, -1);
-    var toggledModifierString = "";
-    for (var i = 0; i < this.state.activeModifiers.length; i++) {
+
+    let toggledModifierString = "";
+    for (let i = 0; i < this.state.activeModifiers.length; i++) {
       toggledModifierString += '{' + this.state.activeModifiers[i] + '} ';
     }
-    
-    var buttonTheme = [];
+
+    let buttonTheme = [];
     if (mappedButtonString != "") {
-      buttonTheme.push({class: "hg-mapped",buttons: mappedButtonString})
+      buttonTheme.push({ class: "hg-mapped", buttons: mappedButtonString })
     }
     if (toggledModifierString != "") {
-      buttonTheme.push({class: "hg-toggled",buttons: toggledModifierString})
+      buttonTheme.push({ class: "hg-toggled", buttons: toggledModifierString })
     }
     if (inputString != "") {
-      buttonTheme.push( {class: "hg-highlight",buttons: inputString})
+      buttonTheme.push({ class: "hg-highlight", buttons: inputString })
     }
 
     return (
@@ -331,17 +334,17 @@ class KeybindingPanel extends Component {
         detachable
         position={{x: -450, y: -150}}
         attached={false}
-      >        
+      >
         <hr className={Popover.styles.delimiter} />
         <div className={Popover.styles.content}>
           <div className="keyboardContainer">
-             <Keyboard
+            <Keyboard
               baseClass={"simple-keyboard-main"}
               keyboardRef={r => (this.keyboard = r)}
               layoutName="default"
               buttonTheme={buttonTheme}
               {...this.keyboardOptions}
-              />
+            />
               <div className="controlArrows">
                 <Keyboard
                   baseClass={"simple-keyboard-control"}
