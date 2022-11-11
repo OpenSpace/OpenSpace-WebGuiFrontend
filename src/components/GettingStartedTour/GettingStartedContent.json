@@ -163,7 +163,7 @@
     {
         "title" : "Content",
         "firstText" : "Planets can have multiple maps which show different data. Planets also have height maps, which show elevation. Different maps can have different resolutions.",
-        "infoText" : "All the default layers in OpenSpace are named after the satellite that captured the map. The name [Utah] or [Sweden] states which server the map is located on. It is usually faster to choose the server closest to you."
+        "infoText" : "All the default layers in OpenSpace are usually named after the satellite or an instrument on a satellite that captured the map. The name [Utah] or [Sweden] states on which server the map is located. It is usually faster to choose the server closest to you."
     },
     {
         "goalType" : ["multiUri"],
@@ -196,8 +196,8 @@
     },
     {
         "title" : "Content",
-        "key" : ["GeoPositionPanel"],
-        "firstText" : "If you want to search for places on a globe, you can use the Geo Position."
+        "key" : ["GeoLocationPanel"],
+        "firstText" : "If you want to search for places on a globe, you can use the Geo Location."
     },
     {
         "title" : "Content",
