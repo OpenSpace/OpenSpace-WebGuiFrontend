@@ -62,7 +62,8 @@ const GoalTypes = {
   changeTime : "changeTime",
   changeDeltaTime : "changeDeltaTime",
   changeUri : "changeUri",
-  pauseTime : "pauseTime"
+  pauseTime: "pauseTime",
+  multiUri: "multiUri"
 }
 
 function checkConditionsStatus(content, valueStart, currentValue) {
@@ -113,15 +114,25 @@ function checkConditionsStatus(content, valueStart, currentValue) {
           conditionsStatus[i] = !(Math.abs(valueStart[i] - currentValue[i]) < Number.EPSILON);
         }
         else if (valueStart[i]?.length) {
-          let hasChanged = true;
+          let hasChanged = false;
           valueStart[i].map((channel, j) => {
-            hasChanged &= !(Math.abs(channel - currentValue[i][j]) < Number.EPSILON);
+            hasChanged |= !(Math.abs(channel - currentValue[i][j]) < Number.EPSILON);
           })
           conditionsStatus[i] = Boolean(hasChanged);
         }
         else {
           conditionsStatus[i] = valueStart[i] !== currentValue[i];
         }
+        break;
+      case GoalTypes.multiUri:
+        // The multi uri will be true if either of the uris are true, equivalent to the OR operator
+        let isFulfilled = false;
+        for (const uri of currentValue[i]) {
+          if (content.uriValue === uri) {
+            isFulfilled = true;
+          }
+        }
+        conditionsStatus[i] = isFulfilled;
         break;
       default:
         conditionsStatus[i] = true;
@@ -145,13 +156,35 @@ function MouseDescriptions({ button, info, description, keyboardButton}) {
 
 function Goal({ startSubscriptions, setIsFulfilled, hasGoals, stopSubscriptions, content, currentValue}) {
   const [valueStart, setValueStart] = React.useState(undefined);
- 
+  const animationDivs = React.useRef(undefined);
+  const tutorial = useContextRefs();
+
+  // Create animation click div upon startup
+  React.useEffect(() => {
+    const div1 = document.createElement('div');
+    div1.className = styles.clickEffect;
+    document.body.appendChild(div1);
+    div1.style.display = 'none';
+    
+    const div2 = document.createElement('div');
+    div2.className = styles.clickEffect;
+    document.body.appendChild(div2);
+    div2.style.display = 'none';
+
+    animationDivs.current = [div1, div2];
+
+    return () => {
+      document.body.removeChild(div1);
+      document.body.removeChild(div2);
+    } 
+  }, []);
+
   // Subscribe to topics
   React.useEffect(() => {
     startSubscriptions();
     return () => stopSubscriptions();
   }, [startSubscriptions]);
-  
+
   // Save start values, if the goal is to change the values
   React.useEffect(() => {
     const changeGoalTypes = [GoalTypes.changeTime, GoalTypes.changeDeltaTime, GoalTypes.changeUri];
@@ -174,29 +207,46 @@ function Goal({ startSubscriptions, setIsFulfilled, hasGoals, stopSubscriptions,
   },[areAllConditionsFulfilled]);
 
   // Create animated click - it requires the component to be render fairly often
-  const tutorial = useContextRefs();
-  let lastKey = null;
-  const newElement = document.createElement('div');
-  const animationDiv = React.useRef(newElement);
-  if(content?.key && !areAllConditionsFulfilled) {
-    // Find last ref that is not null
-    const keyCopy = [...content.key].reverse();
-    lastKey = keyCopy.find(key => Boolean(tutorial.current[key]));
-  }
-  
-  React.useEffect(() => {
-    newElement.className = styles.clickEffect;
-    tutorial.current[lastKey]?.appendChild(animationDiv.current);
-
-    return () => {
-      try {
-        tutorial.current[lastKey]?.removeChild(animationDiv.current);
+  if (animationDivs.current) {
+    const slideHasClick = content?.key;
+    if (slideHasClick && !areAllConditionsFulfilled) {
+      // Find last ref that is not null
+      const keyCopy = [...content.key].reverse();
+      let lastKey = keyCopy.find(key => {
+        if (typeof key === 'object') {
+          return Boolean(tutorial.current[key[0]]) && Boolean(tutorial.current[key[1]]);
+        }
+        else {
+          return Boolean(tutorial.current[key]);
+        }
+      });
+      if (typeof lastKey !== 'object') {
+        lastKey = [lastKey]
       }
-      catch(e) {
-        console.error("Error: " + e);
+      for (let i = 0; i < 2; i++) {
+        // Get the bounding rect of the last visible ref in the slide
+        let rect = tutorial.current[lastKey[i]]?.getBoundingClientRect();
+        // Set the position of the animation click div 
+        if(rect) {
+          animationDivs.current[i].style.display = 'block';
+          animationDivs.current[i].style.top = (rect.top + (rect.height * 0.5)) + "px";
+          animationDivs.current[i].style.left = (rect.left + (rect.width * 0.5)) + "px";
+          animationDivs.current[i].style.left = (rect.bottom - (rect.height * 0.5)) + "px";
+          animationDivs.current[i].style.left = (rect.right - (rect.width * 0.5)) + "px";
+        }
+        else {
+          // Hide div if slide doesn't have clicks or all conditions are fulfilled
+          animationDivs.current[i].style.display = 'none';
+        }
       }
     }
-  }, [content, lastKey]);  
+    else {
+      // Hide div if slide doesn't have clicks or all conditions are fulfilled
+      for (let i = 0; i < 2; i++) {
+        animationDivs.current[i].style.display = 'none';
+      }
+    }
+  }
 
   return (areAllConditionsFulfilled && hasGoals ?
     <div className={styles.centerContent}>
@@ -223,13 +273,22 @@ function TourPopup({ setVisibility, isVisible }) {
   const content = contents[currentSlide];
   const isLastSlide = currentSlide === contents.length - 1;
   const isFirstSlide = currentSlide === 0;
+  const defaultSize = { width: 500, height: 350 };
+  const offsetFromGrid = 300;
+  const centerX = (window.innerWidth * 0.5) - (defaultSize.width * 0.5) - offsetFromGrid;
+  const centerY = (window.innerHeight * 0.5) - (defaultSize.height * 0.5);
+  const centerOfScreen = { x: centerX, y: centerY };
   
   return (isVisible && <>
     {Boolean(content.position) && !isFulfilled &&
       <div className={`${styles.animatedBorder} ${styles.geoPositionBox}`} />}
     <ResizeableDraggable
-      minWidth={500}
-      minHeight={350}
+      default={{
+        ...centerOfScreen,
+        ...defaultSize
+      }}
+      minWidth={defaultSize.width}
+      minHeight={defaultSize.height}
       bounds="window"
       className={styles.window}
     >
@@ -344,6 +403,16 @@ const mapStateToProps = (state, ownProps) => {
         case GoalTypes.changeUri: 
         case GoalTypes.uri: {
           currentValue[i] = state.propertyTree.properties[content.uri]?.value;
+          break;
+        }
+        case GoalTypes.multiUri: {
+          currentValue[i] = [];
+          for (const uri of content.uri) {
+            const value = state.propertyTree.properties[uri]?.value;
+            if (value !== undefined) {
+              currentValue[i].push(value);
+            }
+          }
           break;
         }
         case GoalTypes.pauseTime: {

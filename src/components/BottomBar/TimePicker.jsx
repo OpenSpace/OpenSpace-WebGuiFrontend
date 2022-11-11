@@ -142,7 +142,7 @@ function TimePicker({ startSubscriptions, stopSubscriptions, time, isPaused, tar
         {lockOptions()}
 
         <div className={Popover.styles.title}>Simulation speed</div>
-        <div className={Popover.styles.content} ref={el => refs.current["SimulationSpeed"] = el}>
+        <div className={Popover.styles.content}>
           <SimulationIncrement />
         </div>
         <hr className={Popover.styles.delimiter} />

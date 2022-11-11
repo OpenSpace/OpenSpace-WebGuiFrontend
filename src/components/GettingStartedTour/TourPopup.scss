@@ -182,10 +182,6 @@ $animated-border-length : 15px;
 
 .clickEffect {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    bottom: 50%;
-    right: 50%;
     box-sizing: border-box;
     border-style: solid;
     border-color: $highlight-color;

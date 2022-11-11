@@ -98,7 +98,7 @@ function VectorProperty({dispatcher, description, value}) {
   }
   const refs = useContextRefs();
   return (
-    <Row ref={ el => refs.current[description.Name] = el} className={`${styles.vectorProperty} ${isDisabled ? styles.disabled : ''}`}>        
+    <Row ref={ el => refs.current[description.Identifier] = el} className={`${styles.vectorProperty} ${isDisabled ? styles.disabled : ''}`}>        
       { values.map((component, index) => (
         <NumericInput
           key={component.key}
