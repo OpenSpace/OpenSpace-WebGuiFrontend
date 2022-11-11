@@ -114,9 +114,9 @@ function checkConditionsStatus(content, valueStart, currentValue) {
           conditionsStatus[i] = !(Math.abs(valueStart[i] - currentValue[i]) < Number.EPSILON);
         }
         else if (valueStart[i]?.length) {
-          let hasChanged = true;
+          let hasChanged = false;
           valueStart[i].map((channel, j) => {
-            hasChanged &= !(Math.abs(channel - currentValue[i][j]) < Number.EPSILON);
+            hasChanged |= !(Math.abs(channel - currentValue[i][j]) < Number.EPSILON);
           })
           conditionsStatus[i] = Boolean(hasChanged);
         }
