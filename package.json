@@ -26,12 +26,12 @@
   },
   "homepage": "https://github.com/OpenSpace/OpenSpace#readme",
   "dependencies": {
+    "@hello-pangea/dnd": "^16.0.1",
     "core-js": "^3.11.2",
     "lodash": "^4.17.21",
     "openspace-api-js": "^0.1.5",
     "prop-types": "^15.7.2",
     "re-resizable": "^6.9.9",
-    "react-beautiful-dnd": "^13.1.0",
     "react-color": "^2.19.3",
     "react-draggable": "^4.4.3",
     "react-input-autosize": "^3.0.0",

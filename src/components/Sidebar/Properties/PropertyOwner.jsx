@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
+import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd';
 import { connect } from 'react-redux';
 import shallowEqualArrays from 'shallow-equal/arrays';
 import shallowEqualObjects from 'shallow-equal/objects';
