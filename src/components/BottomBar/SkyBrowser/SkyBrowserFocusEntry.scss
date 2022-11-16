@@ -22,9 +22,10 @@ $image-width: 96px;
 }
 
 .tabEntry {
-  height: 130px;
+  height: 80px;
   margin-top: 4px;
-  width: inherit;
+  width: 100%;
+  display: flex;
 }
 
 .imageHeader {
@@ -45,7 +46,6 @@ $image-width: 96px;
 }
 
 .imageTitle {
-  width: 80px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -78,7 +78,7 @@ $image-width: 96px;
 
 /* Slider styling */
 .slidecontainer {
-  width: 96px; /* Width of the outside container */
+  width: 160px; /* Width of the outside container */
 }
 
 /* The slider itself */

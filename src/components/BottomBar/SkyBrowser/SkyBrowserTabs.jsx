@@ -2,17 +2,20 @@ import React from 'react';
 import { shallowEqual, useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Resizable } from 're-resizable';
+import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd';
 import Button from '../../common/Input/Button/Button';
 import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
 import CenteredLabel from '../../common/CenteredLabel/CenteredLabel';
 import SkyBrowserTooltip from './SkyBrowserTooltip';
 import SkyBrowserFocusEntry from './SkyBrowserFocusEntry';
+import SkyBrowserTabEntry from './SkyBrowserTabEntry';
 import { Icon } from '@iconify/react';
 import styles from './SkyBrowserTabs.scss';
 import SkyBrowserSettings from './SkyBrowserSettings.jsx'
 import {
   reloadPropertyTree,
 } from '../../../api/Actions';
+import { template } from 'lodash';
 
 const ButtonIds = {
   LookAtTarget: "LookAtTarget",
@@ -47,6 +50,8 @@ function SkyBrowserTabs({
   );
   const [showSettings, setShowSettings] = React.useState(false);
   const [messageCounter, setMessageCounter] = React.useState(0);
+  const [isDragging, setIsDragging] = React.useState(false);
+  const [tempData, setTempData] = React.useState([]);
 
   const infoButton = React.useRef(null);
   const tabsDiv = React.useRef(null);
@@ -55,7 +60,7 @@ function SkyBrowserTabs({
   const browsers = useSelector((state) => state.skybrowser.browsers);
   const luaApi = useSelector((state) => state.luaApi, shallowEqual);
   const selectedBrowserId = useSelector((state) => state.skybrowser.selectedBrowserId, shallowEqual);
-  const data = useSelector((state) => {
+  let data = useSelector((state) => {
     const browser = browsers[selectedBrowserId];
     if (!state.skybrowser.imageList || !browser) {
       return [];
@@ -380,6 +385,75 @@ function SkyBrowserTabs({
     );
   }
 
+  function dragAndDropImageList() {
+    if (!data || data.length === 0) {
+      return <></>;
+    }
+
+    const onDragStart = () => {
+      setIsDragging(true);
+    };
+
+    const onDragEnd = async (result) => {
+      if (!result.destination || result.source.index === result.destination.index) {
+        setIsDragging(false);
+        return; // no change => do nothing
+      }
+
+      // First update the order manually, so we keep it while the properties
+      // are being refreshed below
+      const tempLayers = data;
+      const [reorderedItem] = tempLayers.splice(result.source.index, 1);
+      tempLayers.splice(result.destination.index, 0, reorderedItem);
+      setIsDragging(false);
+      setTempData(tempLayers);
+
+      // Move image logic
+      await setImageLayerOrder(selectedBrowserId, Number(result.draggableId), result.destination.index)
+    };
+
+    // Invisible overlay that covers the entire body and prevents other hover effects
+    // from being triggered while dragging
+    const overlay = (
+      <div style={{
+        position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100,
+      }}
+      />
+    );
+    return (
+      <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
+        { isDragging && overlay }
+        <Droppable droppableId="layers">
+          { provided => (
+            <div {...provided.droppableProps} ref={provided.innerRef}>
+              { data.map((entry, index) => (
+                <Draggable key={entry.identifier} draggableId={entry.identifier} index={index}>
+                  {provided => (
+                    <div {...provided.draggableProps} ref={provided.innerRef}>
+                      <SkyBrowserTabEntry
+                        dragHandleTitleProps={provided.dragHandleProps}
+                        {...entry}
+                        luaApi={luaApi}
+                        key={entry.identifier}
+                        onSelect={selectImage}
+                        removeImageSelection={removeImageSelection}
+                        opacity={browsers[selectedBrowserId].opacities[index]}
+                        setOpacity={setOpacityOfImage}
+                        currentBrowserColor={currentBrowserColor}
+                        isActive={activeImage === entry.identifier}
+                      />
+                    </div>
+                  )}
+                </Draggable>
+              ))}
+              { provided.placeholder }
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
+    );
+  }
+
   function createImageList() {
     return (
       <ul>
@@ -441,7 +515,7 @@ function SkyBrowserTabs({
       </CenteredLabel>
     );
   } else {
-    content = createImageList();
+    content = dragAndDropImageList();
   }
 
   return (

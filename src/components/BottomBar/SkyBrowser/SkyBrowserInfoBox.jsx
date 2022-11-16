@@ -7,7 +7,7 @@ import styles from './SkyBrowserTooltip.scss';
 import esaSkyLogo from './ESASKY.png';
 
 function SkyBrowserInfoBox({
-  dec, fov, hasCelestialCoords, ra, text, textUrl, title
+  dec, fov, hasCelestialCoords, ra, text, textUrl, title, ...props
  }) {
   const [isPopupShowing, setIsPopupShowing] = React.useState(false);
 
@@ -39,7 +39,7 @@ function SkyBrowserInfoBox({
   }
 
   return (
-    <span ref={(el) => ref.current = el}>
+    <span ref={(el) => ref.current = el} {...props}>
       <Button
         transparent
         small
