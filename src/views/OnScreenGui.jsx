@@ -38,8 +38,8 @@ function OnScreenGui({
 
  
   function toggleConsole(e) {
-      if(e.code === "Backquote") {
-        setLuaConsoleVisible(!luaConsoleVisible);
+    if (e.code === "Backquote") {
+      setLuaConsoleVisible(current => !current);
       }
   }
 
