@@ -95,7 +95,8 @@ function SkyBrowserFocusEntry({
             fov={fov}
             hasCelestialCoords={hasCelestialCoords}
             className={styles.removeImageButton}
-            style={{ display: 'flex', justifyContent: 'center', borderRadius: '4px'}}
+            style={{ display: 'flex', justifyContent: 'center', borderRadius: '4px' }}
+            infoPlacement={"left"}
           />
           <Button
             onClick={(e) => {
