@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
 import Button from '../../common/Input/Button/Button';
@@ -7,7 +7,7 @@ import styles from './SkyBrowserTooltip.scss';
 import esaSkyLogo from './ESASKY.png';
 
 function SkyBrowserInfoBox({
-  dec, fov, hasCelestialCoords, ra, text, textUrl, title, ...props
+  dec, fov, hasCelestialCoords, infoPlacement, ra, text, textUrl, title, ...props
  }) {
   const [isPopupShowing, setIsPopupShowing] = React.useState(false);
 
@@ -49,7 +49,7 @@ function SkyBrowserInfoBox({
       </Button>
       {isPopupShowing && (
         <SkyBrowserTooltip
-          placement="bottom-left"
+          placement={infoPlacement}
           style={position()}
         >
           <span className={styles.tooltipTitle}>{ title }</span>
@@ -78,10 +78,15 @@ function SkyBrowserInfoBox({
   );
 }
 
+SkyBrowserInfoBox.defaultProps = {
+  infoPlacement: "bottom-left"
+};
+
 SkyBrowserInfoBox.propTypes = {
   dec: PropTypes.number,
   fov: PropTypes.number,
   hasCelestialCoords: PropTypes.bool,
+  infoPlacement: PropTypes.string,
   ra: PropTypes.number,
   text: PropTypes.string,
   textUrl: PropTypes.string,
