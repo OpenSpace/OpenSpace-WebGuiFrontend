@@ -15,7 +15,7 @@ import SkyBrowserSettings from './SkyBrowserSettings.jsx'
 import {
   reloadPropertyTree,
 } from '../../../api/Actions';
-import { template } from 'lodash';
+import { conformsTo, reverse, template } from 'lodash';
 
 const ButtonIds = {
   LookAtTarget: "LookAtTarget",
@@ -51,7 +51,10 @@ function SkyBrowserTabs({
   const [showSettings, setShowSettings] = React.useState(false);
   const [messageCounter, setMessageCounter] = React.useState(0);
   const [isDragging, setIsDragging] = React.useState(false);
-  const [tempData, setTempData] = React.useState([]);
+  // Cache for when Redux store is updating from OpenSpace
+  const dataImagesRef = React.useRef([]);
+  const opacitiesWhileLoadingRef = React.useRef([]);
+  const isLoading = React.useRef(false);
 
   const infoButton = React.useRef(null);
   const tabsDiv = React.useRef(null);
@@ -60,21 +63,23 @@ function SkyBrowserTabs({
   const browsers = useSelector((state) => state.skybrowser.browsers);
   const luaApi = useSelector((state) => state.luaApi, shallowEqual);
   const selectedBrowserId = useSelector((state) => state.skybrowser.selectedBrowserId, shallowEqual);
-  let data = useSelector((state) => {
+  const indices = useSelector((state) => {
     const browser = browsers[selectedBrowserId];
-    if (!state.skybrowser.imageList || !browser) {
+    if (!browser || !browser?.selectedImages) {
       return [];
     }
-    const images = browser.selectedImages;
-    if (!images) {
-      return [];
-    }
-    const indices = Object.values(images);
-    return indices.map(index => state.skybrowser.imageList[index.toString()]);
+    return Object.values(browser.selectedImages);
   }, shallowEqual);
 
+  const indicesLength = useSelector((state) => {
+    return browsers[selectedBrowserId].selectedImages.length;
+  });
+
+  const data = useSelector((state) => {
+    return state.skybrowser.imageList;
+  });
+
   const dispatch = useDispatch();
-  
   // Effects
   React.useEffect(() => {
     if (tabsDiv.current) {
@@ -88,6 +93,17 @@ function SkyBrowserTabs({
       addAllSelectedImages(selectedBrowserId, false);
     }
   }, [imageCollectionIsLoaded]);
+
+  // Create a cache so that the right images are displayed in the right order,
+  // even in the small gap between a reorder and the updated info from OpenSpace
+  React.useEffect(() => {
+    dataImagesRef.current = [...indices];
+    opacitiesWhileLoadingRef.current = [...browsers[selectedBrowserId].opacities];
+  }, [selectedBrowserId, indicesLength]);
+
+  if (indices.toString() === dataImagesRef.current.toString()) {
+    isLoading.current = false;
+  }
 
   function setSelectedBrowser(browserId) {
     if (browsers === undefined || browsers[browserId] === undefined) {
@@ -168,7 +184,7 @@ function SkyBrowserTabs({
 
   function setImageLayerOrder(browserId, identifier, order) {
     luaApi.skybrowser.setImageLayerOrder(browserId, identifier, order);
-    const reverseOrder = data.length - order - 1;
+    const reverseOrder = indices.length - order - 1;
     passMessageToWwt({
       event: "image_layer_order",
       id: String(identifier),
@@ -385,6 +401,12 @@ function SkyBrowserTabs({
     );
   }
 
+  function getCurrentOrder(layers, source, destination) {
+    const [reorderedItem] = layers.splice(source, 1);
+    layers.splice(destination, 0, reorderedItem);
+    return layers;
+  }
+
   function dragAndDropImageList() {
     if (!data || data.length === 0) {
       return <></>;
@@ -402,11 +424,14 @@ function SkyBrowserTabs({
 
       // First update the order manually, so we keep it while the properties
       // are being refreshed below
-      const tempLayers = data;
-      const [reorderedItem] = tempLayers.splice(result.source.index, 1);
-      tempLayers.splice(result.destination.index, 0, reorderedItem);
+      const imagesOrder = isLoading.current ? [...dataImagesRef.current] : [...indices];
+      dataImagesRef.current = getCurrentOrder(imagesOrder, result.source.index, result.destination.index);
+      // Opacities
+      const opacitiesOrder = isLoading.current ? [...opacitiesWhileLoadingRef.current] : [...browsers[selectedBrowserId].opacities];
+      opacitiesWhileLoadingRef.current = getCurrentOrder(opacitiesOrder, result.source.index, result.destination.index);
+
+      isLoading.current = true;
       setIsDragging(false);
-      setTempData(tempLayers);
 
       // Move image logic
       await setImageLayerOrder(selectedBrowserId, Number(result.draggableId), result.destination.index)
@@ -420,13 +445,19 @@ function SkyBrowserTabs({
       }}
       />
     );
+
+    // Set image indices and opacities to the order they should currently have
+    // Check if they are currently loading or not
+    const imagesIndices = isLoading.current ? dataImagesRef.current : indices;
+    const images = imagesIndices.map(index => data[index.toString()]);
+    const opacities = isLoading.current ? opacitiesWhileLoadingRef.current : browsers[selectedBrowserId].opacities;
     return (
       <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
         { isDragging && overlay }
         <Droppable droppableId="layers">
           { provided => (
             <div {...provided.droppableProps} ref={provided.innerRef}>
-              { data.map((entry, index) => (
+              { images.map((entry, index) => (
                 <Draggable key={entry.identifier} draggableId={entry.identifier} index={index}>
                   {provided => (
                     <div {...provided.draggableProps} ref={provided.innerRef}>
@@ -437,7 +468,7 @@ function SkyBrowserTabs({
                         key={entry.identifier}
                         onSelect={selectImage}
                         removeImageSelection={removeImageSelection}
-                        opacity={browsers[selectedBrowserId].opacities[index]}
+                        opacity={opacities[index]}
                         setOpacity={setOpacityOfImage}
                         currentBrowserColor={currentBrowserColor}
                         isActive={activeImage === entry.identifier}
