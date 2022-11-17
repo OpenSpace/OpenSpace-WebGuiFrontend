@@ -7,7 +7,6 @@ import Button from '../../common/Input/Button/Button';
 import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
 import CenteredLabel from '../../common/CenteredLabel/CenteredLabel';
 import SkyBrowserTooltip from './SkyBrowserTooltip';
-import SkyBrowserFocusEntry from './SkyBrowserFocusEntry';
 import SkyBrowserTabEntry from './SkyBrowserTabEntry';
 import { Icon } from '@iconify/react';
 import styles from './SkyBrowserTabs.scss';
@@ -15,7 +14,6 @@ import SkyBrowserSettings from './SkyBrowserSettings.jsx'
 import {
   reloadPropertyTree,
 } from '../../../api/Actions';
-import { conformsTo, reverse, template } from 'lodash';
 
 const ButtonIds = {
   LookAtTarget: "LookAtTarget",
@@ -40,7 +38,8 @@ function SkyBrowserTabs({
   setCurrentTabHeight,
   setWwtRatio
 }) {
-  // State and refs
+  // State
+  const [showSettings, setShowSettings] = React.useState(false);
   // Sets the showing state info text for the top buttons in the tabs
   const [isShowingInfoButtons, setIsShowingInfoButtons] = React.useState(() => {
     let result = {};
@@ -48,14 +47,17 @@ function SkyBrowserTabs({
     return result;
   }
   );
-  const [showSettings, setShowSettings] = React.useState(false);
+  // Each message to WorldWide Telescope has a unique order number
   const [messageCounter, setMessageCounter] = React.useState(0);
   const [isDragging, setIsDragging] = React.useState(false);
-  // Cache for when Redux store is updating from OpenSpace
-  const dataImagesRef = React.useRef([]);
-  const opacitiesWhileLoadingRef = React.useRef([]);
-  const isLoading = React.useRef(false);
 
+  // Cache for when Redux store is updating from OpenSpace
+  // Using refs so the component doesn't update unnecessarily when they are set
+  const imagesCache = React.useRef([]);
+  const opacitiesCache = React.useRef([]);
+  const isLoading = React.useRef(false);
+  
+  // Refs to get info from DOM
   const infoButton = React.useRef(null);
   const tabsDiv = React.useRef(null);
 
@@ -63,24 +65,23 @@ function SkyBrowserTabs({
   const browsers = useSelector((state) => state.skybrowser.browsers);
   const luaApi = useSelector((state) => state.luaApi, shallowEqual);
   const selectedBrowserId = useSelector((state) => state.skybrowser.selectedBrowserId, shallowEqual);
-  const indices = useSelector((state) => {
+  const imageIndices = useSelector((state) => {
     const browser = browsers[selectedBrowserId];
     if (!browser || !browser?.selectedImages) {
       return [];
     }
     return Object.values(browser.selectedImages);
   }, shallowEqual);
-
-  const indicesLength = useSelector((state) => {
+  const imageIndicesLength = useSelector((state) => {
     return browsers[selectedBrowserId].selectedImages.length;
   });
-
-  const data = useSelector((state) => {
+  const imageList = useSelector((state) => {
     return state.skybrowser.imageList;
   });
-
   const dispatch = useDispatch();
+
   // Effects
+  // Update tab height when the div is changed
   React.useEffect(() => {
     if (tabsDiv.current) {
       const newHeight = tabsDiv.current.clientHeight;
@@ -88,6 +89,7 @@ function SkyBrowserTabs({
     }
   }, [tabsDiv.current]);
 
+  // When WWT has loaded the image collection, add all selected images
   React.useEffect(() => {
     if (imageCollectionIsLoaded) {
       addAllSelectedImages(selectedBrowserId, false);
@@ -97,11 +99,11 @@ function SkyBrowserTabs({
   // Create a cache so that the right images are displayed in the right order,
   // even in the small gap between a reorder and the updated info from OpenSpace
   React.useEffect(() => {
-    dataImagesRef.current = [...indices];
-    opacitiesWhileLoadingRef.current = [...browsers[selectedBrowserId].opacities];
-  }, [selectedBrowserId, indicesLength]);
-
-  if (indices.toString() === dataImagesRef.current.toString()) {
+    imagesCache.current = [...imageIndices];
+    opacitiesCache.current = [...browsers[selectedBrowserId].opacities];
+  }, [selectedBrowserId, imageIndicesLength]);
+  // Stop using the cache when the Redux store is up to date
+  if (imageIndices.toString() === imagesCache.current.toString()) {
     isLoading.current = false;
   }
 
@@ -184,7 +186,7 @@ function SkyBrowserTabs({
 
   function setImageLayerOrder(browserId, identifier, order) {
     luaApi.skybrowser.setImageLayerOrder(browserId, identifier, order);
-    const reverseOrder = indices.length - order - 1;
+    const reverseOrder = imageIndices.length - order - 1;
     passMessageToWwt({
       event: "image_layer_order",
       id: String(identifier),
@@ -408,7 +410,7 @@ function SkyBrowserTabs({
   }
 
   function dragAndDropImageList() {
-    if (!data || data.length === 0) {
+    if (!imageList || imageList.length === 0) {
       return <></>;
     }
 
@@ -424,11 +426,12 @@ function SkyBrowserTabs({
 
       // First update the order manually, so we keep it while the properties
       // are being refreshed below
-      const imagesOrder = isLoading.current ? [...dataImagesRef.current] : [...indices];
-      dataImagesRef.current = getCurrentOrder(imagesOrder, result.source.index, result.destination.index);
-      // Opacities
-      const opacitiesOrder = isLoading.current ? [...opacitiesWhileLoadingRef.current] : [...browsers[selectedBrowserId].opacities];
-      opacitiesWhileLoadingRef.current = getCurrentOrder(opacitiesOrder, result.source.index, result.destination.index);
+      // Images cache
+      const imagesOrder = isLoading.current ? [...imagesCache.current] : [...imageIndices];
+      imagesCache.current = getCurrentOrder(imagesOrder, result.source.index, result.destination.index);
+      // Opacities cache
+      const opacitiesOrder = isLoading.current ? [...opacitiesCache.current] : [...browsers[selectedBrowserId].opacities];
+      opacitiesCache.current = getCurrentOrder(opacitiesOrder, result.source.index, result.destination.index);
 
       isLoading.current = true;
       setIsDragging(false);
@@ -448,9 +451,9 @@ function SkyBrowserTabs({
 
     // Set image indices and opacities to the order they should currently have
     // Check if they are currently loading or not
-    const imagesIndices = isLoading.current ? dataImagesRef.current : indices;
-    const images = imagesIndices.map(index => data[index.toString()]);
-    const opacities = isLoading.current ? opacitiesWhileLoadingRef.current : browsers[selectedBrowserId].opacities;
+    const imagesIndices = isLoading.current ? imagesCache.current : imageIndices;
+    const images = imagesIndices.map(index => imageList[index.toString()]);
+    const opacities = isLoading.current ? opacitiesCache.current : browsers[selectedBrowserId].opacities;
     return (
       <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
         { isDragging && overlay }
@@ -484,50 +487,6 @@ function SkyBrowserTabs({
       </DragDropContext>
     );
   }
-
-  function createImageList() {
-    return (
-      <ul>
-        {data.map((entry, index) => (
-          <div key={index}>
-            {index == 0 ? (
-              <span />
-            ) : (
-              <Button
-                onClick={() => setImageLayerOrder(selectedBrowserId, Number(entry.identifier), index - 1)}
-                className={styles.arrowButton}
-                transparent
-              >
-                <MaterialIcon icon="keyboard_arrow_left" />
-              </Button>
-            )}
-            <SkyBrowserFocusEntry
-              {...entry}
-              luaApi={luaApi}
-              key={entry.identifier}
-              onSelect={selectImage}
-              removeImageSelection={removeImageSelection}
-              opacity={browsers[selectedBrowserId].opacities[index]}
-              setOpacity={setOpacityOfImage}
-              currentBrowserColor={currentBrowserColor}
-              isActive={activeImage === entry.identifier}
-            />
-            {index === data.length - 1 ? (
-              <span className={styles.arrowButtonEmpty} />
-            ) : (
-              <Button
-                onClick={() =>  setImageLayerOrder(selectedBrowserId, Number(entry.identifier), index + 1)}
-                className={styles.arrowButton}
-                transparent
-              >
-                <MaterialIcon icon="keyboard_arrow_right" />
-              </Button>
-            )}
-          </div>
-        ))}
-      </ul>
-    );
-  }
     
   let content = "";
   if (showSettings) {
@@ -539,7 +498,7 @@ function SkyBrowserTabs({
         setBorderRadius={setBorderRadius}
       />
     );
-  } else if (data.length === 0) {
+  } else if (imageList.length === 0) {
     content = (
       <CenteredLabel>
         There are no selected images in this sky browser
