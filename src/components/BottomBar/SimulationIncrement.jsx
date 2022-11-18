@@ -68,7 +68,7 @@ Object.freeze(Limits);
 function SimulationIncrement({hasNextDeltaTimeStep, hasPrevDeltaTimeStep, nextDeltaTimeStep, 
   prevDeltaTimeStep, startSubscriptions, targetDeltaTime, isPaused, stopSubscriptions, luaApi}) {
   const [stepSize, setStepSize] = React.useState(Steps.seconds);
-  const [beforeAdjust, setBeforeAdjust] = React.useState(undefined);
+  const [beforeAdjust, setBeforeAdjust] = React.useState(0);
   const refs = useContextRefs();
   
   React.useEffect(() => {
@@ -145,6 +145,7 @@ function SimulationIncrement({hasNextDeltaTimeStep, hasPrevDeltaTimeStep, nextDe
             block 
             disabled={!hasPrevDeltaTimeStep}
             onClick={setPrevDeltaTimeStep}
+            ref={el => refs.current["SpeedBackward"] = el}
           >
             <MaterialIcon icon="fast_rewind" />
           </Button>
@@ -162,6 +163,7 @@ function SimulationIncrement({hasNextDeltaTimeStep, hasPrevDeltaTimeStep, nextDe
             block 
             disabled={!hasNextDeltaTimeStep}
             onClick={setNextDeltaTimeStep}
+            ref={el => refs.current["SpeedForward"] = el}
           >
             <MaterialIcon icon="fast_forward" />
           </Button>

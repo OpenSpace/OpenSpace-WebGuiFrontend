@@ -31,8 +31,9 @@ class ActionsPanel extends Component {
   }
 
   addNavPath(e) {
-    let navString = this.props.navigationPath;
-    if (this.props.navigationPath == '/') {
+    const { navigationPath } = this.props;
+    let navString = navigationPath;
+    if (navigationPath == '/') {
       navString += e.currentTarget.getAttribute('foldername');
     } else {
       navString += `/${e.currentTarget.getAttribute('foldername')}`;
@@ -41,7 +42,8 @@ class ActionsPanel extends Component {
   }
 
   goBack(e) {
-    let navString = this.props.navigationPath;
+    const { navigationPath } = this.props;
+    let navString = navigationPath;
     navString = navString.substring(0, navString.lastIndexOf('/'));
     if (navString.length == 0) {
       navString = '/';
@@ -50,8 +52,9 @@ class ActionsPanel extends Component {
   }
 
   sendAction(e) {
+    const { luaApi } = this.props;
     const actionId = e.currentTarget.getAttribute('actionid');
-    this.props.luaApi.action.triggerAction(actionId);
+    luaApi.action.triggerAction(actionId);
   }
 
   getActionContent(level) {
@@ -66,7 +69,7 @@ class ActionsPanel extends Component {
       >
         <p><MaterialIcon className={styles.buttonIcon} icon="launch" /></p>
         {action.name}
-        <InfoBox inpanel panelscroll="actionscroller" text={action.documentation} />
+        {action.documentation && <InfoBox text={action.documentation} />}
       </Button>
     ));
   }
@@ -88,7 +91,8 @@ class ActionsPanel extends Component {
   }
 
   getAllActions() {
-    return this.props.allActions.map((action) => (
+    const { allActions } = this.props;
+    return allActions.map((action) => (
       <Button
         block
         smalltext
@@ -105,8 +109,11 @@ class ActionsPanel extends Component {
   }
 
   getBackButton() {
-    if (this.props.navigationPath != '/') {
-      return <Button block smalltext className={styles.backButton} onClick={this.goBack} key="backbtn">&lt;- Back</Button>;
+    const { navigationPath } = this.props;
+    if (navigationPath != '/') {
+      return <Button block className={styles.backButton} onClick={this.goBack} key="backbtn">
+        <MaterialIcon className={styles.buttonIcon} icon="arrow_back" />
+      </Button>;
     }
   }
 
@@ -115,7 +122,7 @@ class ActionsPanel extends Component {
   }
 
   get windowContent() {
-    const level = this.props.actionLevel;
+    const { displayedNavigationPath, level } = this.props;
 
     if (level == undefined) {
       return <div>Loading</div>;
@@ -123,19 +130,17 @@ class ActionsPanel extends Component {
     const actionsContent = this.getActionContent(level);
     const childrenContent = this.getChildrenContent(level);
     const backButton = this.getBackButton();
-    const navPathString = this.props.navigationPath;
     
     return (
       <div id="actionscroller" className={`${styles.windowContainer}`}>
         <hr className={Popover.styles.delimiter} />
           <Row>
-            <div className={Popover.styles.title}>
-              {navPathString}
-              {' '}
+            {backButton}
+            <div className={styles.navPathTitle}>
+              {`${displayedNavigationPath}`}
             </div>
           </Row>
         <hr className={Popover.styles.delimiter} />
-        {backButton}
         <FilterList matcher={this.matcher} height={'80%'}>
           <FilterListFavorites className={styles.Grid}>
             {actionsContent}
@@ -150,37 +155,19 @@ class ActionsPanel extends Component {
   }
 
   get popover() {
+    const { actionLevel, displayedNavigationPath } = this.props;
     let actionsContent;
     let childrenContent;
     let backButton;
-    let keybindsContent;
 
-    if (this.props.actionLevel.length == 0) {
+    if (actionLevel.length == 0) {
       actionsContent = <div>No Actions</div>;
       childrenContent = <div>No Children</div>;
     } else {
-      const level = this.props.actionLevel;
+      const level = actionLevel;
       actionsContent = this.getActionContent(level);
       childrenContent = this.getChildrenContent(level);
       backButton = this.getBackButton();
-    }
-
-    const navPathString = this.props.navigationPath;
-
-    if (navPathString == '/') {
-      keybindsContent = (
-        <Button
-          block
-          smalltext
-          onClick={this.props.toggleKeybinds}
-          key="showKeybinds"
-          className={styles.actionButton}
-        >
-          <p><MaterialIcon className={styles.buttonIcon} icon="launch" /></p>
-          Show Keybindings
-          <InfoBox inpanel panelscroll="actionscroller" text="Shows the keybinding vieiwer" />
-        </Button>
-      );
     }
 
     return (
@@ -193,23 +180,20 @@ class ActionsPanel extends Component {
       >
         <div id="actionscroller" className={`${Popover.styles.content}`}>
           <hr className={Popover.styles.delimiter} />
-          <Row>
+          <Row className={styles.navPathRow}>
             {backButton}
-            <div style={{ whiteSpace: 'nowrap' }} className={Popover.styles.title}>
-              {navPathString}
-              {' '}
+            <div className={styles.navPathTitle}>
+              {`${displayedNavigationPath}`}
             </div>
           </Row>
           <hr className={Popover.styles.delimiter} />
           <FilterList matcher={this.matcher} height={backButton ? '280px' : '320px'}>
             <FilterListFavorites className={styles.Grid}>
-              {actionsContent}
               {childrenContent}
-              {keybindsContent}
+              {actionsContent}
             </FilterListFavorites>
             <FilterListData className={styles.Grid}>
               {this.getAllActions()}
-              {keybindsContent}
             </FilterListData>
           </FilterList>
         </div>
@@ -218,9 +202,7 @@ class ActionsPanel extends Component {
   }
 
   render() {
-    const {
-      popoverVisible, actionLevel, navigationPath, singlewindow,
-    } = this.props;
+    const { popoverVisible, singlewindow } = this.props;
     if (singlewindow) {
       return (this.windowContent);
     }
@@ -249,6 +231,7 @@ const mapSubStateToProps = ({ popoverVisible, luaApi, actions }) => {
       popoverVisible,
       luaApi,
       navigationPath: '/',
+      displayedNavigationPath: '/'
     };
   }
 
@@ -257,9 +240,22 @@ const mapSubStateToProps = ({ popoverVisible, luaApi, actions }) => {
     if (action.key) {
       continue;
     }
+
+    // If there is no backslach at beginning of GUI path, add that manually
+    if (action.guiPath.length > 0 && action.guiPath[0] !== '/') {
+      action.guiPath = '/' + action.guiPath;
+    }
+
     var splits = action.guiPath.split('/');
     splits.shift();
     let parent = actionsMapped['/'];
+
+    // Add to top level actions (no gui path)
+    if (splits.length == 0) {
+      parent.actions.push(action);
+    }
+
+    // Add actions of other levels
     while (splits.length > 0) {
       var index = splits.shift();
       if (parent.children[index] == undefined) {
@@ -285,7 +281,7 @@ const mapSubStateToProps = ({ popoverVisible, luaApi, actions }) => {
   }
 
   const allActions = actions.data.shortcuts.filter(action => {
-    if (navPath.length === 1) { 
+    if (navPath.length === 1) {
       return true;
     }
     else {
@@ -299,12 +295,32 @@ const mapSubStateToProps = ({ popoverVisible, luaApi, actions }) => {
       return true;
     }
   });
-  
+
+  // Truncate navigation path if too long
+  const NAVPATH_LENGTH_LIMIT = 60;
+  const shouldTruncate = actions.navigationPath.length > NAVPATH_LENGTH_LIMIT;
+
+  let truncatedPath = actions.navigationPath;
+  if (shouldTruncate) {
+    let originalPath = navPath;
+    if (originalPath[0] === '/') {
+      originalPath = originalPath.substring(1);
+    }
+    let pieces = originalPath.split('/');
+    if (pieces.length > 1) {
+      // TODO: maybe keep more pieces of the path, if possible?
+      truncatedPath = `/${pieces[0]}/.../${pieces[pieces.length - 1]}`;
+    } else {
+      truncatedPath = navPath.substring(0, NAVPATH_LENGTH_LIMIT);
+    }
+  }
+
   return {
     actionLevel: actionsForPath,
     popoverVisible,
     luaApi,
     navigationPath: actions.navigationPath,
+    displayedNavigationPath: truncatedPath,
     allActions: allActions,
   };
 };
@@ -327,12 +343,6 @@ const mapDispatchToProps = (dispatch) => ({
   },
   actionPath: (action) => {
     dispatch(setActionsPath(action));
-  },
-  toggleKeybinds: (action) => {
-    dispatch(setPopoverVisibility({
-      popover: 'keybinds',
-      visible: true,
-    }));
   },
 });
 

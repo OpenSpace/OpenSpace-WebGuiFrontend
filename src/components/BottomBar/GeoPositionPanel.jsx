@@ -22,7 +22,7 @@ function MultiStateToggle({labels, checked, setChecked, infoText}) {
   return (
     <div className={styles.wrapper}>
       <p className={`${styles.toggleTitle} ${styles.resultsTitle}`} id={'multiStateToggle'}>Mode</p>
-      <InfoBox inpanel panelscroll={'multiStateToggle'} text={infoText} style={{ paddingTop: '3px', paddingRight: '3px' }} />
+      <InfoBox panelscroll={'multiStateToggle'} text={infoText} style={{ paddingTop: '3px', paddingRight: '3px' }} />
       <div className={styles.toggles}>
       {labels.map(label => 
         <React.Fragment key={`${label}fragment`}>
@@ -306,7 +306,8 @@ function GeoPositionPanel({ refresh, luaApi, popoverVisible, setPopoverVisibilit
     <div className={Picker.Wrapper}>
       <Picker
         className={`${popoverVisible && Picker.Active}`}
-        onClick={() => togglePopover() }
+        onClick={() => togglePopover()}
+        refKey={"GeoLocationPanel"}
       >
         <div style={{height: '100%'}}>
           <Icon style={{height : '100%', width: '30px'}} icon="entypo:location-pin" />

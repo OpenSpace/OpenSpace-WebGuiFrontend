@@ -78,13 +78,19 @@ function PropertyOwnerHeader({
   const isHeightLayer = isLayer && quickToggleUri.includes('Layers.HeightLayers.');
   const refs = useContextRefs();
 
+  let refName = "PropertyOwner " + title;
+  const titleNoSpaces = title.replace(/\s/g, '');
+  if (titleNoSpaces !== identifier) {
+    refName += " " + identifier;
+  }
+
   return (
     <header
       className={`${toggleHeaderStyles.toggle} ${isLayer && styles.layerHeader}`}
       onClick={onClick}
       role="button"
       tabIndex={0}
-      ref={el => refs.current["PropertyOwner " + title] = el}
+      ref={el => refs.current[refName] = el}
     >
       <MaterialIcon
         icon={expanded ? onIcon : offIcon}
