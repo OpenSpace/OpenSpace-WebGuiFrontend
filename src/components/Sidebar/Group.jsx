@@ -1,9 +1,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { setPropertyTreeExpansion } from '../../api/Actions';
 import { sortGroups } from '../../api/keys';
-import subStateToProps from '../../utils/subStateToProps';
 import ToggleContent from '../common/ToggleContent/ToggleContent';
 import PropertyOwner, { 
   displayName as propertyOwnerName, 
@@ -31,7 +30,46 @@ const nodeExpansionIdentifier = path => {
   }
 }
 
-let Group = ({ path, expansionIdentifier, entries, isExpanded, setExpanded, sortOrdering}) => {
+const Group = ({ path, expansionIdentifier, autoExpand }) => {
+  const isExpanded = useSelector((state) => {
+    let isExpanded = state.local.propertyTreeExpansion[expansionIdentifier];
+
+    if (isExpanded === undefined) {
+      isExpanded = autoExpand;
+    }
+    return isExpanded;
+  });
+
+  const entries = useSelector((state) => {
+    const data = state.groups[path] || {};
+    const owners = data.propertyOwners || [];
+    const subGroups = data.subgroups || [];
+    const result = subGroups.map(g => ({
+      type: 'group',
+      payload: g,
+      name: displayName(g)
+    })).concat(owners.map(o => ({
+      type: 'propertyOwner',
+      payload: o,
+      name: propertyOwnerName(state.propertyTree.propertyOwners, state.propertyTree.properties, o)
+    })));
+    return result;
+  });
+
+  const pathFragments = path.split('/');
+  const groupName = pathFragments[pathFragments.length - 1];
+  const result = sortGroups[groupName];
+  const sortOrdering = result;
+
+  const dispatch = useDispatch();
+
+  const setExpanded = (expanded) => {
+    dispatch(setPropertyTreeExpansion({
+      identifier: expansionIdentifier,
+      expanded
+    }));
+  };
+
   var sortedEntries = entries.sort((a, b) =>
     a.name.localeCompare(b.name, 'en')
   );
@@ -81,65 +119,6 @@ let Group = ({ path, expansionIdentifier, entries, isExpanded, setExpanded, sort
   </ToggleContent>
 }
 
-
-const mapSubStateToProps = (
-  { groups, propertyOwners, properties, propertyTreeExpansion },
-  { path, expansionIdentifier, autoExpand }
-) => {
-  const data = groups[path] || {};
-  const subGroups = data.subgroups || [];
-  const owners = data.propertyOwners || [];
-  let isExpanded = propertyTreeExpansion[expansionIdentifier];
-
-  if (isExpanded === undefined) {
-    isExpanded = autoExpand;
-  }
-
-  const entries = subGroups.map(g => ({
-    type: 'group',
-    payload: g,
-    name: displayName(g)
-  })).concat(owners.map(o => ({
-    type: 'propertyOwner',
-    payload: o,
-    name: propertyOwnerName(propertyOwners, properties, o)
-  })));
-
-  const pathFragments = path.split('/');
-  const groupName = pathFragments[pathFragments.length - 1];
-  const sortOrdering = sortGroups[groupName];
-
-  return {
-    entries,
-    isExpanded,
-    sortOrdering
-  };
-}
-
-const mapStateToSubState = state => ({
-  groups: state.groups,
-  propertyOwners: state.propertyTree.propertyOwners,
-  properties: state.propertyTree.properties,
-  propertyTreeExpansion: state.local.propertyTreeExpansion,
-})
-
-const mapDispatchToProps = (dispatch, ownProps) => {
-  const setExpanded = (expanded) => {
-    dispatch(setPropertyTreeExpansion({
-      identifier: ownProps.expansionIdentifier,
-      expanded
-    }));
-  }
-  return {
-    setExpanded
-  };
-}
-
-Group = connect(
-  subStateToProps(mapSubStateToProps, mapStateToSubState),
-  mapDispatchToProps
-)(Group);
-
 Group.propTypes = {
   path: PropTypes.string.isRequired,
   autoExpand: PropTypes.bool,
@@ -150,4 +129,3 @@ Group.defaultProps = {
 };
 
 export default Group;
-export { nodeExpansionIdentifier };
