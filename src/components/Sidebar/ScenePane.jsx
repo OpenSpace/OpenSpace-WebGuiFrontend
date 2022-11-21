@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { shallowEqual, useSelector } from 'react-redux';
 import { ObjectWordBeginningSubstring } from '../../utils/StringMatchers';
 import {FilterList, FilterListData, FilterListFavorites, FilterListInputButton } from '../common/FilterList/FilterList';
 import LoadingBlocks from '../common/LoadingBlock/LoadingBlocks';
@@ -49,29 +49,23 @@ function ScenePane({ closeCallback }) {
       // Add back the leading slash
       sortedGroups = sortedGroups.map(path => '/' + path);
     return sortedGroups;
-  });  
-  
-  const propertyOwners = useSelector((state) => {
-    const sceneOwner = state.propertyTree.propertyOwners.Scene || {};
-    return sceneOwner.subowners || [];
-  })
+  }, shallowEqual);  
 
-  const matcher = useSelector((state) => {
-    return (test, search) => {
-      const node = state.propertyTree.propertyOwners[test.uri] || {};
-      const guiHidden = isPropertyOwnerHidden(state.propertyTree.properties, test.uri);
-      return ObjectWordBeginningSubstring(node, search) && !guiHidden;
-    };
-  })
+  const propertyOwners = useSelector((state) => state.propertyTree.propertyOwners, shallowEqual);
+  const properties = useSelector((state) => state.propertyTree.properties, shallowEqual);
+  const propertyOwnersScene = propertyOwners.Scene.subowners ?? [];
+  function matcher(test, search) {
+    const node = propertyOwners[test.uri] || {};
+    const guiHidden = isPropertyOwnerHidden(properties, test.uri);
+    return ObjectWordBeginningSubstring(node, search) && !guiHidden;
+  };
 
-  const onlyEnabledMatcher = useSelector((state) => {
-    return (test, search) => {
-      const isEnabled = state.propertyTree.properties[`${test.uri}.Renderable.Enabled`]?.value;
-      return isEnabled && matcher(test, search);
-    };
-  })
+  function onlyEnabledMatcher(test, search) {
+    const isEnabled = properties[`${test.uri}.Renderable.Enabled`]?.value;
+    return isEnabled && matcher(test, search);
+  };
 
-  const entries = propertyOwners.map(uri => ({
+  const entries = propertyOwnersScene.map(uri => ({
     key: uri,
     uri: uri,
     expansionIdentifier: 'scene-search/' + uri
