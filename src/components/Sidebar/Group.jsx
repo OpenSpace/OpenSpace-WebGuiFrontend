@@ -13,6 +13,40 @@ const isEnabled = (properties, uri) => {
   return properties[`${uri}.Renderable.Enabled`]?.value;
 };
 
+const enabledPropertyOwners = (state, path) => {
+  const data = state.groups[path] || {};
+  const propertyOwners = data.propertyOwners || [];
+  
+  // Filter PropertyOwners
+  const enabledOwners = propertyOwners.filter((propertyOwner) =>
+    isEnabled(state.propertyTree.properties, propertyOwner)
+  );
+  // Extract propertyOwners
+  const resultPropertyOwners = enabledOwners.map(owner => ({
+      type: 'propertyOwner',
+      payload: owner,
+      name: propertyOwnerName(state.propertyTree.propertyOwners, state.propertyTree.properties, owner)
+  }));
+  return resultPropertyOwners;
+}
+
+const shouldShowGroup = (state, path) => {
+  const data = state.groups[path] || {};
+  const subGroups = data.subgroups || [];
+  // If there are any enabled property owners in the result,
+  // Show the groups
+  if (subGroups.length === 0) {
+    return enabledPropertyOwners(state, path).length !== 0; 
+  }
+  const initialValue = false;
+  const result = subGroups.reduce((accumulator, currentValue) => {
+    return accumulator || shouldShowGroup(state, currentValue);
+    },
+    initialValue
+  );
+  return result;
+}
+
 const displayName = path => {
   const splitPath = path.split('/');
   if (splitPath.length > 1) {
@@ -44,31 +78,28 @@ const Group = ({ path, expansionIdentifier, autoExpand }) => {
     return isExpanded;
   }, shallowEqual);
 
-  const entries = useSelector((state) => {
+  const propertyOwners = useSelector((state) => {
+    return enabledPropertyOwners(state, path);
+  }, shallowEqual);
+
+  const groups = useSelector((state) => {
     const data = state.groups[path] || {};
-    const owners = data.propertyOwners || [];
     const subGroups = data.subgroups || [];
-    
-    // Filter PropertyOwners
-    const enabledOwners = owners.filter((owner) =>
-      isEnabled(state.propertyTree.properties, owner)
-    );
-    // Extract propertyOwners
-    const propertyOwners = enabledOwners.map(owner => ({
-        type: 'propertyOwner',
-        payload: owner,
-        name: propertyOwnerName(state.propertyTree.propertyOwners, state.propertyTree.properties, owner)
-    }));
+
     // Extract groups
     const groups = subGroups.map(subGroup => ({
       type: 'group',
       payload: subGroup,
       name: displayName(subGroup)
-    }))
-    console.log(groups)
-    return groups.concat(propertyOwners);
-  }, shallowEqual);
+    }));
+    // See if the groups contain any PropertyOwners
+    const filteredGroups = groups.filter((group) => {
+      return shouldShowGroup(state, group.payload);
+    })
+    return filteredGroups;
+  })
   
+  const entries = groups.concat(propertyOwners); 
   const hasEntries = entries.length !== 0;
   const pathFragments = path.split('/');
   const groupName = pathFragments[pathFragments.length - 1];
