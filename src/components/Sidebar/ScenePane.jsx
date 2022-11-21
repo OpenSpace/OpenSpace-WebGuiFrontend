@@ -49,8 +49,6 @@ function ScenePane({ closeCallback }) {
 
       // Add back the leading slash
       sortedGroups = sortedGroups.map(path => '/' + path);
-
-
     return sortedGroups;
   });  
   
@@ -61,7 +59,7 @@ function ScenePane({ closeCallback }) {
 
   const matcher = useSelector((state) => {
     return (test, search) => {
-      const node = propertyOwners[test.uri] || {};
+      const node = state.propertyTree.propertyOwners[test.uri] || {};
       const guiHidden = isPropertyOwnerHidden(state.propertyTree.properties, test.uri);
       return ObjectWordBeginningSubstring(node, search) && !guiHidden;
     };
@@ -79,7 +77,7 @@ function ScenePane({ closeCallback }) {
     uri: uri,
     expansionIdentifier: 'scene-search/' + uri
   }));
-
+  
   const favorites = groups.map(item => ({
     key: item,
     path: item,
@@ -88,7 +86,7 @@ function ScenePane({ closeCallback }) {
 
   const settingsButton = <>
     <InputButton
-      onClick={() => this.setState({ showSearchSettings: !showSearchSettings })}
+      onClick={() => setShowSearchSettings(current => !current)}
       className={styles.settings}
     >
       <MaterialIcon icon="settings" className="small" />
@@ -100,7 +98,7 @@ function ScenePane({ closeCallback }) {
           checked={showOnlyEnabled}
           left={false}
           disabled={false}
-          setChecked={() => this.setState({ showOnlyEnabled: !showOnlyEnabled })}
+          setChecked={() => setShowOnlyEnabled(current => !current)}
           wide
         />
       </Tooltip>}
@@ -116,7 +114,7 @@ function ScenePane({ closeCallback }) {
           <FilterList matcher={showOnlyEnabled ? onlyEnabledMatcher : matcher} customButton={settingsButton} >
             <FilterListFavorites>
               <ContextSection expansionIdentifier="context" />
-              {favorites.map(favorite => <Group {...favorite} />)}
+              {favorites.map(favorite => <Group {...favorite} showOnlyEnabled />)}
             </FilterListFavorites>
             <FilterListData>
               {entries.map(entry => <PropertyOwner {...entry} />)}
