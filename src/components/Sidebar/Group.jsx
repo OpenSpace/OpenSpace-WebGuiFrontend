@@ -18,16 +18,9 @@ const enabledPropertyOwners = (state, path) => {
   const propertyOwners = data.propertyOwners || [];
   
   // Filter PropertyOwners
-  const enabledOwners = propertyOwners.filter((propertyOwner) =>
+  return propertyOwners.filter((propertyOwner) =>
     isEnabled(state.propertyTree.properties, propertyOwner)
   );
-  // Extract propertyOwners
-  const resultPropertyOwners = enabledOwners.map(owner => ({
-      type: 'propertyOwner',
-      payload: owner,
-      name: propertyOwnerName(state.propertyTree.propertyOwners, state.propertyTree.properties, owner)
-  }));
-  return resultPropertyOwners;
 }
 
 const shouldShowGroup = (state, path) => {
@@ -68,7 +61,7 @@ const nodeExpansionIdentifier = path => {
   }
 }
 
-const Group = ({ path, expansionIdentifier, autoExpand }) => {
+const Group = ({ path, expansionIdentifier, autoExpand, showOnlyEnabled }) => {
   const isExpanded = useSelector((state) => {
     let isExpanded = state.local.propertyTreeExpansion[expansionIdentifier];
 
@@ -79,7 +72,20 @@ const Group = ({ path, expansionIdentifier, autoExpand }) => {
   }, shallowEqual);
 
   const propertyOwners = useSelector((state) => {
-    return enabledPropertyOwners(state, path);
+    let owners;
+    if (showOnlyEnabled) {
+      owners = enabledPropertyOwners(state, path);
+    }
+    else {
+      const data = state.groups[path] || {};
+      owners = data.propertyOwners || [];
+    }
+    // Extract propertyOwners
+    return owners.map(owner => ({
+        type: 'propertyOwner',
+        payload: owner,
+        name: propertyOwnerName(state.propertyTree.propertyOwners, state.propertyTree.properties, owner)
+    }));
   }, shallowEqual);
 
   const groups = useSelector((state) => {
@@ -87,16 +93,18 @@ const Group = ({ path, expansionIdentifier, autoExpand }) => {
     const subGroups = data.subgroups || [];
 
     // Extract groups
-    const groups = subGroups.map(subGroup => ({
+    let groups = subGroups.map(subGroup => ({
       type: 'group',
       payload: subGroup,
       name: displayName(subGroup)
     }));
     // See if the groups contain any PropertyOwners
-    const filteredGroups = groups.filter((group) => {
-      return shouldShowGroup(state, group.payload);
-    })
-    return filteredGroups;
+    if (showOnlyEnabled) {
+      return groups.filter((group) => {
+        return shouldShowGroup(state, group.payload);
+      });
+    }
+    return groups;
   })
   
   const entries = groups.concat(propertyOwners); 
@@ -144,7 +152,8 @@ const Group = ({ path, expansionIdentifier, autoExpand }) => {
             return <Group autoExpand={autoExpand}
                           key={entry.payload}
                           path={entry.payload}
-                          expansionIdentifier={childNodeIdentifier} />
+                          expansionIdentifier={childNodeIdentifier}
+                          showOnlyEnabled={showOnlyEnabled} />
             }
           case 'propertyOwner': {
             const childNodeIdentifier = expansionIdentifier + '/' +

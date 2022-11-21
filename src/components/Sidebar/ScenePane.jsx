@@ -114,7 +114,7 @@ function ScenePane({ closeCallback }) {
           <FilterList matcher={showOnlyEnabled ? onlyEnabledMatcher : matcher} customButton={settingsButton} >
             <FilterListFavorites>
               <ContextSection expansionIdentifier="context" />
-              {favorites.map(favorite => <Group {...favorite} showOnlyEnabled />)}
+              {favorites.map(favorite => <Group {...favorite} showOnlyEnabled={showOnlyEnabled} />)}
             </FilterListFavorites>
             <FilterListData>
               {entries.map(entry => <PropertyOwner {...entry} />)}
