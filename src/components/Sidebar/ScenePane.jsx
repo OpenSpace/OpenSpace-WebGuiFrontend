@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { ObjectWordBeginningSubstring } from '../../utils/StringMatchers';
-import {FilterList, FilterListData, FilterListFavorites} from '../common/FilterList/FilterList';
+import {FilterList, FilterListData, FilterListFavorites, FilterListInputButton } from '../common/FilterList/FilterList';
 import LoadingBlocks from '../common/LoadingBlock/LoadingBlocks';
 import Pane from './Pane';
 import ContextSection from './ContextSection';
@@ -12,7 +12,6 @@ import { isPropertyOwnerHidden } from '../../utils/propertyTreeHelpers';
 import Tooltip from '../common/Tooltip/Tooltip';
 import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import styles from './ScenePane.scss';
-import { InputButton } from '../common/FilterList/FilterList';
 import Checkbox from '../common/Input/Checkbox/Checkbox';
 
 function ScenePane({ closeCallback }) {
@@ -84,26 +83,6 @@ function ScenePane({ closeCallback }) {
     expansionIdentifier: 'scene/' + item 
   }));
 
-  const settingsButton = <>
-    <InputButton
-      onClick={() => setShowSearchSettings(current => !current)}
-      className={styles.settings}
-    >
-      <MaterialIcon icon="settings" className="small" />
-    </InputButton>
-    {showSearchSettings &&
-      <Tooltip placement={'right'} className={styles.toolTip}>
-        <Checkbox
-          label="Show Only Enabled"
-          checked={showOnlyEnabled}
-          left={false}
-          disabled={false}
-          setChecked={() => setShowOnlyEnabled(current => !current)}
-          wide
-        />
-      </Tooltip>}
-  </>;
-
   return (
     <Pane title="Scene" closeCallback={closeCallback}>
       { (entries.length === 0) && (
@@ -111,7 +90,24 @@ function ScenePane({ closeCallback }) {
       )}
       {entries.length > 0 && (
         <>
-          <FilterList matcher={showOnlyEnabled ? onlyEnabledMatcher : matcher} customButton={settingsButton} >
+          <FilterList matcher={showOnlyEnabled ? onlyEnabledMatcher : matcher}>
+            <FilterListInputButton
+              onClick={() => setShowSearchSettings(current => !current)}
+              className={styles.settings}
+            >
+              <MaterialIcon icon="settings" className="small" />
+              {showSearchSettings &&
+                <Tooltip placement={'right'} className={styles.toolTip}>
+                  <Checkbox
+                    label="Show Only Enabled"
+                    checked={showOnlyEnabled}
+                    left={false}
+                    disabled={false}
+                    setChecked={() => setShowOnlyEnabled(current => !current)}
+                    wide
+                  />
+                </Tooltip>}
+            </FilterListInputButton>
             <FilterListFavorites>
               <ContextSection expansionIdentifier="context" />
               {favorites.map(favorite => <Group {...favorite} showOnlyEnabled={showOnlyEnabled} />)}
