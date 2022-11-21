@@ -155,7 +155,7 @@ function SimulationIncrement({hasNextDeltaTimeStep, hasPrevDeltaTimeStep, nextDe
         </div>
         <div style={{flex: 2}} ref={el => refs.current["Pause"] = el}>
           <Button block onClick={togglePause}>
-              {isPaused ? <MaterialIcon icon="play_arrow" /> : <MaterialIcon icon="pause" />}
+            {isPaused ? <MaterialIcon icon="play_arrow" /> : <MaterialIcon icon="pause" />}
           </Button>
         </div>
         <div style={{flex: 3}}>

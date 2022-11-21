@@ -141,20 +141,32 @@ function TimePicker({ startSubscriptions, stopSubscriptions, time, isPaused, tar
         {calendar()}
         {lockOptions()}
 
-        <div className={Popover.styles.title}>Simulation speed</div>
-        <div className={Popover.styles.content}>
-          <SimulationIncrement />
-        </div>
-        <hr className={Popover.styles.delimiter} />
-
         <div className={`${Popover.styles.row} ${Popover.styles.content}`}>
-          <Button block smalltext onClick={realtime}>
-            Realtime
+          {/* TODO: Add on click behaviors (reset to start?)*/}
+          <Button block smalltext>
+            Reset
           </Button>
           <Button block smalltext onClick={now}>
             Now
           </Button>
+          {/* TODO: Add on click behavior (open up interesting times panel) */}
+          <Button block smalltext>
+            ...
+          </Button>
         </div>
+
+        <div className={Popover.styles.title}>Simulation speed</div>
+        <div className={Popover.styles.content}>
+          <SimulationIncrement />
+          <div className={`${Popover.styles.row} ${Popover.styles.content}`}>
+            <Button block smalltext onClick={realtime}>
+              Realtime
+            </Button>
+          </div>
+        </div>
+
+        {/* <hr className={Popover.styles.delimiter} /> */}
+
       </Popover>
     );
   }
