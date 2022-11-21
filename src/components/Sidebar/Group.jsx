@@ -9,11 +9,11 @@ import PropertyOwner, {
   nodeExpansionIdentifier as propertyOwnerNodeExpansionIdentifier 
 } from './Properties/PropertyOwner';
 
-const isEnabled = (properties, uri) => {
+function isEnabled(properties, uri) {
   return properties[`${uri}.Renderable.Enabled`]?.value;
 };
 
-const enabledPropertyOwners = (state, path) => {
+function enabledPropertyOwners(state, path) {
   const data = state.groups[path] || {};
   const propertyOwners = data.propertyOwners || [];
   
@@ -23,7 +23,7 @@ const enabledPropertyOwners = (state, path) => {
   );
 }
 
-const shouldShowGroup = (state, path) => {
+function shouldShowGroup(state, path) {
   const data = state.groups[path] || {};
   const subGroups = data.subgroups || [];
   // If there are any enabled property owners in the result,
@@ -40,7 +40,7 @@ const shouldShowGroup = (state, path) => {
   return result;
 }
 
-const displayName = path => {
+function displayName(path) {
   const splitPath = path.split('/');
   if (splitPath.length > 1) {
     return splitPath[splitPath.length - 1];
@@ -52,7 +52,7 @@ const displayName = path => {
 /**
  * Return an identifier for the tree expansion state.
  */
-const nodeExpansionIdentifier = path => {
+function nodeExpansionIdentifier(path) {
   const splitPath = path.split('/');
   if (splitPath.length > 1) {
     return 'G:' + splitPath[splitPath.length - 1];
@@ -61,7 +61,7 @@ const nodeExpansionIdentifier = path => {
   }
 }
 
-const Group = ({ path, expansionIdentifier, autoExpand, showOnlyEnabled }) => {
+function Group({ path, expansionIdentifier, autoExpand, showOnlyEnabled }) {
   const isExpanded = useSelector((state) => {
     let isExpanded = state.local.propertyTreeExpansion[expansionIdentifier];
 
