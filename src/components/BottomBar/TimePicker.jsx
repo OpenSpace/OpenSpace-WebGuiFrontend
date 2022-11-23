@@ -143,16 +143,22 @@ function TimePicker({ startSubscriptions, stopSubscriptions, time, isPaused, tar
 
         <div className={`${Popover.styles.row} ${Popover.styles.content}`}>
           {/* TODO: Add on click behaviors (reset to start?)*/}
-          <Button block smalltext>
-            Reset
-          </Button>
-          <Button block smalltext onClick={now}>
-            Now
-          </Button>
-          {/* TODO: Add on click behavior (open up interesting times panel) */}
-          <Button block smalltext>
-            ...
-          </Button>
+          <div style={{flex: 3}}>
+            <Button block smalltext>
+              Reset
+            </Button>
+          </div>
+          <div style={{flex: 5}}>
+            <Button block smalltext onClick={now}>
+              Now
+            </Button>
+          </div>
+          <div style={{flex: 3}}>
+            {/* TODO: Add on click behavior (open up interesting times panel) */}
+            <Button block smalltext>
+              ...
+            </Button>
+          </div>
         </div>
 
         <div className={Popover.styles.title}>Simulation speed</div>
