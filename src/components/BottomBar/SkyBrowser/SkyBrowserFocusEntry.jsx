@@ -38,7 +38,7 @@ function SkyBrowserFocusEntry({
           <LazyLoadImage src={thumbnail} alt={''} className={styles.imageText} />
         </div>
         <div className={styles.imageHeader}>
-          <span className={styles.imageTitle} style={{  width: '80px' }}>
+          <span className={styles.imageTitle} style={{ width: '80px' }}>
             { name || identifier }
           </span>
           <SkyBrowserInfoBox
