@@ -27,12 +27,13 @@ function shouldShowGroup(state, path) {
   const data = state.groups[path] || {};
   const subGroups = data.subgroups || [];
   // If there are any enabled property owners in the result,
-  // Show the groups
+  // show the groups
   if (subGroups.length === 0) {
     return enabledPropertyOwners(state, path).length !== 0; 
   }
   const initialValue = false;
-  const result = subGroups.reduce((accumulator, currentValue) => {
+  const result = subGroups.reduce(
+    (accumulator, currentValue) => {
     return accumulator || shouldShowGroup(state, currentValue);
     },
     initialValue

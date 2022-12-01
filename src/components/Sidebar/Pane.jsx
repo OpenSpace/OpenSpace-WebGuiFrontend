@@ -5,7 +5,7 @@ import styles from './Pane.scss';
 
 class Pane extends Component {
   render() {
-    const { children, title, closeCallback } = this.props;
+    const { children, title, headerButton, closeCallback } = this.props;
 
     return (
       <section className={styles.Pane}>
@@ -13,7 +13,7 @@ class Pane extends Component {
           <div className={styles.title}>
             { title }
           </div>
-
+          { headerButton }
           { closeCallback && 
             <button onClick={closeCallback(false)} className={styles.close}>
               <MaterialIcon icon="close" className="small" />
@@ -32,12 +32,14 @@ Pane.propTypes = {
   children: PropTypes.node,
   closeCallback: PropTypes.func,
   title: PropTypes.node,
+  headerButton: PropTypes.node,
 };
 
 Pane.defaultProps = {
   children: [],
   closeCallback: null,
   title: null,
+  headerButton: null,
 };
 
 Pane.styles = styles;

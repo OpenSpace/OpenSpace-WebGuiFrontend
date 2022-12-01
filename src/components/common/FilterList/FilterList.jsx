@@ -71,7 +71,7 @@ function FilterListShowMoreButton({ key, toggleShowDataInstead, showDataInstead 
 
 FilterListShowMoreButton.displayName = 'FilterListShowMoreButton';
 
-function FilterList({ matcher, ignorePropsFilter, searchText, height, className, searchAutoFocus, customButton, children}) {
+function FilterList({ matcher, ignorePropsFilter, searchText, height, className, searchAutoFocus, children}) {
   const [searchString, setSearchString] = React.useState("");
   const [showDataInstead, setShowDataInstead] = React.useState(false);
   const isSearching = searchString !== "";
@@ -141,11 +141,9 @@ FilterList.propTypes = {
    */
   searchAutoFocus: PropTypes.bool,
   /**
-   * 
+   * A list of props that will be ignored in the search
    */
   ignorePropsFilter: PropTypes.array,
-
-  customButton: PropTypes.object
 };
 
 FilterList.defaultProps = {
@@ -154,7 +152,6 @@ FilterList.defaultProps = {
   searchText: 'Search...',
   searchAutoFocus: true,
   ignorePropsFilter: ['active', 'onSelect'],
-  customButton: null
 };
 
 export {FilterList, FilterListData, FilterListInputButton, FilterListFavorites, FilterListShowMoreButton};

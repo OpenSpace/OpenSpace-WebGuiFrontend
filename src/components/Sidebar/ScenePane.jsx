@@ -13,9 +13,11 @@ import Tooltip from '../common/Tooltip/Tooltip';
 import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import styles from './ScenePane.scss';
 import Checkbox from '../common/Input/Checkbox/Checkbox';
+import Button from '../common/Input/Button/Button';
+import { useLocalStorageState } from '../../utils/customHooks';
 
 function ScenePane({ closeCallback }) {
-  const [showOnlyEnabled, setShowOnlyEnabled] = React.useState(false);
+  const [showOnlyEnabled, setShowOnlyEnabled] = useLocalStorageState(false);
   const [showSearchSettings, setShowSearchSettings] = React.useState(false);
 
   const groups = useSelector((state) => {
@@ -28,32 +30,33 @@ function ScenePane({ closeCallback }) {
       ).reduce((obj, key) => ({ // Convert back to object
           ...obj,
           [key]: true
-      }), {});
+      }), {}
+    );
 
-      // Reorder properties based on SceneProperties ordering property
-      let sortedGroups = [];
-      const ordering = state.propertyTree.properties['Modules.ImGUI.Main.SceneProperties.Ordering'];
-      if (ordering && ordering.value) {
-        ordering.value.forEach(item => {
-          if (topLevelGroups[item]) {
-            sortedGroups.push(item);
-            delete topLevelGroups[item];
-          }
-        })
-      }
-      // Add the remaining items to the end.
-      Object.keys(topLevelGroups).forEach(item => {
-        sortedGroups.push(item);
-      });
+    // Reorder properties based on SceneProperties ordering property
+    let sortedGroups = [];
+    const ordering = state.propertyTree.properties['Modules.ImGUI.Main.SceneProperties.Ordering'];
+    if (ordering && ordering.value) {
+      ordering.value.forEach(item => {
+        if (topLevelGroups[item]) {
+          sortedGroups.push(item);
+          delete topLevelGroups[item];
+        }
+      })
+    }
+    // Add the remaining items to the end.
+    Object.keys(topLevelGroups).forEach(item => {
+      sortedGroups.push(item);
+    });
 
-      // Add back the leading slash
-      sortedGroups = sortedGroups.map(path => '/' + path);
+    // Add back the leading slash
+    sortedGroups = sortedGroups.map(path => '/' + path);
     return sortedGroups;
   }, shallowEqual);  
 
   const propertyOwners = useSelector((state) => state.propertyTree.propertyOwners, shallowEqual);
   const properties = useSelector((state) => state.propertyTree.properties, shallowEqual);
-  const propertyOwnersScene = propertyOwners.Scene.subowners ?? [];
+  const propertyOwnersScene = propertyOwners.Scene?.subowners ?? [];
   function matcher(test, search) {
     const node = propertyOwners[test.uri] || {};
     const guiHidden = isPropertyOwnerHidden(properties, test.uri);
@@ -61,7 +64,8 @@ function ScenePane({ closeCallback }) {
   };
 
   function onlyEnabledMatcher(test, search) {
-    const isEnabled = properties[`${test.uri}.Renderable.Enabled`]?.value;
+    const property = properties[`${test.uri}.Renderable.Enabled`];
+    const isEnabled = property?.value;
     return isEnabled && matcher(test, search);
   };
 
@@ -77,31 +81,36 @@ function ScenePane({ closeCallback }) {
     expansionIdentifier: 'scene/' + item 
   }));
 
+  const settingsButton = (
+    <Button
+      onClick={() => setShowSearchSettings(current => !current)}
+      className={styles.settings}
+    >
+      <MaterialIcon icon="settings" className="small" />
+      {showSearchSettings &&
+        <Tooltip placement={'right'} className={styles.toolTip}>
+          <Checkbox
+            label="Show Only Enabled"
+            checked={showOnlyEnabled}
+            left={false}
+            disabled={false}
+            setChecked={() => setShowOnlyEnabled(current => !current)}
+            wide
+            style={{ padding : '2px'}}
+          />
+        </Tooltip>
+      }
+    </Button>
+  );
+
   return (
-    <Pane title="Scene" closeCallback={closeCallback}>
-      { (entries.length === 0) && (
+    <Pane title="Scene" closeCallback={closeCallback} headerButton={settingsButton}>
+      {(entries.length === 0) && (
         <LoadingBlocks className={Pane.styles.loading} />
       )}
       {entries.length > 0 && (
         <>
           <FilterList matcher={showOnlyEnabled ? onlyEnabledMatcher : matcher}>
-            <FilterListInputButton
-              onClick={() => setShowSearchSettings(current => !current)}
-              className={styles.settings}
-            >
-              <MaterialIcon icon="settings" className="small" />
-              {showSearchSettings &&
-                <Tooltip placement={'right'} className={styles.toolTip}>
-                  <Checkbox
-                    label="Show Only Enabled"
-                    checked={showOnlyEnabled}
-                    left={false}
-                    disabled={false}
-                    setChecked={() => setShowOnlyEnabled(current => !current)}
-                    wide
-                  />
-                </Tooltip>}
-            </FilterListInputButton>
             <FilterListFavorites>
               <ContextSection expansionIdentifier="context" />
               {favorites.map(favorite => <Group {...favorite} showOnlyEnabled={showOnlyEnabled} />)}

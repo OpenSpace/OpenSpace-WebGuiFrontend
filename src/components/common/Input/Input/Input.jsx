@@ -124,7 +124,7 @@ class Input extends Component {
           { label || placeholder }
         </label>
         <div className={styles.buttonsContainer}>
-          {children}
+          { children }
           { clearable && (
             <MaterialIcon
               icon="cancel"
