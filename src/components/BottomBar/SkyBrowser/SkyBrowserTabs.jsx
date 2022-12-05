@@ -346,7 +346,6 @@ function SkyBrowserTabs({
   if (showSettings) {
     content = (
       <SkyBrowserSettings
-        browser={browsers[selectedBrowserId]}
         selectedBrowserId={selectedBrowserId}
         luaApi={luaApi}
         setBorderRadius={setBorderRadius}

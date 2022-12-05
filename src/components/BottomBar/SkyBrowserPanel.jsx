@@ -56,6 +56,7 @@ function SkyBrowserPanel({ }) {
     const browser = state.skybrowser.browsers?.[state.skybrowser.selectedBrowserId]; 
     return browser ? `rgb(${browser.color})` : 'gray';
   });
+  const selectedBrowserId = useSelector((state) => state.skybrowser.selectedBrowserId);
 
   const dispatch = useDispatch();
 
