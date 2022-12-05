@@ -1,24 +1,76 @@
 import React from 'react';
 import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd';
+import { shallowEqual, useSelector, useDispatch } from 'react-redux';
 import SkyBrowserTabEntry from './SkyBrowserTabEntry';
 
 function SkyBrowserSelectedImagesList({
-  images,
-  opacities,
   luaApi,
   selectImage,
-  removeImageSelection,
-  setOpacityOfImage,
   currentBrowserColor,
-  activeImage
+  activeImage,
+  passMessageToWwt,
+  removeImageSelection,
+  setOpacityOfImage
 }) {
   const [isDragging, setIsDragging] = React.useState(false);
+    // Each message to WorldWide Telescope has a unique order number
+  const [messageCounter, setMessageCounter] = React.useState(0);
 
-  const test = React.useRef(activeImage);
+  // Cache for when Redux store is updating from OpenSpace
+  // Using refs so the component doesn't update unnecessarily when they are set
+  const imagesCache = React.useRef([]);
+  const opacitiesCache = React.useRef([]);
+  const isLoading = React.useRef(false);
 
-  console.log(test.current === activeImage);
-  test.current = activeImage;
+  const selectedBrowserId = useSelector((state) => state.skybrowser.selectedBrowserId);
+  const imageIndices = useSelector((state) => {
+    const browser = state.skybrowser.browsers[selectedBrowserId];
+    if (!browser || !browser?.selectedImages) {
+      return [];
+    }
+    return Object.values(browser.selectedImages);
+  }, shallowEqual);
+  const imageIndicesLength = useSelector((state) => state.skybrowser.browsers[selectedBrowserId].selectedImages.length);
+  const imageList = useSelector((state) => state.skybrowser.imageList);
+  const imageOpacities = useSelector((state) => state.skybrowser.browsers[selectedBrowserId].opacities, shallowEqual);
 
+  if (!imageList || imageList.length === 0) {
+    return <></>;
+  }
+  // Set image indices and opacities to the order they should currently have
+  // Check if they are currently loading or not
+  const imagesIndices = isLoading.current ? imagesCache.current : imageIndices;
+  const images = imagesIndices.map(index => imageList[index.toString()]);
+  const opacities = isLoading.current ? opacitiesCache.current : imageOpacities;
+
+  // Create a cache so that the right images are displayed in the right order,
+  // even in the small gap between a reorder and the updated info from OpenSpace
+  React.useEffect(() => {
+    imagesCache.current = [...imageIndices];
+    opacitiesCache.current = [...imageOpacities];
+  }, [selectedBrowserId, imageIndicesLength]);
+  // Stop using the cache when the Redux store is up to date
+  if (imageIndices.toString() === imagesCache.current.toString()) {
+    isLoading.current = false;
+  }
+
+  function setImageLayerOrder(browserId, identifier, order) {
+    luaApi.skybrowser.setImageLayerOrder(browserId, identifier, order);
+    const reverseOrder = imageIndices.length - order - 1;
+    passMessageToWwt({
+      event: "image_layer_order",
+      id: String(identifier),
+      order: Number(reverseOrder),
+      version: messageCounter
+    });
+    setMessageCounter(messageCounter + 1);
+  }
+
+  function getCurrentOrder(layers, source, destination) {
+    const [reorderedItem] = layers.splice(source, 1);
+    layers.splice(destination, 0, reorderedItem);
+    return layers;
+  }
 
   function onDragStart () {
     setIsDragging(true);
@@ -36,7 +88,7 @@ function SkyBrowserSelectedImagesList({
     const imagesOrder = isLoading.current ? [...imagesCache.current] : [...imageIndices];
     imagesCache.current = getCurrentOrder(imagesOrder, result.source.index, result.destination.index);
     // Opacities cache
-    const opacitiesOrder = isLoading.current ? [...opacitiesCache.current] : [...browsers[selectedBrowserId].opacities];
+    const opacitiesOrder = isLoading.current ? [...opacitiesCache.current] : [...imageOpacities];
     opacitiesCache.current = getCurrentOrder(opacitiesOrder, result.source.index, result.destination.index);
 
     isLoading.current = true;

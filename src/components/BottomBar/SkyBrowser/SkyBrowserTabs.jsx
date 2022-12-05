@@ -2,12 +2,10 @@ import React from 'react';
 import { shallowEqual, useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Resizable } from 're-resizable';
-import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd';
 import Button from '../../common/Input/Button/Button';
 import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
 import CenteredLabel from '../../common/CenteredLabel/CenteredLabel';
 import SkyBrowserTooltip from './SkyBrowserTooltip';
-import SkyBrowserTabEntry from './SkyBrowserTabEntry';
 import { Icon } from '@iconify/react';
 import styles from './SkyBrowserTabs.scss';
 import SkyBrowserSettings from './SkyBrowserSettings.jsx'
@@ -34,9 +32,11 @@ function SkyBrowserTabs({
   maxHeight,
   minHeight,
   passMessageToWwt,
+  removeImageSelection,
   selectImage,
   setBorderRadius,
   setCurrentTabHeight,
+  setOpacityOfImage,
   setWwtRatio
 }) {
   // State
@@ -48,36 +48,19 @@ function SkyBrowserTabs({
     return result;
   }
   );
-  // Each message to WorldWide Telescope has a unique order number
-  const [messageCounter, setMessageCounter] = React.useState(0);
-
-  // Cache for when Redux store is updating from OpenSpace
-  // Using refs so the component doesn't update unnecessarily when they are set
-  const imagesCache = React.useRef([]);
-  const opacitiesCache = React.useRef([]);
-  const isLoading = React.useRef(false);
   
   // Refs to get info from DOM
   const infoButton = React.useRef(null);
   const tabsDiv = React.useRef(null);
-
+  
   // Redux store access - selectors and dispatch
   const browsers = useSelector((state) => state.skybrowser.browsers);
   const luaApi = useSelector((state) => state.luaApi, shallowEqual);
   const selectedBrowserId = useSelector((state) => state.skybrowser.selectedBrowserId, shallowEqual);
-  const imageIndices = useSelector((state) => {
-    const browser = browsers[selectedBrowserId];
-    if (!browser || !browser?.selectedImages) {
-      return [];
-    }
-    return Object.values(browser.selectedImages);
-  }, shallowEqual);
   const imageIndicesLength = useSelector((state) => {
-    return browsers[selectedBrowserId].selectedImages.length;
+    return state.skybrowser.browsers[selectedBrowserId]?.selectedImages.length;
   });
-  const imageList = useSelector((state) => {
-    return state.skybrowser.imageList;
-  });
+  
   const dispatch = useDispatch();
 
   // Effects
@@ -96,17 +79,6 @@ function SkyBrowserTabs({
     }
   }, [imageCollectionIsLoaded]);
 
-  // Create a cache so that the right images are displayed in the right order,
-  // even in the small gap between a reorder and the updated info from OpenSpace
-  React.useEffect(() => {
-    imagesCache.current = [...imageIndices];
-    opacitiesCache.current = [...browsers[selectedBrowserId].opacities];
-  }, [selectedBrowserId, imageIndicesLength]);
-  // Stop using the cache when the Redux store is up to date
-  if (imageIndices.toString() === imagesCache.current.toString()) {
-    isLoading.current = false;
-  }
-
   function setSelectedBrowser(browserId) {
     if (browsers === undefined || browsers[browserId] === undefined) {
       return "";
@@ -121,28 +93,7 @@ function SkyBrowserTabs({
     setWwtRatio(browsers[browserId].ratio);
   }
 
-  function setOpacityOfImage(identifier, opacity, passToOs = true) {
-    if (passToOs) {
-      luaApi.skybrowser.setOpacityOfImageLayer(selectedBrowserId, Number(identifier), opacity);
-    }
-    passMessageToWwt({
-      event: "image_layer_set",
-      id: String(identifier),
-      setting: "opacity",
-      value: opacity
-    });
-  }
 
-  function removeImageSelection(identifier, passToOs = true) {
-    if (passToOs) {
-      luaApi.skybrowser.removeSelectedImageInBrowser(selectedBrowserId, Number(identifier));
-    }
-    passMessageToWwt({
-      event: "image_layer_remove",
-      id: String(identifier),
-    });
-    luaApi.skybrowser.disableHoverCircle();
-  }
 
   function addAllSelectedImages(browserId, passToOs = true) {
     if (browsers === undefined || browsers[browserId] === undefined) {
@@ -182,18 +133,6 @@ function SkyBrowserTabs({
 
   function toggleShowSettings() {
     setShowSettings(!showSettings);
-  }
-
-  function setImageLayerOrder(browserId, identifier, order) {
-    luaApi.skybrowser.setImageLayerOrder(browserId, identifier, order);
-    const reverseOrder = imageIndices.length - order - 1;
-    passMessageToWwt({
-      event: "image_layer_order",
-      id: String(identifier),
-      order: Number(reverseOrder),
-      version: messageCounter
-    });
-    setMessageCounter(messageCounter + 1);
   }
 
   function createButtons(browser) {
@@ -403,37 +342,6 @@ function SkyBrowserTabs({
     );
   }
 
-  function getCurrentOrder(layers, source, destination) {
-    const [reorderedItem] = layers.splice(source, 1);
-    layers.splice(destination, 0, reorderedItem);
-    return layers;
-  }
-
-  function dragAndDropImageList() {
-    if (!imageList || imageList.length === 0) {
-      return <></>;
-    }
-
-  
-    // Set image indices and opacities to the order they should currently have
-    // Check if they are currently loading or not
-    const imagesIndices = isLoading.current ? imagesCache.current : imageIndices;
-    const images = imagesIndices.map(index => imageList[index.toString()]);
-    const opacities = isLoading.current ? opacitiesCache.current : browsers[selectedBrowserId].opacities;
-    return (
-      <SkyBrowserSelectedImagesList
-        images={images}
-        opacities={opacities}
-        luaApi={luaApi}
-        selectImage={selectImage}
-        removeImageSelection={removeImageSelection}
-        setOpacityOfImage={setOpacityOfImage}
-        currentBrowserColor={currentBrowserColor}
-        activeImage={activeImage}
-      />
-    );
-  }
-    
   let content = "";
   if (showSettings) {
     content = (
@@ -444,14 +352,23 @@ function SkyBrowserTabs({
         setBorderRadius={setBorderRadius}
       />
     );
-  } else if (imageList.length === 0) {
+  } else if (imageIndicesLength === 0) {
     content = (
       <CenteredLabel>
         There are no selected images in this sky browser
       </CenteredLabel>
     );
   } else {
-    content = dragAndDropImageList();
+    content = (
+      <SkyBrowserSelectedImagesList
+        luaApi={luaApi}
+        selectImage={selectImage}
+        currentBrowserColor={currentBrowserColor}
+        activeImage={activeImage}
+        passMessageToWwt={passMessageToWwt}
+        removeImageSelection={removeImageSelection}
+      />
+    );
   }
 
   return (
