@@ -34,7 +34,7 @@ function shouldShowGroup(state, path) {
   const initialValue = false;
   const result = subGroups.reduce(
     (accumulator, currentValue) => {
-    return accumulator || shouldShowGroup(state, currentValue);
+      return accumulator || shouldShowGroup(state, currentValue);
     },
     initialValue
   );
@@ -65,11 +65,7 @@ function nodeExpansionIdentifier(path) {
 function Group({ path, expansionIdentifier, autoExpand, showOnlyEnabled }) {
   const isExpanded = useSelector((state) => {
     let isExpanded = state.local.propertyTreeExpansion[expansionIdentifier];
-
-    if (isExpanded === undefined) {
-      isExpanded = autoExpand;
-    }
-    return isExpanded;
+    return (isExpanded === undefined) ? isExpanded : autoExpand;
   }, shallowEqual);
 
   const propertyOwners = useSelector((state) => {

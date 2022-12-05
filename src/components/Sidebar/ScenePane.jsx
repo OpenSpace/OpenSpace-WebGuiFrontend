@@ -84,7 +84,7 @@ function ScenePane({ closeCallback }) {
   const settingsButton = (
     <Button
       onClick={() => setShowSearchSettings(current => !current)}
-      className={styles.settings}
+      className={`${styles.settings} ${showSearchSettings && styles.settingsFocus}`}
     >
       <MaterialIcon icon="settings" className="small" />
       {showSearchSettings &&
