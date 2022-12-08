@@ -65,7 +65,7 @@ function nodeExpansionIdentifier(path) {
 function Group({ path, expansionIdentifier, autoExpand, showOnlyEnabled }) {
   const isExpanded = useSelector((state) => {
     let isExpanded = state.local.propertyTreeExpansion[expansionIdentifier];
-    return (isExpanded === undefined) ? isExpanded : autoExpand;
+    return (isExpanded === undefined) ? autoExpand : isExpanded;
   }, shallowEqual);
 
   const propertyOwners = useSelector((state) => {
