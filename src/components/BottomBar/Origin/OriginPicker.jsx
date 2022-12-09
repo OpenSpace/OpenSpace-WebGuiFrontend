@@ -28,7 +28,7 @@ import {
 } from '../../../api/keys';
 import propertyDispatcher from '../../../api/propertyDispatcher';
 import subStateToProps from '../../../utils/subStateToProps';
-import {FilterList, FilterListData, FilterListFavorites} from '../../common/FilterList/FilterList';
+import {FilterList, FilterListData, FilterListFavorites, FilterListShowMoreButton} from '../../common/FilterList/FilterList';
 import Button from '../../common/Input/Button/Button';
 import LoadingString from '../../common/LoadingString/LoadingString';
 import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
@@ -295,8 +295,8 @@ function OriginPicker({ favorites, nodes, engineMode, anchorName, luaApi, sessio
         <FilterList
           className={styles.list}
           searchText={searchPlaceholder}
-          showMoreButton
         >
+          <FilterListShowMoreButton/>
           <FilterListFavorites>
             {sortedDefaultList.map((entry) => {
               if(isInFocusMode) {

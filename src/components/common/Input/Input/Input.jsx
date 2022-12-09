@@ -123,17 +123,19 @@ class Input extends Component {
         <label htmlFor={id} className={`${styles.label} ${this.hasInput && styles.hasinput}`}>
           { label || placeholder }
         </label>
-        { children }
-        { clearable && (
-          <MaterialIcon
-            icon="cancel"
-            className={`${styles.clearbutton} ${this.hasInput && styles.hasinput}`}
-            onClick={this.clear}
-            tabIndex="0"
-            role="button"
-            title="Clear input field"
-          />
-        )}
+        <div className={styles.buttonsContainer}>
+          { children }
+          { clearable && (
+            <MaterialIcon
+              icon="cancel"
+              className={`${styles.clearbutton} ${this.hasInput && styles.hasinput}`}
+              onClick={this.clear}
+              tabIndex="0"
+              role="button"
+              title="Clear input field"
+            />
+          )}
+        </div>
       </div>
     );
   }

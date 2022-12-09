@@ -4,9 +4,7 @@ import ReactDom from 'react-dom'
 import { excludeKeys } from '../../../utils/helpers';
 import styles from './Tooltip.scss';
 
-const Tooltip = (props) => {
-  const { children, placement, fixed } = props;
-
+const Tooltip = ({ children, placement, fixed, className, ...props }) => {
   const [domReady, setDomReady] = React.useState(false)
   React.useEffect(() => {
     setDomReady(true)
@@ -15,7 +13,7 @@ const Tooltip = (props) => {
   const tooltip = (
     <div
       {...excludeKeys(props, 'placement fixed')}
-      className={`${styles.tooltip} ${styles[placement]} ${fixed && styles.fixed}`}
+      className={`${styles.tooltip} ${styles[placement]} ${fixed && styles.fixed} ${className}`}
     >
       { children }
     </div>
