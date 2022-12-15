@@ -17,6 +17,7 @@ import {
 } from '../../../api/keys';
 import { isGlobeBrowsingLayer } from '../../../utils/propertyTreeHelpers';
 import { useContextRefs } from '../../GettingStartedTour/GettingStartedContext';
+import Row from '../../common/Row/Row';
 
 function PropertyOwnerHeader({
   title, identifier, expanded, setExpanded, onIcon, offIcon,
@@ -50,6 +51,12 @@ function PropertyOwnerHeader({
     trashAction(identifier);
     evt.stopPropagation();
   };
+
+  const focusButton = (
+    <div className={styles.rightButton} onClick={onClickFocus}>
+      <SvgIcon><Focus /></SvgIcon>
+    </div>
+  );
 
   const popoutButton = (
     <div className={styles.rightButton} onClick={popoutClick}>
@@ -92,40 +99,29 @@ function PropertyOwnerHeader({
       tabIndex={0}
       ref={el => refs.current[refName] = el}
     >
-      <MaterialIcon
-        icon={expanded ? onIcon : offIcon}
-        className={toggleHeaderStyles.icon}
-      />
-      { quickToggleUri
-        && (
-        <span className={styles.leftButtonContainer}>
-          <Property uri={quickToggleUri} checkBoxOnly />
-        </span>
-        )
-      }
-      <span className={`${toggleHeaderStyles.title} ${titleClass}`}>
-        { title }
-        { isHeightLayer && <MaterialIcon className={styles.heightLayerIcon} icon="landscape" /> }
-        { isLayer && <SvgIcon className={styles.layerDraggableIcon}><DraggableIcon /></SvgIcon> }
-      </span>
-      <span className={styles.rightButtonContainer}>
-        { focusAction
-          && (
-          <div className={styles.rightButton} onClick={onClickFocus}>
-            <SvgIcon><Focus /></SvgIcon>
-          </div>
+      <Row>
+        <MaterialIcon
+          icon={expanded ? onIcon : offIcon}
+          className={toggleHeaderStyles.icon}
+        />
+        { quickToggleUri && (
+            <span className={styles.leftButtonContainer}>
+              <Property uri={quickToggleUri} checkBoxOnly />
+            </span>
           )
         }
-        {
-          popOutAction && popoutButton
-        }
-        {
-          metaAction && metaButton
-        }
-        {
-          trashAction && trashButton
-        }
-      </span>
+        <span className={`${toggleHeaderStyles.title} ${titleClass}`}>
+          { title }
+          { isHeightLayer && <MaterialIcon className={styles.heightLayerIcon} icon="landscape" /> }
+          { isLayer && <SvgIcon className={styles.layerDraggableIcon}><DraggableIcon /></SvgIcon> }
+        </span>
+        <span className={styles.rightButtonContainer}>
+          { focusAction && focusButton }
+          { popOutAction && popoutButton }
+          { metaAction && metaButton }
+          { trashAction && trashButton }
+        </span>
+      </Row>
     </header>
   );
 };

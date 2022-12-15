@@ -299,7 +299,7 @@ function OriginPicker({ favorites, nodes, engineMode, anchorName, luaApi, sessio
           <FilterListShowMoreButton/>
           <FilterListFavorites>
             {sortedDefaultList.map((entry) => {
-              if(isInFocusMode) {
+              if (isInFocusMode) {
                 return <FocusEntryWithNavigation onSelect={onSelect} active={active} {...entry} />;
               }
               else {
@@ -309,7 +309,7 @@ function OriginPicker({ favorites, nodes, engineMode, anchorName, luaApi, sessio
           </FilterListFavorites>
           <FilterListData>
             {sortedNodes.map((entry) => {
-              if(isInFocusMode) {
+              if (isInFocusMode) {
                 return <FocusEntryWithNavigation onSelect={onSelect} active={active} {...entry} />;
               }
               else {
