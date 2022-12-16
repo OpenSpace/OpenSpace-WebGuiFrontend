@@ -366,6 +366,7 @@ function SkyBrowserTabs({
         activeImage={activeImage}
         passMessageToWwt={passMessageToWwt}
         removeImageSelection={removeImageSelection}
+        setOpacityOfImage={setOpacityOfImage}
       />
     );
   }
