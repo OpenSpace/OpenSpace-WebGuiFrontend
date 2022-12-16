@@ -56,6 +56,7 @@ function SkyBrowserPanel({ }) {
     const browser = state.skybrowser.browsers?.[state.skybrowser.selectedBrowserId]; 
     return browser ? `rgb(${browser.color})` : 'gray';
   });
+  const selectedBrowserId = useSelector((state) => state.skybrowser.selectedBrowserId);
 
   const dispatch = useDispatch();
 
@@ -133,10 +134,33 @@ function SkyBrowserPanel({ }) {
     }
   }
 
+  function removeImageSelection(identifier, passToOs = true) {
+    if (passToOs) {
+      luaApi.skybrowser.removeSelectedImageInBrowser(selectedBrowserId, Number(identifier));
+    }
+    passMessageToWwt({
+      event: "image_layer_remove",
+      id: String(identifier),
+    });
+    luaApi.skybrowser.disableHoverCircle();
+  }
+
   function setBorderRadius(radius) {
     passMessageToWwt({
       event: "set_border_radius",
       data: radius
+    });
+  }
+
+  function setOpacityOfImage(identifier, opacity, passToOs = true) {
+    if (passToOs) {
+      luaApi.skybrowser.setOpacityOfImageLayer(selectedBrowserId, Number(identifier), opacity);
+    }
+    passMessageToWwt({
+      event: "image_layer_set",
+      id: String(identifier),
+      setting: "opacity",
+      value: opacity
     });
   }
 
@@ -229,6 +253,8 @@ function SkyBrowserPanel({ }) {
         height={currentTabHeight}
         setBorderRadius={setBorderRadius}
         imageCollectionIsLoaded={imageCollectionIsLoaded}
+        removeImageSelection={removeImageSelection}
+        setOpacityOfImage={setOpacityOfImage}
       />
     );
 
