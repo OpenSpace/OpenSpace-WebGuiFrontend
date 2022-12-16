@@ -121,7 +121,7 @@ function SkyBrowserPanel({ }) {
       setActiveImage(identifier);
 
       if (passToOs) {
-        luaApi.skybrowser.selectImage(Number(identifier));
+        luaApi.skybrowser.selectImage(imageList[identifier].url);
       }
       passMessageToWwt({
         event: "image_layer_create",
@@ -131,6 +131,10 @@ function SkyBrowserPanel({ }) {
         goto: false
       });
     }
+  }
+
+  function moveCircleToHoverImage(identifier) {
+    luaApi.skybrowser.moveCircleToHoverImage(imageList[identifier].url);
   }
 
   function setBorderRadius(radius) {
@@ -229,6 +233,7 @@ function SkyBrowserPanel({ }) {
         height={currentTabHeight}
         setBorderRadius={setBorderRadius}
         imageCollectionIsLoaded={imageCollectionIsLoaded}
+        moveCircleToHoverImage={moveCircleToHoverImage}
       />
     );
 
@@ -241,6 +246,7 @@ function SkyBrowserPanel({ }) {
         selectImage={selectImage}
         height={currentImageListHeight}
         passMessageToWwt={passMessageToWwt}
+        moveCircleToHoverImage={moveCircleToHoverImage}
       />
       :
       <FilterList
@@ -256,6 +262,7 @@ function SkyBrowserPanel({ }) {
                 currentBrowserColor={currentBrowserColor}
                 onSelect={selectImage}
                 isActive={activeImage === item.identifier}
+                moveCircleToHoverImage={moveCircleToHoverImage}
               />
           })}
         </FilterListData>

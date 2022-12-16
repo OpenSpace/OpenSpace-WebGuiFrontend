@@ -31,6 +31,7 @@ function SkyBrowserTabs({
   imageCollectionIsLoaded,
   maxHeight,
   minHeight,
+  moveCircleToHoverImage,
   passMessageToWwt,
   selectImage,
   setBorderRadius,
@@ -52,6 +53,7 @@ function SkyBrowserTabs({
   const tabsDiv = React.useRef(null);
 
   // Redux store access - selectors and dispatch
+  const imageList = useSelector((state) => state.skybrowser.imageList);
   const browsers = useSelector((state) => state.skybrowser.browsers);
   const luaApi = useSelector((state) => state.luaApi, shallowEqual);
   const selectedBrowserId = useSelector((state) => state.skybrowser.selectedBrowserId, shallowEqual);
@@ -100,7 +102,7 @@ function SkyBrowserTabs({
 
   function setOpacityOfImage(identifier, opacity, passToOs = true) {
     if (passToOs) {
-      luaApi.skybrowser.setOpacityOfImageLayer(selectedBrowserId, Number(identifier), opacity);
+      luaApi.skybrowser.setOpacityOfImageLayer(selectedBrowserId, imageList[identifier].url, opacity);
     }
     passMessageToWwt({
       event: "image_layer_set",
@@ -112,7 +114,7 @@ function SkyBrowserTabs({
 
   function removeImageSelection(identifier, passToOs = true) {
     if (passToOs) {
-      luaApi.skybrowser.removeSelectedImageInBrowser(selectedBrowserId, Number(identifier));
+      luaApi.skybrowser.removeSelectedImageInBrowser(selectedBrowserId, imageList[identifier].url);
     }
     passMessageToWwt({
       event: "image_layer_remove",
@@ -162,7 +164,7 @@ function SkyBrowserTabs({
   }
 
   function setImageLayerOrder(browserId, identifier, order) {
-    luaApi.skybrowser.setImageLayerOrder(browserId, identifier, order);
+    luaApi.skybrowser.setImageLayerOrder(browserId, imageList[identifier].url, order);
     const reverseOrder = data.length - order - 1;
     passMessageToWwt({
       event: "image_layer_order",
@@ -389,7 +391,7 @@ function SkyBrowserTabs({
               <span />
             ) : (
               <Button
-                onClick={() => setImageLayerOrder(selectedBrowserId, Number(entry.identifier), index - 1)}
+                onClick={() => setImageLayerOrder(selectedBrowserId, entry.identifier, index - 1)}
                 className={styles.arrowButton}
                 transparent
               >
@@ -406,12 +408,13 @@ function SkyBrowserTabs({
               setOpacity={setOpacityOfImage}
               currentBrowserColor={currentBrowserColor}
               isActive={activeImage === entry.identifier}
+              moveCircleToHoverImage={moveCircleToHoverImage}
             />
             {index === data.length - 1 ? (
               <span className={styles.arrowButtonEmpty} />
             ) : (
               <Button
-                onClick={() =>  setImageLayerOrder(selectedBrowserId, Number(entry.identifier), index + 1)}
+                onClick={() =>  setImageLayerOrder(selectedBrowserId, entry.identifier, index + 1)}
                 className={styles.arrowButton}
                 transparent
               >
