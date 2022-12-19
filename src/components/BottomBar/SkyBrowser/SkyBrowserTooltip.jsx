@@ -18,7 +18,7 @@ function SkyBrowserTooltip({ children, fixed, placement, ...props }) {
 SkyBrowserTooltip.propTypes = {
   children: PropTypes.node.isRequired,
   fixed: PropTypes.bool,
-  placement: PropTypes.oneOf('bottom-left bottom-right'.split(' ')),
+  placement: PropTypes.oneOf('bottom-left bottom-right left'.split(' ')),
 };
 
 SkyBrowserTooltip.defaultProps = {

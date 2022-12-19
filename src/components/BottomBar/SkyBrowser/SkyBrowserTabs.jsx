@@ -6,13 +6,13 @@ import Button from '../../common/Input/Button/Button';
 import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
 import CenteredLabel from '../../common/CenteredLabel/CenteredLabel';
 import SkyBrowserTooltip from './SkyBrowserTooltip';
-import SkyBrowserFocusEntry from './SkyBrowserFocusEntry';
 import { Icon } from '@iconify/react';
 import styles from './SkyBrowserTabs.scss';
 import SkyBrowserSettings from './SkyBrowserSettings.jsx'
 import {
   reloadPropertyTree,
 } from '../../../api/Actions';
+import SkyBrowserSelectedImagesList from './SkyBrowserSelectedImagesList';
 
 const ButtonIds = {
   LookAtTarget: "LookAtTarget",
@@ -33,12 +33,15 @@ function SkyBrowserTabs({
   minHeight,
   moveCircleToHoverImage,
   passMessageToWwt,
+  removeImageSelection,
   selectImage,
   setBorderRadius,
   setCurrentTabHeight,
+  setOpacityOfImage,
   setWwtRatio
 }) {
-  // State and refs
+  // State
+  const [showSettings, setShowSettings] = React.useState(false);
   // Sets the showing state info text for the top buttons in the tabs
   const [isShowingInfoButtons, setIsShowingInfoButtons] = React.useState(() => {
     let result = {};
@@ -46,33 +49,24 @@ function SkyBrowserTabs({
     return result;
   }
   );
-  const [showSettings, setShowSettings] = React.useState(false);
-  const [messageCounter, setMessageCounter] = React.useState(0);
-
+  
+  // Refs to get info from DOM
   const infoButton = React.useRef(null);
   const tabsDiv = React.useRef(null);
-
+  
   // Redux store access - selectors and dispatch
   const imageList = useSelector((state) => state.skybrowser.imageList);
   const browsers = useSelector((state) => state.skybrowser.browsers);
   const luaApi = useSelector((state) => state.luaApi, shallowEqual);
   const selectedBrowserId = useSelector((state) => state.skybrowser.selectedBrowserId, shallowEqual);
-  const data = useSelector((state) => {
-    const browser = browsers[selectedBrowserId];
-    if (!state.skybrowser.imageList || !browser) {
-      return [];
-    }
-    const images = browser.selectedImages;
-    if (!images) {
-      return [];
-    }
-    const indices = Object.values(images);
-    return indices.map(index => state.skybrowser.imageList[index.toString()]);
-  }, shallowEqual);
-
-  const dispatch = useDispatch();
+  const imageIndicesLength = useSelector((state) => {
+    return state.skybrowser.browsers[selectedBrowserId]?.selectedImages.length;
+  });
   
+  const dispatch = useDispatch();
+
   // Effects
+  // Update tab height when the div is changed
   React.useEffect(() => {
     if (tabsDiv.current) {
       const newHeight = tabsDiv.current.clientHeight;
@@ -80,6 +74,7 @@ function SkyBrowserTabs({
     }
   }, [tabsDiv.current]);
 
+  // When WWT has loaded the image collection, add all selected images
   React.useEffect(() => {
     if (imageCollectionIsLoaded) {
       addAllSelectedImages(selectedBrowserId, false);
@@ -100,28 +95,6 @@ function SkyBrowserTabs({
     setWwtRatio(browsers[browserId].ratio);
   }
 
-  function setOpacityOfImage(identifier, opacity, passToOs = true) {
-    if (passToOs) {
-      luaApi.skybrowser.setOpacityOfImageLayer(selectedBrowserId, imageList[identifier].url, opacity);
-    }
-    passMessageToWwt({
-      event: "image_layer_set",
-      id: String(identifier),
-      setting: "opacity",
-      value: opacity
-    });
-  }
-
-  function removeImageSelection(identifier, passToOs = true) {
-    if (passToOs) {
-      luaApi.skybrowser.removeSelectedImageInBrowser(selectedBrowserId, imageList[identifier].url);
-    }
-    passMessageToWwt({
-      event: "image_layer_remove",
-      id: String(identifier),
-    });
-    luaApi.skybrowser.disableHoverCircle();
-  }
 
   function addAllSelectedImages(browserId, passToOs = true) {
     if (browsers === undefined || browsers[browserId] === undefined) {
@@ -161,18 +134,6 @@ function SkyBrowserTabs({
 
   function toggleShowSettings() {
     setShowSettings(!showSettings);
-  }
-
-  function setImageLayerOrder(browserId, identifier, order) {
-    luaApi.skybrowser.setImageLayerOrder(browserId, imageList[identifier].url, order);
-    const reverseOrder = data.length - order - 1;
-    passMessageToWwt({
-      event: "image_layer_order",
-      id: String(identifier),
-      order: Number(reverseOrder),
-      version: messageCounter
-    });
-    setMessageCounter(messageCounter + 1);
   }
 
   function createButtons(browser) {
@@ -382,69 +343,34 @@ function SkyBrowserTabs({
     );
   }
 
-  function createImageList() {
-    return (
-      <ul>
-        {data.map((entry, index) => (
-          <div key={index}>
-            {index == 0 ? (
-              <span />
-            ) : (
-              <Button
-                onClick={() => setImageLayerOrder(selectedBrowserId, entry.identifier, index - 1)}
-                className={styles.arrowButton}
-                transparent
-              >
-                <MaterialIcon icon="keyboard_arrow_left" />
-              </Button>
-            )}
-            <SkyBrowserFocusEntry
-              {...entry}
-              luaApi={luaApi}
-              key={entry.identifier}
-              onSelect={selectImage}
-              removeImageSelection={removeImageSelection}
-              opacity={browsers[selectedBrowserId].opacities[index]}
-              setOpacity={setOpacityOfImage}
-              currentBrowserColor={currentBrowserColor}
-              isActive={activeImage === entry.identifier}
-              moveCircleToHoverImage={moveCircleToHoverImage}
-            />
-            {index === data.length - 1 ? (
-              <span className={styles.arrowButtonEmpty} />
-            ) : (
-              <Button
-                onClick={() =>  setImageLayerOrder(selectedBrowserId, entry.identifier, index + 1)}
-                className={styles.arrowButton}
-                transparent
-              >
-                <MaterialIcon icon="keyboard_arrow_right" />
-              </Button>
-            )}
-          </div>
-        ))}
-      </ul>
-    );
-  }
-    
   let content = "";
   if (showSettings) {
     content = (
       <SkyBrowserSettings
-        browser={browsers[selectedBrowserId]}
         selectedBrowserId={selectedBrowserId}
         luaApi={luaApi}
         setBorderRadius={setBorderRadius}
       />
     );
-  } else if (data.length === 0) {
+  } else if (imageIndicesLength === 0) {
     content = (
       <CenteredLabel>
         There are no selected images in this sky browser
       </CenteredLabel>
     );
   } else {
-    content = createImageList();
+    content = (
+      <SkyBrowserSelectedImagesList
+        luaApi={luaApi}
+        selectImage={selectImage}
+        currentBrowserColor={currentBrowserColor}
+        activeImage={activeImage}
+        passMessageToWwt={passMessageToWwt}
+        removeImageSelection={removeImageSelection}
+        setOpacityOfImage={setOpacityOfImage}
+        moveCircleToHoverImage={moveCircleToHoverImage}
+      />
+    );
   }
 
   return (
