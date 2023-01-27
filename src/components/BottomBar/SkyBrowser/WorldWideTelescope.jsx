@@ -146,15 +146,36 @@ function WorldWideTelescope({
     });
   }
 
-  function handleDrag(mouse) {
-    if (isDragging) {
+  function getClientXY(interaction) {
+    let position = undefined;
+    if (interaction.type === "touchstart" || interaction.type === "touchmove") {
+      if (!interaction?.touches?.[0]?.clientX || !interaction?.touches?.[0]?.clientY) {
+        return;
+      }
+      position = [interaction.touches[0].clientX, interaction.touches[0].clientY];
+    }
+    else { // mouse
+      position = [interaction.clientX, interaction.clientY];
+    }
+    if (!position) {
+      return undefined;
+    }
+    return position;
+  }
+
+  function handleDrag(interaction) {
+    const end = getClientXY(interaction);
+    if (isDragging && end) {
       // Calculate pixel translation
-      const end = [mouse.clientX, mouse.clientY];
       const width = size.width - BorderWidth;
       const height = size.height - BorderWidth;
       const translation = [end[0] - startDragPosition[0], end[1] - startDragPosition[1]];
+      
+      const percentageX = translation[0] / width;
+      const percentageY = translation[1] / height;
       // Calculate [ra, dec] translation without roll
-      const percentageTranslation = [translation[0] / width, translation[1] / height];  
+      const percentageTranslation = [ percentageX, percentageY ]; 
+      
       // Call lua function
       skybrowserApi.finetuneTargetPosition(
         browserId,
@@ -163,15 +184,15 @@ function WorldWideTelescope({
     }
   }
 
-  function mouseDown(mouse) {
+  function startInteraction(interaction) {
+    const position = getClientXY(interaction);
     skybrowserApi.startFinetuningTarget(browserId);
-    const position = [mouse.clientX, mouse.clientY];
     setIsDragging(true);
     setStartDragPosition(position);
     skybrowserApi.stopAnimations(browserId);
   }
 
-  function mouseUp(mouse) {
+  function endInteraction() {
     setIsDragging(false);
   }
 
@@ -204,9 +225,12 @@ function WorldWideTelescope({
   const interactionDiv = <div
     className={styles.container}
     onMouseMove={handleDrag}
-    onMouseDown={mouseDown}
-    onMouseUp={mouseUp}
-    onMouseLeave={mouseUp}
+    onMouseDown={startInteraction}
+    onMouseUp={endInteraction}
+    onMouseLeave={endInteraction}
+    onTouchStart={startInteraction}
+    onTouchMove={handleDrag}
+    onTouchEnd={endInteraction}
     onWheel = {(e) => scroll(e)}
   />
 
