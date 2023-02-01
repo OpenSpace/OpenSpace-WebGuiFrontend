@@ -453,7 +453,8 @@ const mapDispatchToProps = dispatch => ({
 });
 
 OriginPicker.propTypes = {
-  nodes: PropTypes.array.isRequired,
+  allNodes: PropTypes.array.isRequired,
+  searchableNodes: PropTypes.array.isRequired,
   anchor: PropTypes.string,
   aim: PropTypes.string,
   anchorName: PropTypes.string,
