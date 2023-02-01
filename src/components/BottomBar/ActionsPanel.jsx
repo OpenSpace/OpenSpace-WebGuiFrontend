@@ -241,13 +241,17 @@ const mapSubStateToProps = ({ popoverVisible, luaApi, actions }) => {
       continue;
     }
 
-    // If there is no backslach at beginning of GUI path, add that manually
+    // If there is no backslash at beginning of GUI path, add that manually
+    // (there should always be though)
     if (action.guiPath.length > 0 && action.guiPath[0] !== '/') {
       action.guiPath = '/' + action.guiPath;
     }
 
-    var splits = action.guiPath.split('/');
-    splits.shift();
+    let splits = action.guiPath.split('/');
+    // Remove all empty strings: which is what we get before initial slash and
+    // if the path is just a slash
+    splits = splits.filter((s) => s !== "");
+
     let parent = actionsMapped['/'];
 
     // Add to top level actions (no gui path)
