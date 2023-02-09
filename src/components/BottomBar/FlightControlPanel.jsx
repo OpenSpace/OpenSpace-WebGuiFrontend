@@ -165,7 +165,6 @@ class FlightControlPanel extends Component {
   }
 
   touchDown(event) {
-    console.log(event.touches[0].clientX)
     this.touchStartX = event.touches[0].clientX;
     this.touchStartY = event.touches[0].clientY;
   }
