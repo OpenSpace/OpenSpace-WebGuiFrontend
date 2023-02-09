@@ -303,7 +303,7 @@ function TourPopup({ setVisibility, isVisible }) {
             <img src={openspaceLogo} className={styles.logo} />
           </div>}
         <p className={styles.text}>{content.firstText}</p>
-        <Goal text={content} setIsFulfilled={setIsFulfilled} />
+        <Goal content={content} setIsFulfilled={setIsFulfilled} />
         {<p className={` ${styles.text} ${styles.infoText}`} style={ isFulfilled ? { paddingTop: '40px' } : undefined }>{content.infoText}</p>}
         {content.showMouse && !isFulfilled &&  
         <div className={ styles.scroll } >
