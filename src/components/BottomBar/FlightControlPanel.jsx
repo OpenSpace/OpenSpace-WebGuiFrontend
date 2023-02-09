@@ -29,8 +29,11 @@ class FlightControlPanel extends Component {
     this.mouseMove = this.mouseMove.bind(this);
     this.touchMove = this.touchMove.bind(this);
     this.touchUp = this.touchUp.bind(this);
+    this.mouseUp = this.mouseUp.bind(this);
+
     this.touchStartX = 0;
     this.touchStartY = 0;
+    this.mouseIsDown = false;
   }
 
   componentDidMount() {
@@ -96,10 +99,10 @@ class FlightControlPanel extends Component {
         <div
           className={styles.control_area}
           onPointerDown={this.mouseDown}
-          onPointerUp={this.touchUp}
-          onPointerCancel={this.touchUp}
-          onPointerLeave={this.touchUp}
-          onLostPointerCapture={this.touchUp}
+          onPointerUp={this.mouseUp}
+          onPointerCancel={this.mouseUp}
+          onPointerLeave={this.mouseUp}
+          onLostPointerCapture={this.mouseUp}
           onPointerMove={this.mouseMove}
           onTouchStart={this.touchDown}
           onTouchEnd={this.touchUp}
@@ -132,13 +135,13 @@ class FlightControlPanel extends Component {
   }
 
   touchDown(event) {
+    console.log(event.touches[0].clientX)
     this.touchStartX = event.touches[0].clientX;
     this.touchStartY = event.touches[0].clientY;
   }
 
   mouseDown(event) {
-    this.touchStartX = event.clientX;
-    this.touchStartY = event.clientY;
+    this.mouseIsDown = true;
   }
 
   touchMove(event) {
@@ -189,28 +192,50 @@ class FlightControlPanel extends Component {
     });
   }
 
-  mouseMove(event) {
-    if (this.touchStartX !== 0) {
-      const deltaX = event.movementX / 20;
-      const deltaY = -event.movementY / 20;
-      const inputState = { values: {} };
-
-      if (event.shiftKey) {
-        inputState.values.panX = -deltaX;
-        inputState.values.panY = deltaY;
-      } else if (event.ctrlKey) {
-        inputState.values.zoomIn = deltaY;
-        inputState.values.localRollX = -deltaX;
-      } else {
-        inputState.values.orbitX = -deltaX;
-        inputState.values.orbitY = deltaY;
-      }
-
-      this.props.sendFlightControl({
-        type: 'inputState',
-        inputState,
-      });
+  mouseUp(event) {
+    if (!this.mouseIsDown) {
+      return;
     }
+    this.mouseIsDown = false;
+    this.props.sendFlightControl({
+      type: 'inputState',
+      inputState: {
+        values: {
+          zoomIn: 0.00,
+          orbitX: 0.0,
+          orbitY: 0.0,
+          panX: 0.0,
+          panY: 0.0,
+          localRollX: 0.0,
+        },
+      },
+    });
+  }
+
+  mouseMove(event) {
+    if (!this.mouseIsDown) {
+      return;
+    }
+
+    const deltaX = event.movementX / 20;
+    const deltaY = -event.movementY / 20;
+    const inputState = { values: {} };
+
+    if (event.shiftKey) {
+      inputState.values.panX = -deltaX;
+      inputState.values.panY = deltaY;
+    } else if (event.ctrlKey) {
+      inputState.values.zoomIn = deltaY;
+      inputState.values.localRollX = -deltaX;
+    } else {
+      inputState.values.orbitX = -deltaX;
+      inputState.values.orbitY = deltaY;
+    }
+
+    this.props.sendFlightControl({
+      type: 'inputState',
+      inputState,
+    });
   }
 
   render() {
