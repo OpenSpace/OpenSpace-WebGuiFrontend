@@ -22,7 +22,7 @@ function MultiStateToggle({labels, checked, setChecked, infoText}) {
   return (
     <div className={styles.wrapper}>
       <p className={`${styles.toggleTitle} ${styles.resultsTitle}`} id={'multiStateToggle'}>Mode</p>
-      <InfoBox panelscroll={'multiStateToggle'} text={infoText} style={{ paddingTop: '3px', paddingRight: '3px' }} />
+      <InfoBox panelscroll={'multiStateToggle'} content={infoText} style={{ paddingTop: '3px', paddingRight: '3px' }} />
       <div className={styles.toggles}>
       {labels.map(label => 
         <React.Fragment key={`${label}fragment`}>

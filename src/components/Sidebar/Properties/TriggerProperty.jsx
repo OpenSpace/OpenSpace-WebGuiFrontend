@@ -16,7 +16,7 @@ class TriggerProperty extends Component {
 
   get descriptionPopup() {
     const { description } = this.props.description;
-    return description ? <span onClick={this.copyUri}><InfoBox text={description} /></span> : '';
+    return description ? <span onClick={this.copyUri}><InfoBox content={description} /></span> : '';
   }
 
   copyUri() {

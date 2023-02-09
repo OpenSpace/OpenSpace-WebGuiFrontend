@@ -182,7 +182,7 @@ function SkyBrowserSettings({
             Position for first copy
           </header>
           <InfoBox
-            text={"This sets the position of the first copy. The additional copies will be evenly spread out on the Azimuth."}
+            content={"This sets the position of the first copy. The additional copies will be evenly spread out on the Azimuth."}
           />
           </Row>
           <Row className={styles.vectorProperty}>

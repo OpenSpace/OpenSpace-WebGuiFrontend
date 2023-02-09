@@ -38,7 +38,7 @@ class InfoBox extends Component {
   }
 
   render() {
-    const { icon, text } = this.props;
+    const { icon, content } = this.props;
     const { showPopup } = this.state;
     const passOnProps = excludeKeys(this.props, 'icon text'); 
     return (
@@ -52,7 +52,7 @@ class InfoBox extends Component {
         />
         { showPopup && (
           <Tooltip fixed placement="right" style={this.position}>
-            { text }
+            { content }
           </Tooltip>
         )}
       </span>
@@ -62,7 +62,7 @@ class InfoBox extends Component {
 
 InfoBox.propTypes = {
   icon: PropTypes.string,
-  text: PropTypes.string.isRequired,
+  content: PropTypes.node.isRequired,
 };
 
 InfoBox.defaultProps = {

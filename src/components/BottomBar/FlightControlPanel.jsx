@@ -11,6 +11,7 @@ import {
 } from '../../api/Actions';
 import { RollFrictionKey, RotationalFrictionKey, ZoomFrictionKey } from '../../api/keys';
 import Button from '../common/Input/Button/Button';
+import InfoBox from '../common/InfoBox/InfoBox';
 import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import Popover from '../common/Popover/Popover';
 import Row from '../common/Row/Row';
@@ -50,11 +51,37 @@ class FlightControlPanel extends Component {
     stopListening(RollFrictionKey);
   }
 
+
+  get position() {
+    if (!this.wrapper) return { top: '0px', left: '0px' };
+    else {
+      const { top, right } = this.wrapper.getBoundingClientRect();
+      return { top: `${top}px`, left: `${right}px` };
+    }
+  }
+
   get popover() {
     const { rotationFriction, rollFriction, zoomFriction } = this.props;
     const rotationButtonColor = rotationFriction ? '#222' : '#888';
     const zoomButtonColor = zoomFriction ? '#222' : '#888';
     const rollButtonColor = rollFriction ? '#222' : '#888';
+
+    const infoBoxContent = <>
+      <p>Interact with the area to control the camera. </p> <br/>
+      <p><b>Mouse controls:</b></p>
+      <p>Click and drag to rotate. Hold</p>
+      <ul className={styles.list}>
+        <li>SHIFT - to pan</li>
+        <li>CTRL - to zoom (y-axis) or roll (x-axis)</li>
+      </ul>
+      <br/>
+      <p><b>Touch controls:</b></p>
+      <ul className={styles.list}>
+        <li>1 finger to rotate</li>
+        <li>2 fingers to pan</li>
+        <li>3 fingers to zoom (y-axis) or roll (x-axis)</li>
+      </ul>
+    </>
 
     return (
       <Popover
@@ -69,7 +96,7 @@ class FlightControlPanel extends Component {
           <Row>
             <Button
               onClick={this.toggleRotation}
-              title="orbit"
+              title="Rotation friction"
               style={{ width: 133, background: rotationButtonColor }}
               disabled={false}
             >
@@ -77,7 +104,7 @@ class FlightControlPanel extends Component {
             </Button>
             <Button
               onClick={this.toggleZoom}
-              title="orbit"
+              title="Zoom friction"
               style={{ width: 133, background: zoomButtonColor }}
               disabled={false}
             >
@@ -85,17 +112,20 @@ class FlightControlPanel extends Component {
             </Button>
             <Button
               onClick={this.toggleRoll}
-              title="orbit"
+              title="Roll friction"
               style={{ width: 133, background: rollButtonColor }}
               disabled={false}
             >
               <span style={{ marginLeft: 5 }}>Roll</span>
             </Button>
-
+            <InfoBox className={styles.infoButton} content={"Controls to disable friction for different camera movements"} />
           </Row>
         </div>
         <hr className={Popover.styles.delimiter} />
-        <div className={Popover.styles.title}>Control Area </div>
+        <Row>
+          <div className={Popover.styles.title}>Control Area</div>
+          <InfoBox className={styles.infoButton} content={infoBoxContent} />
+        </Row>
         <div
           className={styles.control_area}
           onPointerDown={this.mouseDown}

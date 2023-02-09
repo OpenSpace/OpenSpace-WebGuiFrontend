@@ -21,7 +21,7 @@ class NumericProperty extends Component {
 
   get descriptionPopup() {
     const { description } = this.props.description;
-    return description ? <InfoBox text={description} /> : '';
+    return description ? <InfoBox content={description} /> : '';
   }
 
   get disabled() {
@@ -36,7 +36,7 @@ class NumericProperty extends Component {
     let { description } = this.props;
     const { MaximumValue, MinimumValue } = description.AdditionalData;
     const descriptionString = `${description.description}\nMin: ${MinimumValue}, max: ${MaximumValue}`;
-    return descriptionString ? (<InfoBox text={descriptionString} />) : '';
+    return descriptionString ? (<InfoBox content={descriptionString} />) : '';
   }
 
   copyUri() {
