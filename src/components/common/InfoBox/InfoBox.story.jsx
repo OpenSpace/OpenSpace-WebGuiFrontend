@@ -14,5 +14,5 @@ storiesOf('InfoBox', module)
   ))
   .add('default', () => (<InfoBox text="text" />))
   .add('with html content', () =>
-    (<InfoBox content={(<a href="http://gph.is/1PLFn5U" target="_blank">It is a link!</a>)} />))
+    (<InfoBox text={(<a href="http://gph.is/1PLFn5U" target="_blank">It is a link!</a>)} />))
   .add('special icon', () => (<InfoBox text="look it's a globe!" icon="language" />));

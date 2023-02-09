@@ -22,7 +22,7 @@ class StringProperty extends Component {
 
   get descriptionPopup() {
     const { description } = this.props.description;
-    return description ? (<InfoBox content={description} />) : '';
+    return description ? (<InfoBox text={description} />) : '';
   }
 
   copyUri() {

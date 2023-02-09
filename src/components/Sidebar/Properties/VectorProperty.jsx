@@ -60,7 +60,7 @@ function VectorProperty({dispatcher, description, value}) {
     dispatcher.set(newValue);
   }
 
-  const descriptionPopup = description ? <InfoBox content={description.description} /> : '';
+  const descriptionPopup = description ? <InfoBox text={description.description} /> : '';
   const firstLabel = (<span onClick={copyUri}>
     { description.Name } { descriptionPopup }
   </span>);

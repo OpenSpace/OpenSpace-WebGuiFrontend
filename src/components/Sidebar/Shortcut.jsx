@@ -44,7 +44,7 @@ class Shortcut extends Component {
           <MaterialIcon icon="play_arrow" />
           </Button>
         <div className={styles.content}> 
-          {name} {this.keybinding} &nbsp; <InfoBox content={documentation} />
+          {name} {this.keybinding} &nbsp; <InfoBox text={documentation} />
         </div>
       </div>
     );

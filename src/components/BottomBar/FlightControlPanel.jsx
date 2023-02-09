@@ -118,13 +118,13 @@ class FlightControlPanel extends Component {
             >
               <span style={{ marginLeft: 5 }}>Roll</span>
             </Button>
-            <InfoBox className={styles.infoButton} content={"Controls to disable friction for different camera movements"} />
+            <InfoBox className={styles.infoButton} text={"Controls to disable friction for different camera movements"} />
           </Row>
         </div>
         <hr className={Popover.styles.delimiter} />
         <Row>
           <div className={Popover.styles.title}>Control Area</div>
-          <InfoBox className={styles.infoButton} content={infoBoxContent} />
+          <InfoBox className={styles.infoButton} text={infoBoxContent} />
         </Row>
         <div
           className={styles.control_area}
