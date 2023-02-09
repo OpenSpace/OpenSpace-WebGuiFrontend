@@ -71,8 +71,8 @@ class FlightControlPanel extends Component {
       <p><b>Mouse controls:</b></p>
       <p>Click and drag to rotate. Hold</p>
       <ul className={styles.list}>
-        <li>SHIFT - to pan</li>
-        <li>CTRL - to zoom (y-axis) or roll (x-axis)</li>
+        <li>SHIFT to pan</li>
+        <li>CTRL to zoom (y-axis) or roll (x-axis)</li>
       </ul>
       <br/>
       <p><b>Touch controls:</b></p>
