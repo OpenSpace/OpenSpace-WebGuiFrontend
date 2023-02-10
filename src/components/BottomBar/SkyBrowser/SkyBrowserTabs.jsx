@@ -30,6 +30,7 @@ function SkyBrowserTabs({
   imageCollectionIsLoaded,
   maxHeight,
   minHeight,
+  moveCircleToHoverImage,
   passMessageToWwt,
   removeImageSelection,
   selectImage,
@@ -53,6 +54,7 @@ function SkyBrowserTabs({
   const tabsDiv = React.useRef(null);
   
   // Redux store access - selectors and dispatch
+  const imageList = useSelector((state) => state.skybrowser.imageList);
   const browsers = useSelector((state) => state.skybrowser.browsers);
   const luaApi = useSelector((state) => state.luaApi, shallowEqual);
   const selectedBrowserId = useSelector((state) => state.skybrowser.selectedBrowserId, shallowEqual);
@@ -91,7 +93,6 @@ function SkyBrowserTabs({
     luaApi.skybrowser.setSelectedBrowser(browserId);
     setWwtRatio(browsers[browserId].ratio);
   }
-
 
 
   function addAllSelectedImages(browserId, passToOs = true) {
@@ -356,6 +357,7 @@ function SkyBrowserTabs({
         passMessageToWwt={passMessageToWwt}
         removeImageSelection={removeImageSelection}
         setOpacityOfImage={setOpacityOfImage}
+        moveCircleToHoverImage={moveCircleToHoverImage}
       />
     );
   }

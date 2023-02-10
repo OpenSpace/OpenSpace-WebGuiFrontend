@@ -10,7 +10,8 @@ function SkyBrowserSelectedImagesList({
   activeImage,
   passMessageToWwt,
   removeImageSelection,
-  setOpacityOfImage
+  setOpacityOfImage,
+  moveCircleToHoverImage
 }) {
   const [isDragging, setIsDragging] = React.useState(false);
   // Each message to WorldWide Telescope has a unique order number
@@ -57,8 +58,8 @@ function SkyBrowserSelectedImagesList({
   }
 
   function setImageLayerOrder(browserId, identifier, order) {
-    luaApi.skybrowser.setImageLayerOrder(browserId, identifier, order);
-    const reverseOrder = imageIndicesCurrent.length - order - 1;
+    luaApi.skybrowser.setImageLayerOrder(browserId, imageList[identifier].url, order);
+    const reverseOrder = imageIndices.length - order - 1;
     passMessageToWwt({
       event: "image_layer_order",
       id: String(identifier),
@@ -124,6 +125,7 @@ function SkyBrowserSelectedImagesList({
                         setOpacity={setOpacityOfImage}
                         currentBrowserColor={currentBrowserColor}
                         isActive={activeImage === entry.identifier}
+                        moveCircleToHoverImage={moveCircleToHoverImage}
                       />
                     </div>
                   )}
