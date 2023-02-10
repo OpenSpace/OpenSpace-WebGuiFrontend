@@ -11,6 +11,7 @@ function SkyBrowserNearestImagesList({
   activeImage,
   currentBrowserColor,
   height,
+  moveCircleToHoverImage,
   selectImage
 }) {
   const fov = useSelector(
@@ -102,6 +103,7 @@ function SkyBrowserNearestImagesList({
                 currentBrowserColor={currentBrowserColor}
                 onSelect={selectImage}
                 isActive={activeImage === item.identifier}
+                moveCircleToHoverImage={moveCircleToHoverImage}
               />
             ))}
         </FilterListData>
