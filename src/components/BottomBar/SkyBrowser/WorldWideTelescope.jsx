@@ -61,9 +61,7 @@ function WorldWideTelescope({
 
   React.useEffect(() => {
     // Send aim messages to WorldWide Telescope to prompt it to reply with a message
-    setSetupWwtFunc(setInterval(() => {
-      setAim();
-    }, 250));
+    setSetupWwtFunc(setInterval(setAim, 250));
   }, []);
 
   React.useEffect(() => {
