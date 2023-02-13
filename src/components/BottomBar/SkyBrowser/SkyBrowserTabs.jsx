@@ -20,7 +20,6 @@ const ButtonIds = {
   RemoveImages: "RemoveImages",
   ZoomIn: "ZoomIn",
   ZoomOut: "ZoomOut",
-  PointSpaceCraft: "PointSpaceCraft",
   Settings: "Settings"
 }
 
@@ -31,6 +30,7 @@ function SkyBrowserTabs({
   imageCollectionIsLoaded,
   maxHeight,
   minHeight,
+  moveCircleToHoverImage,
   passMessageToWwt,
   removeImageSelection,
   selectImage,
@@ -54,6 +54,7 @@ function SkyBrowserTabs({
   const tabsDiv = React.useRef(null);
   
   // Redux store access - selectors and dispatch
+  const imageList = useSelector((state) => state.skybrowser.imageList);
   const browsers = useSelector((state) => state.skybrowser.browsers);
   const luaApi = useSelector((state) => state.luaApi, shallowEqual);
   const selectedBrowserId = useSelector((state) => state.skybrowser.selectedBrowserId, shallowEqual);
@@ -92,7 +93,6 @@ function SkyBrowserTabs({
     luaApi.skybrowser.setSelectedBrowser(browserId);
     setWwtRatio(browsers[browserId].ratio);
   }
-
 
 
   function addAllSelectedImages(browserId, passToOs = true) {
@@ -190,16 +190,6 @@ function SkyBrowserTabs({
         luaApi.skybrowser.setVerticalFov(browserId, Number(newFov));
       },
     };
-    const pointSpaceCraftButton = {
-      id: ButtonIds.PointSpaceCraft,
-      selected: false,
-      icon: 'eos-icons:satellite-alt',
-      iconify: true,
-      text: 'Point spacecraft',
-      function: function(browserId) {
-        luaApi.skybrowser.pointSpaceCraft(browserId);
-      },
-    };
     const showSettingsButton = {
       id: ButtonIds.Settings,
       selected: showSettings,
@@ -210,7 +200,7 @@ function SkyBrowserTabs({
       },
     };
 
-    const buttonsData = [lookButton, moveButton, scrollInButton, scrollOutButton, pointSpaceCraftButton, trashButton, showSettingsButton];
+    const buttonsData = [lookButton, moveButton, scrollInButton, scrollOutButton, trashButton, showSettingsButton];
 
     const buttons = buttonsData.map((button) => (
       <Button
@@ -367,6 +357,7 @@ function SkyBrowserTabs({
         passMessageToWwt={passMessageToWwt}
         removeImageSelection={removeImageSelection}
         setOpacityOfImage={setOpacityOfImage}
+        moveCircleToHoverImage={moveCircleToHoverImage}
       />
     );
   }

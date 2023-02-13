@@ -28,6 +28,7 @@ function WorldWideTelescope({
   const [wwtHasLoaded, setWwtHasLoaded] = React.useState(false);
   const [isPinching, setIsPinching] = React.useState(false);
   const [startPinchPositions, setStartPinchPositions] = React.useState([]);
+  const [setupWwtFunc, setSetupWwtFunc] = React.useState(null);
   const TopBarHeight = 25;
   // Refs
   const iframe = React.useRef(null);
@@ -57,8 +58,12 @@ function WorldWideTelescope({
     setMessageFunction(sendMessageToWwt);
     window.addEventListener("message", handleCallbackMessage);
     setImageCollectionIsLoaded(false);
-    
     return () => window.removeEventListener("message", handleCallbackMessage);
+  }, []);
+
+  React.useEffect(() => {
+    // Send aim messages to WorldWide Telescope to prompt it to reply with a message
+    setSetupWwtFunc(setInterval(setAim, 250));
   }, []);
 
   React.useEffect(() => {
@@ -87,6 +92,14 @@ function WorldWideTelescope({
       dispatch(unsubscribeToProperty(SkyBrowser_InverseZoomDirectionKey));
     }; 
   }, []);
+
+  // When WorldWide Telescope has replied with a message, stop sending it unnecessary messages
+  function stopSetupWwtFunc() {
+    setSetupWwtFunc(interval => {
+        clearInterval(interval);
+        return null;
+    });
+  }
 
   function sendMessageToWwt(message) {
     try {
@@ -117,6 +130,7 @@ function WorldWideTelescope({
   function handleCallbackMessage(event) {
     if (event.data == "wwt_has_loaded") {
       setWwtHasLoaded(true);
+      stopSetupWwtFunc();
     }
     if (event.data == "load_image_collection_completed") {
       setImageCollectionIsLoaded(true);

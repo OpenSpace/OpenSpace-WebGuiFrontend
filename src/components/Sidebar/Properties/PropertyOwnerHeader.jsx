@@ -153,7 +153,7 @@ const mapStateToProps = (state, ownProps) => {
   const isLayer = isGlobeBrowsingLayer(uri);
 
   return {
-    title: title || displayName(state, uri),
+    title: title || displayName(state, state.propertyTree.properties, uri),
     quickToggleUri,
     enabled,
     isLayer,

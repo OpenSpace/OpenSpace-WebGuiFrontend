@@ -240,7 +240,9 @@ const displayName = (propertyOwners, properties, uri) => {
     property = { value: propertyOwners[uri].name };
   }
 
-  return property ? property.value : propertyOwners[uri].identifier;
+  const guiName = property ? property.value : undefined;
+  // If the gui name is found and not empty, use it. Otherwise, show identifier of node
+  return guiName ? guiName: propertyOwners[uri].identifier;
 };
 
 const mapSubStateToProps = (
