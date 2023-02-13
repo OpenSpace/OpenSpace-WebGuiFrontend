@@ -305,7 +305,8 @@ function SkyBrowserSettings({
           />
         ))}
       </Row>
-      <Property uri={`Scene.${browser.targetId}.Renderable.ApplyRoll`}/>
+      <Property uri={`Scene.${browser.targetId}.Renderable.ApplyRoll`} />
+      <Property uri={`ScreenSpace.${selectedBrowserId}.PointSpacecraft`} />
       {displayDisplaySection}
       <ToggleContent
         title={"General Settings"}
