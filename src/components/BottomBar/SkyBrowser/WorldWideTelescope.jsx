@@ -26,6 +26,8 @@ function WorldWideTelescope({
   const [isDragging, setIsDragging] = React.useState(false);
   const [startDragPosition, setStartDragPosition] = React.useState([0, 0]);
   const [wwtHasLoaded, setWwtHasLoaded] = React.useState(false);
+  const [isPinching, setIsPinching] = React.useState(false);
+  const [startPinchPositions, setStartPinchPositions] = React.useState([]);
   const TopBarHeight = 25;
   // Refs
   const iframe = React.useRef(null);
@@ -152,7 +154,17 @@ function WorldWideTelescope({
       if (!interaction?.touches?.[0]?.clientX || !interaction?.touches?.[0]?.clientY) {
         return;
       }
-      position = [interaction.touches[0].clientX, interaction.touches[0].clientY];
+      if (interaction?.touches?.length > 1) {
+        const touches = interaction.touches;
+        position = [
+          [touches[0].clientX, touches[0].clientY],
+          [touches[1].clientX, touches[1].clientY]
+        ];
+      }
+      else {
+        const touch = interaction.touches[0]; 
+        position = [touch.clientX, touch.clientY];
+      }
     }
     else { // mouse
       position = [interaction.clientX, interaction.clientY];
@@ -161,6 +173,14 @@ function WorldWideTelescope({
       return undefined;
     }
     return position;
+  }
+
+  function scrollZoom(scroll) {
+    if (inverseZoom) {
+      scroll *= -1;
+    }
+    skybrowserApi.scrollOverBrowser(browserId, scroll);
+    skybrowserApi.stopAnimations(browserId);
   }
 
   function handleDrag(interaction) {
@@ -182,27 +202,39 @@ function WorldWideTelescope({
         percentageTranslation
       );
     }
+    else if (isPinching && end) {
+      const euclidianDistance = (coord => {
+        const a = coord[0][0] - coord[1][0];
+        const b = coord[0][1] - coord[1][1];
+        return Math.sqrt(a * a + b * b);
+      });
+      // See if distance is larger or smaller compared to first
+      // interaction
+      const startDistance = euclidianDistance(startPinchPositions);
+      const endDistance = euclidianDistance(end);
+
+      const scroll = startDistance < endDistance ? 1 : -1;
+      scrollZoom(scroll);
+    }
   }
 
   function startInteraction(interaction) {
     const position = getClientXY(interaction);
     skybrowserApi.startFinetuningTarget(browserId);
-    setIsDragging(true);
-    setStartDragPosition(position);
+    const hasMultipleCoords = Array.isArray(position[0]);
+    if (hasMultipleCoords) {
+      setIsPinching(true);
+      setStartPinchPositions(position);
+    } else {
+      setIsDragging(true);
+      setStartDragPosition(position);
+    }
     skybrowserApi.stopAnimations(browserId);
   }
 
   function endInteraction() {
     setIsDragging(false);
-  }
-
-  function scroll(e) {
-    let scroll = e.deltaY;
-    if (inverseZoom) {
-      scroll *= -1;
-    }
-    skybrowserApi.scrollOverBrowser(browserId, scroll);
-    skybrowserApi.stopAnimations(browserId);
+    setIsPinching(false);
   }
 
   function changeSize(widthWwt, heightWwt) {
@@ -231,7 +263,7 @@ function WorldWideTelescope({
     onTouchStart={startInteraction}
     onTouchMove={handleDrag}
     onTouchEnd={endInteraction}
-    onWheel = {(e) => scroll(e)}
+    onWheel = {(e) => scrollZoom(e.deltaY)}
   />
 
   return (
