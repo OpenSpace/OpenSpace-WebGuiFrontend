@@ -20,7 +20,6 @@ const ButtonIds = {
   RemoveImages: "RemoveImages",
   ZoomIn: "ZoomIn",
   ZoomOut: "ZoomOut",
-  PointSpaceCraft: "PointSpaceCraft",
   Settings: "Settings"
 }
 
@@ -191,16 +190,6 @@ function SkyBrowserTabs({
         luaApi.skybrowser.setVerticalFov(browserId, Number(newFov));
       },
     };
-    const pointSpaceCraftButton = {
-      id: ButtonIds.PointSpaceCraft,
-      selected: false,
-      icon: 'eos-icons:satellite-alt',
-      iconify: true,
-      text: 'Point spacecraft',
-      function: function(browserId) {
-        luaApi.skybrowser.pointSpaceCraft(browserId);
-      },
-    };
     const showSettingsButton = {
       id: ButtonIds.Settings,
       selected: showSettings,
@@ -211,7 +200,7 @@ function SkyBrowserTabs({
       },
     };
 
-    const buttonsData = [lookButton, moveButton, scrollInButton, scrollOutButton, pointSpaceCraftButton, trashButton, showSettingsButton];
+    const buttonsData = [lookButton, moveButton, scrollInButton, scrollOutButton, trashButton, showSettingsButton];
 
     const buttons = buttonsData.map((button) => (
       <Button
