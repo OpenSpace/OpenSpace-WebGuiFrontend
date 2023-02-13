@@ -59,7 +59,7 @@ function SkyBrowserSelectedImagesList({
 
   function setImageLayerOrder(browserId, identifier, order) {
     luaApi.skybrowser.setImageLayerOrder(browserId, imageList[identifier].url, order);
-    const reverseOrder = imageIndices.length - order - 1;
+    const reverseOrder = imageIndicesCurrent.length - order - 1;
     passMessageToWwt({
       event: "image_layer_order",
       id: String(identifier),
