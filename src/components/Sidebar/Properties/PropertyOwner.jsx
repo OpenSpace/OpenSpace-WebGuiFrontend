@@ -61,7 +61,7 @@ class PropertyOwnerComponent extends Component {
       && this.props.setExpanded === nextProps.setExpanded
       && this.props.autoExpand === nextProps.autoExpand
       && this.props.expansionIdentifier === nextProps.expansionIdentifier
-      && this.props.sort === nextProps.sort);
+      && this.props.shouldSort === nextProps.shouldSort);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -186,11 +186,11 @@ class PropertyOwnerComponent extends Component {
       isExpanded,
       setExpanded,
       expansionIdentifier,
-      sort,
+      shouldSort,
       isHidden
     } = this.props;
 
-    const sortedSubowners = sort
+    const sortedSubowners = shouldSort
       ? (subowners.slice(0).sort((a, b) => subownerNames[a].localeCompare(subownerNames[b], 'en')))
       : subowners;
 
@@ -235,21 +235,22 @@ const shouldSortAlphabetically = (uri) => {
 };
 
 const displayName = (propertyOwners, properties, uri) => {
+  // Check property for scene graph nodes
   let property = properties[`${uri}.GuiName`];
-  if (!property && isGlobeBrowsingLayer(uri) && propertyOwners[uri] && propertyOwners[uri].name) {
+
+  // Other property owners with a given name
+  if (!property && propertyOwners[uri] && propertyOwners[uri].name) {
     property = { value: propertyOwners[uri].name };
   }
 
-  return property ? property.value : propertyOwners[uri].identifier;
+  const guiName = property ? property.value : undefined;
+  // If the gui name is found and not empty, use it. Otherwise, show identifier of node
+  return guiName || propertyOwners[uri].identifier;
 };
 
 const mapSubStateToProps = (
-  {
-    luaApi, propertyOwners, properties, propertyTreeExpansion,
-  },
-  {
-    uri, name, autoExpand, expansionIdentifier,
-  },
+  { luaApi, propertyOwners, properties, propertyTreeExpansion },
+  { uri, name, autoExpand, expansionIdentifier },
 ) => {
   const data = propertyOwners[uri];
   const showHidden = properties['OpenSpaceEngine.ShowHiddenSceneGraphNodes'];
@@ -268,7 +269,7 @@ const mapSubStateToProps = (
   });
   subProperties = subProperties.filter(uri => isPropertyVisible(properties, uri));
 
-  const sort = shouldSortAlphabetically(uri);
+  const shouldSort = shouldSortAlphabetically(uri);
 
   name = name || displayName(propertyOwners, properties, uri);
   let isExpanded = propertyTreeExpansion[expansionIdentifier];
@@ -277,11 +278,11 @@ const mapSubStateToProps = (
   }
 
   const renderableTypeProp = properties[`${uri}.Renderable.Type`];
-  const property = properties[`${uri}.GuiName`];
-  let showMeta = false;
-  if ((isSceneGraphNode(uri) || isGlobeBrowsingLayer(uri))) {
-    showMeta = true;
-  }
+  const isRenderable = (renderableTypeProp != undefined);
+
+  // @TODO (emmbr 2023-02-21) Make this work for other propety owners that have
+  // descriptions too, such as geojson layers
+  const showMeta = (isSceneGraphNode(uri) || isGlobeBrowsingLayer(uri));
 
   return {
     name,
@@ -291,8 +292,8 @@ const mapSubStateToProps = (
     subownerNames,
     properties: subProperties,
     isExpanded,
-    sort,
-    isRenderable: (renderableTypeProp != undefined),
+    shouldSort,
+    isRenderable,
     isSceneGraphNodeOrLayer: showMeta,
     isHidden
   };
@@ -346,12 +347,16 @@ const PropertyOwner = connect(
 
 
 PropertyOwner.propTypes = {
-  dragHandleTitleProps: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]), 
-  uri: PropTypes.string.isRequired,
   autoExpand: PropTypes.bool,
+  dragHandleTitleProps: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
+  expansionIdentifier: PropTypes.string,
+  name: PropTypes.string,
+  trashAction: PropTypes.func,
+  uri: PropTypes.string.isRequired,
 };
 
 PropertyOwner.defaultProps = {
+  autoExpand: false,
   dragHandleTitleProps: false,
   properties: [],
   subowners: [],

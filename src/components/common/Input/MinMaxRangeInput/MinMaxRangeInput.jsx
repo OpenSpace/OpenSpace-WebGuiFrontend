@@ -236,13 +236,17 @@ class MinMaxRangeInput extends Component {
 
   onMinTextBlur(event) {
     const value = Number.parseFloat(event.currentTarget.value);
-    this.updateMinValue(value);
+    if(!isNaN(value)) {
+      this.updateMinValue(value);
+    }
     this.disableTextInput();
   }
 
   onMaxTextBlur(event) {
     const value = Number.parseFloat(event.currentTarget.value);
-    this.updateMaxValue(value);
+    if(!isNaN(value)) {
+      this.updateMaxValue(value);
+    }
     this.disableTextInput();
   }
 

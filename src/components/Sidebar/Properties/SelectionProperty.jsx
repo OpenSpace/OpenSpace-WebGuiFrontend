@@ -98,8 +98,6 @@ class SelectionProperty extends Component {
       </span>
     )
 
-      console.log(this.disabled);
-
     return (
       <ToggleContent
         title={label}

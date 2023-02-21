@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import Button from '../../common/Input/Button/Button';
 import Row from '../../common/Row/Row';
@@ -21,13 +22,17 @@ import {
 import styles from './SkyBrowserSettings.scss';
 
 function SkyBrowserSettings({
-   luaApi, selectedBrowserId, browser, setBorderRadius
+  setBorderRadius
 }) {
   const [showExpandedCopies, setShowExpandedCopies] = React.useState(false);
   const [showExpandedSettings, setShowExpandedSettings] = React.useState(false);
   const [generalSettingsExpanded, setGeneralSettingsExpanded] = React.useState(false);
   const [newPosition, setNewPosition] = React.useState([0, 0, -2]);
   const [noOfCopies, setNoOfCopies] = React.useState(1);
+
+  const browser = useSelector((state) => state.skybrowser.browsers[state.skybrowser.selectedBrowserId]);
+  const selectedBrowserId = useSelector((state) => state.skybrowser.selectedBrowserId);
+  const luaApi = useSelector((state) => state.luaApi);
 
   const PrecisionLow = 2;
   const PrecisionHigh = 10;
@@ -300,7 +305,8 @@ function SkyBrowserSettings({
           />
         ))}
       </Row>
-      <Property uri={`Scene.${browser.targetId}.Renderable.ApplyRoll`}/>
+      <Property uri={`Scene.${browser.targetId}.Renderable.ApplyRoll`} />
+      <Property uri={`ScreenSpace.${selectedBrowserId}.PointSpacecraft`} />
       {displayDisplaySection}
       <ToggleContent
         title={"General Settings"}

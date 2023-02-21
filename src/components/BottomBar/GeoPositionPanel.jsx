@@ -105,7 +105,8 @@ function GeoPositionPanel({ refresh, luaApi, popoverVisible, setPopoverVisibilit
       setPlaces([]);
       return;
     }
-    const searchString = inputValue.replaceAll(" ", "%");
+    const searchString = inputValue.replaceAll(" ", "+");
+
     fetch(`https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?SingleLine=${searchString}&category=&outFields=*&forStorage=false&f=json`)
         .then(response => response.json())
         .then(json => {

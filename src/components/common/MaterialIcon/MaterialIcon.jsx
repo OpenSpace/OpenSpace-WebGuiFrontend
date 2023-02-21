@@ -9,7 +9,7 @@ import styles from './MaterialIcon.scss';
  * @constructor
  */
 const MaterialIcon = ({ icon, className, ...props }) => {
-  return <span className={`${styles.base} ${className}`} {...props}>{ icon }</span>;
+  return <span className={`icon ${styles.base} ${className}`} {...props}>{ icon }</span>;
 };
 
 MaterialIcon.propTypes = {

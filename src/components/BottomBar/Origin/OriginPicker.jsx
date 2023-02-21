@@ -49,7 +49,7 @@ const NavigationActions = {
   Aim: 'Aim',
 };
 
-function OriginPicker({ favorites, nodes, engineMode, anchorName, luaApi, sessionRecordingState,
+function OriginPicker({ favorites, allNodes, searchableNodes, engineMode, anchorName, luaApi, sessionRecordingState,
   setPopoverVisibility, popoverVisible, aim, anchor, aimDispatcher, navigationAction, connectFlightController, sendFlightControl,
   retargetAimDispatcher, retargetAnchorDispatcher, anchorDispatcher, startSubscriptions, stopSubscriptions, setNavigationAction, aimName }) {
 
@@ -228,7 +228,7 @@ function OriginPicker({ favorites, nodes, engineMode, anchorName, luaApi, sessio
 
     // Make sure current anchor is in the default list
     if (anchor !== undefined && !defaultList.find(node => node.identifier === anchor)) {
-      const anchorNode = nodes.find(node => node.identifier === anchor);
+      const anchorNode = allNodes.find(node => node.identifier === anchor);
       if (anchorNode) {
         defaultList.push(anchorNode);
       }
@@ -236,18 +236,14 @@ function OriginPicker({ favorites, nodes, engineMode, anchorName, luaApi, sessio
 
     // Make sure current aim is in the default list
     if (hasDistinctAim() && !defaultList.find(node => node.identifier === aim)) {
-      const aimNode = nodes.find(node => node.identifier === aim);
+      const aimNode = allNodes.find(node => node.identifier === aim);
       if (aimNode) {
         defaultList.push(aimNode);
       }
     }
 
     const sortedDefaultList = defaultList.slice(0).sort((a, b) => a.name.localeCompare(b.name));
-    const filteredNodes = nodes.filter((node) => {
-      const hasHiddenProp = node.properties.indexOf(`${node.key}.GuiHidden`) > -1;
-      return !hasHiddenProp;
-    });
-    const sortedNodes = filteredNodes.slice(0).sort((a, b) => a.name.localeCompare(b.name));
+    const sortedNodes = searchableNodes.slice(0).sort((a, b) => a.name.localeCompare(b.name));
 
     const searchPlaceholder = {
       Focus: 'Search for a new focus...',
@@ -364,11 +360,20 @@ const mapSubStateToProps = ({
   const scene = propertyOwners.Scene;
   const uris = scene ? scene.subowners : [];
 
-  const nodes = uris.map(uri => ({
+  // Get all the nodes in the scene
+  const allNodes = uris.map(uri => ({
     ...propertyOwners[uri],
     key: uri,
   }));
 
+  // Searchable nodes => nodes that are not hidden in the GUI
+  const searchableNodes = allNodes.filter((node) => {
+    const isHiddenProp = properties[`${node.key}.GuiHidden`];
+    const isHidden = isHiddenProp && isHiddenProp.value;
+    return !isHidden;
+  });
+
+  // Find interesting nodes
   const favorites = uris.filter(uri => propertyOwners[uri].tags.some(tag => tag.includes(REQUIRED_TAG))).map(uri => ({
     ...propertyOwners[uri],
     key: uri,
@@ -392,7 +397,8 @@ const mapSubStateToProps = ({
   const mode = engineMode.mode || EngineModeUserControl;
 
   return {
-    nodes,
+    allNodes,
+    searchableNodes,
     anchor,
     aim,
     anchorName,
@@ -447,7 +453,8 @@ const mapDispatchToProps = dispatch => ({
 });
 
 OriginPicker.propTypes = {
-  nodes: PropTypes.array.isRequired,
+  allNodes: PropTypes.array.isRequired,
+  searchableNodes: PropTypes.array.isRequired,
   anchor: PropTypes.string,
   aim: PropTypes.string,
   anchorName: PropTypes.string,
