@@ -10,13 +10,8 @@
 }
 
 .rightButtonContainer {
-  // position: absolute;
-  // right: 0;
-  // top: 0;
-  // bottom: 0;
   position: relative;
   display: flex;
-  // overflow: hidden;
   margin-left: auto; // Right align flex item
   cursor: default; /* visually distinguish from dragging (OBS! Kind of ugly.
                       And does not actually prevent dragging from happening)*/
