@@ -27,8 +27,9 @@ import {
 import styles from './SkyBrowserPanel.scss';
 
 const ImageViewingOptions = {
+  withinView: "Images within view",
   all: "All images",
-  withinView: "Images within view"
+  skySurveys: "Sky surveys"
 };
 
 
@@ -263,38 +264,74 @@ function SkyBrowserPanel({ }) {
       />
     );
 
-    const imageListComponent = imageViewingMode === ImageViewingOptions.withinView ? 
-      <SkyBrowserNearestImagesList
-        luaApi={luaApi}
-        imageList={imageList}
-        activeImage={activeImage}
-        currentBrowserColor={currentBrowserColor}
-        selectImage={selectImage}
-        height={currentImageListHeight}
-        passMessageToWwt={passMessageToWwt}
-        moveCircleToHoverImage={moveCircleToHoverImage}
-      />
-      :
-      <FilterList
-        className={styles.filterList}
-        height={currentImageListHeight}
-        searchText={`Search from ${imageList.length.toString()} images...`}
-      >
-        <FilterListData>
-          {imageList.map(item => {
-            return <SkyBrowserFocusEntry 
-                {...item}
-                luaApi={luaApi} 
-                currentBrowserColor={currentBrowserColor}
-                onSelect={selectImage}
-                isActive={activeImage === item.identifier}
-                moveCircleToHoverImage={moveCircleToHoverImage}
-              />
-          })}
-        </FilterListData>
-      </FilterList>
-      ;
-
+    let imageListComponent = null; 
+      
+    switch (imageViewingMode) {
+      case ImageViewingOptions.withinView: {
+        imageListComponent = (
+          <SkyBrowserNearestImagesList
+            activeImage={activeImage}
+            currentBrowserColor={currentBrowserColor}
+            selectImage={selectImage}
+            height={currentImageListHeight}
+            moveCircleToHoverImage={moveCircleToHoverImage}
+          />
+        );
+        break;
+      }
+      case ImageViewingOptions.all: {
+        const allButSkySurveys = imageList.filter((img) => img.hasCelestialCoords);
+        imageListComponent = (
+          <FilterList
+            className={styles.filterList}
+            height={currentImageListHeight}
+            searchText={`Search from ${allButSkySurveys.length.toString()} images...`}
+          >
+            <FilterListData>
+              {allButSkySurveys.map(item => {
+                return <SkyBrowserFocusEntry 
+                    {...item}
+                    luaApi={luaApi} 
+                    currentBrowserColor={currentBrowserColor}
+                    onSelect={selectImage}
+                    isActive={activeImage === item.identifier}
+                    moveCircleToHoverImage={moveCircleToHoverImage}
+                  />
+              })}
+            </FilterListData>
+          </FilterList>
+        );
+        break;
+      }
+      case ImageViewingOptions.skySurveys: {
+        const skySurveyImages = imageList.filter((img) => !img.hasCelestialCoords);
+        imageListComponent = (
+          <FilterList
+            className={styles.filterList}
+            height={currentImageListHeight}
+            searchText={`Search from ${skySurveyImages.length.toString()} images...`}
+          >
+            <FilterListData>
+              {skySurveyImages.map(item => {
+                return <SkyBrowserFocusEntry 
+                    {...item}
+                    luaApi={luaApi} 
+                    currentBrowserColor={currentBrowserColor}
+                    onSelect={selectImage}
+                    isActive={activeImage === item.identifier}
+                    moveCircleToHoverImage={moveCircleToHoverImage}
+                  />
+              })}
+            </FilterListData>
+          </FilterList>
+        );
+        break;
+      }
+      default: {
+        break;
+      }
+    }
+      
     return <div className={styles.content}>
         {imageMenu}
         {imageListComponent}
