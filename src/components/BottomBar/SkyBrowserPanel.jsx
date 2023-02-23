@@ -13,6 +13,7 @@ import WindowThreeStates from './SkyBrowser/WindowThreeStates/WindowThreeStates'
 import WorldWideTelescope from './SkyBrowser/WorldWideTelescope';
 import { FilterList, FilterListData } from '../common/FilterList/FilterList';
 import SkyBrowserFocusEntry from './SkyBrowser/SkyBrowserFocusEntry';
+import Dropdown from '../common/DropDown/Dropdown';
 import { Icon } from '@iconify/react';
 import {
   loadSkyBrowserData,
@@ -25,18 +26,24 @@ import {
 } from '../../api/Actions';
 import styles from './SkyBrowserPanel.scss';
 
+const ImageViewingOptions = {
+  all: "All images",
+  withinView: "Images within view"
+};
+
+
 function SkyBrowserPanel({ }) {
   const [activeImage, setActiveImage] = React.useState('');
   const [currentTabHeight, setCurrentTabHeight] = React.useState(200);
   const [currentPopoverHeight, setCurrentPopoverHeightState] = React.useState(440);
-  const [showOnlyNearest, setShowOnlyNearest] = React.useState(true);
+  const [imageViewingMode, setImageViewingMode] = React.useState(ImageViewingOptions.withinView);
   const [imageCollectionIsLoaded, setImageCollectionIsLoaded] = React.useState(false);
   const [dataIsLoaded, setDataIsLoaded] = React.useState(false);
   const [wwtSize, setWwtSize] = React.useState({width: 400, height: 400});
   const [wwtPosition, setWwtPositionState] = React.useState({ x: -800, y: -600 });
   const MenuHeight = 70;
   const MinimumTabHeight = 80;
-
+  
   const wwt = React.useRef();
 
   // Get redux state
@@ -227,21 +234,14 @@ function SkyBrowserPanel({ }) {
 
   function createBrowserContent() {
     const currentImageListHeight = currentPopoverHeight - currentTabHeight - MenuHeight;
+
     const imageMenu = (
-      <div className={styles.row}>
-        <Picker
-          className={`${styles.picker} ${showOnlyNearest ? styles.unselected : styles.selected}`}
-          onClick={() => setShowOnlyNearest(false)}
-        >
-          <span>All images</span>
-        </Picker>
-        <Picker
-          className={`${styles.picker} ${showOnlyNearest ? styles.selected : styles.unselected}`}
-          onClick={() => setShowOnlyNearest(true)}
-        >
-          <span>Images within view</span>
-        </Picker>
-      </div>
+      <Dropdown
+        options={Object.values(ImageViewingOptions)} 
+        onChange={(anchor) => setImageViewingMode(anchor.value)} 
+        value={imageViewingMode} 
+        placeholder="Select a viewing mode"
+      />
     );
 
     const skybrowserTabs = (
@@ -263,7 +263,7 @@ function SkyBrowserPanel({ }) {
       />
     );
 
-    const imageListComponent = showOnlyNearest ? 
+    const imageListComponent = imageViewingMode === ImageViewingOptions.withinView ? 
       <SkyBrowserNearestImagesList
         luaApi={luaApi}
         imageList={imageList}
