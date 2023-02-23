@@ -68,19 +68,21 @@ function SkyBrowserFocusEntry({
       onClick={select}
       {...dragHandleTitleProps}
     >
-      <div className={styles.image}>
-        <LazyLoadImage src={thumbnail} alt={''} className={styles.imageText} onClick={setOpacity ? select : undefined}/>
+      <div style={{ display: 'flex', flexDirection: 'column'}}>
+        <div className={styles.image}>
+          <LazyLoadImage src={thumbnail} alt={''} className={styles.imageText} onClick={setOpacity ? select : undefined}/>
+        </div>
+        {!hasCelestialCoords && 
+          <span className={styles.skySurvey}>
+            Sky Survey
+          </span>
+        }
       </div>
       <div style={{ display: "flex", flexDirection: "column", marginLeft: "10px" }}>
         <div className={styles.imageTitle} style={{ maxWidth: '150px' }}>
           { name || identifier }
         </div>
         <OpacitySlider setOpacity={setOpacity} opacity={opacity} identifier={identifier} />
-        {!hasCelestialCoords && 
-          <span className={styles.skySurvey}>
-            Sky Survey
-          </span>
-        }
       </div>
       <div style={{ display: "flex", flexDirection: "row", marginLeft: 'auto'}}>
         <SkyBrowserInfoBox
