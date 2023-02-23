@@ -242,6 +242,7 @@ function SkyBrowserPanel({ }) {
         onChange={(anchor) => setImageViewingMode(anchor.value)} 
         value={imageViewingMode} 
         placeholder="Select a viewing mode"
+        style={{ marginRight: '2px'}}
       />
     );
 

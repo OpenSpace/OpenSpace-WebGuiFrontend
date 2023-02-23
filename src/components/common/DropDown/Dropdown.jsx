@@ -3,7 +3,7 @@ import styles from './Dropdown.scss';
 
 const DEFAULT_PLACEHOLDER_STRING = 'Select...';
 
-function Dropdown({value, placeholder, options, onFocus, disabled, onChange}) {
+function Dropdown({value, placeholder, options, onFocus, disabled, onChange, ...props}) {
   const [selected, setSelected] = React.useState(value || {
     label: typeof placeholder === 'undefined' ? DEFAULT_PLACEHOLDER_STRING : placeholder,
     value: ''
@@ -100,7 +100,7 @@ function Dropdown({value, placeholder, options, onFocus, disabled, onChange}) {
   }
 
   return (
-    <div ref={dropdownRef} className={styles.DropdownRoot}>
+    <div ref={dropdownRef} className={styles.DropdownRoot} {...props}>
       <div
         className={styles.DropdownControl}
         onMouseDown={handleMouseDown}
@@ -115,7 +115,7 @@ function Dropdown({value, placeholder, options, onFocus, disabled, onChange}) {
         </div>
       </div>
       {isOpen && (
-        <div className={styles.DropdownMenu} aria-expanded='true'>
+        <div className={styles.DropdownMenu} aria-expanded='true' {...props}>
           {buildMenu()}
         </div>
       )}
