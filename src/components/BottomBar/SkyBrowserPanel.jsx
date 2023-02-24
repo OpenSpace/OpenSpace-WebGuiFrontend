@@ -7,13 +7,10 @@ import Picker from './Picker';
 import Button from '../common/Input/Button/Button';
 import LoadingBlock from '../common/LoadingBlock/LoadingBlock';
 import SmallLabel from '../common/SmallLabel/SmallLabel';
-import SkyBrowserNearestImagesList from './SkyBrowser/SkyBrowserNearestImagesList';
 import SkyBrowserTabs from './SkyBrowser/SkyBrowserTabs';
 import WindowThreeStates from './SkyBrowser/WindowThreeStates/WindowThreeStates';
 import WorldWideTelescope from './SkyBrowser/WorldWideTelescope';
-import { FilterList, FilterListData } from '../common/FilterList/FilterList';
-import SkyBrowserFocusEntry from './SkyBrowser/SkyBrowserFocusEntry';
-import Dropdown from '../common/DropDown/Dropdown';
+import SkyBrowserImageList from './SkyBrowser/SkyBrowserImageList';
 import { Icon } from '@iconify/react';
 import {
   loadSkyBrowserData,
@@ -26,18 +23,10 @@ import {
 } from '../../api/Actions';
 import styles from './SkyBrowserPanel.scss';
 
-const ImageViewingOptions = {
-  withinView: "Images within view",
-  all: "All images",
-  skySurveys: "Sky surveys"
-};
-
-
 function SkyBrowserPanel({ }) {
   const [activeImage, setActiveImage] = React.useState('');
   const [currentTabHeight, setCurrentTabHeight] = React.useState(200);
   const [currentPopoverHeight, setCurrentPopoverHeightState] = React.useState(440);
-  const [imageViewingMode, setImageViewingMode] = React.useState(ImageViewingOptions.withinView);
   const [imageCollectionIsLoaded, setImageCollectionIsLoaded] = React.useState(false);
   const [dataIsLoaded, setDataIsLoaded] = React.useState(false);
   const [wwtSize, setWwtSize] = React.useState({width: 400, height: 400});
@@ -233,113 +222,6 @@ function SkyBrowserPanel({ }) {
     );
   }
 
-  function createBrowserContent() {
-    const currentImageListHeight = currentPopoverHeight - currentTabHeight - MenuHeight;
-
-    const imageMenu = (
-      <Dropdown
-        options={Object.values(ImageViewingOptions)} 
-        onChange={(anchor) => setImageViewingMode(anchor.value)} 
-        value={imageViewingMode} 
-        placeholder="Select a viewing mode"
-        style={{ marginRight: '2px'}}
-      />
-    );
-
-    const skybrowserTabs = (
-      <SkyBrowserTabs
-        setCurrentTabHeight={setCurrentTabHeight}
-        passMessageToWwt={passMessageToWwt}
-        setWwtRatio={setWwtRatio}
-        activeImage={activeImage}
-        currentBrowserColor={currentBrowserColor}
-        selectImage={selectImage}
-        maxHeight={currentPopoverHeight - MenuHeight}
-        minHeight={MinimumTabHeight}
-        height={currentTabHeight}
-        setBorderRadius={setBorderRadius}
-        imageCollectionIsLoaded={imageCollectionIsLoaded}
-        moveCircleToHoverImage={moveCircleToHoverImage}
-        removeImageSelection={removeImageSelection}
-        setOpacityOfImage={setOpacityOfImage}
-      />
-    );
-
-    let imageListComponent = null; 
-      
-    switch (imageViewingMode) {
-      case ImageViewingOptions.withinView: {
-        imageListComponent = (
-          <SkyBrowserNearestImagesList
-            activeImage={activeImage}
-            currentBrowserColor={currentBrowserColor}
-            selectImage={selectImage}
-            height={currentImageListHeight}
-            moveCircleToHoverImage={moveCircleToHoverImage}
-          />
-        );
-        break;
-      }
-      case ImageViewingOptions.all: {
-        const allButSkySurveys = imageList.filter((img) => img.hasCelestialCoords);
-        imageListComponent = (
-          <FilterList
-            className={styles.filterList}
-            height={currentImageListHeight}
-            searchText={`Search from ${allButSkySurveys.length.toString()} images...`}
-          >
-            <FilterListData>
-              {allButSkySurveys.map(item => {
-                return <SkyBrowserFocusEntry 
-                    {...item}
-                    luaApi={luaApi} 
-                    currentBrowserColor={currentBrowserColor}
-                    onSelect={selectImage}
-                    isActive={activeImage === item.identifier}
-                    moveCircleToHoverImage={moveCircleToHoverImage}
-                  />
-              })}
-            </FilterListData>
-          </FilterList>
-        );
-        break;
-      }
-      case ImageViewingOptions.skySurveys: {
-        const skySurveyImages = imageList.filter((img) => !img.hasCelestialCoords);
-        imageListComponent = (
-          <FilterList
-            className={styles.filterList}
-            height={currentImageListHeight}
-            searchText={`Search from ${skySurveyImages.length.toString()} images...`}
-          >
-            <FilterListData>
-              {skySurveyImages.map(item => {
-                return <SkyBrowserFocusEntry 
-                    {...item}
-                    luaApi={luaApi} 
-                    currentBrowserColor={currentBrowserColor}
-                    onSelect={selectImage}
-                    isActive={activeImage === item.identifier}
-                    moveCircleToHoverImage={moveCircleToHoverImage}
-                  />
-              })}
-            </FilterListData>
-          </FilterList>
-        );
-        break;
-      }
-      default: {
-        break;
-      }
-    }
-      
-    return <div className={styles.content}>
-        {imageMenu}
-        {imageListComponent}
-        {skybrowserTabs}
-      </div>;
-  }
-
   function popover() {
     let content = "";
     if (!dataIsLoaded || cameraInSolarSystem === undefined) {
@@ -368,7 +250,41 @@ function SkyBrowserPanel({ }) {
       </>;
     }
     else if (imageCollectionIsLoaded && browsersExist) {
-      content = createBrowserContent();
+      const currentImageListHeight = currentPopoverHeight - currentTabHeight - MenuHeight;
+      const imageMenuList = (
+        <SkyBrowserImageList
+          activeImage={activeImage}
+          currentBrowserColor={currentBrowserColor}
+          height={currentImageListHeight}
+          moveCircleToHoverImage={moveCircleToHoverImage}
+          selectImage={selectImage}
+        />
+      );
+      
+      const skybrowserTabs = (
+        <SkyBrowserTabs
+          setCurrentTabHeight={setCurrentTabHeight}
+          passMessageToWwt={passMessageToWwt}
+          setWwtRatio={setWwtRatio}
+          activeImage={activeImage}
+          currentBrowserColor={currentBrowserColor}
+          selectImage={selectImage}
+          maxHeight={currentPopoverHeight - MenuHeight}
+          minHeight={MinimumTabHeight}
+          height={currentTabHeight}
+          setBorderRadius={setBorderRadius}
+          imageCollectionIsLoaded={imageCollectionIsLoaded}
+          moveCircleToHoverImage={moveCircleToHoverImage}
+          removeImageSelection={removeImageSelection}
+          setOpacityOfImage={setOpacityOfImage}
+        />
+      );
+      content = (
+        <div className={styles.content}>
+          {imageMenuList}
+          {skybrowserTabs}
+        </div>
+      );
     }
 
     return (
