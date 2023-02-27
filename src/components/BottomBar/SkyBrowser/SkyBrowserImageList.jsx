@@ -1,27 +1,18 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { FilterList, FilterListData, FilterListVirtualScroll } from '../../common/FilterList/FilterList';
+import Input from '../../common/Input/Input/Input';
+import { ObjectWordBeginningSubstring } from '../../../utils/StringMatchers';
 import SkyBrowserNearestImagesList from './SkyBrowserNearestImagesList';
 import SkyBrowserFocusEntry from './SkyBrowserFocusEntry';
 import Dropdown from '../../common/DropDown/Dropdown';
 import { AutoSizer, Grid } from 'react-virtualized';
+import CenteredLabel from '../../common/CenteredLabel/CenteredLabel';
 
 const ImageViewingOptions = {
   withinView: "Images within view",
   all: "All images",
   skySurveys: "Sky surveys"
 };
-
-const getVirtualRowStyles = ({ size, startY, index, startX }) => {
-  return {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: '96px',
-    height: size,
-    transform: `translateY(${startY}px) translateX(${startX}px)`,
-  }
-}
 
 export default function SkyBrowserImageList({
   activeImage,
@@ -31,13 +22,18 @@ export default function SkyBrowserImageList({
   selectImage
 }) {
   const [imageViewingMode, setImageViewingMode] = React.useState(ImageViewingOptions.withinView);
+  const [searchString, setSearchString] = React.useState("");
   const imageList = useSelector((state) => state.skybrowser.imageList);
   const luaApi = useSelector((state) => state.luaApi);
   const skySurveys = imageList.filter((img) => !img.hasCelestialCoords);
   const allImages = imageList.filter((img) => img.hasCelestialCoords);
-
   const entryHeight = 110;
   const entryWidth = 110;
+  const inputHeight = 41;
+
+  React.useEffect(() => {
+    setSearchString("");
+  }, [imageViewingMode]);
 
   function getImageList() {      
     if (imageViewingMode == ImageViewingOptions.withinView) {
@@ -52,42 +48,62 @@ export default function SkyBrowserImageList({
         );
     }
     else {
-      
+      const chosenImageList = imageViewingMode === ImageViewingOptions.all ? allImages : skySurveys;
+      const filteredImageList = chosenImageList.filter(img => {
+        return ObjectWordBeginningSubstring(Object.values(img), searchString.toLowerCase());
+      });
+
       return (
+        <>
+          <Input
+            value={searchString}
+            placeholder={`Search from ${chosenImageList.length.toString()} images...`}
+            onChange={(e) => setSearchString(e.target.value)}
+            clearable
+            autoFocus={true}
+          />
+          { filteredImageList.length > 0 ?
           <AutoSizer>
-          {({ width }) => {
-            const noOfCols = Math.floor(width / entryWidth); 
-            const filteredImageList = imageViewingMode === ImageViewingOptions.all ? allImages : skySurveys;
-            return (
-              <Grid
-                cellRenderer={({ columnIndex, key, rowIndex, style }) => {
-                  const index = columnIndex + (rowIndex * noOfCols);
-                  if (index >= filteredImageList.length) {
-                    return;
-                  }
-                  const item = filteredImageList[index];
-                  return (
-                    <SkyBrowserFocusEntry
-                      key={key}
-                      {...item}
-                      luaApi={luaApi}
-                      currentBrowserColor={currentBrowserColor}
-                      onSelect={selectImage}
-                      isActive={activeImage === item.identifier}
-                      moveCircleToHoverImage={moveCircleToHoverImage}
-                      style={style}
-                    />
-                  );
-                }}
-                columnCount={noOfCols}
-                columnWidth={entryWidth}
-                height={height}
-                rowCount={Math.ceil(filteredImageList.length / noOfCols)}
-                rowHeight={entryHeight}
-                width={width}
-              />
-          )}}
-          </AutoSizer>
+            {({ width }) => {
+              const noOfCols = Math.floor(width / entryWidth); 
+              const rows = Math.ceil(filteredImageList.length / noOfCols);
+              const minRows = Math.max(rows, Math.floor((height - inputHeight) / entryHeight));
+
+              return (
+                <Grid
+                  cellRenderer={({ columnIndex, key, rowIndex, style }) => {
+                    const index = columnIndex + (rowIndex * noOfCols);
+                    if (index >= filteredImageList.length) {
+                      return;
+                    }
+                    const item = filteredImageList[index];
+                    return (
+                      <SkyBrowserFocusEntry
+                        key={key}
+                        {...item}
+                        luaApi={luaApi}
+                        currentBrowserColor={currentBrowserColor}
+                        onSelect={selectImage}
+                        isActive={activeImage === item.identifier}
+                        moveCircleToHoverImage={moveCircleToHoverImage}
+                        style={style}
+                      />
+                    );
+                  }}
+                  columnCount={noOfCols}
+                  columnWidth={entryWidth}
+                  height={height - inputHeight}
+                  rowCount={minRows}
+                  rowHeight={entryHeight}
+                  width={width}
+                />
+                )
+              }}
+            </AutoSizer>
+            :
+            <CenteredLabel>Nothing found. Try another search!</CenteredLabel>
+            }
+          </>
         );
 
     }
