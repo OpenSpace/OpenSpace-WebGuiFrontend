@@ -1,7 +1,8 @@
-import React, { useRef, useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Focus from 'svg-react-loader?name=Focus!../../../icons/focus.svg';
+import Button from '../../common/Input/Button/Button';
 import DraggableIcon from 'svg-react-loader?name=Aim!../../../icons/draggable_list.svg';
 import styles from './PropertyOwnerHeader.scss';
 import toggleHeaderStyles from '../../common/ToggleContent/ToggleHeader.scss';
@@ -66,21 +67,21 @@ function PropertyOwnerHeader({
   );
 
   const popoutButton = (
-    <div className={styles.rightButton} onClick={popoutClick}>
+    <Button className={styles.menuButton} onClick={popoutClick}>
       <MaterialIcon icon="build" /> Quick access settings
-    </div>
+    </Button>
   );
 
   const metaButton = (
-    <div className={styles.rightButton} onClick={metaClick}>
+    <Button className={styles.menuButton} onClick={metaClick}>
       <MaterialIcon icon="help_outline" /> Show asset information
-    </div>
+    </Button>
   );
 
   const trashButton = (
-    <div className={styles.rightButton} onClick={trashClick}>
-      <MaterialIcon icon="delete" />
-    </div>
+    <Button className={styles.menuButton} onClick={trashClick}>
+      <MaterialIcon icon="delete" /> Delete
+    </Button>
   );
 
   // Headers look slightly different for globe browsing layers
@@ -131,9 +132,9 @@ function PropertyOwnerHeader({
             >
               { popOutAction && popoutButton }
               { metaAction && metaButton }
+              { trashAction && trashButton }
             </TooltipMenu>
            }
-          { trashAction && trashButton }
         </span>
       </Row>
     </header>
