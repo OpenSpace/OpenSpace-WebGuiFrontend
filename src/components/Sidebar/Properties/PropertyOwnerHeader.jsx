@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Focus from 'svg-react-loader?name=Focus!../../../icons/focus.svg';
@@ -18,6 +18,7 @@ import {
 import { isGlobeBrowsingLayer } from '../../../utils/propertyTreeHelpers';
 import { useContextRefs } from '../../GettingStartedTour/GettingStartedContext';
 import Row from '../../common/Row/Row';
+import TooltipMenu from '../../common/Tooltip/TooltipMenu';
 
 function PropertyOwnerHeader({
   title, identifier, expanded, setExpanded, onIcon, offIcon,
@@ -58,15 +59,21 @@ function PropertyOwnerHeader({
     </div>
   );
 
+  const moreButtonsButton = (
+    <div className={styles.rightButton} >
+      <MaterialIcon icon="more_vert" />
+    </div>
+  );
+
   const popoutButton = (
     <div className={styles.rightButton} onClick={popoutClick}>
-      <MaterialIcon icon="build" />
+      <MaterialIcon icon="build" /> Quick access settings
     </div>
   );
 
   const metaButton = (
     <div className={styles.rightButton} onClick={metaClick}>
-      <MaterialIcon icon="help_outline" />
+      <MaterialIcon icon="help_outline" /> Show asset information
     </div>
   );
 
@@ -91,6 +98,8 @@ function PropertyOwnerHeader({
     refName += " " + identifier;
   }
 
+  const hasMoreButtons = (popOutAction || metaAction);
+
   return (
     <header
       className={`${toggleHeaderStyles.toggle} ${isLayer && styles.layerHeader}`}
@@ -104,11 +113,10 @@ function PropertyOwnerHeader({
           icon={expanded ? onIcon : offIcon}
           className={toggleHeaderStyles.icon}
         />
-        { quickToggleUri && (
-            <span className={styles.leftButtonContainer}>
-              <Property uri={quickToggleUri} checkBoxOnly />
-            </span>
-          )
+        { quickToggleUri &&
+          <span className={styles.leftButtonContainer}>
+            <Property uri={quickToggleUri} checkBoxOnly />
+          </span>
         }
         <span className={`${toggleHeaderStyles.title} ${styles.title} ${titleClass}`}>
           { title }
@@ -117,8 +125,14 @@ function PropertyOwnerHeader({
         </span>
         <span className={styles.rightButtonContainer}>
           { focusAction && focusButton }
-          { popOutAction && popoutButton }
-          { metaAction && metaButton }
+          { hasMoreButtons &&
+            <TooltipMenu
+              sourceObject={moreButtonsButton}
+            >
+              { popOutAction && popoutButton }
+              { metaAction && metaButton }
+            </TooltipMenu>
+           }
           { trashAction && trashButton }
         </span>
       </Row>
