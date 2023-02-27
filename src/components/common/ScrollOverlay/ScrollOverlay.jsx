@@ -42,6 +42,7 @@ class ScrollOverlay extends Component {
       this.node = node;
       this.node.addEventListener('scroll', ({ target }) => this.updateScrollIndicators(target));
       defer(this.updateScrollIndicators, this.node);
+      this.props.innerRef(node);
     }
   }
 
@@ -106,4 +107,4 @@ ScrollOverlay.defaultProps = {
   className: '',
 };
 
-export default ScrollOverlay;
+export default React.forwardRef((props, ref) => <ScrollOverlay innerRef={ref} {...props} />);
