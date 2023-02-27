@@ -9,7 +9,7 @@ import Input from '../Input/Input/Input';
 import ScrollOverlay from '../ScrollOverlay/ScrollOverlay';
 import styles from './FilterList.scss';
 
-function filterChildren(matcher, searchString, ignorePropsFilter, children) {
+function filterChildren({ matcher, searchString, ignorePropsFilter, children }) {
   // Filter the children on their props
   // Most matcher functions are case sensitive, hence toLowerCase
   const childArray = React.Children.toArray(children);
@@ -47,20 +47,14 @@ function FilterListFavorites({ className, children }) {
 
 FilterListFavorites.displayName = 'FilterListFavorites';
 
-function FilterListVirtualScroll({ height }) {
-  return <li key={"virtualscroll"} style={{ height: height, listStyleType: 'none' }} />;
-}
-
-FilterListVirtualScroll.displayName = 'FilterListVirtualScroll';
-
-const FilterListData = React.forwardRef(({ matcher, searchString, ignorePropsFilter, className, children }, ref) => {
-  const content = filterChildren(matcher, searchString, ignorePropsFilter, children);
+function FilterListData({ matcher, searchString, ignorePropsFilter, className, children }) {
+  const content = filterChildren({ matcher, searchString, ignorePropsFilter, children });
   return (
-    <ScrollOverlay className={`${className}`} ref={(el) => { if(ref) ref.current = el; }}>
+    <ScrollOverlay className={`${className}`}>
       {content}
     </ScrollOverlay>
   );
-});
+}
 
 FilterListData.displayName = 'FilterListData';
 
@@ -166,4 +160,4 @@ FilterList.defaultProps = {
   ignorePropsFilter: ['active', 'onSelect'],
 };
 
-export {FilterList, FilterListData, FilterListInputButton, FilterListFavorites, FilterListShowMoreButton, FilterListVirtualScroll};
+export {FilterList, FilterListData, FilterListInputButton, FilterListFavorites, FilterListShowMoreButton};
