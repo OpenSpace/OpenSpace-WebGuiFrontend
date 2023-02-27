@@ -110,7 +110,7 @@ function PropertyOwnerHeader({
             </span>
           )
         }
-        <span className={`${toggleHeaderStyles.title} ${titleClass}`}>
+        <span className={`${toggleHeaderStyles.title} ${styles.title} ${titleClass}`}>
           { title }
           { isHeightLayer && <MaterialIcon className={styles.heightLayerIcon} icon="landscape" /> }
           { isLayer && <SvgIcon className={styles.layerDraggableIcon}><DraggableIcon /></SvgIcon> }
