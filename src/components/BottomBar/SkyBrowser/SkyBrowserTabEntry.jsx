@@ -70,7 +70,7 @@ function SkyBrowserFocusEntry({
     >
       <div style={{ display: 'flex', flexDirection: 'column'}}>
         <div className={styles.image}>
-          <LazyLoadImage src={thumbnail} alt={''} className={styles.imageText} onClick={setOpacity ? select : undefined}/>
+          <LazyLoadImage src={thumbnail} alt={''} className={styles.imageText} onClick={select}/>
         </div>
         {!hasCelestialCoords && 
           <span className={styles.skySurvey}>
