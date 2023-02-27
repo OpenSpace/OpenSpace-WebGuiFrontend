@@ -18,7 +18,8 @@ function SkyBrowserFocusEntry({
   name,
   onSelect,
   ra,
-  thumbnail
+  thumbnail,
+  style
 }) {
   
   function select(e) {
@@ -30,7 +31,7 @@ function SkyBrowserFocusEntry({
   return (
       <li
         className={`${styles.entry} ${isActive && styles.active}`}
-        style={{ borderLeftColor: currentBrowserColor() }}
+        style={{ borderLeftColor: currentBrowserColor(), ...style }}
         onMouseOver={() => { moveCircleToHoverImage(identifier) }}
         onMouseOut={() => { luaApi.skybrowser.disableHoverCircle(); }}
         onClick={select}

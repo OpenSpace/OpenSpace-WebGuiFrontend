@@ -40,6 +40,7 @@
     "react-refresh": "^0.14.0",
     "react-rnd": "^10.3.7",
     "react-simple-keyboard": "^3.2.72",
+    "react-virtual": "^2.10.4",
     "sass": "^1.49.9",
     "shallow-equal": "^1.2.1",
     "simple-keyboard-layouts": "^3.0.176",

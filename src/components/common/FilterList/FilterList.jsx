@@ -9,6 +9,34 @@ import Input from '../Input/Input/Input';
 import ScrollOverlay from '../ScrollOverlay/ScrollOverlay';
 import styles from './FilterList.scss';
 
+function filterChildren(matcher, searchString, ignorePropsFilter, children) {
+  // Filter the children on their props
+  // Most matcher functions are case sensitive, hence toLowerCase
+  const childArray = React.Children.toArray(children);
+  const filteredChildren = childArray.filter(child => {
+    let matcherFunc;
+    if (typeof child.props === 'object') {
+      matcherFunc = ObjectWordBeginningSubstring;
+    }
+    else {
+      matcherFunc = WordBeginningSubstring;
+    }
+    const finalMatcher = matcher || matcherFunc;
+    let searchableChild = child.props ? { ...child.props } : child.toLowerCase();
+    ignorePropsFilter.map(key => delete searchableChild[key]);
+    const isMatching = finalMatcher(searchableChild, searchString.toLowerCase());
+    // Keep the virtual scroll for virtual lists
+    return isMatching || child.type.displayName === "FilterListVirtualScroll";
+  });
+
+  if (filteredChildren.length > 0) {
+    return filteredChildren;
+  }
+  else {
+    return <CenteredLabel>Nothing found. Try another search!</CenteredLabel>;
+  }
+}
+
 function FilterListFavorites({ className, children }) {
   return (
     <ScrollOverlay className={`${className}`}>
@@ -19,36 +47,20 @@ function FilterListFavorites({ className, children }) {
 
 FilterListFavorites.displayName = 'FilterListFavorites';
 
-function FilterListData({matcher, searchString, ignorePropsFilter, className, children}) {
-  // Filter the children on their props
-  // Most matcher functions are case sensitive, hence toLowerCase
-  const childArray = React.Children.toArray(children); 
-  const filteredChildren = childArray.filter(child => {
-    let matcherFunc;
-    if (typeof child.props === 'object') {
-      matcherFunc = ObjectWordBeginningSubstring;    
-    }
-    else {
-      matcherFunc = WordBeginningSubstring;  
-    }
-    const finalMatcher = matcher || matcherFunc;
-    let searchableChild = child.props ? {...child.props} : child.toLowerCase();
-    ignorePropsFilter.map(key => delete searchableChild[key]);
-    return finalMatcher(searchableChild, searchString.toLowerCase());
-  });
-  let content = undefined;
-  if (filteredChildren.length > 0) {
-    content = filteredChildren;
-  }
-  else {
-    content = <CenteredLabel>Nothing found. Try another search!</CenteredLabel>;
-  }
-  return (
-      <ScrollOverlay className={`${className}`}>
-        { content }
-      </ScrollOverlay>
-    );
+function FilterListVirtualScroll({ height }) {
+  return <li key={"virtualscroll"} style={{ height: height, listStyleType: 'none' }} />;
 }
+
+FilterListVirtualScroll.displayName = 'FilterListVirtualScroll';
+
+const FilterListData = React.forwardRef(({ matcher, searchString, ignorePropsFilter, className, children }, ref) => {
+  const content = filterChildren(matcher, searchString, ignorePropsFilter, children);
+  return (
+    <ScrollOverlay className={`${className}`} ref={(el) => { if(ref) ref.current = el; }}>
+      {content}
+    </ScrollOverlay>
+  );
+});
 
 FilterListData.displayName = 'FilterListData';
 
@@ -154,4 +166,4 @@ FilterList.defaultProps = {
   ignorePropsFilter: ['active', 'onSelect'],
 };
 
-export {FilterList, FilterListData, FilterListInputButton, FilterListFavorites, FilterListShowMoreButton};
+export {FilterList, FilterListData, FilterListInputButton, FilterListFavorites, FilterListShowMoreButton, FilterListVirtualScroll};

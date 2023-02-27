@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { FilterList, FilterListData } from '../../common/FilterList/FilterList';
+import { useVirtual } from 'react-virtual'
+import { FilterList, FilterListData, FilterListVirtualScroll } from '../../common/FilterList/FilterList';
 import SkyBrowserNearestImagesList from './SkyBrowserNearestImagesList';
 import SkyBrowserFocusEntry from './SkyBrowserFocusEntry';
 import Dropdown from '../../common/DropDown/Dropdown';
@@ -10,6 +11,15 @@ const ImageViewingOptions = {
   all: "All images",
   skySurveys: "Sky surveys"
 };
+
+const getVirtualRowStyles = ({size, start}) => ({
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  width: '100%',
+  height: size,
+  transform: `translateY(${start}px)`,
+})
 
 export default function SkyBrowserImageList({
   activeImage,
@@ -21,10 +31,27 @@ export default function SkyBrowserImageList({
   const [imageViewingMode, setImageViewingMode] = React.useState(ImageViewingOptions.withinView);
   const imageList = useSelector((state) => state.skybrowser.imageList);
   const luaApi = useSelector((state) => state.luaApi);
+  const skySurveyImages = imageList.filter((img) => !img.hasCelestialCoords);
+  const allButSkySurveys = imageList.filter((img) => img.hasCelestialCoords);
+
+  const listRef = React.useRef()
+
+  const skySurveyVirtualizer = useVirtual({
+    size: skySurveyImages?.length ?? 0,
+    parentRef: listRef,
+    estimateSize: React.useCallback(() => 100, []),
+    overscan: 10,
+  }, [imageList]);
+
+  const imagesVirtualizer = useVirtual({
+    size: allButSkySurveys?.length ?? 0,
+    parentRef: listRef,
+    estimateSize: React.useCallback(() => 100, []),
+    overscan: 10,
+  }, [imageList]);
 
   function getImageList() {      
-    switch (imageViewingMode) {
-      case ImageViewingOptions.withinView: {
+    if (imageViewingMode == ImageViewingOptions.withinView) {
         return (
           <SkyBrowserNearestImagesList
             activeImage={activeImage}
@@ -34,17 +61,31 @@ export default function SkyBrowserImageList({
             moveCircleToHoverImage={moveCircleToHoverImage}
           />
         );
-        break;
+    }
+    else {
+      let filteredList = [];
+      let noOfImages = 0;
+      let imageListCopy = [];
+      if (imageViewingMode == ImageViewingOptions.all) {
+        filteredList = imagesVirtualizer;
+        noOfImages = allButSkySurveys.length.toString();
+        imageListCopy = allButSkySurveys;
       }
-      case ImageViewingOptions.all: {
-        const allButSkySurveys = imageList.filter((img) => img.hasCelestialCoords);
-        return (
+      else {
+        filteredList = skySurveyVirtualizer;
+        noOfImages = skySurveyImages.length.toString();
+        imageListCopy = skySurveyImages;
+      }
+      return (
           <FilterList
             height={height}
-            searchText={`Search from ${allButSkySurveys.length.toString()} images...`}
+            searchText={`Search from ${noOfImages} images...`}
           >
-            <FilterListData>
-              {allButSkySurveys.map(item => {
+            <FilterListData ref={listRef}>
+              <FilterListVirtualScroll height={ filteredList.totalSize} />
+              {filteredList.virtualItems.map(({ index, size, start }) => {
+                const item = imageListCopy[index];
+                if (!item) return null
                 return <SkyBrowserFocusEntry 
                     {...item}
                     luaApi={luaApi} 
@@ -52,40 +93,13 @@ export default function SkyBrowserImageList({
                     onSelect={selectImage}
                     isActive={activeImage === item.identifier}
                     moveCircleToHoverImage={moveCircleToHoverImage}
+                    style={getVirtualRowStyles({size, start})}
                   />
               })}
             </FilterListData>
           </FilterList>
         );
-        break;
-      }
-      case ImageViewingOptions.skySurveys: {
-        const skySurveyImages = imageList.filter((img) => !img.hasCelestialCoords);
-        return (
-          <FilterList
-            height={height}
-            searchText={`Search from ${skySurveyImages.length.toString()} images...`}
-          >
-            <FilterListData>
-              {skySurveyImages.map(item => {
-                return <SkyBrowserFocusEntry 
-                    {...item}
-                    luaApi={luaApi} 
-                    currentBrowserColor={currentBrowserColor}
-                    onSelect={selectImage}
-                    isActive={activeImage === item.identifier}
-                    moveCircleToHoverImage={moveCircleToHoverImage}
-                  />
-              })}
-            </FilterListData>
-          </FilterList>
-        );
-        break;
-      }
-      default: {
-        return null;
-        break;
-      }
+
     }
   }
 
