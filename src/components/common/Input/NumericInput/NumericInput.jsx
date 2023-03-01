@@ -17,7 +17,8 @@ class NumericInput extends Component {
       value: props.value,
       showTextInput: false,
       id: `numericinput-${Input.nextId}`,
-      hoverHint: null
+      hoverHint: null,
+      isValueOutsideRange: props.value < props.min || props.value > props.max
     };
 
     this.roundValueToStepSize = this.roundValueToStepSize.bind(this);
@@ -28,7 +29,8 @@ class NumericInput extends Component {
 
     this.onHover = this.onHover.bind(this);
     this.onLeave = this.onLeave.bind(this);
-    this.onTextBlur = this.onTextBlur.bind(this);
+    this.onTextBlurOrEnter = this.onTextBlurOrEnter.bind(this);
+    this.onTextInputChange = this.onTextInputChange.bind(this);
     this.onSliderChange = this.onSliderChange.bind(this);
     this.enableTextInput = this.enableTextInput.bind(this);
     this.disableTextInput = this.disableTextInput.bind(this);
@@ -96,28 +98,43 @@ class NumericInput extends Component {
    * @param event InputEvent
    */
   onSliderChange(event) {
+    const { max, min } = this.props;
     const sliderValue = Number.parseFloat(event.currentTarget.value);
-    const newValue = this.valueFromSliderPos(sliderValue);
+    let newValue = this.valueFromSliderPos(sliderValue);
+    // Clamp to min max range (should no be needed, but do anyways just ot be sure)
+    newValue = Math.min(Math.max(newValue, min), max);
+
     this.updateValue(newValue);
   }
 
-  onTextBlur(event) {
+  onTextBlurOrEnter(event) {
     const value = Number.parseFloat(event.currentTarget.value);
-    if(!isNaN(value)) {
+    if (!isNaN(value)) {
       this.updateValue(value);
     }
     this.disableTextInput();
   }
 
-  updateValue(value) {
+  onTextInputChange(event) {
     const { max, min } = this.props;
 
-    if (value > max || value < min) return;
+    // Validate the test input
+    const value = Number.parseFloat(event.currentTarget.value);
+    const isValueOutsideRange =  value < min || value > max;
 
-    // update state so that input is re-rendered with new content - optimistic ui change
-    this.setState({ value });
+    if (this.state.isValueOutsideRange !== isValueOutsideRange) {
+      this.setState({ isValueOutsideRange });
+    }
+  }
 
-    // send to the onChange (if any)!
+  updateValue(value) {
+    const { max, min } = this.props;
+    const isValueOutsideRange =  value < min || value > max;
+
+    // Update state so that input is re-rendered with new content - optimistic ui change
+    this.setState({ value, isValueOutsideRange });
+
+    // Send to the onChange (if any)!
     this.props.onValueChanged(value);
   }
 
@@ -141,7 +158,7 @@ class NumericInput extends Component {
     return this.props.inputOnly || this.state.showTextInput;
   }
 
-  enableTextInput(event) {
+  enableTextInput() {
     if (this.props.disabled) {
       return;
     }
@@ -153,17 +170,28 @@ class NumericInput extends Component {
   }
 
   render() {
-    const { value, id, hoverHint } = this.state;
+    const { value, id, isValueOutsideRange, hoverHint } = this.state;
     const { decimals } = this.props;
 
     if (this.showTextInput) {
+      let excludeProps = 'reverse onValueChanged inputOnly noHoverHint noTooltip noValue exponent';
+
+      // If we are already outside the range, sclude the min max properties to the HTML
+      // input. But while inside the range we want them to affect what value is possible
+      // to set using .e.g the arrow keys
+      if (isValueOutsideRange) {
+        excludeProps += ' min max';
+      }
+
       return (
         <Input
-          {...excludeKeys(this.props, 'reverse onValueChanged inputOnly noHoverHint noTooltip noValue exponent')}
+          {...excludeKeys(this.props, excludeProps)}
+          className={isValueOutsideRange ? styles.outsideMinMaxRange : ''}
           type="number"
           value={value}
-          onBlur={this.onTextBlur}
-          onEnter={this.onTextBlur}
+          onBlur={this.onTextBlurOrEnter}
+          onChange={this.onTextInputChange}
+          onEnter={this.onTextBlurOrEnter}
           autoFocus
         />
       );
