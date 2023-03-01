@@ -171,22 +171,26 @@ class NumericInput extends Component {
 
   render() {
     const { value, id, isValueOutsideRange, hoverHint } = this.state;
-    const { decimals } = this.props;
+    const { decimals, showOutsideRangeHint } = this.props;
 
     if (this.showTextInput) {
-      let excludeProps = 'reverse onValueChanged inputOnly noHoverHint noTooltip noValue exponent';
+      let excludeProps = 'reverse onValueChanged inputOnly noHoverHint noTooltip noValue exponent showOutsideRangeHint';
+      let inputClassName = '';
 
       // If we are already outside the range, sclude the min max properties to the HTML
       // input. But while inside the range we want them to affect what value is possible
       // to set using .e.g the arrow keys
       if (isValueOutsideRange) {
         excludeProps += ' min max';
+        if (showOutsideRangeHint) {
+          inputClassName += styles.outsideMinMaxRange;
+        }
       }
 
       return (
         <Input
           {...excludeKeys(this.props, excludeProps)}
-          className={isValueOutsideRange ? styles.outsideMinMaxRange : ''}
+          className={inputClassName}
           type="number"
           value={value}
           onBlur={this.onTextBlurOrEnter}
@@ -199,7 +203,7 @@ class NumericInput extends Component {
 
     const { placeholder, className, label, wide, reverse, noValue } = this.props;
     const doNotInclude = 'wide reverse onValueChanged value className type min max step exponent ' +
-                         'inputOnly label noHoverHint noTooltip noValue';
+                         'inputOnly label noHoverHint noTooltip noValue showOutsideRangeHint';
     const inheritedProps = excludeKeys(this.props, doNotInclude);
     const hoverHintOffset = reverse ? 1 - hoverHint : hoverHint;
 
@@ -262,6 +266,7 @@ NumericInput.propTypes = {
   noValue: PropTypes.bool,
   onValueChanged: PropTypes.func,
   placeholder: PropTypes.string.isRequired,
+  showOutsideRangeHint: PropTypes.bool,
   step: PropTypes.number,
   value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   wide: PropTypes.bool,
@@ -281,6 +286,7 @@ NumericInput.defaultProps = {
   noTooltip: false,
   noValue: false,
   onValueChanged: () => {},
+  showOutsideRangeHint: true,
   step: 1,
   value: 0,
   wide: true,
