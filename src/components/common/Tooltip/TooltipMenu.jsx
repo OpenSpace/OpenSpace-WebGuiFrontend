@@ -47,7 +47,9 @@ class TooltipMenu extends Component {
   }
 
   handleOutsideClick(evt) {
-    if (this.insideClickWrapper && !this.insideClickWrapper.contains(evt.target)) {
+    if (!this.insideClickWrapper?.contains(evt.target) &&
+        !this.buttonClickWrapper?.contains(evt.target))
+    {
       this.closePopup();
     }
   }
@@ -69,7 +71,7 @@ class TooltipMenu extends Component {
         ref={this.setRef('wrapper')}
         className={className}
       >
-        <div onClick={this.togglePopup} >
+        <div ref={this.setRef('buttonClickWrapper')} onClick={this.togglePopup} >
           { sourceObject }
         </div>
         {!disabled && this.state.showPopup && (
