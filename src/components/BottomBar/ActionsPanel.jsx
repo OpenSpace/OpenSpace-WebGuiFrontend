@@ -17,7 +17,6 @@ function ActionsPanel ({
   actionPath,
   allActions,
   displayedNavigationPath,
-  level,
   luaApi,
   navigationPath,
   popoverVisible,
@@ -117,7 +116,7 @@ function ActionsPanel ({
   }
 
   function windowContent() {
-    if (level == undefined) {
+    if (actionLevel == undefined) {
       return <div>Loading</div>;
     }
 
@@ -133,8 +132,8 @@ function ActionsPanel ({
         <hr className={Popover.styles.delimiter} />
         <FilterList matcher={matcher} height={'80%'}>
           <FilterListFavorites className={styles.Grid}>
-            {getActionContent(level)}
-            {getChildrenContent(level)}
+            {getActionContent(actionLevel)}
+            {getChildrenContent(actionLevel)}
           </FilterListFavorites>
           <FilterListData className={styles.Grid}>
             {getAllActions()}
