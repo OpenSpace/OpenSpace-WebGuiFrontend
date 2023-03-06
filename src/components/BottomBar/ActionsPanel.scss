@@ -87,8 +87,14 @@
   min-height: 400px;
 }
 
+.iconRow {
+  display: flex;
+  justify-content: center;
+  gap: 3px;
+  padding-bottom: 2px !important;
+}
+
 .localText {
-  padding-top: 0.2em !important;
   color: $ui-highlight-secondary;
   font-size: smaller;
 }

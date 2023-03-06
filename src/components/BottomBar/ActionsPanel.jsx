@@ -62,7 +62,7 @@ function ActionsPanel ({
         className={styles.actionButton}
         actionid={action.identifier}
       >
-        <p>
+        <p className={styles.iconRow}>
           <MaterialIcon className={styles.buttonIcon} icon="launch" />
           {isLocal && <span className={styles.localText}> (Local)</span>}
         </p>
