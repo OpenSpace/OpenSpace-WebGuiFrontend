@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { setActionsPath, setPopoverVisibility, triggerAction } from '../../api/Actions';
 import subStateToProps from '../../utils/subStateToProps';
@@ -52,21 +52,27 @@ function ActionsPanel ({
     luaApi.action.triggerAction(actionId);
   }
 
-  function getActionContent(level) {
-    return level.actions.map((action) => (
+  function actionsButton(action, key) {
+    const isLocal = (action.synchronization === false);
+    return (
       <Button
         block
         smalltext
         onClick={sendAction}
-        key={action.identifier}
+        key={key}
         className={styles.actionButton}
         actionid={action.identifier}
       >
         <p><MaterialIcon className={styles.buttonIcon} icon="launch" /></p>
-        {action.name}
+        {action.name} {' '}
         {action.documentation && <InfoBox text={action.documentation} />}
+        {isLocal && <p className={styles.localText}>(Local)</p>}
       </Button>
-    ));
+    );
+  }
+
+  function getActionContent(level) {
+    return level.actions.map((action) => actionsButton(action, action.identifier));
   }
 
   function getChildrenContent(level) {
@@ -86,27 +92,16 @@ function ActionsPanel ({
   }
 
   function getAllActions() {
-    return allActions.map((action) => (
-      <Button
-        block
-        smalltext
-        onClick={sendAction}
-        key={`${action.identifier}Filtered`}
-        className={styles.actionButton}
-        actionid={action.identifier}
-        name={action.name}
-      >
-        <p><MaterialIcon className={styles.buttonIcon} icon="launch" /></p>
-        {action.name}
-      </Button>
-    ));
+    return allActions.map((action) => actionsButton(action, `${action.identifier}Filtered`));
   }
 
   function getBackButton() {
     if (navigationPath != '/') {
-      return <Button block className={styles.backButton} onClick={goBack} key="backbtn">
-        <MaterialIcon className={styles.buttonIcon} icon="arrow_back" />
-      </Button>;
+      return (
+        <Button block className={styles.backButton} onClick={goBack} key="backbtn">
+          <MaterialIcon className={styles.buttonIcon} icon="arrow_back" />
+        </Button>
+      );
     }
   }
 
@@ -118,15 +113,12 @@ function ActionsPanel ({
     if (level == undefined) {
       return <div>Loading</div>;
     }
-    const actionsContent = getActionContent(level);
-    const childrenContent = getChildrenContent(level);
-    const backButton = getBackButton();
 
     return (
       <div id="actionscroller" className={`${styles.windowContainer}`}>
         <hr className={Popover.styles.delimiter} />
         <Row>
-          {backButton}
+          {getBackButton()}
           <div className={styles.navPathTitle}>
             {`${displayedNavigationPath}`}
           </div>
@@ -134,8 +126,8 @@ function ActionsPanel ({
         <hr className={Popover.styles.delimiter} />
         <FilterList matcher={matcher} height={'80%'}>
           <FilterListFavorites className={styles.Grid}>
-            {actionsContent}
-            {childrenContent}
+            {getActionContent(level)}
+            {getChildrenContent(level)}
           </FilterListFavorites>
           <FilterListData className={styles.Grid}>
             {getAllActions()}
@@ -146,19 +138,10 @@ function ActionsPanel ({
   }
 
   function popover() {
-    let actionsContent;
-    let childrenContent;
-    let backButton;
-
-    if (actionLevel.length == 0) {
-      actionsContent = <div>No Actions</div>;
-      childrenContent = <div>No Children</div>;
-    } else {
-      const level = actionLevel;
-      actionsContent = getActionContent(level);
-      childrenContent = getChildrenContent(level);
-      backButton = getBackButton();
-    }
+    const isEmpty = (actionLevel.length === 0);
+    const actionsContent = isEmpty ? <div>No Actions</div> : getActionContent(actionLevel);
+    const childrenContent = isEmpty ? <div>No Children</div> : getChildrenContent(actionLevel);
+    const backButton = getBackButton();
 
     return (
       <Popover
@@ -211,8 +194,6 @@ function ActionsPanel ({
 }
 
 const mapSubStateToProps = ({ popoverVisible, luaApi, actions }) => {
-  console.log(actions);
-
   const actionsMapped = { '/': { actions: [], children: {} } };
   if (!actions.isInitialized) {
     return {

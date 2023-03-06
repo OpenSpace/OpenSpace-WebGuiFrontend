@@ -82,3 +82,9 @@
   max-height: 400px;
   min-height: 400px;
 }
+
+.localText {
+  padding-top: 0.2em !important;
+  color: $ui-highlight-secondary;
+  font-size: smaller;
+}
