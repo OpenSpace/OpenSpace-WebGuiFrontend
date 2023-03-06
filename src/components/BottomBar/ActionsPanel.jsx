@@ -115,7 +115,7 @@ function ActionsPanel ({
     return ObjectWordBeginningSubstring(test.children, search);
   }
 
-  function actionsContent() {
+  function actionsContent(filterListHeight) {
     const isEmpty = (actionLevel.length === 0);
     const actionsContent = isEmpty ? <div>No Actions</div> : getActionContent(actionLevel);
     const childrenContent = isEmpty ? <div>No Children</div> : getChildrenContent(actionLevel);
@@ -131,7 +131,7 @@ function ActionsPanel ({
           </div>
         </Row>
         <hr className={Popover.styles.delimiter} />
-        <FilterList matcher={matcher}>
+        <FilterList matcher={matcher} height={filterListHeight}>
           <FilterListFavorites className={styles.Grid}>
             {childrenContent}
             {actionsContent}
@@ -145,14 +145,16 @@ function ActionsPanel ({
   }
 
   function windowContent() {
+    const height = '80%';
     return (
       <div id="actionscroller" className={`${styles.windowContainer}`}>
-        {actionLevel ? actionsContent() : <div>Loading...</div> }
+        {actionLevel ? actionsContent(height) : <div>Loading...</div> }
       </div>
     );
   }
 
   function popover() {
+    const height = '310px'; // A bit ugly, but makes filterlist size correctly
     return (
       <Popover
         className={`${Picker.Popover} ${styles.actionsPanel}`}
@@ -162,7 +164,7 @@ function ActionsPanel ({
         attached
       >
         <div id="actionscroller" className={`${Popover.styles.content}`}>
-          {actionsContent()}
+          {actionsContent(height)}
         </div>
       </Popover>
     );
