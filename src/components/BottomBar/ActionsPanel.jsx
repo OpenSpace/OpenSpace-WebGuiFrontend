@@ -115,40 +115,44 @@ function ActionsPanel ({
     return ObjectWordBeginningSubstring(test.children, search);
   }
 
-  function windowContent() {
-    if (actionLevel == undefined) {
-      return <div>Loading</div>;
-    }
-
-    return (
-      <div id="actionscroller" className={`${styles.windowContainer}`}>
-        <hr className={Popover.styles.delimiter} />
-        <Row>
-          {getBackButton()}
-          <div className={styles.navPathTitle}>
-            {`${displayedNavigationPath}`}
-          </div>
-        </Row>
-        <hr className={Popover.styles.delimiter} />
-        <FilterList matcher={matcher} height={'80%'}>
-          <FilterListFavorites className={styles.Grid}>
-            {getActionContent(actionLevel)}
-            {getChildrenContent(actionLevel)}
-          </FilterListFavorites>
-          <FilterListData className={styles.Grid}>
-            {getAllActions()}
-          </FilterListData>
-        </FilterList>
-      </div>
-    );
-  }
-
-  function popover() {
+  function actionsContent() {
     const isEmpty = (actionLevel.length === 0);
     const actionsContent = isEmpty ? <div>No Actions</div> : getActionContent(actionLevel);
     const childrenContent = isEmpty ? <div>No Children</div> : getChildrenContent(actionLevel);
     const backButton = getBackButton();
 
+    return (
+      <>
+        <hr className={Popover.styles.delimiter} />
+        <Row className={styles.navPathRow}>
+          {backButton}
+          <div className={styles.navPathTitle}>
+            {`${displayedNavigationPath}`}
+          </div>
+        </Row>
+        <hr className={Popover.styles.delimiter} />
+        <FilterList matcher={matcher}>
+          <FilterListFavorites className={styles.Grid}>
+            {childrenContent}
+            {actionsContent}
+          </FilterListFavorites>
+          <FilterListData className={styles.Grid}>
+            {getAllActions()}
+          </FilterListData>
+        </FilterList>
+      </>
+    );
+  }
+
+  function windowContent() {
+    return (
+      <div id="actionscroller" className={`${styles.windowContainer}`}>
+        {actionLevel ? actionsContent() : <div>Loading...</div> }
+      </div>
+    );
+  }
+
+  function popover() {
     return (
       <Popover
         className={`${Picker.Popover} ${styles.actionsPanel}`}
@@ -158,23 +162,7 @@ function ActionsPanel ({
         attached
       >
         <div id="actionscroller" className={`${Popover.styles.content}`}>
-          <hr className={Popover.styles.delimiter} />
-          <Row className={styles.navPathRow}>
-            {backButton}
-            <div className={styles.navPathTitle}>
-              {`${displayedNavigationPath}`}
-            </div>
-          </Row>
-          <hr className={Popover.styles.delimiter} />
-          <FilterList matcher={matcher} height={backButton ? '280px' : '320px'}>
-            <FilterListFavorites className={styles.Grid}>
-              {childrenContent}
-              {actionsContent}
-            </FilterListFavorites>
-            <FilterListData className={styles.Grid}>
-              {getAllActions()}
-            </FilterListData>
-          </FilterList>
+          {actionsContent()}
         </div>
       </Popover>
     );
