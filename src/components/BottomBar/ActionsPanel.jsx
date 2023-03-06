@@ -63,20 +63,19 @@ function ActionsPanel ({
         className={styles.actionButton}
         actionid={action.identifier}
       >
-        <p><MaterialIcon className={styles.buttonIcon} icon="launch" /></p>
+        <p>
+          <MaterialIcon className={styles.buttonIcon} icon="launch" />
+          {isLocal && <span className={styles.localText}> (Local)</span>}
+        </p>
         {action.name} {' '}
         {action.documentation && <InfoBox text={action.documentation} />}
-        {isLocal && <p className={styles.localText}>(Local)</p>}
+
       </Button>
     );
   }
 
-  function getActionContent(level) {
-    return level.actions.map((action) => actionsButton(action, action.identifier));
-  }
-
-  function getChildrenContent(level) {
-    return Object.keys(level.children).map((key) => (
+  function folderButton(key) {
+    return (
       <Button
         block
         smalltext
@@ -88,7 +87,15 @@ function ActionsPanel ({
         <p><MaterialIcon className={styles.buttonIcon} icon="folder" /></p>
         {key}
       </Button>
-    ));
+    );
+  }
+
+  function getChildrenContent(level) {
+    return Object.keys(level.children).map((key) => folderButton(key));
+  }
+
+  function getActionContent(level) {
+    return level.actions.map((action) => actionsButton(action, action.identifier));
   }
 
   function getAllActions() {
@@ -96,7 +103,7 @@ function ActionsPanel ({
   }
 
   function getBackButton() {
-    if (navigationPath != '/') {
+    if (navigationPath !== '/') {
       return (
         <Button block className={styles.backButton} onClick={goBack} key="backbtn">
           <MaterialIcon className={styles.buttonIcon} icon="arrow_back" />
