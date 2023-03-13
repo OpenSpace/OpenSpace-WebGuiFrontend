@@ -1,8 +1,13 @@
 @import "../../../styles/all";
 
+.colorPicker {
+  height: $input-total-height !important;
+}
+
 .colorSwatch {
-  width: 1.7em;
-  height: 1.7em;
+  width: calc(0.7 * $input-total-height);
+  height: calc(0.7 * $input-total-height);
+  margin: auto;
   border-radius: 3px;
   border-color: rgba(white, 0.3);
   border-width: 1px;

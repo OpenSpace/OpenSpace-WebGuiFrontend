@@ -1,109 +1,40 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React from 'react';
 import Button from '../Input/Button/Button';
-import Tooltip from '../Tooltip/Tooltip';
+import TooltipMenu from '../Tooltip/TooltipMenu';
 import ColorPicker from './ColorPicker';
 import styles from './ColorPickerPopup.scss';
-var { Checkboard } = require('react-color/lib/components/common');
+const { Checkboard } = require('react-color/lib/components/common');
 
-class ColorPickerPopup extends Component {
-  constructor(props) {
-    super(props);
+function ColorPickerPopup({ className, color, disableAlpha, disabled, onChange }){
+  const colorSwatchBg = {
+    background: `rgba(${ color.r }, ${ color.g }, ${ color.b }, ${ color.a })`
+  };
 
-    this.mounted = false;
-
-    this.state = { showPopup: false };
-
-    this.setRef = this.setRef.bind(this);
-    this.togglePopup = this.togglePopup.bind(this);
-    this.closePopup = this.closePopup.bind(this);
-    this.handleOutsideClick = this.handleOutsideClick.bind(this);
-  }
-
-  componentDidMount() {
-    this.mounted = true;
-    window.addEventListener('scroll', this.closePopup, true);
-    window.addEventListener('mousedown', this.handleOutsideClick, true);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('scroll', this.closePopup);
-    window.removeEventListener('mousedown', this.handleOutsideClick);
-    this.mounted = false;
-  }
-
-  setRef(what) {
-    return (element) => {
-      this[what] = element;
-    };
-  }
-
-  get position() {
-    if (!this.wrapper) return { top: '0px', left: '0px' };
-    const { top, right } = this.wrapper.getBoundingClientRect();
-    return { top: `${top}px`, left: `${right}px` };
-  }
-
-  togglePopup(evt) {
-    if (this.mounted) {
-      this.setState({ showPopup: !this.state.showPopup });
-    }
-  }
-
-  handleOutsideClick(evt) {
-    if (this.insideClickWrapper && !this.insideClickWrapper.contains(evt.target)) {
-      this.closePopup();
-    }
-  }
-
-  closePopup() {
-    if (this.mounted) {
-      this.setState({ showPopup: false });
-    }
-  }
-
-  render() {
-    const { className, color, disableAlpha, disabled, onChange } = this.props;
-
-    const colorSwatchBg = {
-      background: `rgba(${ color.r }, ${ color.g }, ${ color.b }, ${ color.a })`
-    };
-
-    const customTooltipCss = {
-      paddingRight: '4px', paddingLeft: '4px', maxWidth: '200px'
-    };
-
-    return (
-      <div
-        ref={this.setRef('wrapper')}
-        className={className}
-      >
-        <Button block small onClick={this.togglePopup} nopadding>
-          <div className={styles.colorSwatch}>
-            <div className={styles.colorOverlay} style={colorSwatchBg}/>
-            <div className={styles.checkboard}>
-              <Checkboard size={ 10 } white="#fff" grey="#ccc" />
-            </div>
-          </div>
-          </Button>
-          {!disabled && this.state.showPopup && (
-            <Tooltip
-              fixed
-              placement="right" // TODO: fix so placement can be set from property
-              style={{...this.position, ...customTooltipCss}}
-            >
-              <div ref={this.setRef('insideClickWrapper')}>
-                <ColorPicker
-                  disableAlpha={disableAlpha}
-                  color={color}
-                  onChange={onChange}
-                />
-              </div>
-            </Tooltip>
-        )}
+  const colorSwatchButton = (
+    <Button className={styles.colorPicker} block small nopadding>
+      <div className={styles.colorSwatch}>
+        <div className={styles.colorOverlay} style={colorSwatchBg}/>
+        <div className={styles.checkboard}>
+          <Checkboard size={ 10 } white="#fff" grey="#ccc" />
+        </div>
       </div>
-    );
-  }
+    </Button>
+  );
+
+  return (
+    <TooltipMenu
+      className={`${className} ${styles.fullHeight}`}
+      disabled={disabled}
+      sourceObject={colorSwatchButton}
+    >
+      <ColorPicker
+        disableAlpha={disableAlpha}
+        color={color}
+        onChange={onChange}
+      />
+    </TooltipMenu>
+  );
 }
 
 ColorPickerPopup.propTypes = {
