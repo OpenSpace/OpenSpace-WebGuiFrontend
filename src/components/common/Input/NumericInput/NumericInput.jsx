@@ -66,7 +66,10 @@ class NumericInput extends Component {
 
     // If linear scale, we want the resolution to match the step size
     if (exp == 1.0) {
-      const nSteps = Math.ceil((max - min) / step);
+      let nSteps = Math.ceil((max - min) / step);
+      if (!isFinite(nSteps)) {
+        nSteps = 1000;
+      }
       this.sliderResolution = nSteps;
     }
 
@@ -154,6 +157,7 @@ class NumericInput extends Component {
 
   render() {
     const { value, id, hoverHint } = this.state;
+    const { decimals } = this.props;
 
     if (this.showTextInput) {
       return (
@@ -175,11 +179,10 @@ class NumericInput extends Component {
     const hoverHintOffset = reverse ? 1 - hoverHint : hoverHint;
 
     const sliderValue = this.valueToSliderPos(value);
-
     // HoverHintOffset is in [0, 1]. Scale to full slider range
     const scaledHoverHintOffset = this.sliderResolution * hoverHintOffset;
     const tooltipValue = this.valueFromSliderPos(scaledHoverHintOffset);
-
+    const displayValue = decimals ? value.toFixed(decimals) : value;
     return (
       <div
         className={`${styles.inputGroup} ${wide ? styles.wide : ''} ${reverse ? styles.reverse : ''}`}
@@ -190,7 +193,7 @@ class NumericInput extends Component {
           <div className={styles.hoverHint} style={{ width: `${100 * hoverHintOffset}%` }} />
         )}
         { !this.props.noTooltip && hoverHint !== null && (
-          <Tooltip style={{ left: `${100 * hoverHint}%` }}>
+          <Tooltip style={{ left: `${100 * hoverHint}%` }} placement={'top'}>
             { tooltipValue }
           </Tooltip>
         )}
@@ -198,12 +201,13 @@ class NumericInput extends Component {
           {...inheritedProps}
           id={id}
           type="range"
-          value={sliderValue}
+          value={"test"}
           min={0}
           max={this.sliderResolution}
           step={1}
           className={`${className} ${styles.range}`}
           style={{ '--min': 0, '--max': this.sliderResolution, '--value': sliderValue, direction: reverse ? "rtl" : "ltr" }}
+          onClickCapture={(event) => event.stopPropagation()}
           onChange={this.onSliderChange}
           onMouseMove={this.onHover}
           onMouseLeave={this.onLeave}
@@ -212,7 +216,7 @@ class NumericInput extends Component {
           { label || placeholder }
         </label>
         <span className={styles.value}>
-          {noValue ? "" : value}
+          {noValue ? "" : displayValue}
         </span>
       </div>
     );
@@ -236,6 +240,7 @@ NumericInput.propTypes = {
   step: PropTypes.number,
   value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   wide: PropTypes.bool,
+  decimals: PropTypes.number
 };
 
 NumericInput.defaultProps = {
@@ -254,6 +259,7 @@ NumericInput.defaultProps = {
   step: 1,
   value: 0,
   wide: true,
+  decimals: undefined
 };
 
 export default NumericInput;

@@ -1,9 +1,11 @@
 @import "../../styles/all";
 
+@import "../common/Popover/Popover.scss";
+
 .Grid {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
   &:before,
     &:after {
       display: none;
@@ -17,21 +19,28 @@
 }
 
 .buttonIcon {
-    font-size: 1em;
+  font-size: 1em;
 }
 
 .bottomBarIcon {
-    font-size: 2em;
+  font-size: 2em;
 }
 
 .backButton {
-  margin-bottom: 10px;
+  background-color: $ui-background-slider-input;
+  width: fit-content;
+  padding-left: 10px !important;
+  padding-right: 12px !important;
+  padding-bottom: 4px;
+  font-size: 1em;
 }
 
 .actionButton {
   width: 120px;
   margin-bottom: 5px;
   margin: 2px;
+  max-height: 50%;
+  overflow-wrap: break-word;
 }
 
 .windowContainer {
@@ -39,15 +48,31 @@
     min-width: 310px;
     min-height: 100px;
   }
+
+  .navPathTitle {
+    font-size: 1em;
+  }
+
   font-size: 3.4em;
   overflow: scroll;
   overflow-y: auto;
   height: 100%;
+  width: 100%;
   overflow-x: hidden;
 }
 
 .folderButton {
   background-color: $ui-background-slider-input;
+}
+
+.navPathTitle {
+  @extend .title;
+  display: inline-block;
+  word-break: break-word;
+}
+
+.navPathRow {
+  line-height: 1.5em;
 }
 
 .actionsPanel {

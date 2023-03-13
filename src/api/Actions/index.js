@@ -229,6 +229,21 @@ export const updateSkyBrowser = data => ({
   payload: data,
 });
 
+export const subscribeToCamera = data => ({
+  type: actionTypes.subscribeToCamera,
+  payload: data
+});
+
+export const updateCamera = data => ({
+  type: actionTypes.updateCamera,
+  payload: data
+});
+
+export const unsubscribeToCamera = data => ({
+  type: actionTypes.unsubscribeToCamera,
+  payload: data
+});
+
 export const subscribeToShortcuts = () => ({
   type: actionTypes.subscribeToShortcuts,
   payload: {},
@@ -263,11 +278,6 @@ export const toggleKeybindViewer = data => ({
 export const setNavigationAction = data => ({
   type: actionTypes.setNavigationAction,
   payload: data,
-});
-
-export const setOriginPickerShowFavorites = showFavorites => ({
-  type: actionTypes.setOriginPickerShowFavorites,
-  payload: showFavorites,
 });
 
 export const setPopoverVisibility = data => ({

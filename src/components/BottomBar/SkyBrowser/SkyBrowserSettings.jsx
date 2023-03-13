@@ -1,14 +1,13 @@
-import React, { Component } from 'react';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import Button from '../../common/Input/Button/Button';
 import Row from '../../common/Row/Row';
 import NumericInput from '../../common/Input/NumericInput/NumericInput';
-import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
 import Checkbox from '../../common/Input/Checkbox/Checkbox';
 import ColorPickerPopup from '../../common/ColorPicker/ColorPickerPopup';
 import ToggleContent from '../../common/ToggleContent/ToggleContent';
-import SkyBrowserTooltip from './SkyBrowserTooltip';
-import Popover from '../../common/Popover/Popover';
+import InfoBox from '../../common/InfoBox/InfoBox';
 import Property from '../../Sidebar/Properties/Property'
 import {
   SkyBrowser_ShowTitleInBrowserKey,
@@ -22,57 +21,50 @@ import {
  } from '../../../api/keys';
 import styles from './SkyBrowserSettings.scss';
 
-class SkyBrowserSettings extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      showExpandedCopies: false,
-      showExpandedSettings: false,
-      generalSettingsExpanded: false,
-      precisionLow: 2,
-      precisionHigh: 10,
-      newPosition: [0, 0, -2],
-      noOfCopies: 1,
-      showCopiesInfo: false,
-    };
-    this.valueToColor = this.valueToColor.bind(this);
-    this.onColorPickerChange = this.onColorPickerChange.bind(this);
-    this.toggleFaceCamera = this.toggleFaceCamera.bind(this);
-    this.toggleRadiusAzimuthElevation = this.toggleRadiusAzimuthElevation.bind(this);
-    this.setRef = this.setRef.bind(this);
-    this.setExpandedCopies = this.setExpandedCopies.bind(this);
-    this.createDisplayCopiesSection = this.createDisplayCopiesSection.bind(this);
-    this.showExpandedCopySettings = this.showExpandedCopySettings.bind(this);
-    this.setExpandedGeneralSettings = this.setExpandedGeneralSettings.bind(this);
+function SkyBrowserSettings({
+  setBorderRadius
+}) {
+  const [showExpandedCopies, setShowExpandedCopies] = React.useState(false);
+  const [showExpandedSettings, setShowExpandedSettings] = React.useState(false);
+  const [generalSettingsExpanded, setGeneralSettingsExpanded] = React.useState(false);
+  const [newPosition, setNewPosition] = React.useState([0, 0, -2]);
+  const [noOfCopies, setNoOfCopies] = React.useState(1);
+
+  const browser = useSelector((state) => state.skybrowser.browsers[state.skybrowser.selectedBrowserId]);
+  const selectedBrowserId = useSelector((state) => state.skybrowser.selectedBrowserId);
+  const luaApi = useSelector((state) => state.luaApi);
+
+  const PrecisionLow = 2;
+  const PrecisionHigh = 10;
+  // Cartesian
+  const CartesianStartVector = [0, 0, -2];
+  const CartesianRange = { min: [-4, -4, -10], max: [4, 4, 0] };
+  const CartesianLabels = ['X', 'Y', 'Z'];
+  // Radius, Azimuth, Elevation
+  const RaeStartVector = [2, 0, 0];
+  const RaeRange = { min: [0, -3.14, -3.14], max: [10, 3.14, 3.14] };
+  const RaeLabels = ['Radius', 'Azimuth', 'Elevation'];
+
+  React.useEffect(() => {
+    setNewPosition(browser.isUsingRae ? RaeStartVector : CartesianStartVector);
+  }, []);
+
+  if (!browser) {
+    return null;
   }
 
-  setRef(what) {
-    return (element) => {
-      this[what] = element;
-    };
-  }
-
-  setExpandedCopies(expanded) {
-    this.setState({ showExpandedCopies: expanded });
-  }
-
-  setExpandedGeneralSettings(expanded) {
-    this.setState({ generalSettingsExpanded: expanded });
-  }
-
-  toggleFaceCamera() {
-    const { luaApi, browser } = this.props;
+  function toggleFaceCamera() {
     const uriBrowser = `ScreenSpace.${browser.id}.FaceCamera`;
     luaApi.setPropertyValueSingle(uriBrowser, !browser.isFacingCamera);
   }
 
-  toggleRadiusAzimuthElevation() {
-    const { luaApi, browser } = this.props;
+  function toggleRadiusAzimuthElevation() {
     const uriBrowser = `ScreenSpace.${browser.id}.UseRadiusAzimuthElevation`;
     luaApi.setPropertyValueSingle(uriBrowser, !browser.isUsingRae);
+    setNewPosition(browser.isUsingRae ? CartesianStartVector : RaeStartVector);
   }
 
-  valueToColor(color) {
+  function valueToColor(color) {
     return {
       r: color[0],
       g: color[1],
@@ -81,8 +73,7 @@ class SkyBrowserSettings extends Component {
     };
   }
 
-  onColorPickerChange(color) {
-    const { luaApi, selectedBrowserId } = this.props;
+  function onColorPickerChange(color) {
     const rgb = color.rgb;
     luaApi.skybrowser.setBorderColor(
       selectedBrowserId,
@@ -92,27 +83,22 @@ class SkyBrowserSettings extends Component {
     );
   }
 
-  showExpandedCopySettings() {
-    this.setState({ showExpandedSettings: !this.state.showExpandedSettings });
-  }
-
-  createDisplayCopiesSection(browser, luaApi, selectedBrowserId) {
+  function createDisplayCopiesSection() {
     const displayCopies = browser.displayCopies;
-    const positionData = browser.isUsingRae ? ['Radius', 'Azimuth', 'Elevation'] : ['X', 'Y', 'Z'];
-    const maxPosition = browser.isUsingRae ? [10, 3.14, 3.14] : [4, 4, 0];
-    const minPosition = browser.isUsingRae ? [0, -3.14, -3.14] : [-4, -4, -10];
-    const newPositionVector = this.state.newPosition;
+    const positionData = browser.isUsingRae ? RaeLabels : CartesianLabels;
+    const maxPosition = browser.isUsingRae ? RaeRange.max : CartesianRange.max;
+    const minPosition = browser.isUsingRae ? RaeRange.min : CartesianRange.min;
+    const newPositionVector = newPosition;
 
     const displayCopiesButtons = displayCopies && Object.values(displayCopies).map((entry, indexCopy) => {
       return (
-        <Row key={indexCopy} className={`${styles.vectorProperty} ${this.disabled ? styles.disabled : ''}`}>
+        <Row key={indexCopy} className={styles.vectorProperty}>
           <Checkbox
             label=""
             checked={entry.show}
             left={false}
             disabled={false}
-            setChecked={(value, event) => {
-              const displayCopyId = Object.keys(displayCopies)[indexCopy];
+            setChecked={(value) => {
               const uriBrowser = `ScreenSpace.${selectedBrowserId}.${entry.idShowProperty}`;
               luaApi.setPropertyValueSingle(uriBrowser, value);
             }}
@@ -133,7 +119,7 @@ class SkyBrowserSettings extends Component {
                 luaApi.setPropertyValueSingle(uriBrowser, newVector);
               }}
               step={0.1}
-              value={parseFloat((number).toFixed(this.state.precisionLow))}
+              value={parseFloat((number).toFixed(PrecisionLow))}
               placeholder={`value ${index}`}
             />;
           })}
@@ -144,8 +130,8 @@ class SkyBrowserSettings extends Component {
     return (
       <ToggleContent
         title={"Display Copies"}
-        expanded={this.state.showExpandedCopies}
-        setExpanded={this.setExpandedCopies}
+        expanded={showExpandedCopies}
+        setExpanded={setShowExpandedCopies}
       >
         <NumericInput
           label="Scale"
@@ -157,7 +143,7 @@ class SkyBrowserSettings extends Component {
             luaApi.setPropertyValueSingle(uriBrowser, value);
           }}
           step={0.1}
-          value={parseFloat(browser.scale.toFixed(this.state.precisionLow))}
+          value={parseFloat(browser.scale.toFixed(PrecisionLow))}
           placeholder="value 2"
         />
         <Checkbox
@@ -165,7 +151,7 @@ class SkyBrowserSettings extends Component {
           checked={browser.isFacingCamera}
           left={false}
           disabled={false}
-          setChecked={this.toggleFaceCamera}
+          setChecked={toggleFaceCamera}
           wide
         />
         <Checkbox
@@ -173,44 +159,33 @@ class SkyBrowserSettings extends Component {
           checked={browser.isUsingRae}
           left={false}
           disabled={false}
-          setChecked={this.toggleRadiusAzimuthElevation}
+          setChecked={toggleRadiusAzimuthElevation}
           wide
           style={{ width: '100%'}}
         />
         <ToggleContent
           title={"Add Copy Settings"}
-          expanded={this.state.showExpandedSettings}
-          setExpanded={this.showExpandedCopySettings}
+          expanded={showExpandedSettings}
+          setExpanded={setShowExpandedSettings}
         >
           <NumericInput
             label={"Number of Copies"}
             max={5}
             min={1}
-            onValueChanged={(newValue) => this.setState({ noOfCopies : newValue })}
+            onValueChanged={(newValue) => setNoOfCopies(newValue)}
             step={1}
-            value={this.state.noOfCopies}
+            value={noOfCopies}
             placeholder={`value`}
           />
           <Row>
           <header>
             Position for first copy
           </header>
-          <MaterialIcon
-            icon={'info'}
-            ref={this.setRef('copiesPosition')}
-            onMouseOver={() => this.setState({ showCopiesInfo : true})}
-            onMouseOut={() => this.setState({ showCopiesInfo : false})}
-            style={{fontSize: '15px'}}>
-          </MaterialIcon>
-          {
-            this.state.showCopiesInfo && (
-              <SkyBrowserTooltip placement="bottom-right" style={this.copiesPosition}>
-                {"This sets the position of the first copy. The additional copies will be evenly spread out on the Azimuth."}
-              </SkyBrowserTooltip>
-            )
-          }
+          <InfoBox
+            text={"This sets the position of the first copy. The additional copies will be evenly spread out on the Azimuth."}
+          />
           </Row>
-          <Row className={`${styles.vectorProperty} ${this.disabled ? styles.disabled : ''}`}>
+          <Row className={styles.vectorProperty}>
             {newPositionVector.map((number, index) => {
               return <NumericInput
                 key={index}
@@ -219,12 +194,12 @@ class SkyBrowserSettings extends Component {
                 max={maxPosition[index]}
                 min={minPosition[index]}
                 onValueChanged={(newValue) => {
-                  const newVector = this.state.newPosition;
+                  const newVector = newPosition;
                   newVector[index] = newValue;
-                  this.setState({ newPosition : newVector });
+                  setNewPosition(newVector);
                 }}
                 step={0.1}
-                value={parseFloat((number).toFixed(this.state.precisionLow))}
+                value={parseFloat((number).toFixed(PrecisionLow))}
                 placeholder={`value ${index}`}
               />
             })}
@@ -233,7 +208,7 @@ class SkyBrowserSettings extends Component {
         <Row className={styles.buttonContainer}>
           <Button
             onClick={() => {
-              luaApi.skybrowser.addDisplayCopy(selectedBrowserId, this.state.noOfCopies, this.state.newPosition);
+              luaApi.skybrowser.addDisplayCopy(selectedBrowserId, noOfCopies, newPosition);
             }}
             className={styles.displayCopyButton}
             transparent
@@ -251,118 +226,123 @@ class SkyBrowserSettings extends Component {
           </Button>
         </Row>
         {displayCopies && displayCopiesButtons}
-      </ToggleContent>);
-  }
-
-  render() {
-      const { selectedBrowserId, browser, luaApi } = this.props;
-      if (!browser) {
-        return '';
-      }
-      // Take half to display in ranges [0,1] instead of [0,2]
-      const size = browser.size;
-      const colorValues = browser.color;
-      const colorLabels = ['Border Color: R', 'G', 'B'];
-      const displayDisplaySection = this.createDisplayCopiesSection(browser, luaApi, selectedBrowserId);
-
-      const colorPicker = (
-        <ColorPickerPopup
-          className={styles.colorPicker}
-          disableAlpha
-          color={this.valueToColor(browser.color)}
-          onChange={this.onColorPickerChange}
-          disabled={false}
-        />
+      </ToggleContent>
       );
+    }
 
-      return (
-        <div>
+  const colorValues = browser.color;
+  const colorLabels = ['Border Color: R', 'G', 'B'];
+  const displayDisplaySection = createDisplayCopiesSection();
+
+  const colorPicker = (
+    <ColorPickerPopup
+      className={styles.colorPicker}
+      disableAlpha
+      color={valueToColor(browser.color)}
+      onChange={onColorPickerChange}
+      disabled={false}
+    />
+  );
+
+  return (
+    <div>
+      <NumericInput
+        label="Vertical Field of View"
+        max={70}
+        min={0}
+        disabled={!luaApi.skybrowser.setVerticalFov}
+        onValueChanged={(fov) => {
+          luaApi.skybrowser.setVerticalFov(selectedBrowserId, fov);
+        }}
+        step={1}
+        value={parseFloat(browser.fov.toFixed(PrecisionHigh))}
+        placeholder="value 0"
+      />
+      <Row>
+        <NumericInput
+          label="Right Ascension"
+          max={360}
+          min={0}
+          disabled={!luaApi.skybrowser.setVerticalFov}
+          onValueChanged={value => luaApi.skybrowser.setEquatorialAim(selectedBrowserId, value, browser.dec)}
+          step={0.1}
+          value={parseFloat(browser.ra.toFixed(PrecisionHigh))}
+          placeholder="value 1"
+        />
+        <NumericInput
+          label="Declination"
+          max={90}
+          min={-90}
+          disabled={!luaApi.skybrowser.setVerticalFov}
+          onValueChanged={value => luaApi.skybrowser.setEquatorialAim(selectedBrowserId, browser.ra, value)
+          }
+          step={0.1}
+          value={parseFloat(browser.dec.toFixed(PrecisionHigh))}
+          placeholder="value 2"
+        />
+      </Row>
+      <Row className={styles.vectorProperty}>
+        {colorPicker}
+        {colorValues.map((color, index) => (
           <NumericInput
-            label="Vertical Field of View"
-            max={70}
+            key={index}
+            label={colorLabels[index]}
+            max={255}
             min={0}
-            disabled={!luaApi.skybrowser.setVerticalFov}
-            onValueChanged={(fov) => {
-              luaApi.skybrowser.setVerticalFov(selectedBrowserId, fov);
+            onValueChanged={(value) => {
+              const newColor = colorValues;
+              newColor[index] = value;
+              luaApi.skybrowser.setBorderColor(
+                selectedBrowserId,
+                newColor[0],
+                newColor[1],
+                newColor[2],
+              );
             }}
             step={1}
-            value={parseFloat(browser.fov.toFixed(this.state.precisionHigh))}
-            placeholder="value 0"
+            value={color}
+            placeholder={`value ${index}`}
           />
-          <Row>
-            <NumericInput
-              label="Right Ascension"
-              max={360}
-              min={0}
-              disabled={!luaApi.skybrowser.setVerticalFov}
-              onValueChanged={value => luaApi.skybrowser.setEquatorialAim(selectedBrowserId, value, browser.dec)
-              }
-              step={0.1}
-              value={parseFloat(browser.ra.toFixed(this.state.precisionHigh))}
-              placeholder="value 1"
-            />
-            <NumericInput
-              label="Declination"
-              max={90}
-              min={-90}
-              disabled={!luaApi.skybrowser.setVerticalFov}
-              onValueChanged={value => luaApi.skybrowser.setEquatorialAim(selectedBrowserId, browser.ra, value)
-              }
-              step={0.1}
-              value={parseFloat(browser.dec.toFixed(this.state.precisionHigh))}
-              placeholder="value 2"
-            />
-          </Row>
-          <Row className={`${styles.vectorProperty} ${this.disabled ? styles.disabled : ''}`}>
-            {colorPicker}
-            {colorValues.map((color, index) => (
-              <NumericInput
-                key={index}
-                label={colorLabels[index]}
-                max={255}
-                min={0}
-                onValueChanged={(value) => {
-                  const newColor = colorValues;
-                  newColor[index] = value;
-                  luaApi.skybrowser.setBorderColor(
-                    selectedBrowserId,
-                    newColor[0],
-                    newColor[1],
-                    newColor[2],
-                  );
-                }}
-                step={1}
-                value={color}
-                placeholder={`value ${index}`}
-              />
-            ))}
-          </Row>
-          {displayDisplaySection}
-          <ToggleContent
-            title={"General Settings"}
-            expanded={this.state.generalSettingsExpanded}
-            setExpanded={this.setExpandedGeneralSettings}
-          >
-          <Property uri={SkyBrowser_ShowTitleInBrowserKey}/>
-          <Property uri={SkyBrowser_AllowCameraRotationKey}/>
-          <Property uri={SkyBrowser_CameraRotationSpeedKey}/>
-          <Property uri={SkyBrowser_TargetAnimationSpeedKey}/>
-          <Property uri={SkyBrowser_BrowserAnimationSpeedKey}/>
-          <Property uri={SkyBrowser_HideTargetsBrowsersWithGuiKey}/>
-          <Property uri={SkyBrowser_InverseZoomDirectionKey}/>
-          <Property uri={SkyBrowser_SpaceCraftAnimationTimeKey}/>
-          </ToggleContent>
-        </div>
-    );
-  }
+        ))}
+      </Row>
+      <Property uri={`Scene.${browser.targetId}.Renderable.ApplyRoll`} />
+      <Property uri={`ScreenSpace.${selectedBrowserId}.PointSpacecraft`} />
+      {displayDisplaySection}
+      <ToggleContent
+        title={"General Settings"}
+        expanded={generalSettingsExpanded}
+        setExpanded={setGeneralSettingsExpanded}
+      >
+        <NumericInput
+          label="Border Radius"
+          max={1}
+          min={0}
+          onValueChanged={value => {
+            luaApi.skybrowser.setBorderRadius(browser.id, value);
+            setBorderRadius(value);
+          }}
+          step={0.01}
+          value={browser.borderRadius}
+          placeholder="value 2"
+        />
+        <Property uri={SkyBrowser_ShowTitleInBrowserKey}/>
+        <Property uri={SkyBrowser_AllowCameraRotationKey}/>
+        <Property uri={SkyBrowser_CameraRotationSpeedKey}/>
+        <Property uri={SkyBrowser_TargetAnimationSpeedKey}/>
+        <Property uri={SkyBrowser_BrowserAnimationSpeedKey}/>
+        <Property uri={SkyBrowser_HideTargetsBrowsersWithGuiKey}/>
+        <Property uri={SkyBrowser_InverseZoomDirectionKey}/>
+        <Property uri={SkyBrowser_SpaceCraftAnimationTimeKey}/>
+      </ToggleContent>
+    </div>
+  );
 }
 
 SkyBrowserSettings.propTypes = {
+  browser: PropTypes.object,
+  luaApi: PropTypes.object,
   selectedBrowserId: PropTypes.string,
-  browser: PropTypes.object
-};
-
-SkyBrowserSettings.defaultProps = {
+  setBorderRadius: PropTypes.func
 };
 
 export default SkyBrowserSettings;

@@ -26,6 +26,7 @@
   background: linear-gradient(to top, $ui-background-solid, transparent);
   height: 2 * $base-padding;
   position: fixed;
-  bottom: 0;
+  left: calc(((100% - (100% - #{$scrollbar-width}))) * 0.5);
+  top: calc(100% - (2 * $base-padding));
   width: unquote('calc(100% - #{$scrollbar-width})');
 }

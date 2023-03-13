@@ -5,166 +5,125 @@ import InfoBox from '../../common/InfoBox/InfoBox';
 import MinMaxRangeInput from '../../common/Input/MinMaxRangeInput/MinMaxRangeInput';
 import NumericInput from '../../common/Input/NumericInput/NumericInput';
 import Row from '../../common/Row/Row';
+import { useContextRefs } from '../../GettingStartedTour/GettingStartedContext';
 import styles from './Property.scss';
 
-class VectorProperty extends Component {
-  constructor(props) {
-    super(props);
+function VectorProperty({dispatcher, description, value}) {
+  const { SteppingValue, MaximumValue, MinimumValue, Exponent } = description.AdditionalData;
+  const isDisabled = description.MetaData.isReadOnly; 
+  const isColor = value.length < 3 || value.length > 4 ? false : description.MetaData.ViewOptions.Color;
+  const hasAlpha = isColor && value.length == 4;
+  const isMinMaxRange = value.length == 2 ? description.MetaData.ViewOptions.MinMaxRange : false;
+  // eslint-disable-next-line react/no-array-index-key
+  const values = value.map((value, index) => ({
+     key: `${description.Name}-${index}`, value 
+    }));
 
-    this.copyUri = this.copyUri.bind(this);
-    this.valueToColor = this.valueToColor.bind(this);
-    this.onColorPickerChange = this.onColorPickerChange.bind(this);
-    this.asMinMaxRange = this.asMinMaxRange.bind(this);
+  React.useEffect(() => {
+    dispatcher.subscribe();
+    return dispatcher.unsubscribe;
+  }, []);
+
+  function copyUri() {
+    copyTextToClipboard(description.Identifier);
   }
 
-  componentDidMount() {
-    this.props.dispatcher.subscribe();
-  }
-
-  componentWillUnmount() {
-    this.props.dispatcher.unsubscribe();
-  }
-
-  get descriptionPopup() {
-    const { description } = this.props.description;
-    return description ? <InfoBox text={description} /> : '';
-  }
-
-  copyUri() {
-    copyTextToClipboard(this.props.description.Identifier);
-  }
-
-  get disabled() {
-    return this.props.description.MetaData.isReadOnly;
-  }
-
-  get isColor() {
-    if(this.props.value.length < 3 || this.props.value.length > 4) {
-      return false;
-    }
-    return this.props.description.MetaData.ViewOptions.Color;
-  }
-
-  get hasAlpha() {
-    return this.isColor && this.props.value.length == 4;
-  }
-
-  get isMinMaxRange() {
-    const isVec2 = this.props.value.length == 2;
-    if (!isVec2) {
-      return false;
-    }
-    return this.props.description.MetaData.ViewOptions.MinMaxRange;
-  }
-
-  valueToColor() {
-    if(!this.isColor) { return null; }
-    const {value} = this.props;
+  function valueToColor() {
+    if(!isColor) { return null; }
 
     return {
         r: value[0] * 255,
         g: value[1] * 255,
         b: value[2] * 255,
-        a: this.hasAlpha ? value[3]: 1.0
+        a: hasAlpha ? value[3]: 1.0
     }
   }
 
-  onChange(index) {
+  function onChange(index) {
     return (newValue) => {
-      const stateValue = this.props.value;
+      const stateValue = value;
 
       stateValue[index] = parseFloat(newValue);
-      this.props.dispatcher.set(stateValue);
+      dispatcher.set(stateValue);
     };
   }
 
-  onColorPickerChange(color) {
+  function onColorPickerChange(color) {
     const rgb = color.rgb;
     let newValue = [rgb.r / 255, rgb.g / 255, rgb.b / 255];
-    if(this.hasAlpha) {
+    if(hasAlpha) {
       newValue[3] = rgb.a;
     }
-    
     // Avoid creating numbers with lots of decimals
     newValue = newValue.map((v) => parseFloat(v.toFixed(3)));
 
-    this.props.dispatcher.set(newValue);
+    dispatcher.set(newValue);
   }
 
-  asMinMaxRange() {
-    if (!this.isMinMaxRange) return;
+  const descriptionPopup = description ? <InfoBox text={description.description} /> : ''; 
+  const firstLabel = (<span onClick={copyUri}>
+    { description.Name } { descriptionPopup }
+  </span>);
 
-    const { description } = this.props;
-    const { SteppingValue, MaximumValue, MinimumValue, Exponent } = description.AdditionalData;
-    const label = (<span onClick={this.copyUri}>
-      { description.Name } { this.descriptionPopup }
+  function asMinMaxRange() {
+    if (!isMinMaxRange) return;
+
+    const label = (<span onClick={copyUri}>
+      { description.Name } { descriptionPopup }
     </span>);
-    const values = this.props.value;
 
     // Different step sizes does not make sense here, so just use the minimum
     const stepSize = Math.min(...SteppingValue);
 
     return (
-      <Row className={`${styles.vectorProperty} ${this.disabled ? styles.disabled : ''}`}>
+      <Row className={`${styles.vectorProperty} ${isDisabled ? styles.disabled : ''}`}>
         <MinMaxRangeInput
-          valueMin={values[0]}
-          valueMax={values[1]}
+          valueMin={value[0]}
+          valueMax={value[1]}
           label={label}
-          onMinValueChanged={this.onChange(0)}
-          onMaxValueChanged={this.onChange(1)}
+          onMinValueChanged={onChange(0)}
+          onMaxValueChanged={onChange(1)}
           step={stepSize}
           exponent={Exponent}
           max={Math.max(...MaximumValue)}
           min={Math.min(...MinimumValue)}
-          disabled={this.disabled}
+          disabled={isDisabled}
         />
       </Row>
     );
   }
 
-  render() {
-    const { description } = this.props;
-    const { SteppingValue, MaximumValue, MinimumValue, Exponent } = description.AdditionalData;
-    const firstLabel = (<span onClick={this.copyUri}>
-      { description.Name } { this.descriptionPopup }
-    </span>);
-
-    // eslint-disable-next-line react/no-array-index-key
-    const values = this.props.value
-      .map((value, index) => ({ key: `${description.Name}-${index}`, value }));
-
-    if (this.isMinMaxRange) {
-      return this.asMinMaxRange();
-    }
-
-    return (
-      <Row className={`${styles.vectorProperty} ${this.disabled ? styles.disabled : ''}`}>        
-        { values.map((component, index) => (
-          <NumericInput
-            key={component.key}
-            value={component.value}
-            label={index === 0 ? firstLabel : ' '}
-            placeholder={`value ${index}`}
-            onValueChanged={this.onChange(index)}
-            step={SteppingValue[index]}
-            exponent={Exponent}
-            max={MaximumValue[index]}
-            min={MinimumValue[index]}
-            disabled={this.disabled}
-          />
-        ))}
-        { this.isColor && (
-          <ColorPickerPopup
-            disableAlpha={!this.hasAlpha}
-            color={this.valueToColor()}
-            onChange={this.onColorPickerChange}
-            placement="right"
-            disabled={this.disabled}
-          />
-        )}
-      </Row>
-    );
+  if (isMinMaxRange) {
+    return asMinMaxRange();
   }
+  const refs = useContextRefs();
+  return (
+    <Row ref={ el => refs.current[description.Identifier] = el} className={`${styles.vectorProperty} ${isDisabled ? styles.disabled : ''}`}>        
+      { values.map((component, index) => (
+        <NumericInput
+          key={component.key}
+          value={component.value}
+          label={index === 0 ? firstLabel : ' '}
+          placeholder={`value ${index}`}
+          onValueChanged={onChange(index)}
+          step={SteppingValue[index]}
+          exponent={Exponent}
+          max={MaximumValue[index]}
+          min={MinimumValue[index]}
+          disabled={isDisabled}
+        />
+      ))}
+      { isColor && (
+        <ColorPickerPopup
+          disableAlpha={!hasAlpha}
+          color={valueToColor()}
+          onChange={onColorPickerChange}
+          placement="right"
+          disabled={isDisabled}
+        />
+      )}
+    </Row>
+  );
 }
 
 export default VectorProperty;

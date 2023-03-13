@@ -79,7 +79,10 @@ class MinMaxRangeInput extends Component {
 
     // If linear scale, we want the resolution to match the step size
     if (exp == 1.0) {
-      const nSteps = Math.ceil((max - min) / step);
+      let nSteps = Math.ceil((max - min) / step);
+      if (!isFinite(nSteps)) {
+        nSteps = 1000;
+      }
       this.sliderResolution = nSteps;
     }
 
@@ -236,13 +239,17 @@ class MinMaxRangeInput extends Component {
 
   onMinTextBlur(event) {
     const value = Number.parseFloat(event.currentTarget.value);
-    this.updateMinValue(value);
+    if(!isNaN(value)) {
+      this.updateMinValue(value);
+    }
     this.disableTextInput();
   }
 
   onMaxTextBlur(event) {
     const value = Number.parseFloat(event.currentTarget.value);
-    this.updateMaxValue(value);
+    if(!isNaN(value)) {
+      this.updateMaxValue(value);
+    }
     this.disableTextInput();
   }
 
@@ -309,7 +316,7 @@ class MinMaxRangeInput extends Component {
           <div className={styles.hoverHint} style={hoverHintStyle} />
         )} 
         { !this.props.noTooltip && hoverHint !== null && (
-          <Tooltip style={{ left: `${100 * hoverHint}%` }}>
+          <Tooltip style={{ left: `${100 * hoverHint}%` }} placement={'top'}>
             { tooltipValue }
           </Tooltip>
         )}

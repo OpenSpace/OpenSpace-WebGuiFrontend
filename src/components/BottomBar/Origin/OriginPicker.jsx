@@ -8,7 +8,6 @@ import {
   connectFlightController,
   sendFlightControl,
   setNavigationAction,
-  setOriginPickerShowFavorites,
   setPopoverVisibility,
   subscribeToEngineMode,
   subscribeToSessionRecording,
@@ -29,7 +28,7 @@ import {
 } from '../../../api/keys';
 import propertyDispatcher from '../../../api/propertyDispatcher';
 import subStateToProps from '../../../utils/subStateToProps';
-import FilterList from '../../common/FilterList/FilterList';
+import {FilterList, FilterListData, FilterListFavorites, FilterListShowMoreButton} from '../../common/FilterList/FilterList';
 import Button from '../../common/Input/Button/Button';
 import LoadingString from '../../common/LoadingString/LoadingString';
 import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
@@ -38,7 +37,6 @@ import SmallLabel from '../../common/SmallLabel/SmallLabel';
 import SvgIcon from '../../common/SvgIcon/SvgIcon';
 import Picker from '../Picker';
 import FocusEntry from './FocusEntry';
-import FocusEntryWithNavigation from './FocusEntryWithNavigation';
 import styles from './OriginPicker.scss';
 
 // tag that each focusable node must have
@@ -50,34 +48,29 @@ const NavigationActions = {
   Aim: 'Aim',
 };
 
-class OriginPicker extends Component {
-  constructor(props) {
-    super(props);
+function OriginPicker({ favorites, allNodes, searchableNodes, engineMode, anchorName, luaApi, sessionRecordingState,
+  setPopoverVisibility, popoverVisible, aim, anchor, aimDispatcher, navigationAction, connectFlightController, sendFlightControl,
+  retargetAimDispatcher, retargetAnchorDispatcher, anchorDispatcher, startSubscriptions, stopSubscriptions, setNavigationAction, aimName }) {
 
-    this.hasDistinctAim = this.hasDistinctAim.bind(this);
-    this.togglePopover = this.togglePopover.bind(this);
-    this.onSelect = this.onSelect.bind(this);
-  }
-
-  componentDidMount() {
-    const { aimDispatcher, anchorDispatcher, startSubscriptions: startSubscriptions } = this.props;
-    anchorDispatcher.subscribe();
-    aimDispatcher.subscribe();
+  const cappedAnchorName = anchorName?.substring(0, 20);
+  React.useEffect(() => {
     startSubscriptions();
-  }
+    return () => stopSubscriptions();
+  }, [startSubscriptions, stopSubscriptions]);
 
-  componentWillUnmount() {
-    const { aimDispatcher, anchorDispatcher, stopSubscriptions } = this.props;
-    anchorDispatcher.unsubscribe();
-    aimDispatcher.unsubscribe();
-    stopSubscriptions();
-  }
+  React.useEffect(() => {
+    anchorDispatcher.subscribe();
+    return () => anchorDispatcher.unsubscribe();
+  }, [anchorDispatcher]);
 
-  onSelect(identifier, evt) {
-    const {
-      aim, anchor, anchorDispatcher, aimDispatcher, navigationAction, retargetAimDispatcher,
-      retargetAnchorDispatcher,
-    } = this.props;
+
+  React.useEffect(() => {
+    aimDispatcher.subscribe();
+    return () => aimDispatcher.unsubscribe();
+  }, [aimDispatcher]);
+
+
+  function onSelect(identifier, evt) {
     const updateViewPayload = {
       type: 'updateView',
       focus: '',
@@ -114,7 +107,7 @@ class OriginPicker extends Component {
     updateViewPayload.retargetAnchor = shouldRetargetAnchor;
     updateViewPayload.resetVelocities = !evt.ctrlKey;
 
-    this.props.sendFlightControl(updateViewPayload);
+    sendFlightControl(updateViewPayload);
     if (updateViewPayload.aim) {
       anchorDispatcher.set(updateViewPayload.anchor);
       aimDispatcher.set(updateViewPayload.aim);
@@ -126,15 +119,14 @@ class OriginPicker extends Component {
     }
   }
 
-  get focusPicker() {
-    const { anchor, anchorName } = this.props;
+  function focusPicker() {
     return (
       <div className={styles.Grid}>
         <SvgIcon className={styles.Icon}><Focus /></SvgIcon>
         <div className={Picker.Title}>
           <span className={Picker.Name}>
             <LoadingString loading={anchor === undefined}>
-              { anchorName }
+              {cappedAnchorName}
             </LoadingString>
           </span>
           <SmallLabel>Focus</SmallLabel>
@@ -143,15 +135,14 @@ class OriginPicker extends Component {
     );
   }
 
-  get anchorAndAimPicker() {
-    const { anchor, anchorName, aimName } = this.props;
+  function anchorAndAimPicker() {
     return (
       <div className={styles.Grid}>
         <SvgIcon className={styles.Icon}><Anchor /></SvgIcon>
         <div className={Picker.Title}>
           <span className={Picker.Name}>
             <LoadingString loading={anchor === undefined}>
-              { anchorName }
+              {cappedAnchorName}
             </LoadingString>
           </span>
           <SmallLabel>Anchor</SmallLabel>
@@ -160,7 +151,7 @@ class OriginPicker extends Component {
         <div className={Picker.Title}>
           <span className={Picker.Name}>
             <LoadingString loading={anchor === undefined}>
-              { aimName }
+              {aimName}
             </LoadingString>
           </span>
           <SmallLabel>Aim</SmallLabel>
@@ -169,15 +160,13 @@ class OriginPicker extends Component {
     );
   }
 
-  get cameraPathPicker() {
-    const { anchor, anchorName, luaApi } = this.props;
-
+  function cameraPathPicker() {
     const cancelFlight = () => {
       luaApi.pathnavigation.stopPath();
     };
 
     return (
-      <div 
+      <div
         className={`${styles.Grid} ${styles.cancelButton}`}
         onClick={cancelFlight}
       >
@@ -193,7 +182,7 @@ class OriginPicker extends Component {
               <SvgIcon><Anchor /></SvgIcon>
               {' '}
               <LoadingString loading={anchor === undefined}>
-                { anchorName }
+                {cappedAnchorName}
               </LoadingString>
             </SmallLabel>
           </div>
@@ -202,24 +191,21 @@ class OriginPicker extends Component {
     );
   }
 
-  get pickerContent() {
-    const { engineMode } = this.props;
+  function pickerContent() {
     if (engineMode === EngineModeCameraPath) {
-      return this.cameraPathPicker;
+      return cameraPathPicker();
     }
     return (
-      <>{this.hasDistinctAim() ? this.anchorAndAimPicker : this.focusPicker }</>
+      <>{hasDistinctAim() ? anchorAndAimPicker() : focusPicker()}</>
     );
   }
 
   // OBS same as timepicker
-  get pickerStyle() {
-    const { engineMode, sessionRecordingState } = this.props;
-
-    const isSessionRecordingPlaying = (engineMode === EngineModeSessionRecordingPlayback) 
+  function pickerStyle() {
+    const isSessionRecordingPlaying = (engineMode === EngineModeSessionRecordingPlayback)
       && (sessionRecordingState === SessionStatePlaying);
 
-    const isSessionRecordingPaused = (engineMode === EngineModeSessionRecordingPlayback) 
+    const isSessionRecordingPaused = (engineMode === EngineModeSessionRecordingPlayback)
       && (sessionRecordingState === SessionStatePaused);
 
     const isCameraPathPlaying = (engineMode === EngineModeCameraPath);
@@ -236,41 +222,27 @@ class OriginPicker extends Component {
     return '';
   }
 
-  get popover() {
-    const {
-      anchor,
-      aim,
-      nodes,
-      favorites,
-      showFavorites,
-      setShowFavorites,
-      navigationAction,
-    } = this.props;
-
+  function popover() {
     const defaultList = favorites.slice();
 
     // Make sure current anchor is in the default list
     if (anchor !== undefined && !defaultList.find(node => node.identifier === anchor)) {
-      const anchorNode = nodes.find(node => node.identifier === anchor);
+      const anchorNode = allNodes.find(node => node.identifier === anchor);
       if (anchorNode) {
         defaultList.push(anchorNode);
       }
     }
 
     // Make sure current aim is in the default list
-    if (this.hasDistinctAim() && !defaultList.find(node => node.identifier === aim)) {
-      const aimNode = nodes.find(node => node.identifier === aim);
+    if (hasDistinctAim() && !defaultList.find(node => node.identifier === aim)) {
+      const aimNode = allNodes.find(node => node.identifier === aim);
       if (aimNode) {
         defaultList.push(aimNode);
       }
     }
 
     const sortedDefaultList = defaultList.slice(0).sort((a, b) => a.name.localeCompare(b.name));
-    const filteredNodes = nodes.filter((node) => {
-      const hasHiddenProp = node.properties.indexOf(`${node.key}.GuiHidden`) > -1;
-      return !hasHiddenProp;
-    });
-    const sortedNodes = filteredNodes.slice(0).sort((a, b) => a.name.localeCompare(b.name));
+    const sortedNodes = searchableNodes.slice(0).sort((a, b) => a.name.localeCompare(b.name));
 
     const searchPlaceholder = {
       Focus: 'Search for a new focus...',
@@ -278,21 +250,12 @@ class OriginPicker extends Component {
       Aim: 'Search for a new aim...',
     }[navigationAction];
 
-    const setNavigationActionToFocus = () => {
-      this.props.setNavigationAction(NavigationActions.Focus);
-    };
-    const setNavigationActionToAnchor = () => {
-      this.props.setNavigationAction(NavigationActions.Anchor);
-    };
-    const setNavigationActionToAim = () => {
-      this.props.setNavigationAction(NavigationActions.Aim);
-    };
-
     const isInFocusMode = navigationAction === NavigationActions.Focus;
+    const active = navigationAction === NavigationActions.Aim ? aim : anchor;
 
     return (
       <Popover
-        closeCallback={this.togglePopover}
+        closeCallback={togglePopover}
         title="Navigation"
         className={Picker.Popover}
         detachable
@@ -301,7 +264,7 @@ class OriginPicker extends Component {
         <div>
           <Button
             className={styles.NavigationButton}
-            onClick={setNavigationActionToFocus}
+            onClick={() => setNavigationAction(NavigationActions.Focus)}
             title="Select focus"
             transparent={navigationAction !== NavigationActions.Focus}
           >
@@ -309,7 +272,7 @@ class OriginPicker extends Component {
           </Button>
           <Button
             className={styles.NavigationButton}
-            onClick={setNavigationActionToAnchor}
+            onClick={() => setNavigationAction(NavigationActions.Anchor)}
             title="Select anchor"
             transparent={navigationAction !== NavigationActions.Anchor}
           >
@@ -317,7 +280,7 @@ class OriginPicker extends Component {
           </Button>
           <Button
             className={styles.NavigationButton}
-            onClick={setNavigationActionToAim}
+            onClick={() => setNavigationAction(NavigationActions.Aim)}
             title="Select aim"
             transparent={navigationAction !== NavigationActions.Aim}
           >
@@ -325,55 +288,63 @@ class OriginPicker extends Component {
           </Button>
         </div>
         <FilterList
-          data={sortedNodes}
-          favorites={sortedDefaultList}
-          showFavorites={showFavorites}
-          setShowFavorites={setShowFavorites}
           className={styles.list}
           searchText={searchPlaceholder}
-          viewComponent={isInFocusMode ? FocusEntryWithNavigation : FocusEntry}
-          onSelect={this.onSelect}
-          active={navigationAction === NavigationActions.Aim ? aim : anchor}
-          searchAutoFocus
-        />
+        >
+          <FilterListShowMoreButton/>
+          <FilterListFavorites>
+            {sortedDefaultList.map((entry) => {
+              return <FocusEntry
+                onSelect={onSelect}
+                active={active}
+                showNavigationButtons={isInFocusMode}
+                {...entry}
+              />
+            })}
+          </FilterListFavorites>
+          <FilterListData>
+            {sortedNodes.map((entry) => {
+              return <FocusEntry
+                onSelect={onSelect}
+                active={active}
+                showNavigationButtons={isInFocusMode}
+                {...entry}
+              />
+            })}
+          </FilterListData>
+        </FilterList>
       </Popover>
     );
   }
 
-  hasDistinctAim() {
-    const { aim, anchor } = this.props;
+  function hasDistinctAim() {
     return (aim !== '') && (aim !== anchor);
   }
 
-  togglePopover() {
-    const { popoverVisible } = this.props;
-    this.props.setPopoverVisibility(!popoverVisible);
+  function togglePopover() {
+    setPopoverVisibility(!popoverVisible);
     if (!popoverVisible) {
-      this.props.connectFlightController();
+      connectFlightController();
     }
   }
 
-  render() {
-    const { engineMode, popoverVisible } = this.props;
+  const enabled = (engineMode === EngineModeUserControl);
+  const popoverEnabledAndVisible = popoverVisible && enabled;
 
-    const enabled = (engineMode === EngineModeUserControl);
-    const popoverEnabledAndVisible = popoverVisible && enabled;
+  const pickerClasses = [
+    styles.originPicker,
+    popoverEnabledAndVisible ? Picker.Active : '',
+    enabled ? '' : pickerStyle(),
+  ].join(' ');
 
-    const pickerClasses = [
-      styles.originPicker,
-      popoverEnabledAndVisible ? Picker.Active : '',
-      enabled ? '' : this.pickerStyle,
-    ].join(' ');
-
-    return (
-      <div className={Picker.Wrapper}>
-        <Picker onClick={this.togglePopover} className={pickerClasses}>
-          {this.pickerContent }
-        </Picker>
-        { popoverEnabledAndVisible && this.popover }
-      </div>
-    );
-  }
+  return (
+    <div className={Picker.Wrapper}>
+      <Picker refKey={"Origin"} onClick={() => togglePopover()} className={pickerClasses}>
+        {pickerContent()}
+      </Picker>
+      {popoverEnabledAndVisible && popover()}
+    </div>
+  );
 }
 
 const mapSubStateToProps = ({
@@ -388,18 +359,26 @@ const mapSubStateToProps = ({
   const scene = propertyOwners.Scene;
   const uris = scene ? scene.subowners : [];
 
-  const nodes = uris.map(uri => ({
+  // Get all the nodes in the scene
+  const allNodes = uris.map(uri => ({
     ...propertyOwners[uri],
     key: uri,
   }));
 
+  // Searchable nodes => nodes that are not hidden in the GUI
+  const searchableNodes = allNodes.filter((node) => {
+    const isHiddenProp = properties[`${node.key}.GuiHidden`];
+    const isHidden = isHiddenProp && isHiddenProp.value;
+    return !isHidden;
+  });
+
+  // Find interesting nodes
   const favorites = uris.filter(uri => propertyOwners[uri].tags.some(tag => tag.includes(REQUIRED_TAG))).map(uri => ({
     ...propertyOwners[uri],
     key: uri,
   }));
 
   const navigationAction = originPicker.action;
-  const { showFavorites } = originPicker;
   const anchorProp = properties[NavigationAnchorKey];
   const aimProp = properties[NavigationAimKey];
 
@@ -417,7 +396,8 @@ const mapSubStateToProps = ({
   const mode = engineMode.mode || EngineModeUserControl;
 
   return {
-    nodes,
+    allNodes,
+    searchableNodes,
     anchor,
     aim,
     anchorName,
@@ -425,7 +405,6 @@ const mapSubStateToProps = ({
     engineMode: mode,
     luaApi,
     favorites,
-    showFavorites,
     navigationAction,
     popoverVisible,
     sessionRecordingState,
@@ -445,9 +424,6 @@ const mapStateToSubState = state => ({
 const mapDispatchToProps = dispatch => ({
   setNavigationAction: (action) => {
     dispatch(setNavigationAction(action));
-  },
-  setShowFavorites: (action) => {
-    dispatch(setOriginPickerShowFavorites(action));
   },
   anchorDispatcher: propertyDispatcher(dispatch, NavigationAnchorKey),
   aimDispatcher: propertyDispatcher(dispatch, NavigationAimKey),
@@ -476,7 +452,8 @@ const mapDispatchToProps = dispatch => ({
 });
 
 OriginPicker.propTypes = {
-  nodes: PropTypes.array.isRequired,
+  allNodes: PropTypes.array.isRequired,
+  searchableNodes: PropTypes.array.isRequired,
   anchor: PropTypes.string,
   aim: PropTypes.string,
   anchorName: PropTypes.string,
@@ -484,7 +461,6 @@ OriginPicker.propTypes = {
   engineMode: PropTypes.string.isRequired,
   favorites: PropTypes.array.isRequired,
   luaApi: PropTypes.object,
-  showFavorites: PropTypes.bool.isRequired,
   navigationAction: PropTypes.string.isRequired,
   popoverVisible: PropTypes.bool.isRequired,
   sessionRecordingState: PropTypes.string.isRequired,
@@ -494,7 +470,6 @@ OriginPicker.propTypes = {
   sendFlightControl: PropTypes.func.isRequired,
   setNavigationAction: PropTypes.func.isRequired,
   setPopoverVisibility: PropTypes.func.isRequired,
-  setShowFavorites: PropTypes.func.isRequired,
   startSubscriptions: PropTypes.func.isRequired,
   stopSubscriptions: PropTypes.func.isRequired,
 

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React from 'react';
 import {
   ObjectWordBeginningSubstring,
   WordBeginningSubstring,
@@ -9,150 +9,129 @@ import Input from '../Input/Input/Input';
 import ScrollOverlay from '../ScrollOverlay/ScrollOverlay';
 import styles from './FilterList.scss';
 
-class FilterList extends Component {
-  constructor(props) {
-    super(props);
+function FilterListFavorites({ className, children }) {
+  return (
+    <ScrollOverlay className={`${className}`}>
+      {children}
+    </ScrollOverlay>
+  );
+}
 
-    this.state = {
-      search: '',
-    };
+FilterListFavorites.displayName = 'FilterListFavorites';
 
-    this.changeSearch = this.changeSearch.bind(this);
-  }
-
-  get filtered() {
-    const {
-      favorites, showFavorites, data, matcher,
-    } = this.props;
-
-    let { search } = this.state;
-    if (search === '' && showFavorites) {
-      return favorites || data;
+function FilterListData({matcher, searchString, ignorePropsFilter, className, children}) {
+  // Filter the children on their props
+  // Most matcher functions are case sensitive, hence toLowerCase
+  const childArray = React.Children.toArray(children); 
+  const filteredChildren = childArray.filter(child => {
+    let matcherFunc;
+    if (typeof child.props === 'object') {
+      matcherFunc = ObjectWordBeginningSubstring;    
     }
-
-    let defaultMatcher = WordBeginningSubstring;
-    if (data.length > 0 && typeof data[0] === 'object') {
-      defaultMatcher = ObjectWordBeginningSubstring;
+    else {
+      matcherFunc = WordBeginningSubstring;  
     }
-
-    // most matcher functions are case sensitive
-    search = search.toLowerCase();
-    const matcherFunc = matcher || defaultMatcher;
-
-    return data.filter(entry => matcherFunc(entry, search));
+    const finalMatcher = matcher || matcherFunc;
+    let searchableChild = child.props ? {...child.props} : child.toLowerCase();
+    ignorePropsFilter.map(key => delete searchableChild[key]);
+    return finalMatcher(searchableChild, searchString.toLowerCase());
+  });
+  let content = undefined;
+  if (filteredChildren.length > 0) {
+    content = filteredChildren;
   }
-
-  changeSearch({ currentTarget }) {
-    this.setState({ search: currentTarget.value });
+  else {
+    content = <CenteredLabel>Nothing found. Try another search!</CenteredLabel>;
   }
+  return (
+      <ScrollOverlay className={`${className}`}>
+        { content }
+      </ScrollOverlay>
+    );
+}
 
-  render() {
-    const {
-      active,
-      className,
-      onSelect,
-      searchAutoFocus,
-      searchText,
-      showFavorites,
-      viewComponent,
-    } = this.props;
-    const { search } = this.state;
-    const entries = this.filtered;
+FilterListData.displayName = 'FilterListData';
 
-    const EntryComponent = viewComponent;
+function FilterListInputButton({key, children, className, ...props}) {
+  return <div key={key} className={`${styles.favoritesButton} ${className}`} {...props}>
+    {children}
+  </div>;
+}
 
-    let inputChildren = null;
+FilterListInputButton.displayName = 'FilterListInputButton';
 
-    if (this.props.setShowFavorites && search === '') {
-      if (showFavorites) {
-        inputChildren = (
-          <div
-            className={styles.favoritesButton}
-            onClick={() => this.props.setShowFavorites(false)}
-          >
-            More
-          </div>
-        );
-      } else {
-        inputChildren = (
-          <div className={styles.favoritesButton} onClick={() => this.props.setShowFavorites(true)}>
-            Less
-          </div>
-        );
+function FilterListShowMoreButton({ key, toggleShowDataInstead, showDataInstead }) {
+  // Create "Less" and "More" toggle button
+  return (
+    <FilterListInputButton key={key} onClick={toggleShowDataInstead}>
+      {showDataInstead ? "Less" : "More"}
+    </FilterListInputButton>
+  );
+}
+
+FilterListShowMoreButton.displayName = 'FilterListShowMoreButton';
+
+function FilterList({ matcher, ignorePropsFilter, searchText, height, className, searchAutoFocus, children}) {
+  const [searchString, setSearchString] = React.useState("");
+  const [showDataInstead, setShowDataInstead] = React.useState(false);
+  const isSearching = searchString !== "";
+  
+  function toggleShowDataInstead() {
+    setShowDataInstead(current => !current);
+  }
+  if(!children) {
+    console.error("FilterList has no children");
+    return <></>;
+  }
+  // See if children has favorites
+  const hasFavorites = Boolean(React.Children.toArray(children).find(child => {  
+    return child.type.displayName === "FilterListFavorites";
+  }));
+
+  let showFavorites = !isSearching && hasFavorites && !showDataInstead;
+  let buttons = [];
+
+  // Collect children, either favorites section or data section
+  const filteredChildren = React.Children.map(children, child => {
+    if (showFavorites && child.type.displayName === "FilterListFavorites") {
+      return child;
+    }
+    else if (!showFavorites && child.type.displayName === "FilterListData") {
+      return React.cloneElement(child, { matcher, searchString, ignorePropsFilter })
+    }
+    else if (child.type.displayName === "FilterListShowMoreButton") {
+      if (hasFavorites && !isSearching) {
+        const key = "FilterListShowMoreButton";
+        buttons.push(React.cloneElement(child, { key, toggleShowDataInstead, showDataInstead }));
       }
     }
-
-    return (
-      <div className={`${className} ${styles.filterList}`} style={{ height: this.props.height }}>
-        <Input
-          value={search}
-          placeholder={searchText}
-          onChange={this.changeSearch}
-          clearable
-          autoFocus={searchAutoFocus}
-        >
-          {inputChildren}
-        </Input>
-
-        <ScrollOverlay>
-          {entries.length === 0 && (
-            <CenteredLabel>Nothing found. Try another search!</CenteredLabel>
-          )}
-          <ul>
-            {entries.map((entry, index) => (
-              <EntryComponent
-                {...entry}
-                {...this.props.viewComponentProps}
-                key={entry.key || index}
-                onSelect={onSelect}
-                active={active}
-              />
-            ))}
-          </ul>
-        </ScrollOverlay>
-      </div>
-    );
-  }
+    else if (child.type.displayName === "FilterListInputButton") {
+      buttons.push(child);
+    }
+  });
+  return <div className={`${styles.filterList} ${className}`} style={{ height: height }}>
+    <Input
+      value={searchString}
+      placeholder={searchText}
+      onChange={(e) => setSearchString(e.target.value)}
+      clearable
+      autoFocus={searchAutoFocus}
+    >
+      {buttons}
+    </Input>
+    {filteredChildren}
+    </div>;
 }
 
 FilterList.propTypes = {
-  /**
-   * the currently active entry, if any. Should be compared strict in viewComponent
-   */
-  // eslint-disable-next-line react/forbid-prop-types
-  active: PropTypes.any,
   /**
    * Class name to apply to the list
    */
   className: PropTypes.string,
   /**
-   * the data to display
-   */
-  // eslint-disable-next-line react/forbid-prop-types
-  data: PropTypes.array.isRequired,
-  /**
-   * Optional: data to display when there is no search term
-   * Defaults to the same as `data`
-   */
-  favorites: PropTypes.array,
-  /**
-   * Show favorites
-   */
-  showFavorites: PropTypes.bool,
-  /**
-   * Optional: set show favorites.
-   * Takes one bool specifying if only the favorites should
-   * be shown when the search field is empty.
-   */
-  setShowFavorites: PropTypes.func,
-  /**
    * the function used to filter the list
    */
   matcher: PropTypes.func,
-  /**
-   * callback method for selecting an option
-   */
-  onSelect: PropTypes.func,
   /**
    * Placeholder and label text for the search box
    */
@@ -162,28 +141,17 @@ FilterList.propTypes = {
    */
   searchAutoFocus: PropTypes.bool,
   /**
-   * the component used to display entries
+   * A list of props that will be ignored in the search
    */
-  viewComponent: PropTypes.elementType,
-
-  /**
-   * props to pass to the view component
-   */
-  viewComponentProps: PropTypes.object,
+  ignorePropsFilter: PropTypes.array,
 };
 
 FilterList.defaultProps = {
-  active: null,
   className: '',
-  favorites: undefined,
   matcher: undefined,
-  onSelect: () => {},
-  showFavorites: true,
-  setShowFavorites: undefined,
   searchText: 'Search...',
-  searchAutoFocus: false,
-  viewComponent: props => <li>{JSON.stringify(props)}</li>,
-  viewComponentProps: {},
+  searchAutoFocus: true,
+  ignorePropsFilter: ['active', 'onSelect'],
 };
 
-export default FilterList;
+export {FilterList, FilterListData, FilterListInputButton, FilterListFavorites, FilterListShowMoreButton};

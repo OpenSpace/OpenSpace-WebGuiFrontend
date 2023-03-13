@@ -36,7 +36,7 @@ class Input extends Component {
    * @param event InputEvent
    */
   onChange(event) {
-    const { value } = event.currentTarget;
+    const { value } = event.target;
 
     // update state so that input is re-rendered with new content
     this.setState({ value });
@@ -83,7 +83,9 @@ class Input extends Component {
 
     // trigger onchange event on input
     this.inputNode.value = '';
-    this.onChange({ currentTarget: this.inputNode });
+    const event = new CustomEvent('clear');
+    this.inputNode.dispatchEvent(event);
+    this.onChange(event);
     this.inputNode.focus();
   }
 
@@ -121,17 +123,19 @@ class Input extends Component {
         <label htmlFor={id} className={`${styles.label} ${this.hasInput && styles.hasinput}`}>
           { label || placeholder }
         </label>
-        { children }
-        { clearable && (
-          <MaterialIcon
-            icon="cancel"
-            className={`${styles.clearbutton} ${this.hasInput && styles.hasinput}`}
-            onClick={this.clear}
-            tabIndex="0"
-            role="button"
-            title="Clear input field"
-          />
-        )}
+        <div className={styles.buttonsContainer}>
+          { children }
+          { clearable && (
+            <MaterialIcon
+              icon="cancel"
+              className={`${styles.clearbutton} ${this.hasInput && styles.hasinput}`}
+              onClick={this.clear}
+              tabIndex="0"
+              role="button"
+              title="Clear input field"
+            />
+          )}
+        </div>
       </div>
     );
   }

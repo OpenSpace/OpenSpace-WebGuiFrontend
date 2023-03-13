@@ -51,6 +51,11 @@ export const actionTypes = {
   unsubscribeToSkyBrowser: 'SKYBROWSER_UNSUBSCRIBE',
   updateSkyBrowser: 'SKYBROWSER_UPDATE',
 
+  // action types for camera topic
+  subscribeToCamera: 'CAMERA_SUBSCRIBE',
+  unsubscribeToCamera: 'CAMERA_UNSUBSCRIBE',
+  updateCamera: 'CAMERA_UPDATE',
+
   // action types for shortcuts
   subscribeToShortcuts: 'SHORTCUTS_SUBSCRIBE',
   unsubscribeToShortcuts: 'SHORTCUTS_UNSUBSCRIBE',
@@ -78,7 +83,6 @@ export const actionTypes = {
 
   // action types for local gui settings
   setNavigationAction: 'LOCAL_SET_NAVIGATION_ACTION',
-  setOriginPickerShowFavorites: 'LOCAL_SET_ORIGIN_PICKER_SHOW_FAVORITES',
   setPropertyTreeExpansion: 'LOCAL_SET_PROPERTY_TREE_EXPANSION',
   setPopoverPosition: 'LOCAL_POPOVER_SET_POSIITON',
   setPopoverVisibility: 'LOCAL_POPOVER_SET_VISIBILITY',
