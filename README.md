@@ -59,3 +59,4 @@ In the main OpenSpace repository, go to `data/assets/util/webgui.asset` and chan
 The production gui is served at http://localhost:4680.
 To run the production gui in a browser, go to `http://localhost:4680/frontend/#/onscreen`.
 
+
