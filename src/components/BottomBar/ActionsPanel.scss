@@ -6,6 +6,8 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
+  align-content: flex-start;
+
   &:before,
     &:after {
       display: none;
@@ -36,6 +38,8 @@
 }
 
 .actionButton {
+  padding-top: 10px !important;
+  padding-bottom: 12px !important;
   width: 120px;
   margin-bottom: 5px;
   margin: 2px;
@@ -81,4 +85,16 @@
   height: 400px;
   max-height: 400px;
   min-height: 400px;
+}
+
+.iconRow {
+  display: flex;
+  justify-content: center;
+  gap: 3px;
+  padding-bottom: 2px !important;
+}
+
+.localText {
+  color: $ui-highlight-secondary;
+  font-size: smaller;
 }

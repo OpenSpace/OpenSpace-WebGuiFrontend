@@ -9,7 +9,7 @@ import styles from './KeybindingPanel.scss';
 import './KeybindingPanelKeyboard.css';
 import Picker from './Picker';
 
-// Cleaned up the imports a but and removed unused ones. Wasn't sure if this 
+// Cleaned up the imports a but and removed unused ones. Wasn't sure if this
 // would be useful to keep around, but did so just in case // Emma
 // import englishLayout from "simple-keyboard-layouts/build/layouts/english";
 
@@ -21,6 +21,7 @@ class KeybindingPanel extends Component {
       input: "",
       actionName: "Select a key to see it's action.",
       actionDescription: "A description of the action will appear here",
+      actionIsLocal: "Info about if the action is local will appear here",
       actionPath: "The actions path will appear here",
     };
     this.togglePopover = this.togglePopover.bind(this);
@@ -50,6 +51,7 @@ class KeybindingPanel extends Component {
     let action = {
       name: "",
       documentation: "",
+      isLocal: "",
       guiPath: ""
     }
 
@@ -62,16 +64,19 @@ class KeybindingPanel extends Component {
         });
       }
       action.name = "No action for: " + modifier + button;
-    } else {
+    }
+    else {
       for (let i = 0; i < mappedActions.length; i++) {
         let mappedAction = mappedActions[i];
-        action.name += mappedAction.name;
+        action.name = mappedAction.name;
         action.documentation += mappedAction.documentation;
+        action.isLocal += mappedAction.synchronization ? "No" : "Yes";
         action.guiPath += mappedAction.guiPath;
         if (i != (mappedActions.length - 1)) {
-          action.name += "  &&  "
-          action.documentation += "  &&  "
-          action.guiPath += "  &&  "
+          action.name += "  &&  ";
+          action.documentation += "  &&  ";
+          action.isLocal += "  &&  ";
+          action.guiPath += "  &&  ";
         }
       }
     }
@@ -80,8 +85,9 @@ class KeybindingPanel extends Component {
       ...this.state,
       input: button,
       actionName: action.name,
-      actionDescription : action.documentation,
-      actionPath : action.guiPath,
+      actionDescription: action.documentation,
+      actionIsLocal: action.isLocal,
+      actionPath: action.guiPath,
     });
   };
 
@@ -199,6 +205,7 @@ class KeybindingPanel extends Component {
       activeModifiers: modifiers,
       actionName: '',
       actionDescription: '',
+      actionIsLocal: '',
       input: '',
       actionPath: ''
     };
@@ -380,6 +387,10 @@ class KeybindingPanel extends Component {
               <section>
                 <label className={styles.actionLabel}>Description: </label>
                 {this.state.actionDescription}
+              </section>
+              <section>
+                <label className={styles.actionLabel}>Is Local: </label>
+                {this.state.actionIsLocal}
               </section>
               <section>
                 <label className={styles.actionLabel}>GUI Path: </label>
