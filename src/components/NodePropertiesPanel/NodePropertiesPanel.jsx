@@ -53,7 +53,7 @@ class NodePropertiesPanel extends Component {
             return <Property key={prop} uri={propUri} />;
           }
         })
-      } 
+      }
       else {
         return <PropertyOwner autoExpand={true}
                               key={0}
@@ -76,16 +76,16 @@ class NodePropertiesPanel extends Component {
               return this.propertyOwnerForUri(activeTab, uri);
             }
           }
-      }      
+      }
     } else {
       return;
     }
   }
 
   buttonForTab(activeTab, index, title) {
-    return <Button block 
-        largetext={activeTab == index} smalltext={activeTab != index} 
-        key={index} 
+    return <Button block
+        largetext={activeTab == index} smalltext={activeTab != index}
+        key={index}
         onClick={() => this.props.setPopoverActiveTabAction(index)}
       >
         {title}
@@ -139,14 +139,14 @@ class NodePropertiesPanel extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  let aim = state.propertyTree.properties[NavigationAnchorKey] ? 
-    state.propertyTree.properties[NavigationAnchorKey].value : 
+  let aim = state.propertyTree.properties[NavigationAnchorKey] ?
+    state.propertyTree.properties[NavigationAnchorKey].value :
     undefined;
 
   var nodeURI = ownProps.isFocusNodePanel ? ScenePrefixKey + aim : ownProps.uri;
 
-  let myPopover = ownProps.isFocusNodePanel ? 
-    state.local.popovers.focusNodePropertiesPanel : 
+  let myPopover = ownProps.isFocusNodePanel ?
+    state.local.popovers.focusNodePropertiesPanel :
     state.local.popovers.activeNodePropertyPanels[ownProps.uri];
 
   var popoverVisible = myPopover ? myPopover.visible : false;
@@ -156,7 +156,7 @@ const mapStateToProps = (state, ownProps) => {
   const node = state.propertyTree.propertyOwners[nodeURI] ? state.propertyTree.propertyOwners[nodeURI] : {};
   const nodeName = node.name;
 
-  const renderableProps = state.propertyTree.propertyOwners[nodeURI+".Renderable"] ? 
+  const renderableProps = state.propertyTree.propertyOwners[nodeURI+".Renderable"] ?
     state.propertyTree.propertyOwners[nodeURI+".Renderable"].properties :
     null;
 
