@@ -22,14 +22,14 @@ FilterListFavorites.displayName = 'FilterListFavorites';
 function FilterListData({matcher, searchString, ignorePropsFilter, className, children}) {
   // Filter the children on their props
   // Most matcher functions are case sensitive, hence toLowerCase
-  const childArray = React.Children.toArray(children); 
+  const childArray = React.Children.toArray(children);
   const filteredChildren = childArray.filter(child => {
     let matcherFunc;
     if (typeof child.props === 'object') {
-      matcherFunc = ObjectWordBeginningSubstring;    
+      matcherFunc = ObjectWordBeginningSubstring;
     }
     else {
-      matcherFunc = WordBeginningSubstring;  
+      matcherFunc = WordBeginningSubstring;
     }
     const finalMatcher = matcher || matcherFunc;
     let searchableChild = child.props ? {...child.props} : child.toLowerCase();
@@ -75,16 +75,18 @@ function FilterList({ matcher, ignorePropsFilter, searchText, height, className,
   const [searchString, setSearchString] = React.useState("");
   const [showDataInstead, setShowDataInstead] = React.useState(false);
   const isSearching = searchString !== "";
-  
+
   function toggleShowDataInstead() {
     setShowDataInstead(current => !current);
   }
+
   if(!children) {
     console.error("FilterList has no children");
     return <></>;
   }
+
   // See if children has favorites
-  const hasFavorites = Boolean(React.Children.toArray(children).find(child => {  
+  const hasFavorites = Boolean(React.Children.toArray(children).find(child => {
     return child.type.displayName === "FilterListFavorites";
   }));
 
@@ -109,6 +111,7 @@ function FilterList({ matcher, ignorePropsFilter, searchText, height, className,
       buttons.push(child);
     }
   });
+
   return <div className={`${styles.filterList} ${className}`} style={{ height: height }}>
     <Input
       value={searchString}
@@ -120,7 +123,7 @@ function FilterList({ matcher, ignorePropsFilter, searchText, height, className,
       {buttons}
     </Input>
     {filteredChildren}
-    </div>;
+  </div>;
 }
 
 FilterList.propTypes = {
