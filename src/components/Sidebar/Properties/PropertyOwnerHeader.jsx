@@ -24,19 +24,26 @@ import TooltipMenu from '../../common/Tooltip/TooltipMenu';
 
 function PropertyOwnerHeader({
   title, identifier, expanded, getPropertyDispatcher, setExpanded, onIcon, offIcon,
-  enabledUri, enabled, fadeDuration, fadeUri, isLayer, focusAction, shiftFocusAction,
-  popOutAction, metaAction, trashAction, luaApi
+  enabledUri, enabled, fadeDuration, fadeUri, fadeValue, isLayer, focusAction,
+  shiftFocusAction, popOutAction, metaAction, trashAction, luaApi
 }) {
   useEffect(() => {
+    // Subscribe to the enabled property
     if (enabledUri) {
-      // Subscribe to the enabled property
       getPropertyDispatcher(enabledUri).subscribe();
+    }
+
+    if (fadeUri) {
+      getPropertyDispatcher(fadeUri).subscribe();
     }
 
     // returned function will be called on component unmount
     return () => {
       if (enabledUri) {
         getPropertyDispatcher(enabledUri).unsubscribe();
+      }
+      if (fadeUri) {
+        getPropertyDispatcher(fadeUri).unsubscribe();
       }
     }
   });
@@ -144,6 +151,11 @@ function PropertyOwnerHeader({
 
   const hasMoreButtons = (popOutAction || metaAction);
 
+  let checkBoxFadeStyle = {}
+  if (fadeUri && fadeValue > 0) {
+    checkBoxFadeStyle = {opacity: fadeValue};
+  }
+
   return (
     <header
       className={`${toggleHeaderStyles.toggle} ${isLayer && styles.layerHeader}`}
@@ -160,10 +172,12 @@ function PropertyOwnerHeader({
         { enabledUri &&
           <span className={styles.leftButtonContainer}>
             <Checkbox
+              className={styles.enabledCheckbox}
               wide={false}
               checked={enabled}
               label={null}
               setChecked={onToggleCheckboxClick}
+              style={checkBoxFadeStyle}
             />
           </span>
         }
@@ -210,8 +224,11 @@ const mapStateToProps = (state, ownProps) => {
 
   // Check if this property owner has a renderable that can be faded
   let fadeUri = undefined;
-  if (state.propertyTree.properties[`${uri}.Renderable.Fade`] !== undefined) {
-    fadeUri = `${uri}.Renderable.Fade`;
+  let fadeValue = 1.0;
+  const theFadeUri = `${uri}.Renderable.Fade`;
+  if (state.propertyTree.properties[theFadeUri] !== undefined) {
+    fadeUri = theFadeUri;
+    fadeValue = state.propertyTree.properties[theFadeUri].value;
   }
 
   let enabled = enabledUri && state.propertyTree.properties[enabledUri].value;
@@ -227,6 +244,7 @@ const mapStateToProps = (state, ownProps) => {
     title: title || displayName(state, state.propertyTree.properties, uri),
     enabledUri,
     fadeUri,
+    fadeValue, 
     fadeDuration,
     enabled,
     isLayer,
