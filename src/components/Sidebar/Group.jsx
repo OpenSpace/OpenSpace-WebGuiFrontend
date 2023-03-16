@@ -4,9 +4,9 @@ import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { setPropertyTreeExpansion } from '../../api/Actions';
 import { sortGroups } from '../../api/keys';
 import ToggleContent from '../common/ToggleContent/ToggleContent';
-import PropertyOwner, { 
-  displayName as propertyOwnerName, 
-  nodeExpansionIdentifier as propertyOwnerNodeExpansionIdentifier 
+import PropertyOwner, {
+  displayName as propertyOwnerName,
+  nodeExpansionIdentifier as propertyOwnerNodeExpansionIdentifier
 } from './Properties/PropertyOwner';
 
 function isEnabled(properties, uri) {
@@ -16,7 +16,7 @@ function isEnabled(properties, uri) {
 function enabledPropertyOwners(state, path) {
   const data = state.groups[path] || {};
   const propertyOwners = data.propertyOwners || [];
-  
+
   // Filter PropertyOwners
   return propertyOwners.filter((propertyOwner) =>
     isEnabled(state.propertyTree.properties, propertyOwner)
@@ -29,7 +29,7 @@ function shouldShowGroup(state, path) {
   // If there are any enabled property owners in the result,
   // show the groups
   if (subGroups.length === 0) {
-    return enabledPropertyOwners(state, path).length !== 0; 
+    return enabledPropertyOwners(state, path).length !== 0;
   }
   const initialValue = false;
   const result = subGroups.reduce(
@@ -43,11 +43,7 @@ function shouldShowGroup(state, path) {
 
 function displayName(path) {
   const splitPath = path.split('/');
-  if (splitPath.length > 1) {
-    return splitPath[splitPath.length - 1];
-  } else {
-    return 'Untitled';
-  }
+  return (splitPath.length > 1) ? splitPath[splitPath.length - 1] : 'Untitled';
 }
 
 /**
@@ -79,9 +75,9 @@ function Group({ path, expansionIdentifier, autoExpand, showOnlyEnabled }) {
     }
     // Extract propertyOwners
     return owners.map(owner => ({
-        type: 'propertyOwner',
-        payload: owner,
-        name: propertyOwnerName(state.propertyTree.propertyOwners, state.propertyTree.properties, owner)
+      type: 'propertyOwner',
+      payload: owner,
+      name: propertyOwnerName(state.propertyTree.propertyOwners, state.propertyTree.properties, owner)
     }));
   }, shallowEqual);
 
@@ -90,16 +86,14 @@ function Group({ path, expansionIdentifier, autoExpand, showOnlyEnabled }) {
     const subGroups = data.subgroups || [];
 
     // Extract groups
-    let groups = subGroups.map(subGroup => ({
+    const groups = subGroups.map(subGroup => ({
       type: 'group',
       payload: subGroup,
       name: displayName(subGroup)
     }));
     // See if the groups contain any PropertyOwners
     if (showOnlyEnabled) {
-      return groups.filter((group) => {
-        return shouldShowGroup(state, group.payload);
-      });
+      return groups.filter((group) => shouldShowGroup(state, group.payload));
     }
     return groups;
   })
@@ -125,48 +119,46 @@ function Group({ path, expansionIdentifier, autoExpand, showOnlyEnabled }) {
 
   if (sortOrdering && sortOrdering.value) {
       sortedEntries.sort((a,b) => {
-        if (sortOrdering.value.indexOf(a.name) < sortOrdering.value.indexOf(b.name)) {
-          return -1;
-        } else {
-          return 1;
-        }
+        return sortOrdering.value.indexOf(a.name) < sortOrdering.value.indexOf(b.name) ?
+          -1 : 1;
       });
   }
 
-  return hasEntries && <ToggleContent
-    title={displayName(path)}
-    expanded={isExpanded}
-    setExpanded={setExpanded}
-  >
-    {
-      sortedEntries.map(entry => {
-        const autoExpand = entries.length === 1;
-        switch (entry.type) {
-          case 'group': {
-            const childNodeIdentifier = expansionIdentifier + '/' +
-              nodeExpansionIdentifier(entry.payload);
+  return hasEntries &&
+    <ToggleContent
+      title={displayName(path)}
+      expanded={isExpanded}
+      setExpanded={setExpanded}
+    >
+      {
+        sortedEntries.map(entry => {
+          const autoExpand = entries.length === 1;
+          switch (entry.type) {
+            case 'group': {
+              const childNodeIdentifier = expansionIdentifier + '/' +
+                nodeExpansionIdentifier(entry.payload);
 
-            return <Group autoExpand={autoExpand}
-                          key={entry.payload}
-                          path={entry.payload}
-                          expansionIdentifier={childNodeIdentifier}
-                          showOnlyEnabled={showOnlyEnabled} />
+              return <Group autoExpand={autoExpand}
+                            key={entry.payload}
+                            path={entry.payload}
+                            expansionIdentifier={childNodeIdentifier}
+                            showOnlyEnabled={showOnlyEnabled} />
             }
-          case 'propertyOwner': {
-            const childNodeIdentifier = expansionIdentifier + '/' +
-              propertyOwnerNodeExpansionIdentifier(entry.payload);
+            case 'propertyOwner': {
+              const childNodeIdentifier = expansionIdentifier + '/' +
+                propertyOwnerNodeExpansionIdentifier(entry.payload);
 
-            return <PropertyOwner autoExpand={autoExpand}
-                                  key={entry.payload}
-                                  uri={entry.payload}
-                                  expansionIdentifier={childNodeIdentifier} />
+              return <PropertyOwner autoExpand={autoExpand}
+                                    key={entry.payload}
+                                    uri={entry.payload}
+                                    expansionIdentifier={childNodeIdentifier} />
             }
-          default:
-            return null;
-        }
-      })
-    }
-  </ToggleContent>
+            default:
+              return null;
+          }
+        })
+      }
+    </ToggleContent>
 }
 
 Group.propTypes = {
