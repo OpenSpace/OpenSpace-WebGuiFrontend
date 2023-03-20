@@ -7,12 +7,10 @@ import Picker from './Picker';
 import Button from '../common/Input/Button/Button';
 import LoadingBlock from '../common/LoadingBlock/LoadingBlock';
 import SmallLabel from '../common/SmallLabel/SmallLabel';
-import SkyBrowserNearestImagesList from './SkyBrowser/SkyBrowserNearestImagesList';
 import SkyBrowserTabs from './SkyBrowser/SkyBrowserTabs';
 import WindowThreeStates from './SkyBrowser/WindowThreeStates/WindowThreeStates';
 import WorldWideTelescope from './SkyBrowser/WorldWideTelescope';
-import { FilterList, FilterListData } from '../common/FilterList/FilterList';
-import SkyBrowserFocusEntry from './SkyBrowser/SkyBrowserFocusEntry';
+import SkyBrowserImageList from './SkyBrowser/SkyBrowserImageList';
 import { Icon } from '@iconify/react';
 import {
   loadSkyBrowserData,
@@ -29,14 +27,13 @@ function SkyBrowserPanel({ }) {
   const [activeImage, setActiveImage] = React.useState('');
   const [currentTabHeight, setCurrentTabHeight] = React.useState(200);
   const [currentPopoverHeight, setCurrentPopoverHeightState] = React.useState(440);
-  const [showOnlyNearest, setShowOnlyNearest] = React.useState(true);
   const [imageCollectionIsLoaded, setImageCollectionIsLoaded] = React.useState(false);
   const [dataIsLoaded, setDataIsLoaded] = React.useState(false);
   const [wwtSize, setWwtSize] = React.useState({width: 400, height: 400});
   const [wwtPosition, setWwtPositionState] = React.useState({ x: -800, y: -600 });
   const MenuHeight = 70;
   const MinimumTabHeight = 80;
-
+  
   const wwt = React.useRef();
 
   // Get redux state
@@ -225,83 +222,6 @@ function SkyBrowserPanel({ }) {
     );
   }
 
-  function createBrowserContent() {
-    const currentImageListHeight = currentPopoverHeight - currentTabHeight - MenuHeight;
-    const imageMenu = (
-      <div className={styles.row}>
-        <Picker
-          className={`${styles.picker} ${showOnlyNearest ? styles.unselected : styles.selected}`}
-          onClick={() => setShowOnlyNearest(false)}
-        >
-          <span>All images</span>
-        </Picker>
-        <Picker
-          className={`${styles.picker} ${showOnlyNearest ? styles.selected : styles.unselected}`}
-          onClick={() => setShowOnlyNearest(true)}
-        >
-          <span>Images within view</span>
-        </Picker>
-      </div>
-    );
-
-    const skybrowserTabs = (
-      <SkyBrowserTabs
-        setCurrentTabHeight={setCurrentTabHeight}
-        passMessageToWwt={passMessageToWwt}
-        setWwtRatio={setWwtRatio}
-        activeImage={activeImage}
-        currentBrowserColor={currentBrowserColor}
-        selectImage={selectImage}
-        maxHeight={currentPopoverHeight - MenuHeight}
-        minHeight={MinimumTabHeight}
-        height={currentTabHeight}
-        setBorderRadius={setBorderRadius}
-        imageCollectionIsLoaded={imageCollectionIsLoaded}
-        moveCircleToHoverImage={moveCircleToHoverImage}
-        removeImageSelection={removeImageSelection}
-        setOpacityOfImage={setOpacityOfImage}
-      />
-    );
-
-    const imageListComponent = showOnlyNearest ? 
-      <SkyBrowserNearestImagesList
-        luaApi={luaApi}
-        imageList={imageList}
-        activeImage={activeImage}
-        currentBrowserColor={currentBrowserColor}
-        selectImage={selectImage}
-        height={currentImageListHeight}
-        passMessageToWwt={passMessageToWwt}
-        moveCircleToHoverImage={moveCircleToHoverImage}
-      />
-      :
-      <FilterList
-        className={styles.filterList}
-        height={currentImageListHeight}
-        searchText={`Search from ${imageList.length.toString()} images...`}
-      >
-        <FilterListData>
-          {imageList.map(item => {
-            return <SkyBrowserFocusEntry 
-                {...item}
-                luaApi={luaApi} 
-                currentBrowserColor={currentBrowserColor}
-                onSelect={selectImage}
-                isActive={activeImage === item.identifier}
-                moveCircleToHoverImage={moveCircleToHoverImage}
-              />
-          })}
-        </FilterListData>
-      </FilterList>
-      ;
-
-    return <div className={styles.content}>
-        {imageMenu}
-        {imageListComponent}
-        {skybrowserTabs}
-      </div>;
-  }
-
   function popover() {
     let content = "";
     if (!dataIsLoaded || cameraInSolarSystem === undefined) {
@@ -330,7 +250,41 @@ function SkyBrowserPanel({ }) {
       </>;
     }
     else if (imageCollectionIsLoaded && browsersExist) {
-      content = createBrowserContent();
+      const currentImageListHeight = currentPopoverHeight - currentTabHeight - MenuHeight;
+      const imageMenuList = (
+        <SkyBrowserImageList
+          activeImage={activeImage}
+          currentBrowserColor={currentBrowserColor}
+          height={currentImageListHeight}
+          moveCircleToHoverImage={moveCircleToHoverImage}
+          selectImage={selectImage}
+        />
+      );
+      
+      const skybrowserTabs = (
+        <SkyBrowserTabs
+          setCurrentTabHeight={setCurrentTabHeight}
+          passMessageToWwt={passMessageToWwt}
+          setWwtRatio={setWwtRatio}
+          activeImage={activeImage}
+          currentBrowserColor={currentBrowserColor}
+          selectImage={selectImage}
+          maxHeight={currentPopoverHeight - MenuHeight}
+          minHeight={MinimumTabHeight}
+          height={currentTabHeight}
+          setBorderRadius={setBorderRadius}
+          imageCollectionIsLoaded={imageCollectionIsLoaded}
+          moveCircleToHoverImage={moveCircleToHoverImage}
+          removeImageSelection={removeImageSelection}
+          setOpacityOfImage={setOpacityOfImage}
+        />
+      );
+      content = (
+        <div className={styles.content}>
+          {imageMenuList}
+          {skybrowserTabs}
+        </div>
+      );
     }
 
     return (
