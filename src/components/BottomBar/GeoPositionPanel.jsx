@@ -155,13 +155,15 @@ function GeoPositionPanel({ refresh, luaApi, popoverVisible, setPopoverVisibilit
           break;
         }
         pushSceneGraphNode(address);
-        let addressString = "";
+        let addressUtf8 = "";
         for (let i = 0; i < address.length; i++) {
             if (address.charCodeAt(i) <= 127) {
-                addressString += address.charAt(i);
+                addressUtf8 += address.charAt(i);
             }
         }
-        luaApi?.addSceneGraphNode(createSceneGraphNodeTable(currentAnchor, addressString, lat, long, altitude));
+        addressUtf8 = addressUtf8.replaceAll(" ", "_");
+        addressUtf8 = addressUtf8.replaceAll(",", "");
+        luaApi?.addSceneGraphNode(createSceneGraphNodeTable(currentAnchor, addressUtf8, lat, long, altitude));
         // TODO: Once we have a proper way to subscribe to additions and removals
         // of property owners, this 'hard' refresh should be removed.
         setTimeout(() => refresh());

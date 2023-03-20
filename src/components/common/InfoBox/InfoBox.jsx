@@ -62,7 +62,7 @@ class InfoBox extends Component {
 
 InfoBox.propTypes = {
   icon: PropTypes.string,
-  text: PropTypes.string.isRequired,
+  text: PropTypes.node.isRequired, // should be text or html object
 };
 
 InfoBox.defaultProps = {

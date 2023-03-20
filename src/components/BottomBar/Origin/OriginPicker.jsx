@@ -37,7 +37,6 @@ import SmallLabel from '../../common/SmallLabel/SmallLabel';
 import SvgIcon from '../../common/SvgIcon/SvgIcon';
 import Picker from '../Picker';
 import FocusEntry from './FocusEntry';
-import FocusEntryWithNavigation from './FocusEntryWithNavigation';
 import styles from './OriginPicker.scss';
 
 // tag that each focusable node must have
@@ -295,22 +294,22 @@ function OriginPicker({ favorites, allNodes, searchableNodes, engineMode, anchor
           <FilterListShowMoreButton/>
           <FilterListFavorites>
             {sortedDefaultList.map((entry) => {
-              if (isInFocusMode) {
-                return <FocusEntryWithNavigation onSelect={onSelect} active={active} {...entry} />;
-              }
-              else {
-                return <FocusEntry onSelect={onSelect} active={active} {...entry}/>
-              }
+              return <FocusEntry
+                onSelect={onSelect}
+                active={active}
+                showNavigationButtons={isInFocusMode}
+                {...entry}
+              />
             })}
           </FilterListFavorites>
           <FilterListData>
             {sortedNodes.map((entry) => {
-              if (isInFocusMode) {
-                return <FocusEntryWithNavigation onSelect={onSelect} active={active} {...entry} />;
-              }
-              else {
-                return <FocusEntry onSelect={onSelect} active={active} {...entry}/>
-              }
+              return <FocusEntry
+                onSelect={onSelect}
+                active={active}
+                showNavigationButtons={isInFocusMode}
+                {...entry}
+              />
             })}
           </FilterListData>
         </FilterList>

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React from 'react';
 import styles from './ToggleContent.scss';
 import ToggleHeader from './ToggleHeader';
 
@@ -18,26 +18,27 @@ function ToggleContent({setExpanded, children, header, title, expanded, showEnab
     setHovered(false);
   }
 
-  if(!(children.length !== 0 && ((children[0].length != 0) || (children[1].length != 0)))) {
+  if (!(children.length !== 0 && ((children[0].length != 0) || (children[1].length != 0)))) {
     return null;
   }
   else {
     return (
-    <div className={styles.toggleContent}
-          onMouseEnter={mouseEntered}
-          onMouseLeave={mouseLeft}>
-      { header ? header : 
-        <ToggleHeader
-          title={title}
-          onClick={toggleExpanded}
-          showEnabled={showEnabled}
-          expanded={expanded}
-        />
-      }
-      <div className={styles.content}>
-        { expanded && children }
+      <div className={styles.toggleContent}
+            onMouseEnter={mouseEntered}
+            onMouseLeave={mouseLeft}>
+        { header ? header :
+          <ToggleHeader
+            title={title}
+            onClick={toggleExpanded}
+            showEnabled={showEnabled}
+            expanded={expanded}
+          />
+        }
+        <div className={styles.content}>
+          { expanded && children }
+        </div>
       </div>
-    </div>);
+    );
   }
 }
 
