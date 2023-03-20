@@ -16,7 +16,7 @@ function ColorPickerPopup({ className, color, disableAlpha, disabled, onChange }
       <div className={styles.colorSwatch}>
         <div className={styles.colorOverlay} style={colorSwatchBg}/>
         <div className={styles.checkboard}>
-          <Checkboard size={ 10 } white="#fff" grey="#ccc" />
+          <Checkboard size={ 10 } white={"#fff"} grey={"#ccc"} />
         </div>
       </div>
     </Button>

@@ -1,7 +1,7 @@
 // TODO: Revisit these functions and determine if any should be
 // kept since most of this functionality is now more easily handled
 // by the lua API
-import { LayerGroupKeys, Engine_PropertyVisibilityKey } from '../api/keys';
+import { LayerGroupKeys } from '../api/keys';
 
 export const getIdOfProperty = (uri) => {
   const a = splitUri(uri);
@@ -112,16 +112,12 @@ export function removeLastWordFromUri(uri) {
 // Returns whether a property should be visible in the gui
 export function isPropertyVisible(properties, uri) {
   const property = properties[uri];
-  const visibility = properties[Engine_PropertyVisibilityKey];
   if (!property?.description?.MetaData?.Visibility) {
     return false;
   }
-  // Don't show the property "Enabled"
-  const splitUri = uri.split('.');
-  if (splitUri.length > 1 && splitUri[splitUri.length - 1] === 'Enabled') {
-      return false;
-  }
 
+  // Only show properties matching the current visibility setting
+  const visibility = properties['OpenSpaceEngine.PropertyVisibility'];
   let propertyVisibility = "";
   switch (property.description.MetaData.Visibility) {
     case 'Hidden':
@@ -168,6 +164,7 @@ export function isDeadEnd(propertyOwners, properties, uri) {
   const visibleProperties = subproperties.filter(
     childUri => isPropertyVisible(properties, childUri)
   );
+
   if (visibleProperties.length > 0) {
     return false;
   }
@@ -224,4 +221,9 @@ export function getSceneGraphNodeFromUri(uri) {
     return undefined;
   }
   return splitUri[1];
+}
+
+export function isEnabledProperty(uri) {
+  const splitUri = uri.split('.');
+  return (splitUri.length > 1 && splitUri[splitUri.length - 1] === 'Enabled');
 }

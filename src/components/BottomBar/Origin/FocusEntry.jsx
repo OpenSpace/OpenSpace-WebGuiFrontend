@@ -30,8 +30,6 @@ function FocusEntry({ luaApi, name, identifier, onSelect, active, showNavigation
 
   const refs = useContextRefs();
 
-  console.log(showNavigationButtons);
-
   return (
     <li
       className={`${styles.entry} ${isActive() && styles.active}`}
@@ -42,6 +40,7 @@ function FocusEntry({ luaApi, name, identifier, onSelect, active, showNavigation
       <span className={styles.title}>
         { name || identifier }
       </span>
+      {showNavigationButtons &&
         <div className={styles.buttonContainer}>
           { isActive() && (
             <Button className={styles.flyToButton} onClick={zoomToFocus} title="Zoom to">
@@ -52,6 +51,7 @@ function FocusEntry({ luaApi, name, identifier, onSelect, active, showNavigation
             <MaterialIcon className={styles.buttonIcon} icon="flight" />
           </Button>
         </div>
+      }
     </li>
   );
 }

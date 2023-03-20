@@ -224,7 +224,7 @@ class SessionRec extends Component {
             />
             <InfoBox
               className={styles.infoBox}
-              text={`If checked, the specified number of frames will be recorded as screenshots and 
+              text={`If checked, the specified number of frames will be recorded as screenshots and
                 saved to disk. Per default, they are saved in the user/screenshots folder. 
                 This feature can not be used together with 'loop playback'`
               }

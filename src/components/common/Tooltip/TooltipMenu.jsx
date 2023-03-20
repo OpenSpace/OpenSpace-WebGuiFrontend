@@ -1,93 +1,75 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { useEffect }  from 'react';
 import Tooltip from './Tooltip';
 
-class TooltipMenu extends Component {
-  constructor(props) {
-    super(props);
+function TooltipMenu({ children, className, disabled, sourceObject }) {
+  const [showPopup, setShowPopup] = React.useState(false);
+  const wrapperRef = React.useRef(null);
+  const insideClickWrapperRef = React.useRef(null);
+  const buttonClickWrapperRef = React.useRef(null);
 
-    this.mounted = false;
-    this.state = {
-      showPopup: false,
-    };
+  useEffect(() => {
+    window.addEventListener('scroll', closePopup, true);
+    window.addEventListener('mousedown', handleOutsideClick, true);
 
-    this.setRef = this.setRef.bind(this);
-    this.togglePopup = this.togglePopup.bind(this);
-    this.closePopup = this.closePopup.bind(this);
-    this.handleOutsideClick = this.handleOutsideClick.bind(this);
+    return () => {
+      window.removeEventListener('scroll', closePopup);
+      window.removeEventListener('mousedown', handleOutsideClick);
+    }
+  });
+
+  function setRef(ref) {
+    return (element) => { ref.current = element; };
   }
 
-  componentDidMount() {
-    this.mounted = true;
-    window.addEventListener('scroll', this.closePopup, true);
-    window.addEventListener('mousedown', this.handleOutsideClick, true);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('scroll', this.closePopup);
-    window.removeEventListener('mousedown', this.handleOutsideClick);
-    this.mounted = false;
-  }
-
-  setRef(what) {
-    return (element) => { this[what] = element; };
-  }
-
-  get position() {
-    if (!this.wrapper) return { top: '0px', left: '0px' };
-    const { top, right } = this.wrapper.getBoundingClientRect();
+  function position() {
+    if (!wrapperRef.current) return { top: '0px', left: '0px' };
+    const { top, right } = wrapperRef.current.getBoundingClientRect();
     return { top: `${top}px`, left: `${right}px` };
   }
 
-  togglePopup(evt) {
-    if (this.mounted) {
-      this.setState({ showPopup: !this.state.showPopup });
-    }
+  function togglePopup(evt) {
+    setShowPopup(!showPopup);
     evt.stopPropagation();
   }
 
-  handleOutsideClick(evt) {
-    if (!this.insideClickWrapper?.contains(evt.target) &&
-        !this.buttonClickWrapper?.contains(evt.target))
+  function handleOutsideClick(evt) {
+    if (!insideClickWrapperRef.current?.contains(evt.target) &&
+        !buttonClickWrapperRef.current?.contains(evt.target))
     {
-      this.closePopup();
+      closePopup();
     }
   }
 
-  closePopup() {
-    if (this.mounted) {
-      this.setState({ showPopup: false });
-    }
+  function closePopup() {
+    setShowPopup(false);
   }
 
-  render() {
-    const { children, className, disabled, sourceObject } = this.props;
     const customTooltipCss = {
       paddingRight: '4px', paddingLeft: '4px', maxWidth: '200px'
     };
 
     return (
       <div
-        ref={this.setRef('wrapper')}
+        ref={setRef(wrapperRef)}
         className={className}
       >
-        <div ref={this.setRef('buttonClickWrapper')} onClick={this.togglePopup} >
+        <div ref={setRef(buttonClickWrapperRef)} onClick={togglePopup} >
           { sourceObject }
         </div>
-        {!disabled && this.state.showPopup && (
+        {!disabled && showPopup && (
           <Tooltip
             fixed
-            placement="right" // TODO: fix so placement can be set from property
-            style={{...this.position, ...customTooltipCss}}
+            placement={"right"} // TODO: fix so placement can be set from property
+            style={{...position(), ...customTooltipCss}}
           >
-            <div ref={this.setRef('insideClickWrapper')}>
+            <div ref={setRef(insideClickWrapperRef)}>
               { children }
             </div>
           </Tooltip>
         )}
       </div>
     );
-  }
 }
 
 TooltipMenu.propTypes = {

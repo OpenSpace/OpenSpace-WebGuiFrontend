@@ -28,8 +28,8 @@ function ScenePane({ closeCallback }) {
       }).map(path =>
         path.slice(1) // Remove leading slash
       ).reduce((obj, key) => ({ // Convert back to object
-          ...obj,
-          [key]: true
+        ...obj,
+        [key]: true
       }), {}
     );
 
@@ -52,11 +52,12 @@ function ScenePane({ closeCallback }) {
     // Add back the leading slash
     sortedGroups = sortedGroups.map(path => '/' + path);
     return sortedGroups;
-  }, shallowEqual);  
+  }, shallowEqual);
 
   const propertyOwners = useSelector((state) => state.propertyTree.propertyOwners, shallowEqual);
   const properties = useSelector((state) => state.propertyTree.properties, shallowEqual);
   const propertyOwnersScene = propertyOwners.Scene?.subowners ?? [];
+
   function matcher(test, search) {
     const node = propertyOwners[test.uri] || {};
     const guiHidden = isPropertyOwnerHidden(properties, test.uri);
@@ -74,11 +75,11 @@ function ScenePane({ closeCallback }) {
     uri: uri,
     expansionIdentifier: 'scene-search/' + uri
   }));
-  
+
   const favorites = groups.map(item => ({
     key: item,
     path: item,
-    expansionIdentifier: 'scene/' + item 
+    expansionIdentifier: 'scene/' + item
   }));
 
   const settingsButton = (
@@ -105,22 +106,20 @@ function ScenePane({ closeCallback }) {
 
   return (
     <Pane title="Scene" closeCallback={closeCallback} headerButton={settingsButton}>
-      {(entries.length === 0) && (
+      {(entries.length === 0) &&
         <LoadingBlocks className={Pane.styles.loading} />
-      )}
-      {entries.length > 0 && (
-        <>
-          <FilterList matcher={showOnlyEnabled ? onlyEnabledMatcher : matcher}>
-            <FilterListFavorites>
-              <ContextSection expansionIdentifier="context" />
-              {favorites.map(favorite => <Group {...favorite} showOnlyEnabled={showOnlyEnabled} />)}
-            </FilterListFavorites>
-            <FilterListData>
-              {entries.map(entry => <PropertyOwner {...entry} />)}
-            </FilterListData>
-          </FilterList> 
-        </>
-      )}
+      }
+      {entries.length > 0 &&
+        <FilterList matcher={showOnlyEnabled ? onlyEnabledMatcher : matcher}>
+          <FilterListFavorites>
+            <ContextSection expansionIdentifier="context" />
+            {favorites.map(favorite => <Group {...favorite} showOnlyEnabled={showOnlyEnabled} />)}
+          </FilterListFavorites>
+          <FilterListData>
+            {entries.map(entry => <PropertyOwner {...entry} />)}
+          </FilterListData>
+        </FilterList>
+      }
     </Pane>
   );
 }
