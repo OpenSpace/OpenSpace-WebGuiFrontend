@@ -238,13 +238,13 @@ const mapStateToProps = (state, ownProps) => {
     enabled = false;
   }
 
-  const fadeDuration = state.propertyTree.properties[Engine_FadeDurationKey].value;
+  const fadeDuration = state.propertyTree.properties[Engine_FadeDurationKey]?.value || 1.0;
 
   return {
     title: title || displayName(state, state.propertyTree.properties, uri),
     enabledUri,
     fadeUri,
-    fadeValue, 
+    fadeValue,
     fadeDuration,
     enabled,
     isLayer,
