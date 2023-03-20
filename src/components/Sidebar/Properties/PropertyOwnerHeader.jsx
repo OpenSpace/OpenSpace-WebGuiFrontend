@@ -62,25 +62,25 @@ function PropertyOwnerHeader({
 
   const moreButtonsButton = (
     <div className={styles.rightButton} >
-      <MaterialIcon icon="more_vert" />
+      <MaterialIcon icon={"more_vert"} />
     </div>
   );
 
   const popoutButton = (
     <Button className={styles.menuButton} onClick={popoutClick}>
-      <MaterialIcon icon="build" /> Quick access settings
+      <MaterialIcon icon={"build"} /> Quick access settings
     </Button>
   );
 
   const metaButton = (
     <Button className={styles.menuButton} onClick={metaClick}>
-      <MaterialIcon icon="help_outline" /> Show asset information
+      <MaterialIcon icon={"help_outline"} /> Show asset information
     </Button>
   );
 
   const trashButton = (
     <Button className={styles.menuButton} onClick={trashClick}>
-      <MaterialIcon icon="delete" /> Delete
+      <MaterialIcon icon={"delete"} /> Delete
     </Button>
   );
 
@@ -105,7 +105,7 @@ function PropertyOwnerHeader({
     <header
       className={`${toggleHeaderStyles.toggle} ${isLayer && styles.layerHeader}`}
       onClick={onClick}
-      role="button"
+      role={"button"}
       tabIndex={0}
       ref={el => refs.current[refName] = el}
     >
@@ -121,7 +121,7 @@ function PropertyOwnerHeader({
         }
         <span className={`${toggleHeaderStyles.title} ${styles.title} ${titleClass}`}>
           { title }
-          { isHeightLayer && <MaterialIcon className={styles.heightLayerIcon} icon="landscape" /> }
+          { isHeightLayer && <MaterialIcon className={styles.heightLayerIcon} icon={"landscape"} /> }
           { isLayer && <SvgIcon className={styles.layerDraggableIcon}><DraggableIcon /></SvgIcon> }
         </span>
         <span className={styles.rightButtonContainer}>

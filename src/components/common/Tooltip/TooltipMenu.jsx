@@ -6,7 +6,6 @@ class TooltipMenu extends Component {
   constructor(props) {
     super(props);
 
-    this.mounted = false;
     this.state = {
       showPopup: false,
     };
@@ -18,7 +17,6 @@ class TooltipMenu extends Component {
   }
 
   componentDidMount() {
-    this.mounted = true;
     window.addEventListener('scroll', this.closePopup, true);
     window.addEventListener('mousedown', this.handleOutsideClick, true);
   }
@@ -26,7 +24,6 @@ class TooltipMenu extends Component {
   componentWillUnmount() {
     window.removeEventListener('scroll', this.closePopup);
     window.removeEventListener('mousedown', this.handleOutsideClick);
-    this.mounted = false;
   }
 
   setRef(what) {
@@ -40,9 +37,7 @@ class TooltipMenu extends Component {
   }
 
   togglePopup(evt) {
-    if (this.mounted) {
-      this.setState({ showPopup: !this.state.showPopup });
-    }
+    this.setState({ showPopup: !this.state.showPopup });
     evt.stopPropagation();
   }
 
@@ -55,9 +50,7 @@ class TooltipMenu extends Component {
   }
 
   closePopup() {
-    if (this.mounted) {
-      this.setState({ showPopup: false });
-    }
+    this.setState({ showPopup: false });
   }
 
   render() {
@@ -77,7 +70,7 @@ class TooltipMenu extends Component {
         {!disabled && this.state.showPopup && (
           <Tooltip
             fixed
-            placement="right" // TODO: fix so placement can be set from property
+            placement={"right"} // TODO: fix so placement can be set from property
             style={{...this.position, ...customTooltipCss}}
           >
             <div ref={this.setRef('insideClickWrapper')}>
