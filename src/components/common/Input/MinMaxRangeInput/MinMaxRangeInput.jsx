@@ -79,7 +79,10 @@ class MinMaxRangeInput extends Component {
 
     // If linear scale, we want the resolution to match the step size
     if (exp == 1.0) {
-      const nSteps = Math.ceil((max - min) / step);
+      let nSteps = Math.ceil((max - min) / step);
+      if (!isFinite(nSteps)) {
+        nSteps = 1000;
+      }
       this.sliderResolution = nSteps;
     }
 

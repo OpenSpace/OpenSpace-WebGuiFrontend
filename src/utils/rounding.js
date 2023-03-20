@@ -58,7 +58,6 @@ export function precision(value: number) {
  * @param precision - desired precision of the resulting value
  */
 export function roundToNiceNumber(value: number, precision: number) {
-  // const p = Math.pow(10, precision(step));
   const p = Math.pow(10, precision);
   return Math.round(value * p) / p;
 }
@@ -70,5 +69,13 @@ export function roundToNiceNumber(value: number, precision: number) {
  */
 export function roundValueToStepSize(value: number, step: number) {
   const roundedToStep = Math.round(value / step) * step;
-  return roundToNiceNumber(roundedToStep, precision(step));
+  const res = roundToNiceNumber(roundedToStep, precision(step));
+
+  // If the rounding did not result in a finite value, just return the
+  // initial value (even if it's not "nice" and exactly matching the steps size)
+  if (!isFinite(res)) {
+    return value;
+  }
+
+  return res;
 }

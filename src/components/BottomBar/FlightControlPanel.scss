@@ -5,18 +5,34 @@
 }
 
 .flightControlPopover {
-	min-width: 400px;
+  min-width: 400px;
 }
 
 button {
-	cursor: pointer;
+  cursor: pointer;
+}
+
+.infoButton {
+  padding-top: 4px;
+  padding-left: 7px;
+  padding-right: 7px;
+  margin-right: 2px;
+  margin-left: auto;
+  margin-top: auto;
+  margin-bottom: auto;
+  font-size: large;
+}
+
+.list {
+  list-style: inside;
 }
 
 .control_area {
-	float: left;
-	height: 400px;
-  	width: 400px;
-  	outline: 2px solid gray;
-  	outline-offset: -10px;
-  	cursor: crosshair;
+  float: left;
+  height: 400px;
+  width: 400px;
+  outline: 2px solid gray;
+  outline-offset: -10px;
+  padding-top: 2px;
+  cursor: crosshair;
 }
