@@ -215,23 +215,23 @@ const mapStateToProps = (state, ownProps) => {
   // layers green and have different behavior on hover)
   const isLayer = isGlobeBrowsingLayer(uri);
 
+  // Check if this property owner has an enabled property, or a renderable with the property
   let enabledUri = undefined;
   if (state.propertyTree.properties[`${uri}.Enabled`] && !isRenderable) {
     enabledUri = `${uri}.Enabled`;
   } else if (state.propertyTree.properties[`${uri}.Renderable.Enabled`]) {
     enabledUri = `${uri}.Renderable.Enabled`;
   }
-
-  // Check if this property owner has a renderable that can be faded
-  let fadeUri = undefined;
-  let fadeValue = 1.0;
-  const theFadeUri = `${uri}.Renderable.Fade`;
-  if (state.propertyTree.properties[theFadeUri] !== undefined) {
-    fadeUri = theFadeUri;
-    fadeValue = state.propertyTree.properties[theFadeUri].value;
-  }
-
   let enabled = enabledUri && state.propertyTree.properties[enabledUri].value;
+
+  // Check if this property owner has a fade property, or a renderable with the property
+  let fadeUri = undefined;
+  if (state.propertyTree.properties[`${uri}.Fade`] && !isRenderable) {
+    fadeUri = `${uri}.Fade`;
+  } else if (state.propertyTree.properties[`${uri}.Renderable.Fade`]) {
+    fadeUri = `${uri}.Renderable.Fade`;
+  }
+  let fadeValue = state.propertyTree.properties[fadeUri]?.value;
 
   // Make fade == 0 correspond to disabled, according to the checkbox
   if (fadeUri && state.propertyTree.properties[fadeUri].value === 0) {
