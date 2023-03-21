@@ -171,7 +171,7 @@ class NumericInput extends Component {
 
   render() {
     const { value, id, isValueOutsideRange, hoverHint } = this.state;
-    const { decimals, showOutsideRangeHint } = this.props;
+    const { decimals, min, max, showOutsideRangeHint } = this.props;
 
     if (this.showTextInput) {
       let excludeProps = 'reverse onValueChanged inputOnly noHoverHint noTooltip noValue exponent showOutsideRangeHint';
@@ -188,16 +188,24 @@ class NumericInput extends Component {
       }
 
       return (
-        <Input
-          {...excludeKeys(this.props, excludeProps)}
-          className={inputClassName}
-          type="number"
-          value={value}
-          onBlur={this.onTextBlurOrEnter}
-          onChange={this.onTextInputChange}
-          onEnter={this.onTextBlurOrEnter}
-          autoFocus
-        />
+        <div className={`${styles.inputGroup}`}>
+          {showOutsideRangeHint && isValueOutsideRange &&
+            <Tooltip style={{ left: `50%` }} placement={'top'}>
+              { `Value is outside the property's min/max range: \n [${min}, ${max}].` }
+              { "Might lead to undesired behavior" }
+            </Tooltip>
+          }
+          <Input
+            {...excludeKeys(this.props, excludeProps)}
+            className={inputClassName}
+            type="number"
+            value={value}
+            onBlur={this.onTextBlurOrEnter}
+            onChange={this.onTextInputChange}
+            onEnter={this.onTextBlurOrEnter}
+            autoFocus
+          />
+        </div>
       );
     }
 
