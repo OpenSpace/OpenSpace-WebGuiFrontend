@@ -95,6 +95,8 @@ function PropertyOwnerHeader({
 
     if (shouldNotFade) {
       getPropertyDispatcher(enabledUri).set(shouldBeEnabled);
+      // Also set the fade value to 1
+      getPropertyDispatcher(fadeUri).set(1.0);
       setFadeDirection(0);
       return;
     }
