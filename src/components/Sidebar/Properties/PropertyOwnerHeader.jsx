@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Checkbox from '../../common/Input/Checkbox/Checkbox';
@@ -27,8 +27,12 @@ function PropertyOwnerHeader({
   enabledUri, enabled, fadeDuration, fadeUri, fadeValue, isLayer, focusAction,
   shiftFocusAction, popOutAction, metaAction, trashAction, luaApi
 }) {
+  // 1 is positive => fading in, -1 negative => fading out. Undefined or 0 means no fading
+  const [fadeDirection, setFadeDirection] = React.useState(0);
+  const prevFadeValueRef = useRef(fadeValue);
+
+  // Subscribe to properties in state
   useEffect(() => {
-    // Subscribe to the enabled property
     if (enabledUri) {
       getPropertyDispatcher(enabledUri).subscribe();
     }
@@ -48,6 +52,28 @@ function PropertyOwnerHeader({
     }
   });
 
+  // When fade value changes
+  useEffect(() => {
+    const prevFade = prevFadeValueRef.current;
+    prevFadeValueRef.current = fadeValue;
+
+    if (fadeValue && prevFade && prevFade !== fadeValue) {
+      if (fadeValue > prevFade) {
+        setFadeDirection(1); // fading in
+      }
+      else {
+        setFadeDirection(-1); // fading out
+        // Disable after finished fading out
+        if (fadeValue < 0.0001) {
+          getPropertyDispatcher(enabledUri).set(false);
+        }
+      }
+    }
+    else {
+      setFadeDirection(0);
+    }
+  }, [fadeValue])
+
   const onClick = (evt) => {
     setExpanded(!expanded);
   };
@@ -61,31 +87,34 @@ function PropertyOwnerHeader({
     evt.stopPropagation();
   };
 
-  const onToggleCheckboxClick = (shouldBeChecked, event) => {
+  const onToggleCheckboxClick = (shouldBeEnabled, event) => {
     if (!enabledUri) return;
 
     const holdingShift = event.getModifierState('Shift');
     const shouldNotFade = !fadeUri || (fadeDuration < 0.001) || holdingShift;
 
     if (shouldNotFade) {
-      getPropertyDispatcher(enabledUri).set(shouldBeChecked);
+      getPropertyDispatcher(enabledUri).set(shouldBeEnabled);
+      setFadeDirection(0);
       return;
     }
 
-    const shouldFadeIn = shouldBeChecked;
+    const isFadingIn = fadeDirection > 0;
+    const isFadingOut = fadeDirection < 0;
+    const shouldFadeIn = isFadingOut || (shouldBeEnabled && !isFadingIn);
 
     // If fade in, first set fade value to 0 to make sure it's fully hidden
     if (shouldFadeIn) {
-      luaApi.setPropertyValueSingle(fadeUri, 0.0);
+      // Enable the thing immediately so we see the visual changes
+      getPropertyDispatcher(enabledUri).set(true);
+      if (!isFadingOut) {
+        // If not in mid fade, fade out the thing before fading in
+        luaApi.setPropertyValueSingle(fadeUri, 0.0);
+      }
       luaApi.setPropertyValueSingle(fadeUri, 1.0, fadeDuration);
-      getPropertyDispatcher(enabledUri).set(shouldBeChecked);
     }
     else { // fade out
       luaApi.setPropertyValueSingle(fadeUri, 0.0, fadeDuration);
-      setTimeout(
-        () => { getPropertyDispatcher(enabledUri).set(shouldBeChecked); },
-        fadeDuration * 1000
-      );
     }
   };
 
