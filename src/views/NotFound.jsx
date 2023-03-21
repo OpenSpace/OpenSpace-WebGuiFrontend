@@ -1,6 +1,6 @@
 import React from 'react';
-import Overlay from '../components/common/Overlay/Overlay';
 import Error from '../components/common/Error/Error';
+import Overlay from '../components/common/Overlay/Overlay';
 
 const NotFound = () => (
   <Overlay>

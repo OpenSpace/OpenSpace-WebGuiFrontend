@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { instructionImage } from '../../../../api/resources';
 import Icon from '../../../common/MaterialIcon/MaterialIcon';
 import SmallLabel from '../../../common/SmallLabel/SmallLabel';
-
-import { instructionImage } from '../../../../api/resources';
-import styles from './../style/UtilitiesButtons.scss';
+import styles from '../style/UtilitiesButtons.scss';
 
 const HelpButton = props => {
-
   const [showInstructions, setShowInstructions] = useState(false);
 
   useEffect(() => {

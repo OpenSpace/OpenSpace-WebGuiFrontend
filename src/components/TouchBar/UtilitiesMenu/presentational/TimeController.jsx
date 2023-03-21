@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { CurrentTimeKey, DeltaTime } from '../../../../api/keys';
-import styles from './../style/TimeController.scss';
-import Button from '../../../common/Input/Button/Button';
 import * as timeHelpers from '../../../../utils/timeHelpers';
+import Button from '../../../common/Input/Button/Button';
 import ScaleInput from '../../../common/Input/ScaleInput/ScaleInput';
+import styles from '../style/TimeController.scss';
 
 class TimeController extends Component {
   constructor(props) {
@@ -14,7 +14,6 @@ class TimeController extends Component {
     this.state = {
       paused: false,
       time: new Date(),
-      hasTime: false,
       subscriptionIdCurrent: -1,
       subscriptionIdDelta: -1,
       deltaTime: 1,
@@ -61,7 +60,7 @@ class TimeController extends Component {
   currentTimeCallback(message) {
     const time = new Date(timeHelpers.DateStringWithTimeZone(message.time));
     if (this.mounted) {
-      this.setState({ time, hasTime: true });
+      this.setState({ time });
     }
   }
 

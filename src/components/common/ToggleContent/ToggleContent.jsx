@@ -1,45 +1,35 @@
-import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
+import styles from './ToggleContent.scss';
 import ToggleHeader from './ToggleHeader';
 
-import styles from './ToggleContent.scss';
+function ToggleContent({setExpanded, children, header, title, expanded, showEnabled}) {
+  const [hovered, setHovered] = React.useState(false);
 
-class ToggleContent extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      hovered: false
-    };
-
-    this.toggleExpanded = this.toggleExpanded.bind(this);
-    this.mouseEntered = this.mouseEntered.bind(this);
-    this.mouseLeft = this.mouseLeft.bind(this);
+  function toggleExpanded() {
+    setExpanded(!expanded);
   }
 
-  toggleExpanded() {
-    this.props.setExpanded(!this.props.expanded);
+  function mouseEntered() {
+    setHovered(true);
   }
 
-  mouseEntered() {
-    this.setState({ hovered: true });
+  function mouseLeft() {
+    setHovered(false);
   }
 
-  mouseLeft() {
-    this.setState({ hovered: false });
+  if (!(children.length !== 0 && ((children[0].length != 0) || (children[1].length != 0)))) {
+    return null;
   }
-
-  render() {
-    const { children, header, title, expanded, showEnabled } = this.props;
-
-    return ( (children.length !== 0) && ((children[0].length != 0) || (children[1].length != 0)) ) ? (
+  else {
+    return (
       <div className={styles.toggleContent}
-           onMouseEnter={this.mouseEntered}
-           onMouseLeave={this.mouseLeft}>
-        { header ? header : 
+            onMouseEnter={mouseEntered}
+            onMouseLeave={mouseLeft}>
+        { header ? header :
           <ToggleHeader
             title={title}
-            onClick={this.toggleExpanded}
+            onClick={toggleExpanded}
             showEnabled={showEnabled}
             expanded={expanded}
           />
@@ -48,7 +38,7 @@ class ToggleContent extends Component {
           { expanded && children }
         </div>
       </div>
-    ) : null;
+    );
   }
 }
 

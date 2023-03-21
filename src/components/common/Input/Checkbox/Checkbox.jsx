@@ -1,9 +1,7 @@
-import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { excludeKeys } from '../../../../utils/helpers';
-import styles from './Checkbox.scss';
+import React, { Component } from 'react';
 import MaterialIcon from '../../MaterialIcon/MaterialIcon';
-import Input from '../Input/Input';
+import styles from './Checkbox.scss';
 
 class Checkbox extends Component {
   constructor(props) {
@@ -12,15 +10,18 @@ class Checkbox extends Component {
   }
 
   onClick(evt) {
+    if(this.props.disabled) {
+      return;
+    }
     this.props.setChecked(!this.props.checked);
     evt.stopPropagation();
   }
 
   render() {
-    const { checked, label, wide, left } = this.props;
+    const { checked, label, wide, left, className, setChecked, ...rest } = this.props;
 
     return (
-      <div onClick={this.onClick} className={`${styles.wrapper} ${wide ? styles.wide : ''} ${left ? styles.left : ''}`}>
+      <div onClick={this.onClick} className={`${styles.wrapper} ${className} ${wide ? styles.wide : ''} ${left ? styles.left : ''}`} {...rest}>
         <MaterialIcon className={styles.checkbox} icon={checked ? "check_box" : "check_box_outline_blank"} />
         { label && <label>{ label }</label> }
       </div>
@@ -30,6 +31,7 @@ class Checkbox extends Component {
 
 Checkbox.propTypes = {
   checked: PropTypes.bool,
+  disabled: PropTypes.bool,
   setChecked: PropTypes.func,
   label: PropTypes.node,
   left: PropTypes.bool,

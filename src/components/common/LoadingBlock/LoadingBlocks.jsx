@@ -1,7 +1,7 @@
-import React from 'react';
 import PropTypes from 'prop-types';
-import LoadingBlock from './LoadingBlock';
+import React from 'react';
 import { excludeKeys } from '../../../utils/helpers';
+import LoadingBlock from './LoadingBlock';
 
 // eslint-disable-next-line no-mixed-operators
 const rand = (min, max) => Math.random() * (max - min) + min;

@@ -1,57 +1,127 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import Pane from './Pane';
-import FilterList from '../common/FilterList/FilterList';
-import LoadingBlocks from '../common/LoadingBlock/LoadingBlocks';
-import ScenePaneListItem from './ScenePaneListItem';
+import React from 'react';
+import { shallowEqual, useSelector } from 'react-redux';
 import { ObjectWordBeginningSubstring } from '../../utils/StringMatchers';
-import subStateToProps from '../../utils/subStateToProps';
+import {FilterList, FilterListData, FilterListFavorites, FilterListInputButton } from '../common/FilterList/FilterList';
+import LoadingBlocks from '../common/LoadingBlock/LoadingBlocks';
+import Pane from './Pane';
+import ContextSection from './ContextSection';
+import PropertyOwner from './Properties/PropertyOwner';
+import Group from './Group';
+import { isPropertyOwnerHidden } from '../../utils/propertyTreeHelpers';
+import Tooltip from '../common/Tooltip/Tooltip';
+import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
+import styles from './ScenePane.scss';
+import Checkbox from '../common/Input/Checkbox/Checkbox';
+import Button from '../common/Input/Button/Button';
+import { useLocalStorageState } from '../../utils/customHooks';
 
-class ScenePane extends Component {
-  constructor(props) {
-    super(props);
-  }
+function ScenePane({ closeCallback }) {
+  const [showOnlyEnabled, setShowOnlyEnabled] = useLocalStorageState(false);
+  const [showSearchSettings, setShowSearchSettings] = React.useState(false);
 
-  render() {
-    let favorites = [];
-    const entries = this.props.propertyOwners.map(uri => ({
-      key: uri,
-      type: 'propertyOwner',
-      uri: uri
-    })).concat(this.props.shortcuts.map((shortcut, index) => ({
-      key: 'shortcut: ' + index,
-      type: 'shortcut',
-      index
-    })));
+  const groups = useSelector((state) => {
+    const topLevelGroups = Object.keys(state.groups).filter(path => {
+        // Get the number of slashes in the path
+        const depth = (path.match(/\//g) || []).length;
+        return depth <= 1;
+      }).map(path =>
+        path.slice(1) // Remove leading slash
+      ).reduce((obj, key) => ({ // Convert back to object
+        ...obj,
+        [key]: true
+      }), {}
+    );
 
-    favorites.push({
-      key: 'context',
-      type: 'context',
+    // Reorder properties based on SceneProperties ordering property
+    let sortedGroups = [];
+    const ordering = state.propertyTree.properties['Modules.ImGUI.Main.SceneProperties.Ordering'];
+    if (ordering && ordering.value) {
+      ordering.value.forEach(item => {
+        if (topLevelGroups[item]) {
+          sortedGroups.push(item);
+          delete topLevelGroups[item];
+        }
+      })
+    }
+    // Add the remaining items to the end.
+    Object.keys(topLevelGroups).forEach(item => {
+      sortedGroups.push(item);
     });
 
-    favorites = favorites.concat(this.props.groups.map(item => ({
-      key: item,
-      path: item,
-      type: 'group'
-    })));
+    // Add back the leading slash
+    sortedGroups = sortedGroups.map(path => '/' + path);
+    return sortedGroups;
+  }, shallowEqual);
 
-    return (
-      <Pane title="Scene" closeCallback={this.props.closeCallback}>
-        { (entries.length === 0) && (
-          <LoadingBlocks className={Pane.styles.loading} />
-        )}
+  const propertyOwners = useSelector((state) => state.propertyTree.propertyOwners, shallowEqual);
+  const properties = useSelector((state) => state.propertyTree.properties, shallowEqual);
+  const propertyOwnersScene = propertyOwners.Scene?.subowners ?? [];
 
-        { entries.length > 0 && (
-          <FilterList favorites={favorites}
-                      matcher={this.props.matcher}
-                      data={entries}
-                      viewComponent={ScenePaneListItem}
-                      searchAutoFocus />
-        )}
-      </Pane>
-    );
-  }
+  function matcher(test, search) {
+    const node = propertyOwners[test.uri] || {};
+    const guiHidden = isPropertyOwnerHidden(properties, test.uri);
+    return ObjectWordBeginningSubstring(node, search) && !guiHidden;
+  };
+
+  function onlyEnabledMatcher(test, search) {
+    const property = properties[`${test.uri}.Renderable.Enabled`];
+    const isEnabled = property?.value;
+    return isEnabled && matcher(test, search);
+  };
+
+  const entries = propertyOwnersScene.map(uri => ({
+    key: uri,
+    uri: uri,
+    expansionIdentifier: 'scene-search/' + uri
+  }));
+
+  const favorites = groups.map(item => ({
+    key: item,
+    path: item,
+    expansionIdentifier: 'scene/' + item
+  }));
+
+  const settingsButton = (
+    <Button
+      onClick={() => setShowSearchSettings(current => !current)}
+      className={`${styles.settings} ${showSearchSettings && styles.settingsFocus}`}
+    >
+      <MaterialIcon icon="settings" className="small" />
+      {showSearchSettings &&
+        <Tooltip placement={'right'} className={styles.toolTip}>
+          <Checkbox
+            label="Show Only Enabled"
+            checked={showOnlyEnabled}
+            left={false}
+            disabled={false}
+            setChecked={() => setShowOnlyEnabled(current => !current)}
+            wide
+            style={{ padding : '2px'}}
+          />
+        </Tooltip>
+      }
+    </Button>
+  );
+
+  return (
+    <Pane title="Scene" closeCallback={closeCallback} headerButton={settingsButton}>
+      {(entries.length === 0) &&
+        <LoadingBlocks className={Pane.styles.loading} />
+      }
+      {entries.length > 0 &&
+        <FilterList matcher={showOnlyEnabled ? onlyEnabledMatcher : matcher}>
+          <FilterListFavorites>
+            <ContextSection expansionIdentifier="context" />
+            {favorites.map(favorite => <Group {...favorite} showOnlyEnabled={showOnlyEnabled} />)}
+          </FilterListFavorites>
+          <FilterListData>
+            {entries.map(entry => <PropertyOwner {...entry} />)}
+          </FilterListData>
+        </FilterList>
+      }
+    </Pane>
+  );
 }
 
 ScenePane.propTypes = {
@@ -61,70 +131,5 @@ ScenePane.propTypes = {
 ScenePane.defaultProps = {
   closeCallback: null,
 };
-
-const mapStateToSubState = (state) => ({
-  properties: state.propertyTree.properties,
-  propertyOwners: state.propertyTree.propertyOwners,
-  groups: state.groups,
-  shortcuts: state.shortcuts.data.shortcuts
-});
-
-const mapSubStateToProps = ({ groups, properties, propertyOwners, shortcuts }) => {
-  const topLevelGroups = Object.keys(groups).filter(path => {
-    // Get the number of slashes in the path
-    const depth = (path.match(/\//g) || []).length;
-    return depth <= 1;
-  }).map(path =>
-    path.slice(1) // Remove leading slash.
-  ).reduce((obj, key) => ({ // Convert back to object
-      ...obj,
-      [key]: true
-  }), {});
-
-  // Reorder properties based on SceneProperties ordering property.
-  let sortedGroups = [];
-  const ordering = properties['Modules.ImGUI.Main.SceneProperties.Ordering'];
-  if (ordering && ordering.value) {
-    ordering.value.forEach(item => {
-      if (topLevelGroups[item]) {
-        sortedGroups.push(item);
-        delete topLevelGroups[item];
-      }
-    })
-  }
-  // Add the remaining items to the end.
-  Object.keys(topLevelGroups).forEach(item => {
-    sortedGroups.push(item);
-  });
-
-  // Add back the leading slash
-  sortedGroups = sortedGroups.map(path => '/' + path);
-
-  const matcher = (test, search) => {
-    if (test.type === 'propertyOwner') {
-      const node = propertyOwners[test.uri] || {};
-      const guiHidden = properties[test.uri + ".GuiHidden"];
-      return ObjectWordBeginningSubstring(node, search) && !guiHidden;
-    } else if (test.type === 'shortcut') {
-      const shortcut = shortcuts[test.index];
-      return ObjectWordBeginningSubstring(shortcut, search)
-    }
-    return false;
-  };
-
-  const sceneOwner = propertyOwners.Scene || {};
-
-  return {
-    groups: sortedGroups,
-    propertyOwners: sceneOwner.subowners || [],
-    shortcuts: shortcuts || [],
-    matcher
-  };
-};
-
-
-ScenePane = connect(
-  subStateToProps(mapSubStateToProps, mapStateToSubState)
-)(ScenePane);
 
 export default ScenePane;

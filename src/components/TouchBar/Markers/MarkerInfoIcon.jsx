@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import Icon from '../../common/MaterialIcon/MaterialIcon';
-import styles from './MarkerInfo.scss';
 import Popover from '../../common/Popover/Popover';
+import styles from './MarkerInfo.scss';
 
 class MarkerInfoIcon extends Component {
   constructor(props) {
@@ -33,16 +33,17 @@ class MarkerInfoIcon extends Component {
           style={positionStyles.Icon}
         />
         {this.state.showInfoWindow &&
-        <Popover
-          className={styles.InfoPopover}
-          arrow=""
-          title={identifier}
-          closeCallback={() => this.toggleInfoWindow()}
-        >
-          <p className={styles.InfoText}>
-            {infoText ? infoText : 'No data available'}
-          </p>
-        </Popover>}
+          <Popover
+            className={styles.InfoPopover}
+            arrow=""
+            title={identifier}
+            closeCallback={() => this.toggleInfoWindow()}
+          >
+            <p className={styles.InfoText}>
+              {infoText ? infoText : 'No data available'}
+            </p>
+          </Popover>
+        }
       </div>);
   }
 }

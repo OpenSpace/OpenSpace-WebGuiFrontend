@@ -1,12 +1,11 @@
 // @flow
-import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { rotate } from '../../../utils/helpers';
-import MaterialIcon from '../MaterialIcon/MaterialIcon';
 import Button from '../Input/Button/Button';
-
-import styles from './Calendar.scss';
 import InlineInput from '../Input/InlineInput/InlineInput';
+import MaterialIcon from '../MaterialIcon/MaterialIcon';
+import styles from './Calendar.scss';
 
 const Days = {
   Sunday: 0,

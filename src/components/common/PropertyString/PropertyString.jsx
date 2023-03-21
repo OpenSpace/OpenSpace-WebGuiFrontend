@@ -1,8 +1,9 @@
-import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import LoadingString from '../LoadingString/LoadingString';
-import propertyDispatcher from '../../../api/propertyDispatcher';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import propertyDispatcher from '../../../api/propertyDispatcher';
+import LoadingString from '../LoadingString/LoadingString';
+
 /**
  * display the value of a property in an effortless way
  */

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import Select from '../../common/Input/Select/Select';
-import InfoBox from '../../common/InfoBox/InfoBox';
-import { connectProperty } from './connectProperty';
 import { copyTextToClipboard } from '../../../utils/helpers';
+import InfoBox from '../../common/InfoBox/InfoBox';
+import Select from '../../common/Input/Select/Select';
+import styles from './Property.scss';
 
 class OptionProperty extends Component {
   constructor(props) {
@@ -50,14 +50,17 @@ class OptionProperty extends Component {
         value: ('' + Object.keys(option)[0]),
         isSelected: ('' + Object.keys(option)[0]) === ('' + value)
       }));
+      
     return (
-      <Select
-        label={label}
-        options={options}
-        onChange={this.onChange}
-        disabled={this.disabled}
-        value={value}
-      />
+      <div className={`${this.disabled ? styles.disabled : ''}`}>
+        <Select
+          label={label}
+          options={options}
+          onChange={this.onChange}
+          disabled={this.disabled}
+          value={value}
+        />
+      </div>
     );
   }
 }

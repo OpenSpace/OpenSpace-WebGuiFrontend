@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import NumericInput from '../../common/Input/NumericInput/NumericInput';
-import InfoBox from '../../common/InfoBox/InfoBox';
-import { connectProperty } from './connectProperty';
 import { copyTextToClipboard } from '../../../utils/helpers';
+import InfoBox from '../../common/InfoBox/InfoBox';
+import NumericInput from '../../common/Input/NumericInput/NumericInput';
+import styles from './Property.scss';
 
 class NumericProperty extends Component {
   constructor(props) {
@@ -28,10 +28,6 @@ class NumericProperty extends Component {
     return this.props.description.MetaData.isReadOnly;
   }
 
-  get logarithmicView() {
-    return this.props.description.MetaData.ViewOptions.Logarithmic;
-  }
-
   onChange(newValue) {
     this.props.dispatcher.set(newValue);
   }
@@ -49,19 +45,21 @@ class NumericProperty extends Component {
 
   render() {
     const { description, value } = this.props;
-    const { SteppingValue, MaximumValue, MinimumValue } = description.AdditionalData;
+    const { SteppingValue, MaximumValue, MinimumValue, Exponent } = description.AdditionalData;
     return (
-      <NumericInput
-        value={value}
-        label={(<span onClick={this.copyUri}>{description.Name} {this.descriptionPopup}</span>)}
-        placeholder={description.Name}
-        onValueChanged={this.onChange}
-        step={SteppingValue}
-        max={MaximumValue}
-        min={MinimumValue}
-        disabled={this.disabled}
-        logarithmicScale={this.logarithmicView}
-      />
+      <div className={`${this.disabled ? styles.disabled : ''}`}>
+        <NumericInput
+          value={value}
+          label={(<span onClick={this.copyUri}>{description.Name} {this.descriptionPopup}</span>)}
+          placeholder={description.Name}
+          onValueChanged={this.onChange}
+          step={SteppingValue}
+          exponent={Exponent}
+          max={MaximumValue}
+          min={MinimumValue}
+          disabled={this.disabled}
+        />
+      </div>
     );
   }
 }

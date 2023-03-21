@@ -1,80 +1,54 @@
 import React, { Component } from 'react';
-import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import {
+  setPopoverVisibility, subscribeToSessionRecording, subscribeToTime,
+  unsubscribeToSessionRecording, unsubscribeToTime, 
+  subscribeToEngineMode, unsubscribeToEngineMode
+} from '../../api/Actions';
+import {
+  EngineModeCameraPath,
+  EngineModeSessionRecordingPlayback,
+  EngineModeUserControl,
+  SessionStatePaused,
+  SessionStatePlaying
+} from '../../api/keys';
+import Calendar from '../common/Calendar/Calendar';
+import Button from '../common/Input/Button/Button';
+import Time from '../common/Input/Time/Time';
 import LoadingString from '../common/LoadingString/LoadingString';
+import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import Popover from '../common/Popover/Popover';
 import SmallLabel from '../common/SmallLabel/SmallLabel';
-import Button from '../common/Input/Button/Button';
-import Calendar from '../common/Calendar/Calendar';
 import Picker from './Picker';
-import Time from '../common/Input/Time/Time';
-import { sessionStatePlaying } from '../../api/keys';
-import {
-  subscribeToTime,
-  unsubscribeToTime,
-  setPopoverVisibility,
-  subscribeToSessionRecording,
-  unsubscribeToSessionRecording
-} from '../../api/Actions';
-import { connect } from 'react-redux';
-
 import SimulationIncrement from './SimulationIncrement';
 import styles from './TimePicker.scss';
-import * as timeHelpers from '../../utils/timeHelpers';
+import { useContextRefs } from '../GettingStartedTour/GettingStartedContext';
 
-class TimePicker extends Component {
-  constructor(props) {
-    super(props);
+function TimePicker({ startSubscriptions, stopSubscriptions, time, isPaused, targetDeltaTime, luaApi, popoverVisible, setPopoverVisibility, engineMode, sessionRecordingState }) {
 
-    this.state = {
-      pendingTime: new Date(),
-      showCalendar: false,
-      useLock: false,
-    };
+  const [pendingTime, setPendingTime] = React.useState(new Date());
+  const [showCalendar, setShowCalendar] = React.useState(false);
+  const [useLock, setUseLock] = React.useState(false);
+  const refs = useContextRefs();
 
-    this.timeSubscriptionCallback = this.timeSubscriptionCallback.bind(this);
-    this.deltaTimeSubscriptionCallback = this.deltaTimeSubscriptionCallback.bind(this);
-    this.togglePopover = this.togglePopover.bind(this);
-    this.toggleCalendar = this.toggleCalendar.bind(this);
-    this.toggleLock = this.toggleLock.bind(this);
-    this.now = this.now.bind(this);
-    this.changeDate = this.changeDate.bind(this);
-    this.setToPendingTime = this.setToPendingTime.bind(this);
-    this.interpolateToPendingTime = this.interpolateToPendingTime.bind(this);
-    this.resetPendingTime = this.resetPendingTime.bind(this);
-    this.realtime = this.realtime.bind(this);
+  React.useEffect(() => {
+    startSubscriptions();
+    return () => stopSubscriptions();
+  }, [startSubscriptions, stopSubscriptions])
+
+  function timeLabel() {
+    return time && time.toUTCString();
   }
 
-  realtime(e) {
-    const openspace = this.props.luaApi;
-    const shift = e.getModifierState("Shift");
-    let script = '';
-    if (shift) {
-      openspace.time.setDeltaTime(1);
-    } else {
-      openspace.time.interpolateDeltaTime(1);
-    }
-  }
-
-  componentDidMount() {
-    this.props.startSubscriptions();
-  }
-
-  componentWillUnmount() {
-    this.props.stopSubscriptions();
-  }
-
-  get time() {
-    return this.props.time && this.props.time.toUTCString();
-  }
-
-  get speed() {
-    let increment = Math.abs(this.props.targetDeltaTime);
-    let isNegative = Math.sign(this.props.targetDeltaTime) === -1;
+  function speedLabel() {
+    let increment = Math.abs(targetDeltaTime);
+    const isNegative = Math.sign(targetDeltaTime) === -1;
     const sign = isNegative ? '-' : '';
-    let unit = "second";
+    let unit = 'second';
 
     if (increment === 1 && !isNegative) {
-      return "Realtime" + (this.props.isPaused ? " (Paused)" : "");
+      return `Realtime${isPaused ? ' (Paused)' : ''}`;
     }
 
     (() => {
@@ -82,104 +56,102 @@ class TimePicker extends Component {
         return;
       }
       increment /= 60;
-      unit = "minute";
+      unit = 'minute';
 
       if (increment < 60 * 2) {
         return;
       }
       increment /= 60;
-      unit = "hour";
+      unit = 'hour';
 
       if (increment < 24 * 2) {
         return;
       }
       increment /= 24;
-      unit = "day";
+      unit = 'day';
 
-      if (increment < 365/12 * 2) {
-        return
+      if (increment < 365 / 12 * 2) {
+        return;
       }
-      increment /= 265/12;
-      unit = "month";
+      increment /= 265 / 12;
+      unit = 'month';
 
       if (increment < 12) {
         return;
       }
       increment /= 12;
-      unit = "year";
+      unit = 'year';
     })();
 
     increment = Math.round(increment);
     const pluralSuffix = (increment !== 1) ? 's' : '';
 
-    return sign + increment + " " + unit + pluralSuffix + " / second" + (this.props.isPaused ? " (Paused)" : "");
+    return `${sign + increment} ${unit}${pluralSuffix} / second${isPaused ? ' (Paused)' : ''}`;
   }
 
-  get date() {
-    const t = this.time;
-    return t.split(" ", 4).join(" ");
+  function date() {
+    const t = timeLabel;
+    return t.split(' ', 4).join(' ');
   }
 
-  get calendar() {
-    const { showCalendar } = this.state;
-    const { time } = this.props;
+  function calendar() {
 
-    return showCalendar && <div>
+    return showCalendar && (
+    <div>
       <hr className={Popover.styles.delimiter} />
-      <Calendar selected={time} activeMonth={time} onChange={this.changeDate} todayButton />
+      <Calendar selected={time} activeMonth={time} onChange={changeDate} todayButton />
       <hr className={Popover.styles.delimiter} />
-      </div>;
-  }
-
-  get lockOptions() {
-    const { useLock } = this.state;
-    return useLock && <div className={`${Popover.styles.row} ${Popover.styles.content}`}>
-      <Button onClick={this.interpolateToPendingTime} block smalltext >Interpolate</Button>
-      <Button onClick={this.setToPendingTime} block smalltext >Set</Button>
-      <Button onClick={this.resetPendingTime} block smalltext >Cancel</Button>
     </div>
+    );
   }
 
-  get popover() {
-    const { useLock, pendingTime } = this.state;
-    const { time } = this.props;
+  function lockOptions() {
+    return useLock && (
+      <div className={`${Popover.styles.row} ${Popover.styles.content}`}>
+        <Button onClick={interpolateToPendingTime} block smalltext>Interpolate</Button>
+        <Button onClick={setToPendingTime} block smalltext>Set</Button>
+        <Button onClick={resetPendingTime} block smalltext>Cancel</Button>
+      </div>
+    );
+  }
 
+  function popover() {
     return (
       <Popover
         className={`${styles.timePopover} ${Picker.Popover}`}
         title="Select date"
-        closeCallback={this.togglePopover}
+        closeCallback={() => togglePopover()}
         detachable
-        attached={true}
+        attached
       >
-        <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
-          <div style={{marginTop: 20}}>
-            <Button onClick={this.toggleLock} title="Toggle lock" small transparent={!this.state.useLock}>
-              <MaterialIcon icon={this.state.useLock ? 'lock' : 'lock_open'} />
+        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+          <div style={{ marginTop: 20 }}>
+            <Button onClick={toggleLock} title="Toggle lock" small transparent={!useLock}>
+              <MaterialIcon icon={useLock ? 'lock' : 'lock_open'} />
             </Button>
           </div>
-          <Time time={useLock ? pendingTime : time} onChange={this.changeDate} />
-          <div style={{marginTop: 20}}>
-            <Button onClick={this.toggleCalendar} title="Toggle calendar" small transparent={!this.state.showCalendar}>
+          <Time time={useLock ? pendingTime : time} onChange={changeDate} />
+          <div style={{ marginTop: 20 }}>
+            <Button onClick={toggleCalendar} title="Toggle calendar" small transparent={!showCalendar}>
               <MaterialIcon icon="view_day" />
             </Button>
           </div>
         </div>
 
-        {this.calendar}
-        {this.lockOptions}
+        {calendar()}
+        {lockOptions()}
 
         <div className={Popover.styles.title}>Simulation speed</div>
         <div className={Popover.styles.content}>
-          <SimulationIncrement/>
+          <SimulationIncrement />
         </div>
         <hr className={Popover.styles.delimiter} />
 
         <div className={`${Popover.styles.row} ${Popover.styles.content}`}>
-          <Button block smalltext onClick={this.realtime}>
+          <Button block smalltext onClick={realtime}>
             Realtime
           </Button>
-          <Button block smalltext onClick={this.now}>
+          <Button block smalltext onClick={now}>
             Now
           </Button>
         </div>
@@ -187,183 +159,188 @@ class TimePicker extends Component {
     );
   }
 
-  setToPendingTime() {
-    this.setDate(this.state.pendingTime);
-    this.setState({
-      useLock: false
-    });
+  // OBS! same as origin picker
+  function pickerStyle() {
+    const isSessionRecordingPlaying = (engineMode === EngineModeSessionRecordingPlayback) 
+      && (sessionRecordingState === SessionStatePlaying);
+
+    const isSessionRecordingPaused = (engineMode === EngineModeSessionRecordingPlayback) 
+      && (sessionRecordingState === SessionStatePaused);
+
+    const isCameraPathPlaying = (engineMode === EngineModeCameraPath);
+
+    if (isSessionRecordingPaused) {  // TODO: add camera path paused check
+      return Picker.DisabledOrange;
+    }
+    else if (isCameraPathPlaying || isSessionRecordingPlaying) {
+      return Picker.DisabledBlue;
+    }
+    return '';
   }
 
-  interpolateToPendingTime() {
-    this.interpolateDate(this.state.pendingTime);
-    this.setState({
-      useLock: false
-    });
+  function setToPendingTime() {
+    setDate(pendingTime);
+    setUseLock(false);
   }
 
-  resetPendingTime() {
-    this.setState({
-      pendingTime: new Date(this.props.time),
-      useLock: false
-    });
+  function interpolateToPendingTime() {
+    interpolateDate(pendingTime);
+    setUseLock(false);
   }
 
-  setDate(time) {
-    this.setState({ time: new Date(time) });
+  function resetPendingTime() {
+    setPendingTime(new Date(time));
+    setUseLock(false);
+  }
+
+  function setDate(time) {
     // Spice, that is handling the time parsing in OpenSpace does not support
     // ISO 8601-style time zones (the Z). It does, however, always assume that UTC
     // is given.
     const fixedTimeString = time.toJSON().replace('Z', '');
-    const openspace = this.props.luaApi;
-    openspace.time.setTime(fixedTimeString);
+    luaApi.time.setTime(fixedTimeString);
   }
 
-  setDateRelative(delta) {
-    const newTime = new Date(this.props.time);
+  function setDateRelative(delta) {
+    const newTime = new Date(time);
     newTime.setSeconds(newTime.getSeconds() + delta);
-
-    this.setState({ time: newTime });
     // Spice, that is handling the time parsing in OpenSpace does not support
     // ISO 8601-style time zones (the Z). It does, however, always assume that UTC
     // is given.
-
     const fixedTimeString = newTime.toJSON().replace('Z', '');
-    const openspace = this.props.luaApi;
-    openspace.time.setTime(fixedTimeString);
+    luaApi.time.setTime(fixedTimeString);
   }
 
-  interpolateDate(time) {
+  function interpolateDate(time) {
     const fixedTimeString = time.toJSON().replace('Z', '');
-    const openspace = this.props.luaApi;
-    openspace.time.interpolateTime(fixedTimeString);
+    luaApi.time.interpolateTime(fixedTimeString);
   }
 
-  interpolateDateRelative(delta) {
-    const openspace = this.props.luaApi;
-    openspace.time.interpolateTimeRelative(delta);
+  function interpolateDateRelative(delta) {
+    luaApi.time.interpolateTimeRelative(delta);
   }
 
-  changeDate(event) {
-    const {time, interpolate, delta, relative} = event;
-    if (this.state.useLock) {
-      this.setState({ pendingTime: new Date(time)});
+  function changeDate(event) {
+    const {
+      time, interpolate, delta, relative,
+    } = event;
+    if (useLock) {
+      setPendingTime(new Date(time));
     } else if (interpolate) {
       if (relative) {
-        this.interpolateDateRelative(delta);
+        interpolateDateRelative(delta);
       } else {
-        this.interpolateDate(time);
+        interpolateDate(time);
       }
+    } else if (relative) {
+      setDateRelative(delta);
     } else {
-      if (relative) {
-        this.setDateRelative(delta);
-      } else {
-        this.setDate(time);
-      }
+      setDate(time);
     }
   }
 
-  togglePopover() {
-    this.props.setPopoverVisibility(!this.props.popoverVisible)
+  function togglePopover() {
+    setPopoverVisibility(!popoverVisible);
   }
 
-  toggleLock() {
-    this.setState({
-      useLock: !this.state.useLock,
-      pendingTime: new Date(this.props.time)
-    });
+  function toggleLock() {
+    setPendingTime(new Date(time));
+    setUseLock(!useLock);
   }
 
-  toggleCalendar() {
-    this.setState({ showCalendar: !this.state.showCalendar });
+  function toggleCalendar() {
+    setShowCalendar(!showCalendar);
   }
 
-  now() {
-    this.setDate(new Date());
-  }
-
-  /**
-   * Callback for time subscription
-   * @param message [object] - message object sent from Subscription
-   */
-  timeSubscriptionCallback(message) {
-    const time = new Date(DateStringWithTimeZone(message.time));
-    const newState = { time, hasTime: true };
-    if (!this.state.useLock) {
-      newState.pendingTime = new Date(time);
-    }
-    //this.setState(newState);
-  }
-
-  /**
-   * Callback for delta time subscription
-   * @param message [object] - message object sent from Subscription
-   */
-  deltaTimeSubscriptionCallback(message) {
-    const { isPaused, targetDeltaTime } = message;
-    //this.setState({ isPaused, targetDeltaTime });
-  }
-
-  render() {
-    const { popoverVisible, sessionRecordingState } = this.props;
-    const enabled = sessionRecordingState !== sessionStatePlaying;
-
-    const popoverEnabledAndVisible = popoverVisible && enabled;
-
-    const pickerClasses = [
-      styles.timePicker,
-      popoverEnabledAndVisible ? Picker.Active : '',
-      enabled ? '' : styles.disabledBySessionPlayback
-    ].join(' ');
-
-    return (
-      <div className={Picker.Wrapper}>
-        <Picker onClick={enabled && this.togglePopover} className={pickerClasses}>
-          <div className={Picker.Title}>
-            <span className={Picker.Name}>
-              <LoadingString loading={this.props.time === undefined}>
-                { this.time }
-              </LoadingString>
-            </span>
-            <SmallLabel>{ this.props.targetDeltaTime === undefined ? "" : this.speed}</SmallLabel>
-          </div>
-        </Picker>
-
-        { popoverEnabledAndVisible && this.popover }
-      </div>
-    );
-  }
-}
-
-const mapStateToProps = (state) => {
-  return {
-    time: state.time.time,
-    deltaTime: state.time.deltaTime,
-    targetDeltaTime: state.time.targetDeltaTime,
-    isPaused: state.time.isPaused,
-    popoverVisible: state.local.popovers.timePicker.visible,
-    sessionRecordingState: state.sessionRecording.recordingState,
-    luaApi: state.luaApi
-  }
-}
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    startSubscriptions: () => {
-      dispatch(subscribeToTime());
-      dispatch(subscribeToSessionRecording());
-    },
-    stopSubscriptions: () => {
-      dispatch(unsubscribeToTime());
-      dispatch(unsubscribeToSessionRecording());
-    },
-    setPopoverVisibility: (visible) => {
-      dispatch(setPopoverVisibility({
-        popover: 'timePicker',
-        visible
-      }));
+  function realtime(e) {
+    const shift = e.getModifierState('Shift');
+    if (shift) {
+      luaApi.time.setDeltaTime(1);
+    } else {
+      luaApi.time.interpolateDeltaTime(1);
     }
   }
+
+  function now() {
+    setDate(new Date());
+  }
+
+  const enabled = (engineMode === EngineModeUserControl);
+  const popoverEnabledAndVisible = popoverVisible && enabled;
+  const disableClass = enabled ? '' : pickerStyle();
+
+  const pickerClasses = [
+    styles.timePicker,
+    popoverEnabledAndVisible ? Picker.Active : '',
+    disableClass,
+  ].join(' ');
+
+  return (
+    <div ref={el => refs.current["Time"] = el} className={Picker.Wrapper}>
+      <Picker onClick={enabled ? () => togglePopover() : undefined} className={pickerClasses}>
+        <div className={Picker.Title}>
+          <span className={Picker.Name}>
+            <LoadingString loading={time === undefined}>
+              { timeLabel() }
+            </LoadingString>
+          </span>
+          <SmallLabel>{ targetDeltaTime === undefined ? '' : speedLabel()}</SmallLabel>
+        </div>
+      </Picker>
+
+      { popoverEnabledAndVisible && popover() }
+    </div>
+  );
 }
+
+
+TimePicker.propTypes = {
+  engineMode: PropTypes.string.isRequired,
+  isPaused: PropTypes.bool,
+  luaApi: PropTypes.object,
+  popoverVisible: PropTypes.bool,
+  sessionRecordingState: PropTypes.string.isRequired,
+  targetDeltaTime: PropTypes.number,
+  time: PropTypes.instanceOf(Date),
+};
+
+TimePicker.defaultProps = {
+  isPaused: undefined,
+  luaApi: undefined,
+  popoverVisible: false,
+  time: undefined,
+  targetDeltaTime: undefined,
+};
+
+const mapStateToProps = state => ({
+  engineMode: state.engineMode.mode,
+  time: state.time.time,
+  // deltaTime: state.time.deltaTime, // unused
+  targetDeltaTime: state.time.targetDeltaTime,
+  isPaused: state.time.isPaused,
+  popoverVisible: state.local.popovers.timePicker.visible,
+  sessionRecordingState: state.sessionRecording.recordingState,
+  luaApi: state.luaApi,
+});
+
+const mapDispatchToProps = dispatch => ({
+  startSubscriptions: () => {
+    dispatch(subscribeToTime());
+    dispatch(subscribeToSessionRecording());
+    dispatch(subscribeToEngineMode());
+  },
+  stopSubscriptions: () => {
+    dispatch(unsubscribeToTime());
+    dispatch(unsubscribeToSessionRecording());
+    dispatch(unsubscribeToEngineMode());
+  },
+  setPopoverVisibility: (visible) => {
+    dispatch(setPopoverVisibility({
+      popover: 'timePicker',
+      visible,
+    }));
+  },
+});
 
 TimePicker = connect(mapStateToProps, mapDispatchToProps)(TimePicker);
 

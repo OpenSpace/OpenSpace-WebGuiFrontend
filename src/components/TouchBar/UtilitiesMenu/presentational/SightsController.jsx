@@ -1,14 +1,12 @@
-import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import Picker from '../../../BottomBar/Picker';
-import Icon from '../../../common/MaterialIcon/MaterialIcon';
-import SmallLabel from '../../../common/SmallLabel/SmallLabel';
-
-import buttonStyle from './../style/UtilitiesButtons.scss';
-import styles from './../style/SightsController.scss';
-import Popover from '../../../common/Popover/Popover';
 import Button from '../../../common/Input/Button/Button';
-
+import Icon from '../../../common/MaterialIcon/MaterialIcon';
+import Popover from '../../../common/Popover/Popover';
+import SmallLabel from '../../../common/SmallLabel/SmallLabel';
+import styles from '../style/SightsController.scss';
+import buttonStyle from '../style/UtilitiesButtons.scss';
 
 class SightsController extends Component {
   constructor(props) {

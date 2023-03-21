@@ -1,12 +1,12 @@
-import React from 'react';
 import PropTypes from 'prop-types';
-
+import React from 'react';
+import { useContextRefs } from '../GettingStartedTour/GettingStartedContext';
 import styles from './Picker.scss';
 
-const Picker = (props) => {
-  const { children, className } = props;
+const Picker = ({children, className, refKey, ...props}) => {
+  const refs = refKey ? useContextRefs() : null;
   return (
-    <div {...props} className={`${styles.Picker} ${className}`}>
+    <div ref={refKey ? el => refs.current[refKey] = el : null} {...props} className={`${styles.Picker} ${className}`}>
       { children }
     </div>
   );
@@ -28,5 +28,10 @@ Picker.Title = styles.Title;
 Picker.Wrapper = styles.Wrapper;
 Picker.Window = styles.Window;
 
-export default Picker;
+Picker.DisabledBlue = styles.DisabledBlue;
+Picker.DisabledOrange = styles.DisabledOrange;
+Picker.Blue = styles.Blue;
+Picker.Orange = styles.Orange;
+Picker.Red = styles.Red;
 
+export default Picker;

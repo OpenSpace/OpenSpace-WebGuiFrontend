@@ -1,11 +1,11 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 import { excludeKeys } from '../../../../utils/helpers';
 import styles from './Button.scss';
 
 /* eslint-disable react/no-unused-prop-types */
 
-const Button = (props) => {
+const Button = React.forwardRef((props, refs) => {
   const specialClasses = 'onClick block small transparent uppercase smalltext nopadding largetext';
   const inheritProps = excludeKeys(props, specialClasses);
 
@@ -25,6 +25,9 @@ const Button = (props) => {
 
   const ref = domElement => {
     buttonElement = domElement;
+    if(refs && typeof refs === 'function') {
+      refs(domElement);
+    }
   };
 
   return (
@@ -37,7 +40,7 @@ const Button = (props) => {
       { props.children }
     </button>
   );
-};
+});
 
 Button.propTypes = {
   block: PropTypes.bool,

@@ -1,11 +1,13 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 import SmallLabel from '../../common/SmallLabel/SmallLabel';
 import styles from './MarkerInfo.scss';
 import MarkerInfoIcon from './MarkerInfoIcon';
 
 const MarkerInfo = (props) => {
-  const { position, size, showInfoIcon, identifier, showLabel, offset, infoText } = props;
+  const {
+    position, size, showInfoIcon, identifier, showLabel, offset, infoText
+  } = props;
 
   const positionStyles = {
     MarkerInfo: {
@@ -22,18 +24,18 @@ const MarkerInfo = (props) => {
 
   return (
     <div className={styles.MarkerInfo} style={positionStyles.MarkerInfo}>
-      {showInfoIcon &&
+      {showInfoIcon && (
         <MarkerInfoIcon
           identifier={identifier}
           positionStyles={positionStyles}
           infoText={infoText}
-        />}
-      {showLabel &&
-        <SmallLabel
-          style={positionStyles.Text}
-        >
+        />
+      )}
+      {showLabel && (
+        <SmallLabel style={positionStyles.Text}>
           {identifier}
-        </SmallLabel>}
+        </SmallLabel>
+      )}
     </div>
   );
 };
@@ -50,8 +52,8 @@ MarkerInfo.propTypes = {
 
 MarkerInfo.defaultProps = {
   position: '',
-  showInfoIcon: false,
-  infoText: 'No info available',
+  // showInfoIcon: false, // required, so should not have default value
+  // infoText: 'No info available', // required, so should not have default value
 };
 
 export default MarkerInfo;

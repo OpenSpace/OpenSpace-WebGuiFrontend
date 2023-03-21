@@ -1,10 +1,9 @@
-import React from 'react';
 import PropTypes from 'prop-types';
-
-import { centeredLabel } from './CenteredLabel.scss';
+import React from 'react';
+import styles from './CenteredLabel.scss';
 
 const CenteredLabel = props => (
-  <div {...props} className={`${props.className} ${centeredLabel}`}>
+  <div {...props} className={`${props.className} ${styles.centeredLabel}`}>
     { props.children }
   </div>
 );

@@ -7,7 +7,6 @@ module.exports = {
   mode: 'development',
   context: resolve(__dirname, 'src'),
   entry: [
-    'react-hot-loader/patch',
     'webpack-dev-server/client?http://localhost:4690',
     'webpack/hot/only-dev-server',
     './devmode.js',
@@ -22,8 +21,10 @@ module.exports = {
   devServer: {
     historyApiFallback: true,
     hot: true,
-    contentBase: resolve(__dirname, 'dist'),
-    publicPath: PublicPath,
+    static: {
+      directory: resolve(__dirname, 'dist'),
+      publicPath: PublicPath
+    },
     proxy: {
       '/': {
         target: 'http://localhost:4680',
@@ -47,19 +48,23 @@ module.exports = {
       },
       // Load SASS!
       {
-        test: /\.scss$/,
+        test: /\.s[ac]ss$/i,
         exclude: /node_modules/,
         use: [
           {
             loader: 'style-loader',
-          }, {
+          },
+          {
             loader: 'css-loader?modules',
             options: {
               sourceMap: true,
               importLoaders: 2,
-              modules: true
+              modules: {
+                localIdentName: "[path][name]__[local]--[hash:base64:7]",
+              }
             },
-          }, {
+          },
+          {
             loader: 'sass-loader',
             options: {
               sourceMap: true,
@@ -68,22 +73,16 @@ module.exports = {
         ],
       },
       {
-        test: /\.css$/,
+        test: /\.css$/i,
         use: ['style-loader', 'css-loader'],
       },
       {
-        test: /\.(woff|woff2|ttf|eot)$/,
-        loader: 'file-loader',
-        options: {
-          name: 'fonts/[name].[ext]',
-        },
+        test: /\.(woff|woff2|ttf|eot)$/i,
+        type: 'asset/resource',
       },
       {
         test: /\.(png)$/,
-        loader: 'file-loader',
-        options: {
-          name: 'img/[name].[ext]',
-        },
+        type: 'asset/resource',
       },
     ],
   },
@@ -93,7 +92,5 @@ module.exports = {
   plugins: [
     // enable HMR globally
     new webpack.HotModuleReplacementPlugin(),
-    // prints more readable module names in the browser console on HMR updates
-    new webpack.NamedModulesPlugin(),
   ],
 };

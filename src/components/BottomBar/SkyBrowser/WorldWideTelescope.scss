@@ -1,0 +1,32 @@
+@import "../../../styles/all";
+
+$top-bar-height: 25px;
+
+.wwt {
+  width: 100%;
+  height: 100%;
+}
+
+.content {
+  width: 100%;
+  height: calc(100% - #{$top-bar-height});
+}
+
+.container {
+  position: absolute;
+  background-color: transparent;
+  z-index: 10;
+  height: calc(98% - #{$top-bar-height});
+  width: 98%;
+  margin: 0px;
+  padding: 0px;
+  border-width: 0px;
+}
+
+.title {
+  font-weight: 600;
+  font-size: $font-size;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  height: $top-bar-height;
+}

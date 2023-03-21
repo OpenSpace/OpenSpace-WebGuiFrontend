@@ -1,0 +1,100 @@
+@import "../../styles/all";
+
+@import "../common/Popover/Popover.scss";
+
+.Grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-content: flex-start;
+
+  &:before,
+    &:after {
+      display: none;
+    }
+}
+
+.scroller {
+  overflow: scroll;
+  height: 92%;
+  overflow-x: hidden;
+}
+
+.buttonIcon {
+  font-size: 1em;
+}
+
+.bottomBarIcon {
+  font-size: 2em;
+}
+
+.backButton {
+  background-color: $ui-background-slider-input;
+  width: fit-content;
+  padding-left: 10px !important;
+  padding-right: 12px !important;
+  padding-bottom: 4px;
+  font-size: 1em;
+}
+
+.actionButton {
+  padding-top: 10px !important;
+  padding-bottom: 12px !important;
+  width: 120px;
+  margin-bottom: 5px;
+  margin: 2px;
+  max-height: 50%;
+  overflow-wrap: break-word;
+}
+
+.windowContainer {
+ .actionButton {
+    min-width: 310px;
+    min-height: 100px;
+  }
+
+  .navPathTitle {
+    font-size: 1em;
+  }
+
+  font-size: 3.4em;
+  overflow: scroll;
+  overflow-y: auto;
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.folderButton {
+  background-color: $ui-background-slider-input;
+}
+
+.navPathTitle {
+  @extend .title;
+  display: inline-block;
+  word-break: break-word;
+}
+
+.navPathRow {
+  line-height: 1.5em;
+}
+
+.actionsPanel {
+  min-width: 394px;
+  max-width: 394px;
+  height: 400px;
+  max-height: 400px;
+  min-height: 400px;
+}
+
+.iconRow {
+  display: flex;
+  justify-content: center;
+  gap: 3px;
+  padding-bottom: 2px !important;
+}
+
+.localText {
+  color: $ui-highlight-secondary;
+  font-size: smaller;
+}

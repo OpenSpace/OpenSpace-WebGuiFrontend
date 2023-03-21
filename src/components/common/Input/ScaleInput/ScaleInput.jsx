@@ -1,9 +1,8 @@
-import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { excludeKeys } from '../../../../utils/helpers';
-
-import styles from './ScaleInput.scss';
 import Input from '../Input/Input';
+import styles from './ScaleInput.scss';
 
 class ScaleInput extends Component {
   constructor(props) {

@@ -1,23 +1,18 @@
 import React, { Component } from 'react';
-import Popover from '../common/Popover/Popover';
-import Button from '../common/Input/Button/Button';
-import Picker from './Picker';
-import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
-import Input from '../common/Input/Input/Input';
-import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
-import Row from '../common/Row/Row';
-
-import ScrollOverlay from '../common/ScrollOverlay/ScrollOverlay';
-
-import { setPopoverVisibility, reloadPropertyTree } from '../../api/Actions';
 import { connect } from 'react-redux';
-
+import { reloadPropertyTree, setPopoverVisibility } from '../../api/Actions';
+import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
+import Button from '../common/Input/Button/Button';
+import Input from '../common/Input/Input/Input';
+import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
+import Popover from '../common/Popover/Popover';
+import Row from '../common/Row/Row';
+import ScrollOverlay from '../common/ScrollOverlay/ScrollOverlay';
+import PropertyOwner from '../Sidebar/Properties/PropertyOwner';
+import Picker from './Picker';
 import styles from './ScreenSpaceRenderablePanel.scss';
 
-import PropertyOwner from '../Sidebar/Properties/PropertyOwner'
-
 class ScreenSpaceRenderablePanel extends Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -51,7 +46,7 @@ class ScreenSpaceRenderablePanel extends Component {
   }
 
   addSlide() {
-    const renderable = {        
+    const renderable = {
       Identifier: this.state.slideName,
       Name: this.state.slideName 
     };
@@ -137,7 +132,11 @@ class ScreenSpaceRenderablePanel extends Component {
     const { popoverVisible } = this.props;
     return (
       <div className={Picker.Wrapper}>
-        <Picker onClick={this.togglePopover}>
+        <Picker
+          className={`${popoverVisible && Picker.Active}`}
+          onClick={this.togglePopover}
+          refKey={"ScreenSpaceRenderable"}
+        >
           <div>
             <MaterialIcon className={styles.photoIcon} icon="insert_photo" />
           </div>
@@ -149,7 +148,7 @@ class ScreenSpaceRenderablePanel extends Component {
 }
 
 const mapStateToProps = state => {
-  var renderables = state.propertyTree.propertyOwners.ScreenSpace ?
+  const renderables = state.propertyTree.propertyOwners.ScreenSpace ?
     state.propertyTree.propertyOwners.ScreenSpace.subowners :
     [];
 
@@ -167,16 +166,15 @@ const mapDispatchToProps = dispatch => ({
       popover: 'screenSpaceRenderables',
       visible
     }));
-    if (visible) {
-      dispatch(reloadPropertyTree());
-    }
   },
   refresh: () => {
     dispatch(reloadPropertyTree());
   }
 })
 
-ScreenSpaceRenderablePanel =
-  connect(mapStateToProps, mapDispatchToProps)(ScreenSpaceRenderablePanel);
+ScreenSpaceRenderablePanel = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ScreenSpaceRenderablePanel);
 
 export default ScreenSpaceRenderablePanel;

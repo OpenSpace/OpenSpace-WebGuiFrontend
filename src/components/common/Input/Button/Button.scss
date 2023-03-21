@@ -1,6 +1,6 @@
 @import "../../../../styles/all";
 
-$small-padding: ($vertical-padding / 2) ($base-padding / 2);
+$small-padding: calc($vertical-padding / 2) calc($base-padding / 2);
 
 .button {
   background: $ui-background-selected;
@@ -60,6 +60,7 @@ $small-padding: ($vertical-padding / 2) ($base-padding / 2);
 
   &:active {
     background: $ui-background-active;
+    color: $text-color-blur;
   }
 
   &:disabled {

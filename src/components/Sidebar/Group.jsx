@@ -1,32 +1,55 @@
-import React from 'react';
 import PropTypes from 'prop-types';
-import ToggleContent from '../common/ToggleContent/ToggleContent';
-import PropertyOwner,
-       { displayName as propertyOwnerName,
-         nodeExpansionIdentifier as propertyOwnerNodeExpansionIdentifier }  from './Properties/PropertyOwner'
-import Shortcut from './Shortcut';
-
+import React from 'react';
+import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { setPropertyTreeExpansion } from '../../api/Actions';
 import { sortGroups } from '../../api/keys';
+import ToggleContent from '../common/ToggleContent/ToggleContent';
+import PropertyOwner, {
+  displayName as propertyOwnerName,
+  nodeExpansionIdentifier as propertyOwnerNodeExpansionIdentifier
+} from './Properties/PropertyOwner';
 
-import { connect } from 'react-redux';
+function isEnabled(properties, uri) {
+  return properties[`${uri}.Renderable.Enabled`]?.value;
+};
 
-import subStateToProps from '../../utils/subStateToProps';
+function enabledPropertyOwners(state, path) {
+  const data = state.groups[path] || {};
+  const propertyOwners = data.propertyOwners || [];
 
+  // Filter PropertyOwners
+  return propertyOwners.filter((propertyOwner) =>
+    isEnabled(state.propertyTree.properties, propertyOwner)
+  );
+}
 
-const displayName = path => {
-  const splitPath = path.split('/');
-  if (splitPath.length > 1) {
-    return splitPath[splitPath.length - 1];
-  } else {
-    return 'Untitled';
+function shouldShowGroup(state, path) {
+  const data = state.groups[path] || {};
+  const subGroups = data.subgroups || [];
+  // If there are any enabled property owners in the result,
+  // show the groups
+  if (subGroups.length === 0) {
+    return enabledPropertyOwners(state, path).length !== 0;
   }
+  const initialValue = false;
+  const result = subGroups.reduce(
+    (accumulator, currentValue) => {
+      return accumulator || shouldShowGroup(state, currentValue);
+    },
+    initialValue
+  );
+  return result;
+}
+
+function displayName(path) {
+  const splitPath = path.split('/');
+  return (splitPath.length > 1) ? splitPath[splitPath.length - 1] : 'Untitled';
 }
 
 /**
  * Return an identifier for the tree expansion state.
  */
-const nodeExpansionIdentifier = path => {
+function nodeExpansionIdentifier(path) {
   const splitPath = path.split('/');
   if (splitPath.length > 1) {
     return 'G:' + splitPath[splitPath.length - 1];
@@ -35,124 +58,108 @@ const nodeExpansionIdentifier = path => {
   }
 }
 
-let Group = ({ path, expansionIdentifier, entries, isExpanded, setExpanded, sortOrdering}) => {
-  var sortedEntries = entries.sort((a, b) =>
+function Group({ path, expansionIdentifier, autoExpand, showOnlyEnabled }) {
+  const isExpanded = useSelector((state) => {
+    let isExpanded = state.local.propertyTreeExpansion[expansionIdentifier];
+    return (isExpanded === undefined) ? autoExpand : isExpanded;
+  }, shallowEqual);
+
+  const propertyOwners = useSelector((state) => {
+    let owners;
+    if (showOnlyEnabled) {
+      owners = enabledPropertyOwners(state, path);
+    }
+    else {
+      const data = state.groups[path] || {};
+      owners = data.propertyOwners || [];
+    }
+    // Extract propertyOwners
+    return owners.map(owner => ({
+      type: 'propertyOwner',
+      payload: owner,
+      name: propertyOwnerName(state.propertyTree.propertyOwners, state.propertyTree.properties, owner)
+    }));
+  }, shallowEqual);
+
+  const groups = useSelector((state) => {
+    const data = state.groups[path] || {};
+    const subGroups = data.subgroups || [];
+
+    // Extract groups
+    const groups = subGroups.map(subGroup => ({
+      type: 'group',
+      payload: subGroup,
+      name: displayName(subGroup)
+    }));
+    // See if the groups contain any PropertyOwners
+    if (showOnlyEnabled) {
+      return groups.filter((group) => shouldShowGroup(state, group.payload));
+    }
+    return groups;
+  })
+  
+  const entries = groups.concat(propertyOwners); 
+  const hasEntries = entries.length !== 0;
+  const pathFragments = path.split('/');
+  const groupName = pathFragments[pathFragments.length - 1];
+  const sortOrdering = sortGroups[groupName];
+
+  const dispatch = useDispatch();
+
+  const setExpanded = (expanded) => {
+    dispatch(setPropertyTreeExpansion({
+      identifier: expansionIdentifier,
+      expanded
+    }));
+  };
+
+  let sortedEntries = entries.sort((a, b) =>
     a.name.localeCompare(b.name, 'en')
   );
 
   if (sortOrdering && sortOrdering.value) {
       sortedEntries.sort((a,b) => {
-        if (sortOrdering.value.indexOf(a.name) < sortOrdering.value.indexOf(b.name)) {
-          return -1;
-        } else {
-          return 1;
-        }
+        return sortOrdering.value.indexOf(a.name) < sortOrdering.value.indexOf(b.name) ?
+          -1 : 1;
       });
   }
 
-  return <ToggleContent
-    title={displayName(path)}
-    expanded={isExpanded}
-    setExpanded={setExpanded}
-  >
-    {
-      sortedEntries.map(entry => {
-        const autoExpand = entries.length === 1;
-        switch (entry.type) {
-          case 'group': {
-            const childNodeIdentifier = expansionIdentifier + '/' +
-              nodeExpansionIdentifier(entry.payload);
+  return hasEntries &&
+    <ToggleContent
+      title={displayName(path)}
+      expanded={isExpanded}
+      setExpanded={setExpanded}
+    >
+      {
+        sortedEntries.map(entry => {
+          const autoExpand = entries.length === 1;
+          switch (entry.type) {
+            case 'group': {
+              const childNodeIdentifier = expansionIdentifier + '/' +
+                nodeExpansionIdentifier(entry.payload);
 
-            return <Group autoExpand={autoExpand}
-                          key={entry.payload}
-                          path={entry.payload}
-                          expansionIdentifier={childNodeIdentifier} />
+              return <Group autoExpand={autoExpand}
+                            key={entry.payload}
+                            path={entry.payload}
+                            expansionIdentifier={childNodeIdentifier}
+                            showOnlyEnabled={showOnlyEnabled} />
             }
-          case 'propertyOwner': {
-            const childNodeIdentifier = expansionIdentifier + '/' +
-              propertyOwnerNodeExpansionIdentifier(entry.payload);
+            case 'propertyOwner': {
+              const childNodeIdentifier = expansionIdentifier + '/' +
+                propertyOwnerNodeExpansionIdentifier(entry.payload);
 
-            return <PropertyOwner autoExpand={autoExpand}
-                                  key={entry.payload}
-                                  uri={entry.payload}
-                                  expansionIdentifier={childNodeIdentifier} />
+              return <PropertyOwner autoExpand={autoExpand}
+                                    key={entry.payload}
+                                    uri={entry.payload}
+                                    expansionIdentifier={childNodeIdentifier} />
             }
-          case 'shortcut': {
-            return <Shortcut key={entry.payload}
-                             index={entry.payload} />
+            default:
+              return null;
           }
-          default:
-            return null;
-        }
-      })
-    }
-  </ToggleContent>
+        })
+      }
+    </ToggleContent>
 }
-
-
-const mapSubStateToProps = (
-  { groups, propertyOwners, properties, propertyTreeExpansion, shortcuts },
-  { path, expansionIdentifier, autoExpand }
-) => {
-  const data = groups[path] || {};
-  const subGroups = data.subgroups || [];
-  const owners = data.propertyOwners || [];
-  const subShortcuts = data.shortcuts || [];
-  let isExpanded = propertyTreeExpansion[expansionIdentifier];
-
-  if (isExpanded === undefined) {
-    isExpanded = autoExpand;
-  }
-
-  const entries = subGroups.map(g => ({
-    type: 'group',
-    payload: g,
-    name: displayName(g)
-  })).concat(owners.map(o => ({
-    type: 'propertyOwner',
-    payload: o,
-    name: propertyOwnerName(propertyOwners, properties, o)
-  }))).concat(subShortcuts.map(i => ({
-    type: 'shortcut',
-    payload: i,
-    name: shortcuts[i].name || ''
-  })));
-
-  const pathFragments = path.split('/');
-  const groupName = pathFragments[pathFragments.length - 1];
-  const sortOrdering = sortGroups[groupName];
-
-  return {
-    entries,
-    isExpanded,
-    sortOrdering
-  };
-}
-
-const mapStateToSubState = state => ({
-  groups: state.groups,
-  propertyOwners: state.propertyTree.propertyOwners,
-  properties: state.propertyTree.properties,
-  propertyTreeExpansion: state.local.propertyTreeExpansion,
-  shortcuts: state.shortcuts.data.shortcuts || []
-})
-
-const mapDispatchToProps = (dispatch, ownProps) => {
-  const setExpanded = (expanded) => {
-    dispatch(setPropertyTreeExpansion({
-      identifier: ownProps.expansionIdentifier,
-      expanded
-    }));
-  }
-  return {
-    setExpanded
-  };
-}
-
-Group = connect(
-  subStateToProps(mapSubStateToProps, mapStateToSubState),
-  mapDispatchToProps
-)(Group);
 
 Group.propTypes = {
   path: PropTypes.string.isRequired,
@@ -163,7 +170,4 @@ Group.propTypes = {
 Group.defaultProps = {
 };
 
-
-
 export default Group;
-export { nodeExpansionIdentifier };

@@ -14,7 +14,7 @@ $padding-bottom-loading: $padding-vertical - $padding-top - $loading-border-widt
 
 // different states
 $padding: $padding-top $padding-horizontal $padding-bottom;
-$padding-empty: ($padding-vertical / 2) $padding-horizontal;
+$padding-empty: calc($padding-vertical / 2) $padding-horizontal;
 $padding-loading: $padding-top $padding-horizontal $padding-bottom-loading;
 
 .group {
@@ -68,6 +68,16 @@ $padding-loading: $padding-top $padding-horizontal $padding-bottom-loading;
   width: 100%;
 }
 
+.buttonsContainer {
+  pointer-events: none;
+  display: flex; 
+  justify-content: flex-end;
+  position: absolute; 
+  top: 0; 
+  width: 100%; 
+  height: 100%;
+}
+
 .label {
   color: $text-color-blur;
   display: none;
@@ -92,12 +102,9 @@ $padding-loading: $padding-top $padding-horizontal $padding-bottom-loading;
   display: none;
   font-size: 18px;
   opacity: 0;
-  position: absolute;
-  right: $padding-horizontal;
-  top: 50%;
-  transform: translateY(-50%);
+  margin: auto 0px;
+  pointer-events: initial;
   transition: opacity $animation-duration $animation-easing;
-
   &:focus,
   &:hover {
     color: $text-color-focus;

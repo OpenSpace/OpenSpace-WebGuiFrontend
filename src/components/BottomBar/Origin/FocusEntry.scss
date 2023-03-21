@@ -1,8 +1,10 @@
 @import "../../../styles/all";
 
+$icon-size: 22px;
+
 .entry {
   padding: $popover-horizontal-padding;
-
+  list-style: none;
   &:hover {
     background: $ui-background-hover;
   }
@@ -11,5 +13,29 @@
     background: $ui-background-hover;
     border-left: 4px solid $blue;
   }
+
+  position: relative;
 }
 
+.buttonIcon {
+  font-size: $icon-size;
+}
+
+.buttonContainer {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.flyToButton {
+  margin-left: 0.3em;
+  padding: 0.2em 0.5em 0.1em;
+  display: none;
+}
+
+/* Show button on hover */
+.entry:hover .flyToButton,
+.entry:active .flyToButton {
+  display: inline-block;
+}

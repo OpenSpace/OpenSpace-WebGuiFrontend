@@ -1,6 +1,5 @@
-import React from 'react';
 import PropTypes from 'prop-types';
-
+import React from 'react';
 import styles from './MaterialIcon.scss';
 
 /**
@@ -9,15 +8,8 @@ import styles from './MaterialIcon.scss';
  * @returns {XML}
  * @constructor
  */
-const MaterialIcon = (props) => {
-  const { icon, className } = props;
-  const classNames = className.split(' ')
-                            .map(s => styles[s] || s)
-                            .concat(styles.base)
-                            .join(' ');
-  return (
-    <i {...props} className={classNames}>{ icon }</i>
-  );
+const MaterialIcon = ({ icon, className, ...props }) => {
+  return <span className={`icon ${styles.base} ${className}`} {...props}>{ icon }</span>;
 };
 
 MaterialIcon.propTypes = {

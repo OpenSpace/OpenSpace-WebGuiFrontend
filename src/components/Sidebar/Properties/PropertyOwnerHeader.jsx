@@ -1,28 +1,34 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import styles from './PropertyOwnerHeader.scss';
-import toggleHeaderStyles from './../../common/ToggleContent/ToggleHeader.scss';
+import { connect } from 'react-redux';
+import Focus from 'svg-react-loader?name=Focus!../../../icons/focus.svg';
 import Button from '../../common/Input/Button/Button';
+import DraggableIcon from 'svg-react-loader?name=Aim!../../../icons/draggable_list.svg';
+import styles from './PropertyOwnerHeader.scss';
+import toggleHeaderStyles from '../../common/ToggleContent/ToggleHeader.scss';
 import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
 import SvgIcon from '../../common/SvgIcon/SvgIcon';
-import FocusIcon from 'svg-react-loader?name=Focus!../../../icons/focus.svg';
-import { LayerGroupKeys } from '../../../api/keys';
 import { displayName } from './PropertyOwner';
 import Property from './Property';
-
-import { connect } from 'react-redux';
 import propertyDispatcher from '../../../api/propertyDispatcher';
-import Focus from 'svg-react-loader?name=Focus!../../../icons/focus.svg';
 import {
   NavigationAnchorKey,
   NavigationAimKey,
   RetargetAnchorKey,
 } from '../../../api/keys';
+import { isGlobeBrowsingLayer } from '../../../utils/propertyTreeHelpers';
+import { useContextRefs } from '../../GettingStartedTour/GettingStartedContext';
+import Row from '../../common/Row/Row';
+import TooltipMenu from '../../common/Tooltip/TooltipMenu';
 
-let PropertyOwnerHeader = ({title, identifier, expanded, setExpanded, onIcon, offIcon, quickToggleUri, focusAction, shiftFocusAction, popOutAction, titleClass, metaAction, trashAction }) => {
+function PropertyOwnerHeader({
+  title, identifier, expanded, setExpanded, onIcon, offIcon,
+  quickToggleUri, enabled, isLayer, focusAction, shiftFocusAction,
+  popOutAction, metaAction, trashAction,
+}) {
   const onClick = (evt) => {
-    setExpanded(!expanded)
-  }
+    setExpanded(!expanded);
+  };
 
   const onClickFocus = (evt) => {
     if (evt.shiftKey && shiftFocusAction) {
@@ -31,117 +37,140 @@ let PropertyOwnerHeader = ({title, identifier, expanded, setExpanded, onIcon, of
       focusAction();
     }
     evt.stopPropagation();
-  }
+  };
 
   const popoutClick = (evt) => {
     popOutAction();
     evt.stopPropagation();
-  }
+  };
 
   const metaClick = (evt) => {
     metaAction();
     evt.stopPropagation();
-  }
+  };
 
- const trashClick = (evt) => {
-    //const trashName = title.slice(0,title.lastIndexOf('(') - 1);
+  const trashClick = (evt) => {
     trashAction(identifier);
-    evt.stopPropagation()
-  }
+    evt.stopPropagation();
+  };
 
+  const focusButton = (
+    <div className={styles.rightButton} onClick={onClickFocus}>
+      <SvgIcon><Focus /></SvgIcon>
+    </div>
+  );
+
+  const moreButtonsButton = (
+    <div className={styles.rightButton} >
+      <MaterialIcon icon={"more_vert"} />
+    </div>
+  );
 
   const popoutButton = (
-      <div className={styles.rightButton} onClick={popoutClick}>
-         <MaterialIcon icon="build"/>
-      </div>
-  )
+    <Button className={styles.menuButton} onClick={popoutClick}>
+      <MaterialIcon icon={"build"} /> Quick access settings
+    </Button>
+  );
 
   const metaButton = (
-      <div className={styles.rightButton} onClick={metaClick}>
-         <MaterialIcon icon="help_outline"/>
-      </div>
-  )
+    <Button className={styles.menuButton} onClick={metaClick}>
+      <MaterialIcon icon={"help_outline"} /> Show asset information
+    </Button>
+  );
 
   const trashButton = (
-      <div className={styles.rightButton} onClick={trashClick}>
-         <MaterialIcon icon="delete"/>
-      </div>
-  )
+    <Button className={styles.menuButton} onClick={trashClick}>
+      <MaterialIcon icon={"delete"} /> Delete
+    </Button>
+  );
 
-  return <header className={toggleHeaderStyles.toggle} onClick={onClick} role="button" tabIndex={0}>
-    <MaterialIcon
-      icon={expanded ? onIcon : offIcon}
-      className={toggleHeaderStyles.icon}
-    />
-    { quickToggleUri &&
-        <span className={styles.leftButtonContainer}>
-          <Property uri={quickToggleUri} checkBoxOnly={true} />
+  // Headers look slightly different for globe browsing layers
+  let titleClass = '';
+  if (isLayer) {
+    titleClass = enabled ? styles.enabledLayerTitle : styles.disabledLayerTitle;
+  }
+  // And additionally for height layers
+  const isHeightLayer = isLayer && quickToggleUri.includes('Layers.HeightLayers.');
+  const refs = useContextRefs();
+
+  let refName = "PropertyOwner " + title;
+  const titleNoSpaces = title.replace(/\s/g, '');
+  if (titleNoSpaces !== identifier) {
+    refName += " " + identifier;
+  }
+
+  const hasMoreButtons = (popOutAction || metaAction);
+
+  return (
+    <header
+      className={`${toggleHeaderStyles.toggle} ${isLayer && styles.layerHeader}`}
+      onClick={onClick}
+      role={"button"}
+      tabIndex={0}
+      ref={el => refs.current[refName] = el}
+    >
+      <Row>
+        <MaterialIcon
+          icon={expanded ? onIcon : offIcon}
+          className={toggleHeaderStyles.icon}
+        />
+        { quickToggleUri &&
+          <span className={styles.leftButtonContainer}>
+            <Property uri={quickToggleUri} checkBoxOnly />
+          </span>
+        }
+        <span className={`${toggleHeaderStyles.title} ${styles.title} ${titleClass}`}>
+          { title }
+          { isHeightLayer && <MaterialIcon className={styles.heightLayerIcon} icon={"landscape"} /> }
+          { isLayer && <SvgIcon className={styles.layerDraggableIcon}><DraggableIcon /></SvgIcon> }
         </span>
-    }
-    <span className={`${toggleHeaderStyles.title} ${titleClass}`} >
-      { title }
-    </span>
-    <span className={styles.rightButtonContainer}>
-      { focusAction &&
-        <div className={styles.rightButton} onClick={onClickFocus}>
-        <SvgIcon><Focus/></SvgIcon>
-        </div>
-      }
-      {
-        popOutAction && popoutButton
-      }
-      {
-        metaAction && metaButton
-      }
-      {
-        trashAction && trashButton
-      }
-    </span>
-  </header>
-}
+        <span className={styles.rightButtonContainer}>
+          { focusAction && focusButton }
+          { hasMoreButtons &&
+            <TooltipMenu
+              sourceObject={moreButtonsButton}
+            >
+              { popOutAction && popoutButton }
+              { metaAction && metaButton }
+              { trashAction && trashButton }
+            </TooltipMenu>
+           }
+        </span>
+      </Row>
+    </header>
+  );
+};
 
 const mapStateToProps = (state, ownProps) => {
   const { uri, title } = ownProps;
 
-  let quickToggleUri = undefined;
+  let quickToggleUri;
 
   const splitUri = uri.split('.');
   const isRenderable = splitUri.length > 1 && splitUri[splitUri.length - 1] === 'Renderable';
 
   const identifier = splitUri.length > 1 && splitUri[1];
 
-  if (state.propertyTree.properties[uri + '.Enabled'] && !isRenderable) {
-    quickToggleUri = uri + '.Enabled';
-  } else if (state.propertyTree.properties[uri + '.Renderable.Enabled']) {
-    quickToggleUri = uri + '.Renderable.Enabled';
-  }
-  //check for layers so we can make the titles green
-  var isLayer = false;
-  LayerGroupKeys.forEach( (layerGroup) => {
-    if ( (uri.indexOf(layerGroup) > -1) && !(uri.endsWith(layerGroup)) ) {
-      isLayer = true;
-    }
-  });
-  let isHeightLayer = quickToggleUri && (quickToggleUri.lastIndexOf('HeightLayers') > 0);
-  var titleClass = "";
-  var enabled = quickToggleUri && state.propertyTree.properties[quickToggleUri].value;
-  if (isLayer) {
-      if (enabled) {
-        titleClass = styles.greenTitle;
-      } else if (isHeightLayer) {
-        //make height layers visually distinguishable from other layers
-        //specificlly color layers where they might have the same name
-        titleClass = styles.grayTitle;
-      }
+  if (state.propertyTree.properties[`${uri}.Enabled`] && !isRenderable) {
+    quickToggleUri = `${uri}.Enabled`;
+  } else if (state.propertyTree.properties[`${uri}.Renderable.Enabled`]) {
+    quickToggleUri = `${uri}.Renderable.Enabled`;
   }
 
+  const enabled = quickToggleUri && state.propertyTree.properties[quickToggleUri].value;
+
+  // Check for layers so we can change their visuals (e.g makes the titles of enabled
+  // layers green and have different behavior on hover)
+  const isLayer = isGlobeBrowsingLayer(uri);
+
   return {
-    title: title || displayName(state, uri),
+    title: title || displayName(state, state.propertyTree.properties, uri),
     quickToggleUri,
-    titleClass,
-    identifier: identifier
+    enabled,
+    isLayer,
+    identifier,
   };
-}
+};
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   const { uri } = ownProps;
@@ -156,16 +185,15 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       shiftFocusAction: () => {
         propertyDispatcher(dispatch, NavigationAnchorKey).set(splitUri[1]);
         propertyDispatcher(dispatch, NavigationAimKey).set('');
-      }
-    }
-  } else {
-    return {};
+      },
+    };
   }
+  return {};
 };
 
 PropertyOwnerHeader = connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(PropertyOwnerHeader);
 
 

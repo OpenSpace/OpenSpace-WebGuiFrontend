@@ -4,18 +4,24 @@
   font-size: 2em;
 }
 
-.playingPicker {
-  background-color: $blue;
-
-  &:hover {
-    background-color: $blue;
-  }
+.playbackButton {
+  margin-right: 1em;
 }
 
-.recordingPicker {
-  background-color: $red;
+.fpsInput {
+  min-width: 40%;
+}
 
-  &:hover {
-    background-color: $red;
-  }
+.fpsCheckbox {
+  min-width: 50%;
+  line-height: 2em;
+}
+
+.lastRow {
+  margin-bottom: 10px;
+}
+
+.infoBox {
+  align-self: center;
+  padding-right: 5px;
 }

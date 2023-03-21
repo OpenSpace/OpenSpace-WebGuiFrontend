@@ -1,9 +1,8 @@
 import React from 'react';
-import HelpButton from './presentational/HelpButton';
+import Controllers from './containers/Controllers';
 import HomeButtonContainer from './containers/HomeButtonContainer';
 import InfoButtonController from './containers/InfoButtonContainer';
-import Controllers from './containers/Controllers';
-
+import HelpButton from './presentational/HelpButton';
 import styles from './style/UtilitiesMenu.scss';
 
 const UtilitiesMenu = (props) => (

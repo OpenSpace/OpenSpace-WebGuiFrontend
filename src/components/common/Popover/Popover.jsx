@@ -1,11 +1,10 @@
-import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-
+import React, { Component } from 'react';
 import { excludeKeys } from '../../../utils/helpers';
-import MaterialIcon from '../MaterialIcon/MaterialIcon';
-import styles from './Popover.scss';
 import Button from '../Input/Button/Button';
+import MaterialIcon from '../MaterialIcon/MaterialIcon';
 import Window from '../Window/Window';
+import styles from './Popover.scss';
 
 const findStyles = arr => arr.split(' ')
   .map(style => styles[style] || style)
@@ -40,7 +39,7 @@ class Popover extends Component {
     return (
       <section {...this.inheritedProps} className={`${styles.popover} ${this.arrowStyle} ${this.styles}`}>
         { this.props.title && (
-          <header>
+          <header className={styles.header}>
             <div className={styles.title}>
               { this.props.title }
             </div>
@@ -65,7 +64,7 @@ class Popover extends Component {
   }
 
   get asWindow() {
-    return (<Window {...this.windowInheritedProps}>{ this.props.children }</Window>);
+    return (<Window {...this.windowInheritedProps} className={`${this.styles}`}>{ this.props.children }</Window>);
   }
 
   toggleDetach() {

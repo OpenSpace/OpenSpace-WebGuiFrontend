@@ -6,7 +6,6 @@ import { combineReducers } from 'redux';
  */
 const defaultOriginPicker = {
   action: 'Focus',
-  showFavorites: true
 };
 const originPicker = (state = defaultOriginPicker, action) => {
   switch (action.type) {
@@ -15,11 +14,6 @@ const originPicker = (state = defaultOriginPicker, action) => {
         ...state,
         action: action.payload
       };
-    case actionTypes.setOriginPickerShowFavorites:
-      return {
-        ...state,
-        showFavorites: action.payload
-      };
     default:
       return state;
   }
@@ -27,7 +21,7 @@ const originPicker = (state = defaultOriginPicker, action) => {
 
 /**
  * Time picker
- */ 
+ */
 const defaultTimePicker = {
   // Todo: move state such as lock and calendar here.
 }
@@ -75,6 +69,10 @@ const defaultPopovers = {
   sessionRecording: popover(),
   screenSpaceRenderables: popover(),
   exoplanets: popover(),
+  skybrowser: popover(),
+  actions: popover(),
+  keybinds: popover(),
+  geoposition: popover(),
   focusNodePropertiesPanel: popover({ attached: false }),
   activeNodePropertyPanels: {},
   activeNodeMetaPanels: {},

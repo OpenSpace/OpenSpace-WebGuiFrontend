@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import InfoBox from '../../common/InfoBox/InfoBox';
+import React, { Component } from 'react';
 import { copyTextToClipboard } from '../../../utils/helpers';
-import ToggleContent from '../../common/ToggleContent/ToggleContent';
-import Checkbox from '../../common/Input/Checkbox/Checkbox';
+import InfoBox from '../../common/InfoBox/InfoBox';
 import Button from '../../common/Input/Button/Button';
+import Checkbox from '../../common/Input/Checkbox/Checkbox';
+import ToggleContent from '../../common/ToggleContent/ToggleContent';
 
 class SelectionProperty extends Component {
   constructor(props) {
@@ -104,20 +104,21 @@ class SelectionProperty extends Component {
         expanded={this.state.expanded}
         setExpanded={this.setExpanded}
       >
-        {
-          (options.length > 10) && helperButtons
-        }
-        {
-          options.map(opt => 
-            <Checkbox
-              key={opt}
-              label={opt}
-              checked={this.isSelected(opt)}
-              setChecked={(checked) => { this.onCheckboxChange(checked, opt); }}
-              disabled={this.disabled}
-            />
-          )
-        }
+        {/* @TODO (emmbr, 2021-05-27): this property type cannot be disabled */}
+        {/* <div className={`${this.disabled ? styles.disabled : ''}`}> */}
+          { (options.length > 10) && helperButtons }
+          {
+            options.map(opt => 
+              <Checkbox
+                key={opt}
+                label={opt}
+                checked={this.isSelected(opt)}
+                setChecked={(checked) => { this.onCheckboxChange(checked, opt); }}
+                disabled={this.disabled}
+              />
+            )
+          }
+        {/* </div> */}
       </ToggleContent>
     );
   }

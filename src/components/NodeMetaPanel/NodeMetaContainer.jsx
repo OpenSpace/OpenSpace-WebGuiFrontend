@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import NodeMetaPanel from './NodeMetaPanel';
 import styles from '../NodePropertiesPanel/NodePopOverContainer.scss';
+import NodeMetaPanel from './NodeMetaPanel';
 
 class NodeMetaContainer extends Component {
-
   constructor(props) {
     super(props);
   }

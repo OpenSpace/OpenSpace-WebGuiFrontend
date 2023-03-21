@@ -1,9 +1,7 @@
 /* eslint import/no-extraneous-dependencies: 0 */
-import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { action } from '@storybook/addon-actions';
+import React from 'react';
 import Select from './Select';
-import ReactSelect from 'react-select';
 
 /* globals module */
 

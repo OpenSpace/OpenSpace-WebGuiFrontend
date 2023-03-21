@@ -16,3 +16,11 @@
     height: 100%;
   }
 }
+
+.disabled > span:not(.icon) {
+  pointer-events: none;
+}
+
+.disabled {
+  color: darken($text-color-focus, 30%) !important;
+}

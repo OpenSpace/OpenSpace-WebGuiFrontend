@@ -1,9 +1,9 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 import ReactSelect from 'react-select';
+import { excludeKeys } from '../../../../utils/helpers';
 import Input from '../Input/Input';
 import styles from './Select.scss';
-import { excludeKeys } from '../../../../utils/helpers';
 
 const selectStyles = {
   control: (provided) => ({
@@ -16,7 +16,8 @@ const selectStyles = {
   menu: (provided) => ({
     ...provided,
     backgroundColor: '#222',
-    margin: 0
+    margin: 0,
+    zIndex: 10
   }),
   placeholder: (provided) => ({
     ...provided,
@@ -39,7 +40,7 @@ const selectStyles = {
   }),
   singleValue: (provided, state) => ({
     ...provided,
-    color: '#fff',
+    color: 'inherited',
     paddingTop: 10,
     marginLeft: 0
   })

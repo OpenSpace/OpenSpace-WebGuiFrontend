@@ -1,15 +1,13 @@
+import { Resizable } from 're-resizable';
 import React, { Component } from 'react';
-
-import TabMenu from './TabMenu/TabMenu';
-import SystemMenu from '../SystemMenu/SystemMenu';
-import TabMenuItem from './TabMenu/TabMenuItem';
 import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import SmallLabel from '../common/SmallLabel/SmallLabel';
+import SystemMenu from '../SystemMenu/SystemMenu';
 import ScenePane from './ScenePane';
 import SettingsPane from './SettingsPane';
-import { Resizable } from 're-resizable';
-
 import styles from './Sidebar.scss';
+import TabMenu from './TabMenu/TabMenu';
+import TabMenuItem from './TabMenu/TabMenuItem';
 
 const views = {
   settings: SettingsPane,
@@ -78,10 +76,10 @@ class Sidebar extends Component {
         <section className={`${styles.Sidebar} ${view ? styles.active : ''}`}>
           { SelectedView && (<SelectedView closeCallback={this.selectView} />)}
           <TabMenu>
-            <SystemMenu />
+            <SystemMenu showTutorial={this.props.showTutorial}/>
             <TabMenuItem active={this.isActive('scene')} onClick={this.selectView('scene')}>
               <MaterialIcon className={styles.icon} icon="layers" />
-              <SmallLabel>Scene</SmallLabel>
+              <SmallLabel refKey={'Scene'}>Scene</SmallLabel>
             </TabMenuItem>
             <TabMenuItem active={this.isActive('settings')} onClick={this.selectView('settings')}>
               <MaterialIcon className={styles.icon} icon="settings" />

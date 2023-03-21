@@ -1,6 +1,6 @@
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
 import InfoButton from './../presentational/InfoButton';
 
 class InfoButtonController extends Component {
@@ -16,10 +16,10 @@ class InfoButtonController extends Component {
     return (
       <div>
         {this.props.story.title &&
-        <InfoButton
-          storyTitle={this.props.story.title}
-          storyInfo={this.props.story.storyinfo}
-        />
+          <InfoButton
+            storyTitle={this.props.story.title}
+            storyInfo={this.props.story.storyinfo}
+          />
         }
       </div>
     );

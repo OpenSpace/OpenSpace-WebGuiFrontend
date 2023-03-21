@@ -1,9 +1,7 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import React from 'react';
 import SmallLabel from '../common/SmallLabel/SmallLabel';
 import styles from './StoryButton.scss';
-
 
 const StoryButton = ({ pickStory, storyIdentifier }) => (
   <div className={styles.StoryButton} onClick={pickStory} id={storyIdentifier} role="button" tabIndex="0">

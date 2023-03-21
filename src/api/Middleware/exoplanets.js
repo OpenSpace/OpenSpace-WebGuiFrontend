@@ -7,8 +7,12 @@ import api from '../api';
 import { actionTypes } from '../Actions/actionTypes';
 
 const getExoplanets = async (luaApi, callback) => {
-  var planetList = await luaApi.exoplanets.getListOfExoplanets();
-  var listArray = Object.values(planetList[1])
+  let planetList = await luaApi.exoplanets.getListOfExoplanets();
+  let actualList = planetList[1];
+  if (!actualList) {
+    return;
+  }
+  var listArray = Object.values(actualList)
   listArray = listArray.map(item => {
     return {"name": item, "identifier": item};
   })
@@ -25,14 +29,13 @@ const removeSystem = async (data, callback) => {
 export const exoplanets = store => next => (action) => {
   const result = next(action);
   switch (action.type) {
-    case actionTypes.initializeLuaApi:
+    case actionTypes.loadExoplanetsData:
       getExoplanets(action.payload, (data) => {
         store.dispatch(initializeExoplanets(data));
       });
       break;
     case actionTypes.removeExoplanets:
-      removeSystem(action.payload.system, () => {
-      })
+      removeSystem(action.payload.system, () => {})
       break;
     default:
       break;
