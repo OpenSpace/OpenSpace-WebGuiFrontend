@@ -262,8 +262,6 @@ const mapStateToProps = (state, ownProps) => {
   }
   let fadeValue = state.propertyTree.properties[fadeUri]?.value;
 
-  // @TODO: Find fade property of all subowners as well! to fade out everything that's fadeable
-
   // Make fade == 0 correspond to disabled, according to the checkbox
   if (fadeUri && state.propertyTree.properties[fadeUri].value === 0) {
     enabled = false;
