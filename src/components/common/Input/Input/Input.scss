@@ -51,7 +51,7 @@ $padding-loading: $padding-top $padding-horizontal $padding-bottom-loading;
   outline: 0;
 
   ~ .label {
-    color: $green;
+    color: $yellow;
   }
 }
 
@@ -132,7 +132,7 @@ $padding-loading: $padding-top $padding-horizontal $padding-bottom-loading;
     border-bottom: $loading-border-width solid $blue;
   }
   50% {
-    border-bottom: $loading-border-width solid $green;
+    border-bottom: $loading-border-width solid $yellow;
   }
   100% {
     border-bottom: $loading-border-width solid $blue;
