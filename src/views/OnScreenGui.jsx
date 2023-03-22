@@ -21,6 +21,7 @@ import About from './About/About';
 import styles from './OnScreenGui.scss';
 import TourPopup from '../components/GettingStartedTour/TourPopup'
 import { RefsProvider } from '../components/GettingStartedTour/GettingStartedContext';
+import WindowThreeStates from '../components/BottomBar/SkyBrowser/WindowThreeStates/WindowThreeStates'; 
 
 function OnScreenGui({
   showFlightController, showAbout, isInBrowser
@@ -29,12 +30,13 @@ function OnScreenGui({
   const location = useLocation();
   const [showTutorial, setShowTutorial] = React.useState(false);
   const [luaConsoleVisible, setLuaConsoleVisible] = React.useState(false);
+  const [showMissions, setShowMissions] = React.useState(false);
 
   const missions = useSelector((state) => state.missions);
   const connectionLost = useSelector((state) => state.connection.connectionLost);
   const version = useSelector((state) => state.version);
   console.log(missions)
-  
+
   const dispatch = useDispatch();
 
   React.useEffect(() => {
@@ -42,6 +44,10 @@ function OnScreenGui({
     window.addEventListener("keydown", toggleConsole);
     return () => window.removeEventListener('keydown', toggleConsole);
   }, []);
+
+  React.useEffect(() => {
+    setShowMissions(missions.isInitialized);
+  }, [missions.isInitialized]);
 
   function hideAbout() {
     dispatch(setShowAbout(false));
@@ -108,6 +114,18 @@ function OnScreenGui({
             </Error>
           </Overlay>
         )}
+        {showMissions && (
+          <WindowThreeStates
+            title={missions.data.missions[0].name}
+            heightCallback={() => console.log("resize")}
+            acceptedStyles={["PANE"]}
+            defaultStyle={"PANE"}
+            closeCallback={() => setShowMissions(false)}
+          >
+            {missions.data.missions[0].description}
+          </WindowThreeStates>
+        )
+        }
         <section className={styles.Grid__Left}>
           <Sidebar showTutorial={ setShowTutorial } />
         </section>
