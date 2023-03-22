@@ -67,7 +67,8 @@ $image-width: 96px;
   width: 96px;
   height: 50px;
   border-radius: 2px;
-  display:flex;
+  display: flex;
+  padding-top: 5px;
   &Text {
     white-space: nowrap;
     overflow: hidden;
