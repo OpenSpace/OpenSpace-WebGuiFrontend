@@ -35,7 +35,6 @@ function OnScreenGui({
   const missions = useSelector((state) => state.missions);
   const connectionLost = useSelector((state) => state.connection.connectionLost);
   const version = useSelector((state) => state.version);
-  console.log(missions)
 
   const dispatch = useDispatch();
 
