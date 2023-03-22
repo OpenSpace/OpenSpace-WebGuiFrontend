@@ -18,7 +18,8 @@ class NumericInput extends Component {
       showTextInput: false,
       id: `numericinput-${Input.nextId}`,
       hoverHint: null,
-      isValueOutsideRange: props.value < props.min || props.value > props.max
+      isValueOutsideRange: props.value < props.min || props.value > props.max,
+      enteredInvalidValue: false
     };
 
     this.roundValueToStepSize = this.roundValueToStepSize.bind(this);
@@ -124,9 +125,14 @@ class NumericInput extends Component {
     // Validate the test input
     const value = Number.parseFloat(event.currentTarget.value);
     const isValueOutsideRange =  value < min || value > max;
+    const enteredNanValue = isNaN(value) || !isFinite(value);
 
     if (this.state.isValueOutsideRange !== isValueOutsideRange) {
       this.setState({ isValueOutsideRange });
+    }
+
+    if (this.state.enteredInvalidValue !== enteredNanValue) {
+      this.setState({ enteredInvalidValue: enteredNanValue });
     }
   }
 
@@ -165,7 +171,7 @@ class NumericInput extends Component {
     if (this.props.disabled) {
       return;
     }
-    this.setState({ showTextInput: true, hoverHint: null });
+    this.setState({ showTextInput: true, hoverHint: null, enteredInvalidValue: false });
   }
 
   disableTextInput() {
@@ -173,12 +179,14 @@ class NumericInput extends Component {
   }
 
   render() {
-    const { value, id, isValueOutsideRange, hoverHint } = this.state;
+    const { value, id, isValueOutsideRange, enteredInvalidValue, hoverHint } = this.state;
     const { decimals, min, max, showOutsideRangeHint } = this.props;
 
     if (this.showTextInput) {
       let excludeProps = 'reverse onValueChanged inputOnly noHoverHint noTooltip noValue exponent showOutsideRangeHint';
       let inputClassName = '';
+      let tootipContent = "";
+      let showTooltip = false;
 
       // If we are already outside the range, sclude the min max properties to the HTML
       // input. But while inside the range we want them to affect what value is possible
@@ -187,15 +195,27 @@ class NumericInput extends Component {
         excludeProps += ' min max';
         if (showOutsideRangeHint) {
           inputClassName += styles.outsideMinMaxRange;
+          showTooltip = true;
+          tootipContent = <>
+            <p>{`Value is outside the valid range: `}<b>{`[${min}, ${max}].`}</b></p>
+            <br/>
+            <p>{"May lead to unexpected/undesired behavior"}</p>
+          </>
         }
+      }
+
+      if (showOutsideRangeHint && enteredInvalidValue) {
+        inputClassName += styles.invalidValue;
+        // TODO: update tooltip content
+        showTooltip = true;
+        tootipContent = <p>{ "Value is not a number! Input will be ignored"}</p>;
       }
 
       return (
         <div className={`${styles.inputGroup}`}>
-          {showOutsideRangeHint && isValueOutsideRange &&
-            <Tooltip style={{ left: `50%` }} placement={'top'}>
-              { `Value is outside the property's min/max range: \n [${min}, ${max}].` }
-              { "Might lead to undesired behavior" }
+          {showTooltip &&
+            <Tooltip className={inputClassName} style={{ left: `50%` }} placement={'top'}>
+              {tootipContent}
             </Tooltip>
           }
           <Input
