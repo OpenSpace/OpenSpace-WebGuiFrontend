@@ -21,7 +21,7 @@ import About from './About/About';
 import styles from './OnScreenGui.scss';
 import TourPopup from '../components/GettingStartedTour/TourPopup'
 import { RefsProvider } from '../components/GettingStartedTour/GettingStartedContext';
-import WindowThreeStates from '../components/BottomBar/SkyBrowser/WindowThreeStates/WindowThreeStates'; 
+import Missions from '../components/BottomBar/Missions/Missions';
 
 function OnScreenGui({
   showFlightController, showAbout, isInBrowser
@@ -46,8 +46,9 @@ function OnScreenGui({
   }, []);
 
   React.useEffect(() => {
-    setShowMissions(missions.isInitialized);
-  }, [missions.isInitialized]);
+    const shouldShow = missions.isInitialized && missions.data.missions;
+    setShowMissions(shouldShow);
+  }, [missions.data]);
 
   function hideAbout() {
     dispatch(setShowAbout(false));
@@ -114,18 +115,7 @@ function OnScreenGui({
             </Error>
           </Overlay>
         )}
-        {showMissions && (
-          <WindowThreeStates
-            title={missions.data.missions[0].name}
-            heightCallback={() => console.log("resize")}
-            acceptedStyles={["PANE"]}
-            defaultStyle={"PANE"}
-            closeCallback={() => setShowMissions(false)}
-          >
-            {missions.data.missions[0].description}
-          </WindowThreeStates>
-        )
-        }
+        {showMissions && <Missions closeCallback={() => setShowMissions(false)} />}
         <section className={styles.Grid__Left}>
           <Sidebar showTutorial={ setShowTutorial } />
         </section>
