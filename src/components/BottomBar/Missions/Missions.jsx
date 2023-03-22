@@ -3,7 +3,13 @@ import { useSelector } from 'react-redux';
 import WindowThreeStates from '../SkyBrowser/WindowThreeStates/WindowThreeStates';
 import * as d3 from 'd3';
 
-function Timeline({ fullWidth, fullHeight }) {
+const colors = [
+  'green', 'purple', 'pink', 'red', 'cyan', 'magenta', 'yellow'
+];
+
+function Timeline({ fullWidth, fullHeight, timeRange, currentPhases, now, setDisplayedPhase }) {
+  const nestedLevels = currentPhases?.length ?? 0;
+
   // Set the dimensions and margins of the graph
   const margin = { top: 10, right: 10, bottom: 25, left: 50 };
   const width = fullWidth - margin.left - margin.right;
@@ -16,14 +22,15 @@ function Timeline({ fullWidth, fullHeight }) {
   let xScale = d3.scaleLinear().range([margin.left, width - margin.right]);
   let yScale = d3.scaleTime().range([height - margin.bottom, margin.top]);
 
-  xScale.domain([0, 20]);
-  yScale.domain([0, 100]);
+  xScale.domain([0, nestedLevels]);
+  yScale.domain(timeRange);
 
   // Calculate axes
   const xAxis = d3.axisTop()
     .scale(xScale)
     .tickFormat(d => ``)
-    .tickSize(height - margin.top - margin.bottom);
+    .tickSize(0)
+    .ticks(nestedLevels)
 
   const yAxis = d3.axisLeft()
     .scale(yScale)
@@ -33,12 +40,52 @@ function Timeline({ fullWidth, fullHeight }) {
   d3.select(xAxisRef.current).call(xAxis);
   d3.select(yAxisRef.current).call(yAxis);
 
+  function createRectangle(phase, nestedLevel) {
+    const timeRange = [new Date(phase.timerange?.start), new Date(phase.timerange?.end)];
+    const key = phase.name;
+    return (
+      <rect
+        x={xScale(nestedLevels - nestedLevel - 1)}
+        y={yScale(timeRange[1])}
+        className="bar-filled"
+        height={yScale(timeRange[0]) - yScale(timeRange[1])}
+        width={xScale(1) - xScale(0)}
+        fill={colors[nestedLevel]}
+        key={`${key}${timeRange[0].toString()}${timeRange[1].toString()}`}
+        onClick={() => setDisplayedPhase(phase)}
+      />
+    );
+  }
+
+  function createCurrentTimeIndicator() {
+    return (
+      <rect
+        x={margin.left}
+        y={yScale(now)}
+        className="bar-filled"
+        height={3}
+        width={width - margin.left - margin.right}
+        fill={'white'}
+      />
+    )
+  }
+
   return (
     <svg width={width} height={height} style={{ position: 'absolute', top: 0, right: 350 }}>
       <g>
         <g ref={xAxisRef} transform={`translate(0, ${height - margin.bottom})`} />
         <g ref={yAxisRef} transform={`translate(${margin.left}, 0)`}/>
       </g>
+      {currentPhases?.map((phase, index) => {
+        return phase.map(phase => {
+          if (!phase.timerange?.start || !phase.timerange?.end) {
+            return null;
+          }
+          return createRectangle(phase, index)
+        })
+      }
+      )}
+      {createCurrentTimeIndicator()}
     </svg>
   );
 }
@@ -46,39 +93,53 @@ function Timeline({ fullWidth, fullHeight }) {
 export default function Missions(closeCallback) {
   const missions = useSelector((state) => state.missions);
   const now = useSelector((state) => state.time.time);
-  const timeRange = { start: new Date(missions.data.missions[0].timerange.start), end: new Date(missions.data.missions[0].timerange.end) };
-  const years = Math.abs(timeRange.start.getUTCFullYear() - timeRange.end.getUTCFullYear()); 
-  console.log(Math.abs(timeRange.start.getUTCFullYear() - timeRange.end.getUTCFullYear()));
+  const timeRange = [new Date(missions.data.missions[0].timerange.start), new Date(missions.data.missions[0].timerange.end)];
+  const years = Math.abs(timeRange[0].getUTCFullYear() - timeRange[1].getUTCFullYear()); 
+  const currentPhases = React.useRef(null);
+  const [displayedPhase, setDisplayedPhase] = React.useState(missions.data.missions[0]);
 
-  let currentPhases = [];
+  React.useEffect(() => {
+    let phases = [];
+    findAllPhases(phases, missions.data.missions[0].phases, 0);
+    currentPhases.current = phases;
+  }, [missions.data]);
 
-  missions.data.missions[0].timerange.start
-
-  //console.log(new Date(missions.data.missions[0].timerange.start))
-  //console.log(new Date(now))
+  function findAllPhases(phaseArray, phases, nestedLevel) {
+    if (!Boolean(phaseArray?.[nestedLevel])) {
+      phaseArray.push(phases);
+    }
+    else {
+      phaseArray[nestedLevel].push(...phases);
+    }
+    phases.map(phase => {
+      if (phase?.phases && phase.phases.length > 0) {
+        findAllPhases(phaseArray, phase.phases, nestedLevel + 1);
+      }
+    });
+  }
 
   return (
     <>
       <Timeline
         fullWidth={150}
         fullHeight={window.innerHeight}
+        timeRange={timeRange}
+        currentPhases={currentPhases.current}
+        now={new Date(now)}
+        setDisplayedPhase={setDisplayedPhase}
       />
       <WindowThreeStates
-        title={missions.data.missions[0].name}
+        title={displayedPhase.name}
         heightCallback={(size) => console.log(size)}
         acceptedStyles={["PANE"]}
         defaultStyle={"PANE"}
         closeCallback={() => closeCallback()}
       > 
-        
       <div style={{ padding: '10px'}}>
         <p>
-          {missions.data.missions[0].description}
+          {displayedPhase.description}
         </p>
-        <p>
-          {`Missions length: ${years} years`}
-        </p>
-        <img style={{ width: '100%' }} src={missions.data.missions[0].media.image} />
+        <img style={{ width: '100%', padding: '20px 5px' }} src={displayedPhase.media.image} />
       </div>
     </WindowThreeStates>
   </>
