@@ -1,0 +1,13 @@
+@import "../../../styles/all";
+
+.bar {
+  fill: grey;
+}
+
+.barHighlighted {
+  fill: $ui-highlight-secondary;
+}
+
+.bar:hover, .barHighlighted:hover {
+  fill: pink;
+}

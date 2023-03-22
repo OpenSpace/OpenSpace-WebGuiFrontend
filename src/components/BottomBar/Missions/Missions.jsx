@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import WindowThreeStates from '../SkyBrowser/WindowThreeStates/WindowThreeStates';
 import * as d3 from 'd3';
+import styles from './missions.scss';
 
 const colors = [
   'green', 'purple', 'pink', 'red', 'cyan', 'magenta', 'yellow'
@@ -43,14 +44,16 @@ function Timeline({ fullWidth, fullHeight, timeRange, currentPhases, now, setDis
   function createRectangle(phase, nestedLevel) {
     const timeRange = [new Date(phase.timerange?.start), new Date(phase.timerange?.end)];
     const key = phase.name;
+    const isCurrent = Date.parse(now) < Date.parse(timeRange[1]) &&
+      Date.parse(now) > Date.parse(timeRange[0]); 
+    
     return (
       <rect
         x={xScale(nestedLevels - nestedLevel - 1)}
         y={yScale(timeRange[1])}
-        className="bar-filled"
+        className={isCurrent ? styles.barHighlighted : styles.bar}
         height={yScale(timeRange[0]) - yScale(timeRange[1])}
         width={xScale(1) - xScale(0)}
-        fill={colors[nestedLevel]}
         key={`${key}${timeRange[0].toString()}${timeRange[1].toString()}`}
         onClick={() => setDisplayedPhase(phase)}
       />
@@ -139,7 +142,9 @@ export default function Missions(closeCallback) {
         <p>
           {displayedPhase.description}
         </p>
-        <img style={{ width: '100%', padding: '20px 5px' }} src={displayedPhase.media.image} />
+          {displayedPhase.media.image &&
+            <img style={{ width: '100%', padding: '20px 5px' }} src={displayedPhase.media.image} />
+          }
       </div>
     </WindowThreeStates>
   </>
