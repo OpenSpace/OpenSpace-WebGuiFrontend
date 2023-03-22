@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { setShowAbout, startConnection } from '../api/Actions';
 import {
@@ -30,6 +30,8 @@ function OnScreenGui({
   const [showTutorial, setShowTutorial] = React.useState(false);
   const [luaConsoleVisible, setLuaConsoleVisible] = React.useState(false);
 
+  const missions = useSelector((state) => state.missions);
+  
   React.useEffect(() => {
     startConnection();
     window.addEventListener("keydown", toggleConsole);

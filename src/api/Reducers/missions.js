@@ -5,7 +5,7 @@ const defaultState = {
   data: {}
 }
 
-export const version = (state = defaultState, action) => { // state refers to version
+export const missions = (state = defaultState, action) => { 
   switch (action.type) {
     case actionTypes.initializeMissions:
       return {
