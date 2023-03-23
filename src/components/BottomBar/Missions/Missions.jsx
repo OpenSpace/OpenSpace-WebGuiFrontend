@@ -9,24 +9,24 @@ const colors = [
 ];
 
 function Timeline({ fullWidth, fullHeight, timeRange, currentPhases, now, setDisplayedPhase }) {
-  const nestedLevels = currentPhases?.length ?? 0;
+  const [k, setK] = React.useState(1);
+  const [y, setY] = React.useState(0);
 
+  const nestedLevels = currentPhases?.length ?? 0;
   // Set the dimensions and margins of the graph
   const margin = { top: 10, right: 10, bottom: 25, left: 50 };
   const width = fullWidth - margin.left - margin.right;
   const height = fullHeight - margin.top - margin.bottom;
 
+  const svgRef = React.useRef();
   const xAxisRef = React.useRef();
   const yAxisRef = React.useRef();
 
   // Calculate scaling for x and y
-  let xScale = d3.scaleLinear().range([margin.left, width - margin.right]);
-  let yScale = d3.scaleTime().range([height - margin.bottom, margin.top]);
+  const xScale = d3.scaleLinear().range([margin.left, width - margin.right]).domain([0, nestedLevels]);
+  let yScale = d3.scaleTime().range([height - margin.bottom, margin.top]).domain(timeRange);
 
-  xScale.domain([0, nestedLevels]);
-  yScale.domain(timeRange);
-
-  // Calculate axes
+   // Calculate axes
   const xAxis = d3.axisTop()
     .scale(xScale)
     .tickFormat(d => ``)
@@ -37,9 +37,31 @@ function Timeline({ fullWidth, fullHeight, timeRange, currentPhases, now, setDis
     .scale(yScale)
     .tickFormat(d3.utcFormat('%Y'))
   
-  // Change axes on DOM with refs
-  d3.select(xAxisRef.current).call(xAxis);
-  d3.select(yAxisRef.current).call(yAxis);
+  React.useEffect(() => {
+    // Change axes on DOM with refs
+    console.log("set initial scaling")
+    d3.select(xAxisRef.current).call(xAxis);
+    d3.select(yAxisRef.current).call(yAxis);
+
+    d3.select(yAxisRef.current).selectAll(".tick text")
+    .style("font-size", "1.3em")
+    .style("font-family", "Segoe UI")
+    
+    d3.select(xAxisRef.current).selectAll(".tick line").attr("stroke", 'grey');
+  },[]);
+
+  React.useEffect(() => {
+    
+    const zoom = d3.zoom().on("zoom", (event) => {
+      const newScaleY = event.transform.rescaleY(yScale); 
+      d3.select(yAxisRef.current).call(yAxis.scale(newScaleY));
+      setK(event.transform.k);
+      setY(event.transform.y);
+    })
+      .scaleExtent([1, 1000])
+      .translateExtent([[0, 0], [width, height]]);;
+    d3.select(svgRef.current).call(zoom);
+  }, []);
 
   function createRectangle(phase, nestedLevel) {
     const timeRange = [new Date(phase.timerange?.start), new Date(phase.timerange?.end)];
@@ -66,7 +88,7 @@ function Timeline({ fullWidth, fullHeight, timeRange, currentPhases, now, setDis
         x={margin.left}
         y={yScale(now)}
         className="bar-filled"
-        height={3}
+        height={3/k}
         width={width - margin.left - margin.right}
         fill={'white'}
       />
@@ -74,21 +96,25 @@ function Timeline({ fullWidth, fullHeight, timeRange, currentPhases, now, setDis
   }
 
   return (
-    <svg width={width} height={height} style={{ position: 'absolute', top: 0, right: 350 }}>
+    <svg ref={svgRef} width={width} height={height} style={{ position: 'absolute', top: 0, right: 350 }}>
       <g>
         <g ref={xAxisRef} transform={`translate(0, ${height - margin.bottom})`} />
-        <g ref={yAxisRef} transform={`translate(${margin.left}, 0)`}/>
+        <g ref={yAxisRef} transform={`translate(${margin.left}, ${0})`} />
       </g>
-      {currentPhases?.map((phase, index) => {
-        return phase.map(phase => {
-          if (!phase.timerange?.start || !phase.timerange?.end) {
-            return null;
-          }
-          return createRectangle(phase, index)
-        })
-      }
-      )}
-      {createCurrentTimeIndicator()}
+      <g transform={`translate(0, ${y})scale(1, ${k})`}>
+        {currentPhases?.map((phase, index) => {
+          return phase.map(phase => {
+            if (!phase.timerange?.start || !phase.timerange?.end) {
+              return null;
+            }
+            return createRectangle(phase, index)
+          })
+        }
+        )}
+      </g>
+      <g transform={`translate(0, ${y})scale(1, ${k})`}>
+        {createCurrentTimeIndicator()}
+      </g>
     </svg>
   );
 }
