@@ -198,8 +198,6 @@ class NumericInput extends Component {
           showTooltip = true;
           tootipContent = <>
             <p>{`Value is outside the valid range: `}<b>{`[${min}, ${max}].`}</b></p>
-            <br/>
-            <p>{"May lead to unexpected/undesired behavior"}</p>
           </>
         }
       }
@@ -208,7 +206,7 @@ class NumericInput extends Component {
         inputClassName += styles.invalidValue;
         // TODO: update tooltip content
         showTooltip = true;
-        tootipContent = <p>{ "Value is not a number! Input will be ignored"}</p>;
+        tootipContent = <p>{ "Value is not a number"}</p>;
       }
 
       return (
