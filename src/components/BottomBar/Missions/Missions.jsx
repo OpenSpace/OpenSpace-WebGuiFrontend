@@ -8,15 +8,17 @@ const colors = [
   'green', 'purple', 'pink', 'red', 'cyan', 'magenta', 'yellow'
 ];
 
+
+
 function Timeline({ fullWidth, fullHeight, timeRange, currentPhases, now, setDisplayedPhase }) {
   const [k, setK] = React.useState(1);
   const [y, setY] = React.useState(0);
 
   const nestedLevels = currentPhases?.length ?? 0;
   // Set the dimensions and margins of the graph
-  const margin = { top: 10, right: 10, bottom: 25, left: 50 };
-  const width = fullWidth - margin.left - margin.right;
-  const height = fullHeight - margin.top - margin.bottom;
+  const margin = { top: 10, right: 10, bottom: 60, left: 60 };
+  const width = fullWidth;
+  const height = fullHeight;
 
   const svgRef = React.useRef();
   const xAxisRef = React.useRef();
@@ -35,11 +37,9 @@ function Timeline({ fullWidth, fullHeight, timeRange, currentPhases, now, setDis
 
   const yAxis = d3.axisLeft()
     .scale(yScale)
-    .tickFormat(d3.utcFormat('%Y'))
   
   React.useEffect(() => {
     // Change axes on DOM with refs
-    console.log("set initial scaling")
     d3.select(xAxisRef.current).call(xAxis);
     d3.select(yAxisRef.current).call(yAxis);
 
@@ -94,10 +94,20 @@ function Timeline({ fullWidth, fullHeight, timeRange, currentPhases, now, setDis
       />
     )
   }
-
+  const clipMargin = { top: margin.top, bottom: window.innerHeight - margin.bottom };
   return (
-    <svg ref={svgRef} width={width} height={height} style={{ position: 'absolute', top: 0, right: 350 }}>
-      <g>
+    <svg
+      ref={svgRef}
+      width={width}
+      height={height}
+      style={{
+        position: 'absolute',
+        top: 0,
+        right: 350,
+        clipPath: `polygon(0% ${clipMargin.top}px, 100% ${clipMargin.top}px, 100% ${clipMargin.bottom}px, 0% ${clipMargin.bottom}px`
+      }}
+    >
+      <g style={{ clipPath: 'none'}}>
         <g ref={xAxisRef} transform={`translate(0, ${height - margin.bottom})`} />
         <g ref={yAxisRef} transform={`translate(${margin.left}, ${0})`} />
       </g>
@@ -150,7 +160,7 @@ export default function Missions(closeCallback) {
   return (
     <>
       <Timeline
-        fullWidth={150}
+        fullWidth={120}
         fullHeight={window.innerHeight}
         timeRange={timeRange}
         currentPhases={currentPhases.current}
@@ -159,7 +169,7 @@ export default function Missions(closeCallback) {
       />
       <WindowThreeStates
         title={displayedPhase.name}
-        heightCallback={(size) => console.log(size)}
+        heightCallback={(size) => size}
         acceptedStyles={["PANE"]}
         defaultStyle={"PANE"}
         closeCallback={() => closeCallback()}
