@@ -4,14 +4,21 @@ import WindowThreeStates from '../SkyBrowser/WindowThreeStates/WindowThreeStates
 import * as d3 from 'd3';
 import styles from './missions.scss';
 import { ActionsButton } from '../ActionsPanel';
+import Button from '../../common/Input/Button/Button';
 
 const colors = [
   'green', 'purple', 'pink', 'red', 'cyan', 'magenta', 'yellow'
 ];
 
-
-
-function Timeline({ fullWidth, fullHeight, timeRange, currentPhases, now, setDisplayedPhase }) {
+function Timeline({
+  fullWidth,
+  fullHeight,
+  timeRange,
+  currentPhases,
+  now,
+  setDisplayedPhase,
+  displayedPhase
+}) {
   const [k, setK] = React.useState(1);
   const [y, setY] = React.useState(0);
 
@@ -20,10 +27,12 @@ function Timeline({ fullWidth, fullHeight, timeRange, currentPhases, now, setDis
   const margin = { top: 10, right: 10, bottom: 60, left: 60 };
   const width = fullWidth;
   const height = fullHeight;
+  const radius = 2;
 
   const svgRef = React.useRef();
   const xAxisRef = React.useRef();
   const yAxisRef = React.useRef();
+  const rectRef = React.useRef();
 
   // Calculate scaling for x and y
   const xScale = d3.scaleLinear().range([margin.left, width - margin.right]).domain([0, nestedLevels]);
@@ -39,6 +48,7 @@ function Timeline({ fullWidth, fullHeight, timeRange, currentPhases, now, setDis
   const yAxis = d3.axisLeft()
     .scale(yScale)
   
+  // Axes
   React.useEffect(() => {
     // Change axes on DOM with refs
     d3.select(xAxisRef.current).call(xAxis);
@@ -51,8 +61,8 @@ function Timeline({ fullWidth, fullHeight, timeRange, currentPhases, now, setDis
     d3.select(xAxisRef.current).selectAll(".tick line").attr("stroke", 'grey');
   },[]);
 
+  // Add zoom
   React.useEffect(() => {
-    
     const zoom = d3.zoom().on("zoom", (event) => {
       const newScaleY = event.transform.rescaleY(yScale); 
       d3.select(yAxisRef.current).call(yAxis.scale(newScaleY));
@@ -64,21 +74,24 @@ function Timeline({ fullWidth, fullHeight, timeRange, currentPhases, now, setDis
     d3.select(svgRef.current).call(zoom);
   }, []);
 
-  function createRectangle(phase, nestedLevel) {
+  function createRectangle(phase, nestedLevel, padding = 0, color = undefined) {
     const timeRange = [new Date(phase.timerange?.start), new Date(phase.timerange?.end)];
     const key = phase.name;
     const isCurrent = Date.parse(now) < Date.parse(timeRange[1]) &&
-      Date.parse(now) > Date.parse(timeRange[0]); 
-    
+      Date.parse(now) > Date.parse(timeRange[0]);
+    const paddingY = padding / k;
     return (
       <rect
-        x={xScale(nestedLevels - nestedLevel - 1)}
-        y={yScale(timeRange[1])}
+        x={xScale(nestedLevels - nestedLevel - 1) - padding}
+        y={yScale(timeRange[1]) - (paddingY)}
+        ry={radius / k}
+        rx={radius}
         className={isCurrent ? styles.barHighlighted : styles.bar}
-        height={yScale(timeRange[0]) - yScale(timeRange[1])}
-        width={xScale(1) - xScale(0)}
-        key={`${key}${timeRange[0].toString()}${timeRange[1].toString()}`}
+        height={yScale(timeRange[0]) - yScale(timeRange[1]) + ( 2 * paddingY)}
+        width={xScale(1) - xScale(0) + ( 2 * padding )}
+        key={`${key}${timeRange[0].toString()}${timeRange[1].toString()}${color}`}
         onClick={() => setDisplayedPhase(phase)}
+        style={color ? { fill : 'white' } : null}
       />
     );
   }
@@ -95,7 +108,10 @@ function Timeline({ fullWidth, fullHeight, timeRange, currentPhases, now, setDis
       />
     )
   }
+
   const clipMargin = { top: margin.top, bottom: window.innerHeight - margin.bottom };
+  let selectedPhase = null;
+  let selectedPhaseIndex = 0;
   return (
     <svg
       ref={svgRef}
@@ -112,16 +128,27 @@ function Timeline({ fullWidth, fullHeight, timeRange, currentPhases, now, setDis
         <g ref={xAxisRef} transform={`translate(0, ${height - margin.bottom})`} />
         <g ref={yAxisRef} transform={`translate(${margin.left}, ${0})`} />
       </g>
-      <g transform={`translate(0, ${y})scale(1, ${k})`}>
+      <g ref={rectRef} transform={`translate(0, ${y})scale(1, ${k})`}>
         {currentPhases?.map((phase, index) => {
           return phase.map(phase => {
             if (!phase.timerange?.start || !phase.timerange?.end) {
+              return null;
+            }
+            if (phase.name === displayedPhase.name) {
+              // We want to draw the selected phase last
+              // Save for later
+              selectedPhase = phase;
+              selectedPhaseIndex = index;
               return null;
             }
             return createRectangle(phase, index)
           })
         }
         )}
+        {selectedPhase ? <>
+          {createRectangle(selectedPhase, selectedPhaseIndex, 2, 'white')}
+          {createRectangle(selectedPhase, selectedPhaseIndex)}
+        </>: null}
       </g>
       <g transform={`translate(0, ${y})scale(1, ${k})`}>
         {createCurrentTimeIndicator()}
@@ -137,6 +164,7 @@ export default function Missions(closeCallback) {
   const years = Math.abs(timeRange[0].getUTCFullYear() - timeRange[1].getUTCFullYear()); 
   const currentPhases = React.useRef(null);
   const [displayedPhase, setDisplayedPhase] = React.useState(missions.data.missions[0]);
+  const overview = missions?.data?.missions[0];
 
   React.useEffect(() => {
     let phases = [];
@@ -156,6 +184,15 @@ export default function Missions(closeCallback) {
         findAllPhases(phaseArray, phase.phases, nestedLevel + 1);
       }
     });
+  }
+
+  function setPhaseToCurrent() {
+    const flatAllPhases = currentPhases.current.flat();
+    const filteredPhases = flatAllPhases.filter(mission => {
+      return Date.parse(now) < Date.parse(mission.timerange.end) &&
+        Date.parse(now) > Date.parse(mission.timerange.start)
+    });
+    setDisplayedPhase(filteredPhases.pop());
   }
 
   const action = {
@@ -178,7 +215,6 @@ export default function Missions(closeCallback) {
     : 
     true
   }
-
   return (
     <>
       <Timeline
@@ -188,6 +224,7 @@ export default function Missions(closeCallback) {
         currentPhases={currentPhases.current}
         now={new Date(now)}
         setDisplayedPhase={setDisplayedPhase}
+        displayedPhase={displayedPhase}
       />
       <WindowThreeStates
         title={displayedPhase.name}
@@ -196,6 +233,10 @@ export default function Missions(closeCallback) {
         defaultStyle={"PANE"}
         closeCallback={() => closeCallback()}
       > 
+        <div style={{ display: 'flex', justifyContent: 'space-around'}}>
+          <Button onClick={() => setDisplayedPhase(overview) }>{"Mission Overview"}</Button>
+          <Button onClick={setPhaseToCurrent}>{"Current Phase"}</Button>
+        </div>
       <div style={{ padding: '10px'}}>
         <p>
           {displayedPhase.description}

@@ -10,8 +10,14 @@ $font-size: 0.8rem;
   fill: $ui-highlight-secondary;
 }
 
+.barSelected {
+  fill: $ui-highlight-secondary;
+  
+  stroke: white;
+}
+
 .bar:hover, .barHighlighted:hover {
-  fill: pink;
+  fill: lightgray;
 }
 
 .title {
