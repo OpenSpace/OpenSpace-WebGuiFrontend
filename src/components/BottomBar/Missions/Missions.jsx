@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import WindowThreeStates from '../SkyBrowser/WindowThreeStates/WindowThreeStates';
 import * as d3 from 'd3';
 import styles from './missions.scss';
+import { ActionsButton } from '../ActionsPanel';
 
 const colors = [
   'green', 'purple', 'pink', 'red', 'cyan', 'magenta', 'yellow'
@@ -157,6 +158,27 @@ export default function Missions(closeCallback) {
     });
   }
 
+  const action = {
+    documentation
+    : 
+    "Toggles the shutdown that will stop OpenSpace after a grace period. Press again to cancel the shutdown during this period",
+    guiPath
+    : 
+    "/",
+    identifier
+    : 
+    "os_default.toggle_shutdown",
+    name
+    : 
+    "Toggle Shutdown",
+    script
+    : 
+    "openspace.toggleShutdown()",
+    synchronization
+    : 
+    true
+  }
+
   return (
     <>
       <Timeline
@@ -181,6 +203,10 @@ export default function Missions(closeCallback) {
           {displayedPhase.media.image &&
             <img style={{ width: '100%', padding: '20px 5px' }} src={displayedPhase.media.image} />
           }
+          <header className={styles.title}>
+            {"Actions"}
+          </header>
+          <ActionsButton action={action} />
       </div>
     </WindowThreeStates>
   </>
