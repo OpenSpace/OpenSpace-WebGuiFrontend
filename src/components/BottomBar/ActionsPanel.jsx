@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { setActionsPath, setPopoverVisibility, triggerAction } from '../../api/Actions';
 import subStateToProps from '../../utils/subStateToProps';
 import InfoBox from '../common/InfoBox/InfoBox';
@@ -11,13 +11,40 @@ import styles from './ActionsPanel.scss';
 import Picker from './Picker';
 import { FilterList, FilterListData, FilterListFavorites } from '../common/FilterList/FilterList';
 import { ObjectWordBeginningSubstring } from '../../utils/StringMatchers';
+import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
+
+export function ActionsButton({ action }) {
+  const luaApi = useSelector(state => state.luaApi);
+  function sendAction(e) {
+    const actionId = e.currentTarget.getAttribute('actionid');
+    luaApi.action.triggerAction(actionId);
+  }
+  const isLocal = (action.synchronization === false);
+  return (
+    <Button
+      block
+      smalltext
+      onClick={sendAction}
+      className={styles.actionButton}
+      actionid={action.identifier}
+    >
+      <p className={styles.iconRow}>
+        <MaterialIcon className={styles.buttonIcon} icon="launch" />
+        {isLocal && <span className={styles.localText}> (Local)</span>}
+      </p>
+      {action.name} {' '}
+      {action.documentation && <InfoBox text={action.documentation} />}
+
+    </Button>
+  );
+}
+
 
 function ActionsPanel ({
   actionLevel,
   actionPath,
   allActions,
   displayedNavigationPath,
-  luaApi,
   navigationPath,
   popoverVisible,
   setPopoverVisibility,
@@ -46,33 +73,6 @@ function ActionsPanel ({
     actionPath(navString);
   }
 
-  function sendAction(e) {
-    const actionId = e.currentTarget.getAttribute('actionid');
-    luaApi.action.triggerAction(actionId);
-  }
-
-  function actionsButton(action, key) {
-    const isLocal = (action.synchronization === false);
-    return (
-      <Button
-        block
-        smalltext
-        onClick={sendAction}
-        key={key}
-        className={styles.actionButton}
-        actionid={action.identifier}
-      >
-        <p className={styles.iconRow}>
-          <MaterialIcon className={styles.buttonIcon} icon="launch" />
-          {isLocal && <span className={styles.localText}> (Local)</span>}
-        </p>
-        {action.name} {' '}
-        {action.documentation && <InfoBox text={action.documentation} />}
-
-      </Button>
-    );
-  }
-
   function folderButton(key) {
     return (
       <Button
@@ -94,11 +94,11 @@ function ActionsPanel ({
   }
 
   function getActionContent(level) {
-    return level.actions.map((action) => actionsButton(action, action.identifier));
+    return level.actions.map((action) => <ActionsButton action={action} key={`${action.identifier}Action`} />);
   }
 
   function getAllActions() {
-    return allActions.map((action) => actionsButton(action, `${action.identifier}Filtered`));
+    return allActions.map((action) => <ActionsButton action={action} key={`${action.identifier}Filtered`} />);
   }
 
   function getBackButton() {
@@ -116,6 +116,10 @@ function ActionsPanel ({
   }
 
   function actionsContent(filterListHeight) {
+    console.log(actionLevel)
+    if (actionLevel === undefined) {
+      return <CenteredLabel>{"Loading..."}</CenteredLabel>;
+    }
     const isEmpty = (actionLevel.length === 0);
     const actionsContent = isEmpty ? <div>No Actions</div> : getActionContent(actionLevel);
     const childrenContent = isEmpty ? <div>No Children</div> : getChildrenContent(actionLevel);
