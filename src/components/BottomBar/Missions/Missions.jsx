@@ -157,7 +157,7 @@ function Timeline({
   );
 }
 
-export default function Missions(closeCallback) {
+export default function Missions({closeCallback}) {
   
   const missions = useSelector((state) => state.missions);
   const allActions = useSelector((state) => state.shortcuts?.data?.shortcuts);
