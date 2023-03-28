@@ -5,6 +5,10 @@ import * as d3 from 'd3';
 import styles from './missions.scss';
 import { ActionsButton } from '../ActionsPanel';
 import Button from '../../common/Input/Button/Button';
+import Picker from '../Picker';
+import { useLocalStorageState } from '../../../utils/customHooks';
+import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
+import { Icon } from '@iconify/react';
 
 const colors = [
   'green', 'purple', 'pink', 'red', 'cyan', 'magenta', 'yellow'
@@ -157,8 +161,8 @@ function Timeline({
   );
 }
 
-export default function Missions({closeCallback}) {
-  
+export default function Missions({}) {
+  const [popoverVisible, setPopoverVisibility] = useLocalStorageState('missionsPanelVisible', true);
   const missions = useSelector((state) => state.missions);
   const allActions = useSelector((state) => state.shortcuts?.data?.shortcuts);
   const luaApi = useSelector((state) => state.luaApi);
@@ -211,9 +215,11 @@ export default function Missions({closeCallback}) {
     });
     setDisplayedPhase(filteredPhases.pop());
   }
- 
-  return (
-    <>
+  
+  function popover() {
+
+    return (
+      <>
       <Timeline
         fullWidth={120}
         fullHeight={window.innerHeight}
@@ -222,31 +228,51 @@ export default function Missions({closeCallback}) {
         now={new Date(now)}
         setDisplayedPhase={setDisplayedPhase}
         displayedPhase={displayedPhase}
-      />
+        />
       <WindowThreeStates
         title={displayedPhase.name}
         heightCallback={(size) => size}
         acceptedStyles={["PANE"]}
         defaultStyle={"PANE"}
-        closeCallback={() => closeCallback()}
-      > 
+        closeCallback={() => setPopoverVisibility(false)}
+        > 
         <div style={{ display: 'flex', justifyContent: 'space-around'}}>
           <Button onClick={() => setDisplayedPhase(overview) }>{"Mission Overview"}</Button>
           <Button onClick={setPhaseToCurrent}>{"Current Phase"}</Button>
         </div>
-      <div style={{ padding: '10px'}}>
-        <p>
-          {displayedPhase.description}
-        </p>
-          {displayedPhase.media.image &&
-            <img style={{ width: '100%', padding: '20px 5px' }} src={displayedPhase.media.image} />
-          }
-          <header className={styles.title}>
-            {"Actions"}
-          </header>
-          {actions.map(action => <ActionsButton action={action} arg={{ time: displayedPhase.timerange.start }} />)}
+        <div style={{ padding: '10px'}}>
+          <p>
+            {displayedPhase.description}
+          </p>
+            {displayedPhase.media.image &&
+              <img style={{ width: '100%', padding: '20px 5px' }} src={displayedPhase.media.image} />
+            }
+            <header className={styles.title}>
+              {"Actions"}
+            </header>
+            {actions.map(action => <ActionsButton action={action} arg={{ time: displayedPhase.timerange.start }} />)}
+        </div>
+      </WindowThreeStates>
+    </>
+    );
+  }
+
+  function togglePopover() {
+    setPopoverVisibility(lastValue => !lastValue);
+  }
+
+  return (
+    <>
+      <div className={Picker.Wrapper}>
+        <Picker
+          refKey="Actions"
+          className={`${popoverVisible && Picker.Active}`}
+          onClick={togglePopover}
+        >
+          <Icon icon={"ic:baseline-rocket-launch"} color={"white"} alt={"Missions"} style={{ fontSize: '2em' }}/>
+        </Picker>
       </div>
-    </WindowThreeStates>
-  </>
+      { popoverVisible && popover() }
+    </>
   );
 }

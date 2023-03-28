@@ -17,12 +17,15 @@ import SessionRec from './SessionRec';
 import TimePicker from './TimePicker';
 import SkyBrowserPanel from './SkyBrowserPanel';
 import GeoPositionPanel from './GeoPositionPanel'; 
+import Missions from './Missions/Missions';
 
 export default function BottomBar({ 
   showFlightController,
 }) {
   const showExoplanets = useSelector(state => getBoolPropertyValue(state, ExoplanetsModuleEnabledKey));
   const showSkyBrowser = useSelector(state => getBoolPropertyValue(state, SkyBrowserModuleEnabledKey));
+  const missions = useSelector((state) => state.missions);
+  const showMissions = missions?.isInitialized && missions?.data?.missions;
   
   const dispatch = useDispatch();
 
@@ -34,7 +37,7 @@ export default function BottomBar({
       dispatch(unsubscribeToProperty(ExoplanetsModuleEnabledKey));
     }
   }, []);
-  
+
   // Subscribe to skybrowser
   useEffect(() => {
     dispatch(subscribeToProperty(SkyBrowserModuleEnabledKey));
@@ -53,6 +56,7 @@ export default function BottomBar({
     <ActionsPanel />
     {showFlightController && <FlightControlPanel />}
     {showSkyBrowser && <SkyBrowserPanel />}
+    {showMissions && <Missions />}
   </div>
 };
 

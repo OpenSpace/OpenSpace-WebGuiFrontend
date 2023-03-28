@@ -21,7 +21,6 @@ import About from './About/About';
 import styles from './OnScreenGui.scss';
 import TourPopup from '../components/GettingStartedTour/TourPopup'
 import { RefsProvider } from '../components/GettingStartedTour/GettingStartedContext';
-import Missions from '../components/BottomBar/Missions/Missions';
 
 function OnScreenGui({
   showFlightController, showAbout, isInBrowser
@@ -30,9 +29,7 @@ function OnScreenGui({
   const location = useLocation();
   const [showTutorial, setShowTutorial] = React.useState(false);
   const [luaConsoleVisible, setLuaConsoleVisible] = React.useState(false);
-  const [showMissions, setShowMissions] = React.useState(false);
 
-  const missions = useSelector((state) => state.missions);
   const connectionLost = useSelector((state) => state.connection.connectionLost);
   const version = useSelector((state) => state.version);
 
@@ -44,11 +41,6 @@ function OnScreenGui({
     return () => window.removeEventListener('keydown', toggleConsole);
   }, []);
 
-  React.useEffect(() => {
-    const shouldShow = missions.isInitialized && missions.data.missions;
-    setShowMissions(shouldShow);
-  }, [missions.data]);
-
   function hideAbout() {
     dispatch(setShowAbout(false));
   }
@@ -56,7 +48,7 @@ function OnScreenGui({
   function toggleConsole(e) {
     if (e.code === "Backquote") {
       setLuaConsoleVisible(current => !current);
-      }
+    }
   }
 
   // Check the version
@@ -114,7 +106,6 @@ function OnScreenGui({
             </Error>
           </Overlay>
         )}
-        {showMissions && <Missions closeCallback={() => setShowMissions(false)} />}
         <section className={styles.Grid__Left}>
           <Sidebar showTutorial={ setShowTutorial } />
         </section>
