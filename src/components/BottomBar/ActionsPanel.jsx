@@ -13,11 +13,16 @@ import { FilterList, FilterListData, FilterListFavorites } from '../common/Filte
 import { ObjectWordBeginningSubstring } from '../../utils/StringMatchers';
 import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
 
-export function ActionsButton({ action }) {
+export function ActionsButton({ action, arg }) {
   const luaApi = useSelector(state => state.luaApi);
   function sendAction(e) {
     const actionId = e.currentTarget.getAttribute('actionid');
-    luaApi.action.triggerAction(actionId);
+    if (arg) {
+      luaApi.action.triggerAction(actionId, arg);
+    }
+    else {
+      luaApi.action.triggerAction(actionId);
+    }
   }
   const isLocal = (action.synchronization === false);
   return (
