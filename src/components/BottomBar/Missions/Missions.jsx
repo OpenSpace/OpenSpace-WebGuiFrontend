@@ -91,7 +91,7 @@ function Timeline({
         width={xScale(1) - xScale(0) + ( 2 * padding )}
         key={`${key}${timeRange[0].toString()}${timeRange[1].toString()}${color}`}
         onClick={() => setDisplayedPhase(phase)}
-        style={color ? { fill : 'white' } : null}
+        style={color ? { fill : 'white', opacity: 1.0 } : null}
       />
     );
   }
@@ -158,18 +158,35 @@ function Timeline({
 }
 
 export default function Missions(closeCallback) {
+  
   const missions = useSelector((state) => state.missions);
+  const allActions = useSelector((state) => state.shortcuts?.data?.shortcuts);
+  const luaApi = useSelector((state) => state.luaApi);
   const now = useSelector((state) => state.time.time);
+  const [displayedPhase, setDisplayedPhase] = React.useState(missions.data.missions[0]);
+  
   const timeRange = [new Date(missions.data.missions[0].timerange.start), new Date(missions.data.missions[0].timerange.end)];
   const years = Math.abs(timeRange[0].getUTCFullYear() - timeRange[1].getUTCFullYear()); 
-  const currentPhases = React.useRef(null);
-  const [displayedPhase, setDisplayedPhase] = React.useState(missions.data.missions[0]);
+  const allPhasesNested = React.useRef(null);
+  const setTimeAction = React.useRef(null);
   const overview = missions?.data?.missions[0];
+  
+  let actions = [];
+  displayedPhase.actions.map(action => {
+    if (allActions) {
+      const found = allActions?.find(item => item.identifier === action)
+      if (found) {
+        actions.push(found);
+      }
+    }
+  }
+  );
+  console.log(actions);
 
   React.useEffect(() => {
     let phases = [];
     findAllPhases(phases, missions.data.missions[0].phases, 0);
-    currentPhases.current = phases;
+    allPhasesNested.current = phases;
   }, [missions.data]);
 
   function findAllPhases(phaseArray, phases, nestedLevel) {
@@ -187,41 +204,21 @@ export default function Missions(closeCallback) {
   }
 
   function setPhaseToCurrent() {
-    const flatAllPhases = currentPhases.current.flat();
+    const flatAllPhases = allPhasesNested.current.flat();
     const filteredPhases = flatAllPhases.filter(mission => {
       return Date.parse(now) < Date.parse(mission.timerange.end) &&
         Date.parse(now) > Date.parse(mission.timerange.start)
     });
     setDisplayedPhase(filteredPhases.pop());
   }
-
-  const action = {
-    documentation
-    : 
-    "Toggles the shutdown that will stop OpenSpace after a grace period. Press again to cancel the shutdown during this period",
-    guiPath
-    : 
-    "/",
-    identifier
-    : 
-    "os_default.toggle_shutdown",
-    name
-    : 
-    "Toggle Shutdown",
-    script
-    : 
-    "openspace.toggleShutdown()",
-    synchronization
-    : 
-    true
-  }
+ 
   return (
     <>
       <Timeline
         fullWidth={120}
         fullHeight={window.innerHeight}
         timeRange={timeRange}
-        currentPhases={currentPhases.current}
+        currentPhases={allPhasesNested.current}
         now={new Date(now)}
         setDisplayedPhase={setDisplayedPhase}
         displayedPhase={displayedPhase}
@@ -247,7 +244,7 @@ export default function Missions(closeCallback) {
           <header className={styles.title}>
             {"Actions"}
           </header>
-          <ActionsButton action={action} />
+          {actions.map(action => <ActionsButton action={action} arg={{ time: displayedPhase.timerange.start }} />)}
       </div>
     </WindowThreeStates>
   </>
