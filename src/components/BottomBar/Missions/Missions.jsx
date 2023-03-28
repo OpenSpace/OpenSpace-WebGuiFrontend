@@ -9,6 +9,21 @@ import Picker from '../Picker';
 import { useLocalStorageState } from '../../../utils/customHooks';
 import { Icon } from '@iconify/react';
 
+function Arrow({ x, y, rotation, width = 20 }) {
+  const paddingFactor = rotation === 90 ? 1 : -1;
+  return (
+    <polygon
+      points={`0,0 ${width}, ${width * 0.5} 0, ${width} ${width * 0.2}, ${width * 0.5}`}
+      style={{
+        strokeWidth: 0,
+        stroke: 'white',
+        fill: 'white',
+      }}
+      transform={`translate(${x + (0.5 * width * paddingFactor)}, ${y})rotate(${rotation})`}
+    />
+  );
+}
+
 function Timeline({
   fullWidth,
   fullHeight,
@@ -27,17 +42,19 @@ function Timeline({
   const width = fullWidth;
   const height = fullHeight;
   const radius = 2;
+  const arrowPadding = 25;
 
   const svgRef = React.useRef();
   const xAxisRef = React.useRef();
   const yAxisRef = React.useRef();
   const rectRef = React.useRef();
+  const timeIndicatorRef = React.useRef();
 
   // Calculate scaling for x and y
   const xScale = d3.scaleLinear().range([margin.left, width - margin.right]).domain([0, nestedLevels]);
   let yScale = d3.scaleTime().range([height - margin.bottom, margin.top]).domain(timeRange);
 
-   // Calculate axes
+  // Calculate axes
   const xAxis = d3.axisTop()
     .scale(xScale)
     .tickFormat(d => ``)
@@ -54,16 +71,16 @@ function Timeline({
     d3.select(yAxisRef.current).call(yAxis);
 
     d3.select(yAxisRef.current).selectAll(".tick text")
-    .style("font-size", "1.3em")
-    .style("font-family", "Segoe UI")
+      .style("font-size", "1.3em")
+      .style("font-family", "Segoe UI")
     
     d3.select(xAxisRef.current).selectAll(".tick line").attr("stroke", 'grey');
-  },[]);
+  }, []);
 
   // Add zoom
   React.useEffect(() => {
     const zoom = d3.zoom().on("zoom", (event) => {
-      const newScaleY = event.transform.rescaleY(yScale); 
+      const newScaleY = event.transform.rescaleY(yScale);
       d3.select(yAxisRef.current).call(yAxis.scale(newScaleY));
       setK(event.transform.k);
       setY(event.transform.y);
@@ -86,11 +103,11 @@ function Timeline({
         ry={radius / k}
         rx={radius}
         className={isCurrent ? styles.barHighlighted : styles.bar}
-        height={yScale(timeRange[0]) - yScale(timeRange[1]) + ( 2 * paddingY)}
-        width={xScale(1) - xScale(0) + ( 2 * padding )}
+        height={yScale(timeRange[0]) - yScale(timeRange[1]) + (2 * paddingY)}
+        width={xScale(1) - xScale(0) + (2 * padding)}
         key={`${key}${timeRange[0].toString()}${timeRange[1].toString()}${color}`}
         onClick={() => setDisplayedPhase(phase)}
-        style={color ? { fill : 'white', opacity: 1.0 } : null}
+        style={color ? { fill: 'white', opacity: 1.0 } : null}
       />
     );
   }
@@ -98,19 +115,40 @@ function Timeline({
   function createCurrentTimeIndicator() {
     return (
       <rect
+        ref={timeIndicatorRef}
+        transform={`translate(0, ${y})scale(1, ${k})`}
         x={margin.left}
         y={yScale(now)}
         className="bar-filled"
-        height={3/k}
+        height={3 / k}
         width={width - margin.left - margin.right}
         fill={'white'}
       />
     )
   }
 
+  function currentTimeArrow() {
+    const pixelPosition = timeIndicatorRef.current?.getBoundingClientRect()?.y;
+    // Before the boundingrect is initialized properly it returns 0
+    if (!timeIndicatorRef.current || pixelPosition === 0) {
+      return null;
+    }
+    const center = ((fullWidth - margin.left - margin.right) * 0.5) + margin.left;
+    const isAtTop = pixelPosition < margin.top;
+    const isAtBottom = pixelPosition > window.innerHeight - margin.bottom;
+    if (isAtTop) {
+      return <Arrow x={center} y={margin.top + arrowPadding} rotation={-90} />;
+    }
+    else if (isAtBottom) {
+      return <Arrow x={center} y={height - (margin.bottom + arrowPadding)} rotation={90} />;
+    }
+    return null;
+  }
+
   const clipMargin = { top: margin.top, bottom: window.innerHeight - margin.bottom };
   let selectedPhase = null;
   let selectedPhaseIndex = 0;
+  
   return (
     <svg
       ref={svgRef}
@@ -149,9 +187,8 @@ function Timeline({
           {createRectangle(selectedPhase, selectedPhaseIndex)}
         </>: null}
       </g>
-      <g transform={`translate(0, ${y})scale(1, ${k})`}>
-        {createCurrentTimeIndicator()}
-      </g>
+      {createCurrentTimeIndicator()}
+      {currentTimeArrow()}
     </svg>
   );
 }
@@ -180,7 +217,6 @@ export default function Missions({}) {
     }
   }
   );
-  console.log(actions);
 
   React.useEffect(() => {
     let phases = [];
