@@ -9,10 +9,6 @@ import Picker from '../Picker';
 import { useLocalStorageState } from '../../../utils/customHooks';
 import { Icon } from '@iconify/react';
 
-const colors = [
-  'green', 'purple', 'pink', 'red', 'cyan', 'magenta', 'yellow'
-];
-
 function Timeline({
   fullWidth,
   fullHeight,
