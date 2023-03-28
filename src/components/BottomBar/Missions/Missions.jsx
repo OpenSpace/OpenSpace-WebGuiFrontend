@@ -7,7 +7,6 @@ import { ActionsButton } from '../ActionsPanel';
 import Button from '../../common/Input/Button/Button';
 import Picker from '../Picker';
 import { useLocalStorageState } from '../../../utils/customHooks';
-import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
 import { Icon } from '@iconify/react';
 
 const colors = [
@@ -167,13 +166,13 @@ export default function Missions({}) {
   const allActions = useSelector((state) => state.shortcuts?.data?.shortcuts);
   const luaApi = useSelector((state) => state.luaApi);
   const now = useSelector((state) => state.time.time);
-  const [displayedPhase, setDisplayedPhase] = React.useState(missions.data.missions[0]);
-  
+  const [overview, setOverview] = React.useState(missions?.data?.missions[0]);
+  const [displayedPhase, setDisplayedPhase] = React.useState(overview);
+
   const timeRange = [new Date(missions.data.missions[0].timerange.start), new Date(missions.data.missions[0].timerange.end)];
   const years = Math.abs(timeRange[0].getUTCFullYear() - timeRange[1].getUTCFullYear()); 
   const allPhasesNested = React.useRef(null);
   const setTimeAction = React.useRef(null);
-  const overview = missions?.data?.missions[0];
   
   let actions = [];
   displayedPhase.actions.map(action => {
@@ -230,7 +229,7 @@ export default function Missions({}) {
         displayedPhase={displayedPhase}
         />
       <WindowThreeStates
-        title={displayedPhase.name}
+        title={overview.name}
         heightCallback={(size) => size}
         acceptedStyles={["PANE"]}
         defaultStyle={"PANE"}
