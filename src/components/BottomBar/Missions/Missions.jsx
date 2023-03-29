@@ -201,22 +201,18 @@ export default function Missions({}) {
   const now = useSelector((state) => state.time.time);
   const [overview, setOverview] = React.useState(missions?.data?.missions[0]);
   const [displayedPhase, setDisplayedPhase] = React.useState(overview);
+  const [currentActions, setCurrentActions] = React.useState([]);
 
   const timeRange = [new Date(missions.data.missions[0].timerange.start), new Date(missions.data.missions[0].timerange.end)];
   const years = Math.abs(timeRange[0].getUTCFullYear() - timeRange[1].getUTCFullYear()); 
   const allPhasesNested = React.useRef(null);
   const setTimeAction = React.useRef(null);
-  
-  let actions = [];
-  displayedPhase.actions.map(action => {
-    if (allActions) {
-      const found = allActions?.find(item => item.identifier === action)
-      if (found) {
-        actions.push(found);
-      }
-    }
-  }
-  );
+
+  React.useEffect(() => {
+    let result = [];
+    findCurrentActions(result, overview);
+    setCurrentActions(result);
+  }, [allActions, displayedPhase]);
 
   React.useEffect(() => {
     let phases = [];
@@ -234,6 +230,17 @@ export default function Missions({}) {
     phases.map(phase => {
       if (phase?.phases && phase.phases.length > 0) {
         findAllPhases(phaseArray, phase.phases, nestedLevel + 1);
+      }
+    });
+  }
+
+  function findCurrentActions(result, phase) {
+    phase.actions.map(action => {
+      if (allActions) {
+        const found = allActions?.find(item => item.identifier === action)
+        if (found) {
+          result.push(found);
+        }
       }
     });
   }
@@ -281,7 +288,9 @@ export default function Missions({}) {
             <header className={styles.title}>
               {"Actions"}
             </header>
-            {actions.map(action => <ActionsButton action={action} arg={{ time: displayedPhase.timerange.start }} />)}
+            {currentActions.map(action =>
+              <ActionsButton action={action} arg={{ Start: displayedPhase.timerange.start, End: displayedPhase.timerange.end }} />
+            )}
         </div>
       </WindowThreeStates>
     </>
