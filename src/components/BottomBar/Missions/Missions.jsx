@@ -31,7 +31,8 @@ function Timeline({
   currentPhases,
   now,
   setDisplayedPhase,
-  displayedPhase
+  displayedPhase,
+  captureTimes
 }) {
   const [k, setK] = React.useState(1);
   const [y, setY] = React.useState(0);
@@ -47,7 +48,6 @@ function Timeline({
   const svgRef = React.useRef();
   const xAxisRef = React.useRef();
   const yAxisRef = React.useRef();
-  const rectRef = React.useRef();
   const timeIndicatorRef = React.useRef();
 
   // Calculate scaling for x and y
@@ -112,17 +112,16 @@ function Timeline({
     );
   }
 
-  function createCurrentTimeIndicator() {
+  function createInstantTimeIndicator(time, color) {
     return (
       <rect
         ref={timeIndicatorRef}
-        transform={`translate(0, ${y})scale(1, ${k})`}
         x={margin.left}
-        y={yScale(now)}
+        y={yScale(time)}
         className="bar-filled"
         height={3 / k}
         width={width - margin.left - margin.right}
-        fill={'white'}
+        fill={color}
       />
     )
   }
@@ -165,7 +164,7 @@ function Timeline({
         <g ref={xAxisRef} transform={`translate(0, ${height - margin.bottom})`} />
         <g ref={yAxisRef} transform={`translate(${margin.left}, ${0})`} />
       </g>
-      <g ref={rectRef} transform={`translate(0, ${y})scale(1, ${k})`}>
+      <g transform={`translate(0, ${y})scale(1, ${k})`}>
         {currentPhases?.map((phase, index) => {
           return phase.map(phase => {
             if (!phase.timerange?.start || !phase.timerange?.end) {
@@ -187,8 +186,11 @@ function Timeline({
           {createRectangle(selectedPhase, selectedPhaseIndex)}
         </>: null}
       </g>
-      {createCurrentTimeIndicator()}
-      {currentTimeArrow()}
+      <g transform={`translate(0, ${y})scale(1, ${k})`}>
+        {captureTimes.map(capture => createInstantTimeIndicator(new Date(capture), 'rgba(255, 0, 0, 0.5)'))}
+        {createInstantTimeIndicator(now, 'white')}
+      </g>
+        {currentTimeArrow()}
     </svg>
   );
 }
@@ -263,6 +265,7 @@ export default function Missions({}) {
         fullHeight={window.innerHeight}
         timeRange={timeRange}
         currentPhases={allPhasesNested.current}
+        captureTimes={overview.capturetimes}  
         now={new Date(now)}
         setDisplayedPhase={setDisplayedPhase}
         displayedPhase={displayedPhase}
