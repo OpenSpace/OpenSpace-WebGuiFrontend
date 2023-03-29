@@ -112,10 +112,11 @@ function Timeline({
     );
   }
 
-  function createInstantTimeIndicator(time, color) {
+  function createInstantTimeIndicator(time, color, ref) {
     return (
       <rect
-        ref={timeIndicatorRef}
+        key={time.toUTCString()}
+        ref={el => ref ? ref.current = el : null}
         x={margin.left}
         y={yScale(time)}
         className="bar-filled"
@@ -187,15 +188,15 @@ function Timeline({
         </>: null}
       </g>
       <g transform={`translate(0, ${y})scale(1, ${k})`}>
-        {captureTimes.map(capture => createInstantTimeIndicator(new Date(capture), 'rgba(255, 0, 0, 0.5)'))}
-        {createInstantTimeIndicator(now, 'white')}
+        {captureTimes.map(capture => createInstantTimeIndicator(new Date(capture), 'rgba(255, 255, 0, 0.5)'))}
+        {createInstantTimeIndicator(now, 'white', timeIndicatorRef)}
       </g>
         {currentTimeArrow()}
     </svg>
   );
 }
 
-export default function Missions({}) {
+export default function Missions({ }) {
   const [popoverVisible, setPopoverVisibility] = useLocalStorageState('missionsPanelVisible', true);
   const missions = useSelector((state) => state.missions);
   const allActions = useSelector((state) => state.shortcuts?.data?.shortcuts);
@@ -208,7 +209,6 @@ export default function Missions({}) {
   const timeRange = [new Date(missions.data.missions[0].timerange.start), new Date(missions.data.missions[0].timerange.end)];
   const years = Math.abs(timeRange[0].getUTCFullYear() - timeRange[1].getUTCFullYear()); 
   const allPhasesNested = React.useRef(null);
-  const setTimeAction = React.useRef(null);
 
   React.useEffect(() => {
     let result = [];
@@ -245,6 +245,34 @@ export default function Missions({}) {
         }
       }
     });
+  }
+
+  function nextCapture() {
+    let nextFoundCapture;
+    // Assume the captures are sorted w regards to time
+    for (let i = 0; i < overview.capturetimes.length; i++) {
+      const capture = overview.capturetimes[i];
+      // Find the first time that is after the current time
+      if (now.getTime() < new Date(capture).getTime()) {
+        nextFoundCapture = capture;
+        break;
+      }
+    }
+    return nextFoundCapture;
+  }
+
+  function lastCapture() {
+    let lastFoundCapture;
+    // Assume the captures are sorted w regards to time
+    for (let i = overview.capturetimes.length - 1; i > 0; i--) {
+      const capture = overview.capturetimes[i];
+      // Find the first time that is before the current time
+      if (now.getTime() > new Date(capture).getTime()) {
+        lastFoundCapture = capture;
+        break;
+      }
+    }
+    return lastFoundCapture;
   }
 
   function setPhaseToCurrent() {
@@ -297,9 +325,17 @@ export default function Missions({}) {
             <header className={styles.title}>
               {"Actions"}
             </header>
-            {currentActions.map(action =>
-              <ActionsButton action={action} arg={{ Start: displayedPhase.timerange.start, End: displayedPhase.timerange.end }} />
-            )}
+            {currentActions.map(action => {
+              if (action.identifier === "nextcapture") {
+                const next = nextCapture();
+                return next && <ActionsButton key={action.identifier} action={action} arg={{ Time: next }} />;
+              }
+              if (action.identifier === "lastcapture") { 
+                const last = lastCapture();
+                return last && <ActionsButton key={action.identifier} action={action} arg={{ Time: last }} />;
+              }
+              return <ActionsButton key={action.identifier} action={action} arg={{ Start: displayedPhase.timerange.start, End: displayedPhase.timerange.end }} />
+            })}
         </div>
       </WindowThreeStates>
     </>
