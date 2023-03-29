@@ -281,10 +281,16 @@ export default function Missions({}) {
           <Button onClick={() => setDisplayedPhase(overview) }>{"Mission Overview"}</Button>
           <Button onClick={setPhaseToCurrent}>{"Current Phase"}</Button>
         </div>
-        <div style={{ padding: '10px'}}>
-          <p>
-            {displayedPhase.description}
-          </p>
+          <div style={{ padding: '10px' }}>
+            <p>{`Phase: ${displayedPhase.name}`}</p>
+            <p>
+              {`Start: ${displayedPhase.timerange.start.toString()}`}
+              <br />
+              {`End: ${displayedPhase.timerange.end.toString()}`}
+            </p>
+            <p>
+              {displayedPhase.description}
+            </p>
             {displayedPhase.media.image &&
               <img style={{ width: '100%', padding: '20px 5px' }} src={displayedPhase.media.image} />
             }
