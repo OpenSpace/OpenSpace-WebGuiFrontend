@@ -9,7 +9,7 @@ import Picker from '../Picker';
 import { useLocalStorageState } from '../../../utils/customHooks';
 import { Icon } from '@iconify/react';
 
-function Arrow({ x, y, rotation, width = 20 }) {
+function Arrow({ x, y, rotation, onClick, width = 20 }) {
   const paddingFactor = rotation === 90 ? 1 : -1;
   return (
     <polygon
@@ -20,6 +20,7 @@ function Arrow({ x, y, rotation, width = 20 }) {
         fill: 'white',
       }}
       transform={`translate(${x + (0.5 * width * paddingFactor)}, ${y})rotate(${rotation})`}
+      onClick={onClick}
     />
   );
 }
@@ -49,6 +50,7 @@ function Timeline({
   const xAxisRef = React.useRef();
   const yAxisRef = React.useRef();
   const timeIndicatorRef = React.useRef();
+  const zoomRef = React.useRef();
 
   // Calculate scaling for x and y
   const xScale = d3.scaleLinear().range([margin.left, width - margin.right]).domain([0, nestedLevels]);
@@ -79,7 +81,7 @@ function Timeline({
 
   // Add zoom
   React.useEffect(() => {
-    const zoom = d3.zoom().on("zoom", (event) => {
+    zoomRef.current = d3.zoom().on("zoom", (event) => {
       const newScaleY = event.transform.rescaleY(yScale);
       d3.select(yAxisRef.current).call(yAxis.scale(newScaleY));
       setK(event.transform.k);
@@ -87,7 +89,7 @@ function Timeline({
     })
       .scaleExtent([1, 1000])
       .translateExtent([[0, 0], [width, height]]);;
-    d3.select(svgRef.current).call(zoom);
+    d3.select(svgRef.current).call(zoomRef.current);
   }, []);
 
   function createRectangle(phase, nestedLevel, padding = 0, color = undefined) {
@@ -136,11 +138,32 @@ function Timeline({
     const center = ((fullWidth - margin.left - margin.right) * 0.5) + margin.left;
     const isAtTop = pixelPosition < margin.top;
     const isAtBottom = pixelPosition > window.innerHeight - margin.bottom;
+
+    function interpolateZoom() {
+      let transform = d3.zoomIdentity;
+      // Apply the transform:
+      d3.select(svgRef.current).transition().call(zoomRef.current.transform, transform);
+    };
+
     if (isAtTop) {
-      return <Arrow x={center} y={margin.top + arrowPadding} rotation={-90} />;
+      return (
+        <Arrow
+          x={center}
+          y={margin.top + arrowPadding}
+          rotation={-90}
+          onClick={() => interpolateZoom()}
+        />
+      );
     }
     else if (isAtBottom) {
-      return <Arrow x={center} y={height - (margin.bottom + arrowPadding)} rotation={90} />;
+      return (
+        <Arrow
+          x={center}
+          y={height - (margin.bottom + arrowPadding)}
+          rotation={90}
+          onClick={() => interpolateZoom()}
+        />
+      );
     }
     return null;
   }
