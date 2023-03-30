@@ -54,8 +54,7 @@ function Timeline({
 
   // Calculate scaling for x and y
   const xScale = d3.scaleLinear().range([margin.left, width - margin.right]).domain([0, nestedLevels]);
-  let yScale = d3.scaleTime().range([height - margin.bottom, margin.top]).domain(timeRange);
-
+  let yScale = d3.scaleUtc().range([height - margin.bottom, margin.top]).domain(timeRange);
   // Calculate axes
   const xAxis = d3.axisTop()
     .scale(xScale)
@@ -93,7 +92,10 @@ function Timeline({
   }, []);
 
   function createRectangle(phase, nestedLevel, padding = 0, color = undefined) {
-    const timeRange = [new Date(phase.timerange?.start), new Date(phase.timerange?.end)];
+    if (!phase?.timerange) {
+      return null;
+    }
+    const timeRange = [new Date(phase.timerange?.start + "Z"), new Date(phase.timerange?.end + "Z")];
     const key = phase.name;
     const isCurrent = Date.parse(now) < Date.parse(timeRange[1]) &&
       Date.parse(now) > Date.parse(timeRange[0]);
@@ -211,7 +213,7 @@ function Timeline({
         </>: null}
       </g>
       <g transform={`translate(0, ${y})scale(1, ${k})`}>
-        {captureTimes.map(capture => createInstantTimeIndicator(new Date(capture), 'rgba(255, 255, 0, 0.5)'))}
+        {captureTimes.map(capture => createInstantTimeIndicator(new Date(capture + "Z"), 'rgba(255, 255, 0, 0.5)'))}
         {createInstantTimeIndicator(now, 'white', timeIndicatorRef)}
       </g>
         {currentTimeArrow()}
