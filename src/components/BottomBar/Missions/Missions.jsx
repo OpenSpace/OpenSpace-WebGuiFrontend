@@ -12,6 +12,7 @@ import { Icon } from '@iconify/react';
 import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
 import InfoBox from '../../common/InfoBox/InfoBox';
 import CenteredLabel from '../../common/CenteredLabel/CenteredLabel';
+import ScrollOverlay from '../../common/ScrollOverlay/ScrollOverlay';
 
 function Arrow({ x, y, rotation, onClick, width = 20 }) {
   const paddingFactor = rotation === 90 ? 1 : -1;
@@ -183,7 +184,6 @@ function Timeline({
   }
 
   const clipMargin = { top: margin.top, bottom: window.innerHeight - margin.bottom };
-  console.log(clipMargin)
   let selectedPhase = null;
   let selectedPhaseIndex = 0;
   
@@ -394,42 +394,44 @@ export default function Missions({ }) {
         />
       <WindowThreeStates
         title={overview.name}
-          sizeCallback={(width, height) => setSize({ width, height })}
+        sizeCallback={(width, height) => setSize({ width, height })}
         acceptedStyles={["PANE"]}
         defaultStyle={"PANE"}
         closeCallback={() => setPopoverVisibility(false)}
         > 
-        <div style={{ display: 'flex', justifyContent: 'space-around'}}>
-          <Button onClick={() => setDisplayedPhase(overview) }>{"Mission Overview"}</Button>
-          <Button onClick={setPhaseToCurrent}>{"Current Phase"}</Button>
-        </div>
-          <div style={{ padding: '10px' }}>
-            {displayedPhase ?
-              <>
-                <p>{displayedPhase?.name !== overview.name && `Phase: ${displayedPhase?.name}`}</p>
-                <p style={{ color: 'darkgray'}}>
-                  {`${new Date(displayedPhase.timerange.start).toDateString()} `}
-                  {`- ${new Date(displayedPhase.timerange.end).toDateString()}`}
-                </p>
-                <p>
-                  <br />
-                  {displayedPhase.description}
-                </p>
-                {displayedPhase.media.image &&
-                  <img style={{ width: '100%', padding: '20px 5px', maxWidth: window.innerWidth * 0.25 }} src={displayedPhase.media.image} />
-                  }
-              </>
-              :
-              <CenteredLabel>{"No current phase in this mission"}</CenteredLabel>
-            }
-            <header className={styles.title}>
-              {"Actions"}
-            </header>
-            {jumpToTimeButtons.map(button => button && <SetTimeButton onClick={button.onClick} name={button.name} documentation={button.documentation} />)}
-            {currentActions.map(action => {
-              return <ActionsButton key={action.identifier} action={action} />
-            })}
-        </div>
+        <div style={{ height: size.height, overflow: 'auto'}}>
+          <div style={{ display: 'flex', justifyContent: 'space-around'}}>
+            <Button onClick={() => setDisplayedPhase(overview) }>{"Mission Overview"}</Button>
+            <Button onClick={setPhaseToCurrent}>{"Current Phase"}</Button>
+          </div>
+            <div style={{ padding: '10px' }}>
+              {displayedPhase ?
+                <>
+                  <p>{displayedPhase?.name !== overview.name && `Phase: ${displayedPhase?.name}`}</p>
+                  <p style={{ color: 'darkgray'}}>
+                    {`${new Date(displayedPhase.timerange.start).toDateString()} `}
+                    {`- ${new Date(displayedPhase.timerange.end).toDateString()}`}
+                  </p>
+                  <p>
+                    <br />
+                    {displayedPhase.description}
+                  </p>
+                  {displayedPhase.media.image &&
+                    <img style={{ width: '100%', padding: '20px 5px', maxWidth: window.innerWidth * 0.25 }} src={displayedPhase.media.image} />
+                    }
+                </>
+                :
+                <CenteredLabel>{"No current phase in this mission"}</CenteredLabel>
+              }
+              <header className={styles.title}>
+                {"Actions"}
+              </header>
+              {jumpToTimeButtons.map(button => button && <SetTimeButton onClick={button.onClick} name={button.name} documentation={button.documentation} />)}
+              {currentActions.map(action => {
+                return <ActionsButton key={action.identifier} action={action} />
+              })}
+            </div>
+          </div>
       </WindowThreeStates>
     </>
     );
