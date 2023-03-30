@@ -4,10 +4,13 @@ import WindowThreeStates from '../SkyBrowser/WindowThreeStates/WindowThreeStates
 import * as d3 from 'd3';
 import styles from './missions.scss';
 import { ActionsButton } from '../ActionsPanel';
+import actionStyles from '../ActionsPanel.scss';
 import Button from '../../common/Input/Button/Button';
 import Picker from '../Picker';
 import { useLocalStorageState } from '../../../utils/customHooks';
 import { Icon } from '@iconify/react';
+import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
+import InfoBox from '../../common/InfoBox/InfoBox';
 
 function Arrow({ x, y, rotation, onClick, width = 20 }) {
   const paddingFactor = rotation === 90 ? 1 : -1;
@@ -221,6 +224,25 @@ function Timeline({
   );
 }
 
+function SetTimeButton({onClick, name, documentation}) {
+  return (
+    <Button
+      block
+      smalltext
+      onClick={onClick}
+      className={actionStyles.actionButton}
+    >
+      <p className={actionStyles.iconRow}>
+        <MaterialIcon className={actionStyles.buttonIcon} icon="launch" />
+      </p>
+      {name} {' '}
+      {documentation && <InfoBox text={documentation} />}
+
+    </Button>
+  );
+}
+
+
 export default function Missions({ }) {
   const [popoverVisible, setPopoverVisibility] = useLocalStorageState('missionsPanelVisible', true);
   const missions = useSelector((state) => state.missions);
@@ -278,7 +300,7 @@ export default function Missions({ }) {
     for (let i = 0; i < overview.capturetimes.length; i++) {
       const capture = overview.capturetimes[i];
       // Find the first time that is after the current time
-      if (now.getTime() < new Date(capture).getTime()) {
+      if (now?.getTime() < new Date(capture + "Z").getTime()) {
         nextFoundCapture = capture;
         break;
       }
@@ -292,7 +314,7 @@ export default function Missions({ }) {
     for (let i = overview.capturetimes.length - 1; i > 0; i--) {
       const capture = overview.capturetimes[i];
       // Find the first time that is before the current time
-      if (now.getTime() > new Date(capture).getTime()) {
+      if (now?.getTime() > new Date(capture + "Z").getTime()) {
         lastFoundCapture = capture;
         break;
       }
@@ -308,9 +330,44 @@ export default function Missions({ }) {
     });
     setDisplayedPhase(filteredPhases.pop());
   }
+
+  async function jumpToTime(time, fade = 1) {
+    let promise = new Promise((resolve, reject) => {
+      luaApi.setPropertyValueSingle('RenderEngine.BlackoutFactor', 0, fade, "QuadraticEaseOut");
+      setTimeout(() => resolve("done!"), fade * 1000)
+    });
+    let result = await promise;
+    luaApi.time.setTime(time);
+    luaApi.setPropertyValueSingle('RenderEngine.BlackoutFactor', 1, fade, "QuadraticEaseIn");
+  }
+
+  const jumpToBeginningOfPhase = {
+    name: "Jump To Beginning Of Phase",
+    documentation: "Set the time to the to beginning of the currently selected phase",
+    onClick: () => jumpToTime(displayedPhase.timerange.start)
+  };
+
+  const jumpToEndOfPhase = {
+    name: "Jump To End Of Phase",
+    documentation: "Set the time to the to end of the currently selected phase",
+    onClick: () => jumpToTime(displayedPhase.timerange.end)
+  };
+
+  const jumpToNextCapture = nextCapture() && {
+    name: "Jump To Next Capture",
+    documentation: "Set the time to the to next capture by the instruments",
+    onClick: () => jumpToTime(nextCapture())
+  };
+
+  const jumpToLastCapture = lastCapture() && {
+    name: "Jump To Last Capture",
+    documentation: "Set the time to the to last capture by the instruments",
+    onClick: () => jumpToTime(lastCapture())
+  };
+
+  const jumpToTimeButtons = [jumpToBeginningOfPhase, jumpToEndOfPhase, jumpToNextCapture, jumpToLastCapture];
   
   function popover() {
-
     return (
       <>
       <Timeline
@@ -350,15 +407,8 @@ export default function Missions({ }) {
             <header className={styles.title}>
               {"Actions"}
             </header>
+            {jumpToTimeButtons.map(button => button && <SetTimeButton onClick={button.onClick} name={button.name} documentation={button.documentation} />)}
             {currentActions.map(action => {
-              if (action.identifier === "nextcapture") {
-                const next = nextCapture();
-                return next && <ActionsButton key={action.identifier} action={action} arg={{ Time: next }} />;
-              }
-              if (action.identifier === "lastcapture") { 
-                const last = lastCapture();
-                return last && <ActionsButton key={action.identifier} action={action} arg={{ Time: last }} />;
-              }
               return <ActionsButton key={action.identifier} action={action} arg={{ Start: displayedPhase.timerange.start, End: displayedPhase.timerange.end }} />
             })}
         </div>
