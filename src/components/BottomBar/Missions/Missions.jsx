@@ -36,7 +36,8 @@ function Timeline({
   now,
   setDisplayedPhase,
   displayedPhase,
-  captureTimes
+  captureTimes,
+  panelWidth
 }) {
   const [k, setK] = React.useState(1);
   const [y, setY] = React.useState(0);
@@ -185,7 +186,7 @@ function Timeline({
       style={{
         position: 'absolute',
         top: 0,
-        right: 350,
+        right: panelWidth,
         clipPath: `polygon(0% ${clipMargin.top}px, 100% ${clipMargin.top}px, 100% ${clipMargin.bottom}px, 0% ${clipMargin.bottom}px`
       }}
     >
@@ -252,6 +253,7 @@ export default function Missions({ }) {
   const [overview, setOverview] = React.useState(missions?.data?.missions[0]);
   const [displayedPhase, setDisplayedPhase] = React.useState(overview);
   const [currentActions, setCurrentActions] = React.useState([]);
+  const [size, setSize] = React.useState({width: 350, height: window.innerHeight});
 
   const timeRange = [new Date(missions.data.missions[0].timerange.start), new Date(missions.data.missions[0].timerange.end)];
   const years = Math.abs(timeRange[0].getUTCFullYear() - timeRange[1].getUTCFullYear()); 
@@ -379,10 +381,11 @@ export default function Missions({ }) {
         now={new Date(now)}
         setDisplayedPhase={setDisplayedPhase}
         displayedPhase={displayedPhase}
+        panelWidth={size.width}
         />
       <WindowThreeStates
         title={overview.name}
-        heightCallback={(size) => size}
+          sizeCallback={(width, height) => setSize({ width, height })}
         acceptedStyles={["PANE"]}
         defaultStyle={"PANE"}
         closeCallback={() => setPopoverVisibility(false)}

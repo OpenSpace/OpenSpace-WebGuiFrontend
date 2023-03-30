@@ -29,7 +29,7 @@ class WindowThreeStates extends Component {
 
   componentDidMount() {
     // Reset height when component is mounted
-    this.props.heightCallback(0, this.props.defaultHeight);
+    this.props.sizeCallback(this.state.windowWidth, this.props.defaultHeight);
     switch (this.props.defaultStyle) {
       case WindowStyle.ATTACHED:
         this.setAsAttached();
@@ -47,12 +47,12 @@ class WindowThreeStates extends Component {
   }
 
   get asPopup() {
-    const { children, height } = this.props;
+    const { children, height, sizeCallback, minHeight } = this.props;
     return (
       <PopoverResizeable
-        setNewHeight={this.props.heightCallback}
+        sizeCallback={sizeCallback}
         size={{ height: `${height}px`, width: `${this.state.windowWidth}px` }}
-        minHeight={this.props.minHeight}
+        minHeight={minHeight}
       >
         {this.createTopBar()}
         {children}
@@ -61,12 +61,12 @@ class WindowThreeStates extends Component {
   }
 
   get asWindow() {
-    const { children, height } = this.props;
+    const { children, height, sizeCallback, minHeight } = this.props;
     return (
       <FloatingWindow
-        setNewHeight={this.props.heightCallback}
+        sizeCallback={sizeCallback}
         defaultSize={{ height, width: `${this.state.windowWidth}px` }}
-        minHeight={this.props.minHeight}
+        minHeight={minHeight}
       >
         {this.createTopBar()}
         {children}
@@ -75,11 +75,11 @@ class WindowThreeStates extends Component {
   }
 
   get asSideview() {
-    const { children } = this.props;
+    const { children, sizeCallback } = this.props;
     return (
       <PaneRightHandSide
         width={`${this.state.windowWidth}px`}
-        heightCallback={this.props.heightCallback}
+        sizeCallback={sizeCallback}
       >
         {this.createTopBar()}
         {children}
@@ -89,7 +89,7 @@ class WindowThreeStates extends Component {
 
   setAsDetached() {
     this.setState({ windowStyle: WindowStyle.DETACHED });
-    this.props.heightCallback(0, this.props.defaultHeight);
+    this.props.sizeCallback(this.state.windowWidth, this.props.defaultHeight);
   }
 
   setAsPane() {
@@ -98,7 +98,7 @@ class WindowThreeStates extends Component {
 
   setAsAttached() {
     this.setState({ windowStyle: WindowStyle.ATTACHED });
-    this.props.heightCallback(0, this.props.defaultHeight);
+    this.props.sizeCallback(this.state.windowWidth, this.props.defaultHeight);
   }
 
   createTopBar() {
@@ -162,7 +162,7 @@ WindowThreeStates.propTypes = {
   children: PropTypes.node.isRequired,
   title: PropTypes.string,
   closeCallback: PropTypes.func,
-  heightCallback: PropTypes.func,
+  sizeCallback: PropTypes.func,
   heightWindow: PropTypes.number,
   defaultHeight: PropTypes.number,
   defaultStyle: PropTypes.string,
@@ -173,7 +173,7 @@ WindowThreeStates.defaultProps = {
   children: [],
   title: '',
   closeCallback: null,
-  heightCallback: null,
+  sizeCallback: null,
   heightWindow: 440,
   defaultHeight: 440,
   defaultStyle: WindowStyle.ATTACHED,
