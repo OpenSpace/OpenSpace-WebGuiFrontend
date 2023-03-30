@@ -67,8 +67,7 @@ function Timeline({
     .tickSize(0)
     .ticks(nestedLevels)
 
-  const yAxis = d3.axisLeft()
-    .scale(yScale)
+  let yAxis = d3.axisLeft().scale(yScale);
   
   // Axes
   React.useEffect(() => {
@@ -83,8 +82,16 @@ function Timeline({
     d3.select(xAxisRef.current).selectAll(".tick line").attr("stroke", 'grey');
   }, []);
 
+  React.useEffect(() => {
+    // Update the axis every time window rescales 
+    yScale = d3.scaleUtc().range([height - margin.bottom, margin.top]).domain(timeRange);
+    yAxis = d3.axisLeft().scale(yScale);
+    d3.select(yAxisRef.current).call(yAxis);
+  }, [height]);
+
   // Add zoom
   React.useEffect(() => {
+    // Update zoom every time the y scale changes
     zoomRef.current = d3.zoom().on("zoom", (event) => {
       const newScaleY = event.transform.rescaleY(yScale);
       d3.select(yAxisRef.current).call(yAxis.scale(newScaleY));
@@ -94,7 +101,7 @@ function Timeline({
       .scaleExtent([1, 1000])
       .translateExtent([[0, 0], [width, height]]);;
     d3.select(svgRef.current).call(zoomRef.current);
-  }, []);
+  }, [yScale]);
 
   function createRectangle(phase, nestedLevel, padding = 0, color = undefined) {
     if (!phase?.timerange) {
@@ -176,6 +183,7 @@ function Timeline({
   }
 
   const clipMargin = { top: margin.top, bottom: window.innerHeight - margin.bottom };
+  console.log(clipMargin)
   let selectedPhase = null;
   let selectedPhaseIndex = 0;
   
@@ -344,13 +352,13 @@ export default function Missions({ }) {
     luaApi.setPropertyValueSingle('RenderEngine.BlackoutFactor', 1, fade, "QuadraticEaseIn");
   }
 
-  const jumpToBeginningOfPhase = {
+  const jumpToBeginningOfPhase = displayedPhase && {
     name: "Jump To Beginning Of Phase",
     documentation: "Set the time to the to beginning of the currently selected phase",
     onClick: () => jumpToTime(displayedPhase.timerange.start)
   };
 
-  const jumpToEndOfPhase = {
+  const jumpToEndOfPhase = displayedPhase && {
     name: "Jump To End Of Phase",
     documentation: "Set the time to the to end of the currently selected phase",
     onClick: () => jumpToTime(displayedPhase.timerange.end)
