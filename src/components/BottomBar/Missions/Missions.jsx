@@ -402,7 +402,7 @@ export default function Missions({ }) {
               {displayedPhase.description}
             </p>
             {displayedPhase.media.image &&
-              <img style={{ width: '100%', padding: '20px 5px' }} src={displayedPhase.media.image} />
+              <img style={{ width: '100%', padding: '20px 5px', maxWidth: window.innerWidth * 0.25 }} src={displayedPhase.media.image} />
             }
             <header className={styles.title}>
               {"Actions"}
