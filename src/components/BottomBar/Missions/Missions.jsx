@@ -333,13 +333,13 @@ export default function Missions({ }) {
           <Button onClick={setPhaseToCurrent}>{"Current Phase"}</Button>
         </div>
           <div style={{ padding: '10px' }}>
-            <p>{`Phase: ${displayedPhase.name}`}</p>
-            <p>
-              {`Start: ${displayedPhase.timerange.start.toString()}`}
-              <br />
-              {`End: ${displayedPhase.timerange.end.toString()}`}
+            <p>{displayedPhase.name !== overview.name && `Phase: ${displayedPhase.name}`}</p>
+            <p style={{ color: 'darkgray'}}>
+              {`${new Date(displayedPhase.timerange.start).toDateString()} `}
+              {`- ${new Date(displayedPhase.timerange.end).toDateString()}`}
             </p>
             <p>
+              <br />
               {displayedPhase.description}
             </p>
             {displayedPhase.media.image &&
