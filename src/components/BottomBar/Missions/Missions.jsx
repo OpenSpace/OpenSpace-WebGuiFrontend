@@ -409,7 +409,7 @@ export default function Missions({ }) {
             </header>
             {jumpToTimeButtons.map(button => button && <SetTimeButton onClick={button.onClick} name={button.name} documentation={button.documentation} />)}
             {currentActions.map(action => {
-              return <ActionsButton key={action.identifier} action={action} arg={{ Start: displayedPhase.timerange.start, End: displayedPhase.timerange.end }} />
+              return <ActionsButton key={action.identifier} action={action} />
             })}
         </div>
       </WindowThreeStates>
