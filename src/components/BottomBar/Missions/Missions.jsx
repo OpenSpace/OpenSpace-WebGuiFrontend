@@ -11,6 +11,7 @@ import { useLocalStorageState } from '../../../utils/customHooks';
 import { Icon } from '@iconify/react';
 import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
 import InfoBox from '../../common/InfoBox/InfoBox';
+import CenteredLabel from '../../common/CenteredLabel/CenteredLabel';
 
 function Arrow({ x, y, rotation, onClick, width = 20 }) {
   const paddingFactor = rotation === 90 ? 1 : -1;
@@ -200,7 +201,7 @@ function Timeline({
             if (!phase.timerange?.start || !phase.timerange?.end) {
               return null;
             }
-            if (phase.name === displayedPhase.name) {
+            if (phase.name === displayedPhase?.name) {
               // We want to draw the selected phase last
               // Save for later
               selectedPhase = phase;
@@ -395,17 +396,23 @@ export default function Missions({ }) {
           <Button onClick={setPhaseToCurrent}>{"Current Phase"}</Button>
         </div>
           <div style={{ padding: '10px' }}>
-            <p>{displayedPhase.name !== overview.name && `Phase: ${displayedPhase.name}`}</p>
-            <p style={{ color: 'darkgray'}}>
-              {`${new Date(displayedPhase.timerange.start).toDateString()} `}
-              {`- ${new Date(displayedPhase.timerange.end).toDateString()}`}
-            </p>
-            <p>
-              <br />
-              {displayedPhase.description}
-            </p>
-            {displayedPhase.media.image &&
-              <img style={{ width: '100%', padding: '20px 5px', maxWidth: window.innerWidth * 0.25 }} src={displayedPhase.media.image} />
+            {displayedPhase ?
+              <>
+                <p>{displayedPhase?.name !== overview.name && `Phase: ${displayedPhase?.name}`}</p>
+                <p style={{ color: 'darkgray'}}>
+                  {`${new Date(displayedPhase.timerange.start).toDateString()} `}
+                  {`- ${new Date(displayedPhase.timerange.end).toDateString()}`}
+                </p>
+                <p>
+                  <br />
+                  {displayedPhase.description}
+                </p>
+                {displayedPhase.media.image &&
+                  <img style={{ width: '100%', padding: '20px 5px', maxWidth: window.innerWidth * 0.25 }} src={displayedPhase.media.image} />
+                  }
+              </>
+              :
+              <CenteredLabel>{"No current phase in this mission"}</CenteredLabel>
             }
             <header className={styles.title}>
               {"Actions"}
