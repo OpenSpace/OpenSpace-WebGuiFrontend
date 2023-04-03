@@ -12,7 +12,6 @@ import { Icon } from '@iconify/react';
 import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
 import InfoBox from '../../common/InfoBox/InfoBox';
 import CenteredLabel from '../../common/CenteredLabel/CenteredLabel';
-import ScrollOverlay from '../../common/ScrollOverlay/ScrollOverlay';
 
 function Arrow({ x, y, rotation, onClick, width = 20 }) {
   const paddingFactor = rotation === 90 ? 1 : -1;
@@ -426,7 +425,7 @@ export default function Missions({ }) {
               <header className={styles.title}>
                 {"Actions"}
               </header>
-              {jumpToTimeButtons.map(button => button && <SetTimeButton onClick={button.onClick} name={button.name} documentation={button.documentation} />)}
+              {jumpToTimeButtons.map(button => button && <SetTimeButton key={button.name} onClick={button.onClick} name={button.name} documentation={button.documentation} />)}
               {currentActions.map(action => {
                 return <ActionsButton key={action.identifier} action={action} />
               })}
