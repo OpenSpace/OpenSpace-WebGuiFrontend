@@ -6,6 +6,7 @@
   position: relative;
   box-sizing: border-box;
   height: $input-total-height;
+  flex: 1 1 0px;
 }
 
 // the descriptive label
@@ -61,7 +62,7 @@
 // state changes
 .inputGroup {
   .range:focus + .rangeLabel {
-    color: $yellow;
+    color: $text-color-focus;
   }
 
   &:hover {
@@ -120,7 +121,7 @@
 }
 
 .outsideMinMaxRange {
-  color: $ui-warning !important;
+  color: $yellow !important;
 }
 
 .invalidValue {

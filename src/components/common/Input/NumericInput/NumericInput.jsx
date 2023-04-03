@@ -22,6 +22,9 @@ class NumericInput extends Component {
       enteredInvalidValue: false
     };
 
+    this.setRef = this.setRef.bind(this);
+    this.textTooltipPosition = this.textTooltipPosition.bind(this);
+
     this.roundValueToStepSize = this.roundValueToStepSize.bind(this);
 
     this.updateSliderScale = this.updateSliderScale.bind(this);
@@ -55,6 +58,10 @@ class NumericInput extends Component {
     if (scaleNeedsUpdate) {
       this.scale = this.updateSliderScale();
     }
+  }
+
+  setRef(what) {
+    return (element) => { this[what] = element; };
   }
 
   roundValueToStepSize(value) {
@@ -178,12 +185,19 @@ class NumericInput extends Component {
     this.setState({ showTextInput: false, hoverHint: null});
   }
 
+  textTooltipPosition() {
+    console.log(this.wrapperRef);
+    if (!this.wrapperRef) return { top: '0px', left: '0px' };
+    const { top, right } = this.wrapperRef.getBoundingClientRect();
+    return { top: `${top}px`, left: `${right}px` };
+  }
+
   render() {
     const { value, id, isValueOutsideRange, enteredInvalidValue, hoverHint } = this.state;
     const { decimals, min, max, showOutsideRangeHint } = this.props;
 
     if (this.showTextInput) {
-      let excludeProps = 'reverse onValueChanged inputOnly noHoverHint noTooltip noValue exponent showOutsideRangeHint';
+      let excludeProps = 'wide reverse onValueChanged inputOnly noHoverHint noTooltip noValue exponent showOutsideRangeHint';
       let inputClassName = '';
       let tootipContent = "";
       let showTooltip = false;
@@ -210,12 +224,7 @@ class NumericInput extends Component {
       }
 
       return (
-        <div className={`${styles.inputGroup}`}>
-          {showTooltip &&
-            <Tooltip className={inputClassName} style={{ left: `50%` }} placement={'top'}>
-              {tootipContent}
-            </Tooltip>
-          }
+        <div className={`${styles.inputGroup} ${wide ? styles.wide : ''}` } ref={this.setRef('wrapperRef')}>
           <Input
             {...excludeKeys(this.props, excludeProps)}
             className={inputClassName}
@@ -226,6 +235,11 @@ class NumericInput extends Component {
             onEnter={this.onTextBlurOrEnter}
             autoFocus
           />
+          {showTooltip &&
+            <Tooltip className={inputClassName} fixed style={{...this.textTooltipPosition()}} placement={'right'}>
+              {tootipContent}
+            </Tooltip>
+          }
         </div>
       );
     }
@@ -244,6 +258,7 @@ class NumericInput extends Component {
     return (
       <div
         className={`${styles.inputGroup} ${wide ? styles.wide : ''} ${reverse ? styles.reverse : ''}`}
+        ref={this.setRef('wrapperRef')}
         onDoubleClick={this.enableTextInput}
         onContextMenu={this.enableTextInput}
       >

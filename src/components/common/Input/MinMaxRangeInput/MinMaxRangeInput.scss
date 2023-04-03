@@ -54,7 +54,7 @@
 // state changes
 .inputGroup {
   .range:focus + .rangeLabel {
-    color: $yellow;
+    color: $text-color-focus;
   }
 
   &:hover {
