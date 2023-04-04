@@ -299,7 +299,6 @@ class MinMaxRangeInput extends Component {
   }
 
   textTooltipPosition() {
-    console.log(this.wrapperRef);
     if (!this.wrapperRef) return { top: '0px', left: '0px' };
     const { top, right } = this.wrapperRef.getBoundingClientRect();
     return { top: `${top}px`, left: `${right}px` };
