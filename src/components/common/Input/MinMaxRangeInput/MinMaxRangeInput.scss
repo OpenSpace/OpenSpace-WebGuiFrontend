@@ -120,3 +120,11 @@
       transparent var(--bg-stop)
     );
 }
+
+.outsideMinMaxRange {
+  color: $yellow !important;
+}
+
+.invalidValue {
+  color: $ui-danger !important;
+}

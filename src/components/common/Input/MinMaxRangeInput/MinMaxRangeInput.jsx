@@ -20,18 +20,24 @@ class MinMaxRangeInput extends Component {
       id: `minmaxrangeinput-${Input.nextId}`,
       hoverHint: null,
       hoverHintStyle: {},
-      showTextInput: false, 
-      focusLeftTextInput: null
+      showTextInput: false,
+      focusLeftTextInput: null,
+      isMinValueOutsideRange: props.valueMin < props.min || props.valueMin > props.max,
+      isMaxValueOutsideRange: props.valueMax < props.min || props.valueMax > props.max,
+      enteredInvalidMinValue: false,
+      enteredInvalidMaxValue: false
     };
 
     this.setRef = this.setRef.bind(this);
-    
+
     this.updateSliderScale = this.updateSliderScale.bind(this);
     this.valueToSliderPos = this.valueToSliderPos.bind(this);
     this.valueFromSliderPos = this.valueFromSliderPos.bind(this);
 
     this.roundValueToStepSize = this.roundValueToStepSize.bind(this);
 
+    this.onMinTextInputChanged = this.onMinTextInputChanged.bind(this);
+    this.onMaxTextInputChanged = this.onMaxTextInputChanged.bind(this);
     this.updateMinValue = this.updateMinValue.bind(this);
     this.updateMaxValue = this.updateMaxValue.bind(this);
 
@@ -42,6 +48,7 @@ class MinMaxRangeInput extends Component {
     this.disableTextInput = this.disableTextInput.bind(this);
     this.onMinTextBlur = this.onMinTextBlur.bind(this);
     this.onMaxTextBlur = this.onMaxTextBlur.bind(this);
+    this.textTooltipPosition = this.textTooltipPosition.bind(this);
     this.renderTextInput = this.renderTextInput.bind(this);
 
     this.sliderResolution = 10000;
@@ -111,29 +118,61 @@ class MinMaxRangeInput extends Component {
     return roundValueToStepSize(value, this.props.step);
   }
 
-  updateMinValue(newValue) {
+  onMinTextInputChanged(event) {
     const { max, min } = this.props;
 
-    if (newValue > max || newValue < min) return;
+    // Validate the test input
+    const value = Number.parseFloat(event.currentTarget.value);
+    const isMinValueOutsideRange =  value < min || value > max;
+    const enteredNanValue = isNaN(value) || !isFinite(value);
+
+    if (this.state.isMinValueOutsideRange !== isMinValueOutsideRange) {
+      this.setState({ isMinValueOutsideRange });
+    }
+
+    if (this.state.enteredInvalidMinValue !== enteredNanValue) {
+      this.setState({ enteredInvalidMinValue: enteredNanValue });
+    }
+  }
+
+  onMaxTextInputChanged(event) {
+    const { max, min } = this.props;
+
+    // Validate the test input
+    const value = Number.parseFloat(event.currentTarget.value);
+    const isMaxValueOutsideRange =  value < min || value > max;
+    const enteredNanValue = isNaN(value) || !isFinite(value);
+
+    if (this.state.isMaxValueOutsideRange !== isMaxValueOutsideRange) {
+      this.setState({ isMaxValueOutsideRange });
+    }
+
+    if (this.state.enteredInvalidMaxValue !== enteredNanValue) {
+      this.setState({ enteredInvalidMaxValue: enteredNanValue });
+    }
+  }
+
+  updateMinValue(newValue) {
+    const { max, min } = this.props;
+    const isMinValueOutsideRange =  newValue < min || newValue > max;
 
     if (newValue > this.state.maxValue) {
       this.updateMaxValue(newValue);
     }
 
-    this.setState({ minValue: newValue });
+    this.setState({ minValue: newValue, isMinValueOutsideRange });
     this.props.onMinValueChanged(newValue);
   }
 
   updateMaxValue(newValue) {
     const { max, min } = this.props;
-
-    if (newValue > max || newValue < min) return;
+    const isMaxValueOutsideRange =  newValue < min || newValue > max;
 
     if (newValue < this.state.minValue) {
       this.updateMinValue(newValue);
     }
 
-    this.setState({ maxValue: newValue });
+    this.setState({ maxValue: newValue, isMaxValueOutsideRange });
     this.props.onMaxValueChanged(newValue);
   }
 
@@ -230,7 +269,13 @@ class MinMaxRangeInput extends Component {
     const { clientX } = event;
     const didClickToLeft = (clientX - left) / (right - left) < 0.5;
 
-    this.setState({ showTextInput: true, hoverHint: null, focusLeftTextInput: didClickToLeft });
+    this.setState({
+      showTextInput: true,
+      hoverHint: null,
+      focusLeftTextInput: didClickToLeft,
+      enteredInvalidMinValue: false,
+      enteredInvalidMaxValue: false
+    });
   }
 
   disableTextInput() {
@@ -239,7 +284,7 @@ class MinMaxRangeInput extends Component {
 
   onMinTextBlur(event) {
     const value = Number.parseFloat(event.currentTarget.value);
-    if(!isNaN(value)) {
+    if (!isNaN(value)) {
       this.updateMinValue(value);
     }
     this.disableTextInput();
@@ -247,41 +292,94 @@ class MinMaxRangeInput extends Component {
 
   onMaxTextBlur(event) {
     const value = Number.parseFloat(event.currentTarget.value);
-    if(!isNaN(value)) {
+    if (!isNaN(value)) {
       this.updateMaxValue(value);
     }
     this.disableTextInput();
   }
 
-  renderTextInput() {
-    const { minValue, maxValue, focusLeftTextInput } = this.state;
-    const { placeholder, label } = this.props;
+  textTooltipPosition() {
+    console.log(this.wrapperRef);
+    if (!this.wrapperRef) return { top: '0px', left: '0px' };
+    const { top, right } = this.wrapperRef.getBoundingClientRect();
+    return { top: `${top}px`, left: `${right}px` };
+  }
 
-    const doNotInclude = 'onMinValueChanged onMaxValueChanged inputOnly noHoverHint ' +
-                         'noTooltip noValue exponent valueMax valueMin label'
+  renderTextInput() {
+    const {
+      minValue, maxValue, focusLeftTextInput, isMinValueOutsideRange,
+      isMaxValueOutsideRange, enteredInvalidMinValue, enteredInvalidMaxValue
+    } = this.state;
+    const { placeholder, label, min, max } = this.props;
+
+    let doNotInclude = 'onMinValueChanged onMaxValueChanged inputOnly noHoverHint ' +
+                       'noTooltip noValue exponent valueMax valueMin label'
+
+    let inputMinClassName = '';
+    let inputMaxClassName = '';
+    let tootipContent = '';
+    let showTooltip = false;
+
+    // If we are already outside the range, sclude the min max properties to the HTML
+    // input. But while inside the range we want them to affect what value is possible
+    // to set using .e.g the arrow keys
+    if (isMinValueOutsideRange || isMaxValueOutsideRange) {
+      doNotInclude += ' min max';
+      inputMinClassName = isMinValueOutsideRange ? styles.outsideMinMaxRange : '';
+      inputMaxClassName = isMaxValueOutsideRange ? styles.outsideMinMaxRange : '';
+      showTooltip = true;
+      tootipContent = <>
+        <p>{`Value is outside the valid range: `}<b>{`[${min}, ${max}].`}</b></p>
+      </>
+    }
+
+    if (enteredInvalidMinValue || enteredInvalidMaxValue) {
+      inputMinClassName = enteredInvalidMinValue ? styles.invalidValue : '';
+      inputMaxClassName = enteredInvalidMaxValue ? styles.invalidValue : '';
+      // TODO: update tooltip content
+      showTooltip = true;
+      tootipContent = <p>{"Value is not a number"}</p>;
+    }
+
     const inheritedProps = excludeKeys(this.props, doNotInclude);
 
     return (
-      <Row>
-        <Input
-          {...inheritedProps}
-          type="number"
-          value={minValue}
-          label={label || placeholder}
-          onBlur={this.onMinTextBlur}
-          onEnter={this.onMinTextBlur}
-          autoFocus={focusLeftTextInput}
-        />
-        <Input
-          {...inheritedProps}
-          type="number"
-          value={maxValue}
-          label={' '}
-          onBlur={this.onMaxTextBlur}
-          onEnter={this.onMaxTextBlur}
-          autoFocus={!focusLeftTextInput}
-        />
-    </Row>
+      <div ref={this.setRef('wrapperRef')}>
+        <Row >
+          <Input
+            {...inheritedProps}
+            className={inputMinClassName}
+            type="number"
+            value={minValue}
+            label={label || placeholder}
+            onBlur={this.onMinTextBlur}
+            onEnter={this.onMinTextBlur}
+            onChange={this.onMinTextInputChanged}
+            autoFocus={focusLeftTextInput}
+          />
+          <Input
+            {...inheritedProps}
+            className={inputMaxClassName}
+            type="number"
+            value={maxValue}
+            label={' '}
+            onBlur={this.onMaxTextBlur}
+            onEnter={this.onMaxTextBlur}
+            onChange={this.onMaxTextInputChanged}
+            autoFocus={!focusLeftTextInput}
+          />
+          {showTooltip &&
+            <Tooltip
+              className={`${inputMinClassName} ${inputMaxClassName}`}
+              fixed
+              style={{...this.textTooltipPosition()}}
+              placement={'right'}
+            >
+              {tootipContent}
+            </Tooltip>
+          }
+        </Row>
+      </div>
     );
   }
 
@@ -311,10 +409,11 @@ class MinMaxRangeInput extends Component {
         className={`${styles.inputGroup} ${wide ? styles.wide : ''}`}
         onDoubleClick={this.enableTextInput}
         onContextMenu={this.enableTextInput}
+        ref={this.setRef('wrapperRef')}
       >
         {!this.props.noHoverHint && hoverHint !== null && (
           <div className={styles.hoverHint} style={hoverHintStyle} />
-        )} 
+        )}
         { !this.props.noTooltip && hoverHint !== null && (
           <Tooltip style={{ left: `${100 * hoverHint}%` }} placement={'top'}>
             { tooltipValue }
