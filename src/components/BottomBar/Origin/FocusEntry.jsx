@@ -19,12 +19,22 @@ function FocusEntry({ luaApi, name, identifier, onSelect, active, showNavigation
   }
 
   const flyTo = (event) => {
-    luaApi.pathnavigation.flyTo(identifier);
+    if (event.shiftKey) {
+      luaApi.pathnavigation.flyTo(identifier, 0.0);
+    }
+    else {
+      luaApi.pathnavigation.flyTo(identifier);
+    }
     event.stopPropagation();
   };
 
   const zoomToFocus = (event) => {
-    luaApi.pathnavigation.zoomToFocus();
+    if (event.shiftKey) {
+      luaApi.pathnavigation.zoomToFocus(0.0);
+    }
+    else {
+      luaApi.pathnavigation.zoomToFocus();
+    }
     event.stopPropagation();
   };
 
