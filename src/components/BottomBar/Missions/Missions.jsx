@@ -452,9 +452,6 @@ export default function Missions({ }) {
                 :
                 <CenteredLabel>{"No current phase in this mission"}</CenteredLabel>
               }
-              <header className={styles.title}>
-                {"Actions"}
-              </header>
               {jumpToTimeButtons.map(button => button && <SetTimeButton key={button.name} onClick={button.onClick} name={button.name} documentation={button.documentation} />)}
               {currentActions.map(action => {
                 return <ActionsButton key={action.identifier} action={action} />
