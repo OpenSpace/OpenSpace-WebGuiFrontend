@@ -399,32 +399,6 @@ export default function Missions({ }) {
     setPopoverVisibility(lastValue => !lastValue);
   }
 
-  const jumpToBeginningOfPhase = displayedPhase && {
-    name: "Set Time to Beginning of Phase",
-    documentation: "Set the time to the to beginning of the currently selected phase",
-    onClick: () => jumpToTime(displayedPhase.timerange.start)
-  };
-
-  const jumpToEndOfPhase = displayedPhase && {
-    name: "Set Time to End of Phase",
-    documentation: "Set the time to the to end of the currently selected phase",
-    onClick: () => jumpToTime(displayedPhase.timerange.end)
-  };
-
-  const jumpToNextCapture = nextCapture() && {
-    name: "Set Time to Next Capture",
-    documentation: "Set the time to the to next capture by the instruments",
-    onClick: () => jumpToTime(nextCapture())
-  };
-
-  const jumpToLastCapture = lastCapture() && {
-    name: "Set Time to Last Capture",
-    documentation: "Set the time to the to last capture by the instruments",
-    onClick: () => jumpToTime(lastCapture())
-  };
-
-  const jumpToTimeButtons = [jumpToBeginningOfPhase, jumpToEndOfPhase, jumpToNextCapture, jumpToLastCapture];
-  
   function popover() {
     return (
       <>
@@ -470,9 +444,12 @@ export default function Missions({ }) {
                 :
                 <CenteredLabel>{"No current phase in this mission"}</CenteredLabel>
               }
-              {jumpToTimeButtons.map(button =>
-                button && <SetTimeButton key={button.name} onClick={button.onClick} name={button.name} documentation={button.documentation} />
-              )}
+              <div style={{ display: 'flex', gap: '10px', flexDirection: 'column', padding: '10px 0px' }}>
+                {displayedPhase && <SetTimeButton name={"Set Time to End of Phase"} onClick={() => jumpToTime(displayedPhase.timerange.end)} />}
+                {displayedPhase && <SetTimeButton name={"Set Time to Beginning of Phase"} onClick={() => jumpToTime(displayedPhase.timerange.start)} />}
+                {nextCapture() && <SetTimeButton name={"Set Time to Next Capture"} onClick={() => jumpToTime(nextCapture())} />}
+                {lastCapture() && <SetTimeButton name={"Set Time to Last Capture"} onClick={() => jumpToTime(lastCapture())} />}
+              </div>
               {currentActions.map(action =>
                 <ActionsButton key={action.identifier} action={action} />
               )}
