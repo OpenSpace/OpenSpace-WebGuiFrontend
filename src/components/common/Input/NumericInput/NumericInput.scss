@@ -32,6 +32,8 @@
   bottom: $padding-bottom;
   left: $padding-horizontal;
   pointer-events: none;
+  width: calc(100% - $padding-horizontal);
+  overflow: hidden;
 }
 
 .reverse .value {
