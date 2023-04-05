@@ -23,3 +23,14 @@ $font-size: 0.8rem;
   text-transform: uppercase;
   padding: 15px 0;
 }
+
+.arrow {
+  stroke-width: 0;
+  stroke: white;
+  fill: white;
+  &:hover {
+    stroke-width: 2;
+    stroke: white;
+    fill: $ui-highlight-secondary;
+  }
+}

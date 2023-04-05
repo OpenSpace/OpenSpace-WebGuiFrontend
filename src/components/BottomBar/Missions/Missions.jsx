@@ -18,11 +18,7 @@ function Arrow({ x, y, rotation, onClick, width = 20 }) {
   return (
     <polygon
       points={`0,0 ${width}, ${width * 0.5} 0, ${width} ${width * 0.2}, ${width * 0.5}`}
-      style={{
-        strokeWidth: 0,
-        stroke: 'white',
-        fill: 'white',
-      }}
+      className={styles.arrow}
       transform={`translate(${x + (0.5 * width * paddingFactor)}, ${y})rotate(${rotation})`}
       onClick={onClick}
     />
@@ -45,11 +41,15 @@ function Timeline({
 
   const nestedLevels = currentPhases?.length ?? 0;
   // Set the dimensions and margins of the graph
-  const margin = { top: 10, right: 10, bottom: 60, left: 60 };
+  const margin = { top: 0, right: 10, bottom: 60, left: 60 };
+  const zoomButtonHeight = 40;
+
   const width = fullWidth;
-  const height = fullHeight;
+  const height = fullHeight - zoomButtonHeight;
   const radius = 2;
   const arrowPadding = 25;
+  const scaleExtent = [ 1, 1000 ];
+  const translateExtent = [[0, 0], [width, height]];
 
   const svgRef = React.useRef();
   const xAxisRef = React.useRef();
@@ -91,17 +91,29 @@ function Timeline({
 
   // Add zoom
   React.useEffect(() => {
-    // Update zoom every time the y scale changes
+    // Update zoom every time the y scale changes (when window is resized)
     zoomRef.current = d3.zoom().on("zoom", (event) => {
       const newScaleY = event.transform.rescaleY(yScale);
       d3.select(yAxisRef.current).call(yAxis.scale(newScaleY));
       setK(event.transform.k);
       setY(event.transform.y);
     })
-      .scaleExtent([1, 1000])
-      .translateExtent([[0, 0], [width, height]]);;
+      .scaleExtent(scaleExtent)
+      .translateExtent(translateExtent);
     d3.select(svgRef.current).call(zoomRef.current);
   }, [yScale]);
+
+  // Add zoom
+  function interpolateZoom(scale = 1, centerCurrentTime = true) {
+    const cappedScale = Math.max(Math.min(scaleExtent[1], scale), scaleExtent[0]);
+    const scaledCenterOfHeight = (height * 0.5) / (cappedScale);
+    const currentTimeY = yScale(now) - scaledCenterOfHeight;
+    const currentCenterY = ((-y + (height * 0.5)) / k) - scaledCenterOfHeight;
+    const newY = centerCurrentTime ? currentTimeY : currentCenterY;
+    const cappedTranslation = Math.max(Math.min(translateExtent[1][1], newY), translateExtent[0][1]);
+    const transform = d3.zoomIdentity.scale(cappedScale).translate(1, -cappedTranslation);
+    d3.select(svgRef.current).transition().call(zoomRef.current.transform, transform);
+  };
 
   function createRectangle(phase, nestedLevel, padding = 0, color = undefined) {
     if (!phase?.timerange) {
@@ -150,14 +162,8 @@ function Timeline({
       return null;
     }
     const center = ((fullWidth - margin.left - margin.right) * 0.5) + margin.left;
-    const isAtTop = pixelPosition < margin.top;
+    const isAtTop = pixelPosition < (margin.top + zoomButtonHeight);
     const isAtBottom = pixelPosition > window.innerHeight - margin.bottom;
-
-    function interpolateZoom() {
-      let transform = d3.zoomIdentity;
-      // Apply the transform:
-      d3.select(svgRef.current).transition().call(zoomRef.current.transform, transform);
-    };
 
     if (isAtTop) {
       return (
@@ -165,7 +171,7 @@ function Timeline({
           x={center}
           y={margin.top + arrowPadding}
           rotation={-90}
-          onClick={() => interpolateZoom()}
+          onClick={() => interpolateZoom(k)}
         />
       );
     }
@@ -175,61 +181,85 @@ function Timeline({
           x={center}
           y={height - (margin.bottom + arrowPadding)}
           rotation={90}
-          onClick={() => interpolateZoom()}
+          onClick={() => interpolateZoom(k)}
         />
       );
     }
     return null;
   }
 
-  const clipMargin = { top: margin.top, bottom: window.innerHeight - margin.bottom };
+  const clipMargin = { top: margin.top, bottom: height - margin.bottom };
   let selectedPhase = null;
   let selectedPhaseIndex = 0;
-  
   return (
-    <svg
-      ref={svgRef}
-      width={width}
-      height={height}
-      style={{
-        position: 'absolute',
-        top: 0,
-        right: panelWidth,
-        clipPath: `polygon(0% ${clipMargin.top}px, 100% ${clipMargin.top}px, 100% ${clipMargin.bottom}px, 0% ${clipMargin.bottom}px`
-      }}
-    >
-      <g style={{ clipPath: 'none'}}>
-        <g ref={xAxisRef} transform={`translate(0, ${height - margin.bottom})`} />
-        <g ref={yAxisRef} transform={`translate(${margin.left}, ${0})`} />
-      </g>
-      <g transform={`translate(0, ${y})scale(1, ${k})`}>
-        {currentPhases?.map((phase, index) => {
-          return phase.map(phase => {
-            if (!phase.timerange?.start || !phase.timerange?.end) {
-              return null;
-            }
-            if (phase.name === displayedPhase?.name) {
-              // We want to draw the selected phase last
-              // Save for later
-              selectedPhase = phase;
-              selectedPhaseIndex = index;
-              return null;
-            }
-            return createRectangle(phase, index)
-          })
-        }
-        )}
-        {selectedPhase ? <>
-          {createRectangle(selectedPhase, selectedPhaseIndex, 2, 'white')}
-          {createRectangle(selectedPhase, selectedPhaseIndex)}
-        </>: null}
-      </g>
-      <g transform={`translate(0, ${y})scale(1, ${k})`}>
-        {captureTimes.map(capture => createInstantTimeIndicator(new Date(capture + "Z"), 'rgba(255, 255, 0, 0.5)'))}
-        {createInstantTimeIndicator(now, 'white', timeIndicatorRef)}
-      </g>
+    <>
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          right: panelWidth,
+          display: 'flex',
+          width: width,
+          height: zoomButtonHeight,
+          justifyContent: 'right',
+          padding: '10px 12px 8px 8px ',
+          gap: '10px'
+        }}
+      >
+        <Button onClick={() => interpolateZoom(Math.floor(Math.sqrt(k - 1)), false)} style={{ margin: 0, padding: 0 }}>
+          <Icon icon={"mi:zoom-out"} color={"white"} alt={"zoom-in"} style={{ fontSize: '1.5em' }}/>
+        </Button>
+        <Button onClick={() => interpolateZoom(Math.pow(k + 1, 2), false)} style={{ margin: 0, padding: 0 }}>
+          <Icon icon={"mi:zoom-in"} color={"white"} alt={"zoom-out"} style={{ fontSize: '1.5em' }}/>
+        </Button>
+        <Button onClick={() => interpolateZoom(1, false)} style={{ margin: 0, padding: 0 }}>
+          <Icon icon={"fluent:full-screen-zoom-24-filled"} color={"white"} alt={"full-view"} style={{ fontSize: '1.5em' }}/>
+        </Button>
+      </div>
+      <svg
+        ref={svgRef}
+        width={width}
+        height={height}
+        style={{
+          position: 'absolute',
+          top: zoomButtonHeight,
+          right: panelWidth,
+          clipPath: `polygon(0% ${clipMargin.top}px, 100% ${clipMargin.top}px, 100% ${clipMargin.bottom}px, 0% ${clipMargin.bottom}px`
+        }}
+      >
+        <g style={{ clipPath: 'none'}}>
+          <g ref={xAxisRef} transform={`translate(0, ${height - margin.bottom})`} />
+          <g ref={yAxisRef} transform={`translate(${margin.left}, ${0})`} />
+        </g>
+        <g transform={`translate(0, ${y})scale(1, ${k})`}>
+          {currentPhases?.map((phase, index) => {
+            return phase.map(phase => {
+              if (!phase.timerange?.start || !phase.timerange?.end) {
+                return null;
+              }
+              if (phase.name === displayedPhase?.name) {
+                // We want to draw the selected phase last
+                // Save for later
+                selectedPhase = phase;
+                selectedPhaseIndex = index;
+                return null;
+              }
+              return createRectangle(phase, index)
+            })
+          }
+          )}
+          {selectedPhase ? <>
+            {createRectangle(selectedPhase, selectedPhaseIndex, 2, 'white')}
+            {createRectangle(selectedPhase, selectedPhaseIndex)}
+          </>: null}
+        </g>
+        <g transform={`translate(0, ${y})scale(1, ${k})`}>
+          {captureTimes.map(capture => createInstantTimeIndicator(new Date(capture + "Z"), 'rgba(255, 255, 0, 0.5)'))}
+          {createInstantTimeIndicator(now, 'white', timeIndicatorRef)}
+        </g>
         {currentTimeArrow()}
-    </svg>
+      </svg>
+    </>
   );
 }
 
@@ -262,7 +292,6 @@ export default function Missions({ }) {
   const [displayedPhase, setDisplayedPhase] = React.useState(overview);
   const [currentActions, setCurrentActions] = React.useState([]);
   const [size, setSize] = React.useState({width: 350, height: window.innerHeight});
-
   const timeRange = [new Date(missions.data.missions[0].timerange.start), new Date(missions.data.missions[0].timerange.end)];
   const years = Math.abs(timeRange[0].getUTCFullYear() - timeRange[1].getUTCFullYear()); 
   const allPhasesNested = React.useRef(null);
@@ -342,12 +371,13 @@ export default function Missions({ }) {
   }
 
   async function jumpToTime(time, fade = 1) {
+    const utcTime = new Date(time + "Z");
     let promise = new Promise((resolve, reject) => {
       luaApi.setPropertyValueSingle('RenderEngine.BlackoutFactor', 0, fade, "QuadraticEaseOut");
       setTimeout(() => resolve("done!"), fade * 1000)
     });
     let result = await promise;
-    luaApi.time.setTime(time);
+    luaApi.time.setTime(utcTime.toISOString());
     luaApi.setPropertyValueSingle('RenderEngine.BlackoutFactor', 1, fade, "QuadraticEaseIn");
   }
 
