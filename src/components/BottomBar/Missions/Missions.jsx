@@ -388,13 +388,20 @@ export default function Missions({ }) {
   // Fadetime is in seconds
   async function jumpToTime(time, fadeTime = 1) {
     const utcTime = makeUtcDate(time);
-    let promise = new Promise((resolve, reject) => {
-      luaApi.setPropertyValueSingle('RenderEngine.BlackoutFactor', 0, fadeTime, "QuadraticEaseOut");
-      setTimeout(() => resolve("done!"), fadeTime * 1000)
-    });
-    let result = await promise;
-    luaApi.time.setTime(utcTime.toISOString());
-    luaApi.setPropertyValueSingle('RenderEngine.BlackoutFactor', 1, fadeTime, "QuadraticEaseIn");
+    const timeDiffSeconds = parseInt(Math.abs(now - utcTime) / 1000);
+    const diffBiggerThanADay = timeDiffSeconds > 86400; // No of seconds in a day
+    if (diffBiggerThanADay) {
+      let promise = new Promise((resolve, reject) => {
+        luaApi.setPropertyValueSingle('RenderEngine.BlackoutFactor', 0, fadeTime, "QuadraticEaseOut");
+        setTimeout(() => resolve("done!"), fadeTime * 1000)
+      });
+      let result = await promise;
+      luaApi.time.setTime(utcTime.toISOString());
+      luaApi.setPropertyValueSingle('RenderEngine.BlackoutFactor', 1, fadeTime, "QuadraticEaseIn");
+    }
+    else {
+      luaApi.time.interpolateTime(utcTime.toISOString(), fadeTime);
+    }
   }
 
   function togglePopover() {
