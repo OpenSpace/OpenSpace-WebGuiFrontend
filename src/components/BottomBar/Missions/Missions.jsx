@@ -41,7 +41,7 @@ function Timeline({
 
   const nestedLevels = currentPhases?.length ?? 0;
   // Set the dimensions and margins of the graph
-  const margin = { top: 0, right: 10, bottom: 60, left: 60 };
+  const margin = { top: 0, right: 10, bottom: 70, left: 60 };
   const zoomButtonHeight = 40;
 
   const width = fullWidth;
