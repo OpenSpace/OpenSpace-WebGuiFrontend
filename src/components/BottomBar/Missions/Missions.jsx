@@ -48,10 +48,12 @@ function Timeline({
   const nestedLevels = currentPhases?.length ?? 0;
 
   // Set the dimensions and margins of the graph
+  const margin = { top: 0, right: 10, bottom: 70, left: 60 };
+  const minLevelWidth = 15;
+  const minWidth = (minLevelWidth * nestedLevels) + margin.left + margin.right;
   const zoomButtonHeight = 40;
   const height = fullHeight - zoomButtonHeight;
-  const width = fullWidth;
-  const margin = { top: 0, right: 10, bottom: 70, left: 60 };
+  const width = Math.max(fullWidth, minWidth);
   const clipMargin = { top: margin.top, bottom: height - margin.bottom };
   const radius = 2;
   const arrowPadding = 25;
