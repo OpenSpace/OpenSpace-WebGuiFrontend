@@ -4,14 +4,19 @@ import WindowThreeStates from '../SkyBrowser/WindowThreeStates/WindowThreeStates
 import * as d3 from 'd3';
 import styles from './missions.scss';
 import { ActionsButton } from '../ActionsPanel';
-import actionStyles from '../ActionsPanel.scss';
 import Button from '../../common/Input/Button/Button';
 import Picker from '../Picker';
 import { useLocalStorageState } from '../../../utils/customHooks';
 import { Icon } from '@iconify/react';
-import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
-import InfoBox from '../../common/InfoBox/InfoBox';
 import CenteredLabel from '../../common/CenteredLabel/CenteredLabel';
+
+function makeUtcDate(time) {
+  if (!time) {
+    return null;
+  }
+  const utcString = time.includes("Z") ? time : `${time}Z`;
+  return new Date(utcString);
+}
 
 function Arrow({ x, y, rotation, onClick, width = 20 }) {
   const paddingFactor = rotation === 90 ? 1 : -1;
@@ -36,21 +41,24 @@ function Timeline({
   captureTimes,
   panelWidth
 }) {
-  const [k, setK] = React.useState(1);
-  const [y, setY] = React.useState(0);
+  const [k, setK] = React.useState(1); // Scale, d3 notation
+  const [y, setY] = React.useState(0); // Translation, d3 notation
 
+  // Depth of nesting for phases
   const nestedLevels = currentPhases?.length ?? 0;
-  // Set the dimensions and margins of the graph
-  const margin = { top: 0, right: 10, bottom: 70, left: 60 };
-  const zoomButtonHeight = 40;
 
-  const width = fullWidth;
+  // Set the dimensions and margins of the graph
+  const zoomButtonHeight = 40;
   const height = fullHeight - zoomButtonHeight;
+  const width = fullWidth;
+  const margin = { top: 0, right: 10, bottom: 70, left: 60 };
+  const clipMargin = { top: margin.top, bottom: height - margin.bottom };
   const radius = 2;
   const arrowPadding = 25;
   const scaleExtent = [ 1, 1000 ];
   const translateExtent = [[0, 0], [width, height]];
 
+  // Refs
   const svgRef = React.useRef();
   const xAxisRef = React.useRef();
   const yAxisRef = React.useRef();
@@ -60,16 +68,16 @@ function Timeline({
   // Calculate scaling for x and y
   const xScale = d3.scaleLinear().range([margin.left, width - margin.right]).domain([0, nestedLevels]);
   let yScale = d3.scaleUtc().range([height - margin.bottom, margin.top]).domain(timeRange);
+
   // Calculate axes
   const xAxis = d3.axisTop()
     .scale(xScale)
     .tickFormat(d => ``)
     .tickSize(0)
-    .ticks(nestedLevels)
-
-  let yAxis = d3.axisLeft().scale(yScale);
+    .ticks(nestedLevels);
+  let yAxis = d3.axisLeft().scale(yScale); // Y axis will change
   
-  // Axes
+  // On mount, style axes
   React.useEffect(() => {
     // Change axes on DOM with refs
     d3.select(xAxisRef.current).call(xAxis);
@@ -82,6 +90,7 @@ function Timeline({
     d3.select(xAxisRef.current).selectAll(".tick line").attr("stroke", 'grey');
   }, []);
 
+  // When height changes of window, rescale y axis
   React.useEffect(() => {
     // Update the axis every time window rescales 
     yScale = d3.scaleUtc().range([height - margin.bottom, margin.top]).domain(timeRange);
@@ -90,8 +99,8 @@ function Timeline({
   }, [height]);
 
   // Add zoom
+  // Update zoom function every time the y scale changes (when window is resized)
   React.useEffect(() => {
-    // Update zoom every time the y scale changes (when window is resized)
     zoomRef.current = d3.zoom().on("zoom", (event) => {
       const newScaleY = event.transform.rescaleY(yScale);
       d3.select(yAxisRef.current).call(yAxis.scale(newScaleY));
@@ -103,7 +112,7 @@ function Timeline({
     d3.select(svgRef.current).call(zoomRef.current);
   }, [yScale]);
 
-  // Add zoom
+  // Zooming function for transition
   function interpolateZoom(scale = 1, centerCurrentTime = true) {
     const cappedScale = Math.max(Math.min(scaleExtent[1], scale), scaleExtent[0]);
     const scaledCenterOfHeight = (height * 0.5) / (cappedScale);
@@ -115,11 +124,12 @@ function Timeline({
     d3.select(svgRef.current).transition().call(zoomRef.current.transform, transform);
   };
 
+  // Used for phases
   function createRectangle(phase, nestedLevel, padding = 0, color = undefined) {
     if (!phase?.timerange) {
       return null;
     }
-    const timeRange = [new Date(phase.timerange?.start + "Z"), new Date(phase.timerange?.end + "Z")];
+    const timeRange = [makeUtcDate(phase.timerange?.start), makeUtcDate(phase.timerange?.end)];
     const key = phase.name;
     const isCurrent = Date.parse(now) < Date.parse(timeRange[1]) &&
       Date.parse(now) > Date.parse(timeRange[0]);
@@ -140,7 +150,8 @@ function Timeline({
     );
   }
 
-  function createInstantTimeIndicator(time, color, ref) {
+  // Used for instantaneous times such as current time or capture times 
+  function createLine(time, color, ref) {
     return (
       <rect
         key={time.toUTCString()}
@@ -155,7 +166,7 @@ function Timeline({
     )
   }
 
-  function currentTimeArrow() {
+  function createCurrentTimeArrow() {
     const pixelPosition = timeIndicatorRef.current?.getBoundingClientRect()?.y;
     // Before the boundingrect is initialized properly it returns 0
     if (!timeIndicatorRef.current || pixelPosition === 0) {
@@ -188,7 +199,7 @@ function Timeline({
     return null;
   }
 
-  const clipMargin = { top: margin.top, bottom: height - margin.bottom };
+  // Store the selected phase for later rendering
   let selectedPhase = null;
   let selectedPhaseIndex = 0;
   return (
@@ -254,10 +265,10 @@ function Timeline({
           </>: null}
         </g>
         <g transform={`translate(0, ${y})scale(1, ${k})`}>
-          {captureTimes.map(capture => createInstantTimeIndicator(new Date(capture + "Z"), 'rgba(255, 255, 0, 0.5)'))}
-          {createInstantTimeIndicator(now, 'white', timeIndicatorRef)}
+          {captureTimes.map(capture => createLine(makeUtcDate(capture), 'rgba(255, 255, 0, 0.5)'))}
+          {createLine(now, 'white', timeIndicatorRef)}
         </g>
-        {currentTimeArrow()}
+        {createCurrentTimeArrow()}
       </svg>
     </>
   );
@@ -269,55 +280,55 @@ function SetTimeButton({onClick, name, documentation}) {
       block
       smalltext
       onClick={onClick}
-      className={actionStyles.actionButton}
     >
-      <p className={actionStyles.iconRow}>
-        <MaterialIcon className={actionStyles.buttonIcon} icon="launch" />
-      </p>
-      {name} {' '}
-      {documentation && <InfoBox text={documentation} />}
-
+      {name}
     </Button>
   );
 }
 
 
 export default function Missions({ }) {
+  // Make panel being shown stored in local storage
   const [popoverVisible, setPopoverVisibility] = useLocalStorageState('missionsPanelVisible', true);
+
+  // Access Redux state
   const missions = useSelector((state) => state.missions);
   const allActions = useSelector((state) => state.shortcuts?.data?.shortcuts);
   const luaApi = useSelector((state) => state.luaApi);
   const now = useSelector((state) => state.time.time);
+
   const [overview, setOverview] = React.useState(missions?.data?.missions[0]);
   const [displayedPhase, setDisplayedPhase] = React.useState(overview);
   const [currentActions, setCurrentActions] = React.useState([]);
   const [size, setSize] = React.useState({width: 350, height: window.innerHeight});
+  
   const timeRange = [new Date(missions.data.missions[0].timerange.start), new Date(missions.data.missions[0].timerange.end)];
-  const years = Math.abs(timeRange[0].getUTCFullYear() - timeRange[1].getUTCFullYear()); 
   const allPhasesNested = React.useRef(null);
 
+  // Every time a phase changes, get the actions that are valid for that phase
   React.useEffect(() => {
     let result = [];
     findCurrentActions(result, overview);
     setCurrentActions(result);
   }, [allActions, displayedPhase]);
 
+  // When missions data changes, update phases
   React.useEffect(() => {
     let phases = [];
     findAllPhases(phases, missions.data.missions[0].phases, 0);
     allPhasesNested.current = phases;
   }, [missions.data]);
 
-  function findAllPhases(phaseArray, phases, nestedLevel) {
-    if (!Boolean(phaseArray?.[nestedLevel])) {
-      phaseArray.push(phases);
+  function findAllPhases(result, phases, nestedLevel) {
+    if (!Boolean(result?.[nestedLevel])) {
+      result.push(phases);
     }
     else {
-      phaseArray[nestedLevel].push(...phases);
+      result[nestedLevel].push(...phases);
     }
     phases.map(phase => {
       if (phase?.phases && phase.phases.length > 0) {
-        findAllPhases(phaseArray, phase.phases, nestedLevel + 1);
+        findAllPhases(result, phase.phases, nestedLevel + 1);
       }
     });
   }
@@ -333,13 +344,14 @@ export default function Missions({ }) {
     });
   }
 
+  // Locate the next instrument activity capture
   function nextCapture() {
     let nextFoundCapture;
     // Assume the captures are sorted w regards to time
     for (let i = 0; i < overview.capturetimes.length; i++) {
       const capture = overview.capturetimes[i];
       // Find the first time that is after the current time
-      if (now?.getTime() < new Date(capture + "Z").getTime()) {
+      if (now?.getTime() < makeUtcDate(capture).getTime()) {
         nextFoundCapture = capture;
         break;
       }
@@ -347,13 +359,14 @@ export default function Missions({ }) {
     return nextFoundCapture;
   }
 
+  // Locate the previous instrument activity capture
   function lastCapture() {
     let lastFoundCapture;
     // Assume the captures are sorted w regards to time
     for (let i = overview.capturetimes.length - 1; i > 0; i--) {
       const capture = overview.capturetimes[i];
       // Find the first time that is before the current time
-      if (now?.getTime() > new Date(capture + "Z").getTime()) {
+      if (now?.getTime() > makeUtcDate(capture).getTime()) {
         lastFoundCapture = capture;
         break;
       }
@@ -364,43 +377,48 @@ export default function Missions({ }) {
   function setPhaseToCurrent() {
     const flatAllPhases = allPhasesNested.current.flat();
     const filteredPhases = flatAllPhases.filter(mission => {
-      return Date.parse(now) < Date.parse(mission.timerange.end) &&
-        Date.parse(now) > Date.parse(mission.timerange.start)
+      return Date.parse(now) < Date.parse(makeUtcDate(mission.timerange.end)) &&
+        Date.parse(now) > Date.parse(makeUtcDate(mission.timerange.start))
     });
     setDisplayedPhase(filteredPhases.pop());
   }
 
-  async function jumpToTime(time, fade = 1) {
-    const utcTime = new Date(time + "Z");
+  // Fadetime is in seconds
+  async function jumpToTime(time, fadeTime = 1) {
+    const utcTime = makeUtcDate(time);
     let promise = new Promise((resolve, reject) => {
-      luaApi.setPropertyValueSingle('RenderEngine.BlackoutFactor', 0, fade, "QuadraticEaseOut");
-      setTimeout(() => resolve("done!"), fade * 1000)
+      luaApi.setPropertyValueSingle('RenderEngine.BlackoutFactor', 0, fadeTime, "QuadraticEaseOut");
+      setTimeout(() => resolve("done!"), fadeTime * 1000)
     });
     let result = await promise;
     luaApi.time.setTime(utcTime.toISOString());
-    luaApi.setPropertyValueSingle('RenderEngine.BlackoutFactor', 1, fade, "QuadraticEaseIn");
+    luaApi.setPropertyValueSingle('RenderEngine.BlackoutFactor', 1, fadeTime, "QuadraticEaseIn");
+  }
+
+  function togglePopover() {
+    setPopoverVisibility(lastValue => !lastValue);
   }
 
   const jumpToBeginningOfPhase = displayedPhase && {
-    name: "Jump To Beginning Of Phase",
+    name: "Set Time to Beginning of Phase",
     documentation: "Set the time to the to beginning of the currently selected phase",
     onClick: () => jumpToTime(displayedPhase.timerange.start)
   };
 
   const jumpToEndOfPhase = displayedPhase && {
-    name: "Jump To End Of Phase",
+    name: "Set Time to End of Phase",
     documentation: "Set the time to the to end of the currently selected phase",
     onClick: () => jumpToTime(displayedPhase.timerange.end)
   };
 
   const jumpToNextCapture = nextCapture() && {
-    name: "Jump To Next Capture",
+    name: "Set Time to Next Capture",
     documentation: "Set the time to the to next capture by the instruments",
     onClick: () => jumpToTime(nextCapture())
   };
 
   const jumpToLastCapture = lastCapture() && {
-    name: "Jump To Last Capture",
+    name: "Set Time to Last Capture",
     documentation: "Set the time to the to last capture by the instruments",
     onClick: () => jumpToTime(lastCapture())
   };
@@ -452,19 +470,17 @@ export default function Missions({ }) {
                 :
                 <CenteredLabel>{"No current phase in this mission"}</CenteredLabel>
               }
-              {jumpToTimeButtons.map(button => button && <SetTimeButton key={button.name} onClick={button.onClick} name={button.name} documentation={button.documentation} />)}
-              {currentActions.map(action => {
-                return <ActionsButton key={action.identifier} action={action} />
-              })}
+              {jumpToTimeButtons.map(button =>
+                button && <SetTimeButton key={button.name} onClick={button.onClick} name={button.name} documentation={button.documentation} />
+              )}
+              {currentActions.map(action =>
+                <ActionsButton key={action.identifier} action={action} />
+              )}
             </div>
           </div>
       </WindowThreeStates>
     </>
     );
-  }
-
-  function togglePopover() {
-    setPopoverVisibility(lastValue => !lastValue);
   }
 
   return (
