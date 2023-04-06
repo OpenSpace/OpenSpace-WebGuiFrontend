@@ -36,7 +36,7 @@ class Input extends Component {
    * @param event InputEvent
    */
   onChange(event) {
-    const { value } = event.target;
+    let { value } = event.currentTarget;
 
     // update state so that input is re-rendered with new content
     this.setState({ value });
@@ -58,7 +58,7 @@ class Input extends Component {
     //this solution is so bad it only lets you put . at the end of a value.
     //but I feel its still better then nothing happening.
     if ( (window.navigator.platform == "Win32") && ((event.keyCode == 46)) ) {
-      var charString = String.fromCharCode(event.keyCode);
+      let charString = String.fromCharCode(event.keyCode);
       if (event.currentTarget.type == "number") {
         charString += "0";
       }

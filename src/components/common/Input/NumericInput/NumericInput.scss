@@ -6,6 +6,7 @@
   position: relative;
   box-sizing: border-box;
   height: $input-total-height;
+  flex: 1 1 0px;
 }
 
 // the descriptive label
@@ -31,6 +32,8 @@
   bottom: $padding-bottom;
   left: $padding-horizontal;
   pointer-events: none;
+  width: calc(100% - $padding-horizontal);
+  overflow: hidden;
 }
 
 .reverse .value {
@@ -61,7 +64,7 @@
 // state changes
 .inputGroup {
   .range:focus + .rangeLabel {
-    color: $green;
+    color: $text-color-focus;
   }
 
   &:hover {
@@ -117,4 +120,12 @@
   background: linear-gradient(to left, $ui-background-slider-input var(--bg-width), transparent var(--bg-width));
   height: 100%;
   min-width: 2px;
+}
+
+.outsideMinMaxRange {
+  color: $yellow !important;
+}
+
+.invalidValue {
+  color: $ui-danger !important;
 }
