@@ -107,6 +107,10 @@ function PropertyOwnerHeader({
     const shouldFadeIn = isFadingOut || (shouldBeEnabled && !isFadingIn);
 
     if (shouldFadeIn) {
+      if (!isFadingOut) {
+        // If not in mid fade, fade out the thing before fading in
+        luaApi.setPropertyValueSingle(fadeUri, 0.0);
+      }
       // Enable the thing immediately so we see the visual changes
       getPropertyDispatcher(enabledUri).set(true);
       luaApi.setPropertyValueSingle(fadeUri, 1.0, fadeDuration);
