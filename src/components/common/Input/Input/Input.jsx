@@ -36,7 +36,7 @@ class Input extends Component {
    * @param event InputEvent
    */
   onChange(event) {
-    const { value } = event.target;
+    let { value } = event.currentTarget;
 
     // update state so that input is re-rendered with new content
     this.setState({ value });
