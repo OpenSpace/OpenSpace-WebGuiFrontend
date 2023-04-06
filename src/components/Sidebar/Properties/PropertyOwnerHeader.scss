@@ -65,3 +65,7 @@
 .title {
   word-break: break-word;
 }
+
+.enabledCheckbox:active {
+  opacity: 1 !important;
+}
