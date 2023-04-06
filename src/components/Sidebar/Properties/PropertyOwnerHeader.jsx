@@ -1,9 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import Button from '../../common/Input/Button/Button';
 import Checkbox from '../../common/Input/Checkbox/Checkbox';
 import Focus from 'svg-react-loader?name=Focus!../../../icons/focus.svg';
-import Button from '../../common/Input/Button/Button';
 import DraggableIcon from 'svg-react-loader?name=Aim!../../../icons/draggable_list.svg';
 import styles from './PropertyOwnerHeader.scss';
 import toggleHeaderStyles from '../../common/ToggleContent/ToggleHeader.scss';
