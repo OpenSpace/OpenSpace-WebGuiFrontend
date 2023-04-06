@@ -36,7 +36,7 @@ class Input extends Component {
    * @param event InputEvent
    */
   onChange(event) {
-    let { value } = event.currentTarget;
+    const { value } = event.target;
 
     // update state so that input is re-rendered with new content
     this.setState({ value });
@@ -63,7 +63,7 @@ class Input extends Component {
         charString += "0";
       }
       this.inputNode.value += charString;
-      this.onChange({ currentTarget: this.inputNode });
+      this.onChange({ target: this.inputNode });
     }
   }
 
