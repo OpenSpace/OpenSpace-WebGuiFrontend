@@ -201,9 +201,9 @@ class NumericInput extends Component {
       let tootipContent = "";
       let showTooltip = false;
 
-      // If we are already outside the range, sclude the min max properties to the HTML
+      // If we are already outside the range, exclude the min max properties to the HTML
       // input. But while inside the range we want them to affect what value is possible
-      // to set using .e.g the arrow keys
+      // to set using e.g. the arrow keys
       if (isValueOutsideRange) {
         excludeProps += ' min max';
         if (showOutsideRangeHint) {
@@ -217,7 +217,6 @@ class NumericInput extends Component {
 
       if (showOutsideRangeHint && enteredInvalidValue) {
         inputClassName += styles.invalidValue;
-        // TODO: update tooltip content
         showTooltip = true;
         tootipContent = <p>{ "Value is not a number"}</p>;
       }
