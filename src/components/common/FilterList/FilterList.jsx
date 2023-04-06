@@ -9,17 +9,7 @@ import Input from '../Input/Input/Input';
 import ScrollOverlay from '../ScrollOverlay/ScrollOverlay';
 import styles from './FilterList.scss';
 
-function FilterListFavorites({ className, children }) {
-  return (
-    <ScrollOverlay className={`${className}`}>
-      {children}
-    </ScrollOverlay>
-  );
-}
-
-FilterListFavorites.displayName = 'FilterListFavorites';
-
-function FilterListData({matcher, searchString, ignorePropsFilter, className, children}) {
+function filterChildren({ matcher, searchString, ignorePropsFilter, children }) {
   // Filter the children on their props
   // Most matcher functions are case sensitive, hence toLowerCase
   const childArray = React.Children.toArray(children);
@@ -32,22 +22,38 @@ function FilterListData({matcher, searchString, ignorePropsFilter, className, ch
       matcherFunc = WordBeginningSubstring;
     }
     const finalMatcher = matcher || matcherFunc;
-    let searchableChild = child.props ? {...child.props} : child.toLowerCase();
+    let searchableChild = child.props ? { ...child.props } : child.toLowerCase();
     ignorePropsFilter.map(key => delete searchableChild[key]);
-    return finalMatcher(searchableChild, searchString.toLowerCase());
+    const isMatching = finalMatcher(searchableChild, searchString.toLowerCase());
+    // Keep the virtual scroll for virtual lists
+    return isMatching || child.type.displayName === "FilterListVirtualScroll";
   });
-  let content = undefined;
+
   if (filteredChildren.length > 0) {
-    content = filteredChildren;
+    return filteredChildren;
   }
   else {
-    content = <CenteredLabel>Nothing found. Try another search!</CenteredLabel>;
+    return <CenteredLabel>Nothing found. Try another search!</CenteredLabel>;
   }
+}
+
+function FilterListFavorites({ className, children }) {
   return (
-      <ScrollOverlay className={`${className}`}>
-        { content }
-      </ScrollOverlay>
-    );
+    <ScrollOverlay className={`${className}`}>
+      {children}
+    </ScrollOverlay>
+  );
+}
+
+FilterListFavorites.displayName = 'FilterListFavorites';
+
+function FilterListData({ matcher, searchString, ignorePropsFilter, className, children }) {
+  const content = filterChildren({ matcher, searchString, ignorePropsFilter, children });
+  return (
+    <ScrollOverlay className={`${className}`}>
+      {content}
+    </ScrollOverlay>
+  );
 }
 
 FilterListData.displayName = 'FilterListData';

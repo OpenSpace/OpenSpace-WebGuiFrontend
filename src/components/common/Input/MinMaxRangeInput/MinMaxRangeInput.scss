@@ -54,7 +54,7 @@
 // state changes
 .inputGroup {
   .range:focus + .rangeLabel {
-    color: $green;
+    color: $text-color-focus;
   }
 
   &:hover {
@@ -119,4 +119,12 @@
       $ui-background-slider-input var(--bg-start) var(--bg-stop),
       transparent var(--bg-stop)
     );
+}
+
+.outsideMinMaxRange {
+  color: $yellow !important;
+}
+
+.invalidValue {
+  color: $ui-danger !important;
 }

@@ -201,6 +201,7 @@ function SimulationIncrement({hasNextDeltaTimeStep, hasPrevDeltaTimeStep, nextDe
           value={-adjustedDelta}
           reverse
           noValue={adjustedDelta >= 0}
+          showOutsideRangeHint={false}
         />
         <NumericInput
           {...Limits[stepSize]}
@@ -209,6 +210,7 @@ function SimulationIncrement({hasNextDeltaTimeStep, hasPrevDeltaTimeStep, nextDe
           placeholder={`${stepSize} / second`}
           value={adjustedDelta}
           noValue={adjustedDelta < 0}
+          showOutsideRangeHint={false}
         />
       </Row>
       <div style={{ height: '10px' }} />
