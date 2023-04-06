@@ -31,26 +31,25 @@ function PropertyOwnerHeader({
   const [fadeDirection, setFadeDirection] = React.useState(0);
   const prevFadeValueRef = useRef(fadeValue);
 
-  // Subscribe to properties in state
   useEffect(() => {
-    if (enabledUri) {
-      getPropertyDispatcher(enabledUri).subscribe();
-    }
+    if (!fadeUri) { return; }
 
-    if (fadeUri) {
-      getPropertyDispatcher(fadeUri).subscribe();
-    }
-
-    // returned function will be called on component unmount
+    getPropertyDispatcher(fadeUri).subscribe();
     return () => {
-      if (enabledUri) {
-        getPropertyDispatcher(enabledUri).unsubscribe();
-      }
-      if (fadeUri) {
-        getPropertyDispatcher(fadeUri).unsubscribe();
-      }
+      // unsubscribe on component unmount
+      getPropertyDispatcher(fadeUri).unsubscribe();
     }
-  });
+  }, []);
+
+  useEffect(() => {
+    if (!enabledUri) { return; }
+
+    getPropertyDispatcher(enabledUri).subscribe();
+    return () => {
+      // unsubscribe on component unmount
+      getPropertyDispatcher(enabledUri).unsubscribe();
+    }
+  }, []);
 
   // When fade value changes
   useEffect(() => {
@@ -74,11 +73,11 @@ function PropertyOwnerHeader({
     }
   }, [fadeValue])
 
-  const onClick = (evt) => {
+  function onClick(evt) {
     setExpanded(!expanded);
   };
 
-  const onClickFocus = (evt) => {
+  function onClickFocus(evt) {
     if (evt.shiftKey && shiftFocusAction) {
       shiftFocusAction();
     } else if (focusAction) {
@@ -87,7 +86,7 @@ function PropertyOwnerHeader({
     evt.stopPropagation();
   };
 
-  const onToggleCheckboxClick = (shouldBeEnabled, event) => {
+  function onToggleCheckboxClick(shouldBeEnabled, event) {
     if (!enabledUri) return;
 
     const holdingShift = event.getModifierState('Shift');
@@ -120,17 +119,17 @@ function PropertyOwnerHeader({
     }
   };
 
-  const popoutClick = (evt) => {
+  function popoutClick(evt) {
     popOutAction();
     evt.stopPropagation();
   };
 
-  const metaClick = (evt) => {
+  function metaClick(evt) {
     metaAction();
     evt.stopPropagation();
   };
 
-  const trashClick = (evt) => {
+  function trashClick(evt) {
     trashAction(identifier);
     evt.stopPropagation();
   };
@@ -181,11 +180,7 @@ function PropertyOwnerHeader({
   }
 
   const hasMoreButtons = (popOutAction || metaAction);
-
-  let checkBoxFadeStyle = {}
-  if (fadeUri && fadeValue > 0) {
-    checkBoxFadeStyle = {opacity: fadeValue};
-  }
+  const shouldFadeCheckbox = (fadeUri && fadeValue > 0.0)
 
   return (
     <header
@@ -208,7 +203,7 @@ function PropertyOwnerHeader({
               checked={enabled}
               label={null}
               setChecked={onToggleCheckboxClick}
-              style={checkBoxFadeStyle}
+              style={shouldFadeCheckbox ? { opacity: fadeValue } : null}
             />
           </span>
         }
