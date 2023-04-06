@@ -23,9 +23,9 @@ import Row from '../../common/Row/Row';
 import TooltipMenu from '../../common/Tooltip/TooltipMenu';
 
 function PropertyOwnerHeader({
-  title, identifier, expanded, getPropertyDispatcher, setExpanded, onIcon, offIcon,
-  enabledUri, enabled, fadeDuration, fadeUri, fadeValue, isLayer, focusAction,
-  shiftFocusAction, popOutAction, metaAction, trashAction, luaApi
+  enabled, enabledUri, expanded, fadeDuration, fadeUri, fadeValue, focusAction,
+  getPropertyDispatcher, identifier, isLayer, luaApi, metaAction,  offIcon, onIcon,
+  popOutAction, setExpanded, shiftFocusAction, title, trashAction
 }) {
   // 1 is positive => fading in, -1 negative => fading out. Undefined or 0 means no fading
   const [fadeDirection, setFadeDirection] = React.useState(0);
@@ -104,14 +104,9 @@ function PropertyOwnerHeader({
     const isFadingOut = fadeDirection < 0;
     const shouldFadeIn = isFadingOut || (shouldBeEnabled && !isFadingIn);
 
-    // If fade in, first set fade value to 0 to make sure it's fully hidden
     if (shouldFadeIn) {
       // Enable the thing immediately so we see the visual changes
       getPropertyDispatcher(enabledUri).set(true);
-      if (!isFadingOut) {
-        // If not in mid fade, fade out the thing before fading in
-        luaApi.setPropertyValueSingle(fadeUri, 0.0);
-      }
       luaApi.setPropertyValueSingle(fadeUri, 1.0, fadeDuration);
     }
     else { // fade out
@@ -267,15 +262,15 @@ const mapStateToProps = (state, ownProps) => {
   const fadeDuration = state.propertyTree.properties[Engine_FadeDurationKey]?.value || 1.0;
 
   return {
-    title: title || displayName(state, state.propertyTree.properties, uri),
-    enabledUri,
-    fadeUri,
-    fadeValue,
-    fadeDuration,
     enabled,
-    isLayer,
+    enabledUri,
+    fadeDuration,
+    fadeValue,
+    fadeUri,
     identifier,
+    isLayer,
     luaApi: state.luaApi,
+    title: title || displayName(state, state.propertyTree.properties, uri),
   };
 };
 
