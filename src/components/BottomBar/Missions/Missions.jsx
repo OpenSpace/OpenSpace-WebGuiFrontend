@@ -1,5 +1,6 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { subscribeToTime, unsubscribeToTime } from '../../../api/Actions';
 import WindowThreeStates from '../SkyBrowser/WindowThreeStates/WindowThreeStates';
 import * as d3 from 'd3';
 import styles from './missions.scss';
@@ -10,6 +11,11 @@ import { useLocalStorageState } from '../../../utils/customHooks';
 import { Icon } from '@iconify/react';
 import CenteredLabel from '../../common/CenteredLabel/CenteredLabel';
 import Tooltip from '../../common/Tooltip/Tooltip';
+
+const DisplayType = {
+  phase: "phase",
+  importantDate: "importantDate"
+};
 
 function makeUtcDate(time) {
   if (!time) {
@@ -65,14 +71,12 @@ function Timeline({
   const arrowPadding = 25;
   const scaleExtent = [ 1, 1000 ];
   const translateExtent = [[0, 0], [width, height]];
-
   // Refs
   const svgRef = React.useRef();
   const xAxisRef = React.useRef();
   const yAxisRef = React.useRef();
   const timeIndicatorRef = React.useRef();
   const zoomRef = React.useRef();
-  const toolTipRef = React.useRef();
 
   // Calculate scaling for x and y
   const xScale = d3.scaleLinear().range([margin.left, width - margin.right]).domain([0, nestedLevels]);
@@ -135,7 +139,7 @@ function Timeline({
 
   function onClick(event, time) {
     if (event.shiftKey) {
-      jumpToTime(time);
+      jumpToTime(now, time);
     }
   }
 
@@ -150,7 +154,7 @@ function Timeline({
   }
 
   // Used for phases
-  function createRectangle(phase, nestedLevel, noBorder = false, padding = 0, color = undefined, ) {
+  function createRectangle(phase, nestedLevel, noBorder = false, padding = 0, color = undefined) {
     if (!phase?.timerange) {
       return null;
     }
@@ -170,14 +174,14 @@ function Timeline({
         width={xScale(1) - xScale(0) + (2 * padding)}
         key={`${key}${timeRange[0].toString()}${timeRange[1].toString()}${color}`}
         onClick={(e) => {
-          setDisplayedPhase(phase);
+          setDisplayedPhase({ type: DisplayType.phase, data: phase });
           onClick(e, timeRange[0]);
         }}
         style={color ? { fill: 'white', opacity: 1.0 } : null}
         stroke={'black'}
         strokeWidth={noBorder ? 0 : 0.5}
         onMouseOver={(e) => mouseOver(e, "Phase", phase.name)}
-        onMouseOut={mouseLeave}
+        onMouseLeave={mouseLeave}
       />
     );
   }
@@ -224,8 +228,9 @@ function Timeline({
     )
   }
 
-  function createPolygon(time, name, color) {
-    const width = 12;
+  function createPolygon(date, color = undefined, noBorder = false, padding = 0) {
+    const time = makeUtcDate(date.date);
+    const width = 12 + (2 * padding);
     const y = yScale(time) - (width * 0.5 / k);
     const x = margin.left - width;
     return (
@@ -234,10 +239,13 @@ function Timeline({
         transform={`translate(${x + (0.5 * width)}, ${y})scale(1, ${1 / k})`}
         fill={color}
         stroke={'black'}
-        strokeWidth={0.5}
-        key={time.toUTCString()}
-        onClick={(e) => onClick(e, time)}
-        onMouseOver={(e) => mouseOver(e, "Key event", name)}
+        strokeWidth={noBorder ? 0 : 0.5}
+        key={`${time.toUTCString()}${padding}${color}`}
+        onClick={(e) => {
+          onClick(e, time);
+          setDisplayedPhase({ type: DisplayType.importantDate, data: date });
+        }}
+        onMouseOver={(e) => mouseOver(e, "Important date", date.name)}
         onMouseLeave={mouseLeave}
         className={styles.polygon}
       />
@@ -279,6 +287,7 @@ function Timeline({
 
   // Store the selected phase for later rendering
   let selectedPhase = null;
+  let selectedDate = null;
   let selectedPhaseIndex = 0;
 
   const tooltipStyling = {
@@ -288,7 +297,6 @@ function Timeline({
     width: 100
 
   };
-
   return (
     <>
       <div
@@ -314,7 +322,7 @@ function Timeline({
           <Icon icon={"fluent:full-screen-zoom-24-filled"} color={"white"} alt={"full-view"} style={{ fontSize: '1.5em' }}/>
         </Button>
       </div>
-      <Tooltip ref={toolTipRef} fixed placement={"left"} className={styles.toolTip} style={tooltipStyling}>
+      <Tooltip fixed placement={"left"} className={styles.toolTip} style={tooltipStyling}>
         <p style={{ fontWeight: 'bold' }}>{toolTipData.title}</p>
         <p>{toolTipData.value}</p>
       </Tooltip>
@@ -339,7 +347,7 @@ function Timeline({
               if (!phase.timerange?.start || !phase.timerange?.end) {
                 return null;
               }
-              if (phase.name === displayedPhase?.name) {
+              if (displayedPhase.type === DisplayType.phase && phase.name === displayedPhase.data.name) {
                 // We want to draw the selected phase last
                 // Save for later
                 selectedPhase = phase;
@@ -353,14 +361,26 @@ function Timeline({
           {selectedPhase ? <>
             {createRectangle(selectedPhase, selectedPhaseIndex, true, 2, 'white')}
             {createRectangle(selectedPhase, selectedPhaseIndex, true)}
-          </>: null}
+          </> : null}
         </g>
         <g transform={`translate(0, ${y})scale(1, ${k})`}>
           {createLine(now, 'white', timeIndicatorRef)}
           {captureTimes?.map(capture => createCircle(makeUtcDate(capture), 'rgba(255, 255, 0, 0.8)'))}
         </g>
         <g transform={`translate(0, ${y})scale(1, ${k})`}>
-          {importantDates?.map(date => createPolygon(makeUtcDate(date.date), date.name, 'rgba(255, 150, 0, 1)'))}
+          {importantDates?.map(date => {
+            if (displayedPhase.type === DisplayType.importantDate && date.name === displayedPhase.data.name) {
+              // We want to draw the selected phase last
+              // Save for later
+              selectedDate = date;
+              return null;
+            }
+            return createPolygon(date, 'rgba(255, 150, 0, 1)');
+          })}
+          {selectedDate ? <>
+            {createPolygon(selectedDate, 'white', true, 3)}
+            {createPolygon(selectedDate, 'rgba(255, 150, 0, 1)', true)}
+          </> : null}
         </g>
         {createCurrentTimeArrow()}
       </svg>
@@ -381,6 +401,7 @@ function SetTimeButton({onClick, name, documentation}) {
 }
 
 
+
 export default function Missions({ }) {
   // Make panel being shown stored in local storage
   const [popoverVisible, setPopoverVisibility] = useLocalStorageState('missionsPanelVisible', true);
@@ -392,13 +413,22 @@ export default function Missions({ }) {
   const now = useSelector((state) => state.time.time);
 
   const [overview, setOverview] = React.useState(missions?.data?.missions[0]);
-  const [displayedPhase, setDisplayedPhase] = React.useState(overview);
+  const [displayedPhase, setDisplayedPhase] = React.useState({ type: DisplayType.phase, data: overview });
   const [currentActions, setCurrentActions] = React.useState([]);
   const [size, setSize] = React.useState({width: 350, height: window.innerHeight});
-  
-  const timeRange = [new Date(missions.data.missions[0].timerange.start), new Date(missions.data.missions[0].timerange.end)];
+  const [wholeTimeRange, setWholeTimeRange] = React.useState(
+    [new Date(missions.data.missions[0].timerange.start), new Date(missions.data.missions[0].timerange.end)]
+  );
+
   const allPhasesNested = React.useRef(null);
   const topBarHeight = 30;
+
+  const dispatch = useDispatch();
+
+  React.useEffect(() => {
+    dispatch(subscribeToTime());
+    return () => dispatch(unsubscribeToTime());
+  }, []);
 
   // Every time a phase changes, get the actions that are valid for that phase
   React.useEffect(() => {
@@ -475,13 +505,27 @@ export default function Missions({ }) {
       return Date.parse(now) < Date.parse(makeUtcDate(mission.timerange.end)) &&
         Date.parse(now) > Date.parse(makeUtcDate(mission.timerange.start))
     });
-    setDisplayedPhase(filteredPhases.pop());
+    const found = filteredPhases.pop();
+    if (found) {
+      setDisplayedPhase({ type: DisplayType.phase, data: filteredPhases.pop() });
+    }
+    else {
+      setDisplayedPhase({ type: null, data: undefined });
+    }
+  }
+
+  function togglePopover() {
+    setPopoverVisibility(lastValue => !lastValue);
+  }
+
+  function sizeCallback(width, height) {
+    setSize({ width, height });
   }
 
   // Fadetime is in seconds
-  async function jumpToTime(time, fadeTime = 1) {
+  async function jumpToTime(timeNow, time, fadeTime = 1) {
     const utcTime = time instanceof Date ? time : makeUtcDate(time);
-    const timeDiffSeconds = parseInt(Math.abs(now - utcTime) / 1000);
+    const timeDiffSeconds = parseInt(Math.abs(timeNow - utcTime) / 1000);
     const diffBiggerThanADay = timeDiffSeconds > 86400; // No of seconds in a day
     if (diffBiggerThanADay) {
       let promise = new Promise((resolve, reject) => {
@@ -497,9 +541,25 @@ export default function Missions({ }) {
     }
   }
 
-  function togglePopover() {
-    setPopoverVisibility(lastValue => !lastValue);
+  function jumpToNextCapture() {
+    jumpToTime(now, nextCapture());
   }
+
+  function jumpToLastCapture() {
+    jumpToTime(now, lastCapture());
+  }
+
+  function jumpToEndOfPhase() {
+    jumpToTime(now, displayedPhase.data.timerange.end);
+  }
+
+  function jumpToStartOfPhase() {
+    jumpToTime(now, displayedPhase.data.timerange.start);
+  } 
+
+  function jumpToDate() {
+    jumpToTime(now, displayedPhase.data.date)
+  } 
 
   function popover() {
     return (
@@ -507,52 +567,77 @@ export default function Missions({ }) {
       <Timeline
         fullWidth={120}
         fullHeight={window.innerHeight}
-        timeRange={timeRange}
+        timeRange={wholeTimeRange}
         currentPhases={allPhasesNested.current}
         captureTimes={overview.capturetimes}  
-        now={new Date(now)}
+        now={now}
         setDisplayedPhase={setDisplayedPhase}
         displayedPhase={displayedPhase}
         panelWidth={size.width}
         importantDates={overview?.importantDates}
         jumpToTime={jumpToTime}
-        />
+      />
       <WindowThreeStates
         title={overview.name}
-        sizeCallback={(width, height) => setSize({ width, height })}
+        sizeCallback={sizeCallback}
         acceptedStyles={["PANE"]}
         defaultStyle={"PANE"}
         closeCallback={() => setPopoverVisibility(false)}
         > 
         <div style={{ height: size.height - topBarHeight, overflow: 'auto'}}>
           <div style={{ display: 'flex', justifyContent: 'space-around'}}>
-            <Button onClick={() => setDisplayedPhase(overview) }>{"Mission Overview"}</Button>
+            <Button onClick={() => setDisplayedPhase({ type: DisplayType.phase, data: overview }) }>{"Mission Overview"}</Button>
             <Button onClick={setPhaseToCurrent}>{"Current Phase"}</Button>
           </div>
             <div style={{ padding: '10px' }}>
-              {displayedPhase ?
+              {displayedPhase.type === DisplayType.phase ?
                 <>
-                  <p>{displayedPhase?.name !== overview.name && `Phase: ${displayedPhase?.name}`}</p>
+                  <p>{displayedPhase?.data?.name !== overview.name && `Phase: ${displayedPhase?.data?.name}`}</p>
                   <p style={{ color: 'darkgray'}}>
-                    {`${new Date(displayedPhase.timerange.start).toDateString()} `}
-                    {`- ${new Date(displayedPhase.timerange.end).toDateString()}`}
+                    {`${new Date(displayedPhase.data.timerange.start).toDateString()} `}
+                    {`- ${new Date(displayedPhase.data.timerange.end).toDateString()}`}
                   </p>
                   <p>
                     <br />
-                    {displayedPhase.description}
+                    {displayedPhase.data.description}
                   </p>
-                  {displayedPhase.media.image &&
-                    <img style={{ width: '100%', padding: '20px 5px', maxWidth: window.innerWidth * 0.25 }} src={displayedPhase.media.image} />
+                  {displayedPhase.data.media.image &&
+                    <img style={{ width: '100%', padding: '20px 5px', maxWidth: window.innerWidth * 0.25 }} src={displayedPhase.data.media.image} />
                     }
                 </>
+                :
+                displayedPhase.type === DisplayType.importantDate ?
+                  <>
+                  <p>{`Important date: ${displayedPhase?.data?.name}`}</p>
+                  <p style={{ color: 'darkgray'}}>
+                    {`${new Date(displayedPhase.data.date).toDateString()} `}
+                  </p>
+                  <p>
+                    <br />
+                    {displayedPhase.data.description}
+                  </p>
+                  {displayedPhase.data.image &&
+                    <img style={{ width: '100%', padding: '20px 5px', maxWidth: window.innerWidth * 0.25 }} src={displayedPhase.data.image} />
+                  }
+                </> 
                 :
                 <CenteredLabel>{"No current phase in this mission"}</CenteredLabel>
               }
               <div style={{ display: 'flex', gap: '10px', flexDirection: 'column', padding: '10px 0px' }}>
-                {displayedPhase && <SetTimeButton name={"Set Time to End of Phase"} onClick={() => jumpToTime(displayedPhase.timerange.end)} />}
-                {displayedPhase && <SetTimeButton name={"Set Time to Beginning of Phase"} onClick={() => jumpToTime(displayedPhase.timerange.start)} />}
-                {nextCapture() && <SetTimeButton name={"Set Time to Next Capture"} onClick={() => jumpToTime(nextCapture())} />}
-                {lastCapture() && <SetTimeButton name={"Set Time to Last Capture"} onClick={() => jumpToTime(lastCapture())} />}
+                {displayedPhase.type === DisplayType.phase ? 
+                    <>
+                      <SetTimeButton name={"Set Time to End of Phase"} onClick={jumpToEndOfPhase} />
+                      <SetTimeButton name={"Set Time to Beginning of Phase"} onClick={jumpToStartOfPhase} />
+                    </>
+                  :
+                  displayedPhase.type === DisplayType.importantDate ?
+                      <SetTimeButton name={"Set Time to Important Date"} onClick={jumpToDate} />
+                  : 
+                    <>
+                    </>
+                }
+                {nextCapture() && <SetTimeButton name={"Set Time to Next Capture"} onClick={jumpToNextCapture} />}
+                {lastCapture() && <SetTimeButton name={"Set Time to Last Capture"} onClick={jumpToLastCapture} />}
               </div>
               {currentActions.map(action =>
                 <ActionsButton key={action.identifier} action={action} />
