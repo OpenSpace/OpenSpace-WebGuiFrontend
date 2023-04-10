@@ -367,7 +367,18 @@ function Timeline({
           {createLine(now, 'white', timeIndicatorRef)}
           {captureTimes?.map(capture => createCircle(makeUtcDate(capture), 'rgba(255, 255, 0, 0.8)'))}
         </g>
-        <g transform={`translate(0, ${y})scale(1, ${k})`}>
+        {createCurrentTimeArrow()}
+      </svg>
+      <svg
+        width={width}
+        height={height}
+        style={{
+          position: 'absolute',
+          top: 0,
+          right: panelWidth,
+          pointerEvents: 'none'
+        }}>
+        <g transform={`translate(0, ${y + zoomButtonHeight})scale(1, ${k})`} style={{ pointerEvents: 'auto'}}>
           {importantDates?.map(date => {
             if (displayedPhase.type === DisplayType.importantDate && date.name === displayedPhase.data.name) {
               // We want to draw the selected phase last
@@ -382,7 +393,6 @@ function Timeline({
             {createPolygon(selectedDate, 'rgba(255, 150, 0, 1)', true)}
           </> : null}
         </g>
-        {createCurrentTimeArrow()}
       </svg>
     </>
   );
