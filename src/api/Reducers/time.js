@@ -64,7 +64,15 @@ export const time = (state = defaultState, action = {}) => {
 
       if (time !== undefined) {
         let date = new Date(dateStringWithTimeZone(time));
-        newState.time = date;
+        // Make the GUI only update with each in game second
+        date.setMilliseconds(0);
+        // Only update the state every second for performance
+        if (!state.time) {
+          newState.time = date;
+        }
+        if (Math.abs(state.time?.getTime() - date?.getTime()) > 1000) {
+          newState.time = date;
+        }
       }
       if (deltaTime !== undefined) {
         newState.deltaTime = deltaTime;
