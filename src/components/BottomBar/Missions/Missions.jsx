@@ -9,6 +9,7 @@ import Picker from '../Picker';
 import { useLocalStorageState } from '../../../utils/customHooks';
 import { Icon } from '@iconify/react';
 import CenteredLabel from '../../common/CenteredLabel/CenteredLabel';
+import Tooltip from '../../common/Tooltip/Tooltip';
 
 function makeUtcDate(time) {
   if (!time) {
@@ -39,11 +40,16 @@ function Timeline({
   setDisplayedPhase,
   displayedPhase,
   captureTimes,
-  panelWidth
+  panelWidth, 
+  importantDates,
+  jumpToTime
 }) {
   const [k, setK] = React.useState(1); // Scale, d3 notation
   const [y, setY] = React.useState(0); // Translation, d3 notation
-
+  // Tooltip
+  const [showToolTip, setShowToolTip] = React.useState(false);
+  const [toolTipData, setToolTipData] = React.useState({ title: "", text: ""});
+  const [toolTipPosition, setToolTipPosition] = React.useState([0,0]);
   // Depth of nesting for phases
   const nestedLevels = currentPhases?.length ?? 0;
 
@@ -66,6 +72,7 @@ function Timeline({
   const yAxisRef = React.useRef();
   const timeIndicatorRef = React.useRef();
   const zoomRef = React.useRef();
+  const toolTipRef = React.useRef();
 
   // Calculate scaling for x and y
   const xScale = d3.scaleLinear().range([margin.left, width - margin.right]).domain([0, nestedLevels]);
@@ -126,8 +133,24 @@ function Timeline({
     d3.select(svgRef.current).transition().call(zoomRef.current.transform, transform);
   };
 
+  function onClick(event, time) {
+    if (event.shiftKey) {
+      jumpToTime(time);
+    }
+  }
+
+  function mouseOver(e, title, value) {
+    setToolTipData({ title, value });
+    setShowToolTip(true);
+    setToolTipPosition([e.clientX, e.clientY])
+  }
+
+  function mouseLeave() {
+    setShowToolTip(false);
+  }
+
   // Used for phases
-  function createRectangle(phase, nestedLevel, padding = 0, color = undefined) {
+  function createRectangle(phase, nestedLevel, noBorder = false, padding = 0, color = undefined, ) {
     if (!phase?.timerange) {
       return null;
     }
@@ -146,24 +169,77 @@ function Timeline({
         height={yScale(timeRange[0]) - yScale(timeRange[1]) + (2 * paddingY)}
         width={xScale(1) - xScale(0) + (2 * padding)}
         key={`${key}${timeRange[0].toString()}${timeRange[1].toString()}${color}`}
-        onClick={() => setDisplayedPhase(phase)}
+        onClick={(e) => {
+          setDisplayedPhase(phase);
+          onClick(e, timeRange[0]);
+        }}
         style={color ? { fill: 'white', opacity: 1.0 } : null}
+        stroke={'black'}
+        strokeWidth={noBorder ? 0 : 0.5}
+        onMouseOver={(e) => mouseOver(e, "Phase", phase.name)}
+        onMouseOut={mouseLeave}
       />
     );
   }
 
   // Used for instantaneous times such as current time or capture times 
   function createLine(time, color, ref) {
+    // Check so time is valid
+    if (!(time instanceof Date && !isNaN(time))) {
+      return null;
+    }
+    const lineWidth = 3 / k;
+    const yPosition = yScale(time) - (lineWidth * 0.5);
     return (
       <rect
         key={time.toUTCString()}
         ref={el => ref ? ref.current = el : null}
         x={margin.left}
-        y={yScale(time)}
-        className="bar-filled"
-        height={3 / k}
+        y={yPosition}
+        height={lineWidth}
         width={width - margin.left - margin.right}
         fill={color}
+        stroke={'black'}
+        strokeWidth={0.5/k}
+      />
+    )
+  }
+
+  // Used for instantaneous times such as current time or capture times 
+  function createCircle(time, color, ref) {
+    return (
+      <ellipse 
+        key={time?.toUTCString()}
+        ref={el => ref ? ref.current = el : null}
+        cx={margin.left}
+        cy={yScale(time)}
+        ry={3 / k}
+        rx={3}
+        fill={color}
+        onClick={(e) => onClick(e, time)}
+        className={styles.capture}
+        onMouseOver={(e) => mouseOver(e, "Instrument Activity")}
+        onMouseLeave={mouseLeave}
+      />
+    )
+  }
+
+  function createPolygon(time, name, color) {
+    const width = 12;
+    const y = yScale(time) - (width * 0.5 / k);
+    const x = margin.left - width;
+    return (
+      <polygon
+        points={`0,${width * 0.5} ${width * 0.5},${width} ${width},${width * 0.5} ${width * 0.5},0`}
+        transform={`translate(${x + (0.5 * width)}, ${y})scale(1, ${1 / k})`}
+        fill={color}
+        stroke={'black'}
+        strokeWidth={0.5}
+        key={time.toUTCString()}
+        onClick={(e) => onClick(e, time)}
+        onMouseOver={(e) => mouseOver(e, "Key event", name)}
+        onMouseLeave={mouseLeave}
+        className={styles.polygon}
       />
     )
   }
@@ -204,6 +280,15 @@ function Timeline({
   // Store the selected phase for later rendering
   let selectedPhase = null;
   let selectedPhaseIndex = 0;
+
+  const tooltipStyling = {
+    display: showToolTip ? 'block' : 'none',
+    top: toolTipPosition[1], left: toolTipPosition[0] - 120,
+    marginRight: 10,
+    width: 100
+
+  };
+
   return (
     <>
       <div
@@ -229,6 +314,10 @@ function Timeline({
           <Icon icon={"fluent:full-screen-zoom-24-filled"} color={"white"} alt={"full-view"} style={{ fontSize: '1.5em' }}/>
         </Button>
       </div>
+      <Tooltip ref={toolTipRef} fixed placement={"left"} className={styles.toolTip} style={tooltipStyling}>
+        <p style={{ fontWeight: 'bold' }}>{toolTipData.title}</p>
+        <p>{toolTipData.value}</p>
+      </Tooltip>
       <svg
         ref={svgRef}
         width={width}
@@ -262,13 +351,16 @@ function Timeline({
           }
           )}
           {selectedPhase ? <>
-            {createRectangle(selectedPhase, selectedPhaseIndex, 2, 'white')}
-            {createRectangle(selectedPhase, selectedPhaseIndex)}
+            {createRectangle(selectedPhase, selectedPhaseIndex, true, 2, 'white')}
+            {createRectangle(selectedPhase, selectedPhaseIndex, true)}
           </>: null}
         </g>
         <g transform={`translate(0, ${y})scale(1, ${k})`}>
-          {captureTimes.map(capture => createLine(makeUtcDate(capture), 'rgba(255, 255, 0, 0.5)'))}
           {createLine(now, 'white', timeIndicatorRef)}
+          {captureTimes?.map(capture => createCircle(makeUtcDate(capture), 'rgba(255, 255, 0, 0.8)'))}
+        </g>
+        <g transform={`translate(0, ${y})scale(1, ${k})`}>
+          {importantDates?.map(date => createPolygon(makeUtcDate(date.date), date.name, 'rgba(255, 150, 0, 1)'))}
         </g>
         {createCurrentTimeArrow()}
       </svg>
@@ -306,6 +398,7 @@ export default function Missions({ }) {
   
   const timeRange = [new Date(missions.data.missions[0].timerange.start), new Date(missions.data.missions[0].timerange.end)];
   const allPhasesNested = React.useRef(null);
+  const topBarHeight = 30;
 
   // Every time a phase changes, get the actions that are valid for that phase
   React.useEffect(() => {
@@ -353,7 +446,7 @@ export default function Missions({ }) {
     for (let i = 0; i < overview.capturetimes.length; i++) {
       const capture = overview.capturetimes[i];
       // Find the first time that is after the current time
-      if (now?.getTime() < makeUtcDate(capture).getTime()) {
+      if (now?.getTime() < makeUtcDate(capture)?.getTime()) {
         nextFoundCapture = capture;
         break;
       }
@@ -368,7 +461,7 @@ export default function Missions({ }) {
     for (let i = overview.capturetimes.length - 1; i > 0; i--) {
       const capture = overview.capturetimes[i];
       // Find the first time that is before the current time
-      if (now?.getTime() > makeUtcDate(capture).getTime()) {
+      if (now?.getTime() > makeUtcDate(capture)?.getTime()) {
         lastFoundCapture = capture;
         break;
       }
@@ -387,7 +480,7 @@ export default function Missions({ }) {
 
   // Fadetime is in seconds
   async function jumpToTime(time, fadeTime = 1) {
-    const utcTime = makeUtcDate(time);
+    const utcTime = time instanceof Date ? time : makeUtcDate(time);
     const timeDiffSeconds = parseInt(Math.abs(now - utcTime) / 1000);
     const diffBiggerThanADay = timeDiffSeconds > 86400; // No of seconds in a day
     if (diffBiggerThanADay) {
@@ -421,6 +514,8 @@ export default function Missions({ }) {
         setDisplayedPhase={setDisplayedPhase}
         displayedPhase={displayedPhase}
         panelWidth={size.width}
+        importantDates={overview?.importantDates}
+        jumpToTime={jumpToTime}
         />
       <WindowThreeStates
         title={overview.name}
@@ -429,7 +524,7 @@ export default function Missions({ }) {
         defaultStyle={"PANE"}
         closeCallback={() => setPopoverVisibility(false)}
         > 
-        <div style={{ height: size.height, overflow: 'auto'}}>
+        <div style={{ height: size.height - topBarHeight, overflow: 'auto'}}>
           <div style={{ display: 'flex', justifyContent: 'space-around'}}>
             <Button onClick={() => setDisplayedPhase(overview) }>{"Mission Overview"}</Button>
             <Button onClick={setPhaseToCurrent}>{"Current Phase"}</Button>
