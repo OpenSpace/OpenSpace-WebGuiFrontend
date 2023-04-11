@@ -14,7 +14,7 @@ import Tooltip from '../../common/Tooltip/Tooltip';
 
 const DisplayType = {
   phase: "phase",
-  importantDate: "importantDate"
+  milestone: "milestone"
 };
 
 function makeUtcDate(time) {
@@ -47,7 +47,7 @@ function Timeline({
   displayedPhase,
   captureTimes,
   panelWidth, 
-  importantDates,
+  milestones,
   jumpToTime
 }) {
   const [k, setK] = React.useState(1); // Scale, d3 notation
@@ -68,7 +68,7 @@ function Timeline({
   const height = fullHeight - zoomButtonHeight;
   const width = Math.max(fullWidth, minWidth);
   //const clipMargin = { top: margin.top - timelinePadding, bottom: height - margin.bottom + timelinePadding };
-  const importantDatePadding = 10;
+  const milestonePadding = 10;
   const radius = 2;
   const arrowPadding = 25;
   const scaleExtent = [ 1, 1000 ];
@@ -245,9 +245,9 @@ function Timeline({
         key={`${time.toUTCString()}${padding}${color}`}
         onClick={(e) => {
           onClick(e, time);
-          setDisplayedPhase({ type: DisplayType.importantDate, data: date });
+          setDisplayedPhase({ type: DisplayType.milestone, data: date });
         }}
-        onMouseOver={(e) => mouseOver(e, "Important date", date.name)}
+        onMouseOver={(e) => mouseOver(e, "Milestone", date.name)}
         onMouseLeave={mouseLeave}
         className={styles.polygon}
       />
@@ -289,11 +289,11 @@ function Timeline({
 
   // Store the selected phase for later rendering
   let selectedPhase = null;
-  let selectedDate = null;
+  let selectedMilestone = null;
   let selectedPhaseIndex = 0;
 
-  const polygonPadTop = margin.top - importantDatePadding;
-  const polygonPadBottom = height - margin.bottom + (2 * importantDatePadding);
+  const polygonPadTop = margin.top - milestonePadding;
+  const polygonPadBottom = height - margin.bottom + (2 * milestonePadding);
 
   const tooltipStyling = {
     display: showToolTip ? 'block' : 'none',
@@ -337,12 +337,12 @@ function Timeline({
         height={height}
         style={{
           position: 'absolute',
-          top: zoomButtonHeight - importantDatePadding,
+          top: zoomButtonHeight - milestonePadding,
           right: panelWidth,
           clipPath: `polygon(0% ${polygonPadTop}px, 100% ${polygonPadTop}px, 100% ${polygonPadBottom}px, 0% ${polygonPadBottom}px`,
         }}
       >
-        <g transform={`translate(0, ${importantDatePadding})`}>
+        <g transform={`translate(0, ${milestonePadding})`}>
           <g style={{ clipPath: 'none'}}>
             <g ref={xAxisRef} transform={`translate(0, ${height - margin.bottom})`} />
             <g ref={yAxisRef} transform={`translate(${margin.left}, ${0})`} />
@@ -372,18 +372,18 @@ function Timeline({
           <g transform={`translate(0, ${y})scale(1, ${k})`}>
             {createLine(now, 'white', timeIndicatorRef)}
             {captureTimes?.map(capture => createCircle(makeUtcDate(capture), 'rgba(255, 255, 0, 0.8)'))}
-            {importantDates?.map(date => {
-              if (displayedPhase.type === DisplayType.importantDate && date.name === displayedPhase.data.name) {
+            {milestones?.map(milestone => {
+              if (displayedPhase.type === DisplayType.milestone && milestone.name === displayedPhase.data.name) {
                 // We want to draw the selected phase last
                 // Save for later
-                selectedDate = date;
+                selectedMilestone = milestone;
                 return null;
               }
-              return createPolygon(date, 'rgba(255, 150, 0, 1)');
+              return createPolygon(milestone, 'rgba(255, 150, 0, 1)');
             })}
-            {selectedDate ? <>
-              {createPolygon(selectedDate, 'white', true, 3)}
-              {createPolygon(selectedDate, 'rgba(255, 150, 0, 1)', true)}
+            {selectedMilestone ? <>
+              {createPolygon(selectedMilestone, 'white', true, 3)}
+              {createPolygon(selectedMilestone, 'rgba(255, 150, 0, 1)', true)}
             </> : null}
           </g>
           {createCurrentTimeArrow()}
@@ -584,7 +584,7 @@ export default function Missions({ }) {
         setDisplayedPhase={setDisplayedPhase}
         displayedPhase={displayedPhase}
         panelWidth={size.width}
-        importantDates={overview?.importantDates}
+        milestones={overview?.milestones}
         jumpToTime={jumpToTime}
       />
       <WindowThreeStates
@@ -619,9 +619,9 @@ export default function Missions({ }) {
                   }
                 </>
                 :
-                displayedPhase.type === DisplayType.importantDate ?
+                displayedPhase.type === DisplayType.milestone ?
                   <>
-                  <p>{`Important date: ${displayedPhase?.data?.name}`}</p>
+                  <p>{`Milestone: ${displayedPhase?.data?.name}`}</p>
                   <p style={{ color: 'darkgray'}}>
                     {`${new Date(displayedPhase.data.date).toDateString()} `}
                   </p>
@@ -646,7 +646,7 @@ export default function Missions({ }) {
                       <SetTimeButton name={`Set Time to Beginning of ${displayedPhase.data === overview ? "Mission" : "Phase"}`} onClick={jumpToStartOfPhase} />
                     </>
                   :
-                  displayedPhase.type === DisplayType.importantDate ?
+                  displayedPhase.type === DisplayType.milestone ?
                       <SetTimeButton name={"Set Time"} onClick={jumpToDate} />
                   : 
                     <>
