@@ -15,6 +15,7 @@ import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
 
 export function ActionsButton({ action }) {
   const luaApi = useSelector(state => state.luaApi);
+
   function sendAction(e) {
     const actionId = e.currentTarget.getAttribute('actionid');
     luaApi.action.triggerAction(actionId);
@@ -112,11 +113,10 @@ function ActionsPanel ({
   }
 
   function matcher(test, search) {
-    return ObjectWordBeginningSubstring(test.children, search);
+    return ObjectWordBeginningSubstring(test.action, search);
   }
 
   function actionsContent(filterListHeight) {
-    console.log(actionLevel)
     if (actionLevel === undefined) {
       return <CenteredLabel>{"Loading..."}</CenteredLabel>;
     }
