@@ -329,15 +329,15 @@ class SessionRec extends Component {
       forceTime, shouldOutputFrames, outputFramerate, loopPlayback);
   }
 
-  setUseTextFormat(useTextFormat) {
+  setUseTextFormat(useTextFormat, event) {
     this.setState({ useTextFormat });
   }
 
-  setForceTiming(forceTime) {
+  setForceTiming(forceTime, event) {
     this.setState({ forceTime });
   }
 
-  setLoopPlayback(loopPlayback) {
+  setLoopPlayback(loopPlayback, event) {
     if (loopPlayback) {
       this.setState({ loopPlayback: true, shouldOutputFrames: false });
     } else {
@@ -345,7 +345,7 @@ class SessionRec extends Component {
     }
   }
 
-  setShouldOutputFrames(shouldOutputFrames) {
+  setShouldOutputFrames(shouldOutputFrames, event) {
     if (shouldOutputFrames) {
       this.setState({ loopPlayback: false, shouldOutputFrames: true });
     } else {

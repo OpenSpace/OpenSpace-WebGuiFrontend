@@ -6,7 +6,7 @@ const RefsContext = React.createContext()
 function RefsProvider(props) {
   let allRefKeys = {};
   contents.map(content => {
-    if(content.key) { 
+    if(content.key) {
       content.key.map(key => {
         if(!allRefKeys.hasOwnProperty(key)) {
           allRefKeys[key] = undefined

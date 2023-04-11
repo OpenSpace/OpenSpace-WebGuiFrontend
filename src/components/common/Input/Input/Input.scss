@@ -51,7 +51,7 @@ $padding-loading: $padding-top $padding-horizontal $padding-bottom-loading;
   outline: 0;
 
   ~ .label {
-    color: $green;
+    color: $text-color-focus;
   }
 }
 
@@ -70,12 +70,13 @@ $padding-loading: $padding-top $padding-horizontal $padding-bottom-loading;
 
 .buttonsContainer {
   pointer-events: none;
-  display: flex; 
+  display: flex;
   justify-content: flex-end;
-  position: absolute; 
-  top: 0; 
-  width: 100%; 
+  position: absolute;
+  top: 0;
+  width: 100%;
   height: 100%;
+  padding-right: 4px;
 }
 
 .label {
@@ -132,7 +133,7 @@ $padding-loading: $padding-top $padding-horizontal $padding-bottom-loading;
     border-bottom: $loading-border-width solid $blue;
   }
   50% {
-    border-bottom: $loading-border-width solid $green;
+    border-bottom: $loading-border-width solid $yellow;
   }
   100% {
     border-bottom: $loading-border-width solid $blue;
