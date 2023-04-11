@@ -63,10 +63,12 @@ function Timeline({
   const margin = { top: 0, right: 10, bottom: 70, left: 60 };
   const minLevelWidth = 15;
   const minWidth = (minLevelWidth * nestedLevels) + margin.left + margin.right;
+  //const timelinePadding = 5;
   const zoomButtonHeight = 40;
   const height = fullHeight - zoomButtonHeight;
   const width = Math.max(fullWidth, minWidth);
-  const clipMargin = { top: margin.top, bottom: height - margin.bottom };
+  //const clipMargin = { top: margin.top - timelinePadding, bottom: height - margin.bottom + timelinePadding };
+  const importantDatePadding = 10;
   const radius = 2;
   const arrowPadding = 25;
   const scaleExtent = [ 1, 1000 ];
@@ -115,6 +117,7 @@ function Timeline({
   // Update zoom function every time the y scale changes (when window is resized)
   React.useEffect(() => {
     zoomRef.current = d3.zoom().on("zoom", (event) => {
+      console.log("zoom")
       const newScaleY = event.transform.rescaleY(yScale);
       d3.select(yAxisRef.current).call(yAxis.scale(newScaleY));
       setK(event.transform.k);
@@ -236,7 +239,7 @@ function Timeline({
     return (
       <polygon
         points={`0,${width * 0.5} ${width * 0.5},${width} ${width},${width * 0.5} ${width * 0.5},0`}
-        transform={`translate(${x + (0.5 * width)}, ${y})scale(1, ${1 / k})`}
+        transform={`translate(${x + (0.5 * width)}, ${y})scale(1, ${1/k})`}
         fill={color}
         stroke={'black'}
         strokeWidth={noBorder ? 0 : 0.5}
@@ -290,6 +293,9 @@ function Timeline({
   let selectedDate = null;
   let selectedPhaseIndex = 0;
 
+  const polygonPadTop = margin.top - importantDatePadding;
+  const polygonPadBottom = height - margin.bottom + (2 * importantDatePadding);
+
   const tooltipStyling = {
     display: showToolTip ? 'block' : 'none',
     top: toolTipPosition[1], left: toolTipPosition[0] - 120,
@@ -332,66 +338,56 @@ function Timeline({
         height={height}
         style={{
           position: 'absolute',
-          top: zoomButtonHeight,
+          top: zoomButtonHeight - importantDatePadding,
           right: panelWidth,
-          clipPath: `polygon(0% ${clipMargin.top}px, 100% ${clipMargin.top}px, 100% ${clipMargin.bottom}px, 0% ${clipMargin.bottom}px`
+          clipPath: `polygon(0% ${polygonPadTop}px, 100% ${polygonPadTop}px, 100% ${polygonPadBottom}px, 0% ${polygonPadBottom}px`,
         }}
       >
-        <g style={{ clipPath: 'none'}}>
-          <g ref={xAxisRef} transform={`translate(0, ${height - margin.bottom})`} />
-          <g ref={yAxisRef} transform={`translate(${margin.left}, ${0})`} />
-        </g>
-        <g transform={`translate(0, ${y})scale(1, ${k})`}>
-          {currentPhases?.map((phase, index) => {
-            return phase.map(phase => {
-              if (!phase.timerange?.start || !phase.timerange?.end) {
-                return null;
-              }
-              if (displayedPhase.type === DisplayType.phase && phase.name === displayedPhase.data.name) {
+        <g transform={`translate(0, ${importantDatePadding})`}>
+          <g style={{ clipPath: 'none'}}>
+            <g ref={xAxisRef} transform={`translate(0, ${height - margin.bottom})`} />
+            <g ref={yAxisRef} transform={`translate(${margin.left}, ${0})`} />
+          </g>
+          <g transform={`translate(0, ${y})scale(1, ${k})`}>
+            {currentPhases?.map((phase, index) => {
+              return phase.map(phase => {
+                if (!phase.timerange?.start || !phase.timerange?.end) {
+                  return null;
+                }
+                if (displayedPhase.type === DisplayType.phase && phase.name === displayedPhase.data.name) {
+                  // We want to draw the selected phase last
+                  // Save for later
+                  selectedPhase = phase;
+                  selectedPhaseIndex = index;
+                  return null;
+                }
+                return createRectangle(phase, index)
+              })
+            }
+            )}
+            {selectedPhase ? <>
+              {createRectangle(selectedPhase, selectedPhaseIndex, true, 2, 'white')}
+              {createRectangle(selectedPhase, selectedPhaseIndex, true)}
+            </> : null}
+          </g>
+          <g transform={`translate(0, ${y})scale(1, ${k})`}>
+            {createLine(now, 'white', timeIndicatorRef)}
+            {captureTimes?.map(capture => createCircle(makeUtcDate(capture), 'rgba(255, 255, 0, 0.8)'))}
+            {importantDates?.map(date => {
+              if (displayedPhase.type === DisplayType.importantDate && date.name === displayedPhase.data.name) {
                 // We want to draw the selected phase last
                 // Save for later
-                selectedPhase = phase;
-                selectedPhaseIndex = index;
+                selectedDate = date;
                 return null;
               }
-              return createRectangle(phase, index)
-            })
-          }
-          )}
-          {selectedPhase ? <>
-            {createRectangle(selectedPhase, selectedPhaseIndex, true, 2, 'white')}
-            {createRectangle(selectedPhase, selectedPhaseIndex, true)}
-          </> : null}
-        </g>
-        <g transform={`translate(0, ${y})scale(1, ${k})`}>
-          {createLine(now, 'white', timeIndicatorRef)}
-          {captureTimes?.map(capture => createCircle(makeUtcDate(capture), 'rgba(255, 255, 0, 0.8)'))}
-        </g>
-        {createCurrentTimeArrow()}
-      </svg>
-      <svg
-        width={width}
-        height={height}
-        style={{
-          position: 'absolute',
-          top: 0,
-          right: panelWidth,
-          pointerEvents: 'none'
-        }}>
-        <g transform={`translate(0, ${y + zoomButtonHeight})scale(1, ${k})`} style={{ pointerEvents: 'auto'}}>
-          {importantDates?.map(date => {
-            if (displayedPhase.type === DisplayType.importantDate && date.name === displayedPhase.data.name) {
-              // We want to draw the selected phase last
-              // Save for later
-              selectedDate = date;
-              return null;
-            }
-            return createPolygon(date, 'rgba(255, 150, 0, 1)');
-          })}
-          {selectedDate ? <>
-            {createPolygon(selectedDate, 'white', true, 3)}
-            {createPolygon(selectedDate, 'rgba(255, 150, 0, 1)', true)}
-          </> : null}
+              return createPolygon(date, 'rgba(255, 150, 0, 1)');
+            })}
+            {selectedDate ? <>
+              {createPolygon(selectedDate, 'white', true, 3)}
+              {createPolygon(selectedDate, 'rgba(255, 150, 0, 1)', true)}
+            </> : null}
+          </g>
+          {createCurrentTimeArrow()}
         </g>
       </svg>
     </>
@@ -517,7 +513,7 @@ export default function Missions({ }) {
     });
     const found = filteredPhases.pop();
     if (found) {
-      setDisplayedPhase({ type: DisplayType.phase, data: filteredPhases.pop() });
+      setDisplayedPhase({ type: DisplayType.phase, data: found });
     }
     else {
       setDisplayedPhase({ type: null, data: undefined });
@@ -636,12 +632,12 @@ export default function Missions({ }) {
               <div style={{ display: 'flex', gap: '10px', flexDirection: 'column', padding: '10px 0px' }}>
                 {displayedPhase.type === DisplayType.phase ? 
                     <>
-                      <SetTimeButton name={"Set Time to End of Phase"} onClick={jumpToEndOfPhase} />
-                      <SetTimeButton name={"Set Time to Beginning of Phase"} onClick={jumpToStartOfPhase} />
+                      <SetTimeButton name={`Set Time to End of ${displayedPhase.data === overview ? "Mission" : "Phase"}`} onClick={jumpToEndOfPhase} />
+                      <SetTimeButton name={`Set Time to Beginning of ${displayedPhase.data === overview ? "Mission" : "Phase"}`} onClick={jumpToStartOfPhase} />
                     </>
                   :
                   displayedPhase.type === DisplayType.importantDate ?
-                      <SetTimeButton name={"Set Time to Important Date"} onClick={jumpToDate} />
+                      <SetTimeButton name={"Set Time"} onClick={jumpToDate} />
                   : 
                     <>
                     </>
