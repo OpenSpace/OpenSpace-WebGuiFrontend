@@ -117,7 +117,6 @@ function Timeline({
   // Update zoom function every time the y scale changes (when window is resized)
   React.useEffect(() => {
     zoomRef.current = d3.zoom().on("zoom", (event) => {
-      console.log("zoom")
       const newScaleY = event.transform.rescaleY(yScale);
       d3.select(yAxisRef.current).call(yAxis.scale(newScaleY));
       setK(event.transform.k);
@@ -567,6 +566,11 @@ export default function Missions({ }) {
     jumpToTime(now, displayedPhase.data.date)
   } 
 
+  function openUrl(url) {
+    const newWindow = window.open(url, '_blank', 'noopener,noreferrer');
+    if (newWindow) newWindow.opener = null;
+  }
+
   function popover() {
     return (
       <>
@@ -603,13 +607,16 @@ export default function Missions({ }) {
                     {`${new Date(displayedPhase.data.timerange.start).toDateString()} `}
                     {`- ${new Date(displayedPhase.data.timerange.end).toDateString()}`}
                   </p>
-                  <p>
+                  <p style={{ paddingBottom: '15px'}}>
                     <br />
                     {displayedPhase.data.description}
                   </p>
+                  {displayedPhase.data.media.link &&
+                    <Button onClick={() => openUrl(displayedPhase.data.media.link)}>{"Read more"}</Button>
+                  }
                   {displayedPhase.data.media.image &&
                     <img style={{ width: '100%', padding: '20px 5px', maxWidth: window.innerWidth * 0.25 }} src={displayedPhase.data.media.image} />
-                    }
+                  }
                 </>
                 :
                 displayedPhase.type === DisplayType.importantDate ?
@@ -618,10 +625,13 @@ export default function Missions({ }) {
                   <p style={{ color: 'darkgray'}}>
                     {`${new Date(displayedPhase.data.date).toDateString()} `}
                   </p>
-                  <p>
+                  <p style={{ paddingBottom: '15px'}}>
                     <br />
                     {displayedPhase.data.description}
                   </p>
+                  {displayedPhase.data.link &&
+                    <Button onClick={() => openUrl(displayedPhase.data.link)}>{displayedPhase.data.link}</Button>
+                  }
                   {displayedPhase.data.image &&
                     <img style={{ width: '100%', padding: '20px 5px', maxWidth: window.innerWidth * 0.25 }} src={displayedPhase.data.image} />
                   }
