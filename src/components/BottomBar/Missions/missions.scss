@@ -14,6 +14,7 @@ $font-size: 0.8rem;
 
 .bar:hover, .barHighlighted:hover {
   fill: lightgray;
+  cursor: pointer;
 }
 
 .arrow {
@@ -24,6 +25,7 @@ $font-size: 0.8rem;
     stroke-width: 2;
     stroke: white;
     fill: $ui-highlight-secondary;
+    cursor: pointer;
   }
 }
 
@@ -31,6 +33,7 @@ $font-size: 0.8rem;
   &:hover {
     stroke-width: 2;
     stroke: white;
+    cursor: pointer;
   }
 }
 
