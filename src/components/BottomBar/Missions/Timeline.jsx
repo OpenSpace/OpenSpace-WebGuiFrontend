@@ -68,10 +68,18 @@ export default function Timeline({
   const arrowOffsetY = 25; // "Padding" for the arrow - how far away from the edge it is displayed
   const radiusPhase = 2; // Radius for the rectangles that represent phases
 
+  // Styling
   const milestoneColor = 'rgba(255, 150, 0, 1)';
   const captureColor = 'rgba(255, 255, 0, 0.8)';
   const selectedBorder = 'white';
   const timeIndicatorColor = 'white';
+  const borderWidth = 0.5;
+  const borderColor = 'black';
+  const circleRadius = 3; // Instrument activity
+  const lineWidth = 3; // Timeline width
+  const polygonSize = 12; // Milestone size
+  const tooltipWidth = 100;
+  const tooltipMargin = 10;
 
   // Calculate scaling for x and y
   const xScale = d3.scaleLinear().range([margin.left, width - margin.right]).domain([0, nestedLevels]);
@@ -192,7 +200,7 @@ export default function Timeline({
         onMouseLeave={mouseLeave}
         className={isCurrent ? styles.barHighlighted : styles.bar}
         style={color ? { fill: selectedBorder, opacity: 1.0 } : null} // Override stylesheet
-        strokeWidth={noBorder ? 0 : 0.5}
+        strokeWidth={noBorder ? 0 : borderWidth}
       />
     );
   }
@@ -203,19 +211,19 @@ export default function Timeline({
     if (!(time instanceof Date && !isNaN(time))) {
       return null;
     }
-    const lineWidth = 3 / k; // Ensure line doesn't get stretched when zooming
-    const yPosition = yScale(time) - (lineWidth * 0.5); // Center line around time
+    const lineWidthScaled = lineWidth / k; // Ensure line doesn't get stretched when zooming
+    const yPosition = yScale(time) - (lineWidthScaled * 0.5); // Center line around time
     return (
       <rect
         key={time.toUTCString()}
         ref={el => ref ? ref.current = el : null}
         x={margin.left}
         y={yPosition}
-        height={lineWidth}
+        height={lineWidthScaled}
         width={width - margin.left - margin.right}
         fill={color}
-        stroke={'black'}
-        strokeWidth={0.5/k}
+        stroke={borderColor}
+        strokeWidth={borderWidth/k}
       />
     )
   }
@@ -228,8 +236,8 @@ export default function Timeline({
         ref={el => ref ? ref.current = el : null}
         cx={margin.left}
         cy={yScale(time)}
-        ry={3 / k}
-        rx={3}
+        ry={circleRadius / k}
+        rx={circleRadius}
         fill={color}
         onClick={(e) => onClick(e, time)}
         className={styles.capture}
@@ -242,7 +250,7 @@ export default function Timeline({
   // Used for milestones
   function createPolygon(date, color = undefined, noBorder = false, padding = 0) {
     const time = makeUtcDate(date.date);
-    const width = 12 + (2 * padding);
+    const width = polygonSize + (2 * padding);
     const y = yScale(time) - (width * 0.5 / k);
     const x = margin.left - width;
     const centerOffsetX = 0.5 * width;
@@ -251,8 +259,8 @@ export default function Timeline({
         points={`0,${width * 0.5} ${width * 0.5},${width} ${width},${width * 0.5} ${width * 0.5},0`}
         transform={`translate(${x + centerOffsetX}, ${y})scale(1, ${1/k})`}
         fill={color}
-        stroke={'black'}
-        strokeWidth={noBorder ? 0 : 0.5}
+        stroke={borderColor}
+        strokeWidth={noBorder ? 0 : borderWidth}
         key={`${time.toUTCString()}${padding}${color}`}
         onClick={(e) => {
           onClick(e, time);
@@ -298,6 +306,34 @@ export default function Timeline({
     return null;
   }
 
+  function createFade(placement) {
+    const firstColor = placement === "top" ? 'black' : 'transparent';
+    const secondColor = placement === "top" ? 'transparent' : 'black';
+    const id = `Gradient${placement}`;
+    const yPlacement = placement === "top" ? 0 : height - margin.top - margin.bottom + padding;
+    
+    return (
+      <>
+        <defs>
+          <linearGradient id={id} x1={0} x2={0} y1={0} y2={1}>
+            <stop stopColor={firstColor} offset={"0%"} />
+            <stop stopColor={secondColor} offset={"100%"} />
+          </linearGradient>
+        </defs>
+      <rect
+        style={{
+          height: padding + 5,
+          width: width - margin.left - margin.right + polygonSize + 5,
+          x: margin.left - polygonSize + 3,
+          y: yPlacement,
+          fill: `url(#${id})`,
+          pointerEvents: 'none' 
+        }}
+        />
+      </>
+    );
+  }
+
   // Store the selected phase for later rendering
   let selectedPhase = null;
   let selectedMilestone = null;
@@ -308,11 +344,11 @@ export default function Timeline({
 
   const tooltipStyling = {
     display: showToolTip ? 'block' : 'none',
-    top: toolTipPosition[1], left: toolTipPosition[0] - 120,
-    marginRight: 10,
-    width: 100
-
+    top: toolTipPosition[1], left: toolTipPosition[0] - tooltipWidth - (2 * tooltipMargin),
+    marginRight: tooltipMargin,
+    width: tooltipWidth
   };
+
   return (
     <>
       <div
@@ -354,10 +390,8 @@ export default function Timeline({
         }}
       >
         <g transform={`translate(0, ${padding})`}>
-          <g style={{ clipPath: 'none'}}>
-            <g ref={xAxisRef} transform={`translate(0, ${height - margin.bottom})`} />
-            <g ref={yAxisRef} transform={`translate(${margin.left}, ${0})`} />
-          </g>
+          <g ref={xAxisRef} transform={`translate(0, ${height - margin.bottom})`} />
+          <g ref={yAxisRef} transform={`translate(${margin.left}, ${0})`} />
           <g transform={`translate(0, ${y})scale(1, ${k})`}>
             {currentPhases?.map((phase, index) => {
               return phase.map(phase => {
@@ -371,14 +405,18 @@ export default function Timeline({
                   selectedPhaseIndex = index;
                   return null;
                 }
-                return createRectangle(phase, index)
+                return createRectangle(phase, index);
               })
             }
             )}
-            {selectedPhase ? <>
-              {createRectangle(selectedPhase, selectedPhaseIndex, true, 2, selectedBorder)}
-              {createRectangle(selectedPhase, selectedPhaseIndex, true)}
-            </> : null}
+            {selectedPhase ?
+              <>
+                {createRectangle(selectedPhase, selectedPhaseIndex, true, 2, selectedBorder)}
+                {createRectangle(selectedPhase, selectedPhaseIndex, true)}
+              </>
+              :
+              null
+            }
           </g>
           <g transform={`translate(0, ${y})scale(1, ${k})`}>
             {createLine(now, timeIndicatorColor, timeIndicatorRef)}
@@ -392,13 +430,19 @@ export default function Timeline({
               }
               return createPolygon(milestone, milestoneColor);
             })}
-            {selectedMilestone ? <>
-              {createPolygon(selectedMilestone, selectedBorder, true, 3)}
-              {createPolygon(selectedMilestone, milestoneColor, true)}
-            </> : null}
+            {selectedMilestone ?
+              <>
+                {createPolygon(selectedMilestone, selectedBorder, true, 3)}
+                {createPolygon(selectedMilestone, milestoneColor, true)}
+              </>
+              :
+              null
+            }
           </g>
           {createCurrentTimeArrow()}
         </g>
+          {createFade("top")}
+          {createFade("bottom")}
       </svg>
     </>
   );
