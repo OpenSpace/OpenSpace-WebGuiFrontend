@@ -62,9 +62,9 @@ export default function Timeline({
   const zoomButtonHeight = 40; // Height of buttons that control zoom
   const height = fullHeight - zoomButtonHeight; // Height of graph
   const width = Math.max(fullWidth, minWidth); // Width of graph
-  const scaleExtent = [ 1, 1000 ]; // Min and max scale
-  const translateExtent = [[0, 0], [width, height - margin.bottom - margin.top]]; // Min and max translation
-  const padding = 10; // How many pixels over and below graph will still show content
+  const scaleExtent = [1, 1000]; // Min and max scale
+  const translateExtent = [[0, 0], [width, height - margin.bottom]]; // Min and max translation
+  const paddingGraph = 10; // How many pixels over and below graph will still show content
   const arrowOffsetY = 25; // "Padding" for the arrow - how far away from the edge it is displayed
   const radiusPhase = 2; // Radius for the rectangles that represent phases
 
@@ -76,7 +76,7 @@ export default function Timeline({
   const borderWidth = 0.5;
   const borderColor = 'black';
   const circleRadius = 3; // Instrument activity
-  const lineWidth = 3; // Timeline width
+  const lineWidth = 3; // Current time indicator width
   const polygonSize = 12; // Milestone size
   const tooltipWidth = 100;
   const tooltipMargin = 10;
@@ -131,26 +131,33 @@ export default function Timeline({
       setY(event.transform.y);
     })
       .scaleExtent(scaleExtent)
+      .extent(translateExtent)
       .translateExtent(translateExtent);
     d3.select(svgRef.current).call(zoomRef.current);
   }, [yScale]);
 
-  // Zooming function for transition
-  function interpolateZoom(scale = 1, centerCurrentTime = true) {
-    // Calculate new scale
-    const cappedScale = Math.max(Math.min(scaleExtent[1], scale), scaleExtent[0]);
-
+  // Transition to center the current time indicator
+  function centerTime() {
     // Calculate new translation
-    const scaledCenterOfHeight = (height * 0.5) / (cappedScale);
-    const currentTimeY = yScale(now) - scaledCenterOfHeight; // Y coordinate for current time
-    const currentCenterY = ((-y + (height * 0.5)) / k) - scaledCenterOfHeight; // Y coordinate for current center of graph
-    const newY = centerCurrentTime ? currentTimeY : currentCenterY;
-    const cappedTranslation = -1 * Math.max(Math.min(translateExtent[1][1], newY), translateExtent[0][1]);
+    const centerY = (height * 0.5) / (k);
+    const deltaY = centerY - yScale(now);
 
     // Apply transform 
-    const transform = d3.zoomIdentity.scale(cappedScale).translate(1, cappedTranslation);
+    const transform = d3.zoomIdentity.scale(k).translate(1, deltaY);
     d3.select(svgRef.current).transition().call(zoomRef.current.transform, transform);
   };
+
+  function reset() {
+    d3.select(svgRef.current).transition().duration(750).call(
+      zoomRef.current.transform,
+      d3.zoomIdentity,
+      d3.zoomTransform(d3.select(svgRef.current).node()).invert([width * 0.5, height * 0.5])
+    );
+  }
+
+  function zoomByButton(zoomValue) {
+    d3.select(svgRef.current).transition().call(zoomRef.current.scaleBy, zoomValue);
+  }
 
   function onClick(event, time) {
     // Shift modifier
@@ -183,6 +190,7 @@ export default function Timeline({
     const isCurrent = Date.parse(now) < Date.parse(endTime) && Date.parse(now) > Date.parse(startTime);
     const paddingY = padding / k; // Make sure padding doesn't get stretched when zooming
     const radiusY = radiusPhase / k; // Same here
+    
     return (
       <rect
         key={`${phase.name}${startTime.toString()}${endTime.toString()}${color}`}
@@ -199,8 +207,8 @@ export default function Timeline({
         onMouseOver={(e) => mouseOver(e, "Phase", phase.name)}
         onMouseLeave={mouseLeave}
         className={isCurrent ? styles.barHighlighted : styles.bar}
-        style={color ? { fill: 'white', opacity: 1.0 } : null}
         strokeWidth={0}
+        style={color ? { fill: color, opacity: 1.0 } : null} // Override stylesheet
       />
     );
   }
@@ -279,27 +287,27 @@ export default function Timeline({
     if (!timeIndicatorRef.current || pixelPosition === 0) {
       return null;
     }
-    const center = ((fullWidth - margin.left - margin.right) * 0.5) + margin.left;
-    const isAtTop = pixelPosition < (margin.top + zoomButtonHeight);
+    const centerX = ((fullWidth - margin.left - margin.right) * 0.5) + margin.left;
+    const isAtTop = pixelPosition <= (margin.top + zoomButtonHeight - paddingGraph);
     const isAtBottom = pixelPosition > window.innerHeight - margin.bottom;
 
     if (isAtTop) {
       return (
         <Arrow
-          x={center}
+          x={centerX}
           y={margin.top + arrowOffsetY}
           orientation={"up"}
-          onClick={() => interpolateZoom(k)}
+          onClick={centerTime}
         />
       );
     }
     else if (isAtBottom) {
       return (
         <Arrow
-          x={center}
+          x={centerX}
           y={height - (margin.bottom + arrowOffsetY)}
           orientation={"down"}
-          onClick={() => interpolateZoom(k)}
+          onClick={centerTime}
         />
       );
     }
@@ -310,7 +318,7 @@ export default function Timeline({
     const firstColor = placement === "top" ? 'black' : 'transparent';
     const secondColor = placement === "top" ? 'transparent' : 'black';
     const id = `Gradient${placement}`;
-    const yPlacement = placement === "top" ? 0 : height - margin.top - margin.bottom + padding;
+    const yPlacement = placement === "top" ? 0 : height - margin.top - margin.bottom + paddingGraph;
     
     return (
       <>
@@ -322,7 +330,7 @@ export default function Timeline({
         </defs>
       <rect
         style={{
-          height: padding + 5,
+          height: paddingGraph + 5,
           width: width - margin.left - margin.right + polygonSize + 5,
           x: margin.left - polygonSize + 3,
           y: yPlacement,
@@ -339,8 +347,8 @@ export default function Timeline({
   let selectedMilestone = null;
   let selectedPhaseIndex = 0;
 
-  const clippathTop = margin.top - padding;
-  const clippathBottom = height - margin.bottom + (2 * padding);
+  const clippathTop = margin.top - paddingGraph;
+  const clippathBottom = height - margin.bottom + (2 * paddingGraph);
 
   const tooltipStyling = {
     display: showToolTip ? 'block' : 'none',
@@ -364,13 +372,13 @@ export default function Timeline({
           gap: '10px'
         }}
       >
-        <Button onClick={() => interpolateZoom(Math.floor(Math.sqrt(k - 1)), false)} style={{ margin: 0, padding: 0 }}>
+        <Button onClick={() => zoomByButton(2)} style={{ margin: 0, padding: 0 }}>
           <Icon icon={"mi:zoom-out"} color={"white"} alt={"zoom-in"} style={{ fontSize: '1.5em' }}/>
         </Button>
-        <Button onClick={() => interpolateZoom(Math.pow(k + 1, 2), false)} style={{ margin: 0, padding: 0 }}>
+        <Button onClick={() => zoomByButton(0.5)} style={{ margin: 0, padding: 0 }}>
           <Icon icon={"mi:zoom-in"} color={"white"} alt={"zoom-out"} style={{ fontSize: '1.5em' }}/>
         </Button>
-        <Button onClick={() => interpolateZoom(1, false)} style={{ margin: 0, padding: 0 }}>
+        <Button onClick={() => reset()} style={{ margin: 0, padding: 0 }}>
           <Icon icon={"fluent:full-screen-zoom-24-filled"} color={"white"} alt={"full-view"} style={{ fontSize: '1.5em' }}/>
         </Button>
       </div>
@@ -384,12 +392,12 @@ export default function Timeline({
         height={height}
         style={{
           position: 'absolute',
-          top: zoomButtonHeight - padding,
+          top: zoomButtonHeight - paddingGraph,
           right: panelWidth,
           clipPath: `polygon(0% ${clippathTop}px, 100% ${clippathTop}px, 100% ${clippathBottom}px, 0% ${clippathBottom}px`,
         }}
       >
-        <g transform={`translate(0, ${padding})`}>
+        <g transform={`translate(0, ${paddingGraph})`}>
           <g ref={xAxisRef} transform={`translate(0, ${height - margin.bottom})`} />
           <g ref={yAxisRef} transform={`translate(${margin.left}, ${0})`} />
           <g transform={`translate(0, ${y})scale(1, ${k})`}>
