@@ -346,16 +346,9 @@ export default function Timeline({
   let selectedPhase = null;
   let selectedMilestone = null;
   let selectedPhaseIndex = 0;
-
+  // Calculate clippath
   const clippathTop = margin.top - paddingGraph;
   const clippathBottom = height - margin.bottom + (2 * paddingGraph);
-
-  const tooltipStyling = {
-    display: showToolTip ? 'block' : 'none',
-    top: toolTipPosition[1], left: toolTipPosition[0] - tooltipWidth - (2 * tooltipMargin),
-    marginRight: tooltipMargin,
-    width: tooltipWidth
-  };
 
   return (
     <>
@@ -382,7 +375,17 @@ export default function Timeline({
           <Icon icon={"fluent:full-screen-zoom-24-filled"} color={"white"} alt={"full-view"} style={{ fontSize: '1.5em' }}/>
         </Button>
       </div>
-      <Tooltip fixed placement={"left"} className={styles.toolTip} style={tooltipStyling}>
+      <Tooltip
+        fixed
+        placement={"left"}
+        className={styles.toolTip}
+        style={ {
+          display: showToolTip ? 'block' : 'none',
+          top: toolTipPosition[1], left: toolTipPosition[0] - tooltipWidth - (2 * tooltipMargin),
+          marginRight: tooltipMargin,
+          width: tooltipWidth
+        }}
+      >
         <p style={{ fontWeight: 'bold' }}>{toolTipData.title}</p>
         <p>{toolTipData.value}</p>
       </Tooltip>
@@ -449,8 +452,8 @@ export default function Timeline({
           </g>
           {createCurrentTimeArrow()}
         </g>
-          {createFade("top")}
-          {createFade("bottom")}
+        {createFade("top")}
+        {createFade("bottom")}
       </svg>
     </>
   );
