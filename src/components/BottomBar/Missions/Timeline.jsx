@@ -174,7 +174,7 @@ export default function Timeline({
   // Used for phases
   // Padding is used for the white rectangle underneath the selected phase
   // It makes the rectangle bigger
-  function createRectangle(phase, nestedLevel, noBorder = false, padding = 0, color = undefined) {
+  function createRectangle(phase, nestedLevel, padding = 0, color = undefined) {
     if (!phase?.timerange) {
       return null;
     }
@@ -199,8 +199,8 @@ export default function Timeline({
         onMouseOver={(e) => mouseOver(e, "Phase", phase.name)}
         onMouseLeave={mouseLeave}
         className={isCurrent ? styles.barHighlighted : styles.bar}
-        style={color ? { fill: selectedBorder, opacity: 1.0 } : null} // Override stylesheet
-        strokeWidth={noBorder ? 0 : borderWidth}
+        style={color ? { fill: 'white', opacity: 1.0 } : null}
+        strokeWidth={0}
       />
     );
   }
@@ -411,8 +411,8 @@ export default function Timeline({
             )}
             {selectedPhase ?
               <>
-                {createRectangle(selectedPhase, selectedPhaseIndex, true, 2, selectedBorder)}
-                {createRectangle(selectedPhase, selectedPhaseIndex, true)}
+                {createRectangle(selectedPhase, selectedPhaseIndex, 2, selectedBorder)}
+                {createRectangle(selectedPhase, selectedPhaseIndex)}
               </>
               :
               null
