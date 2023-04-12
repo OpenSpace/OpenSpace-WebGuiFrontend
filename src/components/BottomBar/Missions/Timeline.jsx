@@ -67,7 +67,7 @@ export default function Timeline({
   const paddingGraph = 10; // How many pixels over and below graph will still show content
   const arrowOffsetY = 25; // "Padding" for the arrow - how far away from the edge it is displayed
   const radiusPhase = 2; // Radius for the rectangles that represent phases
-
+  const transitionTime = 750; // Milliseconds
   // Styling
   const milestoneColor = 'rgba(255, 150, 0, 1)';
   const captureColor = 'rgba(255, 255, 0, 0.8)';
@@ -144,11 +144,11 @@ export default function Timeline({
 
     // Apply transform 
     const transform = d3.zoomIdentity.scale(k).translate(1, deltaY);
-    d3.select(svgRef.current).transition().call(zoomRef.current.transform, transform);
+    d3.select(svgRef.current).transition().duration(transitionTime).call(zoomRef.current.transform, transform);
   };
 
   function reset() {
-    d3.select(svgRef.current).transition().duration(750).call(
+    d3.select(svgRef.current).transition().duration(transitionTime).call(
       zoomRef.current.transform,
       d3.zoomIdentity,
       d3.zoomTransform(d3.select(svgRef.current).node()).invert([width * 0.5, height * 0.5])
@@ -156,7 +156,7 @@ export default function Timeline({
   }
 
   function zoomByButton(zoomValue) {
-    d3.select(svgRef.current).transition().call(zoomRef.current.scaleBy, zoomValue);
+    d3.select(svgRef.current).transition().duration(transitionTime).call(zoomRef.current.scaleBy, zoomValue);
   }
 
   function onClick(event, time) {
@@ -365,10 +365,10 @@ export default function Timeline({
           gap: '10px'
         }}
       >
-        <Button onClick={() => zoomByButton(2)} style={{ margin: 0, padding: 0 }}>
+        <Button onClick={() => zoomByButton(0.5)} style={{ margin: 0, padding: 0 }}>
           <Icon icon={"mi:zoom-out"} color={"white"} alt={"zoom-in"} style={{ fontSize: '1.5em' }}/>
         </Button>
-        <Button onClick={() => zoomByButton(0.5)} style={{ margin: 0, padding: 0 }}>
+        <Button onClick={() => zoomByButton(2)} style={{ margin: 0, padding: 0 }}>
           <Icon icon={"mi:zoom-in"} color={"white"} alt={"zoom-out"} style={{ fontSize: '1.5em' }}/>
         </Button>
         <Button onClick={() => reset()} style={{ margin: 0, padding: 0 }}>
