@@ -239,11 +239,11 @@ export default function Missions({ }) {
                     <br />
                     {displayedPhase.data.description}
                   </p>
-                  {displayedPhase.data.media.link &&
-                    <Button onClick={() => openUrl(displayedPhase.data.media.link)}>{"Read more"}</Button>
+                  {displayedPhase.data.link &&
+                    <Button onClick={() => openUrl(displayedPhase.data.link)}>{"Read more"}</Button>
                   }
-                  {displayedPhase.data.media.image &&
-                    <img style={{ width: '100%', padding: '20px 5px', maxWidth: window.innerWidth * 0.25 }} src={displayedPhase.data.media.image} />
+                  {displayedPhase.data.image &&
+                    <img style={{ width: '100%', padding: '20px 5px', maxWidth: window.innerWidth * 0.25 }} src={displayedPhase.data.image} />
                   }
                 </>
                 :
