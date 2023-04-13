@@ -166,7 +166,7 @@ function GeoPositionPanel({ refresh, luaApi, popoverVisible, setPopoverVisibilit
         luaApi?.addSceneGraphNode(createSceneGraphNodeTable(currentAnchor, addressUtf8, lat, long, altitude));
         // TODO: Once we have a proper way to subscribe to additions and removals
         // of property owners, this 'hard' refresh should be removed.
-        setTimeout(() => refresh());
+        setTimeout(() => refresh(), 300);
         break;
       }
       default: {
