@@ -57,6 +57,7 @@ export default function Missions({ }) {
 
   const allPhasesNested = React.useRef(null);
   const topBarHeight = 30;
+  const browserHasLoaded = window.innerHeight > 1;
 
   const dispatch = useDispatch();
 
@@ -219,19 +220,23 @@ export default function Missions({ }) {
   function popover() {
     return (
       <>
-      <Timeline
-        fullWidth={120}
-        fullHeight={window.innerHeight}
-        timeRange={wholeTimeRange}
-        currentPhases={allPhasesNested.current}
-        captureTimes={overview.capturetimes}  
-        now={now}
-        setDisplayedPhase={setPhaseManually}
-        displayedPhase={displayedPhase}
-        panelWidth={size.width}
-        milestones={overview?.milestones}
-        jumpToTime={jumpToTime}
-      />
+      { browserHasLoaded ? 
+        <Timeline
+          fullWidth={120}
+          fullHeight={window.innerHeight}
+          timeRange={wholeTimeRange}
+          currentPhases={allPhasesNested.current}
+          captureTimes={overview.capturetimes}  
+          now={now}
+          setDisplayedPhase={setPhaseManually}
+          displayedPhase={displayedPhase}
+          panelWidth={size.width}
+          milestones={overview?.milestones}
+          jumpToTime={jumpToTime}
+        />
+          :
+        null
+      }
       <WindowThreeStates
         title={overview.name}
         sizeCallback={sizeCallback}

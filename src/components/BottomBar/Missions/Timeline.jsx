@@ -68,6 +68,7 @@ export default function Timeline({
   const arrowOffsetY = 25; // "Padding" for the arrow - how far away from the edge it is displayed
   const radiusPhase = 2; // Radius for the rectangles that represent phases
   const transitionTime = 750; // Milliseconds
+  
   // Styling
   const milestoneColor = 'rgba(255, 150, 0, 1)';
   const captureColor = 'rgba(255, 255, 0, 0.8)';
@@ -190,7 +191,6 @@ export default function Timeline({
     const isCurrent = Date.parse(now) < Date.parse(endTime) && Date.parse(now) > Date.parse(startTime);
     const paddingY = padding / k; // Make sure padding doesn't get stretched when zooming
     const radiusY = radiusPhase / k; // Same here
-    
     return (
       <rect
         key={`${phase.name}${startTime.toString()}${endTime.toString()}${color}`}
