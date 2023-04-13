@@ -383,7 +383,8 @@ export default function Timeline({
           display: showToolTip ? 'block' : 'none',
           top: toolTipPosition[1], left: toolTipPosition[0] - tooltipWidth - (2 * tooltipMargin),
           marginRight: tooltipMargin,
-          width: tooltipWidth
+          width: tooltipWidth,
+          overflowWrap: 'break-word'
         }}
       >
         <p style={{ fontWeight: 'bold' }}>{toolTipData.title}</p>
