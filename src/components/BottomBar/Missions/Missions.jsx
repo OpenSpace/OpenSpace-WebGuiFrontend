@@ -9,6 +9,7 @@ import { useLocalStorageState } from '../../../utils/customHooks';
 import { Icon } from '@iconify/react';
 import CenteredLabel from '../../common/CenteredLabel/CenteredLabel';
 import Timeline from './Timeline';
+import styles from './Missions.scss';
 
 export function makeUtcDate(time) {
   if (!time) {
@@ -49,6 +50,7 @@ export default function Missions({ }) {
   const [displayedPhase, setDisplayedPhase] = React.useState({ type: DisplayType.phase, data: overview });
   const [currentActions, setCurrentActions] = React.useState([]);
   const [size, setSize] = React.useState({width: 350, height: window.innerHeight});
+  const [displayCurrentPhase, setDisplayCurrentPhase] = React.useState(false);
   const [wholeTimeRange, setWholeTimeRange] = React.useState(
     [new Date(missions.data.missions[0].timerange.start), new Date(missions.data.missions[0].timerange.end)]
   );
@@ -62,6 +64,12 @@ export default function Missions({ }) {
     dispatch(subscribeToTime());
     return () => dispatch(unsubscribeToTime());
   }, []);
+
+  React.useEffect(() => {
+    if (displayCurrentPhase) {
+      setPhaseToCurrent()
+    }
+  }, [now]);
 
   // Every time a phase changes, get the actions that are valid for that phase
   React.useEffect(() => {
@@ -139,6 +147,10 @@ export default function Missions({ }) {
         Date.parse(now) > Date.parse(makeUtcDate(mission.timerange.start))
     });
     const found = filteredPhases.pop();
+    // If the found phase is already displayed, do nothing
+    if (found.name === displayedPhase.data.name) {
+      return;
+    }
     if (found) {
       setDisplayedPhase({ type: DisplayType.phase, data: found });
     }
@@ -199,6 +211,11 @@ export default function Missions({ }) {
     if (newWindow) newWindow.opener = null;
   }
 
+  function setPhaseManually(phase) {
+    setDisplayedPhase(phase);
+    setDisplayCurrentPhase(false);
+  }
+
   function popover() {
     return (
       <>
@@ -209,7 +226,7 @@ export default function Missions({ }) {
         currentPhases={allPhasesNested.current}
         captureTimes={overview.capturetimes}  
         now={now}
-        setDisplayedPhase={setDisplayedPhase}
+        setDisplayedPhase={setPhaseManually}
         displayedPhase={displayedPhase}
         panelWidth={size.width}
         milestones={overview?.milestones}
@@ -224,8 +241,13 @@ export default function Missions({ }) {
         > 
         <div style={{ height: size.height - topBarHeight, overflow: 'auto'}}>
           <div style={{ display: 'flex', justifyContent: 'space-around'}}>
-            <Button onClick={() => setDisplayedPhase({ type: DisplayType.phase, data: overview }) }>{"Mission Overview"}</Button>
-            <Button onClick={setPhaseToCurrent}>{"Current Phase"}</Button>
+            <Button onClick={() => setPhaseManually({ type: DisplayType.phase, data: overview }) }>{"Mission Overview"}</Button>
+            <Button
+              onClick={() => setDisplayCurrentPhase(lastValue => !lastValue)}
+              className={displayCurrentPhase ? styles.selectedButton : null}
+            >
+              {"Current Phase"}
+            </Button>
           </div>
             <div style={{ padding: '10px' }}>
               {displayedPhase.type === DisplayType.phase ?
