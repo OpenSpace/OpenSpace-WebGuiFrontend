@@ -237,11 +237,10 @@ export default function Timeline({
   }
 
   // Used for instrument activity / capture times
-  function createCircle(time, color, ref) {
+  function createCircle(time, color, index) {
     return (
       <ellipse 
-        key={time?.toUTCString()}
-        ref={el => ref ? ref.current = el : null}
+        key={`${time?.toISOString()}${index}`}
         cx={margin.left}
         cy={yScale(time)}
         ry={circleRadius / k}
@@ -432,7 +431,7 @@ export default function Timeline({
           </g>
           <g transform={`translate(0, ${y})scale(1, ${k})`}>
             {createLine(now, timeIndicatorColor, timeIndicatorRef)}
-            {captureTimes?.map(capture => createCircle(makeUtcDate(capture), captureColor))}
+            {captureTimes?.map((capture, index) => createCircle(makeUtcDate(capture), captureColor, index))}
             {milestones?.map(milestone => {
               if (displayedPhase.type === DisplayType.milestone && milestone.name === displayedPhase.data.name) {
                 // We want to draw the selected phase last so it appears on top
