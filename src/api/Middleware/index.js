@@ -6,6 +6,7 @@ import { engineMode } from './engineMode';
 import { fetchData } from './fetchData';
 import { shortcuts } from './shortcuts';
 import { version } from './version';
+import { missions } from './missions';
 import { sessionRecording } from './sessionRecording';
 import { flightController } from './flightController';
 import { documentation } from './documentation';
@@ -24,6 +25,7 @@ const middleware = applyMiddleware(
   connection,
   shortcuts,
   version,
+  missions,
   fetchData,
   flightController,
   documentation,

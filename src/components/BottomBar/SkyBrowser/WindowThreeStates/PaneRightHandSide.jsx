@@ -2,27 +2,27 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Resizable } from 're-resizable';
 import styles from './WindowThreeStates.scss';
-import MaterialIcon from '../../../common/MaterialIcon/MaterialIcon';
-import Button from '../../../common/Input/Button/Button';
 
 class PaneRightHandSide extends Component {
   constructor(props) {
     super(props);
-    this.handleResize = this.handleResize.bind(this);
+    this.onResizeStop = this.onResizeStop.bind(this);
   }
 
-  handleResize() {
-    const { innerWidth: width, innerHeight: height } = window;
-    this.props.heightCallback(innerWidth, innerHeight);
+  onResizeStop() {
+    const { sizeCallback } = this.props;
+    if (sizeCallback) {
+      sizeCallback(this.windowDiv.clientWidth, this.windowDiv.clientHeight)
+    }
   }
 
   componentDidMount() {
-    this.handleResize();
-    window.addEventListener('resize', this.handleResize);
+    this.onResizeStop();
+    window.addEventListener('resize', this.onResizeStop);
   }
 
   componentWillUnmount() {
-    window.removeEventListener('resize', this.handleResize)
+    window.removeEventListener('resize', this.onResizeStop)
   }
 
   render() {
@@ -40,7 +40,10 @@ class PaneRightHandSide extends Component {
     };
 
     return (
-      <section className={`${styles.pane}`}>
+      <section
+        className={`${styles.pane}`}
+        ref={(divElement) => { this.windowDiv = divElement; }}
+      >
         <Resizable
           enable={resizablePlacement}
           defaultSize={{
@@ -50,6 +53,7 @@ class PaneRightHandSide extends Component {
           minWidth={250}
           handleClasses={{ left: styles.leftHandle }}
           onResizeStop={this.onResizeStop}
+          onResize={this.onResizeStop}
         >
           {children}
         </Resizable>

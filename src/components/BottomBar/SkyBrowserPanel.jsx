@@ -291,7 +291,7 @@ function SkyBrowserPanel({ }) {
       <WindowThreeStates
         title="AAS WorldWide Telescope"
         closeCallback={togglePopover}
-        heightCallback={setCurrentPopoverHeight}
+        sizeCallback={setCurrentPopoverHeight}
         height={currentPopoverHeight}
         defaultHeight={440}
         minHeight={440}

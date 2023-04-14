@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { 
   subscribeToProperty,
@@ -17,23 +17,34 @@ import SessionRec from './SessionRec';
 import TimePicker from './TimePicker';
 import SkyBrowserPanel from './SkyBrowserPanel';
 import GeoPositionPanel from './GeoPositionPanel'; 
+import Missions from './Missions/Missions';
 
-let BottomBar = ({ 
-  showExoplanets,
+export default function BottomBar({ 
   showFlightController,
-  showSkyBrowser,
-  startListening,
-  stopListening
-}) => {
+}) {
+  const showExoplanets = useSelector(state => getBoolPropertyValue(state, ExoplanetsModuleEnabledKey));
+  const showSkyBrowser = useSelector(state => getBoolPropertyValue(state, SkyBrowserModuleEnabledKey));
+  const missions = useSelector((state) => state.missions);
+  const showMissions = missions?.isInitialized && missions?.data?.missions;
+  
+  const dispatch = useDispatch();
 
+  // Subscribe to exoplanets
   useEffect(() => {
     // componentDidMount
-    startListening();
-
+    dispatch(subscribeToProperty(ExoplanetsModuleEnabledKey));
     return () => { // componentWillUnmount
-      stopListening();
+      dispatch(unsubscribeToProperty(ExoplanetsModuleEnabledKey));
     }
-  });
+  }, []);
+
+  // Subscribe to skybrowser
+  useEffect(() => {
+    dispatch(subscribeToProperty(SkyBrowserModuleEnabledKey));
+    return () => { 
+      dispatch(unsubscribeToProperty(SkyBrowserModuleEnabledKey));
+    }
+  }, []);
 
   return <div className={styles.BottomBar}>
     <OriginPicker />
@@ -45,6 +56,7 @@ let BottomBar = ({
     <ActionsPanel />
     {showFlightController && <FlightControlPanel />}
     {showSkyBrowser && <SkyBrowserPanel />}
+    {showMissions && <Missions />}
   </div>
 };
 
@@ -60,24 +72,3 @@ BottomBar.defaultProps = {
   showSkyBrowser: false,
 };
 
-const mapStateToProps = (state) => {
-  return {
-    showExoplanets: getBoolPropertyValue(state, ExoplanetsModuleEnabledKey),
-    showSkyBrowser: getBoolPropertyValue(state, SkyBrowserModuleEnabledKey)
-  }
-};
-
-const mapDispatchToProps = dispatch => ({
-  startListening: () => {
-    dispatch(subscribeToProperty(ExoplanetsModuleEnabledKey));
-    dispatch(subscribeToProperty(SkyBrowserModuleEnabledKey));
-  },
-  stopListening: () => {
-    dispatch(unsubscribeToProperty(ExoplanetsModuleEnabledKey));
-    dispatch(unsubscribeToProperty(SkyBrowserModuleEnabledKey));
-  },
-})
-
-BottomBar = connect(mapStateToProps, mapDispatchToProps)(BottomBar);
-
-export default BottomBar;

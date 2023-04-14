@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Resizable } from 're-resizable';
 import styles from './WindowThreeStates.scss';
-import MaterialIcon from '../../../common/MaterialIcon/MaterialIcon';
-import Button from '../../../common/Input/Button/Button';
 
 class PopoverResizeable extends Component {
   constructor(props) {
@@ -11,7 +9,7 @@ class PopoverResizeable extends Component {
   }
 
   render() {
-    const { children, setNewHeight } = this.props;
+    const { children, sizeCallback } = this.props;
     return (
       <section
         className={`${styles.popover}`}
@@ -41,7 +39,7 @@ class PopoverResizeable extends Component {
             right: styles.rightHandle,
             left: styles.leftHandle,
           }}
-          onResizeStop={() => setNewHeight(this.windowDiv.clientWidth, this.windowDiv.clientHeight)}
+          onResizeStop={() => sizeCallback(this.windowDiv.clientWidth, this.windowDiv.clientHeight)}
         >
           {children}
         </Resizable>
