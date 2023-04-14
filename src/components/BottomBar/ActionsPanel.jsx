@@ -20,7 +20,9 @@ export function ActionsButton({ action }) {
     const actionId = e.currentTarget.getAttribute('actionid');
     luaApi.action.triggerAction(actionId);
   }
+  
   const isLocal = (action.synchronization === false);
+
   return (
     <Button
       block
@@ -35,7 +37,6 @@ export function ActionsButton({ action }) {
       </p>
       {action.name} {' '}
       {action.documentation && <InfoBox text={action.documentation} />}
-
     </Button>
   );
 }

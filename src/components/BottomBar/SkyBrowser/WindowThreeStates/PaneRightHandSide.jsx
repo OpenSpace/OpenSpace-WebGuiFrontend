@@ -42,9 +42,7 @@ class PaneRightHandSide extends Component {
     return (
       <section
         className={`${styles.pane}`}
-        ref={(divElement) => {
-          this.windowDiv = divElement;
-        }}
+        ref={(divElement) => { this.windowDiv = divElement; }}
       >
         <Resizable
           enable={resizablePlacement}

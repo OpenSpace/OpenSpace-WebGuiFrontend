@@ -24,13 +24,9 @@ export const DisplayType = {
   milestone: "milestone"
 };
 
-function SetTimeButton({onClick, name, documentation}) {
+function SetTimeButton({onClick, name}) {
   return (
-    <Button
-      block
-      smalltext
-      onClick={onClick}
-    >
+    <Button block smalltext onClick={onClick}>
       {name}
     </Button>
   );
@@ -102,11 +98,9 @@ export default function Missions({ }) {
 
   function findCurrentActions(result, phase) {
     phase.actions.map(action => {
-      if (allActions) {
-        const found = allActions?.find(item => item.identifier === action)
-        if (found) {
-          result.push(found);
-        }
+      const found = allActions?.find(item => item.identifier === action)
+      if (found) {
+        result.push(found);
       }
     });
   }
@@ -115,8 +109,7 @@ export default function Missions({ }) {
   function nextCapture() {
     let nextFoundCapture;
     // Assume the captures are sorted w regards to time
-    for (let i = 0; i < overview.capturetimes.length; i++) {
-      const capture = overview.capturetimes[i];
+    for (const capture in overview.capturetimes) {
       // Find the first time that is after the current time
       if (now?.getTime() < makeUtcDate(capture)?.getTime()) {
         nextFoundCapture = capture;
@@ -130,8 +123,7 @@ export default function Missions({ }) {
   function lastCapture() {
     let lastFoundCapture;
     // Assume the captures are sorted w regards to time
-    for (let i = overview.capturetimes.length - 1; i > 0; i--) {
-      const capture = overview.capturetimes[i];
+    for (const capture in overview.capturetimes.reverse()) {
       // Find the first time that is before the current time
       if (now?.getTime() > makeUtcDate(capture)?.getTime()) {
         lastFoundCapture = capture;
@@ -217,7 +209,38 @@ export default function Missions({ }) {
     setDisplayCurrentPhase(false);
   }
 
+  function createTimeButtons() {
+    if (displayedPhase.type === DisplayType.phase) {
+      const phaseType = displayedPhase.data === overview ? "Mission" : "Phase";
+      return (
+        <>
+          <SetTimeButton name={`Set Time to End of ${phaseType}`} onClick={jumpToEndOfPhase} />
+          <SetTimeButton name={`Set Time to Beginning of ${phaseType}`} onClick={jumpToStartOfPhase} />
+        </>
+      );
+    } 
+    if (displayedPhase.type === DisplayType.milestone) {
+      return <SetTimeButton name={"Set Time"} onClick={jumpToDate} />;
+    }
+  }
+
+  function getTimeString() {
+    if (displayedPhase.type === DisplayType.milestone) {
+      return `${new Date(displayedPhase.data.date).toDateString()}`;
+    }
+    else if (displayedPhase.type === DisplayType.phase) {
+      const start = new Date(displayedPhase.data.timerange.start).toDateString();
+      const end = new Date(displayedPhase.data.timerange.end).toDateString();
+      return `${start} - ${end}`;
+    }
+  }
+
   function popover() {
+    const timeString = getTimeString();
+    const typeTitle = displayedPhase.type === DisplayType.phase ? "Phase" : "Milestone";
+    const title = `${typeTitle}: ${displayedPhase?.data?.name}`;
+    const hideTitle = displayedPhase.type === DisplayType.phase && displayedPhase?.data?.name === overview.name;
+    
     return (
       <>
       { browserHasLoaded ? 
@@ -255,14 +278,13 @@ export default function Missions({ }) {
             </Button>
           </div>
             <div style={{ padding: '10px' }}>
-              {displayedPhase.type === DisplayType.phase ?
+              {displayedPhase ?
                 <>
-                  <p>{displayedPhase?.data?.name !== overview.name && `Phase: ${displayedPhase?.data?.name}`}</p>
-                  <p style={{ color: 'darkgray'}}>
-                    {`${new Date(displayedPhase.data.timerange.start).toDateString()} `}
-                    {`- ${new Date(displayedPhase.data.timerange.end).toDateString()}`}
+                  <p>{!hideTitle && title}</p>
+                  <p style={{ color: 'darkgray' }}>
+                    {timeString}
                   </p>
-                  <p style={{ paddingBottom: '15px'}}>
+                  <p style={{ paddingBottom: '15px' }}>
                     <br />
                     {displayedPhase.data.description}
                   </p>
@@ -274,39 +296,10 @@ export default function Missions({ }) {
                   }
                 </>
                 :
-                displayedPhase.type === DisplayType.milestone ?
-                  <>
-                  <p>{`Milestone: ${displayedPhase?.data?.name}`}</p>
-                  <p style={{ color: 'darkgray'}}>
-                    {`${new Date(displayedPhase.data.date).toDateString()} `}
-                  </p>
-                  <p style={{ paddingBottom: '15px'}}>
-                    <br />
-                    {displayedPhase.data.description}
-                  </p>
-                  {displayedPhase.data.link &&
-                    <Button onClick={() => openUrl(displayedPhase.data.link)}>{displayedPhase.data.link}</Button>
-                  }
-                  {displayedPhase.data.image &&
-                    <img style={{ width: '100%', padding: '20px 5px', maxWidth: window.innerWidth * 0.25 }} src={displayedPhase.data.image} />
-                  }
-                </> 
-                :
                 <CenteredLabel>{"No current phase in this mission"}</CenteredLabel>
               }
               <div style={{ display: 'flex', gap: '10px', flexDirection: 'column', padding: '10px 0px' }}>
-                {displayedPhase.type === DisplayType.phase ? 
-                    <>
-                      <SetTimeButton name={`Set Time to End of ${displayedPhase.data === overview ? "Mission" : "Phase"}`} onClick={jumpToEndOfPhase} />
-                      <SetTimeButton name={`Set Time to Beginning of ${displayedPhase.data === overview ? "Mission" : "Phase"}`} onClick={jumpToStartOfPhase} />
-                    </>
-                  :
-                  displayedPhase.type === DisplayType.milestone ?
-                      <SetTimeButton name={"Set Time"} onClick={jumpToDate} />
-                  : 
-                    <>
-                    </>
-                }
+                {createTimeButtons()}
                 {nextCapture() && <SetTimeButton name={"Set Time to Next Capture"} onClick={jumpToNextCapture} />}
                 {lastCapture() && <SetTimeButton name={"Set Time to Last Capture"} onClick={jumpToLastCapture} />}
               </div>

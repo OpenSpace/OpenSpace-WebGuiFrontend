@@ -39,7 +39,7 @@ export default function Timeline({
   jumpToTime,
   milestones,
   now,
-  panelWidth, 
+  panelWidth,
   setDisplayedPhase,
   timeRange
 }) {
@@ -49,14 +49,14 @@ export default function Timeline({
   
   // Tooltip
   const [showToolTip, setShowToolTip] = React.useState(false);
-  const [toolTipData, setToolTipData] = React.useState({ title: "", text: ""});
-  const [toolTipPosition, setToolTipPosition] = React.useState([0,0]);
+  const [toolTipData, setToolTipData] = React.useState({ title: "", text: "" });
+  const [toolTipPosition, setToolTipPosition] = React.useState([0, 0]);
   
   // Depth of nesting for phases
   const nestedLevels = currentPhases?.length ?? 0;
 
   // Set the dimensions and margins of the graph
-  const margin = { top: 0, right: 10, bottom: 70, left: 60 }; // Margins
+  const margin = { top: 0, right: 10, bottom: 70, left: 60 };
   const minLevelWidth = 15; // Minimum width of a phase
   const minWidth = (minLevelWidth * nestedLevels) + margin.left + margin.right; // Ensure graph is large enough to show all phases
   const zoomButtonHeight = 40; // Height of buttons that control zoom
@@ -125,12 +125,13 @@ export default function Timeline({
   // Add zoom
   // Update zoom function every time the y scale changes (when window is resized)
   React.useEffect(() => {
-    zoomRef.current = d3.zoom().on("zoom", (event) => {
-      const newScaleY = event.transform.rescaleY(yScale);
-      d3.select(yAxisRef.current).call(yAxis.scale(newScaleY));
-      setK(event.transform.k);
-      setY(event.transform.y);
-    })
+    zoomRef.current = d3.zoom()
+      .on("zoom", (event) => {
+        const newScaleY = event.transform.rescaleY(yScale);
+        d3.select(yAxisRef.current).call(yAxis.scale(newScaleY));
+        setK(event.transform.k);
+        setY(event.transform.y);
+      })
       .scaleExtent(scaleExtent)
       .extent(translateExtent)
       .translateExtent(translateExtent);
@@ -231,7 +232,7 @@ export default function Timeline({
         width={width - margin.left - margin.right}
         fill={color}
         stroke={borderColor}
-        strokeWidth={borderWidth/k}
+        strokeWidth={borderWidth / k}
       />
     )
   }
@@ -239,7 +240,7 @@ export default function Timeline({
   // Used for instrument activity / capture times
   function createCircle(time, color, index) {
     return (
-      <ellipse 
+      <ellipse
         key={`${time?.toISOString()}${index}`}
         cx={margin.left}
         cy={yScale(time)}
@@ -261,14 +262,18 @@ export default function Timeline({
     const y = yScale(time) - (width * 0.5 / k);
     const x = margin.left - width;
     const centerOffsetX = 0.5 * width;
+    // To make the key unique we need to make sure that the time is different for each
+    // polygon - the color and padding are added when two polygons are placed at the same
+    // time (when it is selected)
+    const uniqueKey = `${time.toUTCString()}${padding}${color}`;
     return (
       <polygon
-        points={`0,${width * 0.5} ${width * 0.5},${width} ${width},${width * 0.5} ${width * 0.5},0`}
-        transform={`translate(${x + centerOffsetX}, ${y})scale(1, ${1/k})`}
+        points={`0, ${width * 0.5} ${width * 0.5}, ${width} ${width}, ${width * 0.5} ${width * 0.5}, 0`}
+        transform={`translate(${x + centerOffsetX}, ${y})scale(1, ${1 / k})`}
         fill={color}
         stroke={borderColor}
         strokeWidth={noBorder ? 0 : borderWidth}
-        key={`${time.toUTCString()}${padding}${color}`}
+        key={uniqueKey}
         onClick={(e) => {
           onClick(e, time);
           setDisplayedPhase({ type: DisplayType.milestone, data: date });
@@ -289,28 +294,21 @@ export default function Timeline({
     const centerX = ((fullWidth - margin.left - margin.right) * 0.5) + margin.left;
     const isAtTop = pixelPosition <= (margin.top + zoomButtonHeight - paddingGraph);
     const isAtBottom = pixelPosition > window.innerHeight - margin.bottom;
+    
+    if (!isAtTop || !isAtBottom) {
+      return null;
+    }
+    const yTop = margin.top + arrowOffsetY;
+    const yBottom = height - (margin.bottom + arrowOffsetY);
 
-    if (isAtTop) {
-      return (
-        <Arrow
-          x={centerX}
-          y={margin.top + arrowOffsetY}
-          orientation={"up"}
-          onClick={centerTime}
-        />
-      );
-    }
-    else if (isAtBottom) {
-      return (
-        <Arrow
-          x={centerX}
-          y={height - (margin.bottom + arrowOffsetY)}
-          orientation={"down"}
-          onClick={centerTime}
-        />
-      );
-    }
-    return null;
+    return (
+      <Arrow
+        x={centerX}
+        y={isAtTop ? yTop : yBottom}
+        orientation={isAtTop ? "up" : "down"}
+        onClick={centerTime}
+      />
+    );
   }
 
   function createFade(placement) {
@@ -327,15 +325,15 @@ export default function Timeline({
             <stop stopColor={secondColor} offset={"100%"} />
           </linearGradient>
         </defs>
-      <rect
-        style={{
-          height: paddingGraph + 5,
-          width: width - margin.left - margin.right + polygonSize + 5,
-          x: margin.left - polygonSize + 3,
-          y: yPlacement,
-          fill: `url(#${id})`,
-          pointerEvents: 'none' 
-        }}
+        <rect
+          style={{
+            height: paddingGraph + 5,
+            width: width - margin.left - margin.right + polygonSize + 5,
+            x: margin.left - polygonSize + 3,
+            y: yPlacement,
+            fill: `url(#${id})`,
+            pointerEvents: 'none' 
+          }}
         />
       </>
     );
@@ -378,7 +376,7 @@ export default function Timeline({
         fixed
         placement={"left"}
         className={styles.toolTip}
-        style={ {
+        style={{
           display: showToolTip ? 'block' : 'none',
           top: toolTipPosition[1], left: toolTipPosition[0] - tooltipWidth - (2 * tooltipMargin),
           marginRight: tooltipMargin,
