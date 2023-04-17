@@ -233,7 +233,7 @@ function WorldWideTelescope({
       size={{ height: `${size.height}px`, width: `${size.width}px` }}
       position={position}
       handleStop={setPosition}
-      setNewHeight={changeSize}
+      sizeCallback={changeSize}
     >
       {topBar}
       <div className={styles.content}>
