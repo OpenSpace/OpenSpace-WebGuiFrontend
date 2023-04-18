@@ -107,7 +107,7 @@ export default function Missions({ }) {
 
   // Locate the next instrument activity capture
   function nextCapture() {
-    let nextFoundCapture;
+    let nextFoundCapture = null;
     // Assume the captures are sorted w regards to time
     for (const capture in overview.capturetimes) {
       // Find the first time that is after the current time
@@ -121,7 +121,7 @@ export default function Missions({ }) {
 
   // Locate the previous instrument activity capture
   function lastCapture() {
-    let lastFoundCapture;
+    let lastFoundCapture = null;
     // Assume the captures are sorted w regards to time
     for (const capture in overview.capturetimes.reverse()) {
       // Find the first time that is before the current time
