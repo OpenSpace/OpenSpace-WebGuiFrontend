@@ -107,7 +107,7 @@ export default function Missions({ }) {
 
   // Locate the next instrument activity capture
   function nextCapture() {
-    if (!now) {
+    if (!now || overview.capturetimes.length === 0) {
       return null;
     }
     let nextFoundCapture = null;
@@ -129,7 +129,7 @@ export default function Missions({ }) {
 
   // Locate the previous instrument activity capture
   function lastCapture() {
-    if (!now) {
+    if (!now || overview.capturetimes.length === 0) {
       return null;
     }
     let lastFoundCapture = null;
