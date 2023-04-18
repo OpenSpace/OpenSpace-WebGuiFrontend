@@ -107,12 +107,20 @@ export default function Missions({ }) {
 
   // Locate the next instrument activity capture
   function nextCapture() {
+    if (!now) {
+      return null;
+    }
     let nextFoundCapture = null;
+
     // Assume the captures are sorted w regards to time
-    for (const capture in overview.capturetimes) {
+    for (const capture of overview.capturetimes) {
+      const utcDate = makeUtcDate(capture);
+      if (!utcDate) {
+        return null;
+      }
       // Find the first time that is after the current time
-      if (now?.getTime() < makeUtcDate(capture)?.getTime()) {
-        nextFoundCapture = capture;
+      if (now.getTime() < utcDate.getTime()) {
+        nextFoundCapture = utcDate;
         break;
       }
     }
@@ -121,12 +129,19 @@ export default function Missions({ }) {
 
   // Locate the previous instrument activity capture
   function lastCapture() {
+    if (!now) {
+      return null;
+    }
     let lastFoundCapture = null;
     // Assume the captures are sorted w regards to time
-    for (const capture in overview.capturetimes.reverse()) {
+    for (const capture of overview.capturetimes.toReversed()) {
+      const utcDate = makeUtcDate(capture);
       // Find the first time that is before the current time
-      if (now?.getTime() > makeUtcDate(capture)?.getTime()) {
-        lastFoundCapture = capture;
+      if (!utcDate) {
+        return null;
+      }
+      if (now.getTime() > utcDate.getTime()) {
+        lastFoundCapture = utcDate;
         break;
       }
     }
@@ -180,11 +195,17 @@ export default function Missions({ }) {
   }
 
   function jumpToNextCapture() {
-    jumpToTime(now, nextCapture());
+    const time = nextCapture();
+    if (time !== null) {
+      jumpToTime(now, time);
+    }
   }
 
   function jumpToLastCapture() {
-    jumpToTime(now, lastCapture());
+    const time = lastCapture();
+    if (time !== null) {
+      jumpToTime(now, time);
+    }
   }
 
   function jumpToEndOfPhase() {
