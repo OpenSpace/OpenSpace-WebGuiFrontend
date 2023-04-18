@@ -15,6 +15,7 @@ function SystemMenu({
   keybindsIsVisible,
   nativeGui,
   openTutorials,
+  openFeedback,
   saveChange,
   showAbout,
   showTutorial,
@@ -37,6 +38,9 @@ function SystemMenu({
             </button>
             <button style={{position : 'relative'}} onClick={() => showTutorial(true)} ref={el => refs.current["Tutorial"] = el}>
               Open Getting Started Tour
+            </button>
+            <button onClick={openFeedback}>
+              Send Feedback
             </button>
             <hr className={Popover.styles.delimiter} />
             <button onClick={() => setShowKeybinds(!keybindsIsVisible)}>
@@ -90,6 +94,16 @@ const mapSubStateToProps = ({ luaApi, keybindsIsVisible }) => {
   if (!luaApi) {
     return {};
   }
+
+  var openlinkScript = (url) => {
+    var startString = "open";
+    if (navigator.platform == 'Win32') {
+      startString = 'start'
+    }
+    var script = "os.execute('" + startString + " " + url + "')";
+    return script;
+  };
+
   return {
     quit: () => luaApi.toggleShutdown(),
     console: async () => {
@@ -103,11 +117,12 @@ const mapSubStateToProps = ({ luaApi, keybindsIsVisible }) => {
       luaApi.setPropertyValue("Modules.ImGUI.Enabled", !visible);
     },
     openTutorials: () => {
-      var startString = "open";
-      if (navigator.platform == 'Win32') {
-        startString = 'start'
-      }
-      api.executeLuaScript("os.execute('" + startString + " http://wiki.openspaceproject.com/docs/tutorials/users/')")
+      var script = openlinkScript('http://wiki.openspaceproject.com/docs/tutorials/users/');
+      api.executeLuaScript(script);
+    },
+    openFeedback: () => {
+      var script = openlinkScript('http://data.openspaceproject.com/feedback');
+      api.executeLuaScript(script);
     },
     saveChange: async () => {
       luaApi.saveSettingsToProfile();
