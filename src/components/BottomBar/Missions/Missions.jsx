@@ -40,7 +40,7 @@ export default function Missions({ }) {
   const missions = useSelector((state) => state.missions);
   const allActions = useSelector((state) => state.shortcuts?.data?.shortcuts);
   const luaApi = useSelector((state) => state.luaApi);
-  const now = useSelector((state) => state.time.time);
+  const now = useSelector((state) => state.time.timeCapped); // Use time that is updated every second - optimization
 
   const [overview, setOverview] = React.useState(missions?.data?.missions[0]);
   const [displayedPhase, setDisplayedPhase] = React.useState({ type: DisplayType.phase, data: overview });
@@ -126,6 +126,7 @@ export default function Missions({ }) {
     }
     return nextFoundCapture;
   }
+
 
   // Locate the previous instrument activity capture
   function lastCapture() {

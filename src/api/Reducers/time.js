@@ -38,6 +38,7 @@ const dateStringWithTimeZone = (date, zone = 'Z') => {
 
 const defaultState = {
   time: undefined,
+  timeCapped: undefined,
   targetDeltaTime: undefined,
   deltaTime: undefined,
   isPaused: undefined,
@@ -63,16 +64,18 @@ export const time = (state = defaultState, action = {}) => {
       const newState = {...state};
 
       if (time !== undefined) {
+        newState.time = new Date(dateStringWithTimeZone(time));
+        
+        // Make optimized time that only updates every second
         let date = new Date(dateStringWithTimeZone(time));
-        // Make the GUI only update with each in-game second
         date.setMilliseconds(0);
         // If it is the first time the time is sent, just set the state
         // Else cap the update of the state to every second for performance 
-        if (!state.time) {
-          newState.time = date;
+        if (!state.timeCapped) {
+          newState.timeCapped = date;
         }
-        else if (Math.abs(state.time.getTime() - date.getTime()) > 1000) {
-          newState.time = date;
+        else if (date.toISOString() !== newState.timeCapped.toISOString()) {
+          newState.timeCapped = date;
         }
       }
       if (deltaTime !== undefined) {
