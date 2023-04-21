@@ -92,7 +92,7 @@ function ActionsPanel ({
   }
 
   function getChildrenContent(level) {
-    return Object.keys(level.children).map((key) => folderButton(key));
+    return Object.keys(level.children).sort().map((key) => folderButton(key));
   }
 
   function getActionContent(level) {
