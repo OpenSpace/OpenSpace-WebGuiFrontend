@@ -270,7 +270,7 @@ const mapSubStateToProps = (
   });
 
   // Find all the subproperties of this owner (do not include the enabled property)
-  subProperties = subProperties.filter(uri => isPropertyVisible(properties, uri) && !isEnabledProperty(uri));
+  subProperties = subProperties.filter(uri => isPropertyVisible(properties, uri));
 
   const shouldSort = shouldSortAlphabetically(uri);
 
