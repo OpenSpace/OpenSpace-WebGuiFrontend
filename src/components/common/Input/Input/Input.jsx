@@ -19,7 +19,6 @@ class Input extends Component {
 
     this.onChange = this.onChange.bind(this);
     this.onKeyUp = this.onKeyUp.bind(this);
-    this.onKeyDown = this.onKeyDown.bind(this);
     this.clear = this.clear.bind(this);
     this.setInputRef = this.setInputRef.bind(this);
   }
@@ -48,22 +47,6 @@ class Input extends Component {
   onKeyUp(event) {
     if (event.key === 'Enter') {
       this.props.onEnter(event);
-    }
-  }
-
-  onKeyDown(event) {
-    //TMP hack for windows CEF not allowing .
-    //other issues are not fixed by this but at least it lets .for now.
-    // i.e || (event.keyCode == 39) this should be ' but winds up being right arrow
-    //this solution is so bad it only lets you put . at the end of a value.
-    //but I feel its still better then nothing happening.
-    if ( (window.navigator.platform == "Win32") && ((event.keyCode == 46)) ) {
-      let charString = String.fromCharCode(event.keyCode);
-      if (event.currentTarget.type == "number") {
-        charString += "0";
-      }
-      this.inputNode.value += charString;
-      this.onChange({ target: this.inputNode });
     }
   }
 
@@ -116,7 +99,6 @@ class Input extends Component {
           id={id}
           onChange={this.onChange}
           onKeyUp={this.onKeyUp}
-          onKeyDown={this.onKeyDown}
           value={value}
           ref={this.setInputRef}
         />

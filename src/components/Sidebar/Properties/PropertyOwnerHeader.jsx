@@ -62,15 +62,18 @@ function PropertyOwnerHeader({
       }
       else {
         setFadeDirection(-1); // fading out
-        // Disable after finished fading out
-        if (fadeValue < 0.0001) {
-          getPropertyDispatcher(enabledUri).set(false);
-        }
       }
     }
     else {
       setFadeDirection(0);
     }
+
+    // Disable after finished fading out
+    const isFadingOut = fadeDirection < 0;
+    if (fadeValue < 0.0001 && isFadingOut) {
+      getPropertyDispatcher(enabledUri).set(false);
+    }
+
   }, [fadeValue])
 
   function onClick(evt) {
