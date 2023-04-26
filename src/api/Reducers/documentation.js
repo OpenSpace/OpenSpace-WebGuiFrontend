@@ -10,7 +10,7 @@ export const documentation = (state = defaultState, action) => { // state refers
     case actionTypes.initializeDocumentation:
       return {
         isInitialized: true,
-        data: {...action.payload}
+        data: [...action.payload]
       }
     default:
       return state;
