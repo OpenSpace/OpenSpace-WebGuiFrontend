@@ -294,8 +294,7 @@ export default function Timeline({
     const centerX = ((fullWidth - margin.left - margin.right) * 0.5) + margin.left;
     const isAtTop = pixelPosition <= (margin.top + zoomButtonHeight - paddingGraph);
     const isAtBottom = pixelPosition > window.innerHeight - margin.bottom;
-    
-    if (!isAtTop || !isAtBottom) {
+    if (!isAtTop && !isAtBottom) {
       return null;
     }
     const yTop = margin.top + arrowOffsetY;
