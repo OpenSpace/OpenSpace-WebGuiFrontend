@@ -291,7 +291,7 @@ export default function Missions({ }) {
         > 
         <div style={{ height: size.height - topBarHeight, overflow: 'auto'}}>
           <div style={{ display: 'flex', justifyContent: 'space-around'}}>
-            <Button onClick={() => setPhaseManually({ type: DisplayType.phase, data: overview }) }>{"Mission Overview"}</Button>
+            <Button onClick={() => setPhaseManually({ type: DisplayType.phase, data: overview }) }>{"Overview"}</Button>
             <Button
               onClick={() => setDisplayCurrentPhase(lastValue => !lastValue)}
               className={displayCurrentPhase ? styles.selectedButton : null}
