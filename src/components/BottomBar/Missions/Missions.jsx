@@ -157,14 +157,14 @@ export default function Missions({ }) {
     });
     const found = filteredPhases.pop();
     // If the found phase is already displayed, do nothing
-    if (found.name === displayedPhase.data.name) {
-      return;
-    }
-    if (found) {
-      setDisplayedPhase({ type: DisplayType.phase, data: found });
+    if (!found) {
+      setDisplayedPhase({ type: null, data: undefined });
     }
     else {
-      setDisplayedPhase({ type: null, data: undefined });
+      if (found.name === displayedPhase.data?.name) {
+        return;
+      }
+      setDisplayedPhase({ type: DisplayType.phase, data: found });
     }
   }
 
@@ -259,7 +259,7 @@ export default function Missions({ }) {
 
   function popover() {
     const timeString = getTimeString();
-    const typeTitle = displayedPhase.type === DisplayType.phase ? "Phase" : "Milestone";
+    const typeTitle = displayedPhase.type && displayedPhase.type === DisplayType.phase ? "Phase" : "Milestone";
     const title = `${typeTitle}: ${displayedPhase?.data?.name}`;
     const hideTitle = displayedPhase.type === DisplayType.phase && displayedPhase?.data?.name === overview.name;
     
@@ -300,7 +300,7 @@ export default function Missions({ }) {
             </Button>
           </div>
             <div style={{ padding: '10px' }}>
-              {displayedPhase ?
+              {displayedPhase.data ?
                 <>
                   <p>{!hideTitle && title}</p>
                   <p style={{ color: 'darkgray' }}>
@@ -308,12 +308,12 @@ export default function Missions({ }) {
                   </p>
                   <p style={{ paddingBottom: '15px' }}>
                     <br />
-                    {displayedPhase.data.description}
+                    {displayedPhase.data?.description}
                   </p>
-                  {displayedPhase.data.link &&
+                  {displayedPhase.data?.link &&
                     <Button onClick={() => openUrl(displayedPhase.data.link)}>{"Read more"}</Button>
                   }
-                  {displayedPhase.data.image &&
+                  {displayedPhase.data?.image &&
                     <img style={{ width: '100%', padding: '20px 5px', maxWidth: window.innerWidth * 0.25 }} src={displayedPhase.data.image} />
                   }
                 </>
