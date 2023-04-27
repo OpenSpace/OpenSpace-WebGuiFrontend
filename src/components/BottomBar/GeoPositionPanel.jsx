@@ -312,9 +312,7 @@ function GeoPositionPanel({ refresh, luaApi, popoverVisible, setPopoverVisibilit
         onClick={() => togglePopover()}
         refKey={"GeoLocationPanel"}
       >
-        <div style={{height: '100%'}}>
-          <Icon style={{height : '100%', width: '30px'}} icon="entypo:location-pin" />
-        </div>
+        <Icon className={Picker.Icon} icon="entypo:location-pin" />
       </Picker>
       { popoverVisible && popover() }
     </div>

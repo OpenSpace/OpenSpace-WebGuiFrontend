@@ -304,7 +304,7 @@ function SkyBrowserPanel({ }) {
   return (
       <div className={Picker.Wrapper}>
         <Picker onClick={togglePopover} refKey={"SkyBrowser"}>
-          <Icon icon="mdi:telescope" color="white" alt="WWT" style={{ fontSize: '2em' }}/>
+          <Icon icon="mdi:telescope" color="white" alt="WWT" className={Picker.Icon}/>
         </Picker>
         {popoverVisible && popover()}
         {popoverVisible && createWwtBrowser()}

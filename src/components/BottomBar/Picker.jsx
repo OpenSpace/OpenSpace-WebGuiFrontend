@@ -27,6 +27,7 @@ Picker.Popover = styles.Popover;
 Picker.Title = styles.Title;
 Picker.Wrapper = styles.Wrapper;
 Picker.Window = styles.Window;
+Picker.Icon = styles.Icon;
 
 Picker.DisabledBlue = styles.DisabledBlue;
 Picker.DisabledOrange = styles.DisabledOrange;

@@ -23,6 +23,13 @@
   }
 }
 
+.Icon {
+  font-size: 2em;
+  filter: drop-shadow(0px 1px 6px rgba(0, 0, 0, 0.7));
+  padding-bottom: 3px;
+  width: 30px;
+}
+
 .Title {
   display: flex;
   flex-direction: column;
