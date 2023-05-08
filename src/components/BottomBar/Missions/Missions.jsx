@@ -48,7 +48,7 @@ export default function Missions({ }) {
   const [size, setSize] = React.useState({width: 350, height: window.innerHeight});
   const [displayCurrentPhase, setDisplayCurrentPhase] = React.useState(false);
   const [wholeTimeRange, setWholeTimeRange] = React.useState(
-    [new Date(missions.data.missions[0].timerange.start), new Date(missions.data.missions[0].timerange.end)]
+    [makeUtcDate(missions.data.missions[0].timerange.start), makeUtcDate(missions.data.missions[0].timerange.end)]
   );
 
   const allPhasesNested = React.useRef(null);
