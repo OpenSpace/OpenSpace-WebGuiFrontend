@@ -343,7 +343,7 @@ export default function Missions({ }) {
           className={`${popoverVisible && Picker.Active}`}
           onClick={togglePopover}
         >
-          <Icon icon={"ic:baseline-rocket-launch"} color={"white"} alt={"Missions"} style={{ fontSize: '2em' }}/>
+          <Icon className={Picker.Icon} icon={"ic:baseline-rocket-launch"} alt={"Missions"} />
         </Picker>
       </div>
       { popoverVisible && popover() }
