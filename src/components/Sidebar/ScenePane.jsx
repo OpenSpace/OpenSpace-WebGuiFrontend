@@ -2,23 +2,19 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import { ObjectWordBeginningSubstring } from '../../utils/StringMatchers';
-import {FilterList, FilterListData, FilterListFavorites, FilterListInputButton } from '../common/FilterList/FilterList';
+import {FilterList, FilterListData, FilterListFavorites } from '../common/FilterList/FilterList';
 import LoadingBlocks from '../common/LoadingBlock/LoadingBlocks';
 import Pane from './Pane';
 import ContextSection from './ContextSection';
 import PropertyOwner from './Properties/PropertyOwner';
 import Group from './Group';
 import { isPropertyOwnerHidden } from '../../utils/propertyTreeHelpers';
-import Tooltip from '../common/Tooltip/Tooltip';
-import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
-import styles from './ScenePane.scss';
 import Checkbox from '../common/Input/Checkbox/Checkbox';
-import Button from '../common/Input/Button/Button';
 import { useLocalStorageState } from '../../utils/customHooks';
+import SettingsPopup from '../common/SettingsPopup/SettingsPopup';
 
 function ScenePane({ closeCallback }) {
   const [showOnlyEnabled, setShowOnlyEnabled] = useLocalStorageState("showOnlyEnabled", false);
-  const [showSearchSettings, setShowSearchSettings] = React.useState(false);
 
   const groups = useSelector((state) => {
     const topLevelGroups = Object.keys(state.groups).filter(path => {
@@ -83,25 +79,17 @@ function ScenePane({ closeCallback }) {
   }));
 
   const settingsButton = (
-    <Button
-      onClick={() => setShowSearchSettings(current => !current)}
-      className={`${styles.settings} ${showSearchSettings && styles.settingsFocus}`}
-    >
-      <MaterialIcon icon="settings" className="small" />
-      {showSearchSettings &&
-        <Tooltip placement={'right'} className={styles.toolTip}>
-          <Checkbox
-            label="Show Only Enabled"
-            checked={showOnlyEnabled}
-            left={false}
-            disabled={false}
-            setChecked={() => setShowOnlyEnabled(current => !current)}
-            wide
-            style={{ padding : '2px'}}
-          />
-        </Tooltip>
-      }
-    </Button>
+    <SettingsPopup>
+      <Checkbox
+        label="Show Only Enabled"
+        checked={showOnlyEnabled}
+        left={false}
+        disabled={false}
+        setChecked={() => setShowOnlyEnabled(current => !current)}
+        wide
+        style={{ padding : '2px'}}
+      />
+    </SettingsPopup>
   );
 
   return (
