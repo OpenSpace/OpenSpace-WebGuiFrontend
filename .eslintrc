@@ -31,7 +31,7 @@
         "allowTemplateLiterals": true // allows `word`
       }
     ], // For consistency
-    "arrow-parens": ["error", "always"], // For consistency and to catch accidental >= operators  
+    "arrow-parens": ["error", "always"], // For consistency and to catch accidental >= operators
     "no-console": ["warn", { "allow": ["warn", "error"] }],
     "no-func-assign": "off", // Is used all the time to connect dispatch and state to props
     "operator-linebreak": ["error", "after"], // Prettier to have the operator after the line
@@ -43,10 +43,10 @@
     }],
     "indent": ["error", 2], // Indentation
     "eol-last": ["error", "always"], // End of file
-    "key-spacing": { 
+    "key-spacing": [1, {
       "mode": "strict",
       "beforeColon": false, // Make it pretty :)
       "afterColon": true // Make it pretty :)
-    }
+    }]
   }
 }
