@@ -26,7 +26,7 @@ class Popover extends Component {
   }
 
   get inheritedProps() {
-    const doNotInclude = 'title arrow closeCallback detachable attached';
+    const doNotInclude = 'title arrow closeCallback detachable attached headerButton';
     return excludeKeys(this.props, doNotInclude);
   }
 
@@ -45,6 +45,7 @@ class Popover extends Component {
             </div>
 
             <div>
+              { this.props.headerButton && this.props.headerButton }
               { this.props.detachable && (
                 <Button onClick={this.toggleDetach} transparent small>
                   <MaterialIcon icon="filter_none" />
@@ -64,7 +65,13 @@ class Popover extends Component {
   }
 
   get asWindow() {
-    return (<Window {...this.windowInheritedProps} className={`${this.styles}`}>{ this.props.children }</Window>);
+    return (
+      <Window
+        {...this.windowInheritedProps}
+        className={`${this.styles}`}
+      >
+        {this.props.children}
+      </Window>);
   }
 
   toggleDetach() {
