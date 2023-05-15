@@ -17,7 +17,7 @@ import Button from '../common/Input/Button/Button';
 import { useLocalStorageState } from '../../utils/customHooks';
 
 function ScenePane({ closeCallback }) {
-  const [showOnlyEnabled, setShowOnlyEnabled] = useLocalStorageState(false);
+  const [showOnlyEnabled, setShowOnlyEnabled] = useLocalStorageState("showOnlyEnabled", false);
   const [showSearchSettings, setShowSearchSettings] = React.useState(false);
 
   const groups = useSelector((state) => {
