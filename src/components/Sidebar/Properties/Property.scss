@@ -5,7 +5,7 @@
   margin-bottom: 3px;
 
   &:hover label {
-    color: $green;
+    color: $text-color-focus;
   }
 
   label {
@@ -17,7 +17,10 @@
   }
 }
 
-.disabled {
+.disabled > span:not(.icon) {
   pointer-events: none;
+}
+
+.disabled {
   color: darken($text-color-focus, 30%) !important;
 }

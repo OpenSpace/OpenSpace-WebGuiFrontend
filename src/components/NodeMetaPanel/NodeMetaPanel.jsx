@@ -56,17 +56,17 @@ class NodeMetaPanel extends Component {
 
   contentForTab(activeTab) {
     let uriSplit = this.props.nodeURI.split('.');
-    let identifier = uriSplit[uriSplit.length-1];
+    let identifier = uriSplit[uriSplit.length - 1];
     var description = "";
-    var docs = Object.entries(this.props.documentation);
+    var docs = this.props.documentation;
+
     var foundDoc = null;
     for (var i = 0; i < docs.length; ++i) {
-      var doc = docs[i][1];
-      if (doc.identifiers && doc.identifiers.includes("\""+identifier+"\"")) {
+      var doc = docs[i];
+      if (doc?.identifiers && doc.identifiers.includes(identifier)) {
         foundDoc = doc;
       }
     }
-
     if (!foundDoc && !this.props.description) {
       return (
         <Row>

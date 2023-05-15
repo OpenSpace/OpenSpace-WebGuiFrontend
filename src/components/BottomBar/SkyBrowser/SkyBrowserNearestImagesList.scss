@@ -1,0 +1,16 @@
+@import '../../../styles/all';
+
+.picker {
+  align-items: center;
+  display: flex;
+  width: inherit;
+  padding: 10px 14px;
+}
+
+.selected {
+  background: $ui-background-hover; // window and popup
+}
+
+.unselected {
+  background: $ui-background;
+}

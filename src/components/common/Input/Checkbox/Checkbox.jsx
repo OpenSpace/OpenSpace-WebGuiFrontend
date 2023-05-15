@@ -13,7 +13,7 @@ class Checkbox extends Component {
     if(this.props.disabled) {
       return;
     }
-    this.props.setChecked(!this.props.checked);
+    this.props.setChecked(!this.props.checked, evt);
     evt.stopPropagation();
   }
 

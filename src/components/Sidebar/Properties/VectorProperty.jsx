@@ -60,7 +60,7 @@ function VectorProperty({dispatcher, description, value}) {
     dispatcher.set(newValue);
   }
 
-  const descriptionPopup = description ? <InfoBox text={description.description} /> : ''; 
+  const descriptionPopup = description ? <InfoBox text={description.description} /> : '';
   const firstLabel = (<span onClick={copyUri}>
     { description.Name } { descriptionPopup }
   </span>);
@@ -98,7 +98,7 @@ function VectorProperty({dispatcher, description, value}) {
   }
   const refs = useContextRefs();
   return (
-    <Row ref={ el => refs.current[description.Name] = el} className={`${styles.vectorProperty} ${isDisabled ? styles.disabled : ''}`}>        
+    <Row ref={ el => refs.current[description.Identifier] = el} className={`${styles.vectorProperty} ${isDisabled ? styles.disabled : ''}`}>        
       { values.map((component, index) => (
         <NumericInput
           key={component.key}

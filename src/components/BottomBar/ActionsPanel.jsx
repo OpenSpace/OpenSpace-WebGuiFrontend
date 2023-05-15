@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React from 'react';
+import { connect, useSelector } from 'react-redux';
 import { setActionsPath, setPopoverVisibility, triggerAction } from '../../api/Actions';
 import subStateToProps from '../../utils/subStateToProps';
 import InfoBox from '../common/InfoBox/InfoBox';
@@ -11,72 +11,76 @@ import styles from './ActionsPanel.scss';
 import Picker from './Picker';
 import { FilterList, FilterListData, FilterListFavorites } from '../common/FilterList/FilterList';
 import { ObjectWordBeginningSubstring } from '../../utils/StringMatchers';
+import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
 
-class ActionsPanel extends Component {
-  constructor(props) {
-    super(props);
-    this.togglePopover = this.togglePopover.bind(this);
-    this.sendAction = this.sendAction.bind(this);
-    this.addNavPath = this.addNavPath.bind(this);
-    this.goBack = this.goBack.bind(this);
-    this.getActionContent = this.getActionContent.bind(this);
-    this.getChildrenContent = this.getChildrenContent.bind(this);
-    this.getBackButton = this.getBackButton.bind(this);
-    this.getAllActions = this.getAllActions.bind(this);
-    this.matcher = this.matcher.bind(this);
+export function ActionsButton({ action }) {
+  const luaApi = useSelector(state => state.luaApi);
+
+  function sendAction(e) {
+    const actionId = e.currentTarget.getAttribute('actionid');
+    luaApi.action.triggerAction(actionId);
+  }
+  
+  const isLocal = (action.synchronization === false);
+
+  return (
+    <Button
+      block
+      smalltext
+      onClick={sendAction}
+      className={styles.actionButton}
+      actionid={action.identifier}
+    >
+      <p className={styles.iconRow}>
+        <MaterialIcon className={styles.buttonIcon} icon="launch" />
+        {isLocal && <span className={styles.localText}> (Local)</span>}
+      </p>
+      {action.name} {' '}
+      {action.documentation && <InfoBox text={action.documentation} />}
+    </Button>
+  );
+}
+
+
+function ActionsPanel ({
+  actionLevel,
+  actionPath,
+  allActions,
+  displayedNavigationPath,
+  navigationPath,
+  popoverVisible,
+  setPopoverVisibility,
+  singlewindow,
+}) {
+  function togglePopover() {
+    setPopoverVisibility(!popoverVisible);
   }
 
-  togglePopover() {
-    this.props.setPopoverVisibility(!this.props.popoverVisible);
-  }
-
-  addNavPath(e) {
-    let navString = this.props.navigationPath;
-    if (this.props.navigationPath == '/') {
+  function addNavPath(e) {
+    let navString = navigationPath;
+    if (navigationPath == '/') {
       navString += e.currentTarget.getAttribute('foldername');
     } else {
       navString += `/${e.currentTarget.getAttribute('foldername')}`;
     }
-    this.props.actionPath(navString);
+    actionPath(navString);
   }
 
-  goBack(e) {
-    let navString = this.props.navigationPath;
+  function goBack(e) {
+    let navString = navigationPath;
     navString = navString.substring(0, navString.lastIndexOf('/'));
     if (navString.length == 0) {
       navString = '/';
     }
-    this.props.actionPath(navString);
+    actionPath(navString);
   }
 
-  sendAction(e) {
-    const actionId = e.currentTarget.getAttribute('actionid');
-    this.props.luaApi.action.triggerAction(actionId);
-  }
-
-  getActionContent(level) {
-    return level.actions.map((action) => (
+  function folderButton(key) {
+    return (
       <Button
         block
         smalltext
-        onClick={this.sendAction}
-        key={action.identifier}
-        className={styles.actionButton}
-        actionid={action.identifier}
-      >
-        <p><MaterialIcon className={styles.buttonIcon} icon="launch" /></p>
-        {action.name}
-        <InfoBox inpanel panelscroll="actionscroller" text={action.documentation} />
-      </Button>
-    ));
-  }
-
-  getChildrenContent(level) {
-    return Object.keys(level.children).map((key) => (
-      <Button
-        block
-        smalltext
-        onClick={this.addNavPath}
+        onClick={addNavPath}
         key={key}
         foldername={key}
         className={`${styles.actionButton} ${styles.folderButton}`}
@@ -84,161 +88,110 @@ class ActionsPanel extends Component {
         <p><MaterialIcon className={styles.buttonIcon} icon="folder" /></p>
         {key}
       </Button>
-    ));
+    );
   }
 
-  getAllActions() {
-    return this.props.allActions.map((action) => (
-      <Button
-        block
-        smalltext
-        onClick={this.sendAction}
-        key={`${action.identifier}Filtered`}
-        className={styles.actionButton}
-        actionid={action.identifier}
-        name={action.name}
-      >
-        <p><MaterialIcon className={styles.buttonIcon} icon="launch" /></p>
-        {action.name}
-      </Button>
-    ));
+  function getChildrenContent(level) {
+    return Object.keys(level.children).sort().map((key) => folderButton(key));
   }
 
-  getBackButton() {
-    if (this.props.navigationPath != '/') {
-      return <Button block smalltext className={styles.backButton} onClick={this.goBack} key="backbtn">&lt;- Back</Button>;
+  function getActionContent(level) {
+    return level.actions.map((action) => <ActionsButton action={action} key={`${action.identifier}Action`} />);
+  }
+
+  function getAllActions() {
+    return allActions.map((action) => <ActionsButton action={action} key={`${action.identifier}Filtered`} />);
+  }
+
+  function getBackButton() {
+    if (navigationPath !== '/') {
+      return (
+        <Button block className={styles.backButton} onClick={goBack} key="backbtn">
+          <MaterialIcon className={styles.buttonIcon} icon="arrow_back" />
+        </Button>
+      );
     }
   }
 
-  matcher(test, search) {
-    return ObjectWordBeginningSubstring(test.children, search);
+  function matcher(test, search) {
+    return ObjectWordBeginningSubstring(test.action, search);
   }
 
-  get windowContent() {
-    const level = this.props.actionLevel;
-
-    if (level == undefined) {
-      return <div>Loading</div>;
+  function actionsContent(filterListHeight) {
+    if (actionLevel === undefined) {
+      return <CenteredLabel>{"Loading..."}</CenteredLabel>;
     }
-    const actionsContent = this.getActionContent(level);
-    const childrenContent = this.getChildrenContent(level);
-    const backButton = this.getBackButton();
-    const navPathString = this.props.navigationPath;
-    
+    const isEmpty = (actionLevel.length === 0);
+    const actionsContent = isEmpty ? <div>No Actions</div> : getActionContent(actionLevel);
+    const childrenContent = isEmpty ? <div>No Children</div> : getChildrenContent(actionLevel);
+    const backButton = getBackButton();
+
     return (
-      <div id="actionscroller" className={`${styles.windowContainer}`}>
+      <>
         <hr className={Popover.styles.delimiter} />
-          <Row>
-            <div className={Popover.styles.title}>
-              {navPathString}
-              {' '}
-            </div>
-          </Row>
+        <Row className={styles.navPathRow}>
+          {backButton}
+          <div className={styles.navPathTitle}>
+            {`${displayedNavigationPath}`}
+          </div>
+        </Row>
         <hr className={Popover.styles.delimiter} />
-        {backButton}
-        <FilterList matcher={this.matcher} height={'80%'}>
+        <FilterList matcher={matcher} height={filterListHeight}>
           <FilterListFavorites className={styles.Grid}>
-            {actionsContent}
             {childrenContent}
+            {actionsContent}
           </FilterListFavorites>
           <FilterListData className={styles.Grid}>
-            {this.getAllActions()}
+            {getAllActions()}
           </FilterListData>
         </FilterList>
+      </>
+    );
+  }
+
+  function windowContent() {
+    const height = '80%';
+    return (
+      <div id="actionscroller" className={`${styles.windowContainer}`}>
+        {actionLevel ? actionsContent(height) : <div>Loading...</div> }
       </div>
     );
   }
 
-  get popover() {
-    let actionsContent;
-    let childrenContent;
-    let backButton;
-    let keybindsContent;
-
-    if (this.props.actionLevel.length == 0) {
-      actionsContent = <div>No Actions</div>;
-      childrenContent = <div>No Children</div>;
-    } else {
-      const level = this.props.actionLevel;
-      actionsContent = this.getActionContent(level);
-      childrenContent = this.getChildrenContent(level);
-      backButton = this.getBackButton();
-    }
-
-    const navPathString = this.props.navigationPath;
-
-    if (navPathString == '/') {
-      keybindsContent = (
-        <Button
-          block
-          smalltext
-          onClick={this.props.toggleKeybinds}
-          key="showKeybinds"
-          className={styles.actionButton}
-        >
-          <p><MaterialIcon className={styles.buttonIcon} icon="launch" /></p>
-          Show Keybindings
-          <InfoBox inpanel panelscroll="actionscroller" text="Shows the keybinding vieiwer" />
-        </Button>
-      );
-    }
-
+  function popover() {
+    const height = '310px'; // A bit ugly, but makes filterlist size correctly
     return (
       <Popover
         className={`${Picker.Popover} ${styles.actionsPanel}`}
         title="Actions"
-        closeCallback={this.togglePopover}
+        closeCallback={togglePopover}
         detachable
         attached
       >
         <div id="actionscroller" className={`${Popover.styles.content}`}>
-          <hr className={Popover.styles.delimiter} />
-          <Row>
-            {backButton}
-            <div style={{ whiteSpace: 'nowrap' }} className={Popover.styles.title}>
-              {navPathString}
-              {' '}
-            </div>
-          </Row>
-          <hr className={Popover.styles.delimiter} />
-          <FilterList matcher={this.matcher} height={backButton ? '280px' : '320px'}>
-            <FilterListFavorites className={styles.Grid}>
-              {actionsContent}
-              {childrenContent}
-              {keybindsContent}
-            </FilterListFavorites>
-            <FilterListData className={styles.Grid}>
-              {this.getAllActions()}
-              {keybindsContent}
-            </FilterListData>
-          </FilterList>
+          {actionsContent(height)}
         </div>
       </Popover>
     );
   }
 
-  render() {
-    const {
-      popoverVisible, actionLevel, navigationPath, singlewindow,
-    } = this.props;
-    if (singlewindow) {
-      return (this.windowContent);
-    }
-    return (
-      <div className={Picker.Wrapper}>
-        <Picker
-          refKey="Actions"
-          className={`${popoverVisible && Picker.Active}`}
-          onClick={this.togglePopover}
-        >
-          <div>
-            <MaterialIcon className={styles.bottomBarIcon} icon="dashboard" />
-          </div>
-        </Picker>
-        { popoverVisible && this.popover }
-      </div>
-    );
+  if (singlewindow) {
+    return windowContent();
   }
+  return (
+    <div className={Picker.Wrapper}>
+      <Picker
+        refKey="Actions"
+        className={`${popoverVisible && Picker.Active}`}
+        onClick={togglePopover}
+      >
+        <div>
+          <MaterialIcon className={styles.bottomBarIcon} icon="dashboard" />
+        </div>
+      </Picker>
+      { popoverVisible && popover() }
+    </div>
+  );
 }
 
 const mapSubStateToProps = ({ popoverVisible, luaApi, actions }) => {
@@ -249,6 +202,7 @@ const mapSubStateToProps = ({ popoverVisible, luaApi, actions }) => {
       popoverVisible,
       luaApi,
       navigationPath: '/',
+      displayedNavigationPath: '/'
     };
   }
 
@@ -257,9 +211,26 @@ const mapSubStateToProps = ({ popoverVisible, luaApi, actions }) => {
     if (action.key) {
       continue;
     }
-    var splits = action.guiPath.split('/');
-    splits.shift();
+
+    // If there is no backslash at beginning of GUI path, add that manually
+    // (there should always be though)
+    if (action.guiPath.length > 0 && action.guiPath[0] !== '/') {
+      action.guiPath = '/' + action.guiPath;
+    }
+
+    let splits = action.guiPath.split('/');
+    // Remove all empty strings: which is what we get before initial slash and
+    // if the path is just a slash
+    splits = splits.filter((s) => s !== "");
+
     let parent = actionsMapped['/'];
+
+    // Add to top level actions (no gui path)
+    if (splits.length == 0) {
+      parent.actions.push(action);
+    }
+
+    // Add actions of other levels
     while (splits.length > 0) {
       var index = splits.shift();
       if (parent.children[index] == undefined) {
@@ -285,7 +256,7 @@ const mapSubStateToProps = ({ popoverVisible, luaApi, actions }) => {
   }
 
   const allActions = actions.data.shortcuts.filter(action => {
-    if (navPath.length === 1) { 
+    if (navPath.length === 1) {
       return true;
     }
     else {
@@ -299,12 +270,32 @@ const mapSubStateToProps = ({ popoverVisible, luaApi, actions }) => {
       return true;
     }
   });
-  
+
+  // Truncate navigation path if too long
+  const NAVPATH_LENGTH_LIMIT = 60;
+  const shouldTruncate = actions.navigationPath.length > NAVPATH_LENGTH_LIMIT;
+
+  let truncatedPath = actions.navigationPath;
+  if (shouldTruncate) {
+    let originalPath = navPath;
+    if (originalPath[0] === '/') {
+      originalPath = originalPath.substring(1);
+    }
+    let pieces = originalPath.split('/');
+    if (pieces.length > 1) {
+      // TODO: maybe keep more pieces of the path, if possible?
+      truncatedPath = `/${pieces[0]}/.../${pieces[pieces.length - 1]}`;
+    } else {
+      truncatedPath = navPath.substring(0, NAVPATH_LENGTH_LIMIT);
+    }
+  }
+
   return {
     actionLevel: actionsForPath,
     popoverVisible,
     luaApi,
     navigationPath: actions.navigationPath,
+    displayedNavigationPath: truncatedPath,
     allActions: allActions,
   };
 };
@@ -327,12 +318,6 @@ const mapDispatchToProps = (dispatch) => ({
   },
   actionPath: (action) => {
     dispatch(setActionsPath(action));
-  },
-  toggleKeybinds: (action) => {
-    dispatch(setPopoverVisibility({
-      popover: 'keybinds',
-      visible: true,
-    }));
   },
 });
 

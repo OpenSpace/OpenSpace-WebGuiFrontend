@@ -34,6 +34,10 @@ export const actionTypes = {
   getVersion: 'VERSION_GET',
   initializeVersion: 'VERSION_INITIALIZE',
 
+ // action types for missions
+  getMissions: 'MISSIONS_GET',
+  initializeMissions: 'MISSIONS_INITIALIZE',
+
   // action types for documentation
   getDocumentation: 'DOCUMENTATION_GET',
   initializeDocumentation: 'DOCUMENTATION_INITIALIZE',

@@ -51,7 +51,7 @@
         "uriValue" : "Moon",
         "title" : "Navigation",
         "key": ["Origin", "Moon"],
-        "firstText" : "We can also look at other planets.",
+        "firstText" : "We can also look at other celestial objects.",
         "goalText" : ["Set the navigation focus to the Moon"],
         "arrowPosition" : { "x" : 320, "y" : 70},
         "arrowRotation" : "down"
@@ -98,7 +98,7 @@
     {
         "goalType" : ["changeDeltaTime"],
         "title" : "Time",
-        "key" : ["Time", "SimulationSpeed"],
+        "key" : ["Time", ["SpeedForward", "SpeedBackward"]],
         "firstText" : "You can also change how fast time is playing.",
         "infoText" : "You can reset the simulation speed by pressing 'Real Time'",
         "goalText" : ["Change the simulation speed"],
@@ -141,7 +141,7 @@
         "goalType" : ["changeUri"],
         "uri" : "Scene.MarsTrail.Renderable.Appearance.Color",
         "title" : "Content",
-        "key": ["Scene", "Group Solar System", "Group Planets", "Group Mars", "PropertyOwner Mars Trail", "PropertyOwner Renderable", "PropertyOwner Appearance", "Color"],
+        "key": ["Scene", "Group Solar System", "Group Planets", "Group Mars", "PropertyOwner Mars Trail", "PropertyOwner Renderable MarsTrail", "PropertyOwner Appearance MarsTrail", "Scene.MarsTrail.Renderable.Appearance.Color"],
         "firstText" : "All objects have properties, which makes it possible to alter the behaviour or appearance of an object.",
         "goalText" : ["Change the color of the trail of Mars"],
         "arrowPosition" : { "x" : 50, "y" : 70},
@@ -163,17 +163,17 @@
     {
         "title" : "Content",
         "firstText" : "Planets can have multiple maps which show different data. Planets also have height maps, which show elevation. Different maps can have different resolutions.",
-        "infoText" : "All the default layers in OpenSpace are named after the satellite that captured the map. The name [Utah] or [Sweden] states which server the map is located on. It is usually faster to choose the server closest to you."
+        "infoText" : "All the default layers in OpenSpace are usually named after the satellite or an instrument on a satellite that captured the map. The name [Utah] or [Sweden] states on which server the map is located. It is usually faster to choose the server closest to you."
     },
     {
-        "goalType" : ["uri"],
-        "uri" : "Scene.Mars.Renderable.Layers.ColorLayers.CTX_Mosaic_Utah.Enabled",
+        "goalType" : ["multiUri"],
+        "uri" : ["Scene.Mars.Renderable.Layers.ColorLayers.CTX_Mosaic_Utah.Enabled", "Scene.Mars.Renderable.Layers.ColorLayers.CTX_Mosaic_Sweden.Enabled"],
         "uriValue" : true,
         "title" : "Content",
         "firstText" : "The layers are ordered, and the layer furthest down in the menu is shown at the top.",
         "infoText" : "You need access to the internet to display the maps. They might need a few seconds to load.",
-        "key": ["Scene", "Group Solar System", "Group Planets", "Group Mars", "PropertyOwner Mars", "PropertyOwner Renderable", "PropertyOwner Layers", "PropertyOwner ColorLayers", "PropertyOwner CTX Mosaic [Utah]"],
-        "goalText" : ["Turn on the ColorLayer 'CTX Mosaic [Utah]'"],
+        "key": ["Scene", "Group Solar System", "Group Planets", "Group Mars", "PropertyOwner Mars", "PropertyOwner Renderable Mars", "PropertyOwner Layers Mars", "PropertyOwner ColorLayers Mars", ["PropertyOwner CTX Mosaic [Utah] Mars", "PropertyOwner CTX Mosaic [Sweden] Mars"]],
+        "goalText" : ["Turn on the ColorLayer 'CTX Mosaic [Utah]' or 'CTX Mosaic [Sweden]"],
         "arrowPosition" : { "x" : 50, "y" : 70},
         "arrowRotation" : "down"
     },
@@ -193,6 +193,11 @@
         "title" : "Content",
         "key" : ["SessionRecording"],
         "firstText" : "If you want to record an OpenSpace session, you can use the Session Recording."
+    },
+    {
+        "title" : "Content",
+        "key" : ["GeoLocationPanel"],
+        "firstText" : "If you want to search for places on a globe, you can use the Geo Location."
     },
     {
         "title" : "Content",

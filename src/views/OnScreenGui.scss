@@ -28,4 +28,11 @@
   color: black;
   text-transform: capitalize;
   font-size: small;
+  opacity: 1;
+}
+
+/* Make it disappear on hover when onscreen, to prevent conflict with mouse
+   interaction when navigating */
+.devModeTextBox:hover {
+  opacity: 0;
 }

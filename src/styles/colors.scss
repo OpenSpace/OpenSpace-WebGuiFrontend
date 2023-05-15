@@ -1,6 +1,6 @@
 // color definitions
 $dark-grey: #181818;
-$green: #D9DA6D;
+$yellow: #ebd972;
 $blue: #3DBDEE;
 $red: #FF4136;
 $orange: #FF851B;
@@ -15,11 +15,9 @@ $ui-background-slider-input: rgba(white, 0.1);
 
 $ui-danger: $red;
 $ui-warning: $orange;
+$ui-highlight-secondary: $blue;
 
 $ui-divider: darken($ui-background, 1%);
-
-$ui-highlight-primary: $green;
-$ui-highlight-secondary: $blue;
 
 $text-color-focus: white;
 $text-color-blur: darken($text-color-focus, 40%);

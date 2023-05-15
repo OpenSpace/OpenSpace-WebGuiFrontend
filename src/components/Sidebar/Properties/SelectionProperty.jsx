@@ -98,8 +98,6 @@ class SelectionProperty extends Component {
       </span>
     )
 
-      console.log(this.disabled);
-
     return (
       <ToggleContent
         title={label}
@@ -115,7 +113,7 @@ class SelectionProperty extends Component {
                 key={opt}
                 label={opt}
                 checked={this.isSelected(opt)}
-                setChecked={(checked) => { this.onCheckboxChange(checked, opt); }}
+                setChecked={(checked, event) => { this.onCheckboxChange(checked, opt); }}
                 disabled={this.disabled}
               />
             )

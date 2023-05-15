@@ -14,6 +14,7 @@ import { sessionRecording } from './sessionRecording';
 import { local } from './local';
 import { luaApi } from './luaApi';
 import { camera } from './camera';
+import { missions } from './missions';
 
 // Add more reducers here
 const openspaceApp = (state = {}, action) => {
@@ -36,6 +37,7 @@ const openspaceApp = (state = {}, action) => {
     fetchData: fetchData(state.fetchData, action),
     storyTree: storyTree(state.storyTree, action),
     version: version(state.version, action),
+    missions: missions(state.missions, action),
   };
 };
 

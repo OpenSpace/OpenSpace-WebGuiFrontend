@@ -1,126 +1,46 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import Button from '../../common/Input/Button/Button';
-import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
 import SkyBrowserInfoBox from './SkyBrowserInfoBox';
-import styles from './SkyBrowserFocusEntry.scss';
+import styles from './SkyBrowserEntry.scss';
+import { LazyLoadImage } from "react-lazy-load-image-component";
 
-class OpacitySlider extends Component {
-  constructor(props) {
-    super(props);
-    this.handleChange = this.handleChange.bind(this);
-  }
-
-  handleChange(e) {
-    // Ensure the image has an id, which consists of the index of the image
-    const index = Number(this.props.identifier);
-    const opacity = event.target.value / 100;
-    if (index) {
-      this.props.setOpacity(index, opacity);
-    }
-    if (!e) var e = window.event;
-    e.cancelBubble = true;
-    if (e.stopPropagation) e.stopPropagation();
-  }
-
-  render() {
-    const { opacity } = this.props;
-    return (
-      <div className={styles.slidecontainer}>
-        <input
-          type="range"
-          min="0"
-          max="100"
-          value={opacity * 100}
-          className={styles.slider}
-          onChange={this.handleChange}
-        />
-        {' '}
-      </div>
-    );
-  }
-}
-
-class SkyBrowserFocusEntry extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      showButtonInfo: false,
-    };
-    this.select = this.select.bind(this);
-    this.showTooltip = this.showTooltip.bind(this);
-    this.hideTooltip = this.hideTooltip.bind(this);
-  }
-
-  get isActive() {
-    const { active, identifier } = this.props;
-    return identifier === active;
-  }
-
-  get isTabEntry() {
-    return !!this.props.setOpacity;
-  }
-
-  select(e) {
-    const { identifier, onSelect } = this.props;
+function SkyBrowserFocusEntry({
+  credits,
+  creditsUrl,
+  currentBrowserColor,
+  dec,
+  fov,
+  hasCelestialCoords,
+  identifier,
+  isActive,
+  luaApi,
+  moveCircleToHoverImage,
+  name,
+  onSelect,
+  ra,
+  thumbnail,
+  style
+}) {
+  
+  function select(e) {
     if (onSelect && identifier) {
       onSelect(identifier);
     }
-    if (!e) var e = window.event;
-    e.cancelBubble = true;
-    if (e.stopPropagation) e.stopPropagation();
   }
 
-  showTooltip() {
-    this.setState({ showButtonInfo: !this.state.showButtonInfo });
-  }
-
-  hideTooltip() {
-    this.setState({ showButtonInfo: false });
-  }
-
-  render() {
-    const {
-      name, identifier, thumbnail, credits, creditsUrl, ra, dec, fov, hasCelestialCoords,
-      luaApi, setOpacity, removeImageSelection, currentBrowserColor, opacity } = this.props;
-    const skySurveyTag = !hasCelestialCoords ? <span className={styles.skySurvey}>
-        Sky Survey
-    </span> : "";
-
-    const imageRemoveButton = removeImageSelection && (
-      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        {skySurveyTag}
-        <Button
-          onClick={(e) => {
-            if (!e) var e = window.event;
-            e.cancelBubble = true;
-            if (e.stopPropagation) e.stopPropagation();
-            removeImageSelection(identifier);
-          }}
-          className={styles.removeImageButton}
-          transparent
-          small
-        >
-          <MaterialIcon icon="close" className="small" />
-        </Button>
-      </div>
-    );
-
-    const opacitySlider = setOpacity ? <OpacitySlider setOpacity={setOpacity} opacity={opacity} identifier={identifier} /> : '';
-    return (
+  return (
       <li
-        className={`${styles.entry} ${this.isTabEntry && styles.tabEntry} ${this.isActive && styles.active}`}
-        style={{ borderLeftColor: currentBrowserColor() }}
-        onMouseOver={() => { luaApi.skybrowser.moveCircleToHoverImage(Number(identifier)); }}
+        className={`${styles.entry} ${isActive && styles.active}`}
+        style={{ borderLeftColor: currentBrowserColor(), ...style }}
+        onMouseOver={() => { moveCircleToHoverImage(identifier) }}
         onMouseOut={() => { luaApi.skybrowser.disableHoverCircle(); }}
-        onClick={setOpacity ? undefined : this.select}
+        onClick={select}
       >
-        {imageRemoveButton}
         <div className={styles.image}>
-          <img src={thumbnail} alt={''} loading='lazy' className={styles.imageText} onClick={setOpacity ? this.select : undefined}/>
+          <LazyLoadImage src={thumbnail} alt={''} className={styles.imageText} />
         </div>
         <div className={styles.imageHeader}>
-          <span className={styles.imageTitle}>
+          <span className={styles.imageTitle} style={{ width: '80px' }}>
             { name || identifier }
           </span>
           <SkyBrowserInfoBox
@@ -130,26 +50,37 @@ class SkyBrowserFocusEntry extends Component {
             ra={ra}
             dec={dec}
             fov={fov}
-            isTabEntry={this.isTabEntry}
             hasCelestialCoords={hasCelestialCoords}
           />
         </div>
-        {opacitySlider}
-        {!setOpacity && skySurveyTag}
+        {!hasCelestialCoords && (
+          <span className={styles.skySurvey}>
+            Sky Survey
+          </span>
+        )}
       </li>
     );
-  }
 }
 
 SkyBrowserFocusEntry.propTypes = {
+  credits: PropTypes.string,
+  creditsUrl: PropTypes.string,
+  currentBrowserColor: PropTypes.func,
+  dec: PropTypes.number,
+  fov: PropTypes.number,
+  hasCelestialCoords: PropTypes.bool,
   identifier: PropTypes.string.isRequired,
+  isActive: PropTypes.bool,
+  luaApi: PropTypes.object,
   name: PropTypes.string,
   onSelect: PropTypes.func,
-  active: PropTypes.string,
+  ra: PropTypes.number,
+  thumbnail: PropTypes.string,
+  moveCircleToHoverImage: PropTypes.func,
 };
 
 SkyBrowserFocusEntry.defaultProps = {
-  active: '',
+  isActive: false,
   onSelect: null,
 };
 

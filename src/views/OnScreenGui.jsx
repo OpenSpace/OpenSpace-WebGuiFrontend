@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { setShowAbout, startConnection } from '../api/Actions';
 import {
@@ -23,24 +23,32 @@ import TourPopup from '../components/GettingStartedTour/TourPopup'
 import { RefsProvider } from '../components/GettingStartedTour/GettingStartedContext';
 
 function OnScreenGui({
-  showFlightController, connectionLost, startConnection, version, showAbout, hideAbout, isInBrowser
+  showFlightController, showAbout, isInBrowser
 }) {
   let hasCheckedVersion = false;
   const location = useLocation();
   const [showTutorial, setShowTutorial] = React.useState(false);
   const [luaConsoleVisible, setLuaConsoleVisible] = React.useState(false);
 
+  const connectionLost = useSelector((state) => state.connection.connectionLost);
+  const version = useSelector((state) => state.version);
+
+  const dispatch = useDispatch();
+
   React.useEffect(() => {
-    startConnection();
+    dispatch(startConnection());
     window.addEventListener("keydown", toggleConsole);
     return () => window.removeEventListener('keydown', toggleConsole);
   }, []);
 
+  function hideAbout() {
+    dispatch(setShowAbout(false));
+  }
  
   function toggleConsole(e) {
-      if(e.code === "Backquote") {
-        setLuaConsoleVisible(!luaConsoleVisible);
-      }
+    if (e.code === "Backquote") {
+      setLuaConsoleVisible(current => !current);
+    }
   }
 
   // Check the version
@@ -114,25 +122,5 @@ function OnScreenGui({
   );  
 
 }
-
-const mapStateToProps = (state) => ({
-  connectionLost: state.connection.connectionLost,
-  version: state.version,
-  showAbout: state.local.showAbout,
-});
-
-const mapDispatchToProps = (dispatch) => ({
-  startConnection: () => {
-    dispatch(startConnection());
-  },
-  hideAbout: () => {
-    dispatch(setShowAbout(false));
-  },
-});
-
-OnScreenGui = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(OnScreenGui);
 
 export default OnScreenGui;

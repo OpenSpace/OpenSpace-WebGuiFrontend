@@ -19,6 +19,7 @@ import subStateToProps from '../../utils/subStateToProps';
 import Button from '../common/Input/Button/Button';
 import Checkbox from '../common/Input/Checkbox/Checkbox';
 import Input from '../common/Input/Input/Input';
+import InfoBox from '../common/InfoBox/InfoBox';
 import Select from '../common/Input/Select/Select';
 import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import Popover from '../common/Popover/Popover';
@@ -213,13 +214,20 @@ class SessionRec extends Component {
             label="Loop playback"
             setChecked={this.setLoopPlayback}
           />
-          <Row>
+          <Row className={styles.lastRow}>
             <Checkbox
               checked={shouldOutputFrames}
               name="outputFramesInput"
               label="Output frames"
               className={styles.fpsCheckbox}
               setChecked={this.setShouldOutputFrames}
+            />
+            <InfoBox
+              className={styles.infoBox}
+              text={`If checked, the specified number of frames will be recorded as screenshots and
+                saved to disk. Per default, they are saved in the user/screenshots folder. 
+                This feature can not be used together with 'loop playback'`
+              }
             />
             { shouldOutputFrames && (
               <Input
@@ -321,15 +329,15 @@ class SessionRec extends Component {
       forceTime, shouldOutputFrames, outputFramerate, loopPlayback);
   }
 
-  setUseTextFormat(useTextFormat) {
+  setUseTextFormat(useTextFormat, event) {
     this.setState({ useTextFormat });
   }
 
-  setForceTiming(forceTime) {
+  setForceTiming(forceTime, event) {
     this.setState({ forceTime });
   }
 
-  setLoopPlayback(loopPlayback) {
+  setLoopPlayback(loopPlayback, event) {
     if (loopPlayback) {
       this.setState({ loopPlayback: true, shouldOutputFrames: false });
     } else {
@@ -337,7 +345,7 @@ class SessionRec extends Component {
     }
   }
 
-  setShouldOutputFrames(shouldOutputFrames) {
+  setShouldOutputFrames(shouldOutputFrames, event) {
     if (shouldOutputFrames) {
       this.setState({ loopPlayback: false, shouldOutputFrames: true });
     } else {

@@ -23,14 +23,9 @@ class InfoBox extends Component {
 
   get position() {
     if (!this.wrapper) return { top: '0px', left: '0px' };
-    if (this.props.inpanel) {
-      var scrollParent = document.getElementById(this.props.panelscroll);
-      var buttonScroll = scrollParent.scrollTop;
-      var rect = this.wrapper.getBoundingClientRect();
-      return { top: `${this.wrapper.offsetTop - buttonScroll}px`, left: `${this.wrapper.offsetLeft + rect.width}px` };
-    } else {
+    else {
       const { top, right } = this.wrapper.getBoundingClientRect();
-      return { position: "fixed", top: `${top}px`, left: `${right}px` };
+      return { top: `${top}px`, left: `${right}px` };
     }
   }
 
@@ -45,7 +40,7 @@ class InfoBox extends Component {
   render() {
     const { icon, text } = this.props;
     const { showPopup } = this.state;
-    const passOnProps = excludeKeys(this.props, 'inpanel icon text'); 
+    const passOnProps = excludeKeys(this.props, 'icon text'); 
     return (
       <span
         ref={this.setRef('wrapper')}
@@ -67,7 +62,7 @@ class InfoBox extends Component {
 
 InfoBox.propTypes = {
   icon: PropTypes.string,
-  text: PropTypes.string.isRequired,
+  text: PropTypes.node.isRequired, // should be text or html object
 };
 
 InfoBox.defaultProps = {

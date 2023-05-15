@@ -22,7 +22,7 @@ function MultiStateToggle({labels, checked, setChecked, infoText}) {
   return (
     <div className={styles.wrapper}>
       <p className={`${styles.toggleTitle} ${styles.resultsTitle}`} id={'multiStateToggle'}>Mode</p>
-      <InfoBox inpanel panelscroll={'multiStateToggle'} text={infoText} style={{ paddingTop: '3px', paddingRight: '3px' }} />
+      <InfoBox panelscroll={'multiStateToggle'} text={infoText} style={{ paddingTop: '3px', paddingRight: '3px' }} />
       <div className={styles.toggles}>
       {labels.map(label => 
         <React.Fragment key={`${label}fragment`}>
@@ -105,7 +105,8 @@ function GeoPositionPanel({ refresh, luaApi, popoverVisible, setPopoverVisibilit
       setPlaces([]);
       return;
     }
-    const searchString = inputValue.replaceAll(" ", "%");
+    const searchString = inputValue.replaceAll(" ", "+");
+
     fetch(`https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?SingleLine=${searchString}&category=&outFields=*&forStorage=false&f=json`)
         .then(response => response.json())
         .then(json => {
@@ -154,16 +155,18 @@ function GeoPositionPanel({ refresh, luaApi, popoverVisible, setPopoverVisibilit
           break;
         }
         pushSceneGraphNode(address);
-        let addressString = "";
+        let addressUtf8 = "";
         for (let i = 0; i < address.length; i++) {
             if (address.charCodeAt(i) <= 127) {
-                addressString += address.charAt(i);
+                addressUtf8 += address.charAt(i);
             }
         }
-        luaApi?.addSceneGraphNode(createSceneGraphNodeTable(currentAnchor, addressString, lat, long, altitude));
+        addressUtf8 = addressUtf8.replaceAll(" ", "_");
+        addressUtf8 = addressUtf8.replaceAll(",", "");
+        luaApi?.addSceneGraphNode(createSceneGraphNodeTable(currentAnchor, addressUtf8, lat, long, altitude));
         // TODO: Once we have a proper way to subscribe to additions and removals
         // of property owners, this 'hard' refresh should be removed.
-        setTimeout(() => refresh());
+        setTimeout(() => refresh(), 300);
         break;
       }
       default: {
@@ -306,11 +309,10 @@ function GeoPositionPanel({ refresh, luaApi, popoverVisible, setPopoverVisibilit
     <div className={Picker.Wrapper}>
       <Picker
         className={`${popoverVisible && Picker.Active}`}
-        onClick={() => togglePopover() }
+        onClick={() => togglePopover()}
+        refKey={"GeoLocationPanel"}
       >
-        <div style={{height: '100%'}}>
-          <Icon style={{height : '100%', width: '30px'}} icon="entypo:location-pin" />
-        </div>
+        <Icon className={Picker.Icon} icon={"entypo:location-pin"} />
       </Picker>
       { popoverVisible && popover() }
     </div>

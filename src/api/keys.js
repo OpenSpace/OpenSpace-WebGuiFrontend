@@ -74,6 +74,10 @@ export const SkyBrowser_HideTargetsBrowsersWithGuiKey = 'Modules.SkyBrowser.Hide
 export const SkyBrowser_InverseZoomDirectionKey = 'Modules.SkyBrowser.InverseZoomDirection';
 export const SkyBrowser_SpaceCraftAnimationTimeKey = 'Modules.SkyBrowser.SpaceCraftAnimationTime';
 
+// OpenSpace engine
+export const Engine_PropertyVisibilityKey = 'OpenSpaceEngine.PropertyVisibility';
+export const Engine_FadeDurationKey = 'OpenSpaceEngine.FadeDuration';
+
 // renderableTypes
 export const RenderableTypes = {
   // RenderableAtmosphere: "RenderableAtmosphere",
