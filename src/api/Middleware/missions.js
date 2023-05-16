@@ -13,7 +13,7 @@ const getMissions = async (callback) => {
   missionsTopic.cancel();
 };
 
-export const missions = (store) => (next) => (action) => {
+const missions = (store) => (next) => (action) => {
   const result = next(action);
   switch (action.type) {
   case actionTypes.onOpenConnection:
@@ -26,3 +26,4 @@ export const missions = (store) => (next) => (action) => {
   }
   return result;
 };
+export default missions;

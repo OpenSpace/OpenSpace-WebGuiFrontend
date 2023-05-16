@@ -24,7 +24,7 @@ const removeSystem = async (data, callback) => {
   callback();
 };
 
-export const exoplanets = (store) => (next) => (action) => {
+const exoplanets = (store) => (next) => (action) => {
   const result = next(action);
   switch (action.type) {
   case actionTypes.loadExoplanetsData:
@@ -40,3 +40,4 @@ export const exoplanets = (store) => (next) => (action) => {
   }
   return result;
 };
+export default exoplanets;

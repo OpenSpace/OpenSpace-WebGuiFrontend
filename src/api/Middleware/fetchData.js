@@ -14,7 +14,7 @@ const fetchingInfo = (dispatch, id) => {
     });
 };
 
-export const fetchData = (store) => (next) => (action) => {
+const fetchData = (store) => (next) => (action) => {
   const result = next(action);
   switch (action.type) {
   case actionTypes.fetchData:
@@ -25,3 +25,4 @@ export const fetchData = (store) => (next) => (action) => {
   }
   return result;
 };
+export default fetchData;

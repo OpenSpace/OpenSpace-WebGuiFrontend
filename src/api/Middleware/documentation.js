@@ -11,7 +11,7 @@ const getDocumentation = async (callback) => {
   callback(documentation);
 };
 
-export const documentation = (store) => (next) => (action) => {
+const documentation = (store) => (next) => (action) => {
   const result = next(action);
   switch (action.type) {
   case actionTypes.onOpenConnection:
@@ -24,3 +24,4 @@ export const documentation = (store) => (next) => (action) => {
   }
   return result;
 };
+export default documentation;

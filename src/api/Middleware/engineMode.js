@@ -45,7 +45,7 @@ const refresh = () => {
   }
 };
 
-export const engineMode = (store) => (next) => (action) => {
+const engineMode = (store) => (next) => (action) => {
   const result = next(action);
   const state = store.getState();
 
@@ -78,3 +78,4 @@ export const engineMode = (store) => (next) => (action) => {
   }
   return result;
 };
+export default engineMode;

@@ -20,7 +20,6 @@ function tearDownSubscription() {
 }
 
 async function setupSubscription(store) {
-  console.log('Set up camera subscription');
   cameraTopic = api.startTopic('camera', {
     event: 'start_subscription'
   });
@@ -29,7 +28,7 @@ async function setupSubscription(store) {
   }
 }
 
-export const camera = (store) => (next) => (action) => {
+const camera = (store) => (next) => (action) => {
   const result = next(action);
   const state = store.getState();
   switch (action.type) {

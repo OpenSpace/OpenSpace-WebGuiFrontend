@@ -29,7 +29,7 @@ function tearDownSubscription() {
   timeTopic.cancel();
 }
 
-export const time = (store) => (next) => (action) => {
+const time = (store) => (next) => (action) => {
   const result = next(action);
   const state = store.getState();
   switch (action.type) {

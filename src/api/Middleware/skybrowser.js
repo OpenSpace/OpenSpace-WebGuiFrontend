@@ -60,7 +60,7 @@ async function setupSubscription(store) {
   }
 }
 
-export const skybrowser = (store) => (next) => (action) => {
+const skybrowser = (store) => (next) => (action) => {
   const result = next(action);
   const state = store.getState();
   switch (action.type) {

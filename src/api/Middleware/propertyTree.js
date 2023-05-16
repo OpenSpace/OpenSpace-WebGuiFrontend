@@ -179,7 +179,7 @@ const setBackendValue = (uri, value) => {
   api.setProperty(uri, value);
 };
 
-export const propertyTree = (store) => (next) => (action) => {
+const propertyTree = (store) => (next) => (action) => {
   let result;
 
   if (action.type === actionTypes.setPropertyValue) {

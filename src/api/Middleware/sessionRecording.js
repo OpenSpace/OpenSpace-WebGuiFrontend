@@ -51,7 +51,7 @@ const refresh = () => {
   }
 };
 
-export const sessionRecording = (store) => (next) => (action) => {
+const sessionRecording = (store) => (next) => (action) => {
   const result = next(action);
   const state = store.getState();
 
@@ -84,3 +84,4 @@ export const sessionRecording = (store) => (next) => (action) => {
   }
   return result;
 };
+export default sessionRecording;
