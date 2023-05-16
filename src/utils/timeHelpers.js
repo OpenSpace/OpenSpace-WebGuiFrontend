@@ -1,17 +1,9 @@
-import { SetDeltaTimeScript, TogglePauseScript, ValuePlaceholder } from '../api/keys';
-
 export const togglePause = (luaApi) => {
   luaApi.time.togglePause();
 };
 
 export const realtime = (luaApi) => {
   luaApi.time.setDeltaTime(1);
-};
-
-export const setDateToNow = (luaApi) => {
-  const now = new Date();
-  setDate(luaApi, now);
-  UpdateDeltaTimeNow(luaApi, 1);
 };
 
 /**
@@ -27,6 +19,16 @@ export const setDate = (luaApi, date) => {
   luaApi.time.setTime(fixedDateString);
 };
 
+export const UpdateDeltaTimeNow = (luaApi, value) => {
+  luaApi.time.setDeltaTime(value);
+};
+
+export const setDateToNow = (luaApi) => {
+  const now = new Date();
+  setDate(luaApi, now);
+  UpdateDeltaTimeNow(luaApi, 1);
+};
+
 /**
  * Make sure the date string contains a time zone. When
  * creating a javascript Date, the browser will interpret
@@ -37,10 +39,6 @@ export const setDate = (luaApi, date) => {
  * @constructor
  */
 export const DateStringWithTimeZone = (date, zone = 'Z') => (!date.includes('Z') ? `${date}${zone}` : date);
-
-export const UpdateDeltaTimeNow = (luaApi, value) => {
-  luaApi.time.setDeltaTime(value);
-};
 
 export const sortDates = (dateList) => {
   dateList.sort((date1, date2) => (new Date(date1.date) - (new Date(date2.date))));

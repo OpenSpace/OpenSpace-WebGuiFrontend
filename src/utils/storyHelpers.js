@@ -32,7 +32,8 @@ export const toggleShading = (luaApi, node, value) => {
 // Function to toggle high resolution data for a node, data of type CTX_Mosaic
 // value = 'true' equals high resolution data enabled
 export const toggleHighResolution = (luaApi, node, value) => {
-  luaApi.setPropertyValue(`Scene.${node}.Renderable.Layers.ColorLayers.CTX_Mosaic_Utah.Enabled`, value);
+  const uri = `Scene.${node}.Renderable.Layers.ColorLayers.CTX_Mosaic_Utah.Enabled`;
+  luaApi.setPropertyValue(uri, value);
 };
 
 // Function to toggle the visibility of a node with a trail,
