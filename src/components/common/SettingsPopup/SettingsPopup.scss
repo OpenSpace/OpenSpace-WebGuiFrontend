@@ -1,14 +1,6 @@
-@import "../../styles/all";
+@import "../../../styles/all";
 
 $icon-size: 18px;
-
-.seperator {
-  padding-top:50px;
-  padding-left:7px;
-  font-weight: bold;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-}
 
 .settings {
   background: none;
@@ -16,10 +8,12 @@ $icon-size: 18px;
   padding-top: 5px;
   margin-left: auto;
   background: $ui-background;
+
   &:hover,
   &:focus {
     color: $text-color-focus;
   }
+
   i {
     font-size: $icon-size !important;
   }
@@ -36,6 +30,7 @@ $icon-size: 18px;
   font-size: 12pt;
   margin-top: 7px;
   background: $ui-background;
+
   &::after {
     top: 10%;
   }

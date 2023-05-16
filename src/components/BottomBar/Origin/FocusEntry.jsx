@@ -6,7 +6,7 @@ import Button from '../../common/Input/Button/Button';
 import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
 import { useContextRefs } from '../../GettingStartedTour/GettingStartedContext';
 
-function FocusEntry({ luaApi, name, identifier, onSelect, active, showNavigationButtons }) {
+function FocusEntry({ luaApi, name, identifier, onSelect, active, showNavigationButtons, closePopoverIfSet }) {
 
   function isActive() {
     return identifier === active;
@@ -26,6 +26,7 @@ function FocusEntry({ luaApi, name, identifier, onSelect, active, showNavigation
       luaApi.pathnavigation.flyTo(identifier);
     }
     event.stopPropagation();
+    closePopoverIfSet();
   };
 
   const zoomToFocus = (event) => {
@@ -36,6 +37,7 @@ function FocusEntry({ luaApi, name, identifier, onSelect, active, showNavigation
       luaApi.pathnavigation.zoomToFocus();
     }
     event.stopPropagation();
+    closePopoverIfSet();
   };
 
   const refs = useContextRefs();

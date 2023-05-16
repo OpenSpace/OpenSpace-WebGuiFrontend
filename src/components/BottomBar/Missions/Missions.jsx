@@ -72,7 +72,7 @@ export default function Missions({ }) {
   React.useEffect(() => {
     let result = [];
     findCurrentActions(result, overview);
-    if (displayedPhase.data && overview !== displayedPhase.data) {
+    if (displayedPhase.data && displayedPhase.data?.actions && overview !== displayedPhase.data) {
       findCurrentActions(result, displayedPhase.data);
     }
     setCurrentActions(result);

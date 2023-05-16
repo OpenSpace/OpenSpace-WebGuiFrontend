@@ -38,6 +38,9 @@ import SvgIcon from '../../common/SvgIcon/SvgIcon';
 import Picker from '../Picker';
 import FocusEntry from './FocusEntry';
 import styles from './OriginPicker.scss';
+import SettingsPopup from '../../common/SettingsPopup/SettingsPopup';
+import Checkbox from '../../common/Input/Checkbox/Checkbox';
+import { useLocalStorageState } from '../../../utils/customHooks';
 
 // tag that each focusable node must have
 const REQUIRED_TAG = 'GUI.Interesting';
@@ -52,6 +55,7 @@ function OriginPicker({ favorites, allNodes, searchableNodes, engineMode, anchor
   setPopoverVisibility, popoverVisible, aim, anchor, aimDispatcher, navigationAction, connectFlightController, sendFlightControl,
   retargetAimDispatcher, retargetAnchorDispatcher, anchorDispatcher, startSubscriptions, stopSubscriptions, setNavigationAction, aimName }) {
 
+  const [closeAfterSelection, setCloseAfterSelection] = useLocalStorageState("closeAfterSelection", false);
   const cappedAnchorName = anchorName?.substring(0, 20);
   React.useEffect(() => {
     startSubscriptions();
@@ -116,6 +120,13 @@ function OriginPicker({ favorites, allNodes, searchableNodes, engineMode, anchor
     } else {
       anchorDispatcher.set(updateViewPayload.focus);
       aimDispatcher.set(updateViewPayload.aim);
+    }
+    closePopoverIfSet();
+  }
+
+  function closePopoverIfSet() {
+    if (closeAfterSelection) {
+      setPopoverVisibility(false);
     }
   }
 
@@ -222,6 +233,22 @@ function OriginPicker({ favorites, allNodes, searchableNodes, engineMode, anchor
     return '';
   }
 
+  function settingsButton() {
+    return (
+      <SettingsPopup>
+        <Checkbox
+          label="Close window after selecting"
+          checked={closeAfterSelection}
+          left={false}
+          disabled={false}
+          setChecked={() => setCloseAfterSelection(current => !current)}
+          wide
+          style={{ padding : '2px'}}
+        />
+      </SettingsPopup>
+    );
+  }
+
   function popover() {
     const defaultList = favorites.slice();
 
@@ -260,6 +287,7 @@ function OriginPicker({ favorites, allNodes, searchableNodes, engineMode, anchor
         className={Picker.Popover}
         detachable
         attached
+        headerButton={settingsButton()}
       >
         <div>
           <Button
@@ -298,6 +326,7 @@ function OriginPicker({ favorites, allNodes, searchableNodes, engineMode, anchor
                 onSelect={onSelect}
                 active={active}
                 showNavigationButtons={isInFocusMode}
+                closePopoverIfSet={closePopoverIfSet}
                 {...entry}
               />
             })}
@@ -308,6 +337,7 @@ function OriginPicker({ favorites, allNodes, searchableNodes, engineMode, anchor
                 onSelect={onSelect}
                 active={active}
                 showNavigationButtons={isInFocusMode}
+                closePopoverIfSet={closePopoverIfSet}
                 {...entry}
               />
             })}
