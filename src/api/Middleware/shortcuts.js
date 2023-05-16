@@ -42,7 +42,6 @@ const shortcuts = (store) => (next) => (action) => {
     console.log(api);
     store.getState().luaApi.action.triggerAction(actionName);
     break;
-    break;
   default:
     break;
   }

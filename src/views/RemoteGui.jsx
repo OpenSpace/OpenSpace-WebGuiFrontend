@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { setShowAbout, startConnection } from '../api/Actions';
 import {
@@ -19,16 +19,16 @@ import { RefsProvider } from '../components/GettingStartedTour/GettingStartedCon
 import environment from '../api/Environment';
 
 function RemoteGui({
-  startConnection, version, hideAbout, connectionLost, showAbout
+  dispatchStartConnection, version, hideAbout, connectionLost, showAbout
 }) {
   let hasCheckedVersion = false;
 
   React.useEffect(() => {
-    startConnection();
+    dispatchStartConnection();
   }, []);
 
   function reloadGui() {
-    location.reload();
+    window.location.reload(false);
   }
 
   if (!hasCheckedVersion && version.isInitialized) {
@@ -76,7 +76,9 @@ function RemoteGui({
               <h2>Houston, we've had a...</h2>
               <p>...disconnection between the user interface and OpenSpace.</p>
               <p>Trying to reconnect automatically, but you may want to...</p>
-              <Button className={Error.styles.errorButton} onClick={this.reloadGui}>Reload the user interface</Button>
+              <Button className={Error.styles.errorButton} onClick={reloadGui}>
+                Reload the user interface
+              </Button>
             </Error>
           </Overlay>
         )}
@@ -100,7 +102,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  startConnection: () => {
+  dispatchStartConnection: () => {
     dispatch(startConnection());
   },
   hideAbout: () => {

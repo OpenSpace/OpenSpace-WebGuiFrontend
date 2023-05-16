@@ -6,7 +6,7 @@ import Error from '../components/common/Error/Error';
 import Overlay from '../components/common/Overlay/Overlay';
 import {
   addStoryInfo, addStoryTree, fetchData, resetStoryInfo, setPropertyValue,
-  startConnection, subscribeToProperty, unsubscribeToProperty
+  startConnection, subscribeToProperty, unsubscribeToProperty, triggerAction
 } from '../api/Actions';
 import TouchBar from '../components/TouchBar/TouchBar';
 import DeveloperMenu from '../components/TouchBar/UtilitiesMenu/presentational/DeveloperMenu';
@@ -29,7 +29,8 @@ const KEYCODE_D = 68;
 
 function OnTouchGui({
   luaApi, FetchData, StartConnection, anchorNode, changePropertyValue, triggerActionDispatcher,
-  scaleNodes, connectionLost, story, storyIdentifier, version, AddStoryTree, AddStoryInfo, ResetStoryInfo, startListening, stopListening
+  scaleNodes, connectionLost, story, storyIdentifier, version, AddStoryTree, AddStoryInfo,
+  ResetStoryInfo
 }) {
   const [developerMode, setDeveloperMode] = React.useState(false);
   const [currentStory, setCurrentStory] = React.useState(DefaultStory);
@@ -65,10 +66,49 @@ function OnTouchGui({
     StartConnection();
     FetchData(InfoIconKey);
 
+    function handleKeyPress(e) {
+      if (e.keyCode === KEYCODE_D) {
+        setDeveloperMode(!developerMode);
+        showDevInfoOnScreen(luaApi, developerMode);
+      }
+    }
+
     document.addEventListener('keydown', handleKeyPress);
     showDevInfoOnScreen(luaApi, false);
     return () => document.removeEventListener('keydown', handleKeyPress);
   }, []);
+
+  // Read in json-file for new story and add it to redux
+  function addStoryTreeFromSelection(selectedStory) {
+    const storyFile = storyFileParser(selectedStory);
+
+    AddStoryTree(storyFile);
+    if (storyFile.infoiconsfile) {
+      const info = infoFileParser(storyFile.infoiconsfile);
+      AddStoryInfo(info);
+    } else {
+      ResetStoryInfo();
+    }
+
+    return storyFile;
+  }
+
+  function checkStorySettings(storyJson, value) {
+    const oppositeValue = !value;
+
+    if (storyJson.hidenodes) {
+      story.hidenodes.forEach((node) => toggleShowNode(luaApi, node, value));
+    }
+    if (storyJson.highresplanets) {
+      story.highresplanets.forEach((node) => toggleHighResolution(luaApi, node, oppositeValue));
+    }
+    if (storyJson.noshadingplanets) {
+      story.noshadingplanets.forEach((node) => toggleShading(luaApi, node, value));
+    }
+    if (storyJson.galaxies) {
+      toggleGalaxies(luaApi, oppositeValue);
+    }
+  }
 
   function setStory(selectedStory) {
     const previousStory = storyIdentifier;
@@ -79,7 +119,7 @@ function OnTouchGui({
       return;
     }
 
-    const json = addStoryTree(selectedStory);
+    const json = addStoryTreeFromSelection(selectedStory);
 
     // Set all the story specific properties
     changePropertyValue(anchorNode.description.Identifier, json.start.planet);
@@ -134,51 +174,8 @@ function OnTouchGui({
     setStory(DefaultStory);
   }
 
-  function checkStorySettings(story, value) {
-    const oppositeValue = !value;
-
-    if (story.hidenodes) {
-      story.hidenodes.forEach((node) => toggleShowNode(luaApi, node, value));
-    }
-    if (story.highresplanets) {
-      story.highresplanets.forEach((node) => toggleHighResolution(luaApi, node, oppositeValue));
-    }
-    if (story.noshadingplanets) {
-      story.noshadingplanets.forEach((node) => toggleShading(luaApi, node, value));
-    }
-    if (story.galaxies) {
-      toggleGalaxies(luaApi, oppositeValue);
-    }
-  }
-
-  // Read in json-file for new story and add it to redux
-  function addStoryTree(selectedStory) {
-    const storyFile = storyFileParser(selectedStory);
-
-    AddStoryTree(storyFile);
-    if (storyFile.infoiconsfile) {
-      const info = infoFileParser(storyFile.infoiconsfile);
-      AddStoryInfo(info);
-    } else {
-      ResetStoryInfo();
-    }
-
-    return storyFile;
-  }
-
   function changeStory(e) {
     setStory(e.target.id);
-  }
-
-  function handleKeyPress(e) {
-    if (e.keyCode === KEYCODE_D) {
-      toggleDeveloperMode();
-    }
-  }
-
-  function toggleDeveloperMode() {
-    setDeveloperMode(!developerMode);
-    showDevInfoOnScreen(luaApi, developerMode);
   }
 
   return (
@@ -279,7 +276,7 @@ function RequireLuaApi({ StartConnection, luaApi, children }) {
     StartConnection();
   }, []);
 
-  return !luaApi ? <></> : <>{children}</>;
+  return !luaApi ? null : children;
 }
 
 const mapState = (state) => ({
