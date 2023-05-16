@@ -1,5 +1,5 @@
 import { initializeShortcuts } from '../Actions';
-import { actionTypes } from '../Actions/actionTypes';
+import actionTypes from '../Actions/actionTypes';
 
 import api from '../api';
 

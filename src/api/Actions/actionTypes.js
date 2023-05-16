@@ -1,6 +1,5 @@
 /* All the action types are collected here, to make it easier for debugging. */
-
-export const actionTypes = {
+const actionTypes = {
   // action types for property tree
   updatePropertyValue: 'PROPERTY_TREE_UPDATE_NODE',
   setPropertyValue: 'PROPERTY_TREE_SET',
@@ -117,3 +116,5 @@ export const actionTypes = {
   resetStoryInfo: 'STORY_TREE_RESET_INFO',
   resetStoryTree: 'STORY_TREE_RESET'
 };
+
+export default actionTypes;

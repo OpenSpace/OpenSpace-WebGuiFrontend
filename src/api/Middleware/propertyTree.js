@@ -6,7 +6,7 @@ import {
   reloadPropertyTree,
   updatePropertyValue
 } from '../Actions';
-import { actionTypes } from '../Actions/actionTypes';
+import actionTypes from '../Actions/actionTypes';
 
 import { rootOwnerKey } from '../keys';
 

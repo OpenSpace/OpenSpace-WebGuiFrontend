@@ -4,7 +4,7 @@ import {
 
 import api from '../api';
 
-import { actionTypes } from '../Actions/actionTypes';
+import actionTypes from '../Actions/actionTypes';
 
 const getMissions = async (callback) => {
   const missionsTopic = api.startTopic('missions', {});

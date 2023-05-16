@@ -1,4 +1,4 @@
-import { actionTypes } from '../Actions/actionTypes';
+import actionTypes from '../Actions/actionTypes';
 import { EngineModeUserControl } from '../keys';
 
 const defaultState = {

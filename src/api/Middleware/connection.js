@@ -5,7 +5,7 @@ import {
   subscribeToShortcuts
 } from '../Actions';
 
-import { actionTypes } from '../Actions/actionTypes';
+import actionTypes from '../Actions/actionTypes';
 import api from '../api';
 
 let openspace;

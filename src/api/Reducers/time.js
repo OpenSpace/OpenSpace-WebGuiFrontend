@@ -1,4 +1,4 @@
-import { actionTypes } from '../Actions/actionTypes';
+import actionTypes from '../Actions/actionTypes';
 
 /**
  * Make sure the date string contains a time zone

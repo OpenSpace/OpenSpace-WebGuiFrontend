@@ -1,4 +1,4 @@
-import { actionTypes } from '../Actions/actionTypes';
+import actionTypes from '../Actions/actionTypes';
 
 const point = (state = {}, action, value, id) => {
   switch (action.payload.type) {

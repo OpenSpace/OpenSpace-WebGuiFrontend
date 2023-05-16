@@ -1,4 +1,4 @@
-import { actionTypes } from '../Actions/actionTypes';
+import actionTypes from '../Actions/actionTypes';
 
 const initStoryTree = { story: { storyidentifier: 'story_default' }, reset: false, info: {} };
 

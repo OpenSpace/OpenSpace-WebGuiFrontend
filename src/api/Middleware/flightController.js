@@ -1,5 +1,5 @@
 import { connectFlightController, disconnectFlightController, sendFlightControl } from '../Actions';
-import { actionTypes } from '../Actions/actionTypes';
+import actionTypes from '../Actions/actionTypes';
 import { rootOwnerKey } from '../keys';
 
 import api from '../api';

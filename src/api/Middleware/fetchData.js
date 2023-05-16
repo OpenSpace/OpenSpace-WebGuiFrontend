@@ -1,4 +1,4 @@
-import { actionTypes } from '../Actions/actionTypes';
+import actionTypes from '../Actions/actionTypes';
 import { fetchDataDone, fetchDataFailed } from '../Actions';
 import { DataEndpointKey } from '../keys';
 

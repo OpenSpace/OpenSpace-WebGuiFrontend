@@ -1,5 +1,5 @@
 // To log everything:
-import { actionTypes } from '../Actions/actionTypes';
+import actionTypes from '../Actions/actionTypes';
 
 const actionFilter = { ...actionTypes };
 
