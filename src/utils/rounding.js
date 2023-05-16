@@ -16,7 +16,7 @@ const decimalAdjust = (type: string, value: number, exponent: ?number = 0): numb
   returnValue = +returnValue;
   const exp = +exponent;
   // If the value is not a number or the exponent is not an integer...
-  if (isNaN(returnValue) || !(typeof exp === 'number' && exp % 1 === 0)) {
+  if (Number.isNaN(returnValue) || !(typeof exp === 'number' && exp % 1 === 0)) {
     return NaN;
   }
   // If the value is negative...
@@ -40,14 +40,14 @@ export const ciel10 = (value, exponent) => decimalAdjust('ciel', value, exponent
  * @param value - value to compute precision of
  */
 export function precision(value: number) {
-  if (!isFinite(value)) return 0;
+  if (!Number.isFinite(value)) return 0;
 
-  let e = 1; let
-    precision = 0;
+  let e = 1;
+  let precisionNumber = 0;
   while ((Math.round(value * e) / e) !== value) {
-    e *= 10; precision++;
+    e *= 10; precisionNumber++;
   }
-  return precision;
+  return precisionNumber;
 }
 
 /**
@@ -73,7 +73,7 @@ export function roundValueToStepSize(value: number, step: number) {
 
   // If the rounding did not result in a finite value, just return the
   // initial value (even if it's not "nice" and exactly matching the steps size)
-  if (!isFinite(res)) {
+  if (!Number.isFinite(res)) {
     return value;
   }
 
