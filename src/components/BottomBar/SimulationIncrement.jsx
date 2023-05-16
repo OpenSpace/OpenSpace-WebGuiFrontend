@@ -34,7 +34,7 @@ const Steps = {
   hours: 'Hours',
   days: 'Days',
   months: 'Months',
-  years: 'Years',
+  years: 'Years'
 };
 const StepSizes = {
   [Steps.seconds]: 1,
@@ -42,7 +42,7 @@ const StepSizes = {
   [Steps.hours]: 3600,
   [Steps.days]: 86400,
   [Steps.months]: 2678400,
-  [Steps.years]: 31536000,
+  [Steps.years]: 31536000
 };
 const StepPrecisions = {
   [Steps.seconds]: 0,
@@ -50,7 +50,7 @@ const StepPrecisions = {
   [Steps.hours]: -4,
   [Steps.days]: -5,
   [Steps.months]: -7,
-  [Steps.years]: -10,
+  [Steps.years]: -10
 };
 const Limits = {
   [Steps.seconds]: { min: 0, max: 300, step: 1 },
@@ -58,26 +58,28 @@ const Limits = {
   [Steps.hours]: { min: 0, max: 300, step: 0.0001 },
   [Steps.days]: { min: 0, max: 10, step: 0.000001 },
   [Steps.months]: { min: 0, max: 10, step: 0.00000001 },
-  [Steps.years]: { min: 0, max: 1, step: 0.0000000001 },
+  [Steps.years]: { min: 0, max: 1, step: 0.0000000001 }
 };
 Object.freeze(Steps);
 Object.freeze(StepSizes);
 Object.freeze(StepPrecisions);
 Object.freeze(Limits);
 
-function SimulationIncrement({hasNextDeltaTimeStep, hasPrevDeltaTimeStep, nextDeltaTimeStep, 
-  prevDeltaTimeStep, startSubscriptions, targetDeltaTime, isPaused, stopSubscriptions, luaApi}) {
+function SimulationIncrement({
+  hasNextDeltaTimeStep, hasPrevDeltaTimeStep, nextDeltaTimeStep,
+  prevDeltaTimeStep, startSubscriptions, targetDeltaTime, isPaused, stopSubscriptions, luaApi
+}) {
   const [stepSize, setStepSize] = React.useState(Steps.seconds);
   const [beforeAdjust, setBeforeAdjust] = React.useState(0);
   const refs = useContextRefs();
-  
+
   React.useEffect(() => {
     startSubscriptions();
     return stopSubscriptions();
   }, []);
 
   function togglePause(e) {
-    const shift = e.getModifierState("Shift");
+    const shift = e.getModifierState('Shift');
     if (shift) {
       luaApi.time.togglePause();
     } else {
@@ -115,7 +117,7 @@ function SimulationIncrement({hasNextDeltaTimeStep, hasPrevDeltaTimeStep, nextDe
       updateDeltaTimeNow(luaApi, quickAdjust);
     } else {
       updateDeltaTime.cancel();
-      if(beforeAdjust) {
+      if (beforeAdjust) {
         updateDeltaTimeNow(luaApi, beforeAdjust);
       }
       setBeforeAdjust(null);
@@ -139,13 +141,14 @@ function SimulationIncrement({hasNextDeltaTimeStep, hasPrevDeltaTimeStep, nextDe
     const nextLabel = hasNextDeltaTimeStep ? `${adjustedNextDelta} ${stepSize} / second` : 'None';
     const prevLabel = hasPrevDeltaTimeStep ? `${adjustedPrevDelta} ${stepSize} / second` : 'None';
 
-    return <Row> 
-        <div style={{flex: 3}}>
-          <Button 
-            block 
+    return (
+      <Row>
+        <div style={{ flex: 3 }}>
+          <Button
+            block
             disabled={!hasPrevDeltaTimeStep}
             onClick={setPrevDeltaTimeStep}
-            ref={el => refs.current["SpeedBackward"] = el}
+            ref={(el) => refs.current.SpeedBackward = el}
           >
             <MaterialIcon icon="fast_rewind" />
           </Button>
@@ -153,17 +156,17 @@ function SimulationIncrement({hasNextDeltaTimeStep, hasPrevDeltaTimeStep, nextDe
             {prevLabel}
           </label>
         </div>
-        <div style={{flex: 2}} ref={el => refs.current["Pause"] = el}>
+        <div style={{ flex: 2 }} ref={(el) => refs.current.Pause = el}>
           <Button block onClick={togglePause}>
-              {isPaused ? <MaterialIcon icon="play_arrow" /> : <MaterialIcon icon="pause" />}
+            {isPaused ? <MaterialIcon icon="play_arrow" /> : <MaterialIcon icon="pause" />}
           </Button>
         </div>
-        <div style={{flex: 3}}>
-          <Button 
-            block 
+        <div style={{ flex: 3 }}>
+          <Button
+            block
             disabled={!hasNextDeltaTimeStep}
             onClick={setNextDeltaTimeStep}
-            ref={el => refs.current["SpeedForward"] = el}
+            ref={(el) => refs.current.SpeedForward = el}
           >
             <MaterialIcon icon="fast_forward" />
           </Button>
@@ -171,14 +174,15 @@ function SimulationIncrement({hasNextDeltaTimeStep, hasPrevDeltaTimeStep, nextDe
             {nextLabel}
           </label>
         </div>
-    </Row>
+      </Row>
+    );
   }
 
   const adjustedDelta =
     round10(targetDeltaTime / StepSizes[stepSize], StepPrecisions[stepSize]);
 
   const options = Object.values(Steps)
-    .map(step => ({ value: step, label: step, isSelected: step === stepSize }));
+    .map((step) => ({ value: step, label: step, isSelected: step === stepSize }));
 
   return (
     <div>
@@ -186,7 +190,7 @@ function SimulationIncrement({hasNextDeltaTimeStep, hasPrevDeltaTimeStep, nextDe
         <Select
           label="Display unit"
           menuPlacement="top"
-          onChange={({value}) => Object.values(Steps).includes(value) ? setStepSize(value) : null}
+          onChange={({ value }) => (Object.values(Steps).includes(value) ? setStepSize(value) : null)}
           options={options}
           value={stepSize}
         />
@@ -227,29 +231,25 @@ function SimulationIncrement({hasNextDeltaTimeStep, hasPrevDeltaTimeStep, nextDe
   );
 }
 
-const mapStateToProps = (state) => {
-  return {
-    deltaTime: state.time.deltaTime,
-    targetDeltaTime: state.time.targetDeltaTime,
-    isPaused: state.time.isPaused,
-    hasNextDeltaTimeStep: state.time.hasNextDeltaTimeStep,
-    hasPrevDeltaTimeStep: state.time.hasPrevDeltaTimeStep,
-    nextDeltaTimeStep: state.time.nextDeltaTimeStep,
-    prevDeltaTimeStep: state.time.prevDeltaTimeStep,
-    luaApi: state.luaApi
-  }
-}
+const mapStateToProps = (state) => ({
+  deltaTime: state.time.deltaTime,
+  targetDeltaTime: state.time.targetDeltaTime,
+  isPaused: state.time.isPaused,
+  hasNextDeltaTimeStep: state.time.hasNextDeltaTimeStep,
+  hasPrevDeltaTimeStep: state.time.hasPrevDeltaTimeStep,
+  nextDeltaTimeStep: state.time.nextDeltaTimeStep,
+  prevDeltaTimeStep: state.time.prevDeltaTimeStep,
+  luaApi: state.luaApi
+});
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    startSubscriptions: () => {
-      dispatch(subscribeToTime());
-    },
-    stopSubscriptions: () => {
-      dispatch(unsubscribeToTime());
-    }
+const mapDispatchToProps = (dispatch) => ({
+  startSubscriptions: () => {
+    dispatch(subscribeToTime());
+  },
+  stopSubscriptions: () => {
+    dispatch(unsubscribeToTime());
   }
-}
+});
 
 SimulationIncrement = connect(mapStateToProps, mapDispatchToProps)(SimulationIncrement);
 export default SimulationIncrement;

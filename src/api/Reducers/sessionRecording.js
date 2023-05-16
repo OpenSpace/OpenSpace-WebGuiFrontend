@@ -3,17 +3,17 @@ import { SessionStateIdle } from '../keys';
 
 const defaultState = {
   files: [],
-  recordingState: SessionStateIdle,
+  recordingState: SessionStateIdle
 };
 
 export const sessionRecording = (state = defaultState, action) => { // state refers to version
   switch (action.type) {
-    case actionTypes.updateSessionRecording:
-      return {
-        recordingState: action.payload.state,
-        files: action.payload.files,
-      };
-    default:
-      return state;
+  case actionTypes.updateSessionRecording:
+    return {
+      recordingState: action.payload.state,
+      files: action.payload.files
+    };
+  default:
+    return state;
   }
 };

@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 import Button from '../../common/Input/Button/Button';
 import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
 import SkyBrowserInfoBox from './SkyBrowserInfoBox';
 import styles from './SkyBrowserEntry.scss';
-import { LazyLoadImage } from "react-lazy-load-image-component";
 import NumericInput from '../../common/Input/NumericInput/NumericInput';
 
 function OpacitySlider({ opacity, setOpacity, identifier }) {
@@ -18,10 +18,10 @@ function OpacitySlider({ opacity, setOpacity, identifier }) {
   return (
     <div className={styles.sliderContainer}>
       <NumericInput
-        type={"range"}
+        type="range"
         min={0}
         max={1}
-        placeholder={"Opacity"}
+        placeholder="Opacity"
         step={0.01}
         label="Opacity"
         value={opacity}
@@ -52,7 +52,6 @@ function SkyBrowserFocusEntry({
   setOpacity,
   thumbnail
 }) {
-  
   function select(e) {
     if (onSelect && identifier) {
       onSelect(identifier);
@@ -68,29 +67,29 @@ function SkyBrowserFocusEntry({
       onClick={select}
       {...dragHandleTitleProps}
     >
-      <div style={{ display: 'flex', flexDirection: 'column'}}>
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
         <div className={styles.image}>
-          <LazyLoadImage src={thumbnail} alt={''} className={styles.imageText} onClick={select}/>
+          <LazyLoadImage src={thumbnail} alt="" className={styles.imageText} onClick={select} />
         </div>
-        {!hasCelestialCoords && 
+        {!hasCelestialCoords && (
           <span className={styles.skySurvey}>
             Sky Survey
           </span>
-        }
+        )}
       </div>
-      <div style={{ display: "flex", flexDirection: "column", marginLeft: "10px" }}>
+      <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '10px' }}>
         <div className={styles.imageTitle} style={{ maxWidth: '150px' }}>
           { name || identifier }
         </div>
         <OpacitySlider setOpacity={setOpacity} opacity={opacity} identifier={identifier} />
       </div>
-      <div style={{ display: "flex", flexDirection: "row", marginLeft: 'auto'}}>
+      <div style={{ display: 'flex', flexDirection: 'row', marginLeft: 'auto' }}>
         <SkyBrowserInfoBox
           className={styles.removeImageButton}
           dec={dec}
           fov={fov}
           hasCelestialCoords={hasCelestialCoords}
-          infoPlacement={"left"}
+          infoPlacement="left"
           ra={ra}
           style={{ display: 'flex', justifyContent: 'center', borderRadius: '4px' }}
           text={credits}
@@ -131,12 +130,12 @@ SkyBrowserFocusEntry.propTypes = {
   ra: PropTypes.number,
   removeImageSelection: PropTypes.func,
   setOpacity: PropTypes.func,
-  thumbnail: PropTypes.string,
+  thumbnail: PropTypes.string
 };
 
 SkyBrowserFocusEntry.defaultProps = {
   isActive: false,
-  onSelect: null,
+  onSelect: null
 };
 
 export default SkyBrowserFocusEntry;

@@ -21,25 +21,23 @@ Elements.FullDate = [Elements.FullYear, Elements.Month, Elements.Date];
 Elements.DateAndTime = Elements.FullDate.concat(null).concat(Elements.Time);
 Object.freeze(Elements);
 
-const Months = "January February March April May June July August September October November December".split(" ");
+const Months = 'January February March April May June July August September October November December'.split(' ');
 
 const Interpretors = {
   Month: (input) => {
-    const index = Months.findIndex((month) => {
-      return month.toLowerCase().indexOf(input.toLowerCase()) === 0
-    });
+    const index = Months.findIndex((month) => month.toLowerCase().indexOf(input.toLowerCase()) === 0);
     if (index !== -1) {
       return index;
     }
     return Number.parseFloat(index);
   }
-}
+};
 
 function zeroPad(number) {
   return number < 10 ? `0${number}` : number;
 }
 
-function Time({elements, onChange, time}) {
+function Time({ elements, onChange, time }) {
   function onClick(what, change) {
     const getterFunc = `getUTC${what}`;
     const setterFunc = `setUTC${what}`;
@@ -47,13 +45,13 @@ function Time({elements, onChange, time}) {
     return (e) => {
       const newTime = new Date(time);
       newTime[setterFunc](newTime[getterFunc]() + change);
-      const shift = e.getModifierState("Shift");
+      const shift = e.getModifierState('Shift');
 
       if (hasCallback) {
         onChange({
           time: newTime,
           interpolate: !shift,
-          delta: (newTime - time)/1000,
+          delta: (newTime - time) / 1000,
           relative: true
         });
       }
@@ -77,7 +75,7 @@ function Time({elements, onChange, time}) {
         onChange({
           time: newTime,
           interpolate: false,
-          delta: (newTime - time)/1000,
+          delta: (newTime - time) / 1000,
           relative: false
         });
       }
@@ -153,14 +151,14 @@ function Time({elements, onChange, time}) {
     // make it editable with input and such?
     if (hasCallback) {
       const width = (what === 'Milliseconds' || what === 'Month') ? 3 : 2;
-      const type = (what === 'Month') ? "text" : "number";
+      const type = (what === 'Month') ? 'text' : 'number';
       const ref = useContextRefs();
       return (
         <div key={what} className={styles.element}>
           <Button nopadding transparent onClick={onClick(what, 1)}>
             <MaterialIcon icon="expand_less" />
           </Button>
-          <span key={`span${what}`} ref={ el => ref.current[what] = el}>
+          <span key={`span${what}`} ref={(el) => ref.current[what] = el}>
             <InlineInput
               value={inner}
               size={width}
@@ -179,31 +177,32 @@ function Time({elements, onChange, time}) {
 
     return (
       <div className={styles.element}>
-        { inner }{after}
+        { inner }
+        {after}
       </div>
     );
   }
 
-  const functionMapping = { 
+  const functionMapping = {
     fullYear,
-    month, 
+    month,
     date,
-    hours, 
+    hours,
     seconds,
-    minutes, 
-    milliseconds 
+    minutes,
+    milliseconds
   };
   return (
     <div className={styles.clock}>
-    {
-      elements.map((getterName) => {
-        const value = functionMapping?.[getterName]?.();
-        if (!value) {
-          return <div key={getterName} className={styles.padding}></div>
-        }
-        return value;
-      })
-    }
+      {
+        elements.map((getterName) => {
+          const value = functionMapping?.[getterName]?.();
+          if (!value) {
+            return <div key={getterName} className={styles.padding} />;
+          }
+          return value;
+        })
+      }
     </div>
   );
 }
@@ -216,12 +215,12 @@ Time.propTypes = {
    */
   elements: PropTypes.arrayOf(PropTypes.string),
   onChange: PropTypes.func,
-  time: PropTypes.instanceOf(Date).isRequired,
+  time: PropTypes.instanceOf(Date).isRequired
 };
 
 Time.defaultProps = {
   elements: Elements.DateAndTime,
-  onChange: null,
+  onChange: null
 };
 
 export default Time;

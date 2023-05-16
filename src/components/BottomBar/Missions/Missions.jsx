@@ -1,12 +1,12 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Icon } from '@iconify/react';
 import { subscribeToTime, unsubscribeToTime } from '../../../api/Actions';
 import WindowThreeStates from '../SkyBrowser/WindowThreeStates/WindowThreeStates';
 import { ActionsButton } from '../ActionsPanel';
 import Button from '../../common/Input/Button/Button';
 import Picker from '../Picker';
 import { useLocalStorageState } from '../../../utils/customHooks';
-import { Icon } from '@iconify/react';
 import CenteredLabel from '../../common/CenteredLabel/CenteredLabel';
 import Timeline from './Timeline';
 import styles from './Missions.scss';
@@ -15,16 +15,16 @@ export function makeUtcDate(time) {
   if (!time) {
     return null;
   }
-  const utcString = time.includes("Z") ? time : `${time}Z`;
+  const utcString = time.includes('Z') ? time : `${time}Z`;
   return new Date(utcString);
 }
 
 export const DisplayType = {
-  phase: "phase",
-  milestone: "milestone"
+  phase: 'phase',
+  milestone: 'milestone'
 };
 
-function SetTimeButton({onClick, name}) {
+function SetTimeButton({ onClick, name }) {
   return (
     <Button block smalltext onClick={onClick}>
       {name}
@@ -45,7 +45,7 @@ export default function Missions({ }) {
   const [overview, setOverview] = React.useState(missions?.data?.missions[0]);
   const [displayedPhase, setDisplayedPhase] = React.useState({ type: DisplayType.phase, data: overview });
   const [currentActions, setCurrentActions] = React.useState([]);
-  const [size, setSize] = React.useState({width: 350, height: window.innerHeight});
+  const [size, setSize] = React.useState({ width: 350, height: window.innerHeight });
   const [displayCurrentPhase, setDisplayCurrentPhase] = React.useState(false);
   const [wholeTimeRange, setWholeTimeRange] = React.useState(
     [makeUtcDate(missions.data.missions[0].timerange.start), makeUtcDate(missions.data.missions[0].timerange.end)]
@@ -64,13 +64,13 @@ export default function Missions({ }) {
 
   React.useEffect(() => {
     if (displayCurrentPhase) {
-      setPhaseToCurrent()
+      setPhaseToCurrent();
     }
   }, [now]);
 
   // Every time a phase changes, get the actions that are valid for that phase
   React.useEffect(() => {
-    let result = [];
+    const result = [];
     findCurrentActions(result, overview);
     if (displayedPhase.data && displayedPhase.data?.actions && overview !== displayedPhase.data) {
       findCurrentActions(result, displayedPhase.data);
@@ -80,19 +80,18 @@ export default function Missions({ }) {
 
   // When missions data changes, update phases
   React.useEffect(() => {
-    let phases = [];
+    const phases = [];
     findAllPhases(phases, missions.data.missions[0].phases, 0);
     allPhasesNested.current = phases;
   }, [missions.data]);
 
   function findAllPhases(result, phases, nestedLevel) {
-    if (!Boolean(result?.[nestedLevel])) {
+    if (!result?.[nestedLevel]) {
       result.push(phases);
-    }
-    else {
+    } else {
       result[nestedLevel].push(...phases);
     }
-    phases.map(phase => {
+    phases.map((phase) => {
       if (phase?.phases && phase.phases.length > 0) {
         findAllPhases(result, phase.phases, nestedLevel + 1);
       }
@@ -100,8 +99,8 @@ export default function Missions({ }) {
   }
 
   function findCurrentActions(result, phase) {
-    phase.actions.map(action => {
-      const found = allActions?.find(item => item.identifier === action)
+    phase.actions.map((action) => {
+      const found = allActions?.find((item) => item.identifier === action);
       if (found) {
         result.push(found);
       }
@@ -130,7 +129,6 @@ export default function Missions({ }) {
     return nextFoundCapture;
   }
 
-
   // Locate the previous instrument activity capture
   function lastCapture() {
     if (!now || overview.capturetimes.length === 0) {
@@ -154,16 +152,13 @@ export default function Missions({ }) {
 
   function setPhaseToCurrent() {
     const flatAllPhases = allPhasesNested.current.flat();
-    const filteredPhases = flatAllPhases.filter(mission => {
-      return Date.parse(now) < Date.parse(makeUtcDate(mission.timerange.end)) &&
-        Date.parse(now) > Date.parse(makeUtcDate(mission.timerange.start))
-    });
+    const filteredPhases = flatAllPhases.filter((mission) => Date.parse(now) < Date.parse(makeUtcDate(mission.timerange.end)) &&
+        Date.parse(now) > Date.parse(makeUtcDate(mission.timerange.start)));
     const found = filteredPhases.pop();
     // If the found phase is already displayed, do nothing
     if (!found) {
       setDisplayedPhase({ type: null, data: undefined });
-    }
-    else {
+    } else {
       if (found.name === displayedPhase.data?.name) {
         return;
       }
@@ -172,7 +167,7 @@ export default function Missions({ }) {
   }
 
   function togglePopover() {
-    setPopoverVisibility(lastValue => !lastValue);
+    setPopoverVisibility((lastValue) => !lastValue);
   }
 
   function sizeCallback(width, height) {
@@ -185,15 +180,14 @@ export default function Missions({ }) {
     const timeDiffSeconds = parseInt(Math.abs(timeNow - utcTime) / 1000);
     const diffBiggerThanADay = timeDiffSeconds > 86400; // No of seconds in a day
     if (diffBiggerThanADay) {
-      let promise = new Promise((resolve, reject) => {
-        luaApi.setPropertyValueSingle('RenderEngine.BlackoutFactor', 0, fadeTime, "QuadraticEaseOut");
-        setTimeout(() => resolve("done!"), fadeTime * 1000)
+      const promise = new Promise((resolve, reject) => {
+        luaApi.setPropertyValueSingle('RenderEngine.BlackoutFactor', 0, fadeTime, 'QuadraticEaseOut');
+        setTimeout(() => resolve('done!'), fadeTime * 1000);
       });
-      let result = await promise;
+      const result = await promise;
       luaApi.time.setTime(utcTime.toISOString());
-      luaApi.setPropertyValueSingle('RenderEngine.BlackoutFactor', 1, fadeTime, "QuadraticEaseIn");
-    }
-    else {
+      luaApi.setPropertyValueSingle('RenderEngine.BlackoutFactor', 1, fadeTime, 'QuadraticEaseIn');
+    } else {
       luaApi.time.interpolateTime(utcTime.toISOString(), fadeTime);
     }
   }
@@ -218,11 +212,11 @@ export default function Missions({ }) {
 
   function jumpToStartOfPhase() {
     jumpToTime(now, displayedPhase.data.timerange.start);
-  } 
+  }
 
   function jumpToDate() {
-    jumpToTime(now, displayedPhase.data.date)
-  } 
+    jumpToTime(now, displayedPhase.data.date);
+  }
 
   function openUrl(url) {
     const newWindow = window.open(url, '_blank', 'noopener,noreferrer');
@@ -236,16 +230,16 @@ export default function Missions({ }) {
 
   function createTimeButtons() {
     if (displayedPhase.type === DisplayType.phase) {
-      const phaseType = displayedPhase.data === overview ? "Mission" : "Phase";
+      const phaseType = displayedPhase.data === overview ? 'Mission' : 'Phase';
       return (
         <>
           <SetTimeButton name={`Set Time to End of ${phaseType}`} onClick={jumpToEndOfPhase} />
           <SetTimeButton name={`Set Time to Beginning of ${phaseType}`} onClick={jumpToStartOfPhase} />
         </>
       );
-    } 
+    }
     if (displayedPhase.type === DisplayType.milestone) {
-      return <SetTimeButton name={"Set Time"} onClick={jumpToDate} />;
+      return <SetTimeButton name="Set Time" onClick={jumpToDate} />;
     }
   }
 
@@ -253,7 +247,7 @@ export default function Missions({ }) {
     if (displayedPhase.type === DisplayType.milestone) {
       return `${new Date(displayedPhase.data.date).toDateString()}`;
     }
-    else if (displayedPhase.type === DisplayType.phase) {
+    if (displayedPhase.type === DisplayType.phase) {
       const start = new Date(displayedPhase.data.timerange.start).toDateString();
       const end = new Date(displayedPhase.data.timerange.end).toDateString();
       return `${start} - ${end}`;
@@ -262,48 +256,47 @@ export default function Missions({ }) {
 
   function popover() {
     const timeString = getTimeString();
-    const typeTitle = displayedPhase.type && displayedPhase.type === DisplayType.phase ? "Phase" : "Milestone";
+    const typeTitle = displayedPhase.type && displayedPhase.type === DisplayType.phase ? 'Phase' : 'Milestone';
     const title = `${typeTitle}: ${displayedPhase?.data?.name}`;
     const hideTitle = displayedPhase.type === DisplayType.phase && displayedPhase?.data?.name === overview.name;
-    
+
     return (
       <>
-      { browserHasLoaded ? 
-        <Timeline
-          fullWidth={120}
-          fullHeight={window.innerHeight}
-          timeRange={wholeTimeRange}
-          currentPhases={allPhasesNested.current}
-          captureTimes={overview.capturetimes}  
-          now={now}
-          setDisplayedPhase={setPhaseManually}
-          displayedPhase={displayedPhase}
-          panelWidth={size.width}
-          milestones={overview?.milestones}
-          jumpToTime={jumpToTime}
-        />
-          :
-        null
-      }
-      <WindowThreeStates
-        title={overview.name}
-        sizeCallback={sizeCallback}
-        acceptedStyles={["PANE"]}
-        defaultStyle={"PANE"}
-        closeCallback={() => setPopoverVisibility(false)}
-        > 
-        <div style={{ height: size.height - topBarHeight, overflow: 'auto'}}>
-          <div style={{ display: 'flex', justifyContent: 'space-around'}}>
-            <Button onClick={() => setPhaseManually({ type: DisplayType.phase, data: overview }) }>{"Overview"}</Button>
-            <Button
-              onClick={() => setDisplayCurrentPhase(lastValue => !lastValue)}
-              className={displayCurrentPhase ? styles.selectedButton : null}
-            >
-              {"Current Phase"}
-            </Button>
-          </div>
+        { browserHasLoaded ? (
+          <Timeline
+            fullWidth={120}
+            fullHeight={window.innerHeight}
+            timeRange={wholeTimeRange}
+            currentPhases={allPhasesNested.current}
+            captureTimes={overview.capturetimes}
+            now={now}
+            setDisplayedPhase={setPhaseManually}
+            displayedPhase={displayedPhase}
+            panelWidth={size.width}
+            milestones={overview?.milestones}
+            jumpToTime={jumpToTime}
+          />
+        ) :
+          null}
+        <WindowThreeStates
+          title={overview.name}
+          sizeCallback={sizeCallback}
+          acceptedStyles={['PANE']}
+          defaultStyle="PANE"
+          closeCallback={() => setPopoverVisibility(false)}
+        >
+          <div style={{ height: size.height - topBarHeight, overflow: 'auto' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+              <Button onClick={() => setPhaseManually({ type: DisplayType.phase, data: overview })}>Overview</Button>
+              <Button
+                onClick={() => setDisplayCurrentPhase((lastValue) => !lastValue)}
+                className={displayCurrentPhase ? styles.selectedButton : null}
+              >
+                Current Phase
+              </Button>
+            </div>
             <div style={{ padding: '10px' }}>
-              {displayedPhase.data ?
+              {displayedPhase.data ? (
                 <>
                   <p>{!hideTitle && title}</p>
                   <p style={{ color: 'darkgray' }}>
@@ -314,27 +307,25 @@ export default function Missions({ }) {
                     {displayedPhase.data?.description}
                   </p>
                   {displayedPhase.data?.link &&
-                    <Button onClick={() => openUrl(displayedPhase.data.link)}>{"Read more"}</Button>
-                  }
+                  <Button onClick={() => openUrl(displayedPhase.data.link)}>Read more</Button>}
                   {displayedPhase.data?.image &&
-                    <img style={{ width: '100%', padding: '20px 5px', maxWidth: window.innerWidth * 0.25 }} src={displayedPhase.data.image} />
-                  }
+                  <img style={{ width: '100%', padding: '20px 5px', maxWidth: window.innerWidth * 0.25 }} src={displayedPhase.data.image} />}
                 </>
-                :
-                <CenteredLabel>{"No current phase in this mission"}</CenteredLabel>
-              }
-              <div style={{ display: 'flex', gap: '10px', flexDirection: 'column', padding: '10px 0px' }}>
+              ) :
+                <CenteredLabel>No current phase in this mission</CenteredLabel>}
+              <div style={{
+                display: 'flex', gap: '10px', flexDirection: 'column', padding: '10px 0px'
+              }}
+              >
                 {createTimeButtons()}
-                {nextCapture() && <SetTimeButton name={"Set Time to Next Capture"} onClick={jumpToNextCapture} />}
-                {lastCapture() && <SetTimeButton name={"Set Time to Last Capture"} onClick={jumpToLastCapture} />}
+                {nextCapture() && <SetTimeButton name="Set Time to Next Capture" onClick={jumpToNextCapture} />}
+                {lastCapture() && <SetTimeButton name="Set Time to Last Capture" onClick={jumpToLastCapture} />}
               </div>
-              {currentActions.map(action =>
-                <ActionsButton key={action.identifier} action={action} />
-              )}
+              {currentActions.map((action) => <ActionsButton key={action.identifier} action={action} />)}
             </div>
           </div>
-      </WindowThreeStates>
-    </>
+        </WindowThreeStates>
+      </>
     );
   }
 
@@ -346,7 +337,7 @@ export default function Missions({ }) {
           className={`${popoverVisible && Picker.Active}`}
           onClick={togglePopover}
         >
-          <Icon className={Picker.Icon} icon={"ic:baseline-rocket-launch"} alt={"Missions"} />
+          <Icon className={Picker.Icon} icon="ic:baseline-rocket-launch" alt="Missions" />
         </Picker>
       </div>
       { popoverVisible && popover() }

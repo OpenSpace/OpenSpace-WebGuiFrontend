@@ -18,51 +18,55 @@ class NodeMetaPanel extends Component {
   }
 
   togglePopover() {
-    this.props.removeNodeMetaPopoverAction(this.props.node)
+    this.props.removeNodeMetaPopoverAction(this.props.node);
   }
 
   propertiesForRenderableType() {
     switch (this.props.renderableType) {
-      case RenderableTypes.RenderableGlobe:
-        return ["Enabled", "PerformShading", "TargetLodScaleFactor"];
-      case RenderableTypes.RenderableBillboardsCloud:
-        return ["Enabled", "DrawElements", "RenderOption", "Opacity", "DrawLabels"];
-      case RenderableTypes.RenderablePlaneImageLocal:
-        return ["Enabled", "Opacity", "Billboard"];
-      case RenderableTypes.RenderableStars:
-        return ["Enabled", "ColorOption", "Transparency", "ScaleFactor"];
+    case RenderableTypes.RenderableGlobe:
+      return ['Enabled', 'PerformShading', 'TargetLodScaleFactor'];
+    case RenderableTypes.RenderableBillboardsCloud:
+      return ['Enabled', 'DrawElements', 'RenderOption', 'Opacity', 'DrawLabels'];
+    case RenderableTypes.RenderablePlaneImageLocal:
+      return ['Enabled', 'Opacity', 'Billboard'];
+    case RenderableTypes.RenderableStars:
+      return ['Enabled', 'ColorOption', 'Transparency', 'ScaleFactor'];
     }
   }
 
   propertyOwnerForUri(activeTab, uri) {
-    return <PropertyOwner autoExpand={true}
-                          key={activeTab}
-                          uri={uri}
-                          expansionIdentifier={"P:"+uri} />;
+    return (
+      <PropertyOwner
+        autoExpand
+        key={activeTab}
+        uri={uri}
+        expansionIdentifier={`P:${uri}`}
+      />
+    );
   }
 
   copyURL() {
-      const url = document.getElementById('docurl').innerHTML;
-      const el = document.createElement('textarea');
-      el.value = url;
-      el.setAttribute('readonly', '');
-      el.style.position = 'absolute';
-      el.style.left = '-9999px';
-      document.body.appendChild(el);
-      el.select();
-      document.execCommand('copy');
-      document.body.removeChild(el);
+    const url = document.getElementById('docurl').innerHTML;
+    const el = document.createElement('textarea');
+    el.value = url;
+    el.setAttribute('readonly', '');
+    el.style.position = 'absolute';
+    el.style.left = '-9999px';
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
   }
 
   contentForTab(activeTab) {
-    let uriSplit = this.props.nodeURI.split('.');
-    let identifier = uriSplit[uriSplit.length - 1];
-    var description = "";
-    var docs = this.props.documentation;
+    const uriSplit = this.props.nodeURI.split('.');
+    const identifier = uriSplit[uriSplit.length - 1];
+    let description = '';
+    const docs = this.props.documentation;
 
-    var foundDoc = null;
-    for (var i = 0; i < docs.length; ++i) {
-      var doc = docs[i];
+    let foundDoc = null;
+    for (let i = 0; i < docs.length; ++i) {
+      const doc = docs[i];
       if (doc?.identifiers && doc.identifiers.includes(identifier)) {
         foundDoc = doc;
       }
@@ -75,52 +79,62 @@ class NodeMetaPanel extends Component {
       );
     }
 
-    var rawDescription = "";
+    let rawDescription = '';
     if (this.props.description) {
       rawDescription = this.props.description;
     } else {
-      rawDescription = "No description found";
+      rawDescription = 'No description found';
     }
-    description = rawDescription.replace(/\\n/g,"");
+    description = rawDescription.replace(/\\n/g, '');
 
     if (foundDoc) {
-      foundDoc.license = foundDoc.license.replace(/\\n/g,"");
+      foundDoc.license = foundDoc.license.replace(/\\n/g, '');
     }
 
     if (activeTab == 0) {
       return (
         <Row>
-          <div className={styles.description_container} dangerouslySetInnerHTML={{__html: description}}/>
+          <div className={styles.description_container} dangerouslySetInnerHTML={{ __html: description }} />
         </Row>
       );
-    } 
-    else if (foundDoc) {
+    }
+    if (foundDoc) {
       return (
         <div>
-          <Row>Author: {foundDoc.author}</Row>
-          <Row>Version: {foundDoc.version}</Row>
-          <Row>License: <span className={styles.pad_span} dangerouslySetInnerHTML={{__html: foundDoc.license}} /></Row>
           <Row>
-            URL: <span className={styles.pad_span} id='docurl'>{foundDoc.url}</span>
+            Author:
+            {foundDoc.author}
+          </Row>
+          <Row>
+            Version:
+            {foundDoc.version}
+          </Row>
+          <Row>
+            License:
+            <span className={styles.pad_span} dangerouslySetInnerHTML={{ __html: foundDoc.license }} />
+          </Row>
+          <Row>
+            URL:
+            {' '}
+            <span className={styles.pad_span} id="docurl">{foundDoc.url}</span>
             <span className={styles.copyButton} onClick={this.copyURL}>
               <MaterialIcon icon="content_cut" />
             </span>
           </Row>
         </div>
       );
-    } 
-    else {
-      return (
-        <Row>
-          <div className={styles.description_container}>No meta info found.</div>
-        </Row>
-      );
     }
+
+    return (
+      <Row>
+        <div className={styles.description_container}>No meta info found.</div>
+      </Row>
+    );
   }
 
   get popover() {
     const { activeTab, attached, nodeName } = this.props;
-    const windowTitle = nodeName + "- Asset Infomation";
+    const windowTitle = `${nodeName}- Asset Infomation`;
     return (
       <Popover
         className={`${Picker.Popover} && ${styles.nodePopover}`}
@@ -135,27 +149,33 @@ class NodeMetaPanel extends Component {
         <hr className={Popover.styles.delimiter} />
 
         <div className={`${Popover.styles.row} ${Popover.styles.content}`}>
-          <Button block largetext={activeTab == 0} 
-            smalltext={activeTab != 0} 
-            key={0} 
-            onClick={() => this.props.setPopoverActiveTabAction(0)}>
+          <Button
+            block
+            largetext={activeTab == 0}
+            smalltext={activeTab != 0}
+            key={0}
+            onClick={() => this.props.setPopoverActiveTabAction(0)}
+          >
             Description
           </Button>
-          <Button block largetext={activeTab == 1} 
-            smalltext={activeTab != 0} 
-            key={1} 
-            onClick={() => this.props.setPopoverActiveTabAction(1)}>
+          <Button
+            block
+            largetext={activeTab == 1}
+            smalltext={activeTab != 0}
+            key={1}
+            onClick={() => this.props.setPopoverActiveTabAction(1)}
+          >
             Info
           </Button>
         </div>
       </Popover>
-     );
+    );
   }
 
   render() {
     const { showPopover } = this.props;
     return (
-      <div className={Picker.Wrapper} >
+      <div className={Picker.Wrapper}>
         { showPopover && this.popover }
       </div>
     );
@@ -163,27 +183,27 @@ class NodeMetaPanel extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  var nodeURI = ownProps.uri;
+  const nodeURI = ownProps.uri;
 
-  let myPopover = state.local.popovers.activeNodeMetaPanels[ownProps.uri]
-  var popoverVisible = myPopover ? myPopover.visible : false;
+  const myPopover = state.local.popovers.activeNodeMetaPanels[ownProps.uri];
+  const popoverVisible = myPopover ? myPopover.visible : false;
   const popoverAttached = myPopover ? myPopover.attached : false;
   const popoverActiveTab = myPopover && myPopover.activeTab ? myPopover.activeTab : 0;
 
-  var node = {}
+  let node = {};
   if (state.propertyTree.propertyOwners[nodeURI]) {
     node = state.propertyTree.propertyOwners[nodeURI];
   }
   const nodeName = node.name;
 
-  var guiDescription = null;
-  if (state.propertyTree.properties[nodeURI+".GuiDescription"]) {
-    guiDescription = state.propertyTree.properties[nodeURI+".GuiDescription"].value;
+  let guiDescription = null;
+  if (state.propertyTree.properties[`${nodeURI}.GuiDescription`]) {
+    guiDescription = state.propertyTree.properties[`${nodeURI}.GuiDescription`].value;
   }
 
   return {
-    nodeURI: nodeURI,
-    nodeName: nodeName,
+    nodeURI,
+    nodeName,
     activeTab: popoverActiveTab,
     showPopover: popoverVisible,
     attached: popoverAttached,
@@ -210,7 +230,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     dispatch(setPopoverActiveTab({
       identifier: ownProps.uri,
       activeTab: index,
-      isMeta: true,
+      isMeta: true
     }));
   };
 
@@ -219,7 +239,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     removeNodeMetaPopoverAction,
     setPopoverActiveTabAction
   };
-}
+};
 
 NodeMetaPanel = connect(
   mapStateToProps,

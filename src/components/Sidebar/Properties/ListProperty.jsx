@@ -36,7 +36,7 @@ class ListProperty extends Component {
   onChange(evt) {
     const value = evt.target.value.trim();
 
-    if (value === "") {
+    if (value === '') {
       this.props.dispatcher.set({});
       return;
     }
@@ -46,9 +46,13 @@ class ListProperty extends Component {
 
   render() {
     const { description, value } = this.props;
-    const label = (<span onClick={this.copyUri}>
-      { description.Name } { this.descriptionPopup }
-    </span>);
+    const label = (
+      <span onClick={this.copyUri}>
+        { description.Name }
+        {' '}
+        { this.descriptionPopup }
+      </span>
+    );
     return (
       <div className={`${this.disabled ? styles.disabled : ''}`}>
         <Input
@@ -68,9 +72,9 @@ ListProperty.propTypes = {
     Identifier: PropTypes.string,
     Name: PropTypes.string,
     MetaData: PropTypes.shape({
-      isReadOnly: PropTypes.bool,
+      isReadOnly: PropTypes.bool
     }),
-    description: PropTypes.string,
+    description: PropTypes.string
   }).isRequired,
   value: PropTypes.any
 };

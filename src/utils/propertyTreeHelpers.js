@@ -22,10 +22,10 @@ export const keepCloning = (objectpassed) => {
 };
 
 export const getBoolPropertyValue = (state, uri) => {
-  const properties = state.propertyTree.properties;
+  const { properties } = state.propertyTree;
   const property = properties[uri];
   return property ? property.value : false;
-}
+};
 
 // TODO: Delete unused function
 export function findSubtree(node, uri) {
@@ -34,16 +34,10 @@ export function findSubtree(node, uri) {
     return node;
   }
   if (splittedUri.length === 1) {
-    return node.properties.find(element => {
-      return element.id === splittedUri[0]
-    }) || node.subowners.find(element => {
-      return element.identifier === splittedUri[0]
-    });
+    return node.properties.find((element) => element.id === splittedUri[0]) || node.subowners.find((element) => element.identifier === splittedUri[0]);
   }
 
-  const subowner = node.subowners.find(element => {
-    return element.identifier === splittedUri[0]
-  })
+  const subowner = node.subowners.find((element) => element.identifier === splittedUri[0]);
 
   if (!subowner) {
     return;
@@ -51,51 +45,48 @@ export function findSubtree(node, uri) {
 
   const slicedUri = splittedUri.slice(1);
   return findSubtree(subowner, slicedUri);
-};
+}
 
 // TODO: Delete unused function
 export function traverseTreeForTag(node, tag) {
   let data;
-  node.subowners.map(element => {
+  node.subowners.map((element) => {
     data = traverseTreeForTag(element, tag);
-      if( element.tag.includes(tag)) {
-        data = element;
-      }
-    });
+    if (element.tag.includes(tag)) {
+      data = element;
+    }
+  });
   return data;
-};
+}
 
 export function findAllNodesWithTag(state, tag) {
-  let nodes = [];
-  state.map(element => {
-      const data = traverseTreeForTag(element, tag);
-      if(data !== undefined) {
-        const returnValue = {
-          data,
-          identifier: element.identifier
-        }
-        nodes.push(returnValue);
-      }
-  })
+  const nodes = [];
+  state.map((element) => {
+    const data = traverseTreeForTag(element, tag);
+    if (data !== undefined) {
+      const returnValue = {
+        data,
+        identifier: element.identifier
+      };
+      nodes.push(returnValue);
+    }
+  });
   return nodes;
-};
+}
 
 // Convert envelopes in transfer function property to back end compatible format
 export function convertEnvelopes(envelopes) {
   let convertedEnvelopes = keepCloning(envelopes);
-  convertedEnvelopes = convertedEnvelopes.map(envelope =>
-    Object.assign({},
-      { points: envelope.points.map(point =>
-        Object.assign({},
-          { color: point.color,
-            position: point.position,
-          }),
-      ),
-      },
-    ),
-  );
+  convertedEnvelopes = convertedEnvelopes.map((envelope) => ({
+
+    points: envelope.points.map((point) => ({
+
+      color: point.color,
+      position: point.position
+    }),)
+  }),);
   return JSON.stringify(convertedEnvelopes);
-};
+}
 
 // Get the word after the last dot in the uri, or the full uri if it has no dot
 export function getLastWordOfUri(uri) {
@@ -118,29 +109,29 @@ export function isPropertyVisible(properties, uri) {
 
   // Only show properties matching the current visibility setting
   const visibility = properties['OpenSpaceEngine.PropertyVisibility'];
-  let propertyVisibility = "";
+  let propertyVisibility = '';
   switch (property.description.MetaData.Visibility) {
-    case 'Hidden':
-      propertyVisibility = 5;
-      break;
-    case 'Developer':
-      propertyVisibility = 4;
-      break;
-    case 'AdvancedUser':
-      propertyVisibility = 3;
-      break;
-    case 'User':
-      propertyVisibility = 2;
-      break;
-    case 'NoviceUser':
-      propertyVisibility = 1;
-      break;
-    case 'Always':
-      propertyVisibility = 0;
-      break;
-    default:
-      propertyVisibility = 0;
-      break;
+  case 'Hidden':
+    propertyVisibility = 5;
+    break;
+  case 'Developer':
+    propertyVisibility = 4;
+    break;
+  case 'AdvancedUser':
+    propertyVisibility = 3;
+    break;
+  case 'User':
+    propertyVisibility = 2;
+    break;
+  case 'NoviceUser':
+    propertyVisibility = 1;
+    break;
+  case 'Always':
+    propertyVisibility = 0;
+    break;
+  default:
+    propertyVisibility = 0;
+    break;
   }
   return visibility.value >= propertyVisibility;
 }
@@ -148,11 +139,11 @@ export function isPropertyVisible(properties, uri) {
 // Returns whether a property owner should be hidden in the gui
 export function isPropertyOwnerHidden(properties, uri) {
   if (uri === undefined) return false;
-  const prop = properties[uri + '.GuiHidden'];
-  if(prop && prop.value) {
+  const prop = properties[`${uri}.GuiHidden`];
+  if (prop && prop.value) {
     return true;
   }
-  else return false;
+  return false;
 }
 
 // Returns true if a property owner has no visible children
@@ -162,16 +153,14 @@ export function isDeadEnd(propertyOwners, properties, uri) {
   const subproperties = node.properties || [];
 
   const visibleProperties = subproperties.filter(
-    childUri => isPropertyVisible(properties, childUri)
+    (childUri) => isPropertyVisible(properties, childUri)
   );
 
   if (visibleProperties.length > 0) {
     return false;
   }
 
-  const nonDeadEndSubowners = subowners.filter(childUri => {
-    return !isPropertyOwnerHidden(properties, childUri) && !isDeadEnd(propertyOwners, properties, childUri);
-  });
+  const nonDeadEndSubowners = subowners.filter((childUri) => !isPropertyOwnerHidden(properties, childUri) && !isDeadEnd(propertyOwners, properties, childUri));
   return nonDeadEndSubowners.length === 0;
 }
 
@@ -191,8 +180,8 @@ export function isGlobeBrowsingLayer(uri) {
 
   const splitUri = uri.split('.');
 
-  var found = false;
-  LayerGroupKeys.forEach( layerGroup => {
+  let found = false;
+  LayerGroupKeys.forEach((layerGroup) => {
     if ((uri.indexOf(layerGroup) > -1) && !(uri.endsWith(layerGroup))) {
       found = true;
     }
@@ -209,7 +198,7 @@ export function getLayerGroupFromUri(uri) {
   }
   const splitUri = uri.split('.');
   // The layer group comes after "Layers" in the uri
-  let index = splitUri.indexOf('Layers') + 1;
+  const index = splitUri.indexOf('Layers') + 1;
   return splitUri[index];
 }
 

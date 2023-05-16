@@ -101,7 +101,7 @@ export const RenderableTypes = {
   RenderableGlobe: 'RenderableGlobe',
   // RenderableConstellationBounds: "RenderableConstellationBounds",
   // RenderableRings: "RenderableRings",
-  RenderableStars: 'RenderableStars',
+  RenderableStars: 'RenderableStars'
   // RenderableCrawlingLine: "RenderableCrawlingLine",
   // RenderableFov: "RenderableFov",
   // RenderableModelProjection: "RenderableModelProjection",
@@ -124,9 +124,9 @@ export const sortGroups = {
   Planets: {
     value: ['Mercury', 'Venus',
       'Earth', 'Mars', 'Jupiter',
-      'Saturn', 'Uranus', 'Neptune'],
+      'Saturn', 'Uranus', 'Neptune']
   },
   'Solar System': {
-    value: ['Planets', 'Dwarf Planets', 'Sun', 'Solar System Barycenter'],
-  },
+    value: ['Planets', 'Dwarf Planets', 'Sun', 'Solar System Barycenter']
+  }
 };

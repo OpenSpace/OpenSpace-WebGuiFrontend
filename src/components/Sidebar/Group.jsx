@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { useSelector, useDispatch, shallowEqual } from 'react-redux';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { setPropertyTreeExpansion } from '../../api/Actions';
 import { sortGroups } from '../../api/keys';
 import ToggleContent from '../common/ToggleContent/ToggleContent';
@@ -11,16 +11,14 @@ import PropertyOwner, {
 
 function isEnabled(properties, uri) {
   return properties[`${uri}.Renderable.Enabled`]?.value;
-};
+}
 
 function enabledPropertyOwners(state, path) {
   const data = state.groups[path] || {};
   const propertyOwners = data.propertyOwners || [];
 
   // Filter PropertyOwners
-  return propertyOwners.filter((propertyOwner) =>
-    isEnabled(state.propertyTree.properties, propertyOwner)
-  );
+  return propertyOwners.filter((propertyOwner) => isEnabled(state.propertyTree.properties, propertyOwner));
 }
 
 function shouldShowGroup(state, path) {
@@ -33,9 +31,7 @@ function shouldShowGroup(state, path) {
   }
   const initialValue = false;
   const result = subGroups.reduce(
-    (accumulator, currentValue) => {
-      return accumulator || shouldShowGroup(state, currentValue);
-    },
+    (accumulator, currentValue) => accumulator || shouldShowGroup(state, currentValue),
     initialValue
   );
   return result;
@@ -52,15 +48,16 @@ function displayName(path) {
 function nodeExpansionIdentifier(path) {
   const splitPath = path.split('/');
   if (splitPath.length > 1) {
-    return 'G:' + splitPath[splitPath.length - 1];
-  } else {
-    return '';
+    return `G:${splitPath[splitPath.length - 1]}`;
   }
+  return '';
 }
 
-function Group({ path, expansionIdentifier, autoExpand, showOnlyEnabled }) {
+function Group({
+  path, expansionIdentifier, autoExpand, showOnlyEnabled
+}) {
   const isExpanded = useSelector((state) => {
-    let isExpanded = state.local.propertyTreeExpansion[expansionIdentifier];
+    const isExpanded = state.local.propertyTreeExpansion[expansionIdentifier];
     return (isExpanded === undefined) ? autoExpand : isExpanded;
   }, shallowEqual);
 
@@ -68,13 +65,12 @@ function Group({ path, expansionIdentifier, autoExpand, showOnlyEnabled }) {
     let owners;
     if (showOnlyEnabled) {
       owners = enabledPropertyOwners(state, path);
-    }
-    else {
+    } else {
       const data = state.groups[path] || {};
       owners = data.propertyOwners || [];
     }
     // Extract propertyOwners
-    return owners.map(owner => ({
+    return owners.map((owner) => ({
       type: 'propertyOwner',
       payload: owner,
       name: propertyOwnerName(state.propertyTree.propertyOwners, state.propertyTree.properties, owner)
@@ -86,7 +82,7 @@ function Group({ path, expansionIdentifier, autoExpand, showOnlyEnabled }) {
     const subGroups = data.subgroups || [];
 
     // Extract groups
-    const groups = subGroups.map(subGroup => ({
+    const groups = subGroups.map((subGroup) => ({
       type: 'group',
       payload: subGroup,
       name: displayName(subGroup)
@@ -96,9 +92,9 @@ function Group({ path, expansionIdentifier, autoExpand, showOnlyEnabled }) {
       return groups.filter((group) => shouldShowGroup(state, group.payload));
     }
     return groups;
-  })
-  
-  const entries = groups.concat(propertyOwners); 
+  });
+
+  const entries = groups.concat(propertyOwners);
   const hasEntries = entries.length !== 0;
   const pathFragments = path.split('/');
   const groupName = pathFragments[pathFragments.length - 1];
@@ -113,52 +109,57 @@ function Group({ path, expansionIdentifier, autoExpand, showOnlyEnabled }) {
     }));
   };
 
-  let sortedEntries = entries.sort((a, b) =>
-    a.name.localeCompare(b.name, 'en')
-  );
+  const sortedEntries = entries.sort((a, b) => a.name.localeCompare(b.name, 'en'));
 
   if (sortOrdering && sortOrdering.value) {
-      sortedEntries.sort((a,b) => {
-        return sortOrdering.value.indexOf(a.name) < sortOrdering.value.indexOf(b.name) ?
-          -1 : 1;
-      });
+    sortedEntries.sort((a, b) => (sortOrdering.value.indexOf(a.name) < sortOrdering.value.indexOf(b.name) ?
+      -1 : 1));
   }
 
-  return hasEntries &&
+  return hasEntries && (
     <ToggleContent
       title={displayName(path)}
       expanded={isExpanded}
       setExpanded={setExpanded}
     >
       {
-        sortedEntries.map(entry => {
+        sortedEntries.map((entry) => {
           const autoExpand = entries.length === 1;
           switch (entry.type) {
-            case 'group': {
-              const childNodeIdentifier = expansionIdentifier + '/' +
-                nodeExpansionIdentifier(entry.payload);
+          case 'group': {
+            const childNodeIdentifier = `${expansionIdentifier}/${
+              nodeExpansionIdentifier(entry.payload)}`;
 
-              return <Group autoExpand={autoExpand}
-                            key={entry.payload}
-                            path={entry.payload}
-                            expansionIdentifier={childNodeIdentifier}
-                            showOnlyEnabled={showOnlyEnabled} />
-            }
-            case 'propertyOwner': {
-              const childNodeIdentifier = expansionIdentifier + '/' +
-                propertyOwnerNodeExpansionIdentifier(entry.payload);
+            return (
+              <Group
+                autoExpand={autoExpand}
+                key={entry.payload}
+                path={entry.payload}
+                expansionIdentifier={childNodeIdentifier}
+                showOnlyEnabled={showOnlyEnabled}
+              />
+            );
+          }
+          case 'propertyOwner': {
+            const childNodeIdentifier = `${expansionIdentifier}/${
+              propertyOwnerNodeExpansionIdentifier(entry.payload)}`;
 
-              return <PropertyOwner autoExpand={autoExpand}
-                                    key={entry.payload}
-                                    uri={entry.payload}
-                                    expansionIdentifier={childNodeIdentifier} />
-            }
-            default:
-              return null;
+            return (
+              <PropertyOwner
+                autoExpand={autoExpand}
+                key={entry.payload}
+                uri={entry.payload}
+                expansionIdentifier={childNodeIdentifier}
+              />
+            );
+          }
+          default:
+            return null;
           }
         })
       }
     </ToggleContent>
+  );
 }
 
 Group.propTypes = {

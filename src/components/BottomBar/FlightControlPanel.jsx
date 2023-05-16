@@ -7,7 +7,7 @@ import {
   sendFlightControl,
   setPopoverVisibility,
   subscribeToProperty,
-  unsubscribeToProperty,
+  unsubscribeToProperty
 } from '../../api/Actions';
 import { RollFrictionKey, RotationalFrictionKey, ZoomFrictionKey } from '../../api/keys';
 import Button from '../common/Input/Button/Button';
@@ -51,13 +51,11 @@ class FlightControlPanel extends Component {
     stopListening(RollFrictionKey);
   }
 
-
   get position() {
     if (!this.wrapper) return { top: '0px', left: '0px' };
-    else {
-      const { top, right } = this.wrapper.getBoundingClientRect();
-      return { top: `${top}px`, left: `${right}px` };
-    }
+
+    const { top, right } = this.wrapper.getBoundingClientRect();
+    return { top: `${top}px`, left: `${right}px` };
   }
 
   get popover() {
@@ -66,22 +64,26 @@ class FlightControlPanel extends Component {
     const zoomButtonColor = zoomFriction ? '#222' : '#888';
     const rollButtonColor = rollFriction ? '#222' : '#888';
 
-    const infoBoxContent = <>
-      <p>Interact with the area to control the camera. </p> <br/>
-      <p><b>Mouse controls:</b></p>
-      <p>Click and drag to rotate. Hold</p>
-      <ul className={styles.list}>
-        <li>SHIFT to pan</li>
-        <li>CTRL to zoom (y-axis) or roll (x-axis)</li>
-      </ul>
-      <br/>
-      <p><b>Touch controls:</b></p>
-      <ul className={styles.list}>
-        <li>1 finger to rotate</li>
-        <li>2 fingers to pan</li>
-        <li>3 fingers to zoom (y-axis) or roll (x-axis)</li>
-      </ul>
-    </>
+    const infoBoxContent = (
+      <>
+        <p>Interact with the area to control the camera. </p>
+        {' '}
+        <br />
+        <p><b>Mouse controls:</b></p>
+        <p>Click and drag to rotate. Hold</p>
+        <ul className={styles.list}>
+          <li>SHIFT to pan</li>
+          <li>CTRL to zoom (y-axis) or roll (x-axis)</li>
+        </ul>
+        <br />
+        <p><b>Touch controls:</b></p>
+        <ul className={styles.list}>
+          <li>1 finger to rotate</li>
+          <li>2 fingers to pan</li>
+          <li>3 fingers to zoom (y-axis) or roll (x-axis)</li>
+        </ul>
+      </>
+    );
 
     return (
       <Popover
@@ -118,7 +120,7 @@ class FlightControlPanel extends Component {
             >
               <span style={{ marginLeft: 5 }}>Roll</span>
             </Button>
-            <InfoBox className={styles.infoButton} text={"Controls to disable friction for different camera movements"} />
+            <InfoBox className={styles.infoButton} text="Controls to disable friction for different camera movements" />
           </Row>
         </div>
         <hr className={Popover.styles.delimiter} />
@@ -199,7 +201,7 @@ class FlightControlPanel extends Component {
 
       this.props.sendFlightControl({
         type: 'inputState',
-        inputState,
+        inputState
       });
     }
   }
@@ -215,9 +217,9 @@ class FlightControlPanel extends Component {
           orbitY: 0.0,
           panX: 0.0,
           panY: 0.0,
-          localRollX: 0.0,
-        },
-      },
+          localRollX: 0.0
+        }
+      }
     });
   }
 
@@ -235,9 +237,9 @@ class FlightControlPanel extends Component {
           orbitY: 0.0,
           panX: 0.0,
           panY: 0.0,
-          localRollX: 0.0,
-        },
-      },
+          localRollX: 0.0
+        }
+      }
     });
   }
 
@@ -263,7 +265,7 @@ class FlightControlPanel extends Component {
 
     this.props.sendFlightControl({
       type: 'inputState',
-      inputState,
+      inputState
     });
   }
 
@@ -294,15 +296,15 @@ const mapStateToProps = (state) => {
     luaApi: state.luaApi,
     rotationFriction: rotationFrictionProp ? rotationFrictionProp.value : false,
     zoomFriction: zoomFrictionProp ? zoomFrictionProp.value : false,
-    rollFriction: rollFrictionProp ? rollFrictionProp.value : false,
+    rollFriction: rollFrictionProp ? rollFrictionProp.value : false
   };
 };
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   setPopoverVisibility: (visible) => {
     dispatch(setPopoverVisibility({
       popover: 'flightController',
-      visible,
+      visible
     }));
     if (visible) {
       connectFlightController();
@@ -322,7 +324,7 @@ const mapDispatchToProps = dispatch => ({
   },
   stopListening: (uri) => {
     dispatch(unsubscribeToProperty(uri));
-  },
+  }
 });
 
 FlightControlPanel.propTypes = {
@@ -337,12 +339,12 @@ FlightControlPanel.propTypes = {
   connectFlightController: PropTypes.func.isRequired,
   disconnectFlightController: PropTypes.func.isRequired,
   startListening: PropTypes.func.isRequired,
-  stopListening: PropTypes.func.isRequired,
+  stopListening: PropTypes.func.isRequired
 };
 
 FlightControlPanel.defaultProps = {
   popoverVisible: false,
-  luaApi: undefined,
+  luaApi: undefined
 };
 
 FlightControlPanel = connect(mapStateToProps, mapDispatchToProps)(FlightControlPanel);

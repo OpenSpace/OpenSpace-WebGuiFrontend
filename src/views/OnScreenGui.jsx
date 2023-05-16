@@ -3,11 +3,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { setShowAbout, startConnection } from '../api/Actions';
 import {
-  formatVersion, isCompatible, RequiredOpenSpaceVersion, RequiredSocketApiVersion,
+  formatVersion, isCompatible, RequiredOpenSpaceVersion, RequiredSocketApiVersion
 } from '../api/Version';
 import BottomBar from '../components/BottomBar/BottomBar';
 import KeybindingPanel from '../components/BottomBar/KeybindingPanel';
-import environment from '../api/Environment'
+import environment from '../api/Environment';
 import Error from '../components/common/Error/Error';
 import Button from '../components/common/Input/Button/Button';
 import Overlay from '../components/common/Overlay/Overlay';
@@ -19,7 +19,7 @@ import Sidebar from '../components/Sidebar/Sidebar';
 import '../styles/base.scss';
 import About from './About/About';
 import styles from './OnScreenGui.scss';
-import TourPopup from '../components/GettingStartedTour/TourPopup'
+import TourPopup from '../components/GettingStartedTour/TourPopup';
 import { RefsProvider } from '../components/GettingStartedTour/GettingStartedContext';
 
 function OnScreenGui({
@@ -37,17 +37,17 @@ function OnScreenGui({
 
   React.useEffect(() => {
     dispatch(startConnection());
-    window.addEventListener("keydown", toggleConsole);
+    window.addEventListener('keydown', toggleConsole);
     return () => window.removeEventListener('keydown', toggleConsole);
   }, []);
 
   function hideAbout() {
     dispatch(setShowAbout(false));
   }
- 
+
   function toggleConsole(e) {
-    if (e.code === "Backquote") {
-      setLuaConsoleVisible(current => !current);
+    if (e.code === 'Backquote') {
+      setLuaConsoleVisible((current) => !current);
     }
   }
 
@@ -79,11 +79,11 @@ function OnScreenGui({
 
   return (
     <div className={styles.app} style={environment.developmentMode ? { borderStyle: 'solid', borderWidth: '3px', borderColor: 'orange' } : null}>
-      {environment.developmentMode &&
+      {environment.developmentMode && (
         <div className={styles.devModeTextBox}>
           <p>Dev Gui</p>
         </div>
-      }
+      )}
       <RefsProvider>
         { showAbout && (
 
@@ -107,7 +107,7 @@ function OnScreenGui({
           </Overlay>
         )}
         <section className={styles.Grid__Left}>
-          <Sidebar showTutorial={ setShowTutorial } />
+          <Sidebar showTutorial={setShowTutorial} />
         </section>
         <section className={styles.Grid__Right}>
           {isInBrowser && luaConsoleVisible && <LuaConsole />}
@@ -115,12 +115,11 @@ function OnScreenGui({
           <NodeMetaContainer />
           <BottomBar showFlightController={showFlightController} />
           <KeybindingPanel />
-          <TourPopup isVisible={showTutorial} setVisibility = { (show) => setShowTutorial(show)}/>
+          <TourPopup isVisible={showTutorial} setVisibility={(show) => setShowTutorial(show)} />
         </section>
       </RefsProvider>
     </div>
-  );  
-
+  );
 }
 
 export default OnScreenGui;

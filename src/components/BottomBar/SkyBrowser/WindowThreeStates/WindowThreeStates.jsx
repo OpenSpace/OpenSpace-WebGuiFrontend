@@ -10,7 +10,7 @@ import MaterialIcon from '../../../common/MaterialIcon/MaterialIcon';
 const WindowStyle = {
   DETACHED: 'DETACHED',
   PANE: 'PANE',
-  ATTACHED: 'ATTACHED',
+  ATTACHED: 'ATTACHED'
 };
 
 class WindowThreeStates extends Component {
@@ -18,7 +18,7 @@ class WindowThreeStates extends Component {
     super(props);
     this.state = {
       windowStyle: WindowStyle.ATTACHED,
-      windowWidth: 350,
+      windowWidth: 350
     };
 
     this.setAsPane = this.setAsPane.bind(this);
@@ -31,23 +31,25 @@ class WindowThreeStates extends Component {
     // Reset height when component is mounted
     this.props.sizeCallback(this.state.windowWidth, this.props.defaultHeight);
     switch (this.props.defaultStyle) {
-      case WindowStyle.ATTACHED:
-        this.setAsAttached();
-        break;
-      case WindowStyle.DETACHED:
-        this.setAsDetached();
-        break;
-      case WindowStyle.PANE:
-        this.setAsPane()
-        break;
-      default:
-        this.setAsAttached();
-        break;
+    case WindowStyle.ATTACHED:
+      this.setAsAttached();
+      break;
+    case WindowStyle.DETACHED:
+      this.setAsDetached();
+      break;
+    case WindowStyle.PANE:
+      this.setAsPane();
+      break;
+    default:
+      this.setAsAttached();
+      break;
     }
   }
 
   get asPopup() {
-    const { children, height, sizeCallback, minHeight } = this.props;
+    const {
+      children, height, sizeCallback, minHeight
+    } = this.props;
     return (
       <PopoverResizeable
         sizeCallback={sizeCallback}
@@ -61,7 +63,9 @@ class WindowThreeStates extends Component {
   }
 
   get asWindow() {
-    const { children, height, sizeCallback, minHeight } = this.props;
+    const {
+      children, height, sizeCallback, minHeight
+    } = this.props;
     return (
       <FloatingWindow
         sizeCallback={sizeCallback}
@@ -146,14 +150,14 @@ class WindowThreeStates extends Component {
     const { windowStyle } = this.state;
 
     switch (windowStyle) {
-      case WindowStyle.ATTACHED:
-        return this.asPopup;
-      case WindowStyle.DETACHED:
-        return this.asWindow;
-      case WindowStyle.PANE:
-        return this.asSideview;
-      default:
-        return this.asPopup;
+    case WindowStyle.ATTACHED:
+      return this.asPopup;
+    case WindowStyle.DETACHED:
+      return this.asWindow;
+    case WindowStyle.PANE:
+      return this.asSideview;
+    default:
+      return this.asPopup;
     }
   }
 }

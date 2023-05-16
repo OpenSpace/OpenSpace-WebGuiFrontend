@@ -16,7 +16,7 @@ class OverViewButton extends Component {
 }
 
 OverViewButton.propTypes = {
-  onClick: PropTypes.func.isRequired,
+  onClick: PropTypes.func.isRequired
 };
 
 export default OverViewButton;

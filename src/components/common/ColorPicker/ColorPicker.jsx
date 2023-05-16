@@ -11,12 +11,12 @@ class ColorPicker extends Component {
   render() {
     const { color, disableAlpha, onChange } = this.props;
 
-    // Override some default styling 
+    // Override some default styling
     const customPickerStyles = {
-      'default': {
+      default: {
         picker: {
           boxShadow: 'none',
-          width: '153px',
+          width: '153px'
         },
         // White backgrounds, to show checkboard
         alpha: {
@@ -29,7 +29,7 @@ class ColorPicker extends Component {
           padding: '12px 8px 10px'
         }
       },
-      'disableAlpha': {
+      disableAlpha: {
         swatch: {
           // The white bg results in ugly border for opaque colors,
           // so remove it when alpha is disabled
@@ -53,11 +53,11 @@ class ColorPicker extends Component {
 ColorPicker.propTypes = {
   color: PropTypes.object.isRequired,
   disableAlpha: PropTypes.bool,
-  onChange: PropTypes.func,
+  onChange: PropTypes.func
 };
 
 ColorPicker.defaultProps = {
-  disableAlpha: false,
+  disableAlpha: false
 };
 
 export default ColorPicker;

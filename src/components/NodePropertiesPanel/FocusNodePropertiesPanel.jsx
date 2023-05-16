@@ -11,17 +11,17 @@ class FocusNodePropertiesPanel extends Component {
   render() {
     const { node } = this.props;
     return (
-      <NodePropertiesPanel uri={node} isFocusNodePanel={true}/>
+      <NodePropertiesPanel uri={node} isFocusNodePanel />
     );
   }
 }
 
 const mapStateToProps = (state) => {
   const anchorProp = state.propertyTree.properties[NavigationAnchorKey];
-  const anchorNodeURI = anchorProp ? ScenePrefixKey + anchorProp.value : "";
+  const anchorNodeURI = anchorProp ? ScenePrefixKey + anchorProp.value : '';
 
   return {
-    node: anchorNodeURI,
+    node: anchorNodeURI
   };
 };
 

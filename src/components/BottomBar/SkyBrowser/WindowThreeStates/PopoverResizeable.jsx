@@ -26,18 +26,18 @@ class PopoverResizeable extends Component {
             topRight: false,
             bottomRight: false,
             bottomLeft: false,
-            topLeft: false,
+            topLeft: false
           }}
           defaultSize={{
             width: this.props.size.width,
-            height: this.props.size.height,
+            height: this.props.size.height
           }}
           minHeight={this.props.minHeight}
           maxHeight={900}
           handleClasses={{
             top: styles.topHandle,
             right: styles.rightHandle,
-            left: styles.leftHandle,
+            left: styles.leftHandle
           }}
           onResizeStop={() => sizeCallback(this.windowDiv.clientWidth, this.windowDiv.clientHeight)}
         >
@@ -52,13 +52,13 @@ PopoverResizeable.propTypes = {
   children: PropTypes.node,
   size: PropTypes.shape({
     height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  }),
+    width: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+  })
 };
 
 PopoverResizeable.defaultProps = {
   children: [],
-  size: { height: 'auto', width: 'auto' },
+  size: { height: 'auto', width: 'auto' }
 };
 
 PopoverResizeable.styles = styles;

@@ -14,7 +14,7 @@ class Input extends Component {
 
     this.state = {
       value: props.value,
-      id: `input-${Input.nextId}`,
+      id: `input-${Input.nextId}`
     };
 
     this.onChange = this.onChange.bind(this);
@@ -86,7 +86,9 @@ class Input extends Component {
   }
 
   render() {
-    const { placeholder, className, wide, loading, clearable, label, children } = this.props;
+    const {
+      placeholder, className, wide, loading, clearable, label, children
+    } = this.props;
     const { value, id } = this.state;
     return (
       <div className={`${styles.group} ${wide ? styles.wide : ''}`}>
@@ -134,7 +136,7 @@ Input.propTypes = {
   loading: PropTypes.bool,
   placeholder: PropTypes.string.isRequired,
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  wide: PropTypes.bool,
+  wide: PropTypes.bool
 };
 
 Input.defaultProps = {
@@ -145,8 +147,7 @@ Input.defaultProps = {
   label: null,
   loading: false,
   value: '',
-  wide: true,
+  wide: true
 };
 
 export default Input;
-

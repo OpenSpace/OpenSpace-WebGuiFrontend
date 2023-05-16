@@ -3,11 +3,11 @@ import { actionTypes } from '../Actions/actionTypes';
 
 import api from '../api';
 
-let topic = undefined;
+let topic;
 
-const subscribeToShortcuts = callback => {
+const subscribeToShortcuts = (callback) => {
   topic = api.startTopic('shortcuts', {
-    event: 'start_subscription',
+    event: 'start_subscription'
   });
   (async () => {
     for await (const data of topic.iterator()) {
@@ -24,27 +24,27 @@ const unsubscribeToShortcuts = () => {
     event: 'stop_subscription'
   });
   topic.cancel();
-}
+};
 
-export const shortcuts = store => next => (action) => {
+export const shortcuts = (store) => (next) => (action) => {
   const result = next(action);
   switch (action.type) {
-    case actionTypes.onOpenConnection:
-      subscribeToShortcuts((data) => {
-        store.dispatch(initializeShortcuts(data));
-      });
-      break;
-    case actionTypes.onCloseConnection:
-      unsubscribeToShortcuts();
-      break;
-    case actionTypes.triggerAction:
-      const actionName = action.payload;
-      console.log(api);
-      store.getState().luaApi.action.triggerAction(actionName);
-      break;
+  case actionTypes.onOpenConnection:
+    subscribeToShortcuts((data) => {
+      store.dispatch(initializeShortcuts(data));
+    });
     break;
-    default:
-      break;
+  case actionTypes.onCloseConnection:
+    unsubscribeToShortcuts();
+    break;
+  case actionTypes.triggerAction:
+    const actionName = action.payload;
+    console.log(api);
+    store.getState().luaApi.action.triggerAction(actionName);
+    break;
+    break;
+  default:
+    break;
   }
   return result;
 };

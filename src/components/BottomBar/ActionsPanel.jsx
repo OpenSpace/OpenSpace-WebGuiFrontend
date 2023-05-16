@@ -14,13 +14,13 @@ import { ObjectWordBeginningSubstring } from '../../utils/StringMatchers';
 import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
 
 export function ActionsButton({ action }) {
-  const luaApi = useSelector(state => state.luaApi);
+  const luaApi = useSelector((state) => state.luaApi);
 
   function sendAction(e) {
     const actionId = e.currentTarget.getAttribute('actionid');
     luaApi.action.triggerAction(actionId);
   }
-  
+
   const isLocal = (action.synchronization === false);
 
   return (
@@ -35,14 +35,15 @@ export function ActionsButton({ action }) {
         <MaterialIcon className={styles.buttonIcon} icon="launch" />
         {isLocal && <span className={styles.localText}> (Local)</span>}
       </p>
-      {action.name} {' '}
+      {action.name}
+      {' '}
+      {' '}
       {action.documentation && <InfoBox text={action.documentation} />}
     </Button>
   );
 }
 
-
-function ActionsPanel ({
+function ActionsPanel({
   actionLevel,
   actionPath,
   allActions,
@@ -50,7 +51,7 @@ function ActionsPanel ({
   navigationPath,
   popoverVisible,
   setPopoverVisibility,
-  singlewindow,
+  singlewindow
 }) {
   function togglePopover() {
     setPopoverVisibility(!popoverVisible);
@@ -119,7 +120,7 @@ function ActionsPanel ({
 
   function actionsContent(filterListHeight) {
     if (actionLevel === undefined) {
-      return <CenteredLabel>{"Loading..."}</CenteredLabel>;
+      return <CenteredLabel>Loading...</CenteredLabel>;
     }
     const isEmpty = (actionLevel.length === 0);
     const actionsContent = isEmpty ? <div>No Actions</div> : getActionContent(actionLevel);
@@ -215,13 +216,13 @@ const mapSubStateToProps = ({ popoverVisible, luaApi, actions }) => {
     // If there is no backslash at beginning of GUI path, add that manually
     // (there should always be though)
     if (action.guiPath.length > 0 && action.guiPath[0] !== '/') {
-      action.guiPath = '/' + action.guiPath;
+      action.guiPath = `/${action.guiPath}`;
     }
 
     let splits = action.guiPath.split('/');
     // Remove all empty strings: which is what we get before initial slash and
     // if the path is just a slash
-    splits = splits.filter((s) => s !== "");
+    splits = splits.filter((s) => s !== '');
 
     let parent = actionsMapped['/'];
 
@@ -247,7 +248,7 @@ const mapSubStateToProps = ({ popoverVisible, luaApi, actions }) => {
   const navPath = actions.navigationPath;
   let actionsForPath = actionsMapped['/'];
   if (navPath.length > 1) {
-    var splits = navPath.split('/');
+    const splits = navPath.split('/');
     splits.shift();
     while (splits.length > 0) {
       var index = splits.shift();
@@ -255,20 +256,18 @@ const mapSubStateToProps = ({ popoverVisible, luaApi, actions }) => {
     }
   }
 
-  const allActions = actions.data.shortcuts.filter(action => {
+  const allActions = actions.data.shortcuts.filter((action) => {
     if (navPath.length === 1) {
       return true;
     }
-    else {
-      var navPathGui = navPath.split('/');
-      var actionPathGui = action.guiPath?.split('/');
-      for (let i = 0; i < navPathGui.length; i++) {
-        if (actionPathGui?.[i] !== navPathGui[i]) {
-          return false;
-        }
+    const navPathGui = navPath.split('/');
+    const actionPathGui = action.guiPath?.split('/');
+    for (let i = 0; i < navPathGui.length; i++) {
+      if (actionPathGui?.[i] !== navPathGui[i]) {
+        return false;
       }
-      return true;
     }
+    return true;
   });
 
   // Truncate navigation path if too long
@@ -281,7 +280,7 @@ const mapSubStateToProps = ({ popoverVisible, luaApi, actions }) => {
     if (originalPath[0] === '/') {
       originalPath = originalPath.substring(1);
     }
-    let pieces = originalPath.split('/');
+    const pieces = originalPath.split('/');
     if (pieces.length > 1) {
       // TODO: maybe keep more pieces of the path, if possible?
       truncatedPath = `/${pieces[0]}/.../${pieces[pieces.length - 1]}`;
@@ -296,21 +295,21 @@ const mapSubStateToProps = ({ popoverVisible, luaApi, actions }) => {
     luaApi,
     navigationPath: actions.navigationPath,
     displayedNavigationPath: truncatedPath,
-    allActions: allActions,
+    allActions
   };
 };
 
 const mapStateToSubState = (state) => ({
   popoverVisible: state.local.popovers.actions.visible,
   luaApi: state.luaApi,
-  actions: state.shortcuts,
+  actions: state.shortcuts
 });
 
 const mapDispatchToProps = (dispatch) => ({
   setPopoverVisibility: (visible) => {
     dispatch(setPopoverVisibility({
       popover: 'actions',
-      visible,
+      visible
     }));
   },
   trigger: (action) => {
@@ -318,7 +317,7 @@ const mapDispatchToProps = (dispatch) => ({
   },
   actionPath: (action) => {
     dispatch(setActionsPath(action));
-  },
+  }
 });
 
 ActionsPanel = connect(

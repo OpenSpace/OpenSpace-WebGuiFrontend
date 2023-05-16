@@ -3,7 +3,7 @@ import { actionTypes } from '../Actions/actionTypes';
 
 import api from '../api';
 
-let timeTopic = undefined;
+let timeTopic;
 let nSubscribers = 0;
 
 function handleData(store, data) {
@@ -12,7 +12,7 @@ function handleData(store, data) {
 
 async function setupSubscription(store) {
   timeTopic = api.startTopic('time', {
-    event: 'start_subscription',
+    event: 'start_subscription'
   });
   for await (const data of timeTopic.iterator()) {
     handleData(store, data);
@@ -29,34 +29,33 @@ function tearDownSubscription() {
   timeTopic.cancel();
 }
 
-export const time = store => next => action => {
+export const time = (store) => (next) => (action) => {
   const result = next(action);
   const state = store.getState();
   switch (action.type) {
-    case actionTypes.onOpenConnection:
-      if (nSubscribers > 0) {
-        setupSubscription(store);
-      }
-    case actionTypes.subscribeToTime:
-      ++nSubscribers;
-      if (nSubscribers === 1 && state.connection.isConnected) {
-        setupSubscription(store);
-      }
-      break;
-    case actionTypes.unsubscribeToTime: {
-      if (nSubscribers > 0) {
-        --nSubscribers;
-      }
-      if (timeTopic && nSubscribers === 0) {
-        tearDownSubscription();
-      }
-      break;
+  case actionTypes.onOpenConnection:
+    if (nSubscribers > 0) {
+      setupSubscription(store);
     }
-    default:
-      break;
+  case actionTypes.subscribeToTime:
+    ++nSubscribers;
+    if (nSubscribers === 1 && state.connection.isConnected) {
+      setupSubscription(store);
+    }
+    break;
+  case actionTypes.unsubscribeToTime: {
+    if (nSubscribers > 0) {
+      --nSubscribers;
+    }
+    if (timeTopic && nSubscribers === 0) {
+      tearDownSubscription();
+    }
+    break;
+  }
+  default:
+    break;
   }
   return result;
 };
-
 
 export default time;

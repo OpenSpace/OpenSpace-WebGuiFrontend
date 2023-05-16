@@ -50,7 +50,7 @@ function SkyBrowserSelectedImagesList({
   // Check if they are currently loading or not
   const imageIndicesCurrent = shouldUseCache.current ? imageIndicesCache.current : imageIndicesRedux;
   const imageOpacitiesCurrent = shouldUseCache.current ? imageOpacitiesCache.current : imageOpacitiesRedux;
-  const imagesCurrent = imageIndicesCurrent.map(index => imageList[index.toString()]);
+  const imagesCurrent = imageIndicesCurrent.map((index) => imageList[index.toString()]);
 
   // Stop using the cache when the Redux store is up to date
   if (imageIndicesRedux.toString() === imageIndicesCache.current.toString()) {
@@ -61,7 +61,7 @@ function SkyBrowserSelectedImagesList({
     luaApi.skybrowser.setImageLayerOrder(browserId, imageList[identifier].url, order);
     const reverseOrder = imageIndicesCurrent.length - order - 1;
     passMessageToWwt({
-      event: "image_layer_order",
+      event: 'image_layer_order',
       id: String(identifier),
       order: Number(reverseOrder),
       version: messageCounter
@@ -75,9 +75,9 @@ function SkyBrowserSelectedImagesList({
     return layers;
   }
 
-  function onDragStart () {
+  function onDragStart() {
     setIsDragging(true);
-  };
+  }
 
   async function onDragEnd(result) {
     if (!result.destination || result.source.index === result.destination.index) {
@@ -93,50 +93,50 @@ function SkyBrowserSelectedImagesList({
     setIsDragging(false);
 
     // Move image logic
-    await setImageLayerOrder(selectedBrowserId, Number(result.draggableId), result.destination.index)
-  };
+    await setImageLayerOrder(selectedBrowserId, Number(result.draggableId), result.destination.index);
+  }
 
   // Invisible overlay that covers the entire body and prevents other hover effects
   // from being triggered while dragging
   const overlay = (
     <div style={{
-      position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100,
+      position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100
     }}
     />
   );
-    return (
-      <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
-        { isDragging && overlay }
-        <Droppable droppableId="layers">
-          { provided => (
-            <div {...provided.droppableProps} ref={provided.innerRef}>
-              { imagesCurrent.map((entry, index) => (
-                <Draggable key={entry.identifier} draggableId={entry.identifier} index={index}>
-                  {provided => (
-                    <div {...provided.draggableProps} ref={provided.innerRef}>
-                      <SkyBrowserTabEntry
-                        dragHandleTitleProps={provided.dragHandleProps}
-                        {...entry}
-                        luaApi={luaApi}
-                        key={entry.identifier}
-                        onSelect={selectImage}
-                        removeImageSelection={removeImageSelection}
-                        opacity={imageOpacitiesCurrent[index]}
-                        setOpacity={setOpacityOfImage}
-                        currentBrowserColor={currentBrowserColor}
-                        isActive={activeImage === entry.identifier}
-                        moveCircleToHoverImage={moveCircleToHoverImage}
-                      />
-                    </div>
-                  )}
-                </Draggable>
-              ))}
-              { provided.placeholder }
-            </div>
-          )}
-        </Droppable>
-      </DragDropContext>
-    );
+  return (
+    <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
+      { isDragging && overlay }
+      <Droppable droppableId="layers">
+        { (provided) => (
+          <div {...provided.droppableProps} ref={provided.innerRef}>
+            { imagesCurrent.map((entry, index) => (
+              <Draggable key={entry.identifier} draggableId={entry.identifier} index={index}>
+                {(provided) => (
+                  <div {...provided.draggableProps} ref={provided.innerRef}>
+                    <SkyBrowserTabEntry
+                      dragHandleTitleProps={provided.dragHandleProps}
+                      {...entry}
+                      luaApi={luaApi}
+                      key={entry.identifier}
+                      onSelect={selectImage}
+                      removeImageSelection={removeImageSelection}
+                      opacity={imageOpacitiesCurrent[index]}
+                      setOpacity={setOpacityOfImage}
+                      currentBrowserColor={currentBrowserColor}
+                      isActive={activeImage === entry.identifier}
+                      moveCircleToHoverImage={moveCircleToHoverImage}
+                    />
+                  </div>
+                )}
+              </Draggable>
+            ))}
+            { provided.placeholder }
+          </div>
+        )}
+      </Droppable>
+    </DragDropContext>
+  );
 }
 
 export default React.memo(SkyBrowserSelectedImagesList);

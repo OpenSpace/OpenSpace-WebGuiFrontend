@@ -6,7 +6,7 @@ import { UpdateDeltaTimeNow } from '../../../utils/timeHelpers';
 import { abortFlight } from '../../../utils/storyHelpers';
 import FocusButton from './FocusButton';
 import {
-  ScenePrefixKey, NavigationAnchorKey, RetargetAnchorKey,
+  NavigationAnchorKey, RetargetAnchorKey, ScenePrefixKey
 } from '../../../api/keys';
 import styles from './FocusMenu.scss';
 import OverViewButton from './OverViewButton';
@@ -19,7 +19,7 @@ class FocusMenu extends Component {
     super(props);
 
     this.state = {
-      origin: '',
+      origin: ''
     };
 
     this.applyOverview = this.applyOverview.bind(this);
@@ -29,7 +29,7 @@ class FocusMenu extends Component {
   componentDidMount() {
     const {
       anchorDispatcher,
-      retargetAnchorDispatcher,
+      retargetAnchorDispatcher
     } = this.props;
 
     anchorDispatcher.subscribe();
@@ -83,12 +83,12 @@ class FocusMenu extends Component {
 
   createFocusButtons() {
     const { anchor, focusNodes } = this.props;
-    const focusPicker = focusNodes.map(node => (
+    const focusPicker = focusNodes.map((node) => (
       <FocusButton
         key={node.identifier}
         identifier={node.identifier}
         active={anchor.value}
-        onChangeFocus={origin => this.onChangeFocus({ origin })}
+        onChangeFocus={(origin) => this.onChangeFocus({ origin })}
       />
     ));
     return (focusPicker);
@@ -115,9 +115,7 @@ const mapStateToProps = (state) => {
   if (Object.keys(state.propertyTree).length !== 0) {
     const buttons = state.storyTree.story.focusbuttons;
     if (buttons) {
-      focusNodes = buttons.map(button => 
-        state.propertyTree.propertyOwners[ScenePrefixKey + button]
-      );
+      focusNodes = buttons.map((button) => state.propertyTree.propertyOwners[ScenePrefixKey + button]);
     }
 
     anchor = state.propertyTree.properties[NavigationAnchorKey];
@@ -127,20 +125,16 @@ const mapStateToProps = (state) => {
     overviewLimit,
     focusNodes,
     anchor,
-    luaApi: state.luaApi,
+    luaApi: state.luaApi
   };
 };
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   changePropertyValue: (uri, value) => {
     dispatch(setPropertyValue(uri, value));
   },
-  anchorDispatcher: propertyDispatcher(
-    dispatch, NavigationAnchorKey
-  ),
-  retargetAnchorDispatcher: propertyDispatcher(
-    dispatch, RetargetAnchorKey
-  )
+  anchorDispatcher: propertyDispatcher(dispatch, NavigationAnchorKey),
+  retargetAnchorDispatcher: propertyDispatcher(dispatch, RetargetAnchorKey)
 });
 
 FocusMenu = connect(
@@ -151,7 +145,7 @@ FocusMenu = connect(
 FocusMenu.defaultProps = {
   focusNodes: [],
   properties: [],
-  changePropertyValue: null,
+  changePropertyValue: null
 };
 
 export default FocusMenu;

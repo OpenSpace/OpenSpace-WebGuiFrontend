@@ -12,7 +12,7 @@ class PaneRightHandSide extends Component {
   onResizeStop() {
     const { sizeCallback } = this.props;
     if (sizeCallback) {
-      sizeCallback(this.windowDiv.clientWidth, this.windowDiv.clientHeight)
+      sizeCallback(this.windowDiv.clientWidth, this.windowDiv.clientHeight);
     }
   }
 
@@ -22,7 +22,7 @@ class PaneRightHandSide extends Component {
   }
 
   componentWillUnmount() {
-    window.removeEventListener('resize', this.onResizeStop)
+    window.removeEventListener('resize', this.onResizeStop);
   }
 
   render() {
@@ -36,7 +36,7 @@ class PaneRightHandSide extends Component {
       topRight: false,
       bottomRight: false,
       bottomLeft: false,
-      topLeft: false,
+      topLeft: false
     };
 
     return (
@@ -48,7 +48,7 @@ class PaneRightHandSide extends Component {
           enable={resizablePlacement}
           defaultSize={{
             width: this.props.width,
-            height: '100%',
+            height: '100%'
           }}
           minWidth={250}
           handleClasses={{ left: styles.leftHandle }}
@@ -63,11 +63,11 @@ class PaneRightHandSide extends Component {
 }
 
 PaneRightHandSide.propTypes = {
-  children: PropTypes.node,
+  children: PropTypes.node
 };
 
 PaneRightHandSide.defaultProps = {
-  children: [],
+  children: []
 };
 
 PaneRightHandSide.styles = styles;

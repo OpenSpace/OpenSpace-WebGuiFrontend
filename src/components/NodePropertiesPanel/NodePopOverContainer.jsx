@@ -14,8 +14,8 @@ class NodePopOverContainer extends Component {
     return (
       <div className={styles.nodePopOverContainer}>
         <FocusNodePropertiesPanel />
-        { 
-          activeNodePropertyPanels.map(uri => <NodePropertiesPanel uri={uri} key={uri}/>) 
+        {
+          activeNodePropertyPanels.map((uri) => <NodePropertiesPanel uri={uri} key={uri} />)
         }
       </div>
     );
@@ -23,13 +23,11 @@ class NodePopOverContainer extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const activeNodePropertyPanels = state.local.popovers.activeNodePropertyPanels;
-  const panels = Object.keys(activeNodePropertyPanels).map(function(key) {
-      return key;
-  });
+  const { activeNodePropertyPanels } = state.local.popovers;
+  const panels = Object.keys(activeNodePropertyPanels).map((key) => key);
 
   return {
-    activeNodePropertyPanels: panels,
+    activeNodePropertyPanels: panels
   };
 };
 

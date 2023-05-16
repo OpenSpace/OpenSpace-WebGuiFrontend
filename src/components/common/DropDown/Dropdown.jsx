@@ -3,7 +3,9 @@ import styles from './Dropdown.scss';
 
 const DEFAULT_PLACEHOLDER_STRING = 'Select...';
 
-function Dropdown({value, placeholder, options, onFocus, disabled, onChange, ...props}) {
+function Dropdown({
+  value, placeholder, options, onFocus, disabled, onChange, ...props
+}) {
   const [selected, setSelected] = React.useState(value || {
     label: typeof placeholder === 'undefined' ? DEFAULT_PLACEHOLDER_STRING : placeholder,
     value: ''
@@ -11,7 +13,7 @@ function Dropdown({value, placeholder, options, onFocus, disabled, onChange, ...
   const [isOpen, setIsOpen] = React.useState(false);
   const mounted = React.useRef(true);
   const dropdownRef = React.useRef(null);
-  
+
   // Add and remove event listeners
   React.useEffect(() => {
     document.addEventListener('click', handleDocumentClick, false);
@@ -29,16 +31,15 @@ function Dropdown({value, placeholder, options, onFocus, disabled, onChange, ...
       if (selected !== value) {
         setSelected(value);
       }
-    }
-    else {
+    } else {
       setSelected({
-          label: typeof placeholder === 'undefined' ? DEFAULT_PLACEHOLDER_STRING : placeholder,
-          value: ''
+        label: typeof placeholder === 'undefined' ? DEFAULT_PLACEHOLDER_STRING : placeholder,
+        value: ''
       });
     }
   }, [value]);
 
-  function handleMouseDown (event) {
+  function handleMouseDown(event) {
     if (onFocus && typeof onFocus === 'function') {
       onFocus(isOpen);
     }
@@ -53,21 +54,21 @@ function Dropdown({value, placeholder, options, onFocus, disabled, onChange, ...
     }
   }
 
-  function setValue (value, label) {
+  function setValue(value, label) {
     fireChangeEvent({ value, label });
     setSelected({ value, label });
     setIsOpen(false);
   }
 
-  function fireChangeEvent (newSelected) {
+  function fireChangeEvent(newSelected) {
     if (newSelected !== selected && onChange) {
       onChange(newSelected);
     }
   }
 
-  function buildMenu () {
+  function buildMenu() {
     const optionDivs = options.map((option) => {
-      let value = option.value;
+      let { value } = option;
       if (typeof value === 'undefined') {
         value = option.label || option;
       }
@@ -80,7 +81,7 @@ function Dropdown({value, placeholder, options, onFocus, disabled, onChange, ...
           className={`${styles.DropdownOption} ${isSelected && styles.isSelected}`}
           onMouseDown={() => setValue(value, label)}
           onClick={() => setValue(value, label)}
-          role='option'
+          role="option"
           aria-selected={isSelected ? 'true' : 'false'}
         >
           {label}
@@ -105,7 +106,7 @@ function Dropdown({value, placeholder, options, onFocus, disabled, onChange, ...
         className={styles.DropdownControl}
         onMouseDown={handleMouseDown}
         onTouchEnd={handleMouseDown}
-        aria-haspopup='listbox'
+        aria-haspopup="listbox"
       >
         <div className={styles.DropdownPlaceholder}>
           {typeof selected === 'string' ? selected : selected.label}
@@ -115,7 +116,7 @@ function Dropdown({value, placeholder, options, onFocus, disabled, onChange, ...
         </div>
       </div>
       {isOpen && (
-        <div className={styles.DropdownMenu} aria-expanded='true' {...props}>
+        <div className={styles.DropdownMenu} aria-expanded="true" {...props}>
           {buildMenu()}
         </div>
       )}

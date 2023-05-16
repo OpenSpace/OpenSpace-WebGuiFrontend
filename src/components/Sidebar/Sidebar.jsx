@@ -11,7 +11,7 @@ import TabMenuItem from './TabMenu/TabMenuItem';
 
 const views = {
   settings: SettingsPane,
-  scene: ScenePane,
+  scene: ScenePane
 };
 
 class Sidebar extends Component {
@@ -30,14 +30,14 @@ class Sidebar extends Component {
   onResizeStop(e, direction, ref, delta) {
     this.setState({
       width: this.state.width + delta.width
-    })
+    });
   }
 
   selectView(selectedView) {
     return () => {
       this.setState((previous) => {
         const view = (previous.view === selectedView ? null : selectedView);
-        return Object.assign({}, previous, { view });
+        return { ...previous, view };
       });
     };
   }
@@ -50,7 +50,7 @@ class Sidebar extends Component {
     const { view } = this.state;
     const SelectedView = views[view];
 
-    const size = {height: this.state.view ? '100%' : 60, width: this.state.width};
+    const size = { height: this.state.view ? '100%' : 60, width: this.state.width };
 
     return (
       <Resizable
@@ -70,16 +70,16 @@ class Sidebar extends Component {
         maxHeight={size.height}
         minWidth={200}
         maxWidth={window.innerWidth - 50}
-        handleClasses={{right: styles.rightHandle}}
+        handleClasses={{ right: styles.rightHandle }}
         onResizeStop={this.onResizeStop}
       >
         <section className={`${styles.Sidebar} ${view ? styles.active : ''}`}>
           { SelectedView && (<SelectedView closeCallback={this.selectView} />)}
           <TabMenu>
-            <SystemMenu showTutorial={this.props.showTutorial}/>
+            <SystemMenu showTutorial={this.props.showTutorial} />
             <TabMenuItem active={this.isActive('scene')} onClick={this.selectView('scene')}>
               <MaterialIcon className={styles.icon} icon="layers" />
-              <SmallLabel refKey={'Scene'}>Scene</SmallLabel>
+              <SmallLabel refKey="Scene">Scene</SmallLabel>
             </TabMenuItem>
             <TabMenuItem active={this.isActive('settings')} onClick={this.selectView('settings')}>
               <MaterialIcon className={styles.icon} icon="settings" />

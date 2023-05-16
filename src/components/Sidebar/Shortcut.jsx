@@ -25,56 +25,58 @@ class Shortcut extends Component {
       return null;
     }
     const modifierString = Object.keys(modifiers)
-      .map(m => modifiers[m] ? modifierStrings[m] : false)
-      .filter(m => m)
+      .map((m) => (modifiers[m] ? modifierStrings[m] : false))
+      .filter((m) => m)
       .join(' + ');
 
-    const keyString = (modifierString === '') ? key : (modifierString + ' + ' + key);
+    const keyString = (modifierString === '') ? key : (`${modifierString} + ${key}`);
 
     return <span className={styles.keybinding}>{keyString}</span>;
   }
 
   render() {
     const { documentation, name } = this.props.data;
-    const execute = this.props.execute;
+    const { execute } = this.props;
 
     return (
       <div className={styles.shortcutContainer}>
-        <Button transparent className={styles.executeButton} onClick={execute} >
+        <Button transparent className={styles.executeButton} onClick={execute}>
           <MaterialIcon icon="play_arrow" />
-          </Button>
-        <div className={styles.content}> 
-          {name} {this.keybinding} &nbsp; <InfoBox text={documentation} />
+        </Button>
+        <div className={styles.content}>
+          {name}
+          {' '}
+          {this.keybinding}
+          {' '}
+&nbsp;
+          {' '}
+          <InfoBox text={documentation} />
         </div>
       </div>
     );
-   }
+  }
 }
 
 const mapStateToSubState = (state) => ({
   shortcuts: state.shortcuts.data.shortcuts
-})
+});
 
 const mapSubStateToProps = ({ shortcuts }, { index }) => {
   const shortcut = shortcuts[index];
   return {
     data: shortcut
-  }
+  };
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-  return {
-    execute: () => {
-      dispatch(executeShortcut(ownProps.index))
-    }
+const mapDispatchToProps = (dispatch, ownProps) => ({
+  execute: () => {
+    dispatch(executeShortcut(ownProps.index));
   }
-}
+});
 
 Shortcut = connect(
   subStateToProps(mapSubStateToProps, mapStateToSubState),
   mapDispatchToProps,
 )(Shortcut);
-
-
 
 export default Shortcut;

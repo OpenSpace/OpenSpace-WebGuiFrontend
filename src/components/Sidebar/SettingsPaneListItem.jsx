@@ -10,28 +10,32 @@ class SettingsPaneListItem extends Component {
   }
 
   render() {
-    const props = this.props;
+    const { props } = this;
 
     if (props.type === 'subPropertyOwner') {
       return (
         <div className={styles.propertyItemGroup}>
           <p>{removeLastWordFromUri(this.props.uri)}</p>
           <PropertyOwner
-              uri={this.props.uri}
-              expansionIdentifier={'scene-search/' + this.props.uri} />
+            uri={this.props.uri}
+            expansionIdentifier={`scene-search/${this.props.uri}`}
+          />
         </div>
       );
     }
     if (props.type === 'propertyOwner') {
-      return <PropertyOwner
-              uri={this.props.uri}
-              expansionIdentifier={'scene-search/' + this.props.uri} />
+      return (
+        <PropertyOwner
+          uri={this.props.uri}
+          expansionIdentifier={`scene-search/${this.props.uri}`}
+        />
+      );
     }
     if (props.type === 'property') {
       return (
         <div className={styles.propertyItemGroup}>
           <p>{removeLastWordFromUri(this.props.uri)}</p>
-          <Property index={this.props.index} key={this.props.uri} uri={this.props.uri}/>
+          <Property index={this.props.index} key={this.props.uri} uri={this.props.uri} />
         </div>
       );
     }

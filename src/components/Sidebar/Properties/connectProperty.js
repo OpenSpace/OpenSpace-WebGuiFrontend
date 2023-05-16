@@ -6,11 +6,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   const { uri } = ownProps;
   return {
     dispatcher: propertyDispatcher(dispatch, uri)
-  }
-}
+  };
+};
 
 const mapStateToSubState = (state) => ({
-  properties: state.propertyTree.properties,
+  properties: state.propertyTree.properties
 });
 
 const mapSubStateToProps = ({ properties }, ownProps) => {
@@ -20,11 +20,11 @@ const mapSubStateToProps = ({ properties }, ownProps) => {
   return {
     value: property.value,
     description: property.description
-  }
-}
+  };
+};
 
 export const connectProperty =
-  Property => connect(
+  (Property) => connect(
     subStateToProps(mapSubStateToProps, mapStateToSubState),
     mapDispatchToProps
   )(Property);

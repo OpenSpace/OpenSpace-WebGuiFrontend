@@ -1,10 +1,10 @@
 import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import Button from '../../common/Input/Button/Button';
-import Checkbox from '../../common/Input/Checkbox/Checkbox';
 import Focus from 'svg-react-loader?name=Focus!../../../icons/focus.svg';
 import DraggableIcon from 'svg-react-loader?name=Aim!../../../icons/draggable_list.svg';
+import Button from '../../common/Input/Button/Button';
+import Checkbox from '../../common/Input/Checkbox/Checkbox';
 import styles from './PropertyOwnerHeader.scss';
 import toggleHeaderStyles from '../../common/ToggleContent/ToggleHeader.scss';
 import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
@@ -13,9 +13,9 @@ import { displayName } from './PropertyOwner';
 import propertyDispatcher from '../../../api/propertyDispatcher';
 import {
   Engine_FadeDurationKey,
-  NavigationAnchorKey,
   NavigationAimKey,
-  RetargetAnchorKey,
+  NavigationAnchorKey,
+  RetargetAnchorKey
 } from '../../../api/keys';
 import { isGlobeBrowsingLayer } from '../../../utils/propertyTreeHelpers';
 import { useContextRefs } from '../../GettingStartedTour/GettingStartedContext';
@@ -24,7 +24,7 @@ import TooltipMenu from '../../common/Tooltip/TooltipMenu';
 
 function PropertyOwnerHeader({
   enabled, enabledUri, expanded, fadeDuration, fadeUri, fadeValue, focusAction,
-  getPropertyDispatcher, identifier, isLayer, luaApi, metaAction,  offIcon, onIcon,
+  getPropertyDispatcher, identifier, isLayer, luaApi, metaAction, offIcon, onIcon,
   popOutAction, setExpanded, shiftFocusAction, title, trashAction
 }) {
   // 1 is positive => fading in, -1 negative => fading out. Undefined or 0 means no fading
@@ -38,7 +38,7 @@ function PropertyOwnerHeader({
     return () => {
       // unsubscribe on component unmount
       getPropertyDispatcher(fadeUri).unsubscribe();
-    }
+    };
   }, []);
 
   useEffect(() => {
@@ -48,7 +48,7 @@ function PropertyOwnerHeader({
     return () => {
       // unsubscribe on component unmount
       getPropertyDispatcher(enabledUri).unsubscribe();
-    }
+    };
   }, []);
 
   // When fade value changes
@@ -59,12 +59,10 @@ function PropertyOwnerHeader({
     if (fadeValue && prevFade && prevFade !== fadeValue) {
       if (fadeValue > prevFade) {
         setFadeDirection(1); // fading in
-      }
-      else {
+      } else {
         setFadeDirection(-1); // fading out
       }
-    }
-    else {
+    } else {
       setFadeDirection(0);
     }
 
@@ -73,12 +71,11 @@ function PropertyOwnerHeader({
     if (fadeValue < 0.0001 && isFadingOut) {
       getPropertyDispatcher(enabledUri).set(false);
     }
-
-  }, [fadeValue])
+  }, [fadeValue]);
 
   function onClick(evt) {
     setExpanded(!expanded);
-  };
+  }
 
   function onClickFocus(evt) {
     if (evt.shiftKey && shiftFocusAction) {
@@ -87,7 +84,7 @@ function PropertyOwnerHeader({
       focusAction();
     }
     evt.stopPropagation();
-  };
+  }
 
   function onToggleCheckboxClick(shouldBeEnabled, event) {
     if (!enabledUri) return;
@@ -117,26 +114,25 @@ function PropertyOwnerHeader({
       // Enable the thing immediately so we see the visual changes
       getPropertyDispatcher(enabledUri).set(true);
       luaApi.setPropertyValueSingle(fadeUri, 1.0, fadeDuration);
-    }
-    else { // fade out
+    } else { // fade out
       luaApi.setPropertyValueSingle(fadeUri, 0.0, fadeDuration);
     }
-  };
+  }
 
   function popoutClick(evt) {
     popOutAction();
     evt.stopPropagation();
-  };
+  }
 
   function metaClick(evt) {
     metaAction();
     evt.stopPropagation();
-  };
+  }
 
   function trashClick(evt) {
     trashAction(identifier);
     evt.stopPropagation();
-  };
+  }
 
   const focusButton = (
     <div className={styles.rightButton} onClick={onClickFocus}>
@@ -145,26 +141,32 @@ function PropertyOwnerHeader({
   );
 
   const moreButtonsButton = (
-    <div className={styles.rightButton} >
-      <MaterialIcon icon={"more_vert"} />
+    <div className={styles.rightButton}>
+      <MaterialIcon icon="more_vert" />
     </div>
   );
 
   const popoutButton = (
     <Button className={styles.menuButton} onClick={popoutClick}>
-      <MaterialIcon icon={"build"} /> Quick access settings
+      <MaterialIcon icon="build" />
+      {' '}
+      Quick access settings
     </Button>
   );
 
   const metaButton = (
     <Button className={styles.menuButton} onClick={metaClick}>
-      <MaterialIcon icon={"help_outline"} /> Show asset information
+      <MaterialIcon icon="help_outline" />
+      {' '}
+      Show asset information
     </Button>
   );
 
   const trashButton = (
     <Button className={styles.menuButton} onClick={trashClick}>
-      <MaterialIcon icon={"delete"} /> Delete
+      <MaterialIcon icon="delete" />
+      {' '}
+      Delete
     </Button>
   );
 
@@ -177,29 +179,29 @@ function PropertyOwnerHeader({
   const isHeightLayer = isLayer && enabledUri.includes('Layers.HeightLayers.');
   const refs = useContextRefs();
 
-  let refName = "PropertyOwner " + title;
+  let refName = `PropertyOwner ${title}`;
   const titleNoSpaces = title.replace(/\s/g, '');
   if (titleNoSpaces !== identifier) {
-    refName += " " + identifier;
+    refName += ` ${identifier}`;
   }
 
   const hasMoreButtons = (popOutAction || metaAction);
-  const shouldFadeCheckbox = (fadeUri && fadeValue > 0.0)
+  const shouldFadeCheckbox = (fadeUri && fadeValue > 0.0);
 
   return (
     <header
       className={`${toggleHeaderStyles.toggle} ${isLayer && styles.layerHeader}`}
       onClick={onClick}
-      role={"button"}
+      role="button"
       tabIndex={0}
-      ref={el => refs.current[refName] = el}
+      ref={(el) => refs.current[refName] = el}
     >
       <Row>
         <MaterialIcon
           icon={expanded ? onIcon : offIcon}
           className={toggleHeaderStyles.icon}
         />
-        { enabledUri &&
+        { enabledUri && (
           <span className={styles.leftButtonContainer}>
             <Checkbox
               className={styles.enabledCheckbox}
@@ -210,15 +212,15 @@ function PropertyOwnerHeader({
               style={shouldFadeCheckbox ? { opacity: fadeValue } : null}
             />
           </span>
-        }
+        )}
         <span className={`${toggleHeaderStyles.title} ${styles.title} ${titleClass}`}>
           { title }
-          { isHeightLayer && <MaterialIcon className={styles.heightLayerIcon} icon={"landscape"} /> }
+          { isHeightLayer && <MaterialIcon className={styles.heightLayerIcon} icon="landscape" /> }
           { isLayer && <SvgIcon className={styles.layerDraggableIcon}><DraggableIcon /></SvgIcon> }
         </span>
         <span className={styles.rightButtonContainer}>
           { focusAction && focusButton }
-          { hasMoreButtons &&
+          { hasMoreButtons && (
             <TooltipMenu
               sourceObject={moreButtonsButton}
             >
@@ -226,12 +228,12 @@ function PropertyOwnerHeader({
               { metaAction && metaButton }
               { trashAction && trashButton }
             </TooltipMenu>
-           }
+          )}
         </span>
       </Row>
     </header>
   );
-};
+}
 
 const mapStateToProps = (state, ownProps) => {
   const { uri, title } = ownProps;
@@ -246,7 +248,7 @@ const mapStateToProps = (state, ownProps) => {
   const isLayer = isGlobeBrowsingLayer(uri);
 
   // Check if this property owner has an enabled property, or a renderable with the property
-  let enabledUri = undefined;
+  let enabledUri;
   if (state.propertyTree.properties[`${uri}.Enabled`] && !isRenderable) {
     enabledUri = `${uri}.Enabled`;
   } else if (state.propertyTree.properties[`${uri}.Renderable.Enabled`]) {
@@ -255,13 +257,13 @@ const mapStateToProps = (state, ownProps) => {
   let enabled = enabledUri && state.propertyTree.properties[enabledUri].value;
 
   // Check if this property owner has a fade property, or a renderable with the property
-  let fadeUri = undefined;
+  let fadeUri;
   if (state.propertyTree.properties[`${uri}.Fade`] && !isRenderable) {
     fadeUri = `${uri}.Fade`;
   } else if (state.propertyTree.properties[`${uri}.Renderable.Fade`]) {
     fadeUri = `${uri}.Renderable.Fade`;
   }
-  let fadeValue = state.propertyTree.properties[fadeUri]?.value;
+  const fadeValue = state.propertyTree.properties[fadeUri]?.value;
 
   // Make fade == 0 correspond to disabled, according to the checkbox
   if (fadeUri && state.propertyTree.properties[fadeUri].value === 0) {
@@ -279,7 +281,7 @@ const mapStateToProps = (state, ownProps) => {
     identifier,
     isLayer,
     luaApi: state.luaApi,
-    title: title || displayName(state, state.propertyTree.properties, uri),
+    title: title || displayName(state, state.propertyTree.properties, uri)
   };
 };
 
@@ -289,8 +291,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
   const identifier = splitUri[1];
 
-  let focusAction = undefined;
-  let shiftFocusAction = undefined;
+  let focusAction;
+  let shiftFocusAction;
 
   if (splitUri.length === 2 && splitUri[0] === 'Scene') {
     focusAction = () => {
@@ -301,12 +303,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     shiftFocusAction = () => {
       propertyDispatcher(dispatch, NavigationAnchorKey).set(identifier);
       propertyDispatcher(dispatch, NavigationAimKey).set('');
-    }
+    };
   }
   return {
-    getPropertyDispatcher: (uri) => {
-      return propertyDispatcher(dispatch, uri)
-    },
+    getPropertyDispatcher: (uri) => propertyDispatcher(dispatch, uri),
     focusAction,
     shiftFocusAction
   };
@@ -317,20 +317,19 @@ PropertyOwnerHeader = connect(
   mapDispatchToProps,
 )(PropertyOwnerHeader);
 
-
 PropertyOwnerHeader.propTypes = {
   expanded: PropTypes.bool.isRequired,
   setExpanded: PropTypes.func.isRequired,
   uri: PropTypes.string.isRequired,
   offIcon: PropTypes.string,
-  onIcon: PropTypes.string,
+  onIcon: PropTypes.string
 };
 
 PropertyOwnerHeader.defaultProps = {
   properties: [],
   subowners: [],
   offIcon: 'chevron_right',
-  onIcon: 'expand_more',
+  onIcon: 'expand_more'
 };
 
 export default PropertyOwnerHeader;

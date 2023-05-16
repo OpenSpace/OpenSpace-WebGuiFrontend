@@ -12,7 +12,7 @@ import {
   subscribeToEngineMode,
   subscribeToSessionRecording,
   unsubscribeToEngineMode,
-  unsubscribeToSessionRecording,
+  unsubscribeToSessionRecording
 } from '../../../api/Actions';
 import {
   EngineModeCameraPath,
@@ -24,11 +24,13 @@ import {
   RetargetAnchorKey,
   ScenePrefixKey,
   SessionStatePaused,
-  SessionStatePlaying,
+  SessionStatePlaying
 } from '../../../api/keys';
 import propertyDispatcher from '../../../api/propertyDispatcher';
 import subStateToProps from '../../../utils/subStateToProps';
-import {FilterList, FilterListData, FilterListFavorites, FilterListShowMoreButton} from '../../common/FilterList/FilterList';
+import {
+  FilterList, FilterListData, FilterListFavorites, FilterListShowMoreButton
+} from '../../common/FilterList/FilterList';
 import Button from '../../common/Input/Button/Button';
 import LoadingString from '../../common/LoadingString/LoadingString';
 import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
@@ -48,14 +50,15 @@ const REQUIRED_TAG = 'GUI.Interesting';
 const NavigationActions = {
   Focus: 'Focus',
   Anchor: 'Anchor',
-  Aim: 'Aim',
+  Aim: 'Aim'
 };
 
-function OriginPicker({ favorites, allNodes, searchableNodes, engineMode, anchorName, luaApi, sessionRecordingState,
+function OriginPicker({
+  favorites, allNodes, searchableNodes, engineMode, anchorName, luaApi, sessionRecordingState,
   setPopoverVisibility, popoverVisible, aim, anchor, aimDispatcher, navigationAction, connectFlightController, sendFlightControl,
-  retargetAimDispatcher, retargetAnchorDispatcher, anchorDispatcher, startSubscriptions, stopSubscriptions, setNavigationAction, aimName }) {
-
-  const [closeAfterSelection, setCloseAfterSelection] = useLocalStorageState("closeAfterSelection", false);
+  retargetAimDispatcher, retargetAnchorDispatcher, anchorDispatcher, startSubscriptions, stopSubscriptions, setNavigationAction, aimName
+}) {
+  const [closeAfterSelection, setCloseAfterSelection] = useLocalStorageState('closeAfterSelection', false);
   const cappedAnchorName = anchorName?.substring(0, 20);
   React.useEffect(() => {
     startSubscriptions();
@@ -67,19 +70,17 @@ function OriginPicker({ favorites, allNodes, searchableNodes, engineMode, anchor
     return () => anchorDispatcher.unsubscribe();
   }, [anchorDispatcher]);
 
-
   React.useEffect(() => {
     aimDispatcher.subscribe();
     return () => aimDispatcher.unsubscribe();
   }, [aimDispatcher]);
-
 
   function onSelect(identifier, evt) {
     const updateViewPayload = {
       type: 'updateView',
       focus: '',
       aim: '',
-      anchor: '',
+      anchor: ''
     };
 
     if (navigationAction === NavigationActions.Focus) {
@@ -213,11 +214,11 @@ function OriginPicker({ favorites, allNodes, searchableNodes, engineMode, anchor
 
   // OBS same as timepicker
   function pickerStyle() {
-    const isSessionRecordingPlaying = (engineMode === EngineModeSessionRecordingPlayback)
-      && (sessionRecordingState === SessionStatePlaying);
+    const isSessionRecordingPlaying = (engineMode === EngineModeSessionRecordingPlayback) &&
+      (sessionRecordingState === SessionStatePlaying);
 
-    const isSessionRecordingPaused = (engineMode === EngineModeSessionRecordingPlayback)
-      && (sessionRecordingState === SessionStatePaused);
+    const isSessionRecordingPaused = (engineMode === EngineModeSessionRecordingPlayback) &&
+      (sessionRecordingState === SessionStatePaused);
 
     const isCameraPathPlaying = (engineMode === EngineModeCameraPath);
 
@@ -241,9 +242,9 @@ function OriginPicker({ favorites, allNodes, searchableNodes, engineMode, anchor
           checked={closeAfterSelection}
           left={false}
           disabled={false}
-          setChecked={() => setCloseAfterSelection(current => !current)}
+          setChecked={() => setCloseAfterSelection((current) => !current)}
           wide
-          style={{ padding : '2px'}}
+          style={{ padding: '2px' }}
         />
       </SettingsPopup>
     );
@@ -253,16 +254,16 @@ function OriginPicker({ favorites, allNodes, searchableNodes, engineMode, anchor
     const defaultList = favorites.slice();
 
     // Make sure current anchor is in the default list
-    if (anchor !== undefined && !defaultList.find(node => node.identifier === anchor)) {
-      const anchorNode = allNodes.find(node => node.identifier === anchor);
+    if (anchor !== undefined && !defaultList.find((node) => node.identifier === anchor)) {
+      const anchorNode = allNodes.find((node) => node.identifier === anchor);
       if (anchorNode) {
         defaultList.push(anchorNode);
       }
     }
 
     // Make sure current aim is in the default list
-    if (hasDistinctAim() && !defaultList.find(node => node.identifier === aim)) {
-      const aimNode = allNodes.find(node => node.identifier === aim);
+    if (hasDistinctAim() && !defaultList.find((node) => node.identifier === aim)) {
+      const aimNode = allNodes.find((node) => node.identifier === aim);
       if (aimNode) {
         defaultList.push(aimNode);
       }
@@ -274,7 +275,7 @@ function OriginPicker({ favorites, allNodes, searchableNodes, engineMode, anchor
     const searchPlaceholder = {
       Focus: 'Search for a new focus...',
       Anchor: 'Search for a new anchor...',
-      Aim: 'Search for a new aim...',
+      Aim: 'Search for a new aim...'
     }[navigationAction];
 
     const isInFocusMode = navigationAction === NavigationActions.Focus;
@@ -319,28 +320,28 @@ function OriginPicker({ favorites, allNodes, searchableNodes, engineMode, anchor
           className={styles.list}
           searchText={searchPlaceholder}
         >
-          <FilterListShowMoreButton/>
+          <FilterListShowMoreButton />
           <FilterListFavorites>
-            {sortedDefaultList.map((entry) => {
-              return <FocusEntry
+            {sortedDefaultList.map((entry) => (
+              <FocusEntry
                 onSelect={onSelect}
                 active={active}
                 showNavigationButtons={isInFocusMode}
                 closePopoverIfSet={closePopoverIfSet}
                 {...entry}
               />
-            })}
+            ))}
           </FilterListFavorites>
           <FilterListData>
-            {sortedNodes.map((entry) => {
-              return <FocusEntry
+            {sortedNodes.map((entry) => (
+              <FocusEntry
                 onSelect={onSelect}
                 active={active}
                 showNavigationButtons={isInFocusMode}
                 closePopoverIfSet={closePopoverIfSet}
                 {...entry}
               />
-            })}
+            ))}
           </FilterListData>
         </FilterList>
       </Popover>
@@ -364,12 +365,12 @@ function OriginPicker({ favorites, allNodes, searchableNodes, engineMode, anchor
   const pickerClasses = [
     styles.originPicker,
     popoverEnabledAndVisible ? Picker.Active : '',
-    enabled ? '' : pickerStyle(),
+    enabled ? '' : pickerStyle()
   ].join(' ');
 
   return (
     <div className={Picker.Wrapper}>
-      <Picker refKey={"Origin"} onClick={() => togglePopover()} className={pickerClasses}>
+      <Picker refKey="Origin" onClick={() => togglePopover()} className={pickerClasses}>
         {pickerContent()}
       </Picker>
       {popoverEnabledAndVisible && popover()}
@@ -384,15 +385,15 @@ const mapSubStateToProps = ({
   propertyOwners,
   originPicker,
   originPickerPopover,
-  sessionRecordingState,
+  sessionRecordingState
 }) => {
   const scene = propertyOwners.Scene;
   const uris = scene ? scene.subowners : [];
 
   // Get all the nodes in the scene
-  const allNodes = uris.map(uri => ({
+  const allNodes = uris.map((uri) => ({
     ...propertyOwners[uri],
-    key: uri,
+    key: uri
   }));
 
   // Searchable nodes => nodes that are not hidden in the GUI
@@ -403,9 +404,9 @@ const mapSubStateToProps = ({
   });
 
   // Find interesting nodes
-  const favorites = uris.filter(uri => propertyOwners[uri].tags.some(tag => tag.includes(REQUIRED_TAG))).map(uri => ({
+  const favorites = uris.filter((uri) => propertyOwners[uri].tags.some((tag) => tag.includes(REQUIRED_TAG))).map((uri) => ({
     ...propertyOwners[uri],
-    key: uri,
+    key: uri
   }));
 
   const navigationAction = originPicker.action;
@@ -437,21 +438,21 @@ const mapSubStateToProps = ({
     favorites,
     navigationAction,
     popoverVisible,
-    sessionRecordingState,
+    sessionRecordingState
   };
 };
 
-const mapStateToSubState = state => ({
+const mapStateToSubState = (state) => ({
   engineMode: state.engineMode,
   luaApi: state.luaApi,
   propertyOwners: state.propertyTree.propertyOwners,
   properties: state.propertyTree.properties,
   originPicker: state.local.originPicker,
   originPickerPopover: state.local.popovers.originPicker,
-  sessionRecordingState: state.sessionRecording.recordingState,
+  sessionRecordingState: state.sessionRecording.recordingState
 });
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   setNavigationAction: (action) => {
     dispatch(setNavigationAction(action));
   },
@@ -470,7 +471,7 @@ const mapDispatchToProps = dispatch => ({
   setPopoverVisibility: (visible) => {
     dispatch(setPopoverVisibility({
       popover: 'originPicker',
-      visible,
+      visible
     }));
   },
   connectFlightController: () => {
@@ -478,7 +479,7 @@ const mapDispatchToProps = dispatch => ({
   },
   sendFlightControl: (payload) => {
     dispatch(sendFlightControl(payload));
-  },
+  }
 });
 
 OriginPicker.propTypes = {
@@ -507,7 +508,7 @@ OriginPicker.propTypes = {
   anchorDispatcher: PropTypes.object.isRequired,
   aimDispatcher: PropTypes.object.isRequired,
   retargetAimDispatcher: PropTypes.object.isRequired,
-  retargetAnchorDispatcher: PropTypes.object.isRequired,
+  retargetAnchorDispatcher: PropTypes.object.isRequired
 };
 
 OriginPicker.defaultProps = {
@@ -515,7 +516,7 @@ OriginPicker.defaultProps = {
   aim: undefined,
   anchorName: undefined,
   aimName: undefined,
-  luaApi: undefined,
+  luaApi: undefined
 };
 
 OriginPicker = connect(

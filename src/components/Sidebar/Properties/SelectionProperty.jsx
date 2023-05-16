@@ -31,7 +31,7 @@ class SelectionProperty extends Component {
   }
 
   setExpanded(expanded) {
-    this.setState({ expanded: expanded });
+    this.setState({ expanded });
   }
 
   get descriptionPopup() {
@@ -56,14 +56,13 @@ class SelectionProperty extends Component {
   }
 
   onCheckboxChange(checked, option) {
-    let selection = this.selection;
-    const index = selection.indexOf(option)
+    const { selection } = this;
+    const index = selection.indexOf(option);
     const isSelected = index != -1;
 
     if (checked && !isSelected) { // add to selection
       selection.push(option);
-    }
-    else if (!checked && isSelected) { // remove from selection
+    } else if (!checked && isSelected) { // remove from selection
       selection.splice(index, 1);
     }
     this.props.dispatcher.set(selection);
@@ -85,18 +84,22 @@ class SelectionProperty extends Component {
 
   render() {
     const { description } = this.props;
-    const options = this.options;
+    const { options } = this;
 
-    const label = (<span onClick={this.copyUri}>
-      { description.Name } { this.descriptionPopup }
-    </span>);
+    const label = (
+      <span onClick={this.copyUri}>
+        { description.Name }
+        {' '}
+        { this.descriptionPopup }
+      </span>
+    );
 
     const helperButtons = (
       <span>
         <Button onClick={this.selectAllClick}> Select All </Button>
         <Button onClick={this.clearSelectionClick}> Clear </Button>
       </span>
-    )
+    );
 
     return (
       <ToggleContent
@@ -106,18 +109,18 @@ class SelectionProperty extends Component {
       >
         {/* @TODO (emmbr, 2021-05-27): this property type cannot be disabled */}
         {/* <div className={`${this.disabled ? styles.disabled : ''}`}> */}
-          { (options.length > 10) && helperButtons }
-          {
-            options.map(opt => 
-              <Checkbox
-                key={opt}
-                label={opt}
-                checked={this.isSelected(opt)}
-                setChecked={(checked, event) => { this.onCheckboxChange(checked, opt); }}
-                disabled={this.disabled}
-              />
-            )
-          }
+        { (options.length > 10) && helperButtons }
+        {
+          options.map((opt) => (
+            <Checkbox
+              key={opt}
+              label={opt}
+              checked={this.isSelected(opt)}
+              setChecked={(checked, event) => { this.onCheckboxChange(checked, opt); }}
+              disabled={this.disabled}
+            />
+          ))
+        }
         {/* </div> */}
       </ToggleContent>
     );
@@ -129,9 +132,9 @@ SelectionProperty.propTypes = {
     Identifier: PropTypes.string,
     Name: PropTypes.string,
     MetaData: PropTypes.shape({
-      isReadOnly: PropTypes.bool,
+      isReadOnly: PropTypes.bool
     }),
-    description: PropTypes.string,
+    description: PropTypes.string
   }).isRequired,
   value: PropTypes.any
 };

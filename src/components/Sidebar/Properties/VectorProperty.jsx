@@ -8,16 +8,18 @@ import Row from '../../common/Row/Row';
 import { useContextRefs } from '../../GettingStartedTour/GettingStartedContext';
 import styles from './Property.scss';
 
-function VectorProperty({dispatcher, description, value}) {
-  const { SteppingValue, MaximumValue, MinimumValue, Exponent } = description.AdditionalData;
-  const isDisabled = description.MetaData.isReadOnly; 
+function VectorProperty({ dispatcher, description, value }) {
+  const {
+    SteppingValue, MaximumValue, MinimumValue, Exponent
+  } = description.AdditionalData;
+  const isDisabled = description.MetaData.isReadOnly;
   const isColor = value.length < 3 || value.length > 4 ? false : description.MetaData.ViewOptions.Color;
   const hasAlpha = isColor && value.length == 4;
   const isMinMaxRange = value.length == 2 ? description.MetaData.ViewOptions.MinMaxRange : false;
   // eslint-disable-next-line react/no-array-index-key
   const values = value.map((value, index) => ({
-     key: `${description.Name}-${index}`, value 
-    }));
+    key: `${description.Name}-${index}`, value
+  }));
 
   React.useEffect(() => {
     dispatcher.subscribe();
@@ -29,14 +31,14 @@ function VectorProperty({dispatcher, description, value}) {
   }
 
   function valueToColor() {
-    if(!isColor) { return null; }
+    if (!isColor) { return null; }
 
     return {
-        r: value[0] * 255,
-        g: value[1] * 255,
-        b: value[2] * 255,
-        a: hasAlpha ? value[3]: 1.0
-    }
+      r: value[0] * 255,
+      g: value[1] * 255,
+      b: value[2] * 255,
+      a: hasAlpha ? value[3] : 1.0
+    };
   }
 
   function onChange(index) {
@@ -49,9 +51,9 @@ function VectorProperty({dispatcher, description, value}) {
   }
 
   function onColorPickerChange(color) {
-    const rgb = color.rgb;
+    const { rgb } = color;
     let newValue = [rgb.r / 255, rgb.g / 255, rgb.b / 255];
-    if(hasAlpha) {
+    if (hasAlpha) {
       newValue[3] = rgb.a;
     }
     // Avoid creating numbers with lots of decimals
@@ -61,16 +63,24 @@ function VectorProperty({dispatcher, description, value}) {
   }
 
   const descriptionPopup = description ? <InfoBox text={description.description} /> : '';
-  const firstLabel = (<span onClick={copyUri}>
-    { description.Name } { descriptionPopup }
-  </span>);
+  const firstLabel = (
+    <span onClick={copyUri}>
+      { description.Name }
+      {' '}
+      { descriptionPopup }
+    </span>
+  );
 
   function asMinMaxRange() {
     if (!isMinMaxRange) return;
 
-    const label = (<span onClick={copyUri}>
-      { description.Name } { descriptionPopup }
-    </span>);
+    const label = (
+      <span onClick={copyUri}>
+        { description.Name }
+        {' '}
+        { descriptionPopup }
+      </span>
+    );
 
     // Different step sizes does not make sense here, so just use the minimum
     const stepSize = Math.min(...SteppingValue);
@@ -98,7 +108,7 @@ function VectorProperty({dispatcher, description, value}) {
   }
   const refs = useContextRefs();
   return (
-    <Row ref={ el => refs.current[description.Identifier] = el} className={`${styles.vectorProperty} ${isDisabled ? styles.disabled : ''}`}>        
+    <Row ref={(el) => refs.current[description.Identifier] = el} className={`${styles.vectorProperty} ${isDisabled ? styles.disabled : ''}`}>
       { values.map((component, index) => (
         <NumericInput
           key={component.key}

@@ -8,17 +8,17 @@ import Checkbox from '../../common/Input/Checkbox/Checkbox';
 import ColorPickerPopup from '../../common/ColorPicker/ColorPickerPopup';
 import ToggleContent from '../../common/ToggleContent/ToggleContent';
 import InfoBox from '../../common/InfoBox/InfoBox';
-import Property from '../../Sidebar/Properties/Property'
+import Property from '../../Sidebar/Properties/Property';
 import {
-  SkyBrowser_ShowTitleInBrowserKey,
   SkyBrowser_AllowCameraRotationKey,
-  SkyBrowser_InverseZoomDirectionKey,
-  SkyBrowser_CameraRotationSpeedKey,
-  SkyBrowser_TargetAnimationSpeedKey,
   SkyBrowser_BrowserAnimationSpeedKey,
+  SkyBrowser_CameraRotationSpeedKey,
   SkyBrowser_HideTargetsBrowsersWithGuiKey,
+  SkyBrowser_InverseZoomDirectionKey,
+  SkyBrowser_ShowTitleInBrowserKey,
   SkyBrowser_SpaceCraftAnimationTimeKey,
- } from '../../../api/keys';
+  SkyBrowser_TargetAnimationSpeedKey
+} from '../../../api/keys';
 import styles from './SkyBrowserSettings.scss';
 
 function SkyBrowserSettings({
@@ -74,7 +74,7 @@ function SkyBrowserSettings({
   }
 
   function onColorPickerChange(color) {
-    const rgb = color.rgb;
+    const { rgb } = color;
     luaApi.skybrowser.setBorderColor(
       selectedBrowserId,
       rgb.r,
@@ -84,52 +84,50 @@ function SkyBrowserSettings({
   }
 
   function createDisplayCopiesSection() {
-    const displayCopies = browser.displayCopies;
+    const { displayCopies } = browser;
     const positionData = browser.isUsingRae ? RaeLabels : CartesianLabels;
     const maxPosition = browser.isUsingRae ? RaeRange.max : CartesianRange.max;
     const minPosition = browser.isUsingRae ? RaeRange.min : CartesianRange.min;
     const newPositionVector = newPosition;
 
-    const displayCopiesButtons = displayCopies && Object.values(displayCopies).map((entry, indexCopy) => {
-      return (
-        <Row key={indexCopy} className={styles.vectorProperty}>
-          <Checkbox
-            label=""
-            checked={entry.show}
-            left={false}
-            disabled={false}
-            setChecked={(value) => {
-              const uriBrowser = `ScreenSpace.${selectedBrowserId}.${entry.idShowProperty}`;
-              luaApi.setPropertyValueSingle(uriBrowser, value);
+    const displayCopiesButtons = displayCopies && Object.values(displayCopies).map((entry, indexCopy) => (
+      <Row key={indexCopy} className={styles.vectorProperty}>
+        <Checkbox
+          label=""
+          checked={entry.show}
+          left={false}
+          disabled={false}
+          setChecked={(value) => {
+            const uriBrowser = `ScreenSpace.${selectedBrowserId}.${entry.idShowProperty}`;
+            luaApi.setPropertyValueSingle(uriBrowser, value);
+          }}
+          wide
+        />
+        {entry.position.map((number, index) => (
+          <NumericInput
+            key={index}
+            className={positionData[index]}
+            label={positionData[index]}
+            max={maxPosition[index]}
+            min={minPosition[index]}
+            onValueChanged={(newValue) => {
+              const newVector = entry.position;
+              newVector[index] = newValue;
+              const displayCopyId = Object.keys(displayCopies)[indexCopy];
+              const uriBrowser = `ScreenSpace.${selectedBrowserId}.${displayCopyId}`;
+              luaApi.setPropertyValueSingle(uriBrowser, newVector);
             }}
-            wide
+            step={0.1}
+            value={parseFloat((number).toFixed(PrecisionLow))}
+            placeholder={`value ${index}`}
           />
-          {entry.position.map((number, index) => {
-            return <NumericInput
-              key={index}
-              className={positionData[index]}
-              label={positionData[index]}
-              max={maxPosition[index]}
-              min={minPosition[index]}
-              onValueChanged={(newValue) => {
-                const newVector = entry.position;
-                newVector[index] = newValue;
-                const displayCopyId = Object.keys(displayCopies)[indexCopy];
-                const uriBrowser = `ScreenSpace.${selectedBrowserId}.${displayCopyId}`;
-                luaApi.setPropertyValueSingle(uriBrowser, newVector);
-              }}
-              step={0.1}
-              value={parseFloat((number).toFixed(PrecisionLow))}
-              placeholder={`value ${index}`}
-            />;
-          })}
-        </Row>
-      );
-    });
+        ))}
+      </Row>
+    ));
 
     return (
       <ToggleContent
-        title={"Display Copies"}
+        title="Display Copies"
         expanded={showExpandedCopies}
         setExpanded={setShowExpandedCopies}
       >
@@ -138,7 +136,7 @@ function SkyBrowserSettings({
           max={2}
           min={0.01}
           disabled={!browser.scale}
-          onValueChanged={value => {
+          onValueChanged={(value) => {
             const uriBrowser = `ScreenSpace.${browser.id}.Scale`;
             luaApi.setPropertyValueSingle(uriBrowser, value);
           }}
@@ -161,33 +159,33 @@ function SkyBrowserSettings({
           disabled={false}
           setChecked={toggleRadiusAzimuthElevation}
           wide
-          style={{ width: '100%'}}
+          style={{ width: '100%' }}
         />
         <ToggleContent
-          title={"Add Copy Settings"}
+          title="Add Copy Settings"
           expanded={showExpandedSettings}
           setExpanded={setShowExpandedSettings}
         >
           <NumericInput
-            label={"Number of Copies"}
+            label="Number of Copies"
             max={5}
             min={1}
             onValueChanged={(newValue) => setNoOfCopies(newValue)}
             step={1}
             value={noOfCopies}
-            placeholder={`value`}
+            placeholder="value"
           />
           <Row>
-          <header>
-            Position for first copy
-          </header>
-          <InfoBox
-            text={"This sets the position of the first copy. The additional copies will be evenly spread out on the Azimuth."}
-          />
+            <header>
+              Position for first copy
+            </header>
+            <InfoBox
+              text="This sets the position of the first copy. The additional copies will be evenly spread out on the Azimuth."
+            />
           </Row>
           <Row className={styles.vectorProperty}>
-            {newPositionVector.map((number, index) => {
-              return <NumericInput
+            {newPositionVector.map((number, index) => (
+              <NumericInput
                 key={index}
                 className={positionData[index]}
                 label={positionData[index]}
@@ -202,7 +200,7 @@ function SkyBrowserSettings({
                 value={parseFloat((number).toFixed(PrecisionLow))}
                 placeholder={`value ${index}`}
               />
-            })}
+            ))}
           </Row>
         </ToggleContent>
         <Row className={styles.buttonContainer}>
@@ -227,8 +225,8 @@ function SkyBrowserSettings({
         </Row>
         {displayCopies && displayCopiesButtons}
       </ToggleContent>
-      );
-    }
+    );
+  }
 
   const colorValues = browser.color;
   const colorLabels = ['Border Color: R', 'G', 'B'];
@@ -264,7 +262,7 @@ function SkyBrowserSettings({
           max={360}
           min={0}
           disabled={!luaApi.skybrowser.setVerticalFov}
-          onValueChanged={value => luaApi.skybrowser.setEquatorialAim(selectedBrowserId, value, browser.dec)}
+          onValueChanged={(value) => luaApi.skybrowser.setEquatorialAim(selectedBrowserId, value, browser.dec)}
           step={0.1}
           value={parseFloat(browser.ra.toFixed(PrecisionHigh))}
           placeholder="value 1"
@@ -274,8 +272,7 @@ function SkyBrowserSettings({
           max={90}
           min={-90}
           disabled={!luaApi.skybrowser.setVerticalFov}
-          onValueChanged={value => luaApi.skybrowser.setEquatorialAim(selectedBrowserId, browser.ra, value)
-          }
+          onValueChanged={(value) => luaApi.skybrowser.setEquatorialAim(selectedBrowserId, browser.ra, value)}
           step={0.1}
           value={parseFloat(browser.dec.toFixed(PrecisionHigh))}
           placeholder="value 2"
@@ -309,7 +306,7 @@ function SkyBrowserSettings({
       <Property uri={`ScreenSpace.${selectedBrowserId}.PointSpacecraft`} />
       {displayDisplaySection}
       <ToggleContent
-        title={"General Settings"}
+        title="General Settings"
         expanded={generalSettingsExpanded}
         setExpanded={setGeneralSettingsExpanded}
       >
@@ -317,7 +314,7 @@ function SkyBrowserSettings({
           label="Border Radius"
           max={1}
           min={0}
-          onValueChanged={value => {
+          onValueChanged={(value) => {
             luaApi.skybrowser.setBorderRadius(browser.id, value);
             setBorderRadius(value);
           }}
@@ -325,14 +322,14 @@ function SkyBrowserSettings({
           value={browser.borderRadius}
           placeholder="value 2"
         />
-        <Property uri={SkyBrowser_ShowTitleInBrowserKey}/>
-        <Property uri={SkyBrowser_AllowCameraRotationKey}/>
-        <Property uri={SkyBrowser_CameraRotationSpeedKey}/>
-        <Property uri={SkyBrowser_TargetAnimationSpeedKey}/>
-        <Property uri={SkyBrowser_BrowserAnimationSpeedKey}/>
-        <Property uri={SkyBrowser_HideTargetsBrowsersWithGuiKey}/>
-        <Property uri={SkyBrowser_InverseZoomDirectionKey}/>
-        <Property uri={SkyBrowser_SpaceCraftAnimationTimeKey}/>
+        <Property uri={SkyBrowser_ShowTitleInBrowserKey} />
+        <Property uri={SkyBrowser_AllowCameraRotationKey} />
+        <Property uri={SkyBrowser_CameraRotationSpeedKey} />
+        <Property uri={SkyBrowser_TargetAnimationSpeedKey} />
+        <Property uri={SkyBrowser_BrowserAnimationSpeedKey} />
+        <Property uri={SkyBrowser_HideTargetsBrowsersWithGuiKey} />
+        <Property uri={SkyBrowser_InverseZoomDirectionKey} />
+        <Property uri={SkyBrowser_SpaceCraftAnimationTimeKey} />
       </ToggleContent>
     </div>
   );

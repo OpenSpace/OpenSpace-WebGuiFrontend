@@ -7,7 +7,7 @@ class ColorPicker extends Component {
     super(props);
 
     this.state = {
-      color: '#fff',
+      color: '#fff'
     };
   }
 
@@ -22,12 +22,12 @@ class ColorPicker extends Component {
         disableAlpha
         {...this.props}
         color={this.state.color}
-        onChangeComplete={color => this.handleChangeComplete(color)}
+        onChangeComplete={(color) => this.handleChangeComplete(color)}
       />
     );
   }
 }
 ColorPicker.propTypes = {
-  onColorChange: PropTypes.func.isRequired,
+  onColorChange: PropTypes.func.isRequired
 };
 export default ColorPicker;

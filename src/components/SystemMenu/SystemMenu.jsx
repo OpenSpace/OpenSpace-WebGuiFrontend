@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { setShowAbout, setPopoverVisibility } from '../../api/Actions';
+import { setPopoverVisibility, setShowAbout } from '../../api/Actions';
 import api from '../../api/api';
 import environment from '../../api/Environment';
 import subStateToProps from '../../utils/subStateToProps';
@@ -27,7 +27,7 @@ function SystemMenu({
   return (
     <div className={styles.SystemMenu}>
       { showMenu && (
-        <Popover className={styles.popover} arrow="arrow bottom leftside" attached={true}>
+        <Popover className={styles.popover} arrow="arrow bottom leftside" attached>
           <nav className={styles.links} onClick={() => setShowMenu(!showMenu)}>
 
             <button onClick={showAbout}>
@@ -36,7 +36,7 @@ function SystemMenu({
             <button onClick={openTutorials}>
               Open Web Tutorials
             </button>
-            <button style={{position : 'relative'}} onClick={() => showTutorial(true)} ref={el => refs.current["Tutorial"] = el}>
+            <button style={{ position: 'relative' }} onClick={() => showTutorial(true)} ref={(el) => refs.current.Tutorial = el}>
               Open Getting Started Tour
             </button>
             <button onClick={openFeedback}>
@@ -45,40 +45,48 @@ function SystemMenu({
             <hr className={Popover.styles.delimiter} />
             <button onClick={() => setShowKeybinds(!keybindsIsVisible)}>
               <MaterialIcon className={styles.linkIcon} icon="keyboard" />
-              {keybindsIsVisible ? "Hide" : "Show"} keybindings
+              {keybindsIsVisible ? 'Hide' : 'Show'}
+              {' '}
+              keybindings
             </button>
             {
-              environment.developmentMode &&
+              environment.developmentMode && (
                 <div>
                   <hr className={Popover.styles.delimiter} />
                   <div className={styles.devModeNotifier}>GUI running in dev mode</div>
                 </div>
+              )
             }
             <hr className={Popover.styles.delimiter} />
 
             <button onClick={console}>
-              Toggle console <span className={styles.shortcut}>~</span>
+              Toggle console
+              {' '}
+              <span className={styles.shortcut}>~</span>
             </button>
             <button onClick={nativeGui}>
-              Toggle native GUI <span className={styles.shortcut}>F1</span>
+              Toggle native GUI
+              {' '}
+              <span className={styles.shortcut}>F1</span>
             </button>
 
-{/*              <button onClick={saveChange}>
+            {/*              <button onClick={saveChange}>
               Save settings to profile
-            </button>*/}
-
+            </button> */}
 
             <hr className={Popover.styles.delimiter} />
 
             <button onClick={quit}>
               <MaterialIcon icon="exit_to_app" className={styles.linkIcon} />
-              Quit OpenSpace <span className={styles.shortcut}>ESC</span>
+              Quit OpenSpace
+              {' '}
+              <span className={styles.shortcut}>ESC</span>
             </button>
           </nav>
         </Popover>
       )}
 
-      <Button ref={el => refs.current["System"] = el} className={styles.button} transparent onClick={() => setShowMenu(!showMenu)}>
+      <Button ref={(el) => refs.current.System = el} className={styles.button} transparent onClick={() => setShowMenu(!showMenu)}>
         <MaterialIcon icon="more_vert" className={styles.icon} />
       </Button>
     </div>
@@ -87,7 +95,7 @@ function SystemMenu({
 
 const mapStateToSubState = (state) => ({
   luaApi: state.luaApi,
-  keybindsIsVisible: state.local.popovers.keybinds.visible,
+  keybindsIsVisible: state.local.popovers.keybinds.visible
 });
 
 const mapSubStateToProps = ({ luaApi, keybindsIsVisible }) => {
@@ -95,33 +103,33 @@ const mapSubStateToProps = ({ luaApi, keybindsIsVisible }) => {
     return {};
   }
 
-  var openlinkScript = (url) => {
-    var startString = "open";
+  const openlinkScript = (url) => {
+    let startString = 'open';
     if (navigator.platform == 'Win32') {
-      startString = 'start'
+      startString = 'start';
     }
-    var script = "os.execute('" + startString + " " + url + "')";
+    const script = `os.execute('${startString} ${url}')`;
     return script;
   };
 
   return {
     quit: () => luaApi.toggleShutdown(),
     console: async () => {
-      const data = await luaApi.getPropertyValue("LuaConsole.IsVisible");
+      const data = await luaApi.getPropertyValue('LuaConsole.IsVisible');
       const visible = data[1] || false;
-      luaApi.setPropertyValue("LuaConsole.IsVisible", !visible);
+      luaApi.setPropertyValue('LuaConsole.IsVisible', !visible);
     },
     nativeGui: async () => {
-      const data = await luaApi.getPropertyValue("Modules.ImGUI.Enabled");
+      const data = await luaApi.getPropertyValue('Modules.ImGUI.Enabled');
       const visible = data[1] || false;
-      luaApi.setPropertyValue("Modules.ImGUI.Enabled", !visible);
+      luaApi.setPropertyValue('Modules.ImGUI.Enabled', !visible);
     },
     openTutorials: () => {
-      var script = openlinkScript('http://wiki.openspaceproject.com/docs/tutorials/users/');
+      const script = openlinkScript('http://wiki.openspaceproject.com/docs/tutorials/users/');
       api.executeLuaScript(script);
     },
     openFeedback: () => {
-      var script = openlinkScript('http://data.openspaceproject.com/feedback');
+      const script = openlinkScript('http://data.openspaceproject.com/feedback');
       api.executeLuaScript(script);
     },
     saveChange: async () => {
@@ -131,17 +139,15 @@ const mapSubStateToProps = ({ luaApi, keybindsIsVisible }) => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    showAbout: () => dispatch(setShowAbout(true)),
-    setShowKeybinds: (visible) => {
-      dispatch(setPopoverVisibility({
-        popover: 'keybinds',
-        visible
-      }));
-    },
+const mapDispatchToProps = (dispatch) => ({
+  showAbout: () => dispatch(setShowAbout(true)),
+  setShowKeybinds: (visible) => {
+    dispatch(setPopoverVisibility({
+      popover: 'keybinds',
+      visible
+    }));
   }
-}
+});
 
 SystemMenu = connect(
   subStateToProps(mapSubStateToProps, mapStateToSubState),

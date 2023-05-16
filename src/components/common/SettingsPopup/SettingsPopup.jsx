@@ -9,15 +9,15 @@ export default function SettingsPopup({ children }) {
 
   return (
     <Button
-      onClick={() => setShowSearchSettings(current => !current)}
+      onClick={() => setShowSearchSettings((current) => !current)}
       className={`${styles.settings} ${showSearchSettings && styles.settingsFocus}`}
     >
       <MaterialIcon icon="settings" className="small" />
-      {showSearchSettings &&
-        <Tooltip placement={'right'} className={styles.toolTip}>
+      {showSearchSettings && (
+        <Tooltip placement="right" className={styles.toolTip}>
           { children }
         </Tooltip>
-      }
+      )}
     </Button>
   );
 }

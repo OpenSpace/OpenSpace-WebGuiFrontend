@@ -4,23 +4,29 @@ import { useContextRefs } from '../../GettingStartedTour/GettingStartedContext';
 import MaterialIcon from '../MaterialIcon/MaterialIcon';
 import styles from './ToggleHeader.scss';
 
-function ToggleHeader({ title, expanded, onClick, onIcon, offIcon, showEnabled }) {
+function ToggleHeader({
+  title, expanded, onClick, onIcon, offIcon, showEnabled
+}) {
   const refs = useContextRefs();
 
-  return <header 
-    ref={el => refs.current["Group " + title] = el} 
-    className={styles.toggle} 
-    onClick={onClick} 
-    role="button" tabIndex={0}>
+  return (
+    <header
+      ref={(el) => refs.current[`Group ${title}`] = el}
+      className={styles.toggle}
+      onClick={onClick}
+      role="button"
+      tabIndex={0}
+    >
 
-    <MaterialIcon
-      icon={expanded ? onIcon : offIcon}
-      className={styles.icon}
-    />
-    <span className={`${styles.title}`} >
-      { title }
-    </span>
-  </header>;
+      <MaterialIcon
+        icon={expanded ? onIcon : offIcon}
+        className={styles.icon}
+      />
+      <span className={`${styles.title}`}>
+        { title }
+      </span>
+    </header>
+  );
 }
 
 ToggleHeader.propTypes = {
@@ -32,12 +38,12 @@ ToggleHeader.propTypes = {
     PropTypes.object
   ]).isRequired,
   showEnabled: PropTypes.bool,
-  expanded: PropTypes.bool.isRequired,
+  expanded: PropTypes.bool.isRequired
 };
 
 ToggleHeader.defaultProps = {
   offIcon: 'chevron_right',
-  onIcon: 'expand_more',
+  onIcon: 'expand_more'
 };
 
 export default ToggleHeader;

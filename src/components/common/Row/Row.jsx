@@ -12,11 +12,11 @@ const Row = React.forwardRef((props, ref) => (
 
 Row.propTypes = {
   children: PropTypes.node.isRequired,
-  className: PropTypes.string,
+  className: PropTypes.string
 };
 
 Row.defaultProps = {
-  className: '',
+  className: ''
 };
 
 export default Row;

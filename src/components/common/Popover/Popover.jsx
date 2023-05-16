@@ -6,8 +6,8 @@ import MaterialIcon from '../MaterialIcon/MaterialIcon';
 import Window from '../Window/Window';
 import styles from './Popover.scss';
 
-const findStyles = arr => arr.split(' ')
-  .map(style => styles[style] || style)
+const findStyles = (arr) => arr.split(' ')
+  .map((style) => styles[style] || style)
   .join(' ');
 
 class Popover extends Component {
@@ -71,7 +71,8 @@ class Popover extends Component {
         className={`${this.styles}`}
       >
         {this.props.children}
-      </Window>);
+      </Window>
+    );
   }
 
   toggleDetach() {
@@ -90,7 +91,7 @@ Popover.propTypes = {
   className: PropTypes.string,
   detachable: PropTypes.bool,
   attached: PropTypes.bool,
-  title: PropTypes.string,
+  title: PropTypes.string
 };
 
 Popover.defaultProps = {
@@ -99,7 +100,7 @@ Popover.defaultProps = {
   className: '',
   detachable: false,
   attached: true,
-  title: null,
+  title: null
 };
 
 Popover.styles = styles;

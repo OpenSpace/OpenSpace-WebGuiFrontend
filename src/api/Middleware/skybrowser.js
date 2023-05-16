@@ -2,7 +2,7 @@ import { initializeSkyBrowser, updateSkyBrowser } from '../Actions';
 import { actionTypes } from '../Actions/actionTypes';
 import api from '../api';
 
-let skybrowserTopic = undefined;
+let skybrowserTopic;
 let nSubscribers = 0;
 
 function handleData(store, data) {
@@ -28,71 +28,68 @@ const getWwtData = async (luaApi, callback) => {
     let url = await luaApi.skybrowser.getWwtImageCollectionUrl();
     if (url) {
       url = url[1].url;
-    }
-    else {
+    } else {
       throw new Error('No AAS WorldWide Telescope image collection!');
     }
     if (imgData) {
       imgData = Object.values(imgData[1]);
-      if(imgData.length === 0) {
+      if (imgData.length === 0) {
         callback([]);
-      }
-      else {
-        const imgDataWithKey = imgData.map(image => ({
+      } else {
+        const imgDataWithKey = imgData.map((image) => ({
           ...image,
-          key: image.identifier,
+          key: image.identifier
         }));
-        callback({imageList: imgDataWithKey, url: url});
+        callback({ imageList: imgDataWithKey, url });
       }
     } else {
       throw new Error('No AAS WorldWide Telescope images!');
     }
-  }
-  catch(e) {
+  } catch (e) {
     console.error(e);
   }
 };
 
 async function setupSubscription(store) {
-  console.log("Set up skybrowser subscription");
+  console.log('Set up skybrowser subscription');
   skybrowserTopic = api.startTopic('skybrowser', {
-    event: 'start_subscription',
+    event: 'start_subscription'
   });
   for await (const data of skybrowserTopic.iterator()) {
     handleData(store, data);
   }
 }
 
-export const skybrowser = store => next => (action) => {
+export const skybrowser = (store) => (next) => (action) => {
   const result = next(action);
   const state = store.getState();
   switch (action.type) {
-    case actionTypes.loadSkyBrowserData:
-      getWwtData(action.payload, (data) => {
-        store.dispatch(initializeSkyBrowser(data));
-      });
-      break;
-    case actionTypes.onOpenConnection:
-      if (nSubscribers > 0) {
-        setupSubscription(store);
-      }
-      break;
-    case actionTypes.subscribeToSkyBrowser:
-      ++nSubscribers;
-      if (nSubscribers === 1 && state.connection.isConnected) {
-        setupSubscription(store);
-      }
-      break;
-    case actionTypes.unsubscribeToSkyBrowser:
-      if (nSubscribers > 0) {
-        --nSubscribers;
-      }
-      if (skybrowserTopic && nSubscribers === 0) {
-        tearDownSubscription();
-      }
-      break;
-    default:
-      break;
+  case actionTypes.loadSkyBrowserData:
+    getWwtData(action.payload, (data) => {
+      store.dispatch(initializeSkyBrowser(data));
+    });
+    break;
+  case actionTypes.onOpenConnection:
+    if (nSubscribers > 0) {
+      setupSubscription(store);
+    }
+    break;
+  case actionTypes.subscribeToSkyBrowser:
+    ++nSubscribers;
+    if (nSubscribers === 1 && state.connection.isConnected) {
+      setupSubscription(store);
+    }
+    break;
+  case actionTypes.unsubscribeToSkyBrowser:
+    if (nSubscribers > 0) {
+      --nSubscribers;
+    }
+    if (skybrowserTopic && nSubscribers === 0) {
+      tearDownSubscription();
+    }
+    break;
+  default:
+    break;
   }
   return result;
 };

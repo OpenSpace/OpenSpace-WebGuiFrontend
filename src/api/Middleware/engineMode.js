@@ -11,7 +11,7 @@ let nSubscribers = 0;
 const subscribe = () => {
   topic = api.startTopic('engineMode', {
     event: 'start_subscription',
-    properties: ['mode'],
+    properties: ['mode']
   });
   (async () => {
     for await (const data of topic.iterator()) {
@@ -35,7 +35,7 @@ const refresh = () => {
     // If we do not have a subscription, we need to create a new topic
     const tempTopic = api.startTopic('engineMode', {
       event: 'refresh',
-      properties: ['mode'],
+      properties: ['mode']
     });
     (async () => {
       const data = await topic.iterator().next();
@@ -45,36 +45,36 @@ const refresh = () => {
   }
 };
 
-export const engineMode = store => next => (action) => {
+export const engineMode = (store) => (next) => (action) => {
   const result = next(action);
   const state = store.getState();
 
   switch (action.type) {
-    case actionTypes.onOpenConnection:
-      if (nSubscribers > 0) {
-        dataCallback = data => store.dispatch(updateEngineMode(data));
-        subscribe();
-      }
-      break;
-    case actionTypes.refreshEngineMode:
-      dataCallback = data => store.dispatch(updateEngineMode(data)),
-      refresh();
-      break;
-    case actionTypes.subscribeToEngineMode:
-      ++nSubscribers;
-      if (nSubscribers === 1 && state.connection.isConnected) {
-        dataCallback = data => store.dispatch(updateEngineMode(data));
-        subscribe();
-      }
-      break;
-    case actionTypes.unsubscribeToEngineMode:
-      --nSubscribers;
-      if (nSubscribers === 0) {
-        unsubscribe();
-      }
-      break;
-    default:
-      break;
+  case actionTypes.onOpenConnection:
+    if (nSubscribers > 0) {
+      dataCallback = (data) => store.dispatch(updateEngineMode(data));
+      subscribe();
+    }
+    break;
+  case actionTypes.refreshEngineMode:
+    dataCallback = (data) => store.dispatch(updateEngineMode(data)),
+    refresh();
+    break;
+  case actionTypes.subscribeToEngineMode:
+    ++nSubscribers;
+    if (nSubscribers === 1 && state.connection.isConnected) {
+      dataCallback = (data) => store.dispatch(updateEngineMode(data));
+      subscribe();
+    }
+    break;
+  case actionTypes.unsubscribeToEngineMode:
+    --nSubscribers;
+    if (nSubscribers === 0) {
+      unsubscribe();
+    }
+    break;
+  default:
+    break;
   }
   return result;
 };

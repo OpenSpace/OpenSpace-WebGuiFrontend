@@ -10,22 +10,22 @@ const Button = React.forwardRef((props, refs) => {
   const inheritProps = excludeKeys(props, specialClasses);
 
   const extraClass = specialClasses.split(' ')
-    .filter(c => props[c])
-    .map(c => styles[c])
+    .filter((c) => props[c])
+    .map((c) => styles[c])
     .join(' ');
 
   let buttonElement = null;
 
-  const onClick = evt => {
+  const onClick = (evt) => {
     props.onClick(evt);
     if (buttonElement) {
       buttonElement.blur();
     }
   };
 
-  const ref = domElement => {
+  const ref = (domElement) => {
     buttonElement = domElement;
-    if(refs && typeof refs === 'function') {
+    if (refs && typeof refs === 'function') {
       refs(domElement);
     }
   };
@@ -51,7 +51,7 @@ Button.propTypes = {
   small: PropTypes.bool,
   smalltext: PropTypes.bool,
   transparent: PropTypes.bool,
-  uppercase: PropTypes.bool,
+  uppercase: PropTypes.bool
 };
 
 Button.defaultProps = {
@@ -62,7 +62,7 @@ Button.defaultProps = {
   small: false,
   smalltext: false,
   transparent: false,
-  uppercase: false,
+  uppercase: false
 };
 
 export default Button;

@@ -16,7 +16,7 @@ class TimeController extends Component {
       time: new Date(),
       subscriptionIdCurrent: -1,
       subscriptionIdDelta: -1,
-      deltaTime: 1,
+      deltaTime: 1
     };
 
     this.handleOnTogglePause = this.handleOnTogglePause.bind(this);
@@ -26,7 +26,6 @@ class TimeController extends Component {
     this.setDate = this.setDate.bind(this);
     this.setSimulationSpeed = this.setSimulationSpeed.bind(this);
   }
-
 
   componentDidMount() {
     this.mounted = true;

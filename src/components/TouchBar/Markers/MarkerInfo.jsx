@@ -4,7 +4,7 @@ import SmallLabel from '../../common/SmallLabel/SmallLabel';
 import styles from './MarkerInfo.scss';
 import MarkerInfoIcon from './MarkerInfoIcon';
 
-const MarkerInfo = (props) => {
+function MarkerInfo(props) {
   const {
     position, size, showInfoIcon, identifier, showLabel, offset, infoText
   } = props;
@@ -12,14 +12,14 @@ const MarkerInfo = (props) => {
   const positionStyles = {
     MarkerInfo: {
       left: `${Number(position[0])}px`,
-      bottom: `calc(${Number(position[1])}px + ${offset}px)`,
+      bottom: `calc(${Number(position[1])}px + ${offset}px)`
     },
     Icon: {
-      fontSize: `${size}em`,
+      fontSize: `${size}em`
     },
     Text: {
-      fontSize: `${size / 2}em`,
-    },
+      fontSize: `${size / 2}em`
+    }
   };
 
   return (
@@ -38,7 +38,7 @@ const MarkerInfo = (props) => {
       )}
     </div>
   );
-};
+}
 
 MarkerInfo.propTypes = {
   position: PropTypes.array,
@@ -47,11 +47,11 @@ MarkerInfo.propTypes = {
   showInfoIcon: PropTypes.bool.isRequired,
   infoText: PropTypes.string.isRequired,
   showLabel: PropTypes.bool.isRequired,
-  offset: PropTypes.number.isRequired,
+  offset: PropTypes.number.isRequired
 };
 
 MarkerInfo.defaultProps = {
-  position: '',
+  position: ''
   // showInfoIcon: false, // required, so should not have default value
   // infoText: 'No info available', // required, so should not have default value
 };

@@ -6,7 +6,7 @@ import LoadingString from './LoadingString';
 /* globals module */
 
 storiesOf('LoadingString', module)
-  .addDecorator(story => (
+  .addDecorator((story) => (
     <div style={{ background: '#252525', padding: '20px', color: 'white' }}>
       { story() }
     </div>

@@ -27,13 +27,12 @@ class PropertyString extends Component {
 
 PropertyString.propTypes = {
   defaultValue: PropTypes.string,
-  uri: PropTypes.string.isRequired,
+  uri: PropTypes.string.isRequired
 };
 
 PropertyString.defaultProps = {
   defaultValue: 'loading'
 };
-
 
 const mapStateToProps = (state, { uri }) => {
   const property = state.propertyTree.properties[uri] || {};
@@ -41,14 +40,12 @@ const mapStateToProps = (state, { uri }) => {
   return {
     value: property.value,
     description: property.description
-  }
-}
+  };
+};
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-  return {
-    dispatcher: propertyDispatcher(dispatch, ownProps.uri)
-  }
-}
+const mapDispatchToProps = (dispatch, ownProps) => ({
+  dispatcher: propertyDispatcher(dispatch, ownProps.uri)
+});
 
 PropertyString = connect(mapStateToProps, mapDispatchToProps)(PropertyString);
 

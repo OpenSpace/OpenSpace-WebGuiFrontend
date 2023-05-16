@@ -4,9 +4,11 @@ import { connect } from 'react-redux';
 import { SceneKey } from '../../api/keys';
 import { CaseInsensitiveSubstring, ListCaseInsensitiveSubstring } from '../../utils/StringMatchers';
 import subStateToProps from '../../utils/subStateToProps';
-import {FilterList, FilterListData, FilterListFavorites} from '../common/FilterList/FilterList';
+import { FilterList, FilterListData, FilterListFavorites } from '../common/FilterList/FilterList';
 import LoadingBlocks from '../common/LoadingBlock/LoadingBlocks';
-import { getLastWordOfUri, isDeadEnd, isPropertyOwnerHidden, isPropertyVisible } from './../../utils/propertyTreeHelpers';
+import {
+  getLastWordOfUri, isDeadEnd, isPropertyOwnerHidden, isPropertyVisible
+} from '../../utils/propertyTreeHelpers';
 import Pane from './Pane';
 import SettingsPaneListItem from './SettingsPaneListItem';
 import styles from './SettingsPane.scss'; // OBS! Unused
@@ -17,7 +19,7 @@ class SettingsPane extends Component {
   }
 
   render() {
-    const defaultEntries = this.props.topPropertyOwners.map(p => ({
+    const defaultEntries = this.props.topPropertyOwners.map((p) => ({
       key: p.uri,
       uri: p.uri,
       name: p.name,
@@ -26,25 +28,24 @@ class SettingsPane extends Component {
     }));
 
     const searchEntries = defaultEntries
-      .concat(this.props.subPropertyOwners.map(p => ({
+      .concat(this.props.subPropertyOwners.map((p) => ({
         key: p.uri,
         uri: p.uri,
         name: p.name,
         type: 'subPropertyOwner',
         expansionIdentifier: p.uri
       }))
-      .concat(this.props.properties.map(p => ({
-        key: p.uri,
-        uri: p.uri,
-        names: p.names,
-        type: 'property'
-      }))
-    ));
+        .concat(this.props.properties.map((p) => ({
+          key: p.uri,
+          uri: p.uri,
+          names: p.names,
+          type: 'property'
+        }))));
 
     const matcher = (entry, searchString) => {
       searchString = searchString.trim();
 
-      if(!searchString) {
+      if (!searchString) {
         return false; // guard against empty strings
       }
 
@@ -70,10 +71,10 @@ class SettingsPane extends Component {
             matcher={matcher}
           >
             <FilterListFavorites>
-              {defaultEntries.map((entry) => <SettingsPaneListItem {...entry}/>)}
+              {defaultEntries.map((entry) => <SettingsPaneListItem {...entry} />)}
             </FilterListFavorites>
             <FilterListData>
-              {searchEntries.map((entry) => <SettingsPaneListItem {...entry}/>)}
+              {searchEntries.map((entry) => <SettingsPaneListItem {...entry} />)}
             </FilterListData>
           </FilterList>
         )}
@@ -83,11 +84,11 @@ class SettingsPane extends Component {
 }
 
 SettingsPane.propTypes = {
-  closeCallback: PropTypes.func,
+  closeCallback: PropTypes.func
 };
 
 SettingsPane.defaultProps = {
-  closeCallback: null,
+  closeCallback: null
 };
 
 const mapStateToSubState = (state) => ({
@@ -97,30 +98,27 @@ const mapStateToSubState = (state) => ({
 });
 
 const mapSubStateToProps = ({ properties, propertyOwners, propertyTree }) => {
-  if (!propertyTree || !propertyOwners || !properties ) {
+  if (!propertyTree || !propertyOwners || !properties) {
     return { };
   }
 
   const allOwnerUris = Object.keys(propertyOwners || {});
-  const nonSceneTopPropertyOwners = allOwnerUris.filter(uri => {
-    return uri !== SceneKey && uri.indexOf('.') === -1;
-  });
+  const nonSceneTopPropertyOwners = allOwnerUris.filter((uri) => uri !== SceneKey && uri.indexOf('.') === -1);
 
   const collectUrisRecursively = (owners, collectedOwners, collectedProperties) => {
-    owners.forEach(uri => {
-      let subowners = propertyOwners[uri].subowners || {};
-      let properties = propertyOwners[uri].properties || {};
+    owners.forEach((uri) => {
+      const subowners = propertyOwners[uri].subowners || {};
+      const properties = propertyOwners[uri].properties || {};
       collectedOwners = collectedOwners.concat(subowners);
       collectedProperties = collectedProperties.concat(properties);
 
-      [collectedOwners, collectedProperties] = collectUrisRecursively(
-        subowners, collectedOwners, collectedProperties);
+      [collectedOwners, collectedProperties] = collectUrisRecursively(subowners, collectedOwners, collectedProperties);
     });
 
     // Stops when owners are empty
-    return [ collectedOwners, collectedProperties ];
-  }
-  
+    return [collectedOwners, collectedProperties];
+  };
+
   // Collect uris of all sub property owners and properties
   let subPropertyOwners = [];
   let searchableProperties = [];
@@ -131,26 +129,16 @@ const mapSubStateToProps = ({ properties, propertyOwners, propertyTree }) => {
   );
 
   // Remove any hidden owners/properties
-  subPropertyOwners = subPropertyOwners.filter(uri => {
-    return (!isPropertyOwnerHidden(properties, uri) && 
-      !isDeadEnd(propertyOwners, properties, uri));
-  });
-  searchableProperties = searchableProperties.filter(uri => {
-    return isPropertyVisible(properties, uri);
-  });
+  subPropertyOwners = subPropertyOwners.filter((uri) => (!isPropertyOwnerHidden(properties, uri) &&
+      !isDeadEnd(propertyOwners, properties, uri)));
+  searchableProperties = searchableProperties.filter((uri) => isPropertyVisible(properties, uri));
 
   // Compose the information we need for the search
-  const topOwnersInfo = nonSceneTopPropertyOwners.map(uri => {
-    return { uri: uri, name: getLastWordOfUri(uri) };
-  });
+  const topOwnersInfo = nonSceneTopPropertyOwners.map((uri) => ({ uri, name: getLastWordOfUri(uri) }));
 
-  const subPropertyOwnersInfo = subPropertyOwners.map(uri => {
-    return { uri: uri, name: getLastWordOfUri(uri) };
-  });
+  const subPropertyOwnersInfo = subPropertyOwners.map((uri) => ({ uri, name: getLastWordOfUri(uri) }));
 
-  const propertiesInfo = searchableProperties.map(uri => {
-    return { uri: uri, names:[getLastWordOfUri(uri), properties[uri].description.Name] };
-  });
+  const propertiesInfo = searchableProperties.map((uri) => ({ uri, names: [getLastWordOfUri(uri), properties[uri].description.Name] }));
 
   return {
     topPropertyOwners: topOwnersInfo,

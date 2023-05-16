@@ -1,8 +1,8 @@
 import React from 'react';
 import GraphBody from './GraphBody';
 
-const Graph = ({ points, color }) =>
-  (
+function Graph({ points, color }) {
+  return (
     <div>
       <svg width={800} height={600}>
         <GraphBody
@@ -10,12 +10,13 @@ const Graph = ({ points, color }) =>
           color={color}
           x={0}
           y={600}
-          fill={'blue'}
-          fillOpacity={'.5'}
+          fill="blue"
+          fillOpacity=".5"
           strokeWidth={1}
         />
       </svg>
     </div>
   );
+}
 
 export default Graph;

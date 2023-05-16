@@ -10,12 +10,12 @@ module.exports = {
     'webpack-dev-server/client?http://localhost:4690',
     'webpack/hot/only-dev-server',
     './devmode.js',
-    './index.jsx',
+    './index.jsx'
   ],
   output: {
     filename: 'static/bundle.js',
     path: resolve(__dirname, 'dist'),
-    publicPath: PublicPath,
+    publicPath: PublicPath
   },
   devtool: 'inline-source-map',
   devServer: {
@@ -28,10 +28,9 @@ module.exports = {
     proxy: {
       '/': {
         target: 'http://localhost:4680',
-        bypass: function(req, res, proxyOptions) {
+        bypass(req, res, proxyOptions) {
           if (req.originalUrl.indexOf('/frontend') === 0 ||
-              req.originalUrl.indexOf('/environment.js') === 0)
-          {
+              req.originalUrl.indexOf('/environment.js') === 0) {
             return req.originalUrl;
           }
         }
@@ -44,7 +43,7 @@ module.exports = {
       {
         test: /\.jsx?$/,
         use: ['babel-loader'],
-        exclude: /node_modules/,
+        exclude: /node_modules/
       },
       // Load SASS!
       {
@@ -52,7 +51,7 @@ module.exports = {
         exclude: /node_modules/,
         use: [
           {
-            loader: 'style-loader',
+            loader: 'style-loader'
           },
           {
             loader: 'css-loader?modules',
@@ -60,37 +59,37 @@ module.exports = {
               sourceMap: true,
               importLoaders: 2,
               modules: {
-                localIdentName: "[path][name]__[local]--[hash:base64:7]",
+                localIdentName: '[path][name]__[local]--[hash:base64:7]'
               }
-            },
+            }
           },
           {
             loader: 'sass-loader',
             options: {
-              sourceMap: true,
-            },
-          },
-        ],
+              sourceMap: true
+            }
+          }
+        ]
       },
       {
         test: /\.css$/i,
-        use: ['style-loader', 'css-loader'],
+        use: ['style-loader', 'css-loader']
       },
       {
         test: /\.(woff|woff2|ttf|eot)$/i,
-        type: 'asset/resource',
+        type: 'asset/resource'
       },
       {
         test: /\.(png)$/,
-        type: 'asset/resource',
-      },
-    ],
+        type: 'asset/resource'
+      }
+    ]
   },
   resolve: {
-    extensions: ['.js', '.jsx'],
+    extensions: ['.js', '.jsx']
   },
   plugins: [
     // enable HMR globally
-    new webpack.HotModuleReplacementPlugin(),
-  ],
+    new webpack.HotModuleReplacementPlugin()
+  ]
 };

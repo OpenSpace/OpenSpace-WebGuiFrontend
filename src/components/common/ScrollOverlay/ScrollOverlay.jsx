@@ -21,13 +21,13 @@ class ScrollOverlay extends Component {
     this.state = {
       id: ScrollOverlay.elementId,
       atTop: true,
-      atBottom: false,
+      atBottom: false
     };
     this.setDomNode = this.setDomNode.bind(this);
     this.updateScrollIndicators = this.updateScrollIndicators.bind(this);
   }
 
-  // @TODO (emmbr 2021-05-06): This function is deprecated and should be replaced with 
+  // @TODO (emmbr 2021-05-06): This function is deprecated and should be replaced with
   // something else. Although, I fail to see how this call is actually needed so just
   // comment it out for now. Should be removed if it's actually not needed
   // componentWillReceiveProps() {
@@ -99,11 +99,11 @@ ScrollOverlay.elementCount = 0;
 
 ScrollOverlay.propTypes = {
   children: PropTypes.node.isRequired,
-  className: PropTypes.string,
+  className: PropTypes.string
 };
 
 ScrollOverlay.defaultProps = {
-  className: '',
+  className: ''
 };
 
 export default ScrollOverlay;

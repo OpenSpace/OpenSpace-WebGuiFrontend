@@ -33,7 +33,7 @@ class NumericProperty extends Component {
   }
 
   get descriptionPopup() {
-    let { description } = this.props;
+    const { description } = this.props;
     const { MaximumValue, MinimumValue } = description.AdditionalData;
     const descriptionString = `${description.description}\nMin: ${MinimumValue}, max: ${MaximumValue}`;
     return descriptionString ? (<InfoBox text={descriptionString} />) : '';
@@ -45,12 +45,20 @@ class NumericProperty extends Component {
 
   render() {
     const { description, value } = this.props;
-    const { SteppingValue, MaximumValue, MinimumValue, Exponent } = description.AdditionalData;
+    const {
+      SteppingValue, MaximumValue, MinimumValue, Exponent
+    } = description.AdditionalData;
     return (
       <div className={`${this.disabled ? styles.disabled : ''}`}>
         <NumericInput
           value={value}
-          label={(<span onClick={this.copyUri}>{description.Name} {this.descriptionPopup}</span>)}
+          label={(
+            <span onClick={this.copyUri}>
+              {description.Name}
+              {' '}
+              {this.descriptionPopup}
+            </span>
+          )}
           placeholder={description.Name}
           onValueChanged={this.onChange}
           step={SteppingValue}

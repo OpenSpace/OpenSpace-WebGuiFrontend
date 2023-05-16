@@ -2,23 +2,23 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import styles from './TabMenuItem.scss';
 
-const TabMenuItem = ({ children, onClick, active }) => {
+function TabMenuItem({ children, onClick, active }) {
   const activeClass = active ? styles.active : '';
   return (
     <div onClick={onClick} className={`${styles.TabMenuItem} ${activeClass}`} role="tab" tabIndex={0}>
       {children}
     </div>
   );
-};
+}
 
 TabMenuItem.propTypes = {
   children: PropTypes.node.isRequired,
   active: PropTypes.bool.isRequired,
-  onClick: PropTypes.func,
+  onClick: PropTypes.func
 };
 
 TabMenuItem.defaultProps = {
-  onClick: (() => {}),
+  onClick: (() => {})
 };
 
 export default TabMenuItem;

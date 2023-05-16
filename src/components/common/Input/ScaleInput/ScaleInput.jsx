@@ -10,7 +10,7 @@ class ScaleInput extends Component {
 
     this.state = {
       value: props.defaultValue,
-      id: `scale-${Input.nextId}`,
+      id: `scale-${Input.nextId}`
     };
 
     this.onChange = this.onChange.bind(this);
@@ -24,7 +24,9 @@ class ScaleInput extends Component {
   }
 
   get markers() {
-    const { leftTicks, rightTicks, centerMarker, defaultValue, min, max } = this.props;
+    const {
+      leftTicks, rightTicks, centerMarker, defaultValue, min, max
+    } = this.props;
     const showMarkers = centerMarker || (leftTicks > 0 && rightTicks > 0);
 
     // eslint-disable-next-line no-mixed-operators
@@ -32,13 +34,11 @@ class ScaleInput extends Component {
     return showMarkers && (
       <div className={styles.markers}>
         <div className={styles.ticks} style={{ width: `calc(${width}% - 2px)` }}>
-          { Array.from(new Array(leftTicks), (_, i) =>
-            (<div key={i} className={styles.tick} />))}
+          { Array.from(new Array(leftTicks), (_, i) => (<div key={i} className={styles.tick} />))}
         </div>
         { centerMarker && (<div className={styles.centerMarker} />) }
         <div className={styles.ticks} style={{ width: `calc(${100 - width}% - 2px)` }}>
-          { Array.from(new Array(rightTicks), (_, i) =>
-            (<div key={i} className={styles.tick} />))}
+          { Array.from(new Array(rightTicks), (_, i) => (<div key={i} className={styles.tick} />))}
         </div>
       </div>
     );
@@ -50,10 +50,14 @@ class ScaleInput extends Component {
   }
 
   render() {
-    const { leftLabel, rightLabel, label, wide } = this.props;
+    const {
+      leftLabel, rightLabel, label, wide
+    } = this.props;
     const { id } = this.state;
-    const inheritedProps = excludeKeys(this.props,
-      'rightLabel leftLabel label onChange wide centerMarker defaultValue leftTicks rightTicks');
+    const inheritedProps = excludeKeys(
+      this.props,
+      'rightLabel leftLabel label onChange wide centerMarker defaultValue leftTicks rightTicks'
+    );
 
     return (
       <div className={`${styles.group} ${wide ? styles.wide : ''}`}>
@@ -91,7 +95,7 @@ ScaleInput.propTypes = {
   rightLabel: PropTypes.string,
   rightTicks: PropTypes.number,
   step: PropTypes.number,
-  wide: PropTypes.bool,
+  wide: PropTypes.bool
 };
 
 ScaleInput.defaultProps = {
@@ -106,7 +110,7 @@ ScaleInput.defaultProps = {
   rightLabel: '+',
   rightTicks: 5,
   step: 0.01,
-  wide: true,
+  wide: true
 };
 
 export default ScaleInput;

@@ -12,8 +12,8 @@ export const addEnvelope = (points, URI) => {
       type: actionTypes.addEnvelope,
       id: IdContainer[URI]++,
       points,
-      URI,
-    },
+      URI
+    }
   };
 };
 
@@ -22,24 +22,24 @@ export const addPoint = (color, URI) => ({
   payload: {
     type: actionTypes.addPoint,
     color,
-    URI,
-  },
+    URI
+  }
 });
 
-export const deleteEnvelope = URI => ({
+export const deleteEnvelope = (URI) => ({
   type: actionTypes.changePropertyTreeNode,
   payload: {
     type: actionTypes.deleteEnvelope,
-    URI,
-  },
+    URI
+  }
 });
 
-export const clearEnvelopes = URI => ({
+export const clearEnvelopes = (URI) => ({
   type: actionTypes.changePropertyTreeNode,
   payload: {
     type: actionTypes.clearEnvelopes,
-    URI,
-  },
+    URI
+  }
 });
 
 export const movePoint = (deltaPosition, id, envelopeId, URI) => ({
@@ -49,8 +49,8 @@ export const movePoint = (deltaPosition, id, envelopeId, URI) => ({
     envelopeId,
     id,
     deltaPosition,
-    URI,
-  },
+    URI
+  }
 });
 
 export const changeColor = (color, URI) => ({
@@ -58,8 +58,8 @@ export const changeColor = (color, URI) => ({
   payload: {
     type: actionTypes.changeColor,
     color,
-    URI,
-  },
+    URI
+  }
 });
 
 export const toggleActiveEnvelope = (envelopeId, URI) => ({
@@ -67,8 +67,8 @@ export const toggleActiveEnvelope = (envelopeId, URI) => ({
   payload: {
     type: actionTypes.toggleActiveEnvelope,
     envelopeId,
-    URI,
-  },
+    URI
+  }
 });
 
 export const toggleActivePoint = (envelopeId, pointId, URI) => ({
@@ -77,8 +77,8 @@ export const toggleActivePoint = (envelopeId, pointId, URI) => ({
     type: actionTypes.toggleActivePoint,
     envelopeId,
     pointId,
-    URI,
-  },
+    URI
+  }
 });
 
 export const setClickablePoint = (isClickable, envelopeId, pointId, URI) => ({
@@ -88,6 +88,6 @@ export const setClickablePoint = (isClickable, envelopeId, pointId, URI) => ({
     isClickable,
     envelopeId,
     pointId,
-    URI,
-  },
+    URI
+  }
 });

@@ -8,7 +8,7 @@ import {
   addNodeMetaPopover,
   addNodePropertyPopover,
   reloadPropertyTree,
-  setPropertyTreeExpansion,
+  setPropertyTreeExpansion
 } from '../../../api/Actions';
 import subStateToProps from '../../../utils/subStateToProps';
 import ToggleContent from '../../common/ToggleContent/ToggleContent';
@@ -20,7 +20,7 @@ import {
   isGlobeBrowsingLayer,
   isPropertyOwnerHidden,
   isPropertyVisible,
-  isSceneGraphNode,
+  isSceneGraphNode
 } from '../../../utils/propertyTreeHelpers';
 import Property from './Property';
 import PropertyOwnerHeader from './PropertyOwnerHeader';
@@ -41,7 +41,7 @@ class PropertyOwnerComponent extends Component {
     super(props);
     this.state = {
       shownLayers: props.layers,
-      isDragging: false,
+      isDragging: false
     };
 
     this.renderLayersList = this.renderLayersList.bind(this);
@@ -52,17 +52,17 @@ class PropertyOwnerComponent extends Component {
       return true;
     }
     return !(
-      this.props.uri === nextProps.uri
-      && this.props.name === nextProps.name
-      && shallowEqualArrays(this.props.layers, nextProps.layers)
-      && shallowEqualArrays(this.props.properties, nextProps.properties)
-      && shallowEqualArrays(this.props.subowners, nextProps.subowners)
-      && shallowEqualObjects(this.props.subownerNames, nextProps.subownerNames)
-      && this.props.isExpanded === nextProps.isExpanded
-      && this.props.setExpanded === nextProps.setExpanded
-      && this.props.autoExpand === nextProps.autoExpand
-      && this.props.expansionIdentifier === nextProps.expansionIdentifier
-      && this.props.shouldSort === nextProps.shouldSort);
+      this.props.uri === nextProps.uri &&
+      this.props.name === nextProps.name &&
+      shallowEqualArrays(this.props.layers, nextProps.layers) &&
+      shallowEqualArrays(this.props.properties, nextProps.properties) &&
+      shallowEqualArrays(this.props.subowners, nextProps.subowners) &&
+      shallowEqualObjects(this.props.subownerNames, nextProps.subownerNames) &&
+      this.props.isExpanded === nextProps.isExpanded &&
+      this.props.setExpanded === nextProps.setExpanded &&
+      this.props.autoExpand === nextProps.autoExpand &&
+      this.props.expansionIdentifier === nextProps.expansionIdentifier &&
+      this.props.shouldSort === nextProps.shouldSort);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -73,7 +73,8 @@ class PropertyOwnerComponent extends Component {
   }
 
   get header() {
-    const { uri, name, isExpanded, setExpanded, popOut, metaAction, trashAction,
+    const {
+      uri, name, isExpanded, setExpanded, popOut, metaAction, trashAction,
       isRenderable, isSceneGraphNodeOrLayer, dragHandleTitleProps
     } = this.props;
 
@@ -93,7 +94,12 @@ class PropertyOwnerComponent extends Component {
     );
 
     if (dragHandleTitleProps) {
-      return <div {...dragHandleTitleProps}> { header }</div>
+      return (
+        <div {...dragHandleTitleProps}>
+          {' '}
+          { header }
+        </div>
+      );
     }
     return header;
   }
@@ -146,7 +152,7 @@ class PropertyOwnerComponent extends Component {
     // from being triggered while dragging
     const overlay = (
       <div style={{
-        position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100,
+        position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100
       }}
       />
     );
@@ -155,11 +161,11 @@ class PropertyOwnerComponent extends Component {
       <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
         { this.state.isDragging && overlay }
         <Droppable droppableId="layers">
-          { provided => (
+          { (provided) => (
             <div {...provided.droppableProps} ref={provided.innerRef}>
               { shownLayers.map((uri, index) => (
                 <Draggable key={uri} draggableId={uri} index={index}>
-                  {provided => (
+                  {(provided) => (
                     <div {...provided.draggableProps} ref={provided.innerRef}>
                       <PropertyOwner
                         dragHandleTitleProps={provided.dragHandleProps}
@@ -191,9 +197,9 @@ class PropertyOwnerComponent extends Component {
       isHidden
     } = this.props;
 
-    const sortedSubowners = shouldSort
-      ? (subowners.slice(0).sort((a, b) => subownerNames[a].localeCompare(subownerNames[b], 'en')))
-      : subowners;
+    const sortedSubowners = shouldSort ?
+      (subowners.slice(0).sort((a, b) => subownerNames[a].localeCompare(subownerNames[b], 'en'))) :
+      subowners;
 
     return !isHidden && (
       <ToggleContent
@@ -216,9 +222,8 @@ class PropertyOwnerComponent extends Component {
               autoExpand={autoExpand}
             />
           );
-        })
-        }
-        { properties.map(uri => <Property key={uri} uri={uri} />) }
+        })}
+        { properties.map((uri) => <Property key={uri} uri={uri} />) }
       </ToggleContent>
     );
   }
@@ -250,17 +255,21 @@ const displayName = (propertyOwners, properties, uri) => {
 };
 
 const mapSubStateToProps = (
-  { luaApi, propertyOwners, properties, propertyTreeExpansion },
-  { uri, name, autoExpand, expansionIdentifier },
+  {
+    luaApi, propertyOwners, properties, propertyTreeExpansion
+  },
+  {
+    uri, name, autoExpand, expansionIdentifier
+  },
 ) => {
   const data = propertyOwners[uri];
   const showHidden = properties['OpenSpaceEngine.ShowHiddenSceneGraphNodes'];
-  let isHidden = isPropertyOwnerHidden(properties, uri) && !showHidden.value;
+  const isHidden = isPropertyOwnerHidden(properties, uri) && !showHidden.value;
   let subowners = data ? data.subowners : [];
   let subProperties = data ? data.properties : [];
 
-  const layers = subowners.filter(uri => (isGlobeBrowsingLayer(uri)));
-  subowners = subowners.filter(uri => (
+  const layers = subowners.filter((uri) => (isGlobeBrowsingLayer(uri)));
+  subowners = subowners.filter((uri) => (
     !isPropertyOwnerHidden(properties, uri) && !isDeadEnd(propertyOwners, properties, uri) && !isGlobeBrowsingLayer(uri)
   ));
 
@@ -270,7 +279,7 @@ const mapSubStateToProps = (
   });
 
   // Find all the subproperties of this owner (do not include the enabled property)
-  subProperties = subProperties.filter(uri => isPropertyVisible(properties, uri));
+  subProperties = subProperties.filter((uri) => isPropertyVisible(properties, uri));
 
   const shouldSort = shouldSortAlphabetically(uri);
 
@@ -302,18 +311,18 @@ const mapSubStateToProps = (
   };
 };
 
-const mapStateToSubState = state => ({
+const mapStateToSubState = (state) => ({
   luaApi: state.luaApi,
   propertyOwners: state.propertyTree.propertyOwners,
   properties: state.propertyTree.properties,
-  propertyTreeExpansion: state.local.propertyTreeExpansion,
+  propertyTreeExpansion: state.local.propertyTreeExpansion
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   const setExpanded = (expanded) => {
     dispatch(setPropertyTreeExpansion({
       identifier: ownProps.expansionIdentifier,
-      expanded,
+      expanded
     }));
   };
 
@@ -321,13 +330,13 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   const popOut = () => {
     dispatch(addNodePropertyPopover({
       identifier: ownProps.uri,
-      focus: isFocus,
+      focus: isFocus
     }));
   };
 
   const metaAction = () => {
     dispatch(addNodeMetaPopover({
-      identifier: ownProps.uri,
+      identifier: ownProps.uri
     }));
   };
 
@@ -339,7 +348,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     setExpanded,
     popOut,
     metaAction,
-    refresh,
+    refresh
   };
 };
 
@@ -348,21 +357,20 @@ const PropertyOwner = connect(
   mapDispatchToProps,
 )(PropertyOwnerComponent);
 
-
 PropertyOwner.propTypes = {
   autoExpand: PropTypes.bool,
   dragHandleTitleProps: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
   expansionIdentifier: PropTypes.string,
   name: PropTypes.string,
   trashAction: PropTypes.func,
-  uri: PropTypes.string.isRequired,
+  uri: PropTypes.string.isRequired
 };
 
 PropertyOwner.defaultProps = {
   autoExpand: false,
   dragHandleTitleProps: false,
   properties: [],
-  subowners: [],
+  subowners: []
 };
 
 export default PropertyOwner;

@@ -23,10 +23,9 @@ class InfoBox extends Component {
 
   get position() {
     if (!this.wrapper) return { top: '0px', left: '0px' };
-    else {
-      const { top, right } = this.wrapper.getBoundingClientRect();
-      return { top: `${top}px`, left: `${right}px` };
-    }
+
+    const { top, right } = this.wrapper.getBoundingClientRect();
+    return { top: `${top}px`, left: `${right}px` };
   }
 
   showPopup() {
@@ -40,15 +39,16 @@ class InfoBox extends Component {
   render() {
     const { icon, text } = this.props;
     const { showPopup } = this.state;
-    const passOnProps = excludeKeys(this.props, 'icon text'); 
+    const passOnProps = excludeKeys(this.props, 'icon text');
     return (
       <span
         ref={this.setRef('wrapper')}
         {...passOnProps}
       >
-        <MaterialIcon icon={icon}
-         onMouseEnter={this.showPopup}
-         onMouseLeave={this.hidePopup} 
+        <MaterialIcon
+          icon={icon}
+          onMouseEnter={this.showPopup}
+          onMouseLeave={this.hidePopup}
         />
         { showPopup && (
           <Tooltip fixed placement="right" style={this.position}>
@@ -62,11 +62,11 @@ class InfoBox extends Component {
 
 InfoBox.propTypes = {
   icon: PropTypes.string,
-  text: PropTypes.node.isRequired, // should be text or html object
+  text: PropTypes.node.isRequired // should be text or html object
 };
 
 InfoBox.defaultProps = {
-  icon: 'info',
+  icon: 'info'
 };
 
 export default InfoBox;

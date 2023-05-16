@@ -17,86 +17,96 @@ class NodePropertiesPanel extends Component {
 
   togglePopover() {
     if (this.props.isFocusNodePanel) {
-      this.props.setPopoverVisibilityAction(!this.props.showPopover, 'focusNodePropertiesPanel')
+      this.props.setPopoverVisibilityAction(!this.props.showPopover, 'focusNodePropertiesPanel');
     } else {
-      this.props.removeNodePropertyPopoverAction(this.props.node)
+      this.props.removeNodePropertyPopoverAction(this.props.node);
     }
   }
 
   propertiesForRenderableType() {
     switch (this.props.renderableType) {
-      case RenderableTypes.RenderableGlobe:
-        return ["Enabled", "PerformShading", "TargetLodScaleFactor"];
-      case RenderableTypes.RenderableBillboardsCloud:
-        return ["Enabled", "DrawElements", "RenderOption", "Opacity", "DrawLabels"];
-      case RenderableTypes.RenderablePlaneImageLocal:
-        return ["Enabled", "Opacity", "Billboard"];
-      case RenderableTypes.RenderableStars:
-        return ["Enabled", "ColorOption", "Transparency", "ScaleFactor"];
+    case RenderableTypes.RenderableGlobe:
+      return ['Enabled', 'PerformShading', 'TargetLodScaleFactor'];
+    case RenderableTypes.RenderableBillboardsCloud:
+      return ['Enabled', 'DrawElements', 'RenderOption', 'Opacity', 'DrawLabels'];
+    case RenderableTypes.RenderablePlaneImageLocal:
+      return ['Enabled', 'Opacity', 'Billboard'];
+    case RenderableTypes.RenderableStars:
+      return ['Enabled', 'ColorOption', 'Transparency', 'ScaleFactor'];
     }
   }
 
   propertyOwnerForUri(activeTab, uri) {
-    return <PropertyOwner autoExpand={true}
-                          key={activeTab}
-                          uri={uri}
-                          expansionIdentifier={"P:"+uri} />;
+    return (
+      <PropertyOwner
+        autoExpand
+        key={activeTab}
+        uri={uri}
+        expansionIdentifier={`P:${uri}`}
+      />
+    );
   }
 
   contentForTab(activeTab) {
     if (activeTab == 0) {
-      let featuredProperties = this.propertiesForRenderableType();
+      const featuredProperties = this.propertiesForRenderableType();
       if (featuredProperties) {
-        return featuredProperties.map(prop => {
-          const propUri = this.props.nodeURI + ".Renderable." + prop;
+        return featuredProperties.map((prop) => {
+          const propUri = `${this.props.nodeURI}.Renderable.${prop}`;
           if (this.props.renderableProps.includes(propUri)) {
             return <Property key={prop} uri={propUri} />;
           }
-        })
-      }
-      else {
-        return <PropertyOwner autoExpand={true}
-                              key={0}
-                              uri={this.props.nodeURI + ".Renderable"}
-                              expansionIdentifier={"P:"+this.props.nodeURI} />;
+        });
       }
 
+      return (
+        <PropertyOwner
+          autoExpand
+          key={0}
+          uri={`${this.props.nodeURI}.Renderable`}
+          expansionIdentifier={`P:${this.props.nodeURI}`}
+        />
+      );
     }
 
     if (RenderableTypes[this.props.renderableType]) {
       switch (this.props.renderableType) {
-        case RenderableTypes.RenderableGlobe:
-          switch (activeTab) {
-            case 1: {
-              let uri = this.props.nodeURI + ".Renderable.Layers.ColorLayers"
-              return this.propertyOwnerForUri(activeTab, uri);
-            }
-            case 2: {
-              let uri = this.props.nodeURI + ".Renderable.Layers.HeightLayers"
-              return this.propertyOwnerForUri(activeTab, uri);
-            }
-          }
+      case RenderableTypes.RenderableGlobe:
+        switch (activeTab) {
+        case 1: {
+          const uri = `${this.props.nodeURI}.Renderable.Layers.ColorLayers`;
+          return this.propertyOwnerForUri(activeTab, uri);
+        }
+        case 2: {
+          const uri = `${this.props.nodeURI}.Renderable.Layers.HeightLayers`;
+          return this.propertyOwnerForUri(activeTab, uri);
+        }
+        }
       }
     } else {
-      return;
+
     }
   }
 
   buttonForTab(activeTab, index, title) {
-    return <Button block
-        largetext={activeTab == index} smalltext={activeTab != index}
+    return (
+      <Button
+        block
+        largetext={activeTab == index}
+        smalltext={activeTab != index}
         key={index}
         onClick={() => this.props.setPopoverActiveTabAction(index)}
       >
         {title}
-      </Button>;
+      </Button>
+    );
   }
 
   tabsForRenderableType(activeTab) {
     if (RenderableTypes[this.props.renderableType]) {
       switch (this.props.renderableType) {
-        case RenderableTypes.RenderableGlobe:
-          return [this.buttonForTab(activeTab, 1, "Color Layers"), (this.buttonForTab(activeTab, 2, "Height Layers"))];
+      case RenderableTypes.RenderableGlobe:
+        return [this.buttonForTab(activeTab, 1, 'Color Layers'), (this.buttonForTab(activeTab, 2, 'Height Layers'))];
       }
     } else {
       return [];
@@ -104,8 +114,10 @@ class NodePropertiesPanel extends Component {
   }
 
   get popover() {
-    const { activeTab, isFocusNodePanel, attached, nodeName, renderableType } = this.props;
-    const windowTitle = isFocusNodePanel ? "Current Focus: " + nodeName : nodeName;
+    const {
+      activeTab, isFocusNodePanel, attached, nodeName, renderableType
+    } = this.props;
+    const windowTitle = isFocusNodePanel ? `Current Focus: ${nodeName}` : nodeName;
     return (
       <Popover
         className={`${Picker.Popover} && ${styles.nodePopover}`}
@@ -114,7 +126,10 @@ class NodePropertiesPanel extends Component {
         attached={attached}
         detachable
       >
-        <div className={Popover.styles.title}>Type - {renderableType && renderableType.replace("Renderable", "")}</div>
+        <div className={Popover.styles.title}>
+          Type -
+          {renderableType && renderableType.replace('Renderable', '')}
+        </div>
         <div className={`${Popover.styles.content} ${styles.contentContainer}`}>
           { this.contentForTab(activeTab) }
         </div>
@@ -125,13 +140,13 @@ class NodePropertiesPanel extends Component {
           { this.tabsForRenderableType(activeTab) }
         </div>
       </Popover>
-     );
+    );
   }
 
   render() {
     const { showPopover } = this.props;
     return (
-      <div className={Picker.Wrapper} >
+      <div className={Picker.Wrapper}>
         { showPopover && this.popover }
       </div>
     );
@@ -139,42 +154,42 @@ class NodePropertiesPanel extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  let aim = state.propertyTree.properties[NavigationAnchorKey] ?
+  const aim = state.propertyTree.properties[NavigationAnchorKey] ?
     state.propertyTree.properties[NavigationAnchorKey].value :
     undefined;
 
-  var nodeURI = ownProps.isFocusNodePanel ? ScenePrefixKey + aim : ownProps.uri;
+  const nodeURI = ownProps.isFocusNodePanel ? ScenePrefixKey + aim : ownProps.uri;
 
-  let myPopover = ownProps.isFocusNodePanel ?
+  const myPopover = ownProps.isFocusNodePanel ?
     state.local.popovers.focusNodePropertiesPanel :
     state.local.popovers.activeNodePropertyPanels[ownProps.uri];
 
-  var popoverVisible = myPopover ? myPopover.visible : false;
+  let popoverVisible = myPopover ? myPopover.visible : false;
   const popoverAttached = myPopover ? myPopover.attached : false;
   const popoverActiveTab = myPopover && myPopover.activeTab ? myPopover.activeTab : 0;
 
   const node = state.propertyTree.propertyOwners[nodeURI] ? state.propertyTree.propertyOwners[nodeURI] : {};
   const nodeName = node.name;
 
-  const renderableProps = state.propertyTree.propertyOwners[nodeURI+".Renderable"] ?
-    state.propertyTree.propertyOwners[nodeURI+".Renderable"].properties :
+  const renderableProps = state.propertyTree.propertyOwners[`${nodeURI}.Renderable`] ?
+    state.propertyTree.propertyOwners[`${nodeURI}.Renderable`].properties :
     null;
 
   if (ownProps.isFocusNodePanel && !aim) {
     popoverVisible = false;
   }
 
-  let renderableTypeProp = state.propertyTree.properties[nodeURI + ".Renderable.Type"];
-  let renderableType = renderableTypeProp ? renderableTypeProp.value : undefined;
+  const renderableTypeProp = state.propertyTree.properties[`${nodeURI}.Renderable.Type`];
+  const renderableType = renderableTypeProp ? renderableTypeProp.value : undefined;
 
   if (!renderableType) {
-    popoverVisible = false
+    popoverVisible = false;
   }
 
   return {
-    nodeURI: nodeURI,
-    nodeName: nodeName,
-    renderableType: renderableType,
+    nodeURI,
+    nodeName,
+    renderableType,
     activeTab: popoverActiveTab,
     showPopover: popoverVisible,
     attached: popoverAttached,
@@ -209,7 +224,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     removeNodePropertyPopoverAction,
     setPopoverActiveTabAction
   };
-}
+};
 
 NodePropertiesPanel = connect(
   mapStateToProps,

@@ -46,7 +46,7 @@ const selectStyles = {
   })
 };
 
-const Select = (props) => {
+function Select(props) {
   const { value, label } = props;
   const inheritedProps = excludeKeys(props, 'label');
   const id = props.id || `select-${Input.nextId}`;
@@ -58,13 +58,13 @@ const Select = (props) => {
         id={id}
         placeholder={label}
         styles={selectStyles}
-        value={inheritedProps.options.filter(opt => opt.value == value)}
+        value={inheritedProps.options.filter((opt) => opt.value == value)}
         blurInputOnSelect
       />
       { props.value !== undefined && <label htmlFor={id} className={styles.selectlabel}>{ label }</label> }
     </div>
   );
-};
+}
 
 Select.propTypes = {
   clearable: PropTypes.bool,
@@ -73,15 +73,16 @@ Select.propTypes = {
   options: PropTypes.arrayOf(
     PropTypes.shape({
       value: PropTypes.string,
-      label: PropTypes.string,
-    })).isRequired,
-  searchable: PropTypes.bool,
+      label: PropTypes.string
+    })
+  ).isRequired,
+  searchable: PropTypes.bool
 };
 
 Select.defaultProps = {
   id: null,
   searchable: false,
-  clearable: false,
+  clearable: false
 };
 
 export default Select;

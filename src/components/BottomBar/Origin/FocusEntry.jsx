@@ -6,8 +6,9 @@ import Button from '../../common/Input/Button/Button';
 import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
 import { useContextRefs } from '../../GettingStartedTour/GettingStartedContext';
 
-function FocusEntry({ luaApi, name, identifier, onSelect, active, showNavigationButtons, closePopoverIfSet }) {
-
+function FocusEntry({
+  luaApi, name, identifier, onSelect, active, showNavigationButtons, closePopoverIfSet
+}) {
   function isActive() {
     return identifier === active;
   }
@@ -21,8 +22,7 @@ function FocusEntry({ luaApi, name, identifier, onSelect, active, showNavigation
   const flyTo = (event) => {
     if (event.shiftKey) {
       luaApi.pathnavigation.flyTo(identifier, 0.0);
-    }
-    else {
+    } else {
       luaApi.pathnavigation.flyTo(identifier);
     }
     event.stopPropagation();
@@ -32,8 +32,7 @@ function FocusEntry({ luaApi, name, identifier, onSelect, active, showNavigation
   const zoomToFocus = (event) => {
     if (event.shiftKey) {
       luaApi.pathnavigation.zoomToFocus(0.0);
-    }
-    else {
+    } else {
       luaApi.pathnavigation.zoomToFocus();
     }
     event.stopPropagation();
@@ -47,12 +46,12 @@ function FocusEntry({ luaApi, name, identifier, onSelect, active, showNavigation
       className={`${styles.entry} ${isActive() && styles.active}`}
       onClick={select}
       key={name}
-      ref={el => refs.current[name] = el}
+      ref={(el) => refs.current[name] = el}
     >
       <span className={styles.title}>
         { name || identifier }
       </span>
-      {showNavigationButtons &&
+      {showNavigationButtons && (
         <div className={styles.buttonContainer}>
           { isActive() && (
             <Button className={styles.flyToButton} onClick={zoomToFocus} title="Zoom to">
@@ -63,13 +62,13 @@ function FocusEntry({ luaApi, name, identifier, onSelect, active, showNavigation
             <MaterialIcon className={styles.buttonIcon} icon="flight" />
           </Button>
         </div>
-      }
+      )}
     </li>
   );
 }
 
-const mapStateToProps = state => ({
-  luaApi: state.luaApi,
+const mapStateToProps = (state) => ({
+  luaApi: state.luaApi
 });
 
 FocusEntry.propTypes = {
@@ -78,14 +77,14 @@ FocusEntry.propTypes = {
   onSelect: PropTypes.func,
   active: PropTypes.string,
   showNavigationButtons: PropTypes.bool,
-  luaApi: PropTypes.object.isRequired,
+  luaApi: PropTypes.object.isRequired
 };
 
 FocusEntry.defaultProps = {
   name: undefined,
   onSelect: null,
   showNavigationButtons: false,
-  active: '',
+  active: ''
 };
 
 FocusEntry = connect(mapStateToProps)(FocusEntry);

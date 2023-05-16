@@ -11,7 +11,7 @@ class InfoButton extends Component {
     super(props);
 
     this.state = {
-      showPopover: false,
+      showPopover: false
     };
 
     this.togglePopover = this.togglePopover.bind(this);
@@ -54,7 +54,7 @@ class InfoButton extends Component {
 
 InfoButton.propTypes = {
   storyTitle: PropTypes.string.isRequired,
-  storyInfo: PropTypes.string.isRequired,
+  storyInfo: PropTypes.string.isRequired
 };
 
 export default InfoButton;

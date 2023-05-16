@@ -2,12 +2,12 @@ import { actionTypes } from '../Actions/actionTypes';
 
 import {
   updateSessionRecording
-} from '../Actions'
+} from '../Actions';
 
 import api from '../api';
 
-let topic = undefined;
-let dataCallback = undefined;
+let topic;
+let dataCallback;
 let nSubscribers = 0;
 
 const subscribe = () => {
@@ -30,7 +30,7 @@ const unsubscribe = () => {
     event: 'stop_subscription'
   });
   topic.cancel();
-}
+};
 
 const refresh = () => {
   if (topic) {
@@ -49,38 +49,38 @@ const refresh = () => {
       tempTopic.cancel();
     })();
   }
-}
+};
 
-export const sessionRecording = store => next => action => {
+export const sessionRecording = (store) => (next) => (action) => {
   const result = next(action);
   const state = store.getState();
 
   switch (action.type) {
-    case actionTypes.onOpenConnection:
-      if (nSubscribers > 0) {
-        dataCallback = (data) => store.dispatch(updateSessionRecording(data));
-        subscribe();
-      }
-      break;
-    case actionTypes.refreshSessionRecording:
-      dataCallback = (data) => store.dispatch(updateSessionRecording(data)),
-      refresh();
-      break;
-    case actionTypes.subscribeToSessionRecording:
-      ++nSubscribers;
-      if (nSubscribers === 1 && state.connection.isConnected) {
-        dataCallback = (data) => store.dispatch(updateSessionRecording(data));
-        subscribe();
-      }
-      break;
-    case actionTypes.unsubscribeToSessionRecording:
-      --nSubscribers;
-      if (nSubscribers === 0) {
-        unsubscribe();
-      }
-      break;
-    default:
-      break;
+  case actionTypes.onOpenConnection:
+    if (nSubscribers > 0) {
+      dataCallback = (data) => store.dispatch(updateSessionRecording(data));
+      subscribe();
+    }
+    break;
+  case actionTypes.refreshSessionRecording:
+    dataCallback = (data) => store.dispatch(updateSessionRecording(data)),
+    refresh();
+    break;
+  case actionTypes.subscribeToSessionRecording:
+    ++nSubscribers;
+    if (nSubscribers === 1 && state.connection.isConnected) {
+      dataCallback = (data) => store.dispatch(updateSessionRecording(data));
+      subscribe();
+    }
+    break;
+  case actionTypes.unsubscribeToSessionRecording:
+    --nSubscribers;
+    if (nSubscribers === 0) {
+      unsubscribe();
+    }
+    break;
+  default:
+    break;
   }
   return result;
 };

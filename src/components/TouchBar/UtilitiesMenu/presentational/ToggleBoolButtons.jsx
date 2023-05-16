@@ -23,7 +23,7 @@ class ToggleBoolButtons extends Component {
     return (
       properties.map((property, i) => (
         <ToggleBoolButton
-          ref={ref => this.toggleButtons[property.URI] = ref}
+          ref={(ref) => this.toggleButtons[property.URI] = ref}
           key={property.URI}
           property={property}
           handleGroup={this.handleGroup}
@@ -44,7 +44,7 @@ class ToggleBoolButtons extends Component {
 const mapStateToProps = (state, ownProps) => {
   const properties = state.storyTree.story.toggleboolproperties;
   return {
-    properties,
+    properties
   };
 };
 

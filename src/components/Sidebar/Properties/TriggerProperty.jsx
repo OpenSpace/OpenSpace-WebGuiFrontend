@@ -26,10 +26,12 @@ class TriggerProperty extends Component {
   render() {
     const { Name } = this.props.description;
     return (
-      <div style={{marginBottom: 3}}>
+      <div style={{ marginBottom: 3 }}>
         <Button onClick={this.onChange}>
           { Name }
-        </Button> { this.descriptionPopup }
+        </Button>
+        {' '}
+        { this.descriptionPopup }
       </div>
     );
   }

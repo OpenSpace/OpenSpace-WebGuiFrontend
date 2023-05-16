@@ -11,7 +11,7 @@ class ToggleBoolButton extends Component {
     super(props);
 
     this.state = {
-      checked: this.props.property.isAction ? this.props.property.defaultvalue : this.props.propertyNode.value,
+      checked: this.props.property.isAction ? this.props.property.defaultvalue : this.props.propertyNode.value
     };
 
     this.disableIfChecked = this.disableIfChecked.bind(this);
@@ -99,7 +99,7 @@ const mapStateToProps = (state, ownProps) => {
   if (!ownProps.property.isAction) {
     const propertyNode = state.propertyTree.properties[ownProps.property.URI];
     return {
-      propertyNode,
+      propertyNode
     };
   } return { propertyNode: null };
 };
@@ -108,7 +108,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   boolPropertyDispatcher: propertyDispatcher(dispatch, ownProps.property.URI),
   triggerActionDispatcher: (action) => {
     dispatch(triggerAction(action));
-  },
+  }
 });
 
 ToggleBoolButton = connect(
@@ -121,8 +121,8 @@ ToggleBoolButton = connect(
 ToggleBoolButton.propTypes = {
   propertyNode: PropTypes.shape({
     description: PropTypes.string,
-    value: PropTypes.bool,
-  }),
+    value: PropTypes.bool
+  })
 };
 
 export default ToggleBoolButton;

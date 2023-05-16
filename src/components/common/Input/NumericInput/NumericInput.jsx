@@ -69,7 +69,9 @@ class NumericInput extends Component {
   }
 
   updateSliderScale() {
-    const {exponent, min, max, step} = this.props;
+    const {
+      exponent, min, max, step
+    } = this.props;
 
     // Prevent setting exponent to zero, as it breaks the scale
     const exp = (exponent == 0) ? 1.0 : exponent;
@@ -85,9 +87,9 @@ class NumericInput extends Component {
 
     // The slider is logarithmic, but the scaling of the value increases exponentially
     return Scale.scalePow()
-            .exponent(exp)
-            .domain([0, this.sliderResolution]) // slider pos
-            .range([min, max]); // allowed values
+      .exponent(exp)
+      .domain([0, this.sliderResolution]) // slider pos
+      .range([min, max]); // allowed values
   }
 
   valueToSliderPos(value) {
@@ -131,7 +133,7 @@ class NumericInput extends Component {
 
     // Validate the test input
     const value = Number.parseFloat(event.currentTarget.value);
-    const isValueOutsideRange =  value < min || value > max;
+    const isValueOutsideRange = value < min || value > max;
     const enteredNanValue = isNaN(value) || !isFinite(value);
 
     if (this.state.isValueOutsideRange !== isValueOutsideRange) {
@@ -145,7 +147,7 @@ class NumericInput extends Component {
 
   updateValue(value) {
     const { max, min } = this.props;
-    const isValueOutsideRange =  value < min || value > max;
+    const isValueOutsideRange = value < min || value > max;
 
     // Update state so that input is re-rendered with new content - optimistic ui change
     this.setState({ value, isValueOutsideRange });
@@ -182,7 +184,7 @@ class NumericInput extends Component {
   }
 
   disableTextInput() {
-    this.setState({ showTextInput: false, hoverHint: null});
+    this.setState({ showTextInput: false, hoverHint: null });
   }
 
   textTooltipPosition() {
@@ -192,13 +194,17 @@ class NumericInput extends Component {
   }
 
   render() {
-    const { value, id, isValueOutsideRange, enteredInvalidValue, hoverHint } = this.state;
-    const { decimals, min, max, showOutsideRangeHint } = this.props;
+    const {
+      value, id, isValueOutsideRange, enteredInvalidValue, hoverHint
+    } = this.state;
+    const {
+      decimals, min, max, showOutsideRangeHint
+    } = this.props;
 
     if (this.showTextInput) {
       let excludeProps = 'wide reverse onValueChanged inputOnly noHoverHint noTooltip noValue exponent showOutsideRangeHint';
       let inputClassName = '';
-      let tootipContent = "";
+      let tootipContent = '';
       let showTooltip = false;
 
       // If we are already outside the range, exclude the min max properties to the HTML
@@ -209,20 +215,23 @@ class NumericInput extends Component {
         if (showOutsideRangeHint) {
           inputClassName += styles.outsideMinMaxRange;
           showTooltip = true;
-          tootipContent = <>
-            <p>{`Value is outside the valid range: `}<b>{`[${min}, ${max}].`}</b></p>
-          </>
+          tootipContent = (
+            <p>
+              {`Value is outside the valid range: `}
+              <b>{`[${min}, ${max}].`}</b>
+            </p>
+          );
         }
       }
 
       if (showOutsideRangeHint && enteredInvalidValue) {
         inputClassName += styles.invalidValue;
         showTooltip = true;
-        tootipContent = <p>{ "Value is not a number"}</p>;
+        tootipContent = <p>Value is not a number</p>;
       }
 
       return (
-        <div className={`${styles.inputGroup} ${wide ? styles.wide : ''}` } ref={this.setRef('wrapperRef')}>
+        <div className={`${styles.inputGroup} ${wide ? styles.wide : ''}`} ref={this.setRef('wrapperRef')}>
           <Input
             {...excludeKeys(this.props, excludeProps)}
             className={inputClassName}
@@ -233,16 +242,18 @@ class NumericInput extends Component {
             onEnter={this.onTextBlurOrEnter}
             autoFocus
           />
-          {showTooltip &&
-            <Tooltip className={inputClassName} fixed style={{...this.textTooltipPosition()}} placement={'right'}>
+          {showTooltip && (
+            <Tooltip className={inputClassName} fixed style={{ ...this.textTooltipPosition() }} placement="right">
               {tootipContent}
             </Tooltip>
-          }
+          )}
         </div>
       );
     }
 
-    const { placeholder, className, label, wide, reverse, noValue } = this.props;
+    const {
+      placeholder, className, label, wide, reverse, noValue
+    } = this.props;
     const doNotInclude = 'wide reverse onValueChanged value className type min max step exponent ' +
                          'inputOnly label noHoverHint noTooltip noValue showOutsideRangeHint';
     const inheritedProps = excludeKeys(this.props, doNotInclude);
@@ -264,7 +275,7 @@ class NumericInput extends Component {
           <div className={styles.hoverHint} style={{ width: `${100 * hoverHintOffset}%` }} />
         )}
         { !this.props.noTooltip && hoverHint !== null && (
-          <Tooltip style={{ left: `${100 * hoverHint}%` }} placement={'top'}>
+          <Tooltip style={{ left: `${100 * hoverHint}%` }} placement="top">
             { tooltipValue }
           </Tooltip>
         )}
@@ -272,12 +283,14 @@ class NumericInput extends Component {
           {...inheritedProps}
           id={id}
           type="range"
-          value={"test"}
+          value="test"
           min={0}
           max={this.sliderResolution}
           step={1}
           className={`${className} ${styles.range}`}
-          style={{ '--min': 0, '--max': this.sliderResolution, '--value': sliderValue, direction: reverse ? "rtl" : "ltr" }}
+          style={{
+            '--min': 0, '--max': this.sliderResolution, '--value': sliderValue, direction: reverse ? 'rtl' : 'ltr'
+          }}
           onClickCapture={(event) => event.stopPropagation()}
           onChange={this.onSliderChange}
           onMouseMove={this.onHover}
@@ -287,7 +300,7 @@ class NumericInput extends Component {
           { label || placeholder }
         </label>
         <span className={styles.value}>
-          {noValue ? "" : displayValue}
+          {noValue ? '' : displayValue}
         </span>
       </div>
     );

@@ -15,7 +15,7 @@ class DateController extends Component {
     super(props);
 
     this.state = {
-      showPopover: false,
+      showPopover: false
     };
 
     this.togglePopover = this.togglePopover.bind(this);
@@ -39,7 +39,7 @@ class DateController extends Component {
   get dateButtons() {
     const { dateList } = this.props;
     timeHelpers.sortDates(dateList);
-    return (dateList.map(date => (
+    return (dateList.map((date) => (
       <Button
         className={styles.dateButton}
         id={date.date}
@@ -64,7 +64,7 @@ class DateController extends Component {
     this.togglePopover();
     const timeString = timeHelpers.DateStringWithTimeZone(e.target.id);
     timeHelpers.setDate(luaApi, new Date(timeString));
-    const selectedDate = dateList.find(date => date.date === e.target.id);
+    const selectedDate = dateList.find((date) => date.date === e.target.id);
     onChangeSight(selectedDate);
   }
 
@@ -97,17 +97,17 @@ DateController.propTypes = {
     PropTypes.shape({
       place: PropTypes.string,
       planet: PropTypes.string,
-      location: PropTypes.object,
+      location: PropTypes.object
     }),
-  ),
+  )
 };
 
 DateController.defaultProps = {
   onChangeSight: () => {},
-  dateList: [],
+  dateList: []
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   luaApi: state.luaApi
 });
 

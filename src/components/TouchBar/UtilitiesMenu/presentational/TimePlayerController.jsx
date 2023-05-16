@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { subscribeToTime, unsubscribeToTime } from '../../../../api/Actions';
 import {
-  FastForward, FastRewind, Forward, Play, Rewind,
+  FastForward, FastRewind, Forward, Play, Rewind
 } from '../../../../api/keys';
 import * as timeHelpers from '../../../../utils/timeHelpers';
 import Icon from '../../../common/MaterialIcon/MaterialIcon';
@@ -54,33 +54,33 @@ class TimePlayerController extends Component {
     const { isPaused, luaApi } = this.props;
 
     switch (e.target.id) {
-      case FastRewind:
+    case FastRewind:
+      luaApi.time.setPause(false);
+      this.setSimulationSpeed(-FastSpeed);
+      break;
+    case Rewind:
+      luaApi.time.setPause(false);
+      this.setSimulationSpeed(-Speed);
+      break;
+    case Play:
+      if (isPaused) {
         luaApi.time.setPause(false);
-        this.setSimulationSpeed(-FastSpeed);
-        break;
-      case Rewind:
-        luaApi.time.setPause(false);
-        this.setSimulationSpeed(-Speed);
-        break;
-      case Play:
-        if (isPaused) {
-          luaApi.time.setPause(false);
-          this.setSimulationSpeed(1);
-        } else {
-          luaApi.time.setPause(true);
-          this.setSimulationSpeed(0);
-        }
-        break;
-      case Forward:
-        luaApi.time.setPause(false);
-        this.setSimulationSpeed(Speed);
-        break;
-      case FastForward:
-        luaApi.time.setPause(false);
-        this.setSimulationSpeed(FastSpeed);
-        break;
-      default:
-        break;
+        this.setSimulationSpeed(1);
+      } else {
+        luaApi.time.setPause(true);
+        this.setSimulationSpeed(0);
+      }
+      break;
+    case Forward:
+      luaApi.time.setPause(false);
+      this.setSimulationSpeed(Speed);
+      break;
+    case FastForward:
+      luaApi.time.setPause(false);
+      this.setSimulationSpeed(FastSpeed);
+      break;
+    default:
+      break;
     }
   }
 
@@ -142,22 +142,18 @@ class TimePlayerController extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    time: state.time.time,
-    deltaTime: state.time.deltaTime,
-    targetDeltaTime: state.time.targetDeltaTime,
-    isPaused: state.time.isPaused,
-    luaApi: state.luaApi
-  }
-}
+const mapStateToProps = (state) => ({
+  time: state.time.time,
+  deltaTime: state.time.deltaTime,
+  targetDeltaTime: state.time.targetDeltaTime,
+  isPaused: state.time.isPaused,
+  luaApi: state.luaApi
+});
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    startSubscription: () => dispatch(subscribeToTime()),
-    stopSubscription: () => dispatch(unsubscribeToTime())
-  }
-}
+const mapDispatchToProps = (dispatch) => ({
+  startSubscription: () => dispatch(subscribeToTime()),
+  stopSubscription: () => dispatch(unsubscribeToTime())
+});
 
 TimePlayerController = connect(mapStateToProps, mapDispatchToProps)(TimePlayerController);
 

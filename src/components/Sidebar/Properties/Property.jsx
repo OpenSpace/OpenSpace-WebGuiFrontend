@@ -14,13 +14,13 @@ const concreteProperties = {
   BoolProperty,
   OptionProperty,
   TriggerProperty,
-  StringProperty: StringProperty,
+  StringProperty,
 
   DoubleListProperty: ListProperty,
   IntListProperty: ListProperty,
   StringListProperty: ListProperty,
 
-  SelectionProperty: SelectionProperty,
+  SelectionProperty,
 
   FloatProperty: NumericProperty,
   DoubleProperty: NumericProperty,
@@ -46,14 +46,14 @@ const concreteProperties = {
   DVec2Property: VecProperty,
   DVec3Property: VecProperty,
   DVec4Property: VecProperty,
-  
+
   Mat2Property: MatrixProperty,
   Mat3Property: MatrixProperty,
   Mat4Property: MatrixProperty,
 
   DMat2Property: MatrixProperty,
   DMat3Property: MatrixProperty,
-  DMat4Property: MatrixProperty,
+  DMat4Property: MatrixProperty
 };
 
 class Property extends Component {
@@ -61,19 +61,23 @@ class Property extends Component {
     const { description, value } = this.props;
 
     if (!description) return <></>;
-    
+
     const ConcreteProperty = concreteProperties[description.Type];
- 
+
     if (!ConcreteProperty) {
-      console.error("Missing property", description?.Type, description);
+      console.error('Missing property', description?.Type, description);
       return null;
     }
 
-    return <ConcreteProperty {...this.props}
-                        key={description.Identifier}
-                        description={description}
-                        value={value}
-                        subscribe />;
+    return (
+      <ConcreteProperty
+        {...this.props}
+        key={description.Identifier}
+        description={description}
+        value={value}
+        subscribe
+      />
+    );
   }
 }
 
@@ -81,4 +85,4 @@ Property = connectProperty(Property);
 
 export default Property;
 export const Types = concreteProperties;
-export const GetType = type => concreteProperties[type];
+export const GetType = (type) => concreteProperties[type];
