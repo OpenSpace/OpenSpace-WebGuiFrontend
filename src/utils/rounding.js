@@ -55,10 +55,10 @@ export function precision(value: number) {
  * (without floating point shenanigans)
  * https://www.kirupa.com/html5/rounding_numbers_in_javascript.htm
  * @param value - value to round
- * @param precision - desired precision of the resulting value
+ * @param desiredPrecision - desired precision of the resulting value
  */
-export function roundToNiceNumber(value: number, precision: number) {
-  const p = 10 ** precision;
+export function roundToNiceNumber(value: number, desiredPrecision: number) {
+  const p = 10 ** desiredPrecision;
   return Math.round(value * p) / p;
 }
 
