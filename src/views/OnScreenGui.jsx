@@ -37,18 +37,19 @@ function OnScreenGui({
 
   React.useEffect(() => {
     dispatch(startConnection());
+
+    function toggleConsole(e) {
+      if (e.code === 'Backquote') {
+        setLuaConsoleVisible((current) => !current);
+      }
+    }
+
     window.addEventListener('keydown', toggleConsole);
     return () => window.removeEventListener('keydown', toggleConsole);
   }, []);
 
   function hideAbout() {
     dispatch(setShowAbout(false));
-  }
-
-  function toggleConsole(e) {
-    if (e.code === 'Backquote') {
-      setLuaConsoleVisible((current) => !current);
-    }
   }
 
   // Check the version
@@ -102,7 +103,9 @@ function OnScreenGui({
               <h2>Houston, we've had a...</h2>
               <p>...disconnection between the user interface and OpenSpace.</p>
               <p>Trying to reconnect automatically, but you may want to...</p>
-              <Button className={Error.styles.errorButton} onClick={reloadGui}>Reload the user interface</Button>
+              <Button className={Error.styles.errorButton} onClick={reloadGui}>
+                Reload the user interface
+              </Button>
             </Error>
           </Overlay>
         )}

@@ -8,13 +8,16 @@ import {
 import ActionsPanel from '../components/BottomBar/ActionsPanel';
 import '../styles/base.scss';
 import styles from './ActionsGui.scss';
+import Overlay from '../components/common/Overlay/Overlay';
+import Error from '../components/common/Error/Error';
+import Button from '../components/common/Input/Button/Button';
 
-function ActionsGui({ startConnection, version, connectionLost }) {
+function ActionsGui({ dispatchStartConnection, version, connectionLost }) {
   const [checkedVersion, setCheckedVersion] = React.useState(false);
   const location = useLocation();
 
   React.useEffect(() => {
-    startConnection();
+    dispatchStartConnection();
   }, []);
 
   if (!checkedVersion && version.isInitialized) {
@@ -50,7 +53,9 @@ function ActionsGui({ startConnection, version, connectionLost }) {
             <h2>Houston, we've had a...</h2>
             <p>...disconnection between the user interface and OpenSpace.</p>
             <p>Trying to reconnect automatically, but you may want to...</p>
-            <Button className={Error.styles.errorButton} onClick={reloadGui}>Reload the user interface</Button>
+            <Button className={Error.styles.errorButton} onClick={reloadGui}>
+              Reload the user interface
+            </Button>
           </Error>
         </Overlay>
       )}
@@ -65,7 +70,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  startConnection: () => {
+  dispatchStartConnection: () => {
     dispatch(startConnection());
   }
 });
