@@ -119,6 +119,7 @@ function TimePicker({
   }
 
   function popover() {
+    const displayedTime = useLock ? pendingTime : time;
     return (
       <Popover
         className={`${styles.timePopover} ${Picker.Popover}`}
@@ -133,7 +134,7 @@ function TimePicker({
               <MaterialIcon icon={useLock ? 'lock' : 'lock_open'} />
             </Button>
           </div>
-          <Time time={useLock ? pendingTime : time} onChange={changeDate} />
+          {displayedTime && <Time time={displayedTime} onChange={changeDate} />}
           <div style={{ marginTop: 20 }}>
             <Button onClick={toggleCalendar} title="Toggle calendar" small transparent={!showCalendar}>
               <MaterialIcon icon="view_day" />
