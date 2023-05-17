@@ -7,8 +7,19 @@ import styles from './SmallLabel.scss';
 
 function SmallLabel({ children, refKey, ...props }) {
   const refs = refKey ? useContextRefs() : null;
+
+  function setRef(el) {
+    if (refKey) {
+      refs.current[refKey] = el;
+    }
+  }
+
   return (
-    <span ref={(el) => (refKey ? refs.current[refKey] = el : null)} {...props} className={styles.SmallLabel}>
+    <span
+      ref={setRef}
+      className={styles.SmallLabel}
+      {...props}
+    >
       { children }
     </span>
   );
