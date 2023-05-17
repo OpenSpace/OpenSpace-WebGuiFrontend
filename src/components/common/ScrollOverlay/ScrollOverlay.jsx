@@ -47,6 +47,29 @@ class ScrollOverlay extends Component {
     }
   }
 
+  get hasScrollBar() {
+    if (!this.node || !this.node.scrollHeight) {
+      return false;
+    }
+
+    return this.node.clientHeight < this.node.scrollHeight;
+  }
+
+  get stateClasses() {
+    const { atBottom, atTop } = this.state;
+    if (!this.hasScrollBar) return false;
+
+    let classes = '';
+    if (!atBottom) {
+      classes += `${styles.notAtBottom} `;
+    }
+    if (!atTop) {
+      classes += styles.notAtTop;
+    }
+
+    return classes;
+  }
+
   /**
    * decide if the scroll indicators should be shown or not
    * @param target - the `.scroll-content` node
@@ -62,36 +85,16 @@ class ScrollOverlay extends Component {
     this.setState({ atTop, atBottom });
   }
 
-  get hasScrollBar() {
-    if (!this.node || !this.node.scrollHeight) {
-      return false;
-    }
-
-    return this.node.clientHeight < this.node.scrollHeight;
-  }
-
-  get stateClasses() {
-    if (!this.hasScrollBar) return false;
-
-    let classes = '';
-    if (!this.state.atBottom) {
-      classes += `${styles.notAtBottom} `;
-    }
-    if (!this.state.atTop) {
-      classes += styles.notAtTop;
-    }
-
-    return classes;
-  }
-
   render() {
+    const { className, children } = this.props;
+    const { id } = this.state;
     return (
       <div
-        className={`scroll-content ${this.props.className} ${styles.ScrollOverlay} ${this.stateClasses}`}
-        id={this.state.id}
+        className={`scroll-content ${className} ${styles.ScrollOverlay} ${this.stateClasses}`}
+        id={id}
         ref={this.setDomNode}
       >
-        { this.props.children }
+        { children }
       </div>
     );
   }
