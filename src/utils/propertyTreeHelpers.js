@@ -3,11 +3,6 @@
 // by the lua API
 import { LayerGroupKeys } from '../api/keys';
 
-export const getIdOfProperty = (uri) => {
-  const a = splitUri(uri);
-  return a[a.length - 1];
-};
-
 // Function to return a deep copy of an object
 export const keepCloning = (objectpassed) => {
   if (objectpassed === null || typeof objectpassed !== 'object') {
@@ -15,9 +10,9 @@ export const keepCloning = (objectpassed) => {
   }
   // give temporary-storage the original obj's constructor
   const temporaryStorage = objectpassed.constructor();
-  for (const key in objectpassed) {
+  Object.keys(objectpassed).forEach((key) => {
     temporaryStorage[key] = keepCloning(objectpassed[key]);
-  }
+  });
   return temporaryStorage;
 };
 
@@ -28,29 +23,9 @@ export const getBoolPropertyValue = (state, uri) => {
 };
 
 // TODO: Delete unused function
-export function findSubtree(node, uri) {
-  const splittedUri = splitUri(uri);
-  if (splittedUri.length === 0) {
-    return node;
-  }
-  if (splittedUri.length === 1) {
-    return node.properties.find((element) => element.id === splittedUri[0]) || node.subowners.find((element) => element.identifier === splittedUri[0]);
-  }
-
-  const subowner = node.subowners.find((element) => element.identifier === splittedUri[0]);
-
-  if (!subowner) {
-    return;
-  }
-
-  const slicedUri = splittedUri.slice(1);
-  return findSubtree(subowner, slicedUri);
-}
-
-// TODO: Delete unused function
 export function traverseTreeForTag(node, tag) {
   let data;
-  node.subowners.map((element) => {
+  node.subowners.forEach((element) => {
     data = traverseTreeForTag(element, tag);
     if (element.tag.includes(tag)) {
       data = element;
@@ -61,7 +36,7 @@ export function traverseTreeForTag(node, tag) {
 
 export function findAllNodesWithTag(state, tag) {
   const nodes = [];
-  state.map((element) => {
+  state.forEach((element) => {
     const data = traverseTreeForTag(element, tag);
     if (data !== undefined) {
       const returnValue = {
@@ -160,7 +135,13 @@ export function isDeadEnd(propertyOwners, properties, uri) {
     return false;
   }
 
-  const nonDeadEndSubowners = subowners.filter((childUri) => !isPropertyOwnerHidden(properties, childUri) && !isDeadEnd(propertyOwners, properties, childUri));
+  function filterFunc(childUri) {
+    const isHidden = isPropertyOwnerHidden(properties, childUri);
+    const propertyOwnerIsDeadEnd = isDeadEnd(propertyOwners, properties, childUri);
+    return !isHidden && !propertyOwnerIsDeadEnd;
+  }
+
+  const nonDeadEndSubowners = subowners.filter(filterFunc);
   return nonDeadEndSubowners.length === 0;
 }
 
@@ -171,7 +152,7 @@ export function isSceneGraphNode(uri) {
 
   const splitUri = uri.split('.');
   // A scene graph node URI har the format 'Scene.<NodeIdentifier>'
-  return (splitUri.length == 2 && splitUri[0] === 'Scene');
+  return (splitUri.length === 2 && splitUri[0] === 'Scene');
 }
 
 // Returns true if the URI has the correct format of a globe browsing layer
@@ -187,7 +168,7 @@ export function isGlobeBrowsingLayer(uri) {
     }
   });
 
-  return found && (splitUri.length == 6);
+  return found && (splitUri.length === 6);
 }
 
 // Returns the name of the layer group from a URI corresponding to a
