@@ -2,24 +2,22 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { useContextRefs } from '../../GettingStartedTour/GettingStartedContext';
+import Button from '../Input/Button/Button';
 import MaterialIcon from '../MaterialIcon/MaterialIcon';
 
 import styles from './ToggleHeader.scss';
 
 function ToggleHeader({
-  title, expanded, onClick, onIcon, offIcon, showEnabled
+  title, expanded, onClick, onIcon, offIcon
 }) {
   const refs = useContextRefs();
 
   return (
-    <header
-      ref={(el) => refs.current[`Group ${title}`] = el}
+    <Button
+      ref={(el) => { refs.current[`Group ${title}`] = el; }}
       className={styles.toggle}
       onClick={onClick}
-      role="button"
-      tabIndex={0}
     >
-
       <MaterialIcon
         icon={expanded ? onIcon : offIcon}
         className={styles.icon}
@@ -27,7 +25,7 @@ function ToggleHeader({
       <span className={`${styles.title}`}>
         { title }
       </span>
-    </header>
+    </Button>
   );
 }
 
@@ -39,7 +37,6 @@ ToggleHeader.propTypes = {
     PropTypes.string,
     PropTypes.object
   ]).isRequired,
-  showEnabled: PropTypes.bool,
   expanded: PropTypes.bool.isRequired
 };
 

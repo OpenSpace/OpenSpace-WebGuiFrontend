@@ -30,8 +30,7 @@ const Button = React.forwardRef((props, ref) => {
     }
     if (typeof ref === 'function') {
       ref(domElement);
-    }
-    else {
+    } else {
       ref.current = domElement;
     }
   }

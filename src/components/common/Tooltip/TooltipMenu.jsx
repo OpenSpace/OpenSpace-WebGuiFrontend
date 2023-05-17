@@ -66,7 +66,7 @@ function TooltipMenu({
         block
         small
         nopadding
-      > 
+      >
         { sourceObject }
       </Button>
       {!disabled && showPopup && (

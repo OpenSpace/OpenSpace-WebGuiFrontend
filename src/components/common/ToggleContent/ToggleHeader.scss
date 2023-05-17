@@ -3,7 +3,12 @@
 .toggle {
   padding: 3px;
   position: relative;
-
+  background-color: transparent;
+  width: 100%;
+  font-size: 16px;
+  text-align: left;
+  letter-spacing: normal;
+  font-family: $font-family;
   &:hover {
     background: $ui-background-hover;
   }
