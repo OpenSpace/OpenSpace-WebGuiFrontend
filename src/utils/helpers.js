@@ -19,7 +19,9 @@ export function excludeKeys(value: Object, keys: string): Object {
  * @param func - the function to call
  * @param args - the arguments to call with
  */
-export const defer = (func: Function, ...args: Array<mixed>): number => setTimeout(() => func(...args), 0);
+export function defer(func: Function, ...args: Array<mixed>): number {
+  return setTimeout(() => func(...args), 0);
+}
 
 /**
  * rotate the positions in array arr
@@ -27,13 +29,13 @@ export const defer = (func: Function, ...args: Array<mixed>): number => setTimeo
  * @param steps - number of steps
  * @returns {Array.<any>}
  */
-export const rotate = (arr: Array<any>, steps: number): Array<any> => {
+export function rotate(arr: Array<any>, steps: number): Array<any> {
   // make a shallow copy of the array
   const copy = arr.slice();
   const size = copy.length;
   copy.unshift(...copy.splice(steps % size, size));
   return copy;
-};
+}
 
 /**
  * Copy a text to the clipboard
