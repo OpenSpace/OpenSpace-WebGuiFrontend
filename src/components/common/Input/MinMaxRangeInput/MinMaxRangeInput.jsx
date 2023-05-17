@@ -91,7 +91,7 @@ class MinMaxRangeInput extends Component {
     // If linear scale, we want the resolution to match the step size
     if (exp == 1.0) {
       let nSteps = Math.ceil((max - min) / step);
-      if (!isFinite(nSteps)) {
+      if (!Number.isFinite(nSteps)) {
         nSteps = 1000;
       }
       this.sliderResolution = nSteps;
@@ -128,7 +128,7 @@ class MinMaxRangeInput extends Component {
     // Validate the test input
     const value = Number.parseFloat(event.currentTarget.value);
     const isMinValueOutsideRange = value < min || value > max;
-    const enteredNanValue = isNaN(value) || !isFinite(value);
+    const enteredNanValue = Number.isNaN(value) || !Number.isFinite(value);
 
     if (this.state.isMinValueOutsideRange !== isMinValueOutsideRange) {
       this.setState({ isMinValueOutsideRange });
@@ -145,7 +145,7 @@ class MinMaxRangeInput extends Component {
     // Validate the test input
     const value = Number.parseFloat(event.currentTarget.value);
     const isMaxValueOutsideRange = value < min || value > max;
-    const enteredNanValue = isNaN(value) || !isFinite(value);
+    const enteredNanValue = Number.isNaN(value) || !Number.isFinite(value);
 
     if (this.state.isMaxValueOutsideRange !== isMaxValueOutsideRange) {
       this.setState({ isMaxValueOutsideRange });
@@ -293,7 +293,7 @@ class MinMaxRangeInput extends Component {
 
   onMaxTextBlur(event) {
     const value = Number.parseFloat(event.currentTarget.value);
-    if (!isNaN(value)) {
+    if (!Number.isNaN(value)) {
       this.updateMaxValue(value);
     }
     this.disableTextInput();

@@ -81,7 +81,7 @@ class NumericInput extends Component {
     // If linear scale, we want the resolution to match the step size
     if (exp == 1.0) {
       let nSteps = Math.ceil((max - min) / step);
-      if (!isFinite(nSteps)) {
+      if (!Number.isFinite(nSteps)) {
         nSteps = 1000;
       }
       this.sliderResolution = nSteps;
@@ -124,7 +124,7 @@ class NumericInput extends Component {
 
   onTextBlurOrEnter(event) {
     const value = Number.parseFloat(event.currentTarget.value);
-    if (!isNaN(value)) {
+    if (!Number.isNaN(value)) {
       this.updateValue(value);
     }
     this.disableTextInput();
@@ -136,7 +136,7 @@ class NumericInput extends Component {
     // Validate the test input
     const value = Number.parseFloat(event.currentTarget.value);
     const isValueOutsideRange = value < min || value > max;
-    const enteredNanValue = isNaN(value) || !isFinite(value);
+    const enteredNanValue = Number.isNaN(value) || !Number.isFinite(value);
 
     if (this.state.isValueOutsideRange !== isValueOutsideRange) {
       this.setState({ isValueOutsideRange });

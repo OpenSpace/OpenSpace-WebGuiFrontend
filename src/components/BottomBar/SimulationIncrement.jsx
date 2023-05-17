@@ -91,7 +91,7 @@ function SimulationIncrement({
 
   function setDeltaTime(value) {
     const deltaTime = parseFloat(value) * StepSizes[stepSize];
-    if (isNaN(deltaTime)) {
+    if (Number.isNaN(deltaTime)) {
       return;
     }
     if (luaApi) {

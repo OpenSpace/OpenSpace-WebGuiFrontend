@@ -101,7 +101,7 @@ class KeybindingPanel extends Component {
     }
     if (key.indexOf('Keypad') == 0) {
       const number = key.substring(7);
-      if (!isNaN(number - parseFloat(number))) {
+      if (!Number.isNaN(number - parseFloat(number))) {
         return `{numpad${number}}`;
       }
       // keypad but not number
@@ -127,7 +127,7 @@ class KeybindingPanel extends Component {
         break;
       }
       return `{numpad${keyswap}}`;
-    } if (!isNaN(key - parseFloat(key))) {
+    } if (!Number.isNaN(key - parseFloat(key))) {
       // is a number
       return key;
     }

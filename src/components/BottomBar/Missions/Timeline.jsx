@@ -223,7 +223,7 @@ export default function Timeline({
   // Used for the current time indicator
   function createLine(time, color, ref) {
     // Check so time is valid
-    if (!(time instanceof Date && !isNaN(time))) {
+    if (!(time instanceof Date && !Number.isNaN(time))) {
       return null;
     }
     const lineWidthScaled = lineWidth / k; // Ensure line doesn't get stretched when zooming
