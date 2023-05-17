@@ -1,14 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import Button from '../../common/Input/Button/Button';
-import Row from '../../common/Row/Row';
-import NumericInput from '../../common/Input/NumericInput/NumericInput';
-import Checkbox from '../../common/Input/Checkbox/Checkbox';
-import ColorPickerPopup from '../../common/ColorPicker/ColorPickerPopup';
-import ToggleContent from '../../common/ToggleContent/ToggleContent';
-import InfoBox from '../../common/InfoBox/InfoBox';
-import Property from '../../Sidebar/Properties/Property';
+
 import {
   SkyBrowser_AllowCameraRotationKey,
   SkyBrowser_BrowserAnimationSpeedKey,
@@ -19,6 +12,15 @@ import {
   SkyBrowser_SpaceCraftAnimationTimeKey,
   SkyBrowser_TargetAnimationSpeedKey
 } from '../../../api/keys';
+import ColorPickerPopup from '../../common/ColorPicker/ColorPickerPopup';
+import InfoBox from '../../common/InfoBox/InfoBox';
+import Button from '../../common/Input/Button/Button';
+import Checkbox from '../../common/Input/Checkbox/Checkbox';
+import NumericInput from '../../common/Input/NumericInput/NumericInput';
+import Row from '../../common/Row/Row';
+import ToggleContent from '../../common/ToggleContent/ToggleContent';
+import Property from '../../Sidebar/Properties/Property';
+
 import styles from './SkyBrowserSettings.scss';
 
 function SkyBrowserSettings({

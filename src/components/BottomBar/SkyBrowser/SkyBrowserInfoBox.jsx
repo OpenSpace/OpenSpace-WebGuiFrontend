@@ -1,10 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
+
 import Button from '../../common/Input/Button/Button';
-import SkyBrowserTooltip from './SkyBrowserTooltip';
-import styles from './SkyBrowserTooltip.scss';
+import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
+
 import esaSkyLogo from './ESASKY.png';
+import SkyBrowserTooltip from './SkyBrowserTooltip';
+
+import styles from './SkyBrowserTooltip.scss';
 
 function SkyBrowserInfoBox({
   dec, fov, hasCelestialCoords, infoPlacement, ra, text, textUrl, title, ...props

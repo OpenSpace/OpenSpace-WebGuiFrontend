@@ -1,10 +1,8 @@
 import {
   initializeDocumentation
 } from '../Actions';
-
-import api from '../api';
-
 import actionTypes from '../Actions/actionTypes';
+import api from '../api';
 
 const getDocumentation = async (callback) => {
   const documentation = await api.getDocumentation('meta');

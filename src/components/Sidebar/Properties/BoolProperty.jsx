@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
+
 import { copyTextToClipboard } from '../../../utils/helpers';
 import InfoBox from '../../common/InfoBox/InfoBox';
 import Checkbox from '../../common/Input/Checkbox/Checkbox';
+
 import styles from './Property.scss';
 
 class BoolProperty extends Component {

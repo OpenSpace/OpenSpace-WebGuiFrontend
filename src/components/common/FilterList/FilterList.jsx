@@ -1,5 +1,6 @@
-import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import {
   ObjectWordBeginningSubstring,
   WordBeginningSubstring
@@ -7,6 +8,7 @@ import {
 import CenteredLabel from '../CenteredLabel/CenteredLabel';
 import Input from '../Input/Input/Input';
 import ScrollOverlay from '../ScrollOverlay/ScrollOverlay';
+
 import styles from './FilterList.scss';
 
 function filterChildren({
@@ -171,5 +173,5 @@ FilterList.defaultProps = {
 };
 
 export {
-  FilterList, FilterListData, FilterListInputButton, FilterListFavorites, FilterListShowMoreButton
+  FilterList, FilterListData, FilterListFavorites, FilterListInputButton, FilterListShowMoreButton
 };

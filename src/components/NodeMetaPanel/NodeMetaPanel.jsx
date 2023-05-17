@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+
 import { removeNodeMetaPopover, setPopoverActiveTab, setPopoverVisibility } from '../../api/Actions';
 import { RenderableTypes } from '../../api/keys';
 import Picker from '../BottomBar/Picker';
@@ -8,6 +9,7 @@ import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import Popover from '../common/Popover/Popover';
 import Row from '../common/Row/Row';
 import PropertyOwner from '../Sidebar/Properties/PropertyOwner';
+
 import styles from './NodeMetaPanel.scss';
 
 class NodeMetaPanel extends Component {

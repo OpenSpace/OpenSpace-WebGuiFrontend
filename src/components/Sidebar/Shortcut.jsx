@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+
 import { executeShortcut } from '../../api/Actions';
 import subStateToProps from '../../utils/subStateToProps';
 import InfoBox from '../common/InfoBox/InfoBox';
 import Button from '../common/Input/Button/Button';
 import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
+
 import styles from './Shortcut.scss';
 
 const modifierStrings = {

@@ -1,5 +1,6 @@
 // @flow
 import React, { Element } from 'react';
+
 import styles from './Overlay.scss';
 
 function Overlay(props: { children: Element<any> }): Element<any> {

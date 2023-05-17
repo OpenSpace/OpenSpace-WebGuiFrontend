@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
+
 import { CurrentTimeKey, DeltaTime } from '../../../../api/keys';
 import * as timeHelpers from '../../../../utils/timeHelpers';
 import Button from '../../../common/Input/Button/Button';
 import ScaleInput from '../../../common/Input/ScaleInput/ScaleInput';
+
 import styles from '../style/TimeController.scss';
 
 class TimeController extends Component {

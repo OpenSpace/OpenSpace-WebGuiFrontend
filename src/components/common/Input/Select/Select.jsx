@@ -1,8 +1,10 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 import ReactSelect from 'react-select';
+import PropTypes from 'prop-types';
+
 import { excludeKeys } from '../../../../utils/helpers';
 import Input from '../Input/Input';
+
 import styles from './Select.scss';
 
 const selectStyles = {

@@ -1,4 +1,5 @@
 import { connect } from 'react-redux';
+
 import propertyDispatcher from '../../../api/propertyDispatcher';
 import subStateToProps from '../../../utils/subStateToProps';
 

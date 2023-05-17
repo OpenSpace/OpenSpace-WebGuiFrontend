@@ -1,9 +1,11 @@
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
 import { excludeKeys } from '../../../utils/helpers';
 import Button from '../Input/Button/Button';
 import MaterialIcon from '../MaterialIcon/MaterialIcon';
 import Window from '../Window/Window';
+
 import styles from './Popover.scss';
 
 const findStyles = (arr) => arr.split(' ')

@@ -1,10 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import styles from './FocusEntry.scss';
+
 import Button from '../../common/Input/Button/Button';
 import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
 import { useContextRefs } from '../../GettingStartedTour/GettingStartedContext';
+
+import styles from './FocusEntry.scss';
 
 function FocusEntry({
   luaApi, name, identifier, onSelect, active, showNavigationButtons, closePopoverIfSet

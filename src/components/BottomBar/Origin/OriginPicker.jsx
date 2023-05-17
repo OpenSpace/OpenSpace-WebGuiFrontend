@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import Aim from 'svg-react-loader?name=Aim!../../../icons/aim.svg';
 import Anchor from 'svg-react-loader?name=Anchor!../../../icons/anchor.svg';
 import Focus from 'svg-react-loader?name=Focus!../../../icons/focus.svg';
+
 import {
   connectFlightController,
   sendFlightControl,
@@ -27,22 +28,24 @@ import {
   SessionStatePlaying
 } from '../../../api/keys';
 import propertyDispatcher from '../../../api/propertyDispatcher';
+import { useLocalStorageState } from '../../../utils/customHooks';
 import subStateToProps from '../../../utils/subStateToProps';
 import {
   FilterList, FilterListData, FilterListFavorites, FilterListShowMoreButton
 } from '../../common/FilterList/FilterList';
 import Button from '../../common/Input/Button/Button';
+import Checkbox from '../../common/Input/Checkbox/Checkbox';
 import LoadingString from '../../common/LoadingString/LoadingString';
 import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
 import Popover from '../../common/Popover/Popover';
+import SettingsPopup from '../../common/SettingsPopup/SettingsPopup';
 import SmallLabel from '../../common/SmallLabel/SmallLabel';
 import SvgIcon from '../../common/SvgIcon/SvgIcon';
 import Picker from '../Picker';
+
 import FocusEntry from './FocusEntry';
+
 import styles from './OriginPicker.scss';
-import SettingsPopup from '../../common/SettingsPopup/SettingsPopup';
-import Checkbox from '../../common/Input/Checkbox/Checkbox';
-import { useLocalStorageState } from '../../../utils/customHooks';
 
 // tag that each focusable node must have
 const REQUIRED_TAG = 'GUI.Interesting';

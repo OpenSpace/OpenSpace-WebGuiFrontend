@@ -1,7 +1,9 @@
-import PropTypes from 'prop-types';
 import React from 'react';
-import Button from '../../../common/Input/Button/Button';
+import PropTypes from 'prop-types';
+
 import stories from '../../../../stories/stories.json';
+import Button from '../../../common/Input/Button/Button';
+
 import styles from '../style/DeveloperMenu.scss';
 
 function DeveloperMenu(props) {

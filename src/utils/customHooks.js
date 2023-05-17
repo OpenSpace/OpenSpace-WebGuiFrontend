@@ -42,4 +42,4 @@ function lowPrecisionEqual(oldValue, newValue) {
   return Math.floor(oldValue * Precision) === Math.floor(newValue * Precision);
 }
 
-export { useLocalStorageState, lowPrecisionEqual };
+export { lowPrecisionEqual, useLocalStorageState };

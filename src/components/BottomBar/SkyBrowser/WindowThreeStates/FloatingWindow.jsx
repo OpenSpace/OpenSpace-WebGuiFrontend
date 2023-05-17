@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import Draggable from 'react-draggable';
+import PropTypes from 'prop-types';
 import { Resizable } from 're-resizable';
+
 import styles from './WindowThreeStates.scss';
 
 class FloatingWindow extends Component {

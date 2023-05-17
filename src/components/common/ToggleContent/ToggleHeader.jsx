@@ -1,7 +1,9 @@
-import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import { useContextRefs } from '../../GettingStartedTour/GettingStartedContext';
 import MaterialIcon from '../MaterialIcon/MaterialIcon';
+
 import styles from './ToggleHeader.scss';
 
 function ToggleHeader({

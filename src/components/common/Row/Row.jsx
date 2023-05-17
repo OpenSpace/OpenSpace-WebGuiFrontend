@@ -1,5 +1,6 @@
-import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import styles from './Row.scss';
 
 const Row = React.forwardRef((props, ref) => (

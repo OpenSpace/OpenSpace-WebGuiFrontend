@@ -1,8 +1,11 @@
-import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import SmallLabel from '../../common/SmallLabel/SmallLabel';
-import styles from './MarkerInfo.scss';
+
 import MarkerInfoIcon from './MarkerInfoIcon';
+
+import styles from './MarkerInfo.scss';
 
 function MarkerInfo(props) {
   const {

@@ -1,6 +1,8 @@
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
 import MaterialIcon from '../../MaterialIcon/MaterialIcon';
+
 import styles from './Checkbox.scss';
 
 class Checkbox extends Component {

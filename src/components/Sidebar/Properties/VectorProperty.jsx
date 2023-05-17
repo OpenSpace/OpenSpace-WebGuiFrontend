@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+
 import { copyTextToClipboard } from '../../../utils/helpers';
 import ColorPickerPopup from '../../common/ColorPicker/ColorPickerPopup';
 import InfoBox from '../../common/InfoBox/InfoBox';
@@ -6,6 +7,7 @@ import MinMaxRangeInput from '../../common/Input/MinMaxRangeInput/MinMaxRangeInp
 import NumericInput from '../../common/Input/NumericInput/NumericInput';
 import Row from '../../common/Row/Row';
 import { useContextRefs } from '../../GettingStartedTour/GettingStartedContext';
+
 import styles from './Property.scss';
 
 function VectorProperty({ dispatcher, description, value }) {

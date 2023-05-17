@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+
 import FocusNodePropertiesPanel from './FocusNodePropertiesPanel';
 import NodePropertiesPanel from './NodePropertiesPanel';
+
 import styles from './NodePopOverContainer.scss';
 
 class NodePopOverContainer extends Component {

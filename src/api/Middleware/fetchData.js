@@ -1,5 +1,5 @@
-import actionTypes from '../Actions/actionTypes';
 import { fetchDataDone, fetchDataFailed } from '../Actions';
+import actionTypes from '../Actions/actionTypes';
 import { DataEndpointKey } from '../keys';
 
 const fetchingInfo = (dispatch, id) => {

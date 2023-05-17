@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+
 import { copyTextToClipboard } from '../../../utils/helpers';
 import InfoBox from '../../common/InfoBox/InfoBox';
 import Button from '../../common/Input/Button/Button';

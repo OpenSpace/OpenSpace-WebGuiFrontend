@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+
 import {
   refreshSessionRecording,
   subscribeToEngineMode,
@@ -16,15 +17,17 @@ import {
   SessionStateRecording
 } from '../../api/keys';
 import subStateToProps from '../../utils/subStateToProps';
+import InfoBox from '../common/InfoBox/InfoBox';
 import Button from '../common/Input/Button/Button';
 import Checkbox from '../common/Input/Checkbox/Checkbox';
 import Input from '../common/Input/Input/Input';
-import InfoBox from '../common/InfoBox/InfoBox';
 import Select from '../common/Input/Select/Select';
 import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import Popover from '../common/Popover/Popover';
 import Row from '../common/Row/Row';
+
 import Picker from './Picker';
+
 import styles from './SessionRec.scss';
 
 class SessionRec extends Component {

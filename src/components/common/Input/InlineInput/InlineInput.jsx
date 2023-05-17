@@ -1,8 +1,10 @@
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import AutosizeInput from 'react-input-autosize';
+import PropTypes from 'prop-types';
+
 import { excludeKeys } from '../../../../utils/helpers';
 import Input from '../Input/Input';
+
 import styles from './InlineInput.scss';
 
 class InlineInput extends Component {

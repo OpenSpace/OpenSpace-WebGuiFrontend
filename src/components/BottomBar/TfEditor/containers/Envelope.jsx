@@ -1,9 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import EnvelopeCanvas from '../presentational/EnvelopeCanvas';
+
 import {
   movePoint, setClickablePoint, toggleActiveEnvelope, toggleActivePoint
 } from '../../../../api/Actions/transferFunctionActions';
+import EnvelopeCanvas from '../presentational/EnvelopeCanvas';
 
 const hasActiveChild = (envelope) => {
   let hasActiveChild = false;

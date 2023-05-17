@@ -1,6 +1,7 @@
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+
 import propertyDispatcher from '../../../api/propertyDispatcher';
 import LoadingString from '../LoadingString/LoadingString';
 

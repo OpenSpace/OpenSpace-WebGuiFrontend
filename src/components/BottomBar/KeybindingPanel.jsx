@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Keyboard from 'react-simple-keyboard';
-import 'react-simple-keyboard/build/css/index.css';
+
 import { setPopoverVisibility } from '../../api/Actions';
 import Popover from '../common/Popover/Popover';
 import Row from '../common/Row/Row';
-import styles from './KeybindingPanel.scss';
-import './KeybindingPanelKeyboard.css';
+
 import Picker from './Picker';
+
+import 'react-simple-keyboard/build/css/index.css';
+import './KeybindingPanelKeyboard.css';
+import styles from './KeybindingPanel.scss';
 
 // Cleaned up the imports a but and removed unused ones. Wasn't sure if this
 // would be useful to keep around, but did so just in case // Emma

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+
 import { setPropertyValue, subscribeToProperty, unsubscribeToProperty } from '../../../api/Actions/index';
+
 import MarkerInfo from './MarkerInfo';
 
 class Markers extends Component {

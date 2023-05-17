@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+
 import HistogramCanvas from '../presentational/HistogramCanvas';
 
 const normalizeHistogramDataToCanvas = (Value, width, height) => {

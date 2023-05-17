@@ -1,11 +1,14 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
+import PropTypes from 'prop-types';
+
 import Button from '../../common/Input/Button/Button';
-import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
-import SkyBrowserInfoBox from './SkyBrowserInfoBox';
-import styles from './SkyBrowserEntry.scss';
 import NumericInput from '../../common/Input/NumericInput/NumericInput';
+import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
+
+import SkyBrowserInfoBox from './SkyBrowserInfoBox';
+
+import styles from './SkyBrowserEntry.scss';
 
 function OpacitySlider({ opacity, setOpacity, identifier }) {
   function handleChange(newValue) {

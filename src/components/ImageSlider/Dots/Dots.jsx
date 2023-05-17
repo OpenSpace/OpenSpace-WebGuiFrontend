@@ -1,6 +1,8 @@
-import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import Dot from './Dot';
+
 import styles from './Dots.scss';
 
 function Dots({ index, imagePaths, dotClick }) {

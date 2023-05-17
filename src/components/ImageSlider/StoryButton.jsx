@@ -1,6 +1,8 @@
-import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import SmallLabel from '../common/SmallLabel/SmallLabel';
+
 import styles from './StoryButton.scss';
 
 function StoryButton({ pickStory, storyIdentifier }) {

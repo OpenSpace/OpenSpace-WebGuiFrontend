@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+
 import { subscribeToTime, unsubscribeToTime } from '../../../../api/Actions';
 import {
   FastForward, FastRewind, Forward, Play, Rewind
@@ -7,6 +8,7 @@ import {
 import * as timeHelpers from '../../../../utils/timeHelpers';
 import Icon from '../../../common/MaterialIcon/MaterialIcon';
 import SmallLabel from '../../../common/SmallLabel/SmallLabel';
+
 import styles from '../style/TimeController.scss';
 import buttonStyles from '../style/UtilitiesButtons.scss';
 

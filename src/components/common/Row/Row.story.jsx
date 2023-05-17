@@ -1,8 +1,9 @@
 /* eslint import/no-extraneous-dependencies: 0 */
 /* eslint react/prop-types: 0 */
 /* globals module */
-import { storiesOf } from '@storybook/react';
 import React from 'react';
+import { storiesOf } from '@storybook/react';
+
 import Row from './Row';
 
 function Block({ children }) {

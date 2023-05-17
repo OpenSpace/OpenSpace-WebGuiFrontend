@@ -1,6 +1,7 @@
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { ChromePicker } from 'react-color';
+import PropTypes from 'prop-types';
+
 import styles from './ColorPicker.scss';
 
 class ColorPicker extends Component {

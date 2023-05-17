@@ -1,26 +1,29 @@
 import React, { useEffect, useRef } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import Focus from 'svg-react-loader?name=Focus!../../../icons/focus.svg';
+import PropTypes from 'prop-types';
 import DraggableIcon from 'svg-react-loader?name=Aim!../../../icons/draggable_list.svg';
-import Button from '../../common/Input/Button/Button';
-import Checkbox from '../../common/Input/Checkbox/Checkbox';
-import styles from './PropertyOwnerHeader.scss';
-import toggleHeaderStyles from '../../common/ToggleContent/ToggleHeader.scss';
-import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
-import SvgIcon from '../../common/SvgIcon/SvgIcon';
-import { displayName } from './PropertyOwner';
-import propertyDispatcher from '../../../api/propertyDispatcher';
+import Focus from 'svg-react-loader?name=Focus!../../../icons/focus.svg';
+
 import {
   Engine_FadeDurationKey,
   NavigationAimKey,
   NavigationAnchorKey,
   RetargetAnchorKey
 } from '../../../api/keys';
+import propertyDispatcher from '../../../api/propertyDispatcher';
 import { isGlobeBrowsingLayer } from '../../../utils/propertyTreeHelpers';
-import { useContextRefs } from '../../GettingStartedTour/GettingStartedContext';
+import Button from '../../common/Input/Button/Button';
+import Checkbox from '../../common/Input/Checkbox/Checkbox';
+import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
 import Row from '../../common/Row/Row';
+import SvgIcon from '../../common/SvgIcon/SvgIcon';
 import TooltipMenu from '../../common/Tooltip/TooltipMenu';
+import { useContextRefs } from '../../GettingStartedTour/GettingStartedContext';
+
+import { displayName } from './PropertyOwner';
+
+import toggleHeaderStyles from '../../common/ToggleContent/ToggleHeader.scss';
+import styles from './PropertyOwnerHeader.scss';
 
 function PropertyOwnerHeader({
   enabled, enabledUri, expanded, fadeDuration, fadeUri, fadeValue, focusAction,

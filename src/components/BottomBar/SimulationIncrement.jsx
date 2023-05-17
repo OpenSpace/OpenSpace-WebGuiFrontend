@@ -1,6 +1,7 @@
-import { throttle } from 'lodash/function';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { throttle } from 'lodash/function';
+
 import { subscribeToTime, unsubscribeToTime } from '../../api/Actions';
 import { round10 } from '../../utils/rounding';
 import Button from '../common/Input/Button/Button';
@@ -10,6 +11,7 @@ import Select from '../common/Input/Select/Select';
 import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import Row from '../common/Row/Row';
 import { useContextRefs } from '../GettingStartedTour/GettingStartedContext';
+
 import styles from './SimulationIncrement.scss';
 
 const updateDelayMs = 1000;

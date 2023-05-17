@@ -1,9 +1,11 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 import Draggable from 'react-draggable';
+import PropTypes from 'prop-types';
+
 import { excludeKeys } from '../../../utils/helpers';
 import Button from '../Input/Button/Button';
 import MaterialIcon from '../MaterialIcon/MaterialIcon';
+
 import styles from './Window.scss';
 
 function Window(props) {

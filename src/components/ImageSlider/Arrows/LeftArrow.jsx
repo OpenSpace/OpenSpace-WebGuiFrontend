@@ -1,6 +1,8 @@
-import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import Icon from '../../common/MaterialIcon/MaterialIcon';
+
 import styles from './Arrows.scss';
 
 function LeftArrow({ prevSlide }) {

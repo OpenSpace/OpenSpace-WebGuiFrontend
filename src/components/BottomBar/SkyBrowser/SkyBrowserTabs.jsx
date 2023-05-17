@@ -1,18 +1,21 @@
 import React from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { Icon } from '@iconify/react';
 import PropTypes from 'prop-types';
 import { Resizable } from 're-resizable';
-import { Icon } from '@iconify/react';
-import Button from '../../common/Input/Button/Button';
-import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
-import CenteredLabel from '../../common/CenteredLabel/CenteredLabel';
-import SkyBrowserTooltip from './SkyBrowserTooltip';
-import styles from './SkyBrowserTabs.scss';
-import SkyBrowserSettings from './SkyBrowserSettings.jsx';
+
 import {
   reloadPropertyTree
 } from '../../../api/Actions';
+import CenteredLabel from '../../common/CenteredLabel/CenteredLabel';
+import Button from '../../common/Input/Button/Button';
+import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
+
 import SkyBrowserSelectedImagesList from './SkyBrowserSelectedImagesList';
+import SkyBrowserSettings from './SkyBrowserSettings.jsx';
+import SkyBrowserTooltip from './SkyBrowserTooltip';
+
+import styles from './SkyBrowserTabs.scss';
 
 const ButtonIds = {
   LookAtTarget: 'LookAtTarget',

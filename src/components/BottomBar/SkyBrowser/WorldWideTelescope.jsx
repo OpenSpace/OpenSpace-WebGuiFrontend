@@ -1,16 +1,19 @@
 import React from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { lowPrecisionEqual } from '../../../utils/customHooks';
-import Picker from '../Picker';
-import FloatingWindow from './WindowThreeStates/FloatingWindow';
-import styles from './WorldWideTelescope.scss';
-import { SkyBrowser_InverseZoomDirectionKey, SkyBrowser_ShowTitleInBrowserKey } from '../../../api/keys';
-import { getBoolPropertyValue } from '../../../utils/propertyTreeHelpers';
+
 import {
   subscribeToProperty,
   unsubscribeToProperty
 } from '../../../api/Actions';
+import { SkyBrowser_InverseZoomDirectionKey, SkyBrowser_ShowTitleInBrowserKey } from '../../../api/keys';
+import { lowPrecisionEqual } from '../../../utils/customHooks';
+import { getBoolPropertyValue } from '../../../utils/propertyTreeHelpers';
+import Picker from '../Picker';
+
+import FloatingWindow from './WindowThreeStates/FloatingWindow';
+
+import styles from './WorldWideTelescope.scss';
 
 function WorldWideTelescope({
   imageCollectionIsLoaded,

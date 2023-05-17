@@ -1,11 +1,14 @@
 import React from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
+
 import { lowPrecisionEqual } from '../../../utils/customHooks';
 import CenteredLabel from '../../common/CenteredLabel/CenteredLabel';
 import { FilterList, FilterListData } from '../../common/FilterList/FilterList';
-import styles from './SkyBrowserNearestImagesList.scss';
+
 import SkyBrowserFocusEntry from './SkyBrowserFocusEntry';
+
+import styles from './SkyBrowserNearestImagesList.scss';
 
 function SkyBrowserNearestImagesList({
   activeImage,

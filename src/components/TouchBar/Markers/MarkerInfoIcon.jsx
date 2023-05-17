@@ -1,7 +1,9 @@
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
 import Icon from '../../common/MaterialIcon/MaterialIcon';
 import Popover from '../../common/Popover/Popover';
+
 import styles from './MarkerInfo.scss';
 
 class MarkerInfoIcon extends Component {

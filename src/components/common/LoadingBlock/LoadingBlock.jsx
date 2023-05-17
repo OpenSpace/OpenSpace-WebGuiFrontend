@@ -1,6 +1,8 @@
-import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import { excludeKeys } from '../../../utils/helpers';
+
 import styles from './LoadingBlock.scss';
 
 function LoadingBlock(props) {

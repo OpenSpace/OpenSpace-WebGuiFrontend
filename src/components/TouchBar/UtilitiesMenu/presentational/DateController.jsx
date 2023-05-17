@@ -1,12 +1,14 @@
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+
 import * as timeHelpers from '../../../../utils/timeHelpers';
 import Picker from '../../../BottomBar/Picker';
 import Button from '../../../common/Input/Button/Button';
 import Icon from '../../../common/MaterialIcon/MaterialIcon';
 import Popover from '../../../common/Popover/Popover';
 import SmallLabel from '../../../common/SmallLabel/SmallLabel';
+
 import styles from '../style/DateController.scss';
 import buttonStyle from '../style/UtilitiesButtons.scss';
 

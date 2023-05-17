@@ -1,7 +1,8 @@
 /* eslint import/no-extraneous-dependencies: 0 */
+import React from 'react';
 import { action } from '@storybook/addon-actions';
 import { storiesOf } from '@storybook/react';
-import React from 'react';
+
 import Time from './Time';
 
 /* globals module */

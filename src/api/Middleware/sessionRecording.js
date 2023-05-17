@@ -1,9 +1,7 @@
-import actionTypes from '../Actions/actionTypes';
-
 import {
   updateSessionRecording
 } from '../Actions';
-
+import actionTypes from '../Actions/actionTypes';
 import api from '../api';
 
 let topic;

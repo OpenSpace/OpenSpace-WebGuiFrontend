@@ -1,17 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Icon } from '@iconify/react';
-import { SkyBrowser_HideTargetsBrowsersWithGuiKey } from '../../api/keys';
-import { getBoolPropertyValue } from '../../utils/propertyTreeHelpers';
-import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
-import Picker from './Picker';
-import Button from '../common/Input/Button/Button';
-import LoadingBlock from '../common/LoadingBlock/LoadingBlock';
-import SmallLabel from '../common/SmallLabel/SmallLabel';
-import SkyBrowserTabs from './SkyBrowser/SkyBrowserTabs';
-import WindowThreeStates from './SkyBrowser/WindowThreeStates/WindowThreeStates';
-import WorldWideTelescope from './SkyBrowser/WorldWideTelescope';
-import SkyBrowserImageList from './SkyBrowser/SkyBrowserImageList';
+
 import {
   loadSkyBrowserData,
   reloadPropertyTree,
@@ -21,6 +11,19 @@ import {
   unsubscribeToProperty,
   unsubscribeToSkyBrowser
 } from '../../api/Actions';
+import { SkyBrowser_HideTargetsBrowsersWithGuiKey } from '../../api/keys';
+import { getBoolPropertyValue } from '../../utils/propertyTreeHelpers';
+import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
+import Button from '../common/Input/Button/Button';
+import LoadingBlock from '../common/LoadingBlock/LoadingBlock';
+import SmallLabel from '../common/SmallLabel/SmallLabel';
+
+import SkyBrowserImageList from './SkyBrowser/SkyBrowserImageList';
+import SkyBrowserTabs from './SkyBrowser/SkyBrowserTabs';
+import WindowThreeStates from './SkyBrowser/WindowThreeStates/WindowThreeStates';
+import WorldWideTelescope from './SkyBrowser/WorldWideTelescope';
+import Picker from './Picker';
+
 import styles from './SkyBrowserPanel.scss';
 
 function SkyBrowserPanel({ }) {

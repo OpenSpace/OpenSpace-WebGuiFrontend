@@ -1,7 +1,9 @@
-import PropTypes from 'prop-types';
 import React from 'react';
-import styles from './ToggleContent.scss';
+import PropTypes from 'prop-types';
+
 import ToggleHeader from './ToggleHeader';
+
+import styles from './ToggleContent.scss';
 
 function ToggleContent({
   setExpanded, children, header, title, expanded, showEnabled

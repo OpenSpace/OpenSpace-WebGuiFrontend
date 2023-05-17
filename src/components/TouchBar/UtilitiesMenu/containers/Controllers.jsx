@@ -1,6 +1,7 @@
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+
 import { setPropertyValue, subscribeToProperty, unsubscribeToProperty } from '../../../../api/Actions';
 import { NavigationAnchorKey, ScaleKey, ValuePlaceholder } from '../../../../api/keys';
 import { UpdateDeltaTimeNow } from '../../../../utils/timeHelpers';

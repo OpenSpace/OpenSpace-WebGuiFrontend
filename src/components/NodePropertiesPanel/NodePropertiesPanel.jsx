@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+
 import { removeNodePropertyPopover, setPopoverActiveTab, setPopoverVisibility } from '../../api/Actions';
 import { NavigationAnchorKey, RenderableTypes, ScenePrefixKey } from '../../api/keys';
 import Picker from '../BottomBar/Picker';
@@ -7,6 +8,7 @@ import Button from '../common/Input/Button/Button';
 import Popover from '../common/Popover/Popover';
 import Property from '../Sidebar/Properties/Property';
 import PropertyOwner from '../Sidebar/Properties/PropertyOwner';
+
 import styles from './NodePropertiesPanel.scss';
 
 class NodePropertiesPanel extends Component {

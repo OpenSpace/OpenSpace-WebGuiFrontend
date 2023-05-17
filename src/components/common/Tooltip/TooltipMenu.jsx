@@ -1,5 +1,6 @@
-import PropTypes from 'prop-types';
 import React, { useEffect } from 'react';
+import PropTypes from 'prop-types';
+
 import Tooltip from './Tooltip';
 
 function TooltipMenu({

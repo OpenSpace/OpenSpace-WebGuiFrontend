@@ -1,10 +1,12 @@
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
 import Picker from '../../../BottomBar/Picker';
 import Button from '../../../common/Input/Button/Button';
 import Icon from '../../../common/MaterialIcon/MaterialIcon';
 import Popover from '../../../common/Popover/Popover';
 import SmallLabel from '../../../common/SmallLabel/SmallLabel';
+
 import styles from '../style/SightsController.scss';
 import buttonStyle from '../style/UtilitiesButtons.scss';
 

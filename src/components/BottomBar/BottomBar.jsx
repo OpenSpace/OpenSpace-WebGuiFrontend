@@ -1,23 +1,26 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
+
 import {
   subscribeToProperty,
   unsubscribeToProperty
 } from '../../api/Actions';
 import { ExoplanetsModuleEnabledKey, SkyBrowserModuleEnabledKey } from '../../api/keys';
 import { getBoolPropertyValue } from '../../utils/propertyTreeHelpers';
+
+import Missions from './Missions/Missions';
+import OriginPicker from './Origin/OriginPicker';
 import ActionsPanel from './ActionsPanel';
-import styles from './BottomBar.scss';
 import ExoplanetsPanel from './ExoplanetsPanel';
 import FlightControlPanel from './FlightControlPanel';
-import OriginPicker from './Origin/OriginPicker';
+import GeoPositionPanel from './GeoPositionPanel';
 import ScreenSpaceRenderablePanel from './ScreenSpaceRenderablePanel';
 import SessionRec from './SessionRec';
-import TimePicker from './TimePicker';
 import SkyBrowserPanel from './SkyBrowserPanel';
-import GeoPositionPanel from './GeoPositionPanel';
-import Missions from './Missions/Missions';
+import TimePicker from './TimePicker';
+
+import styles from './BottomBar.scss';
 
 export default function BottomBar({
   showFlightController

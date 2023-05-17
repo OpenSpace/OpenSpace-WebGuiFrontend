@@ -1,17 +1,20 @@
 import React from 'react';
 import { connect, useSelector } from 'react-redux';
+
 import { setActionsPath, setPopoverVisibility, triggerAction } from '../../api/Actions';
+import { ObjectWordBeginningSubstring } from '../../utils/StringMatchers';
 import subStateToProps from '../../utils/subStateToProps';
+import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
+import { FilterList, FilterListData, FilterListFavorites } from '../common/FilterList/FilterList';
 import InfoBox from '../common/InfoBox/InfoBox';
 import Button from '../common/Input/Button/Button';
 import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import Popover from '../common/Popover/Popover';
 import Row from '../common/Row/Row';
-import styles from './ActionsPanel.scss';
+
 import Picker from './Picker';
-import { FilterList, FilterListData, FilterListFavorites } from '../common/FilterList/FilterList';
-import { ObjectWordBeginningSubstring } from '../../utils/StringMatchers';
-import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
+
+import styles from './ActionsPanel.scss';
 
 export function ActionsButton({ action }) {
   const luaApi = useSelector((state) => state.luaApi);

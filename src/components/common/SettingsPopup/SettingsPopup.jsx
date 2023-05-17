@@ -1,8 +1,10 @@
 import React from 'react';
-import Tooltip from '../Tooltip/Tooltip';
-import MaterialIcon from '../MaterialIcon/MaterialIcon';
-import styles from './SettingsPopup.scss';
+
 import Button from '../Input/Button/Button';
+import MaterialIcon from '../MaterialIcon/MaterialIcon';
+import Tooltip from '../Tooltip/Tooltip';
+
+import styles from './SettingsPopup.scss';
 
 export default function SettingsPopup({ children }) {
   const [showSearchSettings, setShowSearchSettings] = React.useState(false);

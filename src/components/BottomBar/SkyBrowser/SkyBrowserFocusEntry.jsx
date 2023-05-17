@@ -1,7 +1,9 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
+import PropTypes from 'prop-types';
+
 import SkyBrowserInfoBox from './SkyBrowserInfoBox';
+
 import styles from './SkyBrowserEntry.scss';
 
 function SkyBrowserFocusEntry({

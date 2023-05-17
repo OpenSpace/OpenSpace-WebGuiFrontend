@@ -1,6 +1,8 @@
-import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import { useContextRefs } from '../GettingStartedTour/GettingStartedContext';
+
 import styles from './Picker.scss';
 
 function Picker({

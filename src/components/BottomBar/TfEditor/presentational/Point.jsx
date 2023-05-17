@@ -1,6 +1,7 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import DraggableCore from 'react-draggable';
+import PropTypes from 'prop-types';
+
 import styles from '../style/Point.scss';
 
 function Point({

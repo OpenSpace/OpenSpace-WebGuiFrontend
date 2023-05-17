@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+
 import BoolProperty from './BoolProperty';
 import { connectProperty } from './connectProperty';
 import ListProperty from './ListProperty';

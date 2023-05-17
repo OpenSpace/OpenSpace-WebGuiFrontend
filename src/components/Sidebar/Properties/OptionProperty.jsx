@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
+
 import { copyTextToClipboard } from '../../../utils/helpers';
 import InfoBox from '../../common/InfoBox/InfoBox';
 import Select from '../../common/Input/Select/Select';
+
 import styles from './Property.scss';
 
 class OptionProperty extends Component {

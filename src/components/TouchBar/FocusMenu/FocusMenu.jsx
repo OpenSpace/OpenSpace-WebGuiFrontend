@@ -1,15 +1,18 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+
 import { setPropertyValue } from '../../../api/Actions';
-import propertyDispatcher from '../../../api/propertyDispatcher';
-import { UpdateDeltaTimeNow } from '../../../utils/timeHelpers';
-import { abortFlight } from '../../../utils/storyHelpers';
-import FocusButton from './FocusButton';
 import {
   NavigationAnchorKey, RetargetAnchorKey, ScenePrefixKey
 } from '../../../api/keys';
-import styles from './FocusMenu.scss';
+import propertyDispatcher from '../../../api/propertyDispatcher';
+import { abortFlight } from '../../../utils/storyHelpers';
+import { UpdateDeltaTimeNow } from '../../../utils/timeHelpers';
+
+import FocusButton from './FocusButton';
 import OverViewButton from './OverViewButton';
+
+import styles from './FocusMenu.scss';
 
 const DISTANCE_FACTOR = 4.0; // target radii
 const SWITCH_FOCUS_DURATION = 5.0; // seconds

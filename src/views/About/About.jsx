@@ -1,10 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
+
 import { formatVersion, isOlder } from '../../api/Version';
 import LoadingString from '../../components/common/LoadingString/LoadingString';
 import Row from '../../components/common/Row/Row';
-import styles from './About.scss';
+
 import logo from './logo.png';
+
+import styles from './About.scss';
 
 const openSpaceVersion = (props) => {
   const currentVersion = (

@@ -1,9 +1,11 @@
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
 import { useContextRefs } from '../../../GettingStartedTour/GettingStartedContext';
 import MaterialIcon from '../../MaterialIcon/MaterialIcon';
 import Button from '../Button/Button';
 import InlineInput from '../InlineInput/InlineInput';
+
 import styles from './Time.scss';
 
 const Elements = {

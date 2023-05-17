@@ -1,4 +1,5 @@
 import { throttle } from 'lodash/function';
+
 import {
   addProperties,
   addPropertyOwners,
@@ -7,10 +8,8 @@ import {
   updatePropertyValue
 } from '../Actions';
 import actionTypes from '../Actions/actionTypes';
-
-import { rootOwnerKey } from '../keys';
-
 import api from '../api';
+import { rootOwnerKey } from '../keys';
 
 // The property tree middleware is designed to populate the react store's
 // copy of the property tree when the frontend is connected to OpenSpace.

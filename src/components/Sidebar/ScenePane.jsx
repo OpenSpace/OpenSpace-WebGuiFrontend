@@ -1,17 +1,19 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
+
+import { useLocalStorageState } from '../../utils/customHooks';
+import { isPropertyOwnerHidden } from '../../utils/propertyTreeHelpers';
 import { ObjectWordBeginningSubstring } from '../../utils/StringMatchers';
 import { FilterList, FilterListData, FilterListFavorites } from '../common/FilterList/FilterList';
-import LoadingBlocks from '../common/LoadingBlock/LoadingBlocks';
-import Pane from './Pane';
-import ContextSection from './ContextSection';
-import PropertyOwner from './Properties/PropertyOwner';
-import Group from './Group';
-import { isPropertyOwnerHidden } from '../../utils/propertyTreeHelpers';
 import Checkbox from '../common/Input/Checkbox/Checkbox';
-import { useLocalStorageState } from '../../utils/customHooks';
+import LoadingBlocks from '../common/LoadingBlock/LoadingBlocks';
 import SettingsPopup from '../common/SettingsPopup/SettingsPopup';
+
+import PropertyOwner from './Properties/PropertyOwner';
+import ContextSection from './ContextSection';
+import Group from './Group';
+import Pane from './Pane';
 
 function ScenePane({ closeCallback }) {
   const [showOnlyEnabled, setShowOnlyEnabled] = useLocalStorageState('showOnlyEnabled', false);

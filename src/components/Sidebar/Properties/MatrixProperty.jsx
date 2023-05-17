@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
+
+import { copyTextToClipboard } from '../../../utils/helpers';
+import InfoBox from '../../common/InfoBox/InfoBox';
 import NumericInput from '../../common/Input/NumericInput/NumericInput';
 import Row from '../../common/Row/Row';
-import InfoBox from '../../common/InfoBox/InfoBox';
-import { copyTextToClipboard } from '../../../utils/helpers';
+
 import styles from './Property.scss';
 
 class MatrixProperty extends Component {

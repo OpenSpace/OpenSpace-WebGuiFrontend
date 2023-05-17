@@ -1,17 +1,16 @@
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd';
 import { connect } from 'react-redux';
+import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd';
+import PropTypes from 'prop-types';
 import shallowEqualArrays from 'shallow-equal/arrays';
 import shallowEqualObjects from 'shallow-equal/objects';
+
 import {
   addNodeMetaPopover,
   addNodePropertyPopover,
   reloadPropertyTree,
   setPropertyTreeExpansion
 } from '../../../api/Actions';
-import subStateToProps from '../../../utils/subStateToProps';
-import ToggleContent from '../../common/ToggleContent/ToggleContent';
 import {
   getLayerGroupFromUri,
   getSceneGraphNodeFromUri,
@@ -22,6 +21,9 @@ import {
   isPropertyVisible,
   isSceneGraphNode
 } from '../../../utils/propertyTreeHelpers';
+import subStateToProps from '../../../utils/subStateToProps';
+import ToggleContent from '../../common/ToggleContent/ToggleContent';
+
 import Property from './Property';
 import PropertyOwnerHeader from './PropertyOwnerHeader';
 

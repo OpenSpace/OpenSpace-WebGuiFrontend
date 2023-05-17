@@ -1,8 +1,11 @@
-import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import Button from '../Input/Button/Button';
 import TooltipMenu from '../Tooltip/TooltipMenu';
+
 import ColorPicker from './ColorPicker';
+
 import styles from './ColorPickerPopup.scss';
 
 const { Checkboard } = require('react-color/lib/components/common');

@@ -1,10 +1,8 @@
 import {
   initializeVersion
 } from '../Actions';
-
-import api from '../api';
-
 import actionTypes from '../Actions/actionTypes';
+import api from '../api';
 
 const getVersion = async (callback) => {
   const versionTopic = api.startTopic('version', {});

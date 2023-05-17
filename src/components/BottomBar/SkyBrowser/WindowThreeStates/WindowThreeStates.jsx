@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import styles from './WindowThreeStates.scss';
+
+import Button from '../../../common/Input/Button/Button';
+import MaterialIcon from '../../../common/MaterialIcon/MaterialIcon';
+
 import FloatingWindow from './FloatingWindow';
 import PaneRightHandSide from './PaneRightHandSide';
 import PopoverResizeable from './PopoverResizeable';
-import Button from '../../../common/Input/Button/Button';
-import MaterialIcon from '../../../common/MaterialIcon/MaterialIcon';
+
+import styles from './WindowThreeStates.scss';
 
 const WindowStyle = {
   DETACHED: 'DETACHED',

@@ -1,4 +1,5 @@
 import React from 'react';
+
 import styles from '../style/Envelope.scss';
 
 const normalizeBetweenValues = (value, min, max, width) => (min + (max - min) * (value / width));

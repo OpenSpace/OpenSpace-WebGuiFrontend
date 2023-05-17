@@ -1,7 +1,9 @@
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
 import Icon from '../../common/MaterialIcon/MaterialIcon';
 import SmallLabel from '../../common/SmallLabel/SmallLabel';
+
 import styles from './FocusButton.scss';
 
 class OverViewButton extends Component {

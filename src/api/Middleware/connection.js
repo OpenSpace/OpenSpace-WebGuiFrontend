@@ -3,7 +3,6 @@ import {
   onCloseConnection,
   onOpenConnection
 } from '../Actions';
-
 import actionTypes from '../Actions/actionTypes';
 import api from '../api';
 

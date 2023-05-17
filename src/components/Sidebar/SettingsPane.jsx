@@ -1,16 +1,19 @@
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+
 import { SceneKey } from '../../api/keys';
+import {
+  getLastWordOfUri, isDeadEnd, isPropertyOwnerHidden, isPropertyVisible
+} from '../../utils/propertyTreeHelpers';
 import { CaseInsensitiveSubstring, ListCaseInsensitiveSubstring } from '../../utils/StringMatchers';
 import subStateToProps from '../../utils/subStateToProps';
 import { FilterList, FilterListData, FilterListFavorites } from '../common/FilterList/FilterList';
 import LoadingBlocks from '../common/LoadingBlock/LoadingBlocks';
-import {
-  getLastWordOfUri, isDeadEnd, isPropertyOwnerHidden, isPropertyVisible
-} from '../../utils/propertyTreeHelpers';
+
 import Pane from './Pane';
 import SettingsPaneListItem from './SettingsPaneListItem';
+
 import styles from './SettingsPane.scss'; // OBS! Unused
 
 class SettingsPane extends Component {

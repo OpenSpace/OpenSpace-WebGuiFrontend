@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+
 import { NavigationAimKey, NavigationAnchorKey, ScenePrefixKey } from '../../api/keys';
+
 import PropertyOwner from './Properties/PropertyOwner';
 
 class ContextSection extends Component {

@@ -1,9 +1,11 @@
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import propertyDispatcher from '../../../../api/propertyDispatcher';
+import PropTypes from 'prop-types';
+
 import { triggerAction } from '../../../../api/Actions';
+import propertyDispatcher from '../../../../api/propertyDispatcher';
 import SmallLabel from '../../../common/SmallLabel/SmallLabel';
+
 import styles from '../style/UtilitiesButtons.scss';
 
 class ToggleBoolButton extends Component {

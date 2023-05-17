@@ -1,11 +1,14 @@
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
 import { storyImages } from '../../api/resources';
 import stories from '../../stories/stories.json';
+
 import LeftArrow from './Arrows/LeftArrow';
 import RightArrow from './Arrows/RightArrow';
 import Dots from './Dots/Dots';
 import Slide from './Slide';
+
 import styles from './Slider.scss';
 
 class Slider extends Component {

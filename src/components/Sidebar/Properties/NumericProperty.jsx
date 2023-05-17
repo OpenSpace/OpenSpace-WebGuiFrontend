@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
+
 import { copyTextToClipboard } from '../../../utils/helpers';
 import InfoBox from '../../common/InfoBox/InfoBox';
 import NumericInput from '../../common/Input/NumericInput/NumericInput';
+
 import styles from './Property.scss';
 
 class NumericProperty extends Component {

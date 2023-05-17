@@ -2,19 +2,22 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import TfIcon from 'svg-react-loader?name=TfIcon!../images/tf.svg';
+
+import { subscribeToProperty, unsubscribeToProperty } from '../../../../api/Actions';
 import {
   addEnvelope, addPoint, changeColor, clearEnvelopes, deleteEnvelope
 } from '../../../../api/Actions/transferFunctionActions';
-import EditorContainer from '../presentational/EditorContainer';
-import { subscribeToProperty, unsubscribeToProperty } from '../../../../api/Actions';
 import { findAllNodesWithTag } from '../../../../utils/propertyTreeHelpers';
-import Window from '../../../common/Window/Window';
-import Picker from '../../Picker';
-import styles from '../style/TfEditor.scss';
-import ColorPicker from './ColorPicker';
 import Button from '../../../common/Input/Button/Button';
 import Select from '../../../common/Input/Select/Select';
 import SmallLabel from '../../../common/SmallLabel/SmallLabel';
+import Window from '../../../common/Window/Window';
+import Picker from '../../Picker';
+import EditorContainer from '../presentational/EditorContainer';
+
+import ColorPicker from './ColorPicker';
+
+import styles from '../style/TfEditor.scss';
 
 class TfEditor extends Component {
   constructor(props) {

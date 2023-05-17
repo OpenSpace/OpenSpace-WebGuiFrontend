@@ -1,6 +1,8 @@
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
 import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
+
 import styles from './Pane.scss';
 
 class Pane extends Component {

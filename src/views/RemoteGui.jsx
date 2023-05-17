@@ -1,6 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
+
 import { setShowAbout, startConnection } from '../api/Actions';
+import environment from '../api/Environment';
 import {
   formatVersion, isCompatible, RequiredOpenSpaceVersion, RequiredSocketApiVersion
 } from '../api/Version';
@@ -9,14 +11,15 @@ import Error from '../components/common/Error/Error';
 import Button from '../components/common/Input/Button/Button';
 import Overlay from '../components/common/Overlay/Overlay';
 import Stack from '../components/common/Stack/Stack';
+import { RefsProvider } from '../components/GettingStartedTour/GettingStartedContext';
 import NodeMetaContainer from '../components/NodeMetaPanel/NodeMetaContainer';
 import NodePopOverContainer from '../components/NodePropertiesPanel/NodePopOverContainer';
 import Sidebar from '../components/Sidebar/Sidebar';
-import '../styles/base.scss';
+
 import About from './About/About';
+
+import '../styles/base.scss';
 import styles from './RemoteGui.scss';
-import { RefsProvider } from '../components/GettingStartedTour/GettingStartedContext';
-import environment from '../api/Environment';
 
 function RemoteGui({
   dispatchStartConnection, version, hideAbout, connectionLost, showAbout

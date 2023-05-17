@@ -1,6 +1,7 @@
 import React from 'react';
-import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd';
 import { shallowEqual, useSelector } from 'react-redux';
+import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd';
+
 import SkyBrowserTabEntry from './SkyBrowserTabEntry';
 
 function SkyBrowserSelectedImagesList({

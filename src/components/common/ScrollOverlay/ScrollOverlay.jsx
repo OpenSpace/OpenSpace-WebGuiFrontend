@@ -1,6 +1,8 @@
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
 import { defer } from '../../../utils/helpers';
+
 import styles from './ScrollOverlay.scss';
 
 /**

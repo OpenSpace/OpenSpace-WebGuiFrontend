@@ -1,5 +1,6 @@
-import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import styles from './TabMenuItem.scss';
 
 function TabMenuItem({ children, onClick, active }) {

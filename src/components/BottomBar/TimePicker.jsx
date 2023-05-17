@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+
 import {
   setPopoverVisibility, subscribeToEngineMode, subscribeToSessionRecording,
   subscribeToTime, unsubscribeToEngineMode,
@@ -20,10 +21,12 @@ import LoadingString from '../common/LoadingString/LoadingString';
 import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import Popover from '../common/Popover/Popover';
 import SmallLabel from '../common/SmallLabel/SmallLabel';
+import { useContextRefs } from '../GettingStartedTour/GettingStartedContext';
+
 import Picker from './Picker';
 import SimulationIncrement from './SimulationIncrement';
+
 import styles from './TimePicker.scss';
-import { useContextRefs } from '../GettingStartedTour/GettingStartedContext';
 
 function TimePicker({
   startSubscriptions, stopSubscriptions, time, isPaused, targetDeltaTime, luaApi, popoverVisible, setPopoverVisibility, engineMode, sessionRecordingState

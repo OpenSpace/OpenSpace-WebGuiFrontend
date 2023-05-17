@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+
 import {
   loadExoplanetsData,
   reloadPropertyTree,
@@ -17,9 +18,11 @@ import Popover from '../common/Popover/Popover';
 import Row from '../common/Row/Row';
 import ScrollOverlay from '../common/ScrollOverlay/ScrollOverlay';
 import PropertyOwner from '../Sidebar/Properties/PropertyOwner';
-import styles from './ExoplanetsPanel.scss';
+
 import FocusEntry from './Origin/FocusEntry';
 import Picker from './Picker';
+
+import styles from './ExoplanetsPanel.scss';
 
 class ExoplanetsPanel extends Component {
   constructor(props) {

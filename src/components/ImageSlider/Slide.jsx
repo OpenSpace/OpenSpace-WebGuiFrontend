@@ -1,8 +1,11 @@
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
 import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
-import styles from './Slide.scss';
+
 import StoryButton from './StoryButton';
+
+import styles from './Slide.scss';
 
 class Slide extends Component {
   constructor(props) {

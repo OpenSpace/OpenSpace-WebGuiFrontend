@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
+
 import { removeLastWordFromUri } from '../../utils/propertyTreeHelpers';
+
 import Property from './Properties/Property';
 import PropertyOwner from './Properties/PropertyOwner';
+
 import styles from './SettingsPaneListItem.scss';
 
 class SettingsPaneListItem extends Component {

@@ -1,7 +1,9 @@
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
 import { excludeKeys } from '../../../../utils/helpers';
 import Input from '../Input/Input';
+
 import styles from './ScaleInput.scss';
 
 class ScaleInput extends Component {

@@ -1,10 +1,13 @@
 import React from 'react';
-import * as d3 from 'd3';
 import { Icon } from '@iconify/react';
-import styles from './Timeline.scss';
+import * as d3 from 'd3';
+
 import Button from '../../common/Input/Button/Button';
 import Tooltip from '../../common/Tooltip/Tooltip';
+
 import { DisplayType, makeUtcDate } from './Missions';
+
+import styles from './Timeline.scss';
 
 function Arrow({
   x, y, orientation, onClick, width = 20

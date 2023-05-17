@@ -1,8 +1,11 @@
 import React from 'react';
-import styles from '../style/Envelope.scss';
+
 import GraphBody from '../../../common/Graph/GraphBody';
-import PointPosition from './PointPosition';
+
 import Point from './Point';
+import PointPosition from './PointPosition';
+
+import styles from '../style/Envelope.scss';
 
 const pointsForEnvelopeGraph = (data, height) => {
   const convertedData = [];

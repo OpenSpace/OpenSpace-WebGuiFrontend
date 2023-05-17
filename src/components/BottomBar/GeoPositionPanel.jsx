@@ -1,22 +1,25 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Icon } from '@iconify/react';
-import subStateToProps from '../../utils/subStateToProps';
-import Button from '../common/Input/Button/Button';
-import Popover from '../common/Popover/Popover';
-import styles from './GeoPositionPanel.scss';
-import Picker from './Picker';
-import Input from '../common/Input/Input/Input';
-import { FilterList, FilterListData } from '../common/FilterList/FilterList';
+
 import {
   reloadPropertyTree,
   setPopoverVisibility
 } from '../../api/Actions';
+import { useLocalStorageState } from '../../utils/customHooks';
+import subStateToProps from '../../utils/subStateToProps';
+import AnimatedCheckmark from '../common/AnimatedCheckmark/AnimatedCheckmark';
 import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
 import Dropdown from '../common/DropDown/Dropdown';
-import { useLocalStorageState } from '../../utils/customHooks';
-import AnimatedCheckmark from '../common/AnimatedCheckmark/AnimatedCheckmark';
+import { FilterList, FilterListData } from '../common/FilterList/FilterList';
 import InfoBox from '../common/InfoBox/InfoBox';
+import Button from '../common/Input/Button/Button';
+import Input from '../common/Input/Input/Input';
+import Popover from '../common/Popover/Popover';
+
+import Picker from './Picker';
+
+import styles from './GeoPositionPanel.scss';
 
 function MultiStateToggle({
   labels, checked, setChecked, infoText

@@ -1,4 +1,5 @@
 import React, { Component, createRef } from 'react';
+
 import styles from './Dropdown.scss';
 
 const DEFAULT_PLACEHOLDER_STRING = 'Select...';

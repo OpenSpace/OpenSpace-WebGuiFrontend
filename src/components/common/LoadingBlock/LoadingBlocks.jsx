@@ -1,6 +1,8 @@
-import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import { excludeKeys } from '../../../utils/helpers';
+
 import LoadingBlock from './LoadingBlock';
 
 // eslint-disable-next-line no-mixed-operators

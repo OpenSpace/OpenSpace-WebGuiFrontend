@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+
 import {
   connectFlightController,
   disconnectFlightController,
@@ -10,13 +11,15 @@ import {
   unsubscribeToProperty
 } from '../../api/Actions';
 import { RollFrictionKey, RotationalFrictionKey, ZoomFrictionKey } from '../../api/keys';
-import Button from '../common/Input/Button/Button';
 import InfoBox from '../common/InfoBox/InfoBox';
+import Button from '../common/Input/Button/Button';
 import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import Popover from '../common/Popover/Popover';
 import Row from '../common/Row/Row';
-import styles from './FlightControlPanel.scss';
+
 import Picker from './Picker';
+
+import styles from './FlightControlPanel.scss';
 
 class FlightControlPanel extends Component {
   constructor(props) {

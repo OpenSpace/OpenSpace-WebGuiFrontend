@@ -1,9 +1,10 @@
 /* eslint import/no-extraneous-dependencies: 0 */
 /* eslint react/prop-types: 0 */
 /* globals module */
+import React from 'react';
 import { action } from '@storybook/addon-actions';
 import { storiesOf } from '@storybook/react';
-import React from 'react';
+
 import Window from './Window';
 
 storiesOf('Window', module)

@@ -1,16 +1,18 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { useLocation } from 'react-router-dom';
+
 import { startConnection } from '../api/Actions';
 import {
   formatVersion, isCompatible, RequiredOpenSpaceVersion, RequiredSocketApiVersion
 } from '../api/Version';
 import ActionsPanel from '../components/BottomBar/ActionsPanel';
-import '../styles/base.scss';
-import styles from './ActionsGui.scss';
-import Overlay from '../components/common/Overlay/Overlay';
 import Error from '../components/common/Error/Error';
 import Button from '../components/common/Input/Button/Button';
+import Overlay from '../components/common/Overlay/Overlay';
+
+import '../styles/base.scss';
+import styles from './ActionsGui.scss';
 
 function ActionsGui({ dispatchStartConnection, version, connectionLost }) {
   const [checkedVersion, setCheckedVersion] = React.useState(false);

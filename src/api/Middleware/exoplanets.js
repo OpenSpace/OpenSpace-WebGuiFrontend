@@ -1,10 +1,8 @@
 import {
   initializeExoplanets
 } from '../Actions';
-
-import api from '../api';
-
 import actionTypes from '../Actions/actionTypes';
+import api from '../api';
 
 const getExoplanets = async (luaApi, callback) => {
   const planetList = await luaApi.exoplanets.getListOfExoplanets();

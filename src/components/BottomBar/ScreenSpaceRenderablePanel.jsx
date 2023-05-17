@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+
 import { reloadPropertyTree, setPopoverVisibility } from '../../api/Actions';
 import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
 import Button from '../common/Input/Button/Button';
@@ -9,7 +10,9 @@ import Popover from '../common/Popover/Popover';
 import Row from '../common/Row/Row';
 import ScrollOverlay from '../common/ScrollOverlay/ScrollOverlay';
 import PropertyOwner from '../Sidebar/Properties/PropertyOwner';
+
 import Picker from './Picker';
+
 import styles from './ScreenSpaceRenderablePanel.scss';
 
 class ScreenSpaceRenderablePanel extends Component {

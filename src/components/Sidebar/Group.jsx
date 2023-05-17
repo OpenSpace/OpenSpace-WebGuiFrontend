@@ -1,9 +1,11 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
+
 import { setPropertyTreeExpansion } from '../../api/Actions';
 import { sortGroups } from '../../api/keys';
 import ToggleContent from '../common/ToggleContent/ToggleContent';
+
 import PropertyOwner, {
   displayName as propertyOwnerName,
   nodeExpansionIdentifier as propertyOwnerNodeExpansionIdentifier

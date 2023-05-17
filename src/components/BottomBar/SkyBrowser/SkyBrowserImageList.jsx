@@ -1,12 +1,14 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { AutoSizer, Grid } from 'react-virtualized';
-import Input from '../../common/Input/Input/Input';
+
 import { ObjectWordBeginningSubstring } from '../../../utils/StringMatchers';
-import SkyBrowserNearestImagesList from './SkyBrowserNearestImagesList';
-import SkyBrowserFocusEntry from './SkyBrowserFocusEntry';
-import Dropdown from '../../common/DropDown/Dropdown';
 import CenteredLabel from '../../common/CenteredLabel/CenteredLabel';
+import Dropdown from '../../common/DropDown/Dropdown';
+import Input from '../../common/Input/Input/Input';
+
+import SkyBrowserFocusEntry from './SkyBrowserFocusEntry';
+import SkyBrowserNearestImagesList from './SkyBrowserNearestImagesList';
 
 const ImageViewingOptions = {
   withinView: 'Images within view',

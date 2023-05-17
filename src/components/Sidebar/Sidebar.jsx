@@ -1,13 +1,16 @@
-import { Resizable } from 're-resizable';
 import React, { Component } from 'react';
+import { Resizable } from 're-resizable';
+
 import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import SmallLabel from '../common/SmallLabel/SmallLabel';
 import SystemMenu from '../SystemMenu/SystemMenu';
-import ScenePane from './ScenePane';
-import SettingsPane from './SettingsPane';
-import styles from './Sidebar.scss';
+
 import TabMenu from './TabMenu/TabMenu';
 import TabMenuItem from './TabMenu/TabMenuItem';
+import ScenePane from './ScenePane';
+import SettingsPane from './SettingsPane';
+
+import styles from './Sidebar.scss';
 
 const views = {
   settings: SettingsPane,

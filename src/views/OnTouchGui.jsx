@@ -1,29 +1,32 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import '../styles/base.scss';
-import Error from '../components/common/Error/Error';
-import Overlay from '../components/common/Overlay/Overlay';
+import PropTypes from 'prop-types';
+
 import {
   addStoryInfo, addStoryTree, fetchData, resetStoryInfo, setPropertyValue,
-  startConnection, subscribeToProperty, unsubscribeToProperty, triggerAction
+  startConnection, subscribeToProperty, triggerAction,
+  unsubscribeToProperty
 } from '../api/Actions';
-import TouchBar from '../components/TouchBar/TouchBar';
-import DeveloperMenu from '../components/TouchBar/UtilitiesMenu/presentational/DeveloperMenu';
 import {
   DefaultStory, InfoIconKey, NavigationAnchorKey, ScaleKey,
   ValuePlaceholder, ZoomInLimitKey, ZoomOutLimitKey
 } from '../api/keys';
+import {
+  formatVersion, isCompatible, RequiredOpenSpaceVersion, RequiredSocketApiVersion
+} from '../api/Version';
+import Error from '../components/common/Error/Error';
+import Overlay from '../components/common/Overlay/Overlay';
 import Slider from '../components/ImageSlider/Slider';
-import { UpdateDeltaTimeNow } from '../utils/timeHelpers';
-import styles from './OnTouchGui.scss';
+import TouchBar from '../components/TouchBar/TouchBar';
+import DeveloperMenu from '../components/TouchBar/UtilitiesMenu/presentational/DeveloperMenu';
 import {
   flyTo, infoFileParser, setStoryStart, showDevInfoOnScreen,
   storyFileParser, toggleGalaxies, toggleHighResolution, toggleShading, toggleShowNode
 } from '../utils/storyHelpers';
-import {
-  formatVersion, isCompatible, RequiredOpenSpaceVersion, RequiredSocketApiVersion
-} from '../api/Version';
+import { UpdateDeltaTimeNow } from '../utils/timeHelpers';
+
+import '../styles/base.scss';
+import styles from './OnTouchGui.scss';
 
 const KEYCODE_D = 68;
 

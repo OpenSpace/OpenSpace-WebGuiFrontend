@@ -1,7 +1,9 @@
 import React from 'react';
-import styles from '../style/EditorCanvas.scss';
-import Histogram from '../containers/Histogram';
+
 import Envelope from '../containers/Envelope';
+import Histogram from '../containers/Histogram';
+
+import styles from '../style/EditorCanvas.scss';
 
 function EditorContainer({
   height,

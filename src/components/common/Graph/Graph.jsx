@@ -1,4 +1,5 @@
 import React from 'react';
+
 import GraphBody from './GraphBody';
 
 function Graph({ points, color }) {

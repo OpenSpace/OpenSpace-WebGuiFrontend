@@ -1,21 +1,24 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Rnd as ResizeableDraggable } from 'react-rnd';
-import styles from './TourPopup.scss';
-import contents from './GettingStartedContent.json';
-import Button from '../common/Input/Button/Button';
+
 import {
   subscribeToCamera,
   subscribeToTime,
   unsubscribeToCamera,
   unsubscribeToTime
 } from '../../api/Actions';
-import openspaceLogo from './openspace-color-transparent.png';
-import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
-import Checkbox from '../common/Input/Checkbox/Checkbox';
-import { useContextRefs } from './GettingStartedContext';
 import { useLocalStorageState } from '../../utils/customHooks';
 import AnimatedCheckmark from '../common/AnimatedCheckmark/AnimatedCheckmark';
+import Button from '../common/Input/Button/Button';
+import Checkbox from '../common/Input/Checkbox/Checkbox';
+import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
+
+import contents from './GettingStartedContent.json';
+import { useContextRefs } from './GettingStartedContext';
+import openspaceLogo from './openspace-color-transparent.png';
+
+import styles from './TourPopup.scss';
 
 function KeyboardButton({ buttonText, ...props }) {
   return (

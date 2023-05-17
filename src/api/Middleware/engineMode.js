@@ -1,7 +1,5 @@
-import actionTypes from '../Actions/actionTypes';
-
 import { updateEngineMode } from '../Actions';
-
+import actionTypes from '../Actions/actionTypes';
 import api from '../api';
 
 let topic;
