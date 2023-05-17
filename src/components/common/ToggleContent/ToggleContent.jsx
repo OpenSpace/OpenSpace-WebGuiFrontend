@@ -8,30 +8,17 @@ import styles from './ToggleContent.scss';
 function ToggleContent({
   setExpanded, children, header, title, expanded, showEnabled
 }) {
-  const [hovered, setHovered] = React.useState(false);
+  // If there are no children, return
+  if (children.length === 0) {
+    return null;
+  }
 
   function toggleExpanded() {
     setExpanded(!expanded);
   }
 
-  function mouseEntered() {
-    setHovered(true);
-  }
-
-  function mouseLeft() {
-    setHovered(false);
-  }
-
-  if (!(children.length !== 0 && ((children[0].length != 0) || (children[1].length != 0)))) {
-    return null;
-  }
-
   return (
-    <div
-      className={styles.toggleContent}
-      onMouseEnter={mouseEntered}
-      onMouseLeave={mouseLeft}
-    >
+    <div className={styles.toggleContent}>
       { header || (
         <ToggleHeader
           title={title}
@@ -51,7 +38,7 @@ ToggleContent.propTypes = {
   children: PropTypes.node,
   header: PropTypes.node,
   setExpanded: PropTypes.func.isRequired,
-  expanded: PropTypes.bool.isRequired,
+  expanded: PropTypes.bool,
   showEnabled: PropTypes.bool,
   title: PropTypes.oneOfType([
     PropTypes.string,
@@ -60,8 +47,11 @@ ToggleContent.propTypes = {
 };
 
 ToggleContent.defaultProps = {
-  children: '',
-  expanded: false
+  children: null,
+  header: null,
+  showEnabled: false,
+  expanded: false,
+  title: ''
 };
 
 export default ToggleContent;
