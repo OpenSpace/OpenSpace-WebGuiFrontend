@@ -48,6 +48,7 @@
       "afterColon": true // Make it pretty :)
     }]
   },
+  "ignorePatterns": ["*.story.jsx"],
   "overrides": [
     // override "simple-import-sort" config
     {
