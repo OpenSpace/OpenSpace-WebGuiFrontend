@@ -20,11 +20,13 @@ class Popover extends Component {
   }
 
   get arrowStyle() {
-    return findStyles(this.props.arrow);
+    const { arrow } = this.props;
+    return findStyles(arrow);
   }
 
   get styles() {
-    return findStyles(this.props.className);
+    const { className } = this.props;
+    return findStyles(className);
   }
 
   get inheritedProps() {
@@ -38,51 +40,60 @@ class Popover extends Component {
   }
 
   get asPopup() {
+    const {
+      title, headerButton, detachable, closeCallback, children
+    } = this.props;
     return (
-      <section {...this.inheritedProps} className={`${styles.popover} ${this.arrowStyle} ${this.styles}`}>
-        { this.props.title && (
+      <section
+        {...this.inheritedProps}
+        className={`${styles.popover} ${this.arrowStyle} ${this.styles}`}
+      >
+        { title && (
           <header className={styles.header}>
             <div className={styles.title}>
-              { this.props.title }
+              { title }
             </div>
 
             <div>
-              { this.props.headerButton && this.props.headerButton }
-              { this.props.detachable && (
+              { headerButton && headerButton }
+              { detachable && (
                 <Button onClick={this.toggleDetach} transparent small>
                   <MaterialIcon icon="filter_none" />
                 </Button>
               )}
-              { this.props.closeCallback && (
-                <Button onClick={this.props.closeCallback} transparent small>
+              { closeCallback && (
+                <Button onClick={closeCallback} transparent small>
                   <MaterialIcon icon="close" className="small" />
                 </Button>
               )}
             </div>
           </header>
         )}
-        { this.props.children }
+        { children }
       </section>
     );
   }
 
   get asWindow() {
+    const { children } = this.props;
     return (
       <Window
         {...this.windowInheritedProps}
         className={`${this.styles}`}
       >
-        {this.props.children}
+        {children}
       </Window>
     );
   }
 
   toggleDetach() {
-    this.setState({ isDetached: !this.state.isDetached });
+    const { isDetached } = this.state;
+    this.setState({ isDetached: !isDetached });
   }
 
   render() {
-    return this.state.isDetached ? this.asWindow : this.asPopup;
+    const { isDetached } = this.state;
+    return isDetached ? this.asWindow : this.asPopup;
   }
 }
 
