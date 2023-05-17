@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, HashRouter as Router, Routes } from 'react-router-dom';
+import { HashRouter as Router, Route, Routes } from 'react-router-dom';
 
 import ActionsGui from './views/ActionsGui';
 import BrowserGui from './views/BrowserGui';
