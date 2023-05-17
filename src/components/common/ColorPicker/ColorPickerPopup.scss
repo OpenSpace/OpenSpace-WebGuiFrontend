@@ -1,9 +1,5 @@
 @import "../../../styles/all";
 
-.colorPicker {
-  height: $input-total-height !important;
-}
-
 .colorSwatch {
   width: calc(0.7 * $input-total-height);
   height: calc(0.7 * $input-total-height);

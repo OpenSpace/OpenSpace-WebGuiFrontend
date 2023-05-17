@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 
+import Button from '../Input/Button/Button';
+
 import Tooltip from './Tooltip';
 
 function TooltipMenu({
@@ -12,18 +14,27 @@ function TooltipMenu({
   const buttonClickWrapperRef = React.useRef(null);
 
   useEffect(() => {
+    function closePopup() {
+      setShowPopup(false);
+    }
     window.addEventListener('scroll', closePopup, true);
-    window.addEventListener('mousedown', handleOutsideClick, true);
-
     return () => {
       window.removeEventListener('scroll', closePopup);
+    };
+  }, []);
+
+  useEffect(() => {
+    function handleOutsideClick(evt) {
+      if (!insideClickWrapperRef.current?.contains(evt.target) &&
+          !buttonClickWrapperRef.current?.contains(evt.target)) {
+        setShowPopup(false);
+      }
+    }
+    window.addEventListener('mousedown', handleOutsideClick, true);
+    return () => {
       window.removeEventListener('mousedown', handleOutsideClick);
     };
-  });
-
-  function setRef(ref) {
-    return (element) => { ref.current = element; };
-  }
+  }, []);
 
   function position() {
     if (!wrapperRef.current) return { top: '0px', left: '0px' };
@@ -32,19 +43,8 @@ function TooltipMenu({
   }
 
   function togglePopup(evt) {
-    setShowPopup(!showPopup);
+    setShowPopup((current) => !current);
     evt.stopPropagation();
-  }
-
-  function handleOutsideClick(evt) {
-    if (!insideClickWrapperRef.current?.contains(evt.target) &&
-        !buttonClickWrapperRef.current?.contains(evt.target)) {
-      closePopup();
-    }
-  }
-
-  function closePopup() {
-    setShowPopup(false);
   }
 
   const customTooltipCss = {
@@ -53,19 +53,29 @@ function TooltipMenu({
 
   return (
     <div
-      ref={setRef(wrapperRef)}
+      ref={wrapperRef}
       className={className}
     >
-      <div ref={setRef(buttonClickWrapperRef)} onClick={togglePopup}>
+      <Button
+        ref={buttonClickWrapperRef}
+        onClick={togglePopup}
+        style={{
+          backgroundColor: 'transparent',
+          cursor: 'default'
+        }}
+        block
+        small
+        nopadding
+      > 
         { sourceObject }
-      </div>
+      </Button>
       {!disabled && showPopup && (
         <Tooltip
           fixed
           placement="right" // TODO: fix so placement can be set from property
           style={{ ...position(), ...customTooltipCss }}
         >
-          <div ref={setRef(insideClickWrapperRef)}>
+          <div ref={insideClickWrapperRef}>
             { children }
           </div>
         </Tooltip>

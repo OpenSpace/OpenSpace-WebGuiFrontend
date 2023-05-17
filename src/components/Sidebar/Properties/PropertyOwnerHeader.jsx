@@ -143,12 +143,6 @@ function PropertyOwnerHeader({
     </div>
   );
 
-  const moreButtonsButton = (
-    <div className={styles.rightButton}>
-      <MaterialIcon icon="more_vert" />
-    </div>
-  );
-
   const popoutButton = (
     <Button className={styles.menuButton} onClick={popoutClick}>
       <MaterialIcon icon="build" />
@@ -225,7 +219,7 @@ function PropertyOwnerHeader({
           { focusAction && focusButton }
           { hasMoreButtons && (
             <TooltipMenu
-              sourceObject={moreButtonsButton}
+              sourceObject={<MaterialIcon icon="more_vert" />}
             >
               { popOutAction && popoutButton }
               { metaAction && metaButton }

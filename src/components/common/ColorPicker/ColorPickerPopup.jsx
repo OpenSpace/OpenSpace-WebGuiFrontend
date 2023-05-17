@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Button from '../Input/Button/Button';
 import TooltipMenu from '../Tooltip/TooltipMenu';
 
 import ColorPicker from './ColorPicker';
@@ -18,14 +17,12 @@ function ColorPickerPopup({
   };
 
   const colorSwatchButton = (
-    <Button className={styles.colorPicker} block small nopadding>
-      <div className={styles.colorSwatch}>
-        <div className={styles.colorOverlay} style={colorSwatchBg} />
-        <div className={styles.checkboard}>
-          <Checkboard size={10} white="#fff" grey="#ccc" />
-        </div>
+    <div className={styles.colorSwatch}>
+      <div className={styles.colorOverlay} style={colorSwatchBg} />
+      <div className={styles.checkboard}>
+        <Checkboard size={10} white="#fff" grey="#ccc" />
       </div>
-    </Button>
+    </div>
   );
 
   return (

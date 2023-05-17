@@ -5,9 +5,7 @@ import { excludeKeys } from '../../../../utils/helpers';
 
 import styles from './Button.scss';
 
-/* eslint-disable react/no-unused-prop-types */
-
-const Button = React.forwardRef((props, refs) => {
+const Button = React.forwardRef((props, ref) => {
   const specialClasses = 'onClick block small transparent uppercase smalltext nopadding largetext';
   const inheritProps = excludeKeys(props, specialClasses);
 
@@ -18,26 +16,32 @@ const Button = React.forwardRef((props, refs) => {
 
   let buttonElement = null;
 
-  const onClick = (evt) => {
+  function onClick(evt) {
     props.onClick(evt);
     if (buttonElement) {
       buttonElement.blur();
     }
-  };
+  }
 
-  const ref = (domElement) => {
+  function setRef(domElement) {
     buttonElement = domElement;
-    if (refs && typeof refs === 'function') {
-      refs(domElement);
+    if (!ref) {
+      return;
     }
-  };
+    if (typeof ref === 'function') {
+      ref(domElement);
+    }
+    else {
+      ref.current = domElement;
+    }
+  }
 
   return (
     <button
       {...inheritProps}
       className={`${props.className} ${extraClass} ${styles.button}`}
       onClick={onClick}
-      ref={ref}
+      ref={setRef}
     >
       { props.children }
     </button>
