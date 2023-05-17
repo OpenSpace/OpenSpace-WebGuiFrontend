@@ -17,7 +17,12 @@ export const CaseInsensitiveSubstring = (test: string, search: string): bool => 
 export const WordBeginningSubstring = (test: string, search: string): bool => {
   const searchWords = search.split(' ');
   const testWords = test.split(' ');
-  return searchWords.every((searchWord) => testWords.some((testWord) => testWord.indexOf(searchWord) === 0));
+
+  function containsWordAsFirst(searchWord) {
+    return testWords.some((testWord) => testWord.indexOf(searchWord) === 0);
+  }
+
+  return searchWords.every((searchWord) => containsWordAsFirst(searchWord));
 };
 
 /**
@@ -26,6 +31,7 @@ export const WordBeginningSubstring = (test: string, search: string): bool => {
  * @param search - string to match with
  * @constructor
  */
+// eslint-disable-next-line no-undef
 export const ObjectSimpleSubstring = (test: object, search: string): bool => {
   const valuesAsStrings = Object.values(test)
     .filter((t) => ['number', 'string'].includes(typeof t))
@@ -34,6 +40,7 @@ export const ObjectSimpleSubstring = (test: object, search: string): bool => {
   return valuesAsStrings.some((v) => SimpleSubstring(v, search));
 };
 
+// eslint-disable-next-line no-undef
 export const ObjectWordBeginningSubstring = (test: object, search: string): bool => {
   const valuesAsStrings = Object.values(test)
     .filter((t) => ['number', 'string'].includes(typeof t))
