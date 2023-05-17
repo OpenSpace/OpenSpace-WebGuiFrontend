@@ -1,6 +1,5 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
 
 import { setShowAbout, startConnection } from '../api/Actions';
 import environment from '../api/Environment';
@@ -9,7 +8,6 @@ import {
 } from '../api/Version';
 import BottomBar from '../components/BottomBar/BottomBar';
 import KeybindingPanel from '../components/BottomBar/KeybindingPanel';
-import Error from '../components/common/Error/Error';
 import Button from '../components/common/Input/Button/Button';
 import Overlay from '../components/common/Overlay/Overlay';
 import Stack from '../components/common/Stack/Stack';
@@ -21,6 +19,7 @@ import NodePopOverContainer from '../components/NodePropertiesPanel/NodePopOverC
 import Sidebar from '../components/Sidebar/Sidebar';
 
 import About from './About/About';
+import ErrorMessage from './ErrorMessage';
 
 import '../styles/base.scss';
 import styles from './OnScreenGui.scss';
@@ -29,11 +28,9 @@ function OnScreenGui({
   showFlightController, showAbout, isInBrowser
 }) {
   let hasCheckedVersion = false;
-  const location = useLocation();
   const [showTutorial, setShowTutorial] = React.useState(false);
   const [luaConsoleVisible, setLuaConsoleVisible] = React.useState(false);
 
-  const connectionLost = useSelector((state) => state.connection.connectionLost);
   const version = useSelector((state) => state.version);
 
   const dispatch = useDispatch();
@@ -77,10 +74,6 @@ function OnScreenGui({
     hasCheckedVersion = true;
   }
 
-  function reloadGui() {
-    location.reload();
-  }
-
   return (
     <div className={styles.app} style={environment.developmentMode ? { borderStyle: 'solid', borderWidth: '3px', borderColor: 'orange' } : null}>
       {environment.developmentMode && (
@@ -100,18 +93,7 @@ function OnScreenGui({
             </Stack>
           </Overlay>
         )}
-        { connectionLost && (
-          <Overlay>
-            <Error>
-              <h2>Houston, we've had a...</h2>
-              <p>...disconnection between the user interface and OpenSpace.</p>
-              <p>Trying to reconnect automatically, but you may want to...</p>
-              <Button className={Error.styles.errorButton} onClick={reloadGui}>
-                Reload the user interface
-              </Button>
-            </Error>
-          </Overlay>
-        )}
+        <ErrorMessage />
         <section className={styles.Grid__Left}>
           <Sidebar showTutorial={setShowTutorial} />
         </section>

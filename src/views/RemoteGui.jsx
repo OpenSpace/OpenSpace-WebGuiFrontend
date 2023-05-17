@@ -7,7 +7,6 @@ import {
   formatVersion, isCompatible, RequiredOpenSpaceVersion, RequiredSocketApiVersion
 } from '../api/Version';
 import BottomBar from '../components/BottomBar/BottomBar';
-import Error from '../components/common/Error/Error';
 import Button from '../components/common/Input/Button/Button';
 import Overlay from '../components/common/Overlay/Overlay';
 import Stack from '../components/common/Stack/Stack';
@@ -17,22 +16,19 @@ import NodePopOverContainer from '../components/NodePropertiesPanel/NodePopOverC
 import Sidebar from '../components/Sidebar/Sidebar';
 
 import About from './About/About';
+import ErrorMessage from './ErrorMessage';
 
 import '../styles/base.scss';
 import styles from './RemoteGui.scss';
 
 function RemoteGui({
-  dispatchStartConnection, version, hideAbout, connectionLost, showAbout
+  dispatchStartConnection, version, hideAbout, showAbout
 }) {
   let hasCheckedVersion = false;
 
   React.useEffect(() => {
     dispatchStartConnection();
   }, []);
-
-  function reloadGui() {
-    window.location.reload(false);
-  }
 
   if (!hasCheckedVersion && version.isInitialized) {
     const versionData = version.data;
@@ -73,18 +69,7 @@ function RemoteGui({
             </Stack>
           </Overlay>
         )}
-        { connectionLost && (
-          <Overlay>
-            <Error>
-              <h2>Houston, we've had a...</h2>
-              <p>...disconnection between the user interface and OpenSpace.</p>
-              <p>Trying to reconnect automatically, but you may want to...</p>
-              <Button className={Error.styles.errorButton} onClick={reloadGui}>
-                Reload the user interface
-              </Button>
-            </Error>
-          </Overlay>
-        )}
+        <ErrorMessage />
         <section className={styles.Grid__Left}>
           <Sidebar />
         </section>
@@ -99,7 +84,6 @@ function RemoteGui({
 }
 
 const mapStateToProps = (state) => ({
-  connectionLost: state.connection.connectionLost,
   version: state.version,
   showAbout: state.local.showAbout
 });

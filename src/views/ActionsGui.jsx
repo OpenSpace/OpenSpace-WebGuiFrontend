@@ -1,22 +1,19 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { useLocation } from 'react-router-dom';
 
 import { startConnection } from '../api/Actions';
 import {
   formatVersion, isCompatible, RequiredOpenSpaceVersion, RequiredSocketApiVersion
 } from '../api/Version';
 import ActionsPanel from '../components/BottomBar/ActionsPanel';
-import Error from '../components/common/Error/Error';
-import Button from '../components/common/Input/Button/Button';
-import Overlay from '../components/common/Overlay/Overlay';
+
+import ErrorMessage from './ErrorMessage';
 
 import '../styles/base.scss';
 import styles from './ActionsGui.scss';
 
-function ActionsGui({ dispatchStartConnection, version, connectionLost }) {
+function ActionsGui({ dispatchStartConnection, version }) {
   const [checkedVersion, setCheckedVersion] = React.useState(false);
-  const location = useLocation();
 
   React.useEffect(() => {
     dispatchStartConnection();
@@ -43,31 +40,15 @@ function ActionsGui({ dispatchStartConnection, version, connectionLost }) {
     setCheckedVersion(true);
   }
 
-  function reloadGui() {
-    location.reload();
-  }
-
   return (
     <div className={styles.app}>
-      { connectionLost && (
-        <Overlay>
-          <Error>
-            <h2>Houston, we've had a...</h2>
-            <p>...disconnection between the user interface and OpenSpace.</p>
-            <p>Trying to reconnect automatically, but you may want to...</p>
-            <Button className={Error.styles.errorButton} onClick={reloadGui}>
-              Reload the user interface
-            </Button>
-          </Error>
-        </Overlay>
-      )}
+      <ErrorMessage />
       <ActionsPanel singlewindow />
     </div>
   );
 }
 
 const mapStateToProps = (state) => ({
-  connectionLost: state.connection.connectionLost,
   version: state.version
 });
 
