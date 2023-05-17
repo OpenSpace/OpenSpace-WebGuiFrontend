@@ -76,6 +76,7 @@ export const showDevInfoOnScreen = (luaApi, value) => {
 * @param story - the selected story identifier
 */
 export const storyFileParser = (story) => {
+  // eslint-disable-next-line import/no-dynamic-require, global-require
   const json = require(`../stories/story_${story}.json`);
   // TODO: Loop through all items and verify their format and type
   const parsedJSON = json;
@@ -95,6 +96,7 @@ export const storyFileParser = (story) => {
 };
 
 export const infoFileParser = (infoFile) => {
+  // eslint-disable-next-line import/no-dynamic-require, global-require
   const info = require(`../stories/${infoFile}.json`);
   const parsedInfo = info;
   return parsedInfo;
