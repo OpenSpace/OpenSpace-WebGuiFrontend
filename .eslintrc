@@ -46,7 +46,9 @@
       "mode": "strict",
       "beforeColon": false, // Make it pretty :)
       "afterColon": true // Make it pretty :)
-    }]
+    }],
+    "react/destructuring-assignment": "off",
+    "prefer-destructuring": ["error", {"object": true, "array": false}]
   },
   "ignorePatterns": ["*.story.jsx"],
   "overrides": [
