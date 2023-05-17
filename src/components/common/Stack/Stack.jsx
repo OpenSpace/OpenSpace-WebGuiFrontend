@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 
 import styles from './Stack.scss';
 
-function Stack(props) {
+function Stack({ className, children, ...props }) {
   return (
-    <div {...props} className={`${styles.stack} ${props.className}`}>
-      { props.children }
+    <div {...props} className={`${styles.stack} ${className}`}>
+      { children }
     </div>
   );
 }
