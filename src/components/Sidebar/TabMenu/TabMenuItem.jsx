@@ -11,7 +11,8 @@ function TabMenuItem({ children, onClick, active }) {
     <Button
       onClick={onClick}
       className={`${styles.TabMenuItem} ${activeClass}`}
-      role="tab"
+      role="button"
+      regular
     >
       {children}
     </Button>
