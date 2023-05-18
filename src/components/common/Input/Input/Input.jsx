@@ -21,11 +21,11 @@ class Input extends Component {
 
     this.onChange = this.onChange.bind(this);
     this.onKeyUp = this.onKeyUp.bind(this);
-    this.clear = this.clear.bind(this);
     this.setInputRef = this.setInputRef.bind(this);
+    this.clear = this.clear.bind(this);
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps) {
     // Update state value variable when we get new props
     if (prevProps.value !== this.props.value) {
       this.setState({ value: this.props.value });
@@ -52,6 +52,19 @@ class Input extends Component {
     }
   }
 
+  get hasInput() {
+    return this.state.value !== '';
+  }
+
+  /**
+   * filter out props that shouldn't be inherited by the input element
+   * @returns {*}
+   */
+  get inheritProps() {
+    const doNotInclude = 'children onEnter wide onChange loading value clearable';
+    return excludeKeys(this.props, doNotInclude);
+  }
+
   /**
    * callback to keep save a reference of the input field
    * @param node
@@ -72,19 +85,6 @@ class Input extends Component {
     this.inputNode.dispatchEvent(event);
     this.onChange(event);
     this.inputNode.focus();
-  }
-
-  get hasInput() {
-    return this.state.value !== '';
-  }
-
-  /**
-   * filter out props that shouldn't be inherited by the input element
-   * @returns {*}
-   */
-  get inheritProps() {
-    const doNotInclude = 'children onEnter wide onChange loading value clearable';
-    return excludeKeys(this.props, doNotInclude);
   }
 
   render() {
