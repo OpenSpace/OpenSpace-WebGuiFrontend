@@ -100,7 +100,7 @@ function FilterList({
 
   if (!children) {
     console.error('FilterList has no children');
-    return <></>;
+    return null;
   }
 
   // See if children has favorites
@@ -113,9 +113,11 @@ function FilterList({
   const filteredChildren = React.Children.map(children, (child) => {
     if (showFavorites && child.type.displayName === 'FilterListFavorites') {
       return child;
-    } if (!showFavorites && child.type.displayName === 'FilterListData') {
+    }
+    if (!showFavorites && child.type.displayName === 'FilterListData') {
       return React.cloneElement(child, { matcher, searchString, ignorePropsFilter });
-    } if (child.type.displayName === 'FilterListShowMoreButton') {
+    }
+    if (child.type.displayName === 'FilterListShowMoreButton') {
       if (hasFavorites && !isSearching) {
         const key = 'FilterListShowMoreButton';
         buttons.push(React.cloneElement(child, { key, toggleShowDataInstead, showDataInstead }));
@@ -123,6 +125,7 @@ function FilterList({
     } else if (child.type.displayName === 'FilterListInputButton') {
       buttons.push(child);
     }
+    return null;
   });
 
   return (
