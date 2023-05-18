@@ -204,7 +204,6 @@ function PropertyOwnerHeader({
               className={styles.enabledCheckbox}
               wide={false}
               checked={enabled}
-              label={null}
               setChecked={onToggleCheckboxClick}
               style={shouldFadeCheckbox ? { opacity: fadeValue } : null}
             />

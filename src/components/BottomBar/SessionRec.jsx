@@ -174,9 +174,10 @@ class SessionRec extends Component {
         <div className={Popover.styles.content}>
           <Checkbox
             checked={useTextFormat}
-            label={textFormatLabel}
             setChecked={this.setUseTextFormat}
-          />
+          >
+            <p>{textFormatLabel}</p>
+          </Checkbox>
           <Row>
             <Input
               value={filenameRecording}
@@ -204,36 +205,39 @@ class SessionRec extends Component {
           <Checkbox
             checked={forceTime}
             name="forceTimeInput"
-            label="Force time change to recorded time"
             setChecked={this.setForceTiming}
-          />
+          >
+            <p>Force time change to recorded time</p>
+          </Checkbox>
           <Checkbox
             checked={loopPlayback}
             name="loopPlaybackInput"
-            label="Loop playback"
             setChecked={this.setLoopPlayback}
-          />
+          >
+            <p>Loop playback</p>
+          </Checkbox>
           <Row className={styles.lastRow}>
             <Checkbox
               checked={shouldOutputFrames}
               name="outputFramesInput"
-              label="Output frames"
               className={styles.fpsCheckbox}
               setChecked={this.setShouldOutputFrames}
-            />
-            <InfoBox
-              className={styles.infoBox}
-              text={`If checked, the specified number of frames will be recorded as screenshots and
+            >
+              <p>Output frames</p>
+              <InfoBox
+                className={styles.infoBox}
+                text={`If checked, the specified number of frames will be recorded as screenshots and
                 saved to disk. Per default, they are saved in the user/screenshots folder. 
                 This feature can not be used together with 'loop playback'`}
-            />
+              />
+            </Checkbox>
             { shouldOutputFrames && (
               <Input
                 value={outputFramerate}
                 label={fpsLabel}
                 placeholder="framerate"
                 className={styles.fpsInput}
-                visible={shouldOutputFrames}
+                visible={shouldOutputFrames ? 'visible' : 'hidden'}
                 onChange={(evt) => this.updateOutputFramerate(evt)}
               />
             )}

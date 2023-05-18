@@ -347,11 +347,12 @@ function TourPopup({ setVisibility, isVisible }) {
                 </p>
               </div>
               <Checkbox
-                label={"Don't show the tutorial again"}
                 checked
                 setChecked={(value) => console.log("Don't show on start")}
                 style={{ marginTop: 'auto' }}
-              />
+              >
+                <p>"Don't show the tutorial again"</p>
+              </Checkbox>
             </>
           )}
           <div

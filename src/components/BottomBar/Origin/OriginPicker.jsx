@@ -241,14 +241,15 @@ function OriginPicker({
     return (
       <SettingsPopup>
         <Checkbox
-          label="Close window after selecting"
           checked={closeAfterSelection}
           left={false}
           disabled={false}
           setChecked={() => setCloseAfterSelection((current) => !current)}
           wide
           style={{ padding: '2px' }}
-        />
+        >
+          <p>Close window after selecting</p>
+        </Checkbox>
       </SettingsPopup>
     );
   }

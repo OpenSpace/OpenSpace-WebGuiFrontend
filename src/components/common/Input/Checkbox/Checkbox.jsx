@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import MaterialIcon from '../../MaterialIcon/MaterialIcon';
+import Button from '../Button/Button';
 
 import styles from './Checkbox.scss';
 
@@ -21,14 +22,21 @@ class Checkbox extends Component {
 
   render() {
     const {
-      checked, label, wide, left, className, setChecked, ...rest
+      checked, wide, left, className, setChecked, children, ...rest
     } = this.props;
 
     return (
-      <div onClick={this.onClick} className={`${styles.wrapper} ${className} ${wide ? styles.wide : ''} ${left ? styles.left : ''}`} {...rest}>
-        <MaterialIcon className={styles.checkbox} icon={checked ? 'check_box' : 'check_box_outline_blank'} />
-        { label && <label>{ label }</label> }
-      </div>
+      <Button
+        onClick={this.onClick}
+        className={`${styles.wrapper} ${className} ${wide ? styles.wide : ''} ${left ? styles.left : ''}`}
+        {...rest}
+      >
+        <MaterialIcon
+          className={styles.checkbox}
+          icon={checked ? 'check_box' : 'check_box_outline_blank'}
+        />
+        { children }
+      </Button>
     );
   }
 }
@@ -36,15 +44,16 @@ class Checkbox extends Component {
 Checkbox.propTypes = {
   checked: PropTypes.bool,
   disabled: PropTypes.bool,
-  setChecked: PropTypes.func,
-  label: PropTypes.node,
   left: PropTypes.bool,
+  onChange: PropTypes.func,
+  setChecked: PropTypes.func.isRequired,
   value: PropTypes.bool,
   wide: PropTypes.bool
 };
 
 Checkbox.defaultProps = {
   checked: false,
+  disabled: false,
   left: false,
   onChange: () => {},
   value: false,

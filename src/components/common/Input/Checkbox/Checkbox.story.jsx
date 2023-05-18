@@ -8,8 +8,8 @@ import Checkbox from './Checkbox';
 /* globals module */
 
 storiesOf('Input/Checkbox', module)
-  .add('default', () => (<Checkbox label="Input" />))
-  .add('checked', () => (<Checkbox label="Input" checked />))
-  .add('left', () => (<Checkbox label="Input" left />))
-  .add('unwide', () => (<Checkbox label="Input" wide={false} />))
-  .add('with callback', () => (<Checkbox label="Input" onChange={action('changed')} />));
+  .add('default', () => (<Checkbox><p>Input</p></Checkbox>))
+  .add('checked', () => (<Checkbox><p>Input</p></Checkbox>))
+  .add('left', () => (<Checkbox><p>Input</p></Checkbox>))
+  .add('unwide', () => (<Checkbox wide={false}><p>Input</p></Checkbox>))
+  .add('with callback', () => (<Checkbox onChange={action('changed')}><p>Input</p></Checkbox>));

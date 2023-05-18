@@ -52,16 +52,17 @@ class BoolProperty extends Component {
         <Checkbox
           wide={!this.props.checkBoxOnly}
           checked={value}
-          label={showText ? (
+          setChecked={this.onChange}
+          disabled={this.disabled}
+        >
+          {showText && (
             <span>
               {description.Name}
               {' '}
               {this.descriptionPopup}
             </span>
-          ) : null}
-          setChecked={this.onChange}
-          disabled={this.disabled}
-        />
+          )}
+        </Checkbox>
       </div>
     );
   }

@@ -95,7 +95,6 @@ function SkyBrowserSettings({
     const displayCopiesButtons = displayCopies && Object.values(displayCopies).map((entry, indexCopy) => (
       <Row key={indexCopy} className={styles.vectorProperty}>
         <Checkbox
-          label=""
           checked={entry.show}
           left={false}
           disabled={false}
@@ -147,22 +146,24 @@ function SkyBrowserSettings({
           placeholder="value 2"
         />
         <Checkbox
-          label="Face Camera"
           checked={browser.isFacingCamera}
           left={false}
           disabled={false}
           setChecked={toggleFaceCamera}
           wide
-        />
+        >
+          <p>Face Camera</p>
+        </Checkbox>
         <Checkbox
-          label="Use Radius Azimuth Elevation"
           checked={browser.isUsingRae}
           left={false}
           disabled={false}
           setChecked={toggleRadiusAzimuthElevation}
           wide
           style={{ width: '100%' }}
-        />
+        >
+          <p>Use Radius Azimuth Elevation</p>
+        </Checkbox>
         <ToggleContent
           title="Add Copy Settings"
           expanded={showExpandedSettings}

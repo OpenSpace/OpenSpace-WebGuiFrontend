@@ -81,14 +81,15 @@ function ScenePane({ closeCallback }) {
   const settingsButton = (
     <SettingsPopup>
       <Checkbox
-        label="Show Only Enabled"
         checked={showOnlyEnabled}
         left={false}
         disabled={false}
         setChecked={() => setShowOnlyEnabled((current) => !current)}
         wide
         style={{ padding: '2px' }}
-      />
+      >
+        <p>Show Only Enabled</p>
+      </Checkbox>
     </SettingsPopup>
   );
 

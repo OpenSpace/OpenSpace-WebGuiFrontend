@@ -115,11 +115,12 @@ class SelectionProperty extends Component {
           options.map((opt) => (
             <Checkbox
               key={opt}
-              label={opt}
               checked={this.isSelected(opt)}
               setChecked={(checked, event) => { this.onCheckboxChange(checked, opt); }}
               disabled={this.disabled}
-            />
+            >
+              <p>{opt}</p>
+            </Checkbox>
           ))
         }
         {/* </div> */}
