@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 
 import { triggerAction } from '../../../../api/Actions';
 import propertyDispatcher from '../../../../api/propertyDispatcher';
+import Button from '../../../common/Input/Button/Button';
 import SmallLabel from '../../../common/SmallLabel/SmallLabel';
 
 import styles from '../style/UtilitiesButtons.scss';
@@ -13,7 +14,8 @@ class ToggleBoolButton extends Component {
     super(props);
 
     this.state = {
-      checked: this.props.property.isAction ? this.props.property.defaultvalue : this.props.propertyNode.value
+      checked: this.props.property.isAction ?
+        this.props.property.defaultvalue : this.props.propertyNode.value
     };
 
     this.disableIfChecked = this.disableIfChecked.bind(this);
@@ -35,16 +37,11 @@ class ToggleBoolButton extends Component {
     }
   }
 
-  disableIfChecked() {
-    const { boolPropertyDispatcher, property } = this.props;
-    const { checked } = this.state;
-    if (checked) {
-      if (property.isAction) {
-        this.props.triggerActionDispatcher(property.actionDisabled);
-      } else {
-        boolPropertyDispatcher.set(false);
-      }
-      this.setState({ checked: false });
+  handleOnClick() {
+    const { property } = this.props;
+    this.toggleChecked();
+    if (property.group) {
+      this.props.handleGroup(this.props);
     }
   }
 
@@ -66,30 +63,34 @@ class ToggleBoolButton extends Component {
     }
   }
 
-  handleOnClick() {
-    const { property } = this.props;
-	  this.toggleChecked();
-	  if (property.group) {
-      this.props.handleGroup(this.props);
-	  }
+  disableIfChecked() {
+    const { boolPropertyDispatcher, property } = this.props;
+    const { checked } = this.state;
+    if (checked) {
+      if (property.isAction) {
+        this.props.triggerActionDispatcher(property.actionDisabled);
+      } else {
+        boolPropertyDispatcher.set(false);
+      }
+      this.setState({ checked: false });
+    }
   }
 
   render() {
     const { property } = this.props;
     const { checked } = this.state;
     return (
-      <div
+      <Button
         className={`${styles.UtilitiesButton} ${checked === true && styles.active}`}
-        role="button"
-        tabIndex="0"
         key={property.URI}
         onClick={this.handleOnClick}
         id={property.URI}
+        regular
       >
         <SmallLabel id={property.URI} style={{ textAlign: 'center' }}>
           {property.label}
         </SmallLabel>
-      </div>
+      </Button>
     );
   }
 }
@@ -113,18 +114,12 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   }
 });
 
-ToggleBoolButton = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-  null,
-  { forwardRef: true },
-)(ToggleBoolButton);
-
 ToggleBoolButton.propTypes = {
   propertyNode: PropTypes.shape({
     description: PropTypes.string,
     value: PropTypes.bool
-  })
+  }).isRequired
 };
-
-export default ToggleBoolButton;
+// Should rewrite this component to functional anyways
+// eslint-disable-next-line max-len
+export default connect(mapStateToProps, mapDispatchToProps, null, { forwardRef: true })(ToggleBoolButton);
