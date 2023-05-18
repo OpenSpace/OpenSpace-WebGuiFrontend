@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 
 import { setPopoverVisibility, setShowAbout } from '../../api/Actions';
@@ -18,7 +18,6 @@ function SystemMenu({
   nativeGui,
   openTutorials,
   openFeedback,
-  saveChange,
   showAbout,
   showTutorial,
   setShowKeybinds,
@@ -26,26 +25,36 @@ function SystemMenu({
 }) {
   const [showMenu, setShowMenu] = React.useState(false);
   const refs = useContextRefs();
+
+  function onClick(func, value) {
+    setShowMenu(!showMenu);
+    func(value);
+  }
+
   return (
     <div className={styles.SystemMenu}>
       { showMenu && (
         <Popover className={styles.popover} arrow="arrow bottom leftside" attached>
-          <nav className={styles.links} onClick={() => setShowMenu(!showMenu)}>
-
-            <button onClick={showAbout}>
+          <nav className={styles.links}>
+            <button type="button" onClick={() => { onClick(showAbout); }}>
               About OpenSpace
             </button>
-            <button onClick={openTutorials}>
+            <button type="button" onClick={() => { onClick(openTutorials); }}>
               Open Web Tutorials
             </button>
-            <button style={{ position: 'relative' }} onClick={() => showTutorial(true)} ref={(el) => refs.current.Tutorial = el}>
+            <button
+              type="button"
+              style={{ position: 'relative' }}
+              onClick={() => { onClick(showTutorial, true); }}
+              ref={(el) => { refs.current.Tutorial = el; }}
+            >
               Open Getting Started Tour
             </button>
-            <button onClick={openFeedback}>
+            <button type="button" onClick={() => onClick(openFeedback)}>
               Send Feedback
             </button>
             <hr className={Popover.styles.delimiter} />
-            <button onClick={() => setShowKeybinds(!keybindsIsVisible)}>
+            <button type="button" onClick={() => { onClick(setShowKeybinds, !keybindsIsVisible); }}>
               <MaterialIcon className={styles.linkIcon} icon="keyboard" />
               {keybindsIsVisible ? 'Hide' : 'Show'}
               {' '}
@@ -61,24 +70,21 @@ function SystemMenu({
             }
             <hr className={Popover.styles.delimiter} />
 
-            <button onClick={console}>
+            <button type="button" onClick={() => onClick(console)}>
               Toggle console
               {' '}
               <span className={styles.shortcut}>~</span>
             </button>
-            <button onClick={nativeGui}>
+            <button type="button" onClick={() => { onClick(nativeGui); }}>
               Toggle native GUI
               {' '}
               <span className={styles.shortcut}>F1</span>
             </button>
-
             {/*              <button onClick={saveChange}>
               Save settings to profile
             </button> */}
-
             <hr className={Popover.styles.delimiter} />
-
-            <button onClick={quit}>
+            <button type="button" onClick={() => { onClick(quit); }}>
               <MaterialIcon icon="exit_to_app" className={styles.linkIcon} />
               Quit OpenSpace
               {' '}
@@ -87,8 +93,12 @@ function SystemMenu({
           </nav>
         </Popover>
       )}
-
-      <Button ref={(el) => refs.current.System = el} className={styles.button} transparent onClick={() => setShowMenu(!showMenu)}>
+      <Button
+        ref={(el) => { refs.current.System = el; }}
+        className={styles.button}
+        transparent
+        onClick={() => setShowMenu(!showMenu)}
+      >
         <MaterialIcon icon="more_vert" className={styles.icon} />
       </Button>
     </div>
@@ -107,7 +117,7 @@ const mapSubStateToProps = ({ luaApi, keybindsIsVisible }) => {
 
   const openlinkScript = (url) => {
     let startString = 'open';
-    if (navigator.platform == 'Win32') {
+    if (navigator.platform === 'Win32') {
       startString = 'start';
     }
     const script = `os.execute('${startString} ${url}')`;
