@@ -45,7 +45,7 @@ ColorPickerPopup.propTypes = {
   color: PropTypes.object.isRequired,
   disableAlpha: PropTypes.bool,
   disabled: PropTypes.bool,
-  onChange: PropTypes.func
+  onChange: PropTypes.func.isRequired
 };
 
 ColorPickerPopup.defaultProps = {
