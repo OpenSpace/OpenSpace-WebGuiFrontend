@@ -30,26 +30,25 @@ class MinMaxRangeInput extends Component {
       enteredInvalidMaxValue: false
     };
 
+    this.onMinTextInputChanged = this.onMinTextInputChanged.bind(this);
+    this.onMaxTextInputChanged = this.onMaxTextInputChanged.bind(this);
+    this.onMouseMove = this.onMouseMove.bind(this);
+    this.onLeave = this.onLeave.bind(this);
+    this.onMinTextBlur = this.onMinTextBlur.bind(this);
+    this.onMaxTextBlur = this.onMaxTextBlur.bind(this);
+
     this.setRef = this.setRef.bind(this);
 
     this.updateSliderScale = this.updateSliderScale.bind(this);
     this.valueToSliderPos = this.valueToSliderPos.bind(this);
     this.valueFromSliderPos = this.valueFromSliderPos.bind(this);
-
     this.roundValueToStepSize = this.roundValueToStepSize.bind(this);
 
-    this.onMinTextInputChanged = this.onMinTextInputChanged.bind(this);
-    this.onMaxTextInputChanged = this.onMaxTextInputChanged.bind(this);
     this.updateMinValue = this.updateMinValue.bind(this);
     this.updateMaxValue = this.updateMaxValue.bind(this);
 
-    this.onMouseMove = this.onMouseMove.bind(this);
-    this.onLeave = this.onLeave.bind(this);
-
     this.enableTextInput = this.enableTextInput.bind(this);
     this.disableTextInput = this.disableTextInput.bind(this);
-    this.onMinTextBlur = this.onMinTextBlur.bind(this);
-    this.onMaxTextBlur = this.onMaxTextBlur.bind(this);
     this.textTooltipPosition = this.textTooltipPosition.bind(this);
     this.renderTextInput = this.renderTextInput.bind(this);
 
@@ -57,7 +56,7 @@ class MinMaxRangeInput extends Component {
     this.scale = this.updateSliderScale();
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps) {
     if (prevProps.valueMin !== this.props.valueMin) {
       this.setState({ minValue: this.props.valueMin });
     }
@@ -74,52 +73,6 @@ class MinMaxRangeInput extends Component {
     if (scaleNeedsUpdate) {
       this.scale = this.updateSliderScale();
     }
-  }
-
-  setRef(what) {
-    return (element) => { this[what] = element; };
-  }
-
-  updateSliderScale() {
-    const {
-      exponent, min, max, step
-    } = this.props;
-
-    // Prevent setting exponent to zero, as it breaks the scale
-    const exp = (exponent == 0) ? 1.0 : exponent;
-
-    // If linear scale, we want the resolution to match the step size
-    if (exp == 1.0) {
-      let nSteps = Math.ceil((max - min) / step);
-      if (!Number.isFinite(nSteps)) {
-        nSteps = 1000;
-      }
-      this.sliderResolution = nSteps;
-    }
-
-    // The slider is logarithmic, but the scaling of the value increases exponentially
-    return Scale.scalePow()
-      .exponent(exp)
-      .domain([0, this.sliderResolution]) // slider pos
-      .range([min, max]); // allowed values
-  }
-
-  valueToSliderPos(value) {
-    return this.scale.invert(value);
-  }
-
-  valueFromSliderPos(sliderValue) {
-    const scaledValue = this.scale(sliderValue);
-    // If almost max, return max, as rounding will prevent this if the step size
-    // is not well chosen
-    if (scaledValue > 0.999 * this.props.max) {
-      return this.props.max;
-    }
-    return this.roundValueToStepSize(scaledValue);
-  }
-
-  roundValueToStepSize(value) {
-    return roundValueToStepSize(value, this.props.step);
   }
 
   onMinTextInputChanged(event) {
@@ -154,30 +107,6 @@ class MinMaxRangeInput extends Component {
     if (this.state.enteredInvalidMaxValue !== enteredNanValue) {
       this.setState({ enteredInvalidMaxValue: enteredNanValue });
     }
-  }
-
-  updateMinValue(newValue) {
-    const { max, min } = this.props;
-    const isMinValueOutsideRange = newValue < min || newValue > max;
-
-    if (newValue > this.state.maxValue) {
-      this.updateMaxValue(newValue);
-    }
-
-    this.setState({ minValue: newValue, isMinValueOutsideRange });
-    this.props.onMinValueChanged(newValue);
-  }
-
-  updateMaxValue(newValue) {
-    const { max, min } = this.props;
-    const isMaxValueOutsideRange = newValue < min || newValue > max;
-
-    if (newValue < this.state.minValue) {
-      this.updateMinValue(newValue);
-    }
-
-    this.setState({ maxValue: newValue, isMaxValueOutsideRange });
-    this.props.onMaxValueChanged(newValue);
   }
 
   onMouseMove(event) {
@@ -256,8 +185,94 @@ class MinMaxRangeInput extends Component {
     this.setState({ hoverHint: null });
   }
 
+  onMinTextBlur(event) {
+    const value = Number.parseFloat(event.currentTarget.value);
+    if (!Number.isNaN(value)) {
+      this.updateMinValue(value);
+    }
+    this.disableTextInput();
+  }
+
+  onMaxTextBlur(event) {
+    const value = Number.parseFloat(event.currentTarget.value);
+    if (!Number.isNaN(value)) {
+      this.updateMaxValue(value);
+    }
+    this.disableTextInput();
+  }
+
+  setRef(what) {
+    return (element) => { this[what] = element; };
+  }
+
   get showTextInput() {
     return this.props.inputOnly || this.state.showTextInput;
+  }
+
+  updateSliderScale() {
+    const {
+      exponent, min, max, step
+    } = this.props;
+
+    // Prevent setting exponent to zero, as it breaks the scale
+    const exp = (exponent === 0) ? 1.0 : exponent;
+
+    // If linear scale, we want the resolution to match the step size
+    if (exp === 1.0) {
+      let nSteps = Math.ceil((max - min) / step);
+      if (!Number.isFinite(nSteps)) {
+        nSteps = 1000;
+      }
+      this.sliderResolution = nSteps;
+    }
+
+    // The slider is logarithmic, but the scaling of the value increases exponentially
+    return Scale.scalePow()
+      .exponent(exp)
+      .domain([0, this.sliderResolution]) // slider pos
+      .range([min, max]); // allowed values
+  }
+
+  valueToSliderPos(value) {
+    return this.scale.invert(value);
+  }
+
+  valueFromSliderPos(sliderValue) {
+    const scaledValue = this.scale(sliderValue);
+    // If almost max, return max, as rounding will prevent this if the step size
+    // is not well chosen
+    if (scaledValue > 0.999 * this.props.max) {
+      return this.props.max;
+    }
+    return this.roundValueToStepSize(scaledValue);
+  }
+
+  roundValueToStepSize(value) {
+    return roundValueToStepSize(value, this.props.step);
+  }
+
+  updateMinValue(newValue) {
+    const { max, min } = this.props;
+    const isMinValueOutsideRange = newValue < min || newValue > max;
+
+    if (newValue > this.state.maxValue) {
+      this.updateMaxValue(newValue);
+    }
+
+    this.setState({ minValue: newValue, isMinValueOutsideRange });
+    this.props.onMinValueChanged(newValue);
+  }
+
+  updateMaxValue(newValue) {
+    const { max, min } = this.props;
+    const isMaxValueOutsideRange = newValue < min || newValue > max;
+
+    if (newValue < this.state.minValue) {
+      this.updateMinValue(newValue);
+    }
+
+    this.setState({ maxValue: newValue, isMaxValueOutsideRange });
+    this.props.onMaxValueChanged(newValue);
   }
 
   enableTextInput(event) {
@@ -281,22 +296,6 @@ class MinMaxRangeInput extends Component {
 
   disableTextInput() {
     this.setState({ showTextInput: false, hoverHint: null, focusLeftTextInput: null });
-  }
-
-  onMinTextBlur(event) {
-    const value = Number.parseFloat(event.currentTarget.value);
-    if (!isNaN(value)) {
-      this.updateMinValue(value);
-    }
-    this.disableTextInput();
-  }
-
-  onMaxTextBlur(event) {
-    const value = Number.parseFloat(event.currentTarget.value);
-    if (!Number.isNaN(value)) {
-      this.updateMaxValue(value);
-    }
-    this.disableTextInput();
   }
 
   textTooltipPosition() {
@@ -394,7 +393,7 @@ class MinMaxRangeInput extends Component {
     } = this.state;
 
     const {
-      placeholder, className, label, wide, min, max, step
+      placeholder, className, label, wide, max, step
     } = this.props;
     const doNotInclude = 'wide onMinValueChanged onMaxValueChanged valueMax valueMin ' +
                          'className type min max step exponent ' +
