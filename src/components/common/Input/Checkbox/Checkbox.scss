@@ -3,12 +3,13 @@
 $height: $font-size + $base-padding * 1.5;
 
 .wrapper {
-  padding: 2px;
+  padding: 0;
   margin: 0;
   font-size: 16px;
   background-color: transparent;
   display: flex;
   text-align: left;
+  font-family: $font-family;
   // Undo ordinary button styles  
   letter-spacing: normal;
   &:hover {
@@ -40,4 +41,8 @@ $height: $font-size + $base-padding * 1.5;
   &.left {
     flex-direction: row;
   }
+}
+
+.checkbox {
+  padding-top: 2px;
 }
