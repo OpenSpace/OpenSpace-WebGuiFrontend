@@ -76,6 +76,15 @@ $border: $ui-background-slider-input;
   padding: 8px 10px;
 }
 
+// Undo the button styling
+.DropdownOption, .DropdownControl {
+  width: 100%;
+  text-align: left;
+  font-family: $font-family;
+  font-size: 16px;
+  letter-spacing: normal;
+}
+
 .DropdownOption:last-child {
   border-bottom-right-radius: 2px;
   border-bottom-left-radius: 2px;

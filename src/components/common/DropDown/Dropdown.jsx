@@ -1,4 +1,6 @@
-import React, { Component, createRef } from 'react';
+import React from 'react';
+
+import Button from '../Input/Button/Button';
 
 import styles from './Dropdown.scss';
 
@@ -17,6 +19,11 @@ function Dropdown({
 
   // Add and remove event listeners
   React.useEffect(() => {
+    function handleDocumentClick(event) {
+      if (mounted.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    }
     document.addEventListener('click', handleDocumentClick, false);
     document.addEventListener('touchend', handleDocumentClick, false);
     return () => {
@@ -29,7 +36,7 @@ function Dropdown({
   // Re-render when the value changes
   React.useEffect(() => {
     if (value) {
-      if (selected !== value) {
+      if (selected.value !== value) {
         setSelected(value);
       }
     } else {
@@ -55,38 +62,36 @@ function Dropdown({
     }
   }
 
-  function setValue(value, label) {
-    fireChangeEvent({ value, label });
-    setSelected({ value, label });
-    setIsOpen(false);
-  }
-
   function fireChangeEvent(newSelected) {
     if (newSelected !== selected && onChange) {
       onChange(newSelected);
     }
   }
 
+  function setValue(newValue, label) {
+    fireChangeEvent({ value: newValue, label });
+    setSelected({ value: newValue, label });
+    setIsOpen(false);
+  }
+
   function buildMenu() {
     const optionDivs = options.map((option) => {
-      let { value } = option;
-      if (typeof value === 'undefined') {
-        value = option.label || option;
+      let newValue = option.value;
+      if (typeof newValue === 'undefined') {
+        newValue = option.label || option;
       }
       const label = option.label || option.value || option;
-      const isSelected = value === selected.value || value === selected;
-
+      const isSelected = newValue === selected.value || newValue === selected;
       return (
-        <div
-          key={value}
+        <Button
+          key={newValue}
           className={`${styles.DropdownOption} ${isSelected && styles.isSelected}`}
-          onMouseDown={() => setValue(value, label)}
-          onClick={() => setValue(value, label)}
-          role="option"
+          onMouseDown={() => setValue(newValue, label)}
+          onClick={() => setValue(newValue, label)}
           aria-selected={isSelected ? 'true' : 'false'}
         >
           {label}
-        </div>
+        </Button>
       );
     });
 
@@ -95,15 +100,9 @@ function Dropdown({
       <div className={styles.DropdownNoresults}>No options found</div>;
   }
 
-  function handleDocumentClick(event) {
-    if (mounted.current && !dropdownRef.current.contains(event.target)) {
-      setIsOpen(false);
-    }
-  }
-
   return (
     <div ref={dropdownRef} className={styles.DropdownRoot} {...props}>
-      <div
+      <Button
         className={styles.DropdownControl}
         onMouseDown={handleMouseDown}
         onTouchEnd={handleMouseDown}
@@ -115,7 +114,7 @@ function Dropdown({
         <div className={styles.DropdownArrowWrapper}>
           <span className={styles.DropdownArrow} />
         </div>
-      </div>
+      </Button>
       {isOpen && (
         <div className={styles.DropdownMenu} aria-expanded="true" {...props}>
           {buildMenu()}
