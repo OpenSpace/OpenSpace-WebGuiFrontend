@@ -30,6 +30,7 @@ class Checkbox extends Component {
         onClick={this.onClick}
         className={`${styles.wrapper} ${className} ${wide ? styles.wide : ''} ${left ? styles.left : ''}`}
         {...rest}
+        regular
       >
         <MaterialIcon
           className={styles.checkbox}

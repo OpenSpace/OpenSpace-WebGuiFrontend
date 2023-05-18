@@ -89,6 +89,8 @@ function Dropdown({
           onMouseDown={() => setValue(newValue, label)}
           onClick={() => setValue(newValue, label)}
           aria-selected={isSelected ? 'true' : 'false'}
+          wide 
+          regular
         >
           {label}
         </Button>
@@ -107,6 +109,8 @@ function Dropdown({
         onMouseDown={handleMouseDown}
         onTouchEnd={handleMouseDown}
         aria-haspopup="listbox"
+        wide
+        regular
       >
         <div className={styles.DropdownPlaceholder}>
           {typeof selected === 'string' ? selected : selected.label}

@@ -8,10 +8,6 @@ $height: $font-size + $base-padding * 1.5;
   font-size: 16px;
   background-color: transparent;
   display: flex;
-  text-align: left;
-  font-family: $font-family;
-  // Undo ordinary button styles  
-  letter-spacing: normal;
   &:hover {
     background-color: transparent;
   }
