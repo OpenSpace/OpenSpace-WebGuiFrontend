@@ -14,13 +14,9 @@ const Button = React.forwardRef((props, ref) => {
     .map((c) => styles[c])
     .join(' ');
 
-  const buttonElement = null;
-
   function onClick(evt) {
     props.onClick(evt);
-    if (buttonElement) {
-      buttonElement.blur();
-    }
+    evt.target.blur();
   }
 
   return (
