@@ -84,9 +84,7 @@ class Calendar extends Component {
     this.setYear = this.setYear.bind(this);
   }
 
-  state: { activeMonth: Date };
-
-  componentWillReceiveProps({ activeMonth }) {
+  UNSAFE_componentWillReceiveProps({ activeMonth }) {
     // update calendar focus (unless user has moved away from previously given active month)
     if (Calendar.isSameDay(
       Calendar.toStartOfMonth(this.props.activeMonth),
@@ -128,6 +126,17 @@ class Calendar extends Component {
     return days;
   }
 
+  setCurrentMonth() {
+    this.setState({ activeMonth: Calendar.toStartOfMonth(new Date()) });
+  }
+
+  setYear(event) {
+    const { value } = event.currentTarget;
+    const { activeMonth } = this.state;
+    activeMonth.setFullYear(Number.parseInt(value, 10));
+    this.setState({ activeMonth });
+  }
+
   daysToGet(day: number): number {
     const rotatedDays = rotate(DaysInWeekBefore, 7 - this.props.weekStartsOn);
     return rotatedDays[day];
@@ -162,17 +171,6 @@ class Calendar extends Component {
 
   changeMonth(dir: number): Function {
     return () => this.setState({ activeMonth: this.month(dir) });
-  }
-
-  setCurrentMonth() {
-    this.setState({ activeMonth: Calendar.toStartOfMonth(new Date()) });
-  }
-
-  setYear(event) {
-    const { value } = event.currentTarget;
-    const { activeMonth } = this.state;
-    activeMonth.setFullYear(Number.parseInt(value, 10));
-    this.setState({ activeMonth });
   }
 
   extraClasses(day: Date): string {
@@ -218,7 +216,7 @@ class Calendar extends Component {
               className={styles.year}
             />
           </div>
-          <Button transparent small onClick={this.changeMonth(1)}>
+          <Button regular transparent small onClick={this.changeMonth(1)}>
             <MaterialIcon icon="chevron_right" />
           </Button>
         </header>
@@ -234,15 +232,14 @@ class Calendar extends Component {
 
           <section className={styles.month}>
             { this.days.map((day) => (
-              <div
+              <Button
                 key={`${day.getMonth()}-${day.getDate()}`}
                 className={`${styles.day} ${this.extraClasses(day)}`}
                 onClick={this.onSelect(day)}
-                role="button"
-                tabIndex={0}
+                regular
               >
                 { day.getDate() }
-              </div>
+              </Button>
             ))}
           </section>
         </section>
