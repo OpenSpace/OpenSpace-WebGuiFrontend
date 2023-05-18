@@ -39,7 +39,17 @@ $small-padding: calc($vertical-padding / 2) calc($base-padding / 2);
   font-size: 1.4em;
 }
 
+// Style as regular text
+.regular {
+  text-align: left;
+  font-family: $font-family;
+  font-size: 16px;
+  letter-spacing: normal;
+}
 
+.wide {
+  width: 100%;
+}
 
 // Why redeclaring some styles here?!
 // Well, some properties from the classes above (small, for instance)
