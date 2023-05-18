@@ -50,7 +50,7 @@
     "react/destructuring-assignment": "off",
     "prefer-destructuring": ["error", {"object": true, "array": false}]
   },
-  "ignorePatterns": ["*.story.jsx"],
+  "ignorePatterns": ["*.story.jsx", "src/components/TouchBar/*"],
   "overrides": [
     // override "simple-import-sort" config
     {
