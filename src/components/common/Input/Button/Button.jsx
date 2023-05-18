@@ -14,7 +14,7 @@ const Button = React.forwardRef((props, ref) => {
     .map((c) => styles[c])
     .join(' ');
 
-  let buttonElement = null;
+  const buttonElement = null;
 
   function onClick(evt) {
     props.onClick(evt);
@@ -23,24 +23,13 @@ const Button = React.forwardRef((props, ref) => {
     }
   }
 
-  function setRef(domElement) {
-    buttonElement = domElement;
-    if (!ref) {
-      return;
-    }
-    if (typeof ref === 'function') {
-      ref(domElement);
-    } else {
-      ref.current = domElement;
-    }
-  }
-
   return (
     <button
       {...inheritProps}
-      className={`${props.className} ${extraClass} ${styles.button}`}
+      className={`${styles.button} ${props.className} ${extraClass}`}
       onClick={onClick}
-      ref={setRef}
+      ref={ref}
+      type="button"
     >
       { props.children }
     </button>
