@@ -40,7 +40,7 @@ const selectStyles = {
     color: '#FFF',
     backgroundColor: state.isFocused ? '#333' : '#222'
   }),
-  singleValue: (provided, state) => ({
+  singleValue: (provided) => ({
     ...provided,
     color: 'inherited',
     paddingTop: 10,
@@ -60,10 +60,15 @@ function Select(props) {
         id={id}
         placeholder={label}
         styles={selectStyles}
-        value={inheritedProps.options.filter((opt) => opt.value == value)}
+        // Convert to string to ensure both are the same type
+        value={inheritedProps.options.filter((opt) => `${opt.value}` === `${value}`)}
         blurInputOnSelect
       />
-      { props.value !== undefined && <label htmlFor={id} className={styles.selectlabel}>{ label }</label> }
+      {props.value !== undefined && (
+        <label htmlFor={id} className={styles.selectlabel}>
+          {label}
+        </label>
+      )}
     </div>
   );
 }
