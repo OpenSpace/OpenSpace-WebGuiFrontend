@@ -89,7 +89,7 @@ function Dropdown({
           onMouseDown={() => setValue(newValue, label)}
           onClick={() => setValue(newValue, label)}
           aria-selected={isSelected ? 'true' : 'false'}
-          wide 
+          wide
           regular
         >
           {label}

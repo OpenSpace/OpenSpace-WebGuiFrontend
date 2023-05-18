@@ -207,7 +207,7 @@ function Time({ elements, onChange, time }) {
   };
   return (
     <div className={styles.clock}>
-      { 
+      {
         elements.map((getterName) => {
           const value = functionMapping?.[getterName]?.();
           if (!value) {
