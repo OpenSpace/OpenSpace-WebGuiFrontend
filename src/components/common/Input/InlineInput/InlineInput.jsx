@@ -21,23 +21,6 @@ class InlineInput extends Component {
     this.onChange = this.onChange.bind(this);
   }
 
-  render() {
-    const { props, state, onKeyUp } = this;
-    return (
-      <AutosizeInput
-        {...excludeKeys(props, 'noExtraWidth onEnter')}
-        id={props.id || `inlineinput-${Input.nextId}`}
-        value={state.value}
-        onChange={this.onChange}
-        onKeyUp={onKeyUp}
-        onBlur={this.onBlur}
-        onFocus={this.onFocus}
-        className={`${styles.input} ${props.className}`}
-        extraWidth={props.noExtraWidth ? 0 : undefined}
-      />
-    );
-  }
-
   componentDidUpdate() {
     const { props, state } = this;
     if (props.value === state.value) {
@@ -71,12 +54,28 @@ class InlineInput extends Component {
   }
 
   onChange(event) {
-    const { props, state } = this;
     const { value } = event.currentTarget;
     this.setState({
       value
     });
     this.props.onChange(event);
+  }
+
+  render() {
+    const { props, state, onKeyUp } = this;
+    return (
+      <AutosizeInput
+        {...excludeKeys(props, 'noExtraWidth onEnter')}
+        id={props.id || `inlineinput-${Input.nextId}`}
+        value={state.value}
+        onChange={this.onChange}
+        onKeyUp={onKeyUp}
+        onBlur={this.onBlur}
+        onFocus={this.onFocus}
+        className={`${styles.input} ${props.className}`}
+        extraWidth={props.noExtraWidth ? 0 : undefined}
+      />
+    );
   }
 }
 
