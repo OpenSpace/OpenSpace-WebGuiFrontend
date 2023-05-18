@@ -32,7 +32,7 @@ class Sidebar extends Component {
 
   onResizeStop(e, direction, ref, delta) {
     this.setState({
-      width: this.state.width + delta.width
+      width: (current) => current + delta.width
     });
   }
 
@@ -59,7 +59,6 @@ class Sidebar extends Component {
       <Resizable
         enable={{
           top: false,
-          right: true,
           bottom: false,
           left: false,
           topRight: false,
