@@ -1,14 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import Button from '../../common/Input/Button/Button';
+
 import styles from './TabMenuItem.scss';
 
 function TabMenuItem({ children, onClick, active }) {
   const activeClass = active ? styles.active : '';
   return (
-    <div onClick={onClick} className={`${styles.TabMenuItem} ${activeClass}`} role="tab" tabIndex={0}>
+    <Button
+      onClick={onClick}
+      className={`${styles.TabMenuItem} ${activeClass}`}
+      role="tab"
+    >
       {children}
-    </div>
+    </Button>
   );
 }
 
