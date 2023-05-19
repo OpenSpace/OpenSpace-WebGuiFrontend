@@ -14,13 +14,7 @@ import LoadingBlocks from '../common/LoadingBlock/LoadingBlocks';
 import Pane from './Pane';
 import SettingsPaneListItem from './SettingsPaneListItem';
 
-import styles from './SettingsPane.scss'; // OBS! Unused
-
 class SettingsPane extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     const defaultEntries = this.props.topPropertyOwners.map((p) => ({
       key: p.uri,
@@ -46,21 +40,22 @@ class SettingsPane extends Component {
         }))));
 
     const matcher = (entry, searchString) => {
-      searchString = searchString.trim();
+      const trimmedSearchString = searchString.trim();
 
-      if (!searchString) {
+      if (!trimmedSearchString) {
         return false; // guard against empty strings
       }
 
       if (entry.type === 'propertyOwner') {
-        return CaseInsensitiveSubstring(entry.uri, searchString);
+        return CaseInsensitiveSubstring(entry.uri, trimmedSearchString);
       }
       if (entry.type === 'subPropertyOwner') {
-        return CaseInsensitiveSubstring(entry.name, searchString);
+        return CaseInsensitiveSubstring(entry.name, trimmedSearchString);
       }
       if (entry.type === 'property') {
-        return ListCaseInsensitiveSubstring(entry.names, searchString);
+        return ListCaseInsensitiveSubstring(entry.names, trimmedSearchString);
       }
+      return null;
     };
 
     return (
@@ -108,19 +103,22 @@ const mapSubStateToProps = ({ properties, propertyOwners, propertyTree }) => {
   const allOwnerUris = Object.keys(propertyOwners || {});
   const nonSceneTopPropertyOwners = allOwnerUris.filter((uri) => uri !== SceneKey && uri.indexOf('.') === -1);
 
-  const collectUrisRecursively = (owners, collectedOwners, collectedProperties) => {
+  function collectUrisRecursively(owners, allOwners, allProperties) {
     owners.forEach((uri) => {
       const subowners = propertyOwners[uri].subowners || {};
-      const properties = propertyOwners[uri].properties || {};
-      collectedOwners = collectedOwners.concat(subowners);
-      collectedProperties = collectedProperties.concat(properties);
-
-      [collectedOwners, collectedProperties] = collectUrisRecursively(subowners, collectedOwners, collectedProperties);
+      const propertiesUri = propertyOwners[uri].properties || {};
+      // Parameter assignment necessary for recursion
+      // eslint-disable-next-line no-param-reassign
+      allOwners = allOwners.concat(subowners);
+      // eslint-disable-next-line no-param-reassign
+      allProperties = allProperties.concat(propertiesUri);
+      // eslint-disable-next-line no-param-reassign
+      [allOwners, allProperties] = collectUrisRecursively(subowners, allOwners, allProperties);
     });
 
     // Stops when owners are empty
-    return [collectedOwners, collectedProperties];
-  };
+    return [allOwners, allProperties];
+  }
 
   // Collect uris of all sub property owners and properties
   let subPropertyOwners = [];
@@ -137,11 +135,17 @@ const mapSubStateToProps = ({ properties, propertyOwners, propertyTree }) => {
   searchableProperties = searchableProperties.filter((uri) => isPropertyVisible(properties, uri));
 
   // Compose the information we need for the search
-  const topOwnersInfo = nonSceneTopPropertyOwners.map((uri) => ({ uri, name: getLastWordOfUri(uri) }));
+  const topOwnersInfo = nonSceneTopPropertyOwners.map((uri) => ({
+    uri, name: getLastWordOfUri(uri)
+  }));
 
-  const subPropertyOwnersInfo = subPropertyOwners.map((uri) => ({ uri, name: getLastWordOfUri(uri) }));
+  const subPropertyOwnersInfo = subPropertyOwners.map((uri) => ({
+    uri, name: getLastWordOfUri(uri)
+  }));
 
-  const propertiesInfo = searchableProperties.map((uri) => ({ uri, names: [getLastWordOfUri(uri), properties[uri].description.Name] }));
+  const propertiesInfo = searchableProperties.map((uri) => ({
+    uri, names: [getLastWordOfUri(uri), properties[uri].description.Name]
+  }));
 
   return {
     topPropertyOwners: topOwnersInfo,
@@ -150,8 +154,6 @@ const mapSubStateToProps = ({ properties, propertyOwners, propertyTree }) => {
   };
 };
 
-SettingsPane = connect(
+export default connect(
   subStateToProps(mapSubStateToProps, mapStateToSubState)
 )(SettingsPane);
-
-export default SettingsPane;
