@@ -5,6 +5,7 @@ import InfoBox from '../../common/InfoBox/InfoBox';
 import Checkbox from '../../common/Input/Checkbox/Checkbox';
 
 import styles from './Property.scss';
+import PropertyLabel from './PropertyLabel';
 
 class BoolProperty extends Component {
   constructor(props) {
@@ -55,13 +56,7 @@ class BoolProperty extends Component {
           setChecked={this.onChange}
           disabled={this.disabled}
         >
-          {showText && (
-            <span>
-              {description.Name}
-              {' '}
-              {this.descriptionPopup}
-            </span>
-          )}
+          {showText && <PropertyLabel description={description} />}
         </Checkbox>
       </div>
     );

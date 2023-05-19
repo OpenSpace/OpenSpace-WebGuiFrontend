@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import { copyTextToClipboard } from '../../../utils/helpers';
-import InfoBox from '../../common/InfoBox/InfoBox';
 import Button from '../../common/Input/Button/Button';
 import Checkbox from '../../common/Input/Checkbox/Checkbox';
 import ToggleContent from '../../common/ToggleContent/ToggleContent';
+import PropertyLabel from './PropertyLabel';
 
 class SelectionProperty extends Component {
   constructor(props) {
@@ -18,7 +17,6 @@ class SelectionProperty extends Component {
     this.setExpanded = this.setExpanded.bind(this);
     this.isSelected = this.isSelected.bind(this);
     this.onCheckboxChange = this.onCheckboxChange.bind(this);
-    this.copyUri = this.copyUri.bind(this);
     this.selectAllClick = this.selectAllClick.bind(this);
     this.clearSelectionClick = this.clearSelectionClick.bind(this);
   }
@@ -33,15 +31,6 @@ class SelectionProperty extends Component {
 
   setExpanded(expanded) {
     this.setState({ expanded });
-  }
-
-  get descriptionPopup() {
-    const { description } = this.props.description;
-    return description ? (<InfoBox text={description} />) : '';
-  }
-
-  copyUri() {
-    copyTextToClipboard(this.props.description.Identifier);
   }
 
   get disabled() {
@@ -87,13 +76,7 @@ class SelectionProperty extends Component {
     const { description } = this.props;
     const { options } = this;
 
-    const label = (
-      <span onClick={this.copyUri}>
-        { description.Name }
-        {' '}
-        { this.descriptionPopup }
-      </span>
-    );
+    const label = <PropertyLabel description={description} />;
 
     const helperButtons = (
       <span>

@@ -1,14 +1,13 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-import { copyTextToClipboard } from '../../../utils/helpers';
 import ColorPickerPopup from '../../common/ColorPicker/ColorPickerPopup';
-import InfoBox from '../../common/InfoBox/InfoBox';
 import MinMaxRangeInput from '../../common/Input/MinMaxRangeInput/MinMaxRangeInput';
 import NumericInput from '../../common/Input/NumericInput/NumericInput';
 import Row from '../../common/Row/Row';
 import { useContextRefs } from '../../GettingStartedTour/GettingStartedContext';
 
 import styles from './Property.scss';
+import PropertyLabel from './PropertyLabel';
 
 function VectorProperty({ dispatcher, description, value }) {
   const {
@@ -27,10 +26,6 @@ function VectorProperty({ dispatcher, description, value }) {
     dispatcher.subscribe();
     return dispatcher.unsubscribe;
   }, []);
-
-  function copyUri() {
-    copyTextToClipboard(description.Identifier);
-  }
 
   function valueToColor() {
     if (!isColor) { return null; }
@@ -64,25 +59,10 @@ function VectorProperty({ dispatcher, description, value }) {
     dispatcher.set(newValue);
   }
 
-  const descriptionPopup = description ? <InfoBox text={description.description} /> : '';
-  const firstLabel = (
-    <span onClick={copyUri}>
-      { description.Name }
-      {' '}
-      { descriptionPopup }
-    </span>
-  );
+  const firstLabel = <PropertyLabel description={description} />;
 
   function asMinMaxRange() {
     if (!isMinMaxRange) return;
-
-    const label = (
-      <span onClick={copyUri}>
-        { description.Name }
-        {' '}
-        { descriptionPopup }
-      </span>
-    );
 
     // Different step sizes does not make sense here, so just use the minimum
     const stepSize = Math.min(...SteppingValue);
@@ -92,7 +72,7 @@ function VectorProperty({ dispatcher, description, value }) {
         <MinMaxRangeInput
           valueMin={value[0]}
           valueMax={value[1]}
-          label={label}
+          label={firstLabel}
           onMinValueChanged={onChange(0)}
           onMaxValueChanged={onChange(1)}
           step={stepSize}

@@ -1,16 +1,14 @@
 import React, { Component } from 'react';
 
-import { copyTextToClipboard } from '../../../utils/helpers';
-import InfoBox from '../../common/InfoBox/InfoBox';
 import NumericInput from '../../common/Input/NumericInput/NumericInput';
 
 import styles from './Property.scss';
+import PropertyLabel from './PropertyLabel';
 
 class NumericProperty extends Component {
   constructor(props) {
     super(props);
     this.onChange = this.onChange.bind(this);
-    this.copyUri = this.copyUri.bind(this);
   }
 
   componentDidMount() {
@@ -21,11 +19,6 @@ class NumericProperty extends Component {
     this.props.dispatcher.unsubscribe();
   }
 
-  get descriptionPopup() {
-    const { description } = this.props.description;
-    return description ? <InfoBox text={description} /> : '';
-  }
-
   get disabled() {
     return this.props.description.MetaData.isReadOnly;
   }
@@ -34,33 +27,19 @@ class NumericProperty extends Component {
     this.props.dispatcher.set(newValue);
   }
 
-  get descriptionPopup() {
-    const { description } = this.props;
-    const { MaximumValue, MinimumValue } = description.AdditionalData;
-    const descriptionString = `${description.description}\nMin: ${MinimumValue}, max: ${MaximumValue}`;
-    return descriptionString ? (<InfoBox text={descriptionString} />) : '';
-  }
-
-  copyUri() {
-    copyTextToClipboard(this.props.description.Identifier);
-  }
-
   render() {
     const { description, value } = this.props;
     const {
       SteppingValue, MaximumValue, MinimumValue, Exponent
     } = description.AdditionalData;
+    // Add min & max value to description
+    let enhancedDescription = { ...description };
+    enhancedDescription.description = `${description.description}\nMin: ${MinimumValue}, max: ${MaximumValue}`;
     return (
       <div className={`${this.disabled ? styles.disabled : ''}`}>
         <NumericInput
           value={value}
-          label={(
-            <span onClick={this.copyUri}>
-              {description.Name}
-              {' '}
-              {this.descriptionPopup}
-            </span>
-          )}
+          label={<PropertyLabel description={enhancedDescription} />}
           placeholder={description.Name}
           onValueChanged={this.onChange}
           step={SteppingValue}

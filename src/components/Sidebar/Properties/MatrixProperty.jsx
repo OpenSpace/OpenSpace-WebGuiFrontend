@@ -6,12 +6,12 @@ import NumericInput from '../../common/Input/NumericInput/NumericInput';
 import Row from '../../common/Row/Row';
 
 import styles from './Property.scss';
+import PropertyLabel from './PropertyLabel';
 
 class MatrixProperty extends Component {
   constructor(props) {
     super(props);
     this.onChange = this.onChange.bind(this);
-    this.copyUri = this.copyUri.bind(this);
   }
 
   componentDidMount() {
@@ -20,15 +20,6 @@ class MatrixProperty extends Component {
 
   componentWillUnmount() {
     this.props.dispatcher.unsubscribe();
-  }
-
-  get descriptionPopup() {
-    const { description } = this.props.description;
-    return description ? <InfoBox text={description} /> : '';
-  }
-
-  copyUri() {
-    copyTextToClipboard(this.props.description.Identifier);
   }
 
   get disabled() {
@@ -48,13 +39,7 @@ class MatrixProperty extends Component {
     const {
       SteppingValue, MaximumValue, MinimumValue, Exponent
     } = description.AdditionalData;
-    const firstLabel = (
-      <span onClick={this.copyUri}>
-        { description.Name }
-        {' '}
-        { this.descriptionPopup }
-      </span>
-    );
+    const firstLabel = <PropertyLabel description={description} />;
 
     const values = value.map((value, index) => ({
       key: `${description.Name}-${index}`,

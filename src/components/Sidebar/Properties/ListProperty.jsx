@@ -1,17 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import { copyTextToClipboard } from '../../../utils/helpers';
-import InfoBox from '../../common/InfoBox/InfoBox';
 import Input from '../../common/Input/Input/Input';
 
 import styles from './Property.scss';
+import PropertyLabel from './PropertyLabel';
 
 class ListProperty extends Component {
   constructor(props) {
     super(props);
     this.onChange = this.onChange.bind(this);
-    this.copyUri = this.copyUri.bind(this);
   }
 
   componentDidMount() {
@@ -20,15 +18,6 @@ class ListProperty extends Component {
 
   componentWillUnmount() {
     this.props.dispatcher.unsubscribe();
-  }
-
-  get descriptionPopup() {
-    const { description } = this.props.description;
-    return description ? (<InfoBox text={description} />) : '';
-  }
-
-  copyUri() {
-    copyTextToClipboard(this.props.description.Identifier);
   }
 
   get disabled() {
@@ -48,13 +37,7 @@ class ListProperty extends Component {
 
   render() {
     const { description, value } = this.props;
-    const label = (
-      <span onClick={this.copyUri}>
-        { description.Name }
-        {' '}
-        { this.descriptionPopup }
-      </span>
-    );
+    const label = <PropertyLabel description={description}/>
     return (
       <div className={`${this.disabled ? styles.disabled : ''}`}>
         <Input

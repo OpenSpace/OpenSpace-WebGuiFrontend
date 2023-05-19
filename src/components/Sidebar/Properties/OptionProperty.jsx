@@ -1,16 +1,14 @@
 import React, { Component } from 'react';
 
-import { copyTextToClipboard } from '../../../utils/helpers';
-import InfoBox from '../../common/InfoBox/InfoBox';
 import Select from '../../common/Input/Select/Select';
 
 import styles from './Property.scss';
+import PropertyLabel from './PropertyLabel';
 
 class OptionProperty extends Component {
   constructor(props) {
     super(props);
     this.onChange = this.onChange.bind(this);
-    this.copyUri = this.copyUri.bind(this);
   }
 
   onChange({ value }) {
@@ -25,28 +23,13 @@ class OptionProperty extends Component {
     this.props.dispatcher.unsubscribe();
   }
 
-  get descriptionPopup() {
-    const { description } = this.props.description;
-    return description ? <InfoBox text={description} /> : '';
-  }
-
-  copyUri() {
-    copyTextToClipboard(this.props.description.Identifier);
-  }
-
   get disabled() {
     return this.props.description.MetaData.isReadOnly;
   }
 
   render() {
     const { description, value } = this.props;
-    const label = (
-      <span onClick={this.copyUri}>
-        { description.Name }
-        {' '}
-        { this.descriptionPopup }
-      </span>
-    );
+    const label = <PropertyLabel description={description} />;
 
     const options = description.AdditionalData.Options
       .map((option) => ({
