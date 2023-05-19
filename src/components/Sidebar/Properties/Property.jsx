@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import BoolProperty from './BoolProperty';
-import { connectProperty } from './connectProperty';
+import connectProperty from './connectProperty';
 import ListProperty from './ListProperty';
 import MatrixProperty from './MatrixProperty';
 import NumericProperty from './NumericProperty';

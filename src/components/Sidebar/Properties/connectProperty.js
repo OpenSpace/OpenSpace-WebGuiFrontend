@@ -24,8 +24,9 @@ const mapSubStateToProps = ({ properties }, ownProps) => {
   };
 };
 
-export const connectProperty =
-  (Property) => connect(
+export default function connectProperty(Property) {
+  return connect(
     subStateToProps(mapSubStateToProps, mapStateToSubState),
     mapDispatchToProps
   )(Property);
+}
