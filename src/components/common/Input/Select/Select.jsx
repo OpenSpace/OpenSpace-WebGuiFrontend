@@ -48,23 +48,24 @@ const selectStyles = {
   })
 };
 
-function Select(props) {
-  const { value, label } = props;
-  const inheritedProps = excludeKeys(props, 'label');
-  const id = props.id || `select-${Input.nextId}`;
+function Select({ value, label, id, disabled, options, onChange, ...props}) {
+  const identifier = id || `select-${Input.nextId}`;
 
   return (
     <div className={styles.selectgroup}>
       <ReactSelect
-        {...inheritedProps}
-        id={id}
+        {...props}
+        id={identifier}
+        isDisabled={disabled}
         placeholder={label}
         styles={selectStyles}
+        options={options}
+        onChange={onChange}
         // Convert to string to ensure both are the same type
-        value={inheritedProps.options.filter((opt) => `${opt.value}` === `${value}`)}
+        value={options.filter((opt) => `${opt.value}` === `${value}`)}
         blurInputOnSelect
       />
-      {props.value !== undefined && (
+      {value !== undefined && (
         <label htmlFor={id} className={styles.selectlabel}>
           {label}
         </label>
