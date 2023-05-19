@@ -19,15 +19,14 @@ function ScenePane({ closeCallback }) {
   const [showOnlyEnabled, setShowOnlyEnabled] = useLocalStorageState('showOnlyEnabled', false);
 
   const groups = useSelector((state) => {
-    const topLevelGroups = Object.keys(state.groups).filter((path) => {
+    const topLevelGroupsPaths = Object.keys(state.groups).filter((path) => {
       // Get the number of slashes in the path
       const depth = (path.match(/\//g) || []).length;
       return depth <= 1;
-    }).map((path) => path.slice(1) // Remove leading slash
-    ).reduce((obj, key) => ({ // Convert back to object
-      ...obj,
-      [key]: true
-    }), {});
+    }).map((path) => path.slice(1)); // Remove first slash
+
+    // Convert back to object
+    const topLevelGroups = topLevelGroupsPaths.reduce((obj, key) => ({ ...obj, [key]: true }), {});
 
     // Reorder properties based on SceneProperties ordering property
     let sortedGroups = [];
