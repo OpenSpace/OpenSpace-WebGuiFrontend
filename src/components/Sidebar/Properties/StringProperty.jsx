@@ -21,10 +21,6 @@ class StringProperty extends Component {
     this.props.dispatcher.unsubscribe();
   }
 
-  get disabled() {
-    return this.props.description.MetaData.isReadOnly;
-  }
-
   onChange(evt) {
     const { value } = evt.target;
     this.props.dispatcher.set(value);
@@ -39,7 +35,7 @@ class StringProperty extends Component {
           label={<PropertyLabel description={description} />}
           placeholder={description.Name}
           onEnter={this.onChange}
-          disabled={this.disabled}
+          disabled={description.MetaData.isReadOnly}
         />
       </div>
     );
@@ -55,7 +51,7 @@ StringProperty.propTypes = {
     }),
     description: PropTypes.string
   }).isRequired,
-  value: PropTypes.any
+  value: PropTypes.any.isRequired
 };
 
 export default StringProperty;
