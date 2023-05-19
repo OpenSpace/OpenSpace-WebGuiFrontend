@@ -1,7 +1,9 @@
-import React, { Component } from 'react';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
+import propertyDispatcher from '../../../api/propertyDispatcher';
 
 import BoolProperty from './BoolProperty';
-import connectProperty from './connectProperty';
 import ListProperty from './ListProperty';
 import MatrixProperty from './MatrixProperty';
 import NumericProperty from './NumericProperty';
@@ -57,32 +59,37 @@ const concreteProperties = {
   DMat4Property: MatrixProperty
 };
 
-class Property extends Component {
-  render() {
-    const { description, value } = this.props;
+function Property({ uri, ...props }) {
+  const description = useSelector((state) => 
+    state.propertyTree.properties[uri].description
+  );
+  const value = useSelector((state) => 
+    state.propertyTree.properties[uri].value
+  );
 
-    if (!description) return <></>;
+  const dispatch = useDispatch();
+  const dispatcher = propertyDispatcher(dispatch, uri);
 
-    const ConcreteProperty = concreteProperties[description.Type];
+  if (!description) return <></>;
 
-    if (!ConcreteProperty) {
-      console.error('Missing property', description?.Type, description);
-      return null;
-    }
+  const ConcreteProperty = concreteProperties[description.Type];
 
-    return (
-      <ConcreteProperty
-        {...this.props}
-        key={description.Identifier}
-        description={description}
-        value={value}
-        subscribe
-      />
-    );
+  if (!ConcreteProperty) {
+    console.error('Missing property', description?.Type, description);
+    return null;
   }
-}
 
-Property = connectProperty(Property);
+  return (
+    <ConcreteProperty
+      dispatcher={dispatcher}
+      key={description.Identifier}
+      description={description}
+      value={value}
+      subscribe
+      {...props}
+    />
+  );
+}
 
 export default Property;
 export const Types = concreteProperties;
