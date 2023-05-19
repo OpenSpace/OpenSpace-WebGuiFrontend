@@ -14,13 +14,15 @@ function VectorProperty({ dispatcher, description, value }) {
   const {
     SteppingValue, MaximumValue, MinimumValue, Exponent
   } = description.AdditionalData;
-  const isDisabled = description.MetaData.isReadOnly;
-  const isColor = value.length < 3 || value.length > 4 ? false : description.MetaData.ViewOptions.Color;
-  const hasAlpha = isColor && value.length == 4;
-  const isMinMaxRange = value.length == 2 ? description.MetaData.ViewOptions.MinMaxRange : false;
+  const { MetaData } = description;
+  const isDisabled = MetaData.isReadOnly;
+  const couldBeColor = value.length < 3 || value.length > 4;
+  const isColor = couldBeColor && MetaData.ViewOptions.Color;
+  const hasAlpha = isColor && value.length === 4;
+  const isMinMaxRange = value.length === 2 ? MetaData.ViewOptions.MinMaxRange : false;
   // eslint-disable-next-line react/no-array-index-key
-  const values = value.map((value, index) => ({
-    key: `${description.Name}-${index}`, value
+  const values = value.map((element, index) => ({
+    key: `${description.Name}-${index}`, element
   }));
 
   React.useEffect(() => {
@@ -63,7 +65,7 @@ function VectorProperty({ dispatcher, description, value }) {
   const firstLabel = <PropertyLabel description={description} />;
 
   function asMinMaxRange() {
-    if (!isMinMaxRange) return;
+    if (!isMinMaxRange) return null;
 
     // Different step sizes does not make sense here, so just use the minimum
     const stepSize = Math.min(...SteppingValue);
@@ -91,7 +93,10 @@ function VectorProperty({ dispatcher, description, value }) {
   }
   const refs = useContextRefs();
   return (
-    <Row ref={(el) => refs.current[description.Identifier] = el} className={`${styles.vectorProperty} ${isDisabled ? styles.disabled : ''}`}>
+    <Row
+      ref={(el) => { refs.current[description.Identifier] = el; }}
+      className={`${styles.vectorProperty} ${isDisabled ? styles.disabled : ''}`}
+    >
       { values.map((component, index) => (
         <NumericInput
           key={component.key}
