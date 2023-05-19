@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 
 import NumericInput from '../../common/Input/NumericInput/NumericInput';
 
-import styles from './Property.scss';
 import PropertyLabel from './PropertyLabel';
+
+import styles from './Property.scss';
 
 class NumericProperty extends Component {
   constructor(props) {
@@ -33,7 +34,7 @@ class NumericProperty extends Component {
       SteppingValue, MaximumValue, MinimumValue, Exponent
     } = description.AdditionalData;
     // Add min & max value to description
-    let enhancedDescription = { ...description };
+    const enhancedDescription = { ...description };
     enhancedDescription.description = `${description.description}\nMin: ${MinimumValue}, max: ${MaximumValue}`;
     return (
       <div className={`${this.disabled ? styles.disabled : ''}`}>

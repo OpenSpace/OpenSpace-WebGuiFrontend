@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import Button from '../../common/Input/Button/Button';
 import Checkbox from '../../common/Input/Checkbox/Checkbox';
 import ToggleContent from '../../common/ToggleContent/ToggleContent';
+
 import PropertyLabel from './PropertyLabel';
 
 class SelectionProperty extends Component {

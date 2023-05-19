@@ -1,6 +1,7 @@
 import React from 'react';
-import InfoBox from "../../common/InfoBox/InfoBox";
+
 import { copyTextToClipboard } from '../../../utils/helpers';
+import InfoBox from '../../common/InfoBox/InfoBox';
 
 export default function PropertyLabel({ description }) {
   function copyUri() {

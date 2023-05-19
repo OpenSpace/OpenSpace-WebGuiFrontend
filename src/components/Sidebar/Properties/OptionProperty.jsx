@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 
 import Select from '../../common/Input/Select/Select';
 
-import styles from './Property.scss';
 import PropertyLabel from './PropertyLabel';
+
+import styles from './Property.scss';
 
 class OptionProperty extends Component {
   constructor(props) {

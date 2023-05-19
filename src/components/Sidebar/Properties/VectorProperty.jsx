@@ -6,8 +6,9 @@ import NumericInput from '../../common/Input/NumericInput/NumericInput';
 import Row from '../../common/Row/Row';
 import { useContextRefs } from '../../GettingStartedTour/GettingStartedContext';
 
-import styles from './Property.scss';
 import PropertyLabel from './PropertyLabel';
+
+import styles from './Property.scss';
 
 function VectorProperty({ dispatcher, description, value }) {
   const {

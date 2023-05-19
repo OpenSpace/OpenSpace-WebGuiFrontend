@@ -5,8 +5,9 @@ import InfoBox from '../../common/InfoBox/InfoBox';
 import NumericInput from '../../common/Input/NumericInput/NumericInput';
 import Row from '../../common/Row/Row';
 
-import styles from './Property.scss';
 import PropertyLabel from './PropertyLabel';
+
+import styles from './Property.scss';
 
 class MatrixProperty extends Component {
   constructor(props) {

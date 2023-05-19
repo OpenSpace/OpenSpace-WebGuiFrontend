@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import Button from '../../common/Input/Button/Button';
+
 import PropertyLabel from './PropertyLabel';
 
 class TriggerProperty extends Component {
@@ -17,8 +18,8 @@ class TriggerProperty extends Component {
     const { description } = this.props;
     // Remove the name of the property popup because the info
     // popup should appear outside of the Button
-    let noNameDescription = { ...description };
-    noNameDescription.Name = ""; 
+    const noNameDescription = { ...description };
+    noNameDescription.Name = '';
     return (
       <div style={{ marginBottom: 3 }}>
         <Button onClick={this.onChange}>

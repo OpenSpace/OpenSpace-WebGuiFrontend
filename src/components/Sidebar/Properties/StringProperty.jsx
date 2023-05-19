@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 
 import Input from '../../common/Input/Input/Input';
 
-import styles from './Property.scss';
 import PropertyLabel from './PropertyLabel';
+
+import styles from './Property.scss';
 
 class StringProperty extends Component {
   constructor(props) {

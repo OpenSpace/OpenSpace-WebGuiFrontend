@@ -60,12 +60,8 @@ const concreteProperties = {
 };
 
 function Property({ uri, ...props }) {
-  const description = useSelector((state) => 
-    state.propertyTree.properties[uri].description
-  );
-  const value = useSelector((state) => 
-    state.propertyTree.properties[uri].value
-  );
+  const description = useSelector((state) => state.propertyTree.properties[uri].description);
+  const value = useSelector((state) => state.propertyTree.properties[uri].value);
 
   const dispatch = useDispatch();
   const dispatcher = propertyDispatcher(dispatch, uri);

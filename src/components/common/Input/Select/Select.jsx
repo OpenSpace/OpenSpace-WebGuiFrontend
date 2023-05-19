@@ -48,7 +48,9 @@ const selectStyles = {
   })
 };
 
-function Select({ value, label, id, disabled, options, onChange, ...props}) {
+function Select({
+  value, label, id, disabled, options, onChange, ...props
+}) {
   const identifier = id || `select-${Input.nextId}`;
 
   return (

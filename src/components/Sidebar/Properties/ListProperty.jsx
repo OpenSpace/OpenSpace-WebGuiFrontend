@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 
 import Input from '../../common/Input/Input/Input';
 
-import styles from './Property.scss';
 import PropertyLabel from './PropertyLabel';
+
+import styles from './Property.scss';
 
 class ListProperty extends Component {
   constructor(props) {
@@ -37,7 +38,7 @@ class ListProperty extends Component {
 
   render() {
     const { description, value } = this.props;
-    const label = <PropertyLabel description={description}/>
+    const label = <PropertyLabel description={description} />;
     return (
       <div className={`${this.disabled ? styles.disabled : ''}`}>
         <Input
