@@ -30,26 +30,10 @@ class SelectionProperty extends Component {
     this.props.dispatcher.unsubscribe();
   }
 
-  setExpanded(expanded) {
-    this.setState({ expanded });
-  }
-
-  get disabled() {
-    return this.props.description.MetaData.isReadOnly;
-  }
-
-  get selection() {
-    return this.props.value;
-  }
-
-  get options() {
-    return this.props.description.AdditionalData.Options;
-  }
-
   onCheckboxChange(checked, option) {
-    const { selection } = this;
+    const selection = this.props.value; 
     const index = selection.indexOf(option);
-    const isSelected = index != -1;
+    const isSelected = index !== -1;
 
     if (checked && !isSelected) { // add to selection
       selection.push(option);
@@ -59,12 +43,18 @@ class SelectionProperty extends Component {
     this.props.dispatcher.set(selection);
   }
 
+  setExpanded(expanded) {
+    this.setState({ expanded });
+  }
+
   isSelected(option) {
-    return this.selection.includes(option);
+    const { value } = this.props; 
+    return value.includes(option);
   }
 
   selectAllClick(evt) {
-    this.props.dispatcher.set(this.options);
+    const options = this.props.description.AdditionalData.Options;
+    this.props.dispatcher.set(options);
     evt.stopPropagation();
   }
 
@@ -75,7 +65,8 @@ class SelectionProperty extends Component {
 
   render() {
     const { description } = this.props;
-    const { options } = this;
+    const options = description.AdditionalData.Options;
+    const isDisabled = description.MetaData.isReadOnly;
 
     const label = <PropertyLabel description={description} />;
 
@@ -100,8 +91,8 @@ class SelectionProperty extends Component {
             <Checkbox
               key={opt}
               checked={this.isSelected(opt)}
-              setChecked={(checked, event) => { this.onCheckboxChange(checked, opt); }}
-              disabled={this.disabled}
+              setChecked={(checked) => { this.onCheckboxChange(checked, opt); }}
+              disabled={isDisabled}
             >
               <p>{opt}</p>
             </Checkbox>
@@ -122,7 +113,7 @@ SelectionProperty.propTypes = {
     }),
     description: PropTypes.string
   }).isRequired,
-  value: PropTypes.any
+  value: PropTypes.any.isRequired
 };
 
 export default SelectionProperty;
