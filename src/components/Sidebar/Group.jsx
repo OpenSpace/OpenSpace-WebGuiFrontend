@@ -18,9 +18,10 @@ function isEnabled(properties, uri) {
 function enabledPropertyOwners(state, path) {
   const data = state.groups[path] || {};
   const propertyOwners = data.propertyOwners || [];
+  const props = state.propertyTree.properties;
 
   // Filter PropertyOwners
-  return propertyOwners.filter((propertyOwner) => isEnabled(state.propertyTree.properties, propertyOwner));
+  return propertyOwners.filter((propertyOwner) => isEnabled(props, propertyOwner));
 }
 
 function shouldShowGroup(state, path) {
@@ -59,8 +60,8 @@ function Group({
   path, expansionIdentifier, autoExpand, showOnlyEnabled
 }) {
   const isExpanded = useSelector((state) => {
-    const isExpanded = state.local.propertyTreeExpansion[expansionIdentifier];
-    return (isExpanded === undefined) ? autoExpand : isExpanded;
+    const expanded = state.local.propertyTreeExpansion[expansionIdentifier];
+    return (expanded === undefined) ? autoExpand : expanded;
   }, shallowEqual);
 
   const propertyOwners = useSelector((state) => {
@@ -71,11 +72,13 @@ function Group({
       const data = state.groups[path] || {};
       owners = data.propertyOwners || [];
     }
+    const propOwners = state.propertyTree.propertyOwners;
+    const props = state.propertyTree.properties;
     // Extract propertyOwners
     return owners.map((owner) => ({
       type: 'propertyOwner',
       payload: owner,
-      name: propertyOwnerName(state.propertyTree.propertyOwners, state.propertyTree.properties, owner)
+      name: propertyOwnerName(propOwners, props, owner)
     }));
   }, shallowEqual);
 
@@ -84,16 +87,16 @@ function Group({
     const subGroups = data.subgroups || [];
 
     // Extract groups
-    const groups = subGroups.map((subGroup) => ({
+    const result = subGroups.map((subGroup) => ({
       type: 'group',
       payload: subGroup,
       name: displayName(subGroup)
     }));
     // See if the groups contain any PropertyOwners
     if (showOnlyEnabled) {
-      return groups.filter((group) => shouldShowGroup(state, group.payload));
+      return result.filter((group) => shouldShowGroup(state, group.payload));
     }
-    return groups;
+    return result;
   });
 
   const entries = groups.concat(propertyOwners);
@@ -114,8 +117,10 @@ function Group({
   const sortedEntries = entries.sort((a, b) => a.name.localeCompare(b.name, 'en'));
 
   if (sortOrdering && sortOrdering.value) {
-    sortedEntries.sort((a, b) => (sortOrdering.value.indexOf(a.name) < sortOrdering.value.indexOf(b.name) ?
-      -1 : 1));
+    sortedEntries.sort((a, b) => {
+      const result = sortOrdering.value.indexOf(a.name) < sortOrdering.value.indexOf(b.name);
+      return result ? -1 : 1;
+    });
   }
 
   return hasEntries && (
@@ -126,7 +131,7 @@ function Group({
     >
       {
         sortedEntries.map((entry) => {
-          const autoExpand = entries.length === 1;
+          const expandSingle = entries.length === 1;
           switch (entry.type) {
           case 'group': {
             const childNodeIdentifier = `${expansionIdentifier}/${
@@ -134,7 +139,7 @@ function Group({
 
             return (
               <Group
-                autoExpand={autoExpand}
+                autoExpand={autoExpand || expandSingle}
                 key={entry.payload}
                 path={entry.payload}
                 expansionIdentifier={childNodeIdentifier}
@@ -148,7 +153,7 @@ function Group({
 
             return (
               <PropertyOwner
-                autoExpand={autoExpand}
+                autoExpand={autoExpand || expandSingle}
                 key={entry.payload}
                 uri={entry.payload}
                 expansionIdentifier={childNodeIdentifier}
@@ -166,11 +171,12 @@ function Group({
 
 Group.propTypes = {
   path: PropTypes.string.isRequired,
-  autoExpand: PropTypes.bool,
-  expansionIdentifier: PropTypes.string.isRequired
+  expansionIdentifier: PropTypes.string.isRequired,
+  autoExpand: PropTypes.bool
 };
 
 Group.defaultProps = {
+  autoExpand: false
 };
 
 export default Group;
