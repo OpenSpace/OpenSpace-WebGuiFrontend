@@ -66,7 +66,7 @@ function Property({ uri, ...props }) {
   const dispatch = useDispatch();
   const dispatcher = propertyDispatcher(dispatch, uri);
 
-  if (!description) return <></>;
+  if (!description) return null;
 
   const ConcreteProperty = concreteProperties[description.Type];
 
