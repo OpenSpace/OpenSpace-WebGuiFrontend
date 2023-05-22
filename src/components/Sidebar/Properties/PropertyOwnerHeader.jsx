@@ -11,7 +11,7 @@ import {
   RetargetAnchorKey
 } from '../../../api/keys';
 import propertyDispatcher from '../../../api/propertyDispatcher';
-import { isGlobeBrowsingLayer } from '../../../utils/propertyTreeHelpers';
+import { displayName, isGlobeBrowsingLayer } from '../../../utils/propertyTreeHelpers';
 import Button from '../../common/Input/Button/Button';
 import Checkbox from '../../common/Input/Checkbox/Checkbox';
 import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
@@ -19,8 +19,6 @@ import Row from '../../common/Row/Row';
 import SvgIcon from '../../common/SvgIcon/SvgIcon';
 import TooltipMenu from '../../common/Tooltip/TooltipMenu';
 import { useContextRefs } from '../../GettingStartedTour/GettingStartedContext';
-
-import { displayName } from './PropertyOwner';
 
 import toggleHeaderStyles from '../../common/ToggleContent/ToggleHeader.scss';
 import styles from './PropertyOwnerHeader.scss';

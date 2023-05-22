@@ -197,3 +197,26 @@ export function isEnabledProperty(uri) {
   const splitUri = uri.split('.');
   return (splitUri.length > 1 && splitUri[splitUri.length - 1] === 'Enabled');
 }
+
+// Return an identifier for the tree expansion state.
+export function nodeExpansionIdentifier(uri) {
+  const splitUri = uri.split('.');
+  if (splitUri.length > 1) {
+    return `O:${splitUri[splitUri.length - 1]}`;
+  }
+  return '';
+}
+
+export function displayName(propertyOwners, properties, uri) {
+  // Check property for scene graph nodes
+  let property = properties[`${uri}.GuiName`];
+
+  // Other property owners with a given name
+  if (!property && propertyOwners[uri] && propertyOwners[uri].name) {
+    property = { value: propertyOwners[uri].name };
+  }
+
+  const guiName = property ? property.value : undefined;
+  // If the gui name is found and not empty, use it. Otherwise, show identifier of node
+  return guiName || propertyOwners[uri].identifier;
+}

@@ -12,31 +12,20 @@ import {
   setPropertyTreeExpansion
 } from '../../../api/Actions';
 import {
-  getLayerGroupFromUri,
+  displayName, getLayerGroupFromUri,
   getSceneGraphNodeFromUri,
   isDeadEnd,
-  isEnabledProperty,
   isGlobeBrowsingLayer,
   isPropertyOwnerHidden,
   isPropertyVisible,
-  isSceneGraphNode
+  isSceneGraphNode,
+  nodeExpansionIdentifier
 } from '../../../utils/propertyTreeHelpers';
 import subStateToProps from '../../../utils/subStateToProps';
 import ToggleContent from '../../common/ToggleContent/ToggleContent';
 
 import Property from './Property';
 import PropertyOwnerHeader from './PropertyOwnerHeader';
-
-/**
- * Return an identifier for the tree expansion state.
- */
-const nodeExpansionIdentifier = (uri) => {
-  const splitUri = uri.split('.');
-  if (splitUri.length > 1) {
-    return `O:${splitUri[splitUri.length - 1]}`;
-  }
-  return '';
-};
 
 class PropertyOwnerComponent extends Component {
   constructor(props) {
@@ -67,7 +56,7 @@ class PropertyOwnerComponent extends Component {
       this.props.shouldSort === nextProps.shouldSort);
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps) {
     // Update state value variable when we get new props
     if (prevProps.layers !== this.props.layers) {
       this.setState({ shownLayers: this.props.layers });
@@ -113,7 +102,7 @@ class PropertyOwnerComponent extends Component {
     const { shownLayers } = this.state;
 
     if (!shownLayers || shownLayers.length === 0) {
-      return <></>;
+      return null;
     }
 
     const onDragStart = () => {
@@ -158,6 +147,7 @@ class PropertyOwnerComponent extends Component {
       }}
       />
     );
+    const id = (uri) => `${expansionIdentifier}/${nodeExpansionIdentifier(uri)}`;
 
     return (
       <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
@@ -167,12 +157,12 @@ class PropertyOwnerComponent extends Component {
             <div {...provided.droppableProps} ref={provided.innerRef}>
               { shownLayers.map((uri, index) => (
                 <Draggable key={uri} draggableId={uri} index={index}>
-                  {(provided) => (
-                    <div {...provided.draggableProps} ref={provided.innerRef}>
+                  {(item) => ( // Draggable expects functions as children
+                    <div {...item.draggableProps} ref={item.innerRef}>
                       <PropertyOwner
-                        dragHandleTitleProps={provided.dragHandleProps}
+                        dragHandleTitleProps={item.dragHandleProps}
                         uri={uri}
-                        expansionIdentifier={`${expansionIdentifier}/${nodeExpansionIdentifier(uri)}`}
+                        expansionIdentifier={id(uri)}
                         autoExpand={false}
                       />
                     </div>
@@ -242,20 +232,6 @@ const shouldSortAlphabetically = (uri) => {
   return splitUri.indexOf('Layers') !== (splitUri.length - 2);
 };
 
-const displayName = (propertyOwners, properties, uri) => {
-  // Check property for scene graph nodes
-  let property = properties[`${uri}.GuiName`];
-
-  // Other property owners with a given name
-  if (!property && propertyOwners[uri] && propertyOwners[uri].name) {
-    property = { value: propertyOwners[uri].name };
-  }
-
-  const guiName = property ? property.value : undefined;
-  // If the gui name is found and not empty, use it. Otherwise, show identifier of node
-  return guiName || propertyOwners[uri].identifier;
-};
-
 const mapSubStateToProps = (
   {
     luaApi, propertyOwners, properties, propertyTreeExpansion
@@ -270,36 +246,39 @@ const mapSubStateToProps = (
   let subowners = data ? data.subowners : [];
   let subProperties = data ? data.properties : [];
 
-  const layers = subowners.filter((uri) => (isGlobeBrowsingLayer(uri)));
-  subowners = subowners.filter((uri) => (
-    !isPropertyOwnerHidden(properties, uri) && !isDeadEnd(propertyOwners, properties, uri) && !isGlobeBrowsingLayer(uri)
-  ));
+  const layers = subowners.filter((subowner) => (isGlobeBrowsingLayer(subowner)));
+  subowners = subowners.filter((subowner) => {
+    const isOwnerVisible = !isPropertyOwnerHidden(properties, subowner);
+    const isOwnerDeadEnd = isDeadEnd(propertyOwners, properties, subowner);
+
+    return isOwnerVisible && !isOwnerDeadEnd && !isGlobeBrowsingLayer(subowner);
+  });
 
   const subownerNames = {};
-  subowners.forEach((uri) => {
-    subownerNames[uri] = displayName(propertyOwners, properties, uri);
+  subowners.forEach((subowner) => {
+    subownerNames[subowner] = displayName(propertyOwners, properties, subowner);
   });
 
   // Find all the subproperties of this owner (do not include the enabled property)
-  subProperties = subProperties.filter((uri) => isPropertyVisible(properties, uri));
+  subProperties = subProperties.filter((prop) => isPropertyVisible(properties, prop));
 
   const shouldSort = shouldSortAlphabetically(uri);
 
-  name = name || displayName(propertyOwners, properties, uri);
+  const nameResult = name || displayName(propertyOwners, properties, uri);
   let isExpanded = propertyTreeExpansion[expansionIdentifier];
   if (isExpanded === undefined) {
     isExpanded = autoExpand || false;
   }
 
   const renderableTypeProp = properties[`${uri}.Renderable.Type`];
-  const isRenderable = (renderableTypeProp != undefined);
+  const isRenderable = (renderableTypeProp !== undefined);
 
   // @TODO (emmbr 2023-02-21) Make this work for other propety owners that have
   // descriptions too, such as geojson layers
   const showMeta = (isSceneGraphNode(uri) || isGlobeBrowsingLayer(uri));
 
   return {
-    name,
+    name: nameResult,
     layers,
     luaApi,
     subowners,
