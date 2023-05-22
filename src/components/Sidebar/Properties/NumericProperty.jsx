@@ -12,12 +12,12 @@ class NumericProperty extends Component {
     this.onChange = this.onChange.bind(this);
   }
 
-  get disabled() {
-    return this.props.description.MetaData.isReadOnly;
-  }
-
   onChange(newValue) {
     this.props.dispatcher.set(newValue);
+  }
+
+  get disabled() {
+    return this.props.description.MetaData.isReadOnly;
   }
 
   render() {
@@ -27,7 +27,8 @@ class NumericProperty extends Component {
     } = description.AdditionalData;
     // Add min & max value to description
     const enhancedDescription = { ...description };
-    enhancedDescription.description = `${description.description}\nMin: ${MinimumValue}, max: ${MaximumValue}`;
+    const minMaxString = `${description.description}\nMin: ${MinimumValue}, max: ${MaximumValue}`;
+    enhancedDescription.description = minMaxString;
     return (
       <div className={`${this.disabled ? styles.disabled : ''}`}>
         <NumericInput
