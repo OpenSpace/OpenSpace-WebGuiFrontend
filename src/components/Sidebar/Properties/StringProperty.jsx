@@ -13,14 +13,6 @@ class StringProperty extends Component {
     this.onChange = this.onChange.bind(this);
   }
 
-  componentDidMount() {
-    this.props.dispatcher.subscribe();
-  }
-
-  componentWillUnmount() {
-    this.props.dispatcher.unsubscribe();
-  }
-
   onChange(evt) {
     const { value } = evt.target;
     this.props.dispatcher.set(value);

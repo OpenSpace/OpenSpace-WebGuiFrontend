@@ -22,16 +22,8 @@ class SelectionProperty extends Component {
     this.clearSelectionClick = this.clearSelectionClick.bind(this);
   }
 
-  componentDidMount() {
-    this.props.dispatcher.subscribe();
-  }
-
-  componentWillUnmount() {
-    this.props.dispatcher.unsubscribe();
-  }
-
   onCheckboxChange(checked, option) {
-    const selection = this.props.value; 
+    const selection = this.props.value;
     const index = selection.indexOf(option);
     const isSelected = index !== -1;
 
@@ -48,7 +40,7 @@ class SelectionProperty extends Component {
   }
 
   isSelected(option) {
-    const { value } = this.props; 
+    const { value } = this.props;
     return value.includes(option);
   }
 

@@ -12,14 +12,6 @@ class OptionProperty extends Component {
     this.onChange = this.onChange.bind(this);
   }
 
-  componentDidMount() {
-    this.props.dispatcher.subscribe();
-  }
-
-  componentWillUnmount() {
-    this.props.dispatcher.unsubscribe();
-  }
-
   onChange({ value }) {
     // 10 is the base, radix, for parsing the int
     this.props.dispatcher.set(parseInt(value, 10));

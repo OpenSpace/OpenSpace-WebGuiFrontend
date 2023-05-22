@@ -19,14 +19,6 @@ class BoolProperty extends Component {
     this.props.dispatcher.set(value);
   }
 
-  componentDidMount() {
-    this.props.dispatcher.subscribe();
-  }
-
-  componentWillUnmount() {
-    this.props.dispatcher.unsubscribe();
-  }
-
   get descriptionPopup() {
     const { description } = this.props.description;
     return description ? (

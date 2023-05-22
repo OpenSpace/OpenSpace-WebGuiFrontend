@@ -63,10 +63,15 @@ function Property({ uri, ...props }) {
   const description = useSelector((state) => state.propertyTree.properties[uri].description);
   const value = useSelector((state) => state.propertyTree.properties[uri].value);
 
+  if (!description) return null;
+
   const dispatch = useDispatch();
   const dispatcher = propertyDispatcher(dispatch, uri);
 
-  if (!description) return null;
+  React.useEffect(() => {
+    dispatcher.subscribe();
+    return dispatcher.unsubscribe;
+  }, []);
 
   const ConcreteProperty = concreteProperties[description.Type];
 

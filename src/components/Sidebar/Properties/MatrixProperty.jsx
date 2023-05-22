@@ -15,14 +15,6 @@ class MatrixProperty extends Component {
     this.onChange = this.onChange.bind(this);
   }
 
-  componentDidMount() {
-    this.props.dispatcher.subscribe();
-  }
-
-  componentWillUnmount() {
-    this.props.dispatcher.unsubscribe();
-  }
-
   get disabled() {
     return this.props.description.MetaData.isReadOnly;
   }

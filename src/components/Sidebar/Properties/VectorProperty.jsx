@@ -25,11 +25,6 @@ function VectorProperty({ dispatcher, description, value }) {
     key: `${description.Name}-${index}`, element
   }));
 
-  React.useEffect(() => {
-    dispatcher.subscribe();
-    return dispatcher.unsubscribe;
-  }, []);
-
   function valueToColor() {
     if (!isColor) { return null; }
 
