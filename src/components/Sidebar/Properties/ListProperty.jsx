@@ -13,10 +13,6 @@ class ListProperty extends Component {
     this.onChange = this.onChange.bind(this);
   }
 
-  get disabled() {
-    return this.props.description.MetaData.isReadOnly;
-  }
-
   onChange(evt) {
     const value = evt.target.value.trim();
 
@@ -26,6 +22,10 @@ class ListProperty extends Component {
     }
 
     this.props.dispatcher.set(value.split(','));
+  }
+
+  get disabled() {
+    return this.props.description.MetaData.isReadOnly;
   }
 
   render() {
@@ -54,7 +54,7 @@ ListProperty.propTypes = {
     }),
     description: PropTypes.string
   }).isRequired,
-  value: PropTypes.any
+  value: PropTypes.any.isRequired
 };
 
 export default ListProperty;
