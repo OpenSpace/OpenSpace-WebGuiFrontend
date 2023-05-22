@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 
-import { copyTextToClipboard } from '../../../utils/helpers';
-import InfoBox from '../../common/InfoBox/InfoBox';
 import Checkbox from '../../common/Input/Checkbox/Checkbox';
 
 import PropertyLabel from './PropertyLabel';
@@ -12,25 +10,10 @@ class BoolProperty extends Component {
   constructor(props) {
     super(props);
     this.onChange = this.onChange.bind(this);
-    this.copyUri = this.copyUri.bind(this);
   }
 
   onChange(value) {
     this.props.dispatcher.set(value);
-  }
-
-  get descriptionPopup() {
-    const { description } = this.props.description;
-    return description ? (
-      <span onClick={this.copyUri}>
-        <InfoBox onClick={this.copyUri} text={description} />
-      </span>
-    ) : '';
-  }
-
-  copyUri(e) {
-    copyTextToClipboard(this.props.description.Identifier);
-    e.stopPropagation();
   }
 
   get disabled() {
