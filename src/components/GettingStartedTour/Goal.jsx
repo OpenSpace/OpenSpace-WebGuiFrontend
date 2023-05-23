@@ -1,5 +1,5 @@
-import { connect } from 'react-redux';
 import React from 'react';
+import { connect } from 'react-redux';
 
 import {
   subscribeToCamera,
@@ -7,9 +7,10 @@ import {
   unsubscribeToCamera,
   unsubscribeToTime
 } from '../../api/Actions';
-
 import AnimatedCheckmark from '../common/AnimatedCheckmark/AnimatedCheckmark';
+
 import { useContextRefs } from './GettingStartedContext';
+
 import styles from './TourPopup.scss';
 
 const GoalTypes = {
@@ -24,73 +25,84 @@ const GoalTypes = {
 
 function checkConditionsStatus(content, valueStart, currentValue) {
   const conditionsStatus = new Array(content.goalType.length);
-  content.goalType.map((goal, i) => {
+  content.goalType.forEach((goal, i) => {
     switch (goal) {
-    case GoalTypes.uri:
+    case GoalTypes.uri: {
       conditionsStatus[i] = content.uriValue === currentValue[i];
       break;
-    case GoalTypes.geoPosition:
+    }
+    case GoalTypes.geoPosition: {
       let isTrue = true;
-      Object.keys(content.position).map((dimension) => {
+      Object.keys(content.position).forEach((dimension) => {
         const { operator, value, unit } = content.position[dimension];
         const cameraPosition = currentValue[i];
         if (unit && unit !== cameraPosition.altitudeUnit) {
           isTrue = false;
         }
         switch (operator) {
-        case '<':
+        case '<': {
           isTrue = isTrue && cameraPosition[dimension] < value;
           break;
-        case '>':
+        }
+        case '>': {
           isTrue = isTrue && cameraPosition[dimension] > value;
           break;
-        case 'between':
+        }
+        case 'between': {
           const isBetween = cameraPosition[dimension] > Math.min(...value) &&
                 cameraPosition[dimension] < Math.max(...value);
           isTrue = isTrue && isBetween;
           break;
-        default:
+        }
+        default: {
           isTrue = false;
           break;
+        }
         }
       });
       conditionsStatus[i] = isTrue;
       break;
-    case GoalTypes.pauseTime:
+    }
+    case GoalTypes.pauseTime: {
       conditionsStatus[i] = currentValue[i] === true;
       break;
+    }
     case GoalTypes.changeTime:
     case GoalTypes.changeDeltaTime:
-    case GoalTypes.changeUri:
+    case GoalTypes.changeUri: {
       if (!valueStart?.[i]) {
         conditionsStatus[i] = false;
         break;
       }
-      if (typeof valueStart[i] === Number) {
+      if (typeof valueStart[i] === 'number') {
         conditionsStatus[i] = !(Math.abs(valueStart[i] - currentValue[i]) < Number.EPSILON);
       } else if (valueStart[i]?.length) {
         let hasChanged = false;
-        valueStart[i].map((channel, j) => {
-          hasChanged |= !(Math.abs(channel - currentValue[i][j]) < Number.EPSILON);
+        valueStart[i].forEach((channel, j) => {
+          hasChanged = hasChanged || !(Math.abs(channel - currentValue[i][j]) < Number.EPSILON);
         });
         conditionsStatus[i] = Boolean(hasChanged);
       } else {
         conditionsStatus[i] = valueStart[i] !== currentValue[i];
       }
       break;
-    case GoalTypes.multiUri:
+    }
+    case GoalTypes.multiUri: {
       // The multi uri will be true if either of the uris are true, equivalent to the OR operator
       let isFulfilled = false;
-      for (const uri of currentValue[i]) {
-        if (content.uriValue === uri) {
+      currentValue[i].forEach(((value) => {
+        if (content.uriValue === value.uri) {
           isFulfilled = true;
         }
-      }
+      }));
+
       conditionsStatus[i] = isFulfilled;
       break;
-    default:
+    }
+    default: {
       conditionsStatus[i] = true;
       break;
+    }
     }
   });
   return conditionsStatus;
@@ -135,7 +147,7 @@ function Goal({
     const changeGoals = content?.goalType?.filter((goal) => changeGoalTypes.includes(goal));
     if (changeGoals?.length > 0) {
       const startValues = new Array(content.goalType.length);
-      content.goalType.map((goal, i) => {
+      content.goalType.forEach((goal, i) => {
         startValues[i] = currentValue[i];
       });
       setValueStart(startValues);
@@ -143,7 +155,8 @@ function Goal({
   }, [content]);
 
   // Check status of goal conditions
-  const conditionsStatus = hasGoals ? checkConditionsStatus(content, valueStart, currentValue) : false;
+  const currentStatus = hasGoals && checkConditionsStatus(content, valueStart, currentValue);
+  const conditionsStatus = hasGoals ? currentStatus : false;
   const areAllConditionsFulfilled = hasGoals ? !conditionsStatus.includes(false) : false;
 
   React.useEffect(() => {
@@ -192,20 +205,17 @@ function Goal({
     <div className={styles.centerContent}>
       <AnimatedCheckmark style={{ marginTop: '70px', width: '56px', height: '56px' }} />
     </div>
-  ) : (
-    <>
-      {hasGoals && content.goalText.map((goal, i) => (
-        <div style={{ display: 'flex' }} key={goal}>
-          <div>
-            <p className={`${styles.goalText} ${styles.text}`}>{goal}</p>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-            {conditionsStatus[i] && <AnimatedCheckmark style={{ width: '20px', height: '20px' }} /> }
-          </div>
+  ) :
+    hasGoals && content.goalText.map((goal, i) => (
+      <div style={{ display: 'flex' }} key={goal}>
+        <div>
+          <p className={`${styles.goalText} ${styles.text}`}>{goal}</p>
         </div>
-      ))}
-    </>
-  )
+        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+          {conditionsStatus[i] && <AnimatedCheckmark style={{ width: '20px', height: '20px' }} /> }
+        </div>
+      </div>
+    ))
   );
 }
 
@@ -216,7 +226,7 @@ const mapStateToProps = (state, ownProps) => {
 
   if (hasGoals) {
     currentValue = new Array(content.goalType.length);
-    content.goalType.map((goal, i) => {
+    content.goalType.forEach((goal, i) => {
       switch (goal) {
       case GoalTypes.geoPosition: {
         currentValue[i] = {
@@ -242,12 +252,12 @@ const mapStateToProps = (state, ownProps) => {
       }
       case GoalTypes.multiUri: {
         currentValue[i] = [];
-        for (const uri of content.uri) {
+        content.uri.forEach((uri) => {
           const value = state.propertyTree.properties[uri]?.value;
           if (value !== undefined) {
             currentValue[i].push(value);
           }
-        }
+        });
         break;
       }
       case GoalTypes.pauseTime: {
