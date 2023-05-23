@@ -6,7 +6,7 @@ import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
 
 import esaSkyLogo from './ESASKY.png';
 import SkyBrowserTooltip from './SkyBrowserTooltip';
-
+import { openUrl } from '../../../utils/helpers';
 import styles from './SkyBrowserTooltip.scss';
 
 function SkyBrowserInfoBox({
@@ -24,11 +24,6 @@ function SkyBrowserInfoBox({
       top, left, right, bottom
     } = ref.current.getBoundingClientRect();
     return { top: `${top}`, left: `${right}` };
-  }
-
-  function openImageUrl(imageUrl) {
-    const newWindow = window.open(imageUrl, '_blank', 'noopener,noreferrer');
-    if (newWindow) newWindow.opener = null;
   }
 
   function togglePopup(e) {
@@ -62,7 +57,7 @@ function SkyBrowserInfoBox({
           {textUrl !== '' && (
             <Button
               className={styles.tooltipButton}
-              onClick={() => openImageUrl(textUrl)}
+              onClick={() => openUrl(textUrl)}
             >
               Read more
             </Button>

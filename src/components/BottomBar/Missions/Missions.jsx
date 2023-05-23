@@ -9,7 +9,7 @@ import Button from '../../common/Input/Button/Button';
 import { ActionsButton } from '../ActionsPanel';
 import Picker from '../Picker';
 import WindowThreeStates from '../SkyBrowser/WindowThreeStates/WindowThreeStates';
-
+import { openUrl } from '../../../utils/helpers';
 import Timeline from './Timeline';
 
 import styles from './Missions.scss';
@@ -219,11 +219,6 @@ export default function Missions({ }) {
 
   function jumpToDate() {
     jumpToTime(now, displayedPhase.data.date);
-  }
-
-  function openUrl(url) {
-    const newWindow = window.open(url, '_blank', 'noopener,noreferrer');
-    if (newWindow) newWindow.opener = null;
   }
 
   function setPhaseManually(phase) {

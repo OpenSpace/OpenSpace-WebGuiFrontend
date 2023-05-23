@@ -36,3 +36,8 @@ export function rotate(arr: Array<any>, steps: number): Array<any> {
   copy.unshift(...copy.splice(steps % size, size));
   return copy;
 }
+
+export function openUrl(url) {
+    const newWindow = window.open(url, '_blank', 'noopener,noreferrer');
+    if (newWindow) newWindow.opener = null;
+  }
