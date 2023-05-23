@@ -1,17 +1,12 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 
 import FocusNodePropertiesPanel from './FocusNodePropertiesPanel';
 import NodePropertiesPanel from './NodePropertiesPanel';
 
 import styles from './NodePopOverContainer.scss';
 
-function NodePopOverContainer() {
-  const activeNodePropertyPanels = useSelector((state) => {
-    const { popovers } = state.local;
-    return Object.keys(popovers).map((key) => key);
-  });
-
+function NodePopOverContainer({ activeNodePropertyPanels }) {
   return (
     <div className={styles.nodePopOverContainer}>
       <FocusNodePropertiesPanel />
@@ -21,5 +16,19 @@ function NodePopOverContainer() {
     </div>
   );
 }
+
+
+const mapStateToProps = (state) => {
+  const { activeNodePropertyPanels } = state.local.popovers;
+  const panels = Object.keys(activeNodePropertyPanels).map((key) => key);
+
+  return {
+    activeNodePropertyPanels: panels
+  };
+};
+
+NodePopOverContainer = connect(
+  mapStateToProps,
+)(NodePopOverContainer);
 
 export default NodePopOverContainer;
