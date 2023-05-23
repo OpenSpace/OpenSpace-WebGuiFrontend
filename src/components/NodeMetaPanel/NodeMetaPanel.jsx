@@ -4,10 +4,9 @@ import { connect } from 'react-redux';
 import { removeNodeMetaPopover, setPopoverActiveTab, setPopoverVisibility } from '../../api/Actions';
 import Picker from '../BottomBar/Picker';
 import Button from '../common/Input/Button/Button';
-import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import Popover from '../common/Popover/Popover';
 import Row from '../common/Row/Row';
-
+import { openUrl } from '../../utils/helpers';
 import styles from './NodeMetaPanel.scss';
 
 function NodeMetaPanel({
@@ -16,19 +15,6 @@ function NodeMetaPanel({
 }) {
   function togglePopover() {
     removeNodeMetaPopoverAction(node);
-  }
-
-  function copyURL() {
-    const url = document.getElementById('docurl').innerHTML;
-    const el = document.createElement('textarea');
-    el.value = url;
-    el.setAttribute('readonly', '');
-    el.style.position = 'absolute';
-    el.style.left = '-9999px';
-    document.body.appendChild(el);
-    el.select();
-    document.execCommand('copy');
-    document.body.removeChild(el);
   }
 
   function contentForTab() {
@@ -62,17 +48,11 @@ function NodeMetaPanel({
         <Row>
           {`License: ${documentation.license.replace(/\\n/g, '')}`}
         </Row>
-        <Button onClick={() => openUrl(documentation.url)}>
+        <Button
+          onClick={() => openUrl(documentation.url)}
+          style={{ width: '100%' }}>
           Open URL
         </Button>
-        <Row>
-          URL:
-          {' '}
-          <span className={styles.pad_span} id="docurl">{documentation.url}</span>
-          <span className={styles.copyButton} onClick={copyURL}>
-            <MaterialIcon icon="content_cut" />
-          </span>
-        </Row>
       </div>
     );
   }
