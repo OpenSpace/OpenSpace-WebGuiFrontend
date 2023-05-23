@@ -1,53 +1,24 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 
 import { removeNodeMetaPopover, setPopoverActiveTab, setPopoverVisibility } from '../../api/Actions';
-import { RenderableTypes } from '../../api/keys';
 import Picker from '../BottomBar/Picker';
 import Button from '../common/Input/Button/Button';
 import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import Popover from '../common/Popover/Popover';
 import Row from '../common/Row/Row';
-import PropertyOwner from '../Sidebar/Properties/PropertyOwner';
 
 import styles from './NodeMetaPanel.scss';
 
-class NodeMetaPanel extends Component {
-  constructor(props) {
-    super(props);
-    this.togglePopover = this.togglePopover.bind(this);
-    this.copyURL = this.copyURL.bind(this);
+function NodeMetaPanel({
+  removeNodeMetaPopoverAction, node, setPopoverActiveTabAction, showPopover,
+  documentation, activeTab, attached, nodeName, description
+}) {
+  function togglePopover() {
+    removeNodeMetaPopoverAction(node);
   }
 
-  togglePopover() {
-    this.props.removeNodeMetaPopoverAction(this.props.node);
-  }
-
-  propertiesForRenderableType() {
-    switch (this.props.renderableType) {
-    case RenderableTypes.RenderableGlobe:
-      return ['Enabled', 'PerformShading', 'TargetLodScaleFactor'];
-    case RenderableTypes.RenderableBillboardsCloud:
-      return ['Enabled', 'DrawElements', 'RenderOption', 'Opacity', 'DrawLabels'];
-    case RenderableTypes.RenderablePlaneImageLocal:
-      return ['Enabled', 'Opacity', 'Billboard'];
-    case RenderableTypes.RenderableStars:
-      return ['Enabled', 'ColorOption', 'Transparency', 'ScaleFactor'];
-    }
-  }
-
-  propertyOwnerForUri(activeTab, uri) {
-    return (
-      <PropertyOwner
-        autoExpand
-        key={activeTab}
-        uri={uri}
-        expansionIdentifier={`P:${uri}`}
-      />
-    );
-  }
-
-  copyURL() {
+  function copyURL() {
     const url = document.getElementById('docurl').innerHTML;
     const el = document.createElement('textarea');
     el.value = url;
@@ -60,20 +31,19 @@ class NodeMetaPanel extends Component {
     document.body.removeChild(el);
   }
 
-  contentForTab(activeTab) {
-    const uriSplit = this.props.nodeURI.split('.');
-    const identifier = uriSplit[uriSplit.length - 1];
-    let description = '';
-    const docs = this.props.documentation;
-
-    let foundDoc = null;
-    for (let i = 0; i < docs.length; ++i) {
-      const doc = docs[i];
-      if (doc?.identifiers && doc.identifiers.includes(identifier)) {
-        foundDoc = doc;
-      }
+  function contentForTab() {
+    // Description tag
+    if (activeTab === 0) {
+      return (
+        <Row>
+          <div className={styles.description_container}>
+            {description}
+          </div>
+        </Row>
+      );
     }
-    if (!foundDoc && !this.props.description) {
+    // Asset meta info tab
+    if (!documentation) {
       return (
         <Row>
           <div className={styles.description_container}>No meta info found.</div>
@@ -81,91 +51,63 @@ class NodeMetaPanel extends Component {
       );
     }
 
-    let rawDescription = '';
-    if (this.props.description) {
-      rawDescription = this.props.description;
-    } else {
-      rawDescription = 'No description found';
-    }
-    description = rawDescription.replace(/\\n/g, '');
-
-    if (foundDoc) {
-      foundDoc.license = foundDoc.license.replace(/\\n/g, '');
-    }
-
-    if (activeTab == 0) {
-      return (
-        <Row>
-          <div className={styles.description_container} dangerouslySetInnerHTML={{ __html: description }} />
-        </Row>
-      );
-    }
-    if (foundDoc) {
-      return (
-        <div>
-          <Row>
-            Author:
-            {foundDoc.author}
-          </Row>
-          <Row>
-            Version:
-            {foundDoc.version}
-          </Row>
-          <Row>
-            License:
-            <span className={styles.pad_span} dangerouslySetInnerHTML={{ __html: foundDoc.license }} />
-          </Row>
-          <Row>
-            URL:
-            {' '}
-            <span className={styles.pad_span} id="docurl">{foundDoc.url}</span>
-            <span className={styles.copyButton} onClick={this.copyURL}>
-              <MaterialIcon icon="content_cut" />
-            </span>
-          </Row>
-        </div>
-      );
-    }
-
     return (
-      <Row>
-        <div className={styles.description_container}>No meta info found.</div>
-      </Row>
+      <div>
+        <Row>
+          {`Author: ${documentation.author}`}
+        </Row>
+        <Row>
+          {`Version: ${documentation.version}`}
+        </Row>
+        <Row>
+          {`License: ${documentation.license.replace(/\\n/g, '')}`}
+        </Row>
+        <Button onClick={() => openUrl(documentation.url)}>
+          Open URL
+        </Button>
+        <Row>
+          URL:
+          {' '}
+          <span className={styles.pad_span} id="docurl">{documentation.url}</span>
+          <span className={styles.copyButton} onClick={copyURL}>
+            <MaterialIcon icon="content_cut" />
+          </span>
+        </Row>
+      </div>
     );
   }
 
-  get popover() {
-    const { activeTab, attached, nodeName } = this.props;
+  function popover() {
     const windowTitle = `${nodeName}- Asset Infomation`;
     return (
       <Popover
         className={`${Picker.Popover} && ${styles.nodePopover}`}
         title={windowTitle}
-        closeCallback={this.togglePopover}
+        closeCallback={togglePopover}
         attached={attached}
         detachable
       >
         <div className={`${Popover.styles.content} ${styles.contentContainer}`}>
-          { this.contentForTab(activeTab) }
+          { contentForTab() }
         </div>
         <hr className={Popover.styles.delimiter} />
 
         <div className={`${Popover.styles.row} ${Popover.styles.content}`}>
           <Button
             block
-            largetext={activeTab == 0}
-            smalltext={activeTab != 0}
+            largetext={activeTab === 0}
+            smalltext={activeTab !== 0}
             key={0}
-            onClick={() => this.props.setPopoverActiveTabAction(0)}
+            onClick={() => setPopoverActiveTabAction(0)}
           >
             Description
           </Button>
           <Button
             block
-            largetext={activeTab == 1}
-            smalltext={activeTab != 0}
+            largetext={activeTab === 1}
+            smalltext={activeTab !== 0}
             key={1}
-            onClick={() => this.props.setPopoverActiveTabAction(1)}
+            onClick={() => setPopoverActiveTabAction(1)}
           >
             Info
           </Button>
@@ -174,14 +116,11 @@ class NodeMetaPanel extends Component {
     );
   }
 
-  render() {
-    const { showPopover } = this.props;
-    return (
-      <div className={Picker.Wrapper}>
-        { showPopover && this.popover }
-      </div>
-    );
-  }
+  return (
+    <div className={Picker.Wrapper}>
+      { showPopover && popover() }
+    </div>
+  );
 }
 
 const mapStateToProps = (state, ownProps) => {
@@ -201,15 +140,28 @@ const mapStateToProps = (state, ownProps) => {
   let guiDescription = null;
   if (state.propertyTree.properties[`${nodeURI}.GuiDescription`]) {
     guiDescription = state.propertyTree.properties[`${nodeURI}.GuiDescription`].value;
+    guiDescription = guiDescription.replace(/\\n/g, '');
+    guiDescription = guiDescription.replace(/<br>/g, '');
+  }
+  if (!guiDescription) {
+    guiDescription = 'No description found';
   }
 
+  // Find documentation
+  const identifier = nodeURI.split('.').pop(); // Get last word in uri
+  const foundDoc = state.documentation.data.find((doc) => {
+    if (doc?.identifiers && doc.identifiers.includes(identifier)) {
+      return true;
+    }
+    return false;
+  });
+
   return {
-    nodeURI,
     nodeName,
     activeTab: popoverActiveTab,
     showPopover: popoverVisible,
     attached: popoverAttached,
-    documentation: state.documentation.data,
+    documentation: foundDoc,
     description: guiDescription
   };
 };
