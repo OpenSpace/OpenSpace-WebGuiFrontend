@@ -5,9 +5,10 @@ import { useLocalStorageState } from '../../utils/customHooks';
 import Button from '../common/Input/Button/Button';
 import Checkbox from '../common/Input/Checkbox/Checkbox';
 import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
+
+import contents from './GettingStartedContent.json';
 import Goal from './Goal';
 import MouseDescriptions from './MouseDescriptions';
-import contents from './GettingStartedContent.json';
 import openspaceLogo from './openspace-color-transparent.png';
 
 import styles from './TourPopup.scss';
@@ -47,18 +48,35 @@ function TourPopup({ setVisibility, isVisible }) {
           </div>
           {isFirstSlide && (
             <div className={styles.centerContent}>
-              <img src={openspaceLogo} className={styles.logo} />
+              <img src={openspaceLogo} className={styles.logo} alt="OpenSpace logo" />
             </div>
           )}
           <p className={styles.text}>{content.firstText}</p>
           <Goal content={content} setIsFulfilled={setIsFulfilled} />
-          <p className={` ${styles.text} ${styles.infoText}`} style={isFulfilled ? { paddingTop: '40px' } : undefined}>{content.infoText}</p>
+          <p
+            className={` ${styles.text} ${styles.infoText}`}
+            style={isFulfilled ? { paddingTop: '40px' } : undefined}
+          >
+            {content.infoText}
+          </p>
           {content.showMouse && !isFulfilled && (
             <div className={styles.scroll}>
-              {content.showMouse.map((mouseData) => <MouseDescriptions key={mouseData.info} {...mouseData} />)}
+              {content.showMouse.map((mouseData) => (
+                <MouseDescriptions
+                  key={mouseData.info}
+                  {...mouseData}
+                />
+              ))}
             </div>
           )}
-          {content.bulletList && content.bulletList.map((text) => <li key={text} className={styles.text}>{text}</li>)}
+          {content.bulletList && content.bulletList.map((text) => (
+            <li
+              key={text}
+              className={styles.text}
+            >
+              {text}
+            </li>
+          ))}
           {isLastSlide && (
             <>
               <div style={{ display: 'flex' }}>
@@ -75,10 +93,11 @@ function TourPopup({ setVisibility, isVisible }) {
               </div>
               <Checkbox
                 checked
-                setChecked={(value) => console.log("Don't show on start")}
+                setChecked={() => { // TODO: save this setting between runs
+                }}
                 style={{ marginTop: 'auto' }}
               >
-                <p>"Don't show the tutorial again"</p>
+                <p>Do not show the tutorial again</p>
               </Checkbox>
             </>
           )}
@@ -111,7 +130,7 @@ function TourPopup({ setVisibility, isVisible }) {
         <div
           className={styles.progressBarContent}
           style={{
-            width: `${100 * currentSlide / (contents.length - 1)}%`,
+            width: `${(100 * currentSlide) / (contents.length - 1)}%`,
             borderBottomRightRadius: `${isLastSlide ? 3 : 0}px`
           }}
         />
