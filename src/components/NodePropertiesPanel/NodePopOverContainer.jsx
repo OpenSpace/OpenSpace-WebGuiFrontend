@@ -17,7 +17,6 @@ function NodePopOverContainer({ activeNodePropertyPanels }) {
   );
 }
 
-
 const mapStateToProps = (state) => {
   const { activeNodePropertyPanels } = state.local.popovers;
   const panels = Object.keys(activeNodePropertyPanels).map((key) => key);

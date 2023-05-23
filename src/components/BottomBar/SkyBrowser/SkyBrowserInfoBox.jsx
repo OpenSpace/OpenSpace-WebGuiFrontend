@@ -1,12 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { openUrl } from '../../../utils/helpers';
 import Button from '../../common/Input/Button/Button';
 import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
 
 import esaSkyLogo from './ESASKY.png';
 import SkyBrowserTooltip from './SkyBrowserTooltip';
-import { openUrl } from '../../../utils/helpers';
+
 import styles from './SkyBrowserTooltip.scss';
 
 function SkyBrowserInfoBox({

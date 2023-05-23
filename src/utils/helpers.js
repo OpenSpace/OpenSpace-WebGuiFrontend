@@ -38,6 +38,6 @@ export function rotate(arr: Array<any>, steps: number): Array<any> {
 }
 
 export function openUrl(url) {
-    const newWindow = window.open(url, '_blank', 'noopener,noreferrer');
-    if (newWindow) newWindow.opener = null;
-  }
+  const newWindow = window.open(url, '_blank', 'noopener,noreferrer');
+  if (newWindow) newWindow.opener = null;
+}

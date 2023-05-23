@@ -4,12 +4,13 @@ import { Icon } from '@iconify/react';
 
 import { subscribeToTime, unsubscribeToTime } from '../../../api/Actions';
 import { useLocalStorageState } from '../../../utils/customHooks';
+import { openUrl } from '../../../utils/helpers';
 import CenteredLabel from '../../common/CenteredLabel/CenteredLabel';
 import Button from '../../common/Input/Button/Button';
 import { ActionsButton } from '../ActionsPanel';
 import Picker from '../Picker';
 import WindowThreeStates from '../SkyBrowser/WindowThreeStates/WindowThreeStates';
-import { openUrl } from '../../../utils/helpers';
+
 import Timeline from './Timeline';
 
 import styles from './Missions.scss';

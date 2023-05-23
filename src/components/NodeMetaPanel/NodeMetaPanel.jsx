@@ -2,11 +2,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { removeNodeMetaPopover, setPopoverActiveTab, setPopoverVisibility } from '../../api/Actions';
+import { openUrl } from '../../utils/helpers';
 import Picker from '../BottomBar/Picker';
 import Button from '../common/Input/Button/Button';
 import Popover from '../common/Popover/Popover';
 import Row from '../common/Row/Row';
-import { openUrl } from '../../utils/helpers';
+
 import styles from './NodeMetaPanel.scss';
 
 function NodeMetaPanel({
@@ -50,7 +51,8 @@ function NodeMetaPanel({
         </Row>
         <Button
           onClick={() => openUrl(documentation.url)}
-          style={{ width: '100%' }}>
+          style={{ width: '100%' }}
+        >
           Open URL
         </Button>
       </div>
