@@ -44,6 +44,12 @@ class Slider extends Component {
     this.onChangeStory = this.onChangeStory.bind(this);
   }
 
+  // Handle the click of a dot
+  handleDotClick(i) {
+    if (i === this.state.index) { return; }
+    this.setState({ index: i });
+  }
+
   onChangeStory(story) {
     this.props.changeStory(story);
   }
@@ -51,7 +57,7 @@ class Slider extends Component {
   // Set the state to the next slide
   nextSlide() {
     if (this.state.index !== this.state.imagePaths.length - 1) {
-      this.setState({ index: this.state.index + 1 });
+      this.setState(({ prevState }) => ({ index: prevState.index + 1, ...prevState }));
     } else {
       this.setState({ index: 0 });
     }
@@ -60,16 +66,10 @@ class Slider extends Component {
   // Set the state to the previous slide
   prevSlide() {
     if (this.state.index !== 0) {
-      this.setState({ index: this.state.index - 1 });
+      this.setState(({ prevState }) => ({ index: prevState.index - 1, ...prevState }));
     } else {
-      this.setState({ index: this.state.imagePaths.length - 1 });
+      this.setState(({ prevState }) => ({ index: prevState.imagePaths.length - 1, ...prevState }));
     }
-  }
-
-  // Handle the click of a dot
-  handleDotClick(i) {
-    if (i === this.state.index) { return; }
-    this.setState({ index: i });
   }
 
   render() {
