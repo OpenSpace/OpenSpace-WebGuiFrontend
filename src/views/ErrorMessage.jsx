@@ -16,7 +16,9 @@ export default function ErrorMessage() {
   const line3 = 'Reload the user interface';
 
   function reloadGui() {
-    location.reload();
+    if (location.reload) {
+      location.reload();
+    }
   }
 
   return (connectionLost && (
