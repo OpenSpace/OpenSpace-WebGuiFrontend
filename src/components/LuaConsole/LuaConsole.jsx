@@ -1,13 +1,15 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import styles from './LuaConsole.scss';
 
-function LuaConsole({ luaApi }) {
+function LuaConsole() {
   const [buffer, setBuffer] = React.useState('');
   const [suggestion, setSuggestion] = React.useState('');
   const [history, setHistory] = React.useState([]);
   const [historyIndex, setHistoryIndex] = React.useState(-1);
+
+  const luaApi = useSelector((state) => state.luaApi);
 
   const consoleRef = React.useRef(null);
 
@@ -24,7 +26,13 @@ function LuaConsole({ luaApi }) {
     const [input, args] = currentBuffer?.split('(') ?? [currentBuffer, undefined];
     const functionNameArray = input.split('.') ?? currentBuffer;
     if (typeof functionNameArray === 'object') {
+      const functionName = functionNameArray.pop();
+      const namespaces = functionNameArray;
+
       const result = args?.replace?.(/[()"]/g, '');
+      if (result === '') {
+        return [namespaces, functionName, null];
+      }
       const parameters = result?.split(',').map((parameter) => {
         if (parameter === 'true') {
           return true;
@@ -34,10 +42,9 @@ function LuaConsole({ luaApi }) {
         }
         if (Number(parameter)) {
           return Number(parameter);
-        } return parameter;
+        }
+        return parameter;
       });
-      const functionName = functionNameArray.pop();
-      const namespaces = functionNameArray;
       return [namespaces, functionName, parameters];
     }
     return [[], input, undefined];
@@ -58,7 +65,11 @@ function LuaConsole({ luaApi }) {
     const functionObject = getNamespace(namespaces);
     // Call function if it exists
     if (functionObject[functionName]) {
-      const response = await functionObject?.[functionName]?.(...parameters);
+      if (parameters) {
+        await functionObject?.[functionName]?.(...parameters);
+      } else {
+        await functionObject?.[functionName]?.();
+      }
       const historyCopy = [...history];
       historyCopy.push(currentBuffer);
       setHistory(historyCopy);
@@ -70,7 +81,7 @@ function LuaConsole({ luaApi }) {
   }
 
   function updateSuggestion(currentBuffer) {
-    const [namespaces, functionName, parameters] = parse(currentBuffer);
+    const [namespaces, functionName] = parse(currentBuffer);
     const functionObject = getNamespace(namespaces);
     let suggestionList;
     if (namespaces.length > 0) {
@@ -82,7 +93,9 @@ function LuaConsole({ luaApi }) {
       const regex = new RegExp(`^${functionName}`, ''); // correct way
       let found = suggestionList.find((word) => regex.test(word));
       let namespacesString = '';
-      namespaces.map((namespace) => namespacesString += `${namespace}.`);
+      namespaces.forEach((namespace) => {
+        namespacesString += `${namespace}.`;
+      });
       if (found === undefined) {
         found = '';
       }
@@ -133,15 +146,5 @@ function LuaConsole({ luaApi }) {
     </div>
   );
 }
-
-const mapStateToProps = (state) => ({
-  luaApi: state.luaApi
-});
-
-const mapDispatchToProps = (dispatch) => ({
-
-});
-
-LuaConsole = connect(mapStateToProps, mapDispatchToProps,)(LuaConsole);
 
 export default LuaConsole;
