@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 
 import { removeNodePropertyPopover, setPopoverActiveTab, setPopoverVisibility } from '../../api/Actions';
@@ -11,22 +11,24 @@ import PropertyOwner from '../Sidebar/Properties/PropertyOwner';
 
 import styles from './NodePropertiesPanel.scss';
 
-class NodePropertiesPanel extends Component {
-  constructor(props) {
-    super(props);
-    this.togglePopover = this.togglePopover.bind(this);
-  }
+function NodePropertiesPanel({
+  isFocusNodePanel, showPopover, node, renderableType, setPopoverVisibilityAction,
+  removeNodePropertyPopoverAction, nodeURI, renderableProps, setPopoverActiveTabAction,
+  activeTab, attached, nodeName
+}) {
+  const isDefined = RenderableTypes[renderableType];
+  const isGlobe = isDefined && renderableType === RenderableTypes.RenderableGlobe;
 
-  togglePopover() {
-    if (this.props.isFocusNodePanel) {
-      this.props.setPopoverVisibilityAction(!this.props.showPopover, 'focusNodePropertiesPanel');
+  function togglePopover() {
+    if (isFocusNodePanel) {
+      setPopoverVisibilityAction(!showPopover, 'focusNodePropertiesPanel');
     } else {
-      this.props.removeNodePropertyPopoverAction(this.props.node);
+      removeNodePropertyPopoverAction(node);
     }
   }
 
-  propertiesForRenderableType() {
-    switch (this.props.renderableType) {
+  function propertiesForRenderableType() {
+    switch (renderableType) {
     case RenderableTypes.RenderableGlobe:
       return ['Enabled', 'PerformShading', 'TargetLodScaleFactor'];
     case RenderableTypes.RenderableBillboardsCloud:
@@ -35,10 +37,12 @@ class NodePropertiesPanel extends Component {
       return ['Enabled', 'Opacity', 'Billboard'];
     case RenderableTypes.RenderableStars:
       return ['Enabled', 'ColorOption', 'Transparency', 'ScaleFactor'];
+    default:
+      return null;
     }
   }
 
-  propertyOwnerForUri(activeTab, uri) {
+  function propertyOwnerForUri(uri) {
     return (
       <PropertyOwner
         autoExpand
@@ -49,15 +53,16 @@ class NodePropertiesPanel extends Component {
     );
   }
 
-  contentForTab(activeTab) {
-    if (activeTab == 0) {
-      const featuredProperties = this.propertiesForRenderableType();
+  function contentForTab() {
+    if (activeTab === 0) {
+      const featuredProperties = propertiesForRenderableType();
       if (featuredProperties) {
         return featuredProperties.map((prop) => {
-          const propUri = `${this.props.nodeURI}.Renderable.${prop}`;
-          if (this.props.renderableProps.includes(propUri)) {
+          const propUri = `${nodeURI}.Renderable.${prop}`;
+          if (renderableProps.includes(propUri)) {
             return <Property key={prop} uri={propUri} />;
           }
+          return null;
         });
       }
 
@@ -65,66 +70,58 @@ class NodePropertiesPanel extends Component {
         <PropertyOwner
           autoExpand
           key={0}
-          uri={`${this.props.nodeURI}.Renderable`}
-          expansionIdentifier={`P:${this.props.nodeURI}`}
+          uri={`${nodeURI}.Renderable`}
+          expansionIdentifier={`P:${nodeURI}`}
         />
       );
     }
 
-    if (RenderableTypes[this.props.renderableType]) {
-      switch (this.props.renderableType) {
-      case RenderableTypes.RenderableGlobe:
-        switch (activeTab) {
-        case 1: {
-          const uri = `${this.props.nodeURI}.Renderable.Layers.ColorLayers`;
-          return this.propertyOwnerForUri(activeTab, uri);
-        }
-        case 2: {
-          const uri = `${this.props.nodeURI}.Renderable.Layers.HeightLayers`;
-          return this.propertyOwnerForUri(activeTab, uri);
-        }
-        }
+    if (isGlobe) {
+      switch (activeTab) {
+      case 1: {
+        const uri = `${nodeURI}.Renderable.Layers.ColorLayers`;
+        return propertyOwnerForUri(uri);
       }
-    } else {
-
+      case 2: {
+        const uri = `${nodeURI}.Renderable.Layers.HeightLayers`;
+        return propertyOwnerForUri(uri);
+      }
+      default: {
+        return null;
+      }
+      }
     }
+    return null;
   }
 
-  buttonForTab(activeTab, index, title) {
+  function buttonForTab(index, title) {
     return (
       <Button
         block
-        largetext={activeTab == index}
-        smalltext={activeTab != index}
+        largetext={activeTab === index}
+        smalltext={activeTab !== index}
         key={index}
-        onClick={() => this.props.setPopoverActiveTabAction(index)}
+        onClick={() => setPopoverActiveTabAction(index)}
       >
         {title}
       </Button>
     );
   }
 
-  tabsForRenderableType(activeTab) {
-    if (RenderableTypes[this.props.renderableType]) {
-      switch (this.props.renderableType) {
-      case RenderableTypes.RenderableGlobe:
-        return [this.buttonForTab(activeTab, 1, 'Color Layers'), (this.buttonForTab(activeTab, 2, 'Height Layers'))];
-      }
-    } else {
-      return [];
+  function tabsForRenderableType() {
+    if (isGlobe) {
+      return [buttonForTab(1, 'Color Layers'), (buttonForTab(2, 'Height Layers'))];
     }
+    return null;
   }
 
-  get popover() {
-    const {
-      activeTab, isFocusNodePanel, attached, nodeName, renderableType
-    } = this.props;
+  function popover() {
     const windowTitle = isFocusNodePanel ? `Current Focus: ${nodeName}` : nodeName;
     return (
       <Popover
         className={`${Picker.Popover} && ${styles.nodePopover}`}
         title={windowTitle}
-        closeCallback={this.togglePopover}
+        closeCallback={togglePopover}
         attached={attached}
         detachable
       >
@@ -133,26 +130,23 @@ class NodePropertiesPanel extends Component {
           {renderableType && renderableType.replace('Renderable', '')}
         </div>
         <div className={`${Popover.styles.content} ${styles.contentContainer}`}>
-          { this.contentForTab(activeTab) }
+          { contentForTab() }
         </div>
         <hr className={Popover.styles.delimiter} />
 
         <div className={`${Popover.styles.row} ${Popover.styles.content}`}>
-          { this.buttonForTab(activeTab, 0, 'Properties') }
-          { this.tabsForRenderableType(activeTab) }
+          { buttonForTab(0, 'Properties') }
+          { tabsForRenderableType() }
         </div>
       </Popover>
     );
   }
 
-  render() {
-    const { showPopover } = this.props;
-    return (
-      <div className={Picker.Wrapper}>
-        { showPopover && this.popover }
-      </div>
-    );
-  }
+  return (
+    <div className={Picker.Wrapper}>
+      { showPopover && popover() }
+    </div>
+  );
 }
 
 const mapStateToProps = (state, ownProps) => {
@@ -170,7 +164,7 @@ const mapStateToProps = (state, ownProps) => {
   const popoverAttached = myPopover ? myPopover.attached : false;
   const popoverActiveTab = myPopover && myPopover.activeTab ? myPopover.activeTab : 0;
 
-  const node = state.propertyTree.propertyOwners[nodeURI] ? state.propertyTree.propertyOwners[nodeURI] : {};
+  const node = state.propertyTree.propertyOwners[nodeURI] ?? {};
   const nodeName = node.name;
 
   const renderableProps = state.propertyTree.propertyOwners[`${nodeURI}.Renderable`] ?
