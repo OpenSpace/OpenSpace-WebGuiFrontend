@@ -1,3 +1,6 @@
+// Turning off linting for no using before define in this file
+// due to the many useEffects that use functions, @ylvse 2023-05-24
+/* eslint-disable no-use-before-define */
 import React from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -29,24 +32,32 @@ function WorldWideTelescope({
   const [isDragging, setIsDragging] = React.useState(false);
   const [startDragPosition, setStartDragPosition] = React.useState([0, 0]);
   const [wwtHasLoaded, setWwtHasLoaded] = React.useState(false);
-  const [setupWwtFunc, setSetupWwtFunc] = React.useState(null);
   const TopBarHeight = 25;
+
   // Refs
   const iframe = React.useRef(null);
+  const setSetupWwtFunc = React.useRef(null);
 
   // Selectors & dispatch - access Redux store
   // Get each value separately to reduce unnecessary renders
-  const fov = useSelector((state) => state.skybrowser.browsers[state.skybrowser.selectedBrowserId].fov, lowPrecisionEqual);
-  const ra = useSelector((state) => state.skybrowser.browsers[state.skybrowser.selectedBrowserId].ra, lowPrecisionEqual);
-  const dec = useSelector((state) => state.skybrowser.browsers[state.skybrowser.selectedBrowserId].dec, lowPrecisionEqual);
-  const roll = useSelector((state) => state.skybrowser.browsers[state.skybrowser.selectedBrowserId].roll, lowPrecisionEqual);
-  const borderRadius = useSelector(
-    (state) => state.skybrowser.browsers[state.skybrowser.selectedBrowserId].borderRadius,
+  const selectedId = useSelector((state) => state.skybrowser.selectedBrowserId);
+  const fov = useSelector((state) => state.skybrowser.browsers[selectedId].fov, lowPrecisionEqual);
+  const ra = useSelector((state) => state.skybrowser.browsers[selectedId].ra, lowPrecisionEqual);
+  const dec = useSelector((state) => state.skybrowser.browsers[selectedId].dec, lowPrecisionEqual);
+  const roll = useSelector(
+    (state) => state.skybrowser.browsers[selectedId].roll,
     lowPrecisionEqual
   );
-  const browserName = useSelector((state) => state.skybrowser.browsers[state.skybrowser.selectedBrowserId].name);
-  const browserId = useSelector((state) => state.skybrowser.browsers[state.skybrowser.selectedBrowserId].id);
-  const browserColor = useSelector((state) => state.skybrowser.browsers[state.skybrowser.selectedBrowserId].color, shallowEqual);
+  const borderRadius = useSelector(
+    (state) => state.skybrowser.browsers[selectedId].borderRadius,
+    lowPrecisionEqual
+  );
+  const browserName = useSelector((state) => state.skybrowser.browsers[selectedId].name);
+  const browserId = useSelector((state) => state.skybrowser.browsers[selectedId].id);
+  const browserColor = useSelector(
+    (state) => state.skybrowser.browsers[selectedId].color,
+    shallowEqual
+  );
   const url = useSelector((state) => state.skybrowser.url);
   const skybrowserApi = useSelector((state) => state.luaApi.skybrowser);
   const showTitle = useSelector((state) => getBoolPropertyValue(state, SkyBrowser_ShowTitleInBrowserKey));
@@ -65,7 +76,7 @@ function WorldWideTelescope({
 
   React.useEffect(() => {
     // Send aim messages to WorldWide Telescope to prompt it to reply with a message
-    setSetupWwtFunc(setInterval(setAim, 250));
+    setSetupWwtFunc.current = setInterval(setAim, 250);
   }, []);
 
   React.useEffect(() => {
@@ -97,10 +108,10 @@ function WorldWideTelescope({
 
   // When WorldWide Telescope has replied with a message, stop sending it unnecessary messages
   function stopSetupWwtFunc() {
-    setSetupWwtFunc((interval) => {
+    setSetupWwtFunc.current = (interval) => {
       clearInterval(interval);
       return null;
-    });
+    };
   }
 
   function sendMessageToWwt(message) {
@@ -130,11 +141,11 @@ function WorldWideTelescope({
   }
 
   function handleCallbackMessage(event) {
-    if (event.data == 'wwt_has_loaded') {
+    if (event.data === 'wwt_has_loaded') {
       setWwtHasLoaded(true);
       stopSetupWwtFunc();
     }
-    if (event.data == 'load_image_collection_completed') {
+    if (event.data === 'load_image_collection_completed') {
       setImageCollectionIsLoaded(true);
     }
   }
@@ -183,27 +194,24 @@ function WorldWideTelescope({
 
   function mouseDown(mouse) {
     skybrowserApi.startFinetuningTarget(browserId);
-    const position = [mouse.clientX, mouse.clientY];
+    const mousePosition = [mouse.clientX, mouse.clientY];
     setIsDragging(true);
-    setStartDragPosition(position);
+    setStartDragPosition(mousePosition);
     skybrowserApi.stopAnimations(browserId);
   }
 
-  function mouseUp(mouse) {
+  function mouseUp() {
     setIsDragging(false);
   }
 
   function scroll(e) {
-    let scroll = e.deltaY;
-    if (inverseZoom) {
-      scroll *= -1;
-    }
-    skybrowserApi.scrollOverBrowser(browserId, scroll);
+    const scrollDirection = inverseZoom ? -e.deltaY : e.deltaY;
+    skybrowserApi.scrollOverBrowser(browserId, scrollDirection);
     skybrowserApi.stopAnimations(browserId);
   }
 
   function changeSize(widthWwt, heightWwt) {
-    const { innerWidth: windowWidth, innerHeight: windowHeight } = window;
+    const { innerHeight: windowHeight } = window;
     const ratio = widthWwt / (heightWwt - TopBarHeight);
     const scale = (heightWwt - TopBarHeight) / windowHeight;
     const newWidth = 2 * scale * ratio;
@@ -228,6 +236,9 @@ function WorldWideTelescope({
       onMouseUp={mouseUp}
       onMouseLeave={mouseUp}
       onWheel={(e) => scroll(e)}
+      role="button"
+      aria-label="Dragging area for WorldWideTelescope"
+      tabIndex={0}
     />
   );
 
@@ -248,7 +259,8 @@ function WorldWideTelescope({
         <iframe
           id="webpage"
           name="wwt"
-          ref={(el) => iframe.current = el}
+          title="WorldWideTelescope"
+          ref={(el) => { iframe.current = el; }}
           src="http://wwt.openspaceproject.com/1/gui/"
           allow="accelerometer; clipboard-write; gyroscope"
           allowFullScreen
@@ -264,14 +276,14 @@ function WorldWideTelescope({
 }
 
 WorldWideTelescope.propTypes = {
-  imageCollectionIsLoaded: PropTypes.bool,
-  position: PropTypes.object,
-  setImageCollectionIsLoaded: PropTypes.func,
-  setMessageFunction: PropTypes.func,
-  setPosition: PropTypes.func,
-  setSize: PropTypes.func,
-  size: PropTypes.object,
-  togglePopover: PropTypes.func
+  imageCollectionIsLoaded: PropTypes.bool.isRequired,
+  position: PropTypes.object.isRequired,
+  setImageCollectionIsLoaded: PropTypes.func.isRequired,
+  setMessageFunction: PropTypes.func.isRequired,
+  setPosition: PropTypes.func.isRequired,
+  setSize: PropTypes.func.isRequired,
+  size: PropTypes.object.isRequired,
+  togglePopover: PropTypes.func.isRequired
 };
 
 export default WorldWideTelescope;
