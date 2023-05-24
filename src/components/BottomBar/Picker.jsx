@@ -10,7 +10,11 @@ function Picker({
 }) {
   const refs = refKey ? useContextRefs() : null;
   return (
-    <div ref={refKey ? (el) => refs.current[refKey] = el : null} {...props} className={`${styles.Picker} ${className}`}>
+    <div
+      ref={refKey ? (el) => { refs.current[refKey] = el; } : null}
+      {...props}
+      className={`${styles.Picker} ${className}`}
+    >
       { children }
     </div>
   );
