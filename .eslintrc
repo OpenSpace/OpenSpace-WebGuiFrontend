@@ -50,7 +50,7 @@
     "react/destructuring-assignment": "off",
     "prefer-destructuring": ["error", {"object": true, "array": false}]
   },
-  "ignorePatterns": ["*.story.jsx", "src/components/TouchBar/*", "src/components/ImageSlider/*", "src/components/BottomBar/TfEditor/*"],
+  "ignorePatterns": ["*.story.jsx", "src/components/TouchBar/*", "src/components/ImageSlider/*", "src/components/BottomBar/TfEditor/*", "src/components/common/Graph/*"],
   "overrides": [
     // override "simple-import-sort" config
     {
