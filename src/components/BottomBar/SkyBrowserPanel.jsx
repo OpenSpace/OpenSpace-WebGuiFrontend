@@ -23,10 +23,11 @@ import SkyBrowserTabs from './SkyBrowser/SkyBrowserTabs';
 import WindowThreeStates from './SkyBrowser/WindowThreeStates/WindowThreeStates';
 import WorldWideTelescope from './SkyBrowser/WorldWideTelescope';
 import Picker from './Picker';
+import wwtLogo from './wwtlogo.png';
 
 import styles from './SkyBrowserPanel.scss';
 
-function SkyBrowserPanel({ }) {
+function SkyBrowserPanel() {
   const [activeImage, setActiveImage] = React.useState('');
   const [currentTabHeight, setCurrentTabHeight] = React.useState(200);
   const [currentPopoverHeight, setCurrentPopoverHeightState] = React.useState(440);
@@ -49,7 +50,9 @@ function SkyBrowserPanel({ }) {
   const isDataInitialized = useSelector((state) => state.skybrowser.isInitialized);
   const luaApi = useSelector((state) => state.luaApi);
   const popoverVisible = useSelector((state) => state.local.popovers.skybrowser.visible);
-  const hideTargetsBrowsersWithGui = useSelector((state) => getBoolPropertyValue(state, SkyBrowserHideTargetsBrowsersWithGuiKey));
+  const hideTargetsBrowsersWithGui = useSelector(
+    (state) => getBoolPropertyValue(state, SkyBrowserHideTargetsBrowsersWithGuiKey)
+  );
   const browserColor = useSelector((state) => {
     const browser = state.skybrowser.browsers?.[state.skybrowser.selectedBrowserId];
     return browser ? `rgb(${browser.color})` : 'gray';
@@ -156,7 +159,11 @@ function SkyBrowserPanel({ }) {
 
   function setOpacityOfImage(identifier, opacity, passToOs = true) {
     if (passToOs) {
-      luaApi.skybrowser.setOpacityOfImageLayer(selectedBrowserId, imageList[identifier].url, opacity);
+      luaApi.skybrowser.setOpacityOfImageLayer(
+        selectedBrowserId,
+        imageList[identifier].url,
+        opacity
+      );
     }
     passMessageToWwt({
       event: 'image_layer_set',
@@ -169,7 +176,7 @@ function SkyBrowserPanel({ }) {
   function createWwtBrowser() {
     return (browsersExist && (
       <WorldWideTelescope
-        setMessageFunction={(func) => wwt.current = func}
+        setMessageFunction={(func) => { wwt.current = func; }}
         setImageCollectionIsLoaded={setImageCollectionIsLoaded}
         size={wwtSize}
         setSize={setWwtSize}
@@ -209,7 +216,7 @@ function SkyBrowserPanel({ }) {
     const wwtLogoImg = (
       <div className={styles.credits}>
         <div className={styles.wwtLogoContainer}>
-          <img src={require('./wwtlogo.png')} alt="WwtLogo" className={styles.wwtLogo} />
+          <img src={wwtLogo} alt="WwtLogo" className={styles.wwtLogo} />
           <SmallLabel>
             Powered by AAS WorldWide Telescope
           </SmallLabel>
