@@ -65,14 +65,14 @@ export const ExoplanetsModuleEnabledKey = 'Modules.Exoplanets.Enabled';
 export const SkyBrowserModuleEnabledKey = 'Modules.SkyBrowser.Enabled';
 
 // Sky browser properties
-export const SkyBrowser_ShowTitleInBrowserKey = 'Modules.SkyBrowser.ShowTitleInGuiBrowser';
-export const SkyBrowser_AllowCameraRotationKey = 'Modules.SkyBrowser.AllowCameraRotation';
-export const SkyBrowser_CameraRotationSpeedKey = 'Modules.SkyBrowser.CameraRotationSpeed';
-export const SkyBrowser_TargetAnimationSpeedKey = 'Modules.SkyBrowser.TargetAnimationSpeed';
-export const SkyBrowser_BrowserAnimationSpeedKey = 'Modules.SkyBrowser.BrowserAnimationSpeed';
-export const SkyBrowser_HideTargetsBrowsersWithGuiKey = 'Modules.SkyBrowser.HideTargetsBrowsersWithGui';
-export const SkyBrowser_InverseZoomDirectionKey = 'Modules.SkyBrowser.InverseZoomDirection';
-export const SkyBrowser_SpaceCraftAnimationTimeKey = 'Modules.SkyBrowser.SpaceCraftAnimationTime';
+export const SkyBrowserShowTitleInBrowserKey = 'Modules.SkyBrowser.ShowTitleInGuiBrowser';
+export const SkyBrowserAllowCameraRotationKey = 'Modules.SkyBrowser.AllowCameraRotation';
+export const SkyBrowserCameraRotationSpeedKey = 'Modules.SkyBrowser.CameraRotationSpeed';
+export const SkyBrowserTargetAnimationSpeedKey = 'Modules.SkyBrowser.TargetAnimationSpeed';
+export const SkyBrowserBrowserAnimationSpeedKey = 'Modules.SkyBrowser.BrowserAnimationSpeed';
+export const SkyBrowserHideTargetsBrowsersWithGuiKey = 'Modules.SkyBrowser.HideTargetsBrowsersWithGui';
+export const SkyBrowserInverseZoomDirectionKey = 'Modules.SkyBrowser.InverseZoomDirection';
+export const SkyBrowserSpaceCraftAnimationTimeKey = 'Modules.SkyBrowser.SpaceCraftAnimationTime';
 
 // OpenSpace engine
 export const Engine_PropertyVisibilityKey = 'OpenSpaceEngine.PropertyVisibility';

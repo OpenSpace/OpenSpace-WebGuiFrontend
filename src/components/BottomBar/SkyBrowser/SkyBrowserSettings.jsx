@@ -3,14 +3,14 @@ import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import {
-  SkyBrowser_AllowCameraRotationKey,
-  SkyBrowser_BrowserAnimationSpeedKey,
-  SkyBrowser_CameraRotationSpeedKey,
-  SkyBrowser_HideTargetsBrowsersWithGuiKey,
-  SkyBrowser_InverseZoomDirectionKey,
-  SkyBrowser_ShowTitleInBrowserKey,
-  SkyBrowser_SpaceCraftAnimationTimeKey,
-  SkyBrowser_TargetAnimationSpeedKey
+  SkyBrowserAllowCameraRotationKey,
+  SkyBrowserBrowserAnimationSpeedKey,
+  SkyBrowserCameraRotationSpeedKey,
+  SkyBrowserHideTargetsBrowsersWithGuiKey,
+  SkyBrowserInverseZoomDirectionKey,
+  SkyBrowserShowTitleInBrowserKey,
+  SkyBrowserSpaceCraftAnimationTimeKey,
+  SkyBrowserTargetAnimationSpeedKey
 } from '../../../api/keys';
 import ColorPickerPopup from '../../common/ColorPicker/ColorPickerPopup';
 import InfoBox from '../../common/InfoBox/InfoBox';
@@ -325,14 +325,14 @@ function SkyBrowserSettings({
           value={browser.borderRadius}
           placeholder="value 2"
         />
-        <Property uri={SkyBrowser_ShowTitleInBrowserKey} />
-        <Property uri={SkyBrowser_AllowCameraRotationKey} />
-        <Property uri={SkyBrowser_CameraRotationSpeedKey} />
-        <Property uri={SkyBrowser_TargetAnimationSpeedKey} />
-        <Property uri={SkyBrowser_BrowserAnimationSpeedKey} />
-        <Property uri={SkyBrowser_HideTargetsBrowsersWithGuiKey} />
-        <Property uri={SkyBrowser_InverseZoomDirectionKey} />
-        <Property uri={SkyBrowser_SpaceCraftAnimationTimeKey} />
+        <Property uri={SkyBrowserShowTitleInBrowserKey} />
+        <Property uri={SkyBrowserAllowCameraRotationKey} />
+        <Property uri={SkyBrowserCameraRotationSpeedKey} />
+        <Property uri={SkyBrowserTargetAnimationSpeedKey} />
+        <Property uri={SkyBrowserBrowserAnimationSpeedKey} />
+        <Property uri={SkyBrowserHideTargetsBrowsersWithGuiKey} />
+        <Property uri={SkyBrowserInverseZoomDirectionKey} />
+        <Property uri={SkyBrowserSpaceCraftAnimationTimeKey} />
       </ToggleContent>
     </div>
   );

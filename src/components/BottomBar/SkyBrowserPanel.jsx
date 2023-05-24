@@ -11,7 +11,7 @@ import {
   unsubscribeToProperty,
   unsubscribeToSkyBrowser
 } from '../../api/Actions';
-import { SkyBrowser_HideTargetsBrowsersWithGuiKey } from '../../api/keys';
+import { SkyBrowserHideTargetsBrowsersWithGuiKey } from '../../api/keys';
 import { getBoolPropertyValue } from '../../utils/propertyTreeHelpers';
 import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
 import Button from '../common/Input/Button/Button';
@@ -49,7 +49,7 @@ function SkyBrowserPanel({ }) {
   const isDataInitialized = useSelector((state) => state.skybrowser.isInitialized);
   const luaApi = useSelector((state) => state.luaApi);
   const popoverVisible = useSelector((state) => state.local.popovers.skybrowser.visible);
-  const hideTargetsBrowsersWithGui = useSelector((state) => getBoolPropertyValue(state, SkyBrowser_HideTargetsBrowsersWithGuiKey));
+  const hideTargetsBrowsersWithGui = useSelector((state) => getBoolPropertyValue(state, SkyBrowserHideTargetsBrowsersWithGuiKey));
   const browserColor = useSelector((state) => {
     const browser = state.skybrowser.browsers?.[state.skybrowser.selectedBrowserId];
     return browser ? `rgb(${browser.color})` : 'gray';
@@ -60,10 +60,10 @@ function SkyBrowserPanel({ }) {
 
   React.useEffect(() => {
     dispatch(subscribeToSkyBrowser());
-    dispatch(subscribeToProperty(SkyBrowser_HideTargetsBrowsersWithGuiKey));
+    dispatch(subscribeToProperty(SkyBrowserHideTargetsBrowsersWithGuiKey));
     return () => {
       dispatch(unsubscribeToSkyBrowser());
-      dispatch(unsubscribeToProperty(SkyBrowser_HideTargetsBrowsersWithGuiKey));
+      dispatch(unsubscribeToProperty(SkyBrowserHideTargetsBrowsersWithGuiKey));
     };
   }, []);
 

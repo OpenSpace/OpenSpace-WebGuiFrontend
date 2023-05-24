@@ -9,7 +9,7 @@ import {
   subscribeToProperty,
   unsubscribeToProperty
 } from '../../../api/Actions';
-import { SkyBrowser_InverseZoomDirectionKey, SkyBrowser_ShowTitleInBrowserKey } from '../../../api/keys';
+import { SkyBrowserInverseZoomDirectionKey, SkyBrowserShowTitleInBrowserKey } from '../../../api/keys';
 import { lowPrecisionEqual } from '../../../utils/customHooks';
 import { getBoolPropertyValue } from '../../../utils/propertyTreeHelpers';
 import Picker from '../Picker';
@@ -60,8 +60,12 @@ function WorldWideTelescope({
   );
   const url = useSelector((state) => state.skybrowser.url);
   const skybrowserApi = useSelector((state) => state.luaApi.skybrowser);
-  const showTitle = useSelector((state) => getBoolPropertyValue(state, SkyBrowser_ShowTitleInBrowserKey));
-  const inverseZoom = useSelector((state) => getBoolPropertyValue(state, SkyBrowser_InverseZoomDirectionKey));
+  const showTitle = useSelector(
+    (state) => getBoolPropertyValue(state, SkyBrowserShowTitleInBrowserKey)
+  );
+  const inverseZoom = useSelector(
+    (state) => getBoolPropertyValue(state, SkyBrowserInverseZoomDirectionKey)
+  );
   const BorderWidth = 10;
 
   const dispatch = useDispatch();
@@ -98,11 +102,11 @@ function WorldWideTelescope({
   }, [browserColor]);
 
   React.useEffect(() => {
-    dispatch(subscribeToProperty(SkyBrowser_ShowTitleInBrowserKey));
-    dispatch(subscribeToProperty(SkyBrowser_InverseZoomDirectionKey));
+    dispatch(subscribeToProperty(SkyBrowserShowTitleInBrowserKey));
+    dispatch(subscribeToProperty(SkyBrowserInverseZoomDirectionKey));
     return () => {
-      dispatch(unsubscribeToProperty(SkyBrowser_ShowTitleInBrowserKey));
-      dispatch(unsubscribeToProperty(SkyBrowser_InverseZoomDirectionKey));
+      dispatch(unsubscribeToProperty(SkyBrowserShowTitleInBrowserKey));
+      dispatch(unsubscribeToProperty(SkyBrowserInverseZoomDirectionKey));
     };
   }, []);
 
