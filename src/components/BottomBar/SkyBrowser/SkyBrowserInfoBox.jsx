@@ -22,7 +22,7 @@ function SkyBrowserInfoBox({
       return { top: '0px', left: '0px' };
     }
     const {
-      top, left, right, bottom
+      top, right
     } = ref.current.getBoundingClientRect();
     return { top: `${top}`, left: `${right}` };
   }
@@ -32,13 +32,13 @@ function SkyBrowserInfoBox({
     stopEventPropagation(e);
   }
 
-  function openEsaSky(ra, dec, fov) {
+  function openEsaSky() {
     const esaSkyUrl = `http://sky.esa.int/?target=${ra}%${dec}&hips=DSS2+color&fov=${fov}&cooframe=J2000&sci=true&lang=en`;
     window.open(esaSkyUrl, 'EsaSky');
   }
 
   return (
-    <span ref={(el) => ref.current = el} {...props}>
+    <span ref={ref} {...props}>
       <Button
         transparent
         small
@@ -63,7 +63,7 @@ function SkyBrowserInfoBox({
           )}
           {hasCelestialCoords && (
             <Button
-              onClick={() => { openEsaSky(ra, dec, fov); }}
+              onClick={() => { openEsaSky(); }}
               className={styles.tooltipButton}
               transparent
               small
@@ -78,13 +78,18 @@ function SkyBrowserInfoBox({
 }
 
 SkyBrowserInfoBox.defaultProps = {
-  infoPlacement: 'bottom-left'
+  infoPlacement: 'bottom-left',
+  dec: 0,
+  fov: 0,
+  ra: 0,
+  text: '',
+  textUrl: ''
 };
 
 SkyBrowserInfoBox.propTypes = {
   dec: PropTypes.number,
   fov: PropTypes.number,
-  hasCelestialCoords: PropTypes.bool,
+  hasCelestialCoords: PropTypes.bool.isRequired,
   infoPlacement: PropTypes.string,
   ra: PropTypes.number,
   text: PropTypes.string,
