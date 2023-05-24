@@ -32,12 +32,17 @@ function SkyBrowserSelectedImagesList({
     }
     return Object.values(browser.selectedImages);
   }, shallowEqual);
-  const imagesIndicesLengthRedux = useSelector((state) => state.skybrowser.browsers[selectedBrowserId].selectedImages.length);
+  const imagesIndicesLengthRedux = useSelector(
+    (state) => state.skybrowser.browsers[selectedBrowserId].selectedImages.length
+  );
   const imageList = useSelector((state) => state.skybrowser.imageList);
-  const imageOpacitiesRedux = useSelector((state) => state.skybrowser.browsers[selectedBrowserId].opacities, shallowEqual);
+  const imageOpacitiesRedux = useSelector(
+    (state) => state.skybrowser.browsers[selectedBrowserId].opacities,
+    shallowEqual
+  );
 
   if (!imageList || imageList.length === 0) {
-    return <></>;
+    return null;
   }
 
   // Create a cache so that the right images are displayed in the right order,
@@ -48,9 +53,13 @@ function SkyBrowserSelectedImagesList({
   }, [selectedBrowserId, imagesIndicesLengthRedux]);
 
   // Set image indices and opacities to the order they should currently have
-  // Check if they are currently loading or not
-  const imageIndicesCurrent = shouldUseCache.current ? imageIndicesCache.current : imageIndicesRedux;
-  const imageOpacitiesCurrent = shouldUseCache.current ? imageOpacitiesCache.current : imageOpacitiesRedux;
+  let imageIndicesCurrent = imageIndicesRedux;
+  let imageOpacitiesCurrent = imageOpacitiesRedux;
+  // Check if they are currently loading or not - if they are, use cache
+  if (shouldUseCache.current) {
+    imageIndicesCurrent = imageIndicesCache.current;
+    imageOpacitiesCurrent = imageOpacitiesCache.current;
+  }
   const imagesCurrent = imageIndicesCurrent.map((index) => imageList[index.toString()]);
 
   // Stop using the cache when the Redux store is up to date
@@ -87,14 +96,16 @@ function SkyBrowserSelectedImagesList({
     }
     // First update the order manually, so we keep it while the properties
     // are being refreshed below
-    imageIndicesCache.current = getCurrentOrder(imageIndicesCurrent, result.source.index, result.destination.index);
-    imageOpacitiesCache.current = getCurrentOrder(imageOpacitiesCurrent, result.source.index, result.destination.index);
+    const sourceIndex = result.source.index;
+    const destIndex = result.destination.index;
+    imageIndicesCache.current = getCurrentOrder(imageIndicesCurrent, sourceIndex, destIndex);
+    imageOpacitiesCache.current = getCurrentOrder(imageOpacitiesCurrent, sourceIndex, destIndex);
 
     shouldUseCache.current = true;
     setIsDragging(false);
 
     // Move image logic
-    await setImageLayerOrder(selectedBrowserId, Number(result.draggableId), result.destination.index);
+    await setImageLayerOrder(selectedBrowserId, Number(result.draggableId), destIndex);
   }
 
   // Invisible overlay that covers the entire body and prevents other hover effects
@@ -113,10 +124,10 @@ function SkyBrowserSelectedImagesList({
           <div {...provided.droppableProps} ref={provided.innerRef}>
             { imagesCurrent.map((entry, index) => (
               <Draggable key={entry.identifier} draggableId={entry.identifier} index={index}>
-                {(provided) => (
-                  <div {...provided.draggableProps} ref={provided.innerRef}>
+                {(providedDraggable) => (
+                  <div {...providedDraggable.draggableProps} ref={providedDraggable.innerRef}>
                     <SkyBrowserTabEntry
-                      dragHandleTitleProps={provided.dragHandleProps}
+                      dragHandleTitleProps={providedDraggable.dragHandleProps}
                       {...entry}
                       luaApi={luaApi}
                       key={entry.identifier}
