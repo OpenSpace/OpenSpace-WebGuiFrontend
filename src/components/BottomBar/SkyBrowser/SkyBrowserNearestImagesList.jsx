@@ -33,10 +33,13 @@ function SkyBrowserNearestImagesList({
     (state) => state.skybrowser.browsers[state.skybrowser.selectedBrowserId].cartesianDirection,
     shallowEqual
   );
-  const luaApi = useSelector((state) => state.luaApi);
   const imageList = useSelector((state) => state.skybrowser.imageList);
 
   const DistanceSortThreshold = 0.1;
+
+  function distPow2(numberA, numberB) {
+    return (numberA - numberB) * (numberA - numberB);
+  }
 
   function euclidianDistance(vec3a, vec3b) {
     let sum = 0;
@@ -44,10 +47,6 @@ function SkyBrowserNearestImagesList({
       sum += distPow2(vec3a[i], vec3b[i]);
     }
     return Math.sqrt(sum);
-  }
-
-  function distPow2(numberA, numberB) {
-    return (numberA - numberB) * (numberA - numberB);
   }
 
   function isWithinFOV(coord, target, radius) {
@@ -93,26 +92,30 @@ function SkyBrowserNearestImagesList({
 
   const showNoImagesHint = list.length === 0;
 
-  return (showNoImagesHint ?
-    <CenteredLabel>No images within the current view. Zoom out or move the target to look at another portion of the sky</CenteredLabel> : (
-      <FilterList
-        className={styles.filterList}
-        height={height} // TODO: prevent rerendering every time height changes
-        searchText={`Search from ${list.length.toString()} images...`}
-      >
-        <FilterListData>
-          {list.map((item) => (
-            <SkyBrowserFocusEntry
-              {...item}
-              currentBrowserColor={currentBrowserColor}
-              onSelect={selectImage}
-              isActive={activeImage === item.identifier}
-              moveCircleToHoverImage={moveCircleToHoverImage}
-            />
-          ))}
-        </FilterListData>
-      </FilterList>
-    )
+  return (showNoImagesHint ? (
+    <CenteredLabel>
+      No images within the current view.
+      Zoom out or move the target to look at another portion of the sky
+    </CenteredLabel>
+  ) : (
+    <FilterList
+      className={styles.filterList}
+      height={height} // TODO: prevent rerendering every time height changes
+      searchText={`Search from ${list.length.toString()} images...`}
+    >
+      <FilterListData>
+        {list.map((item) => (
+          <SkyBrowserFocusEntry
+            {...item}
+            currentBrowserColor={currentBrowserColor}
+            onSelect={selectImage}
+            isActive={activeImage === item.identifier}
+            moveCircleToHoverImage={moveCircleToHoverImage}
+          />
+        ))}
+      </FilterListData>
+    </FilterList>
+  )
   );
 }
 
