@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unstable-nested-components */
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { AutoSizer, Grid } from 'react-virtualized';
@@ -26,7 +27,6 @@ export default function SkyBrowserImageList({
   const [imageViewingMode, setImageViewingMode] = React.useState(ImageViewingOptions.withinView);
   const [searchString, setSearchString] = React.useState('');
   const imageList = useSelector((state) => state.skybrowser.imageList);
-  const luaApi = useSelector((state) => state.luaApi);
   const skySurveys = imageList.filter((img) => !img.hasCelestialCoords);
   const allImages = imageList.filter((img) => img.hasCelestialCoords);
   const entryHeight = 110;
@@ -38,7 +38,7 @@ export default function SkyBrowserImageList({
   }, [imageViewingMode]);
 
   function getImageList() {
-    if (imageViewingMode == ImageViewingOptions.withinView) {
+    if (imageViewingMode === ImageViewingOptions.withinView) {
       return (
         <SkyBrowserNearestImagesList
           activeImage={activeImage}
@@ -51,7 +51,9 @@ export default function SkyBrowserImageList({
     }
 
     const chosenImageList = imageViewingMode === ImageViewingOptions.all ? allImages : skySurveys;
-    const filteredImageList = chosenImageList.filter((img) => ObjectWordBeginningSubstring(Object.values(img), searchString.toLowerCase()));
+    const filteredImageList = chosenImageList.filter(
+      (img) => ObjectWordBeginningSubstring(Object.values(img), searchString.toLowerCase())
+    );
 
     return (
       <>
@@ -76,7 +78,7 @@ export default function SkyBrowserImageList({
                   }) => {
                     const index = columnIndex + (rowIndex * noOfCols);
                     if (index >= filteredImageList.length) {
-                      return;
+                      return null;
                     }
                     const item = filteredImageList[index];
                     return (
