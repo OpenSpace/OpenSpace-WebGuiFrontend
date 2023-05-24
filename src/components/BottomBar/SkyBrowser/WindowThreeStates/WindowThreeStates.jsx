@@ -113,19 +113,19 @@ class WindowThreeStates extends Component {
     const { acceptedStyles } = this.props;
 
     const hasDetached = acceptedStyles.find((item) => item === WindowStyle.DETACHED);
-    const detachedButton = hasDetached && windowStyle != WindowStyle.DETACHED && (
+    const detachedButton = hasDetached && windowStyle !== WindowStyle.DETACHED && (
       <Button onClick={this.setAsDetached} transparent small>
         <MaterialIcon icon="filter_none" />
       </Button>
     );
     const hasPane = acceptedStyles.find((item) => item === WindowStyle.PANE);
-    const paneButton = hasPane && windowStyle != WindowStyle.PANE && (
+    const paneButton = hasPane && windowStyle !== WindowStyle.PANE && (
       <Button onClick={this.setAsPane} transparent small>
         <MaterialIcon icon="exit_to_app" />
       </Button>
     );
     const hasAttached = acceptedStyles.find((item) => item === WindowStyle.ATTACHED);
-    const attachedButton = hasAttached && windowStyle != WindowStyle.ATTACHED && (
+    const attachedButton = hasAttached && windowStyle !== WindowStyle.ATTACHED && (
       <Button onClick={this.setAsAttached} transparent small>
         <MaterialIcon icon="open_in_browser" />
       </Button>
@@ -170,18 +170,15 @@ WindowThreeStates.propTypes = {
   title: PropTypes.string,
   closeCallback: PropTypes.func,
   sizeCallback: PropTypes.func,
-  heightWindow: PropTypes.number,
   defaultHeight: PropTypes.number,
   defaultStyle: PropTypes.string,
   acceptedStyles: PropTypes.array
 };
 
 WindowThreeStates.defaultProps = {
-  children: [],
   title: '',
   closeCallback: null,
   sizeCallback: null,
-  heightWindow: 440,
   defaultHeight: 440,
   defaultStyle: WindowStyle.ATTACHED,
   acceptedStyles: [WindowStyle.ATTACHED, WindowStyle.DETACHED, WindowStyle.PANE]
