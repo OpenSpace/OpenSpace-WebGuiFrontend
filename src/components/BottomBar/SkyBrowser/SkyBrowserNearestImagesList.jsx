@@ -104,7 +104,6 @@ function SkyBrowserNearestImagesList({
           {list.map((item) => (
             <SkyBrowserFocusEntry
               {...item}
-              luaApi={luaApi}
               currentBrowserColor={currentBrowserColor}
               onSelect={selectImage}
               isActive={activeImage === item.identifier}

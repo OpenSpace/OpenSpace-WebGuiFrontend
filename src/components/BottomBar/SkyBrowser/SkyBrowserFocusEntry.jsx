@@ -1,5 +1,6 @@
 import React from 'react';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import SkyBrowserInfoBox from './SkyBrowserInfoBox';
@@ -15,7 +16,6 @@ function SkyBrowserFocusEntry({
   hasCelestialCoords,
   identifier,
   isActive,
-  luaApi,
   moveCircleToHoverImage,
   name,
   onSelect,
@@ -23,6 +23,8 @@ function SkyBrowserFocusEntry({
   thumbnail,
   style
 }) {
+  const luaApi = useSelector((state) => state.luaApi);
+
   function select(e) {
     if (onSelect && identifier) {
       onSelect(identifier);
@@ -30,7 +32,7 @@ function SkyBrowserFocusEntry({
   }
 
   return (
-    <li
+    <div
       className={`${styles.entry} ${isActive && styles.active}`}
       style={{ borderLeftColor: currentBrowserColor(), ...style }}
       onMouseOver={() => { moveCircleToHoverImage(identifier); }}
@@ -59,7 +61,7 @@ function SkyBrowserFocusEntry({
           Sky Survey
         </span>
       )}
-    </li>
+    </div>
   );
 }
 
@@ -72,7 +74,6 @@ SkyBrowserFocusEntry.propTypes = {
   hasCelestialCoords: PropTypes.bool,
   identifier: PropTypes.string.isRequired,
   isActive: PropTypes.bool,
-  luaApi: PropTypes.object,
   name: PropTypes.string,
   onSelect: PropTypes.func,
   ra: PropTypes.number,

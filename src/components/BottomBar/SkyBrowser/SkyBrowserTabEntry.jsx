@@ -1,5 +1,6 @@
 import React from 'react';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import Button from '../../common/Input/Button/Button';
@@ -35,7 +36,7 @@ function OpacitySlider({ opacity, setOpacity, identifier }) {
   );
 }
 
-function SkyBrowserFocusEntry({
+function SkyBrowserTabEntry({
   credits,
   creditsUrl,
   currentBrowserColor,
@@ -45,7 +46,6 @@ function SkyBrowserFocusEntry({
   hasCelestialCoords,
   identifier,
   isActive,
-  luaApi,
   moveCircleToHoverImage,
   name,
   onSelect,
@@ -55,20 +55,26 @@ function SkyBrowserFocusEntry({
   setOpacity,
   thumbnail
 }) {
-  function select(e) {
+  const luaApi = useSelector((state) => state.luaApi);
+  function select() {
     if (onSelect && identifier) {
       onSelect(identifier);
     }
   }
 
   return (
-    <li
+    <div
       className={`${styles.entry} ${styles.tabEntry} ${isActive && styles.active}`}
       style={{ borderLeftColor: currentBrowserColor() }}
       onMouseOver={() => { moveCircleToHoverImage(identifier); }}
+      onFocus={() => { moveCircleToHoverImage(identifier); }}
       onMouseOut={() => { luaApi.skybrowser.disableHoverCircle(); }}
+      onBlur={() => { luaApi.skybrowser.disableHoverCircle(); }}
       onClick={select}
+      onKeyPress={select}
       {...dragHandleTitleProps}
+      role="button"
+      tabIndex={0}
     >
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         <div className={styles.image}>
@@ -101,9 +107,13 @@ function SkyBrowserFocusEntry({
         />
         <Button
           onClick={(e) => {
-            if (!e) var e = window.event;
             e.cancelBubble = true;
             if (e.stopPropagation) e.stopPropagation();
+            if (!e) {
+              const { event } = window;
+              event.cancelBubble = true;
+              if (event.stopPropagation) event.stopPropagation();
+            }
             removeImageSelection(identifier);
           }}
           className={styles.removeImageButton}
@@ -113,32 +123,39 @@ function SkyBrowserFocusEntry({
           <MaterialIcon icon="delete" className="small" />
         </Button>
       </div>
-    </li>
+    </div>
   );
 }
 
-SkyBrowserFocusEntry.propTypes = {
+SkyBrowserTabEntry.propTypes = {
   credits: PropTypes.string,
   creditsUrl: PropTypes.string,
-  currentBrowserColor: PropTypes.func,
+  currentBrowserColor: PropTypes.func.isRequired,
   dec: PropTypes.number,
+  dragHandleTitleProps: PropTypes.object.isRequired,
   fov: PropTypes.number,
-  hasCelestialCoords: PropTypes.bool,
+  hasCelestialCoords: PropTypes.bool.isRequired,
   identifier: PropTypes.string.isRequired,
   isActive: PropTypes.bool,
-  luaApi: PropTypes.object,
+  moveCircleToHoverImage: PropTypes.func.isRequired,
   name: PropTypes.string,
-  onSelect: PropTypes.func,
-  opacity: PropTypes.number,
+  onSelect: PropTypes.func.isRequired,
+  opacity: PropTypes.number.isRequired,
   ra: PropTypes.number,
-  removeImageSelection: PropTypes.func,
-  setOpacity: PropTypes.func,
+  removeImageSelection: PropTypes.func.isRequired,
+  setOpacity: PropTypes.func.isRequired,
   thumbnail: PropTypes.string
 };
 
-SkyBrowserFocusEntry.defaultProps = {
+SkyBrowserTabEntry.defaultProps = {
   isActive: false,
-  onSelect: null
+  credits: '',
+  creditsUrl: '',
+  dec: 0,
+  fov: 90,
+  name: '',
+  ra: 0,
+  thumbnail: ''
 };
 
-export default SkyBrowserFocusEntry;
+export default SkyBrowserTabEntry;

@@ -83,7 +83,6 @@ export default function SkyBrowserImageList({
                       <SkyBrowserFocusEntry
                         key={key}
                         {...item}
-                        luaApi={luaApi}
                         currentBrowserColor={currentBrowserColor}
                         onSelect={selectImage}
                         isActive={activeImage === item.identifier}

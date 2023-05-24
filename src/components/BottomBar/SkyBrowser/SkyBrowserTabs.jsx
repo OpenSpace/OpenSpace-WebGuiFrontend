@@ -12,7 +12,7 @@ import Button from '../../common/Input/Button/Button';
 import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
 
 import SkyBrowserSelectedImagesList from './SkyBrowserSelectedImagesList';
-import SkyBrowserSettings from './SkyBrowserSettings.jsx';
+import SkyBrowserSettings from './SkyBrowserSettings';
 import SkyBrowserTooltip from './SkyBrowserTooltip';
 
 import styles from './SkyBrowserTabs.scss';
@@ -47,7 +47,7 @@ function SkyBrowserTabs({
   // Sets the showing state info text for the top buttons in the tabs
   const [isShowingInfoButtons, setIsShowingInfoButtons] = React.useState(() => {
     const result = {};
-    Object.keys(ButtonIds).forEach((id) => result[id] = false);
+    Object.keys(ButtonIds).forEach((id) => { result[id] = false; });
     return result;
   });
 
@@ -56,11 +56,15 @@ function SkyBrowserTabs({
   const tabsDiv = React.useRef(null);
 
   // Redux store access - selectors and dispatch
-  const imageList = useSelector((state) => state.skybrowser.imageList);
   const browsers = useSelector((state) => state.skybrowser.browsers);
   const luaApi = useSelector((state) => state.luaApi, shallowEqual);
-  const selectedBrowserId = useSelector((state) => state.skybrowser.selectedBrowserId, shallowEqual);
-  const imageIndicesLength = useSelector((state) => state.skybrowser.browsers[selectedBrowserId]?.selectedImages.length);
+  const selectedBrowserId = useSelector(
+    (state) => state.skybrowser.selectedBrowserId,
+    shallowEqual
+  );
+  const imageIndicesLength = useSelector(
+    (state) => state.skybrowser.browsers[selectedBrowserId]?.selectedImages.length
+  );
 
   const dispatch = useDispatch();
 
@@ -76,13 +80,36 @@ function SkyBrowserTabs({
   // When WWT has loaded the image collection, add all selected images
   React.useEffect(() => {
     if (imageCollectionIsLoaded) {
+      // eslint-disable-next-line no-use-before-define
       addAllSelectedImages(selectedBrowserId, false);
     }
   }, [imageCollectionIsLoaded]);
 
+  function addAllSelectedImages(browserId, passToOs = true) {
+    if (browsers === undefined || browsers[browserId] === undefined) {
+      return;
+    }
+    // Make deep copies in order to reverse later
+    const reverseImages = [...browsers[browserId].selectedImages];
+    const opacities = [...browsers[browserId].opacities];
+    reverseImages.reverse().forEach((image, index) => {
+      selectImage(String(image), passToOs);
+      setOpacityOfImage(String(image), opacities.reverse()[index], passToOs);
+    });
+  }
+
+  function removeAllSelectedImages(browserId, passToOs = true) {
+    if (browsers === undefined || browsers[browserId] === undefined) {
+      return;
+    }
+    browsers[browserId].selectedImages.forEach((image) => {
+      removeImageSelection(Number(image), passToOs);
+    });
+  }
+
   function setSelectedBrowser(browserId) {
     if (browsers === undefined || browsers[browserId] === undefined) {
-      return '';
+      return;
     }
     // Don't pass the selection to OpenSpace as we are only changing images in the GUI
     // This is a result of only having one instance of the WWT application, but making
@@ -92,28 +119,6 @@ function SkyBrowserTabs({
     addAllSelectedImages(browserId, passToOs);
     luaApi.skybrowser.setSelectedBrowser(browserId);
     setWwtRatio(browsers[browserId].ratio);
-  }
-
-  function addAllSelectedImages(browserId, passToOs = true) {
-    if (browsers === undefined || browsers[browserId] === undefined) {
-      return '';
-    }
-    // Make deep copies in order to reverse later
-    const reverseImages = [...browsers[browserId].selectedImages];
-    const opacities = [...browsers[browserId].opacities];
-    reverseImages.reverse().map((image, index) => {
-      selectImage(String(image), passToOs);
-      setOpacityOfImage(String(image), opacities.reverse()[index], passToOs);
-    });
-  }
-
-  function removeAllSelectedImages(browserId, passToOs = true) {
-    if (browsers === undefined || browsers[browserId] === undefined) {
-      return '';
-    }
-    browsers[browserId].selectedImages.map((image) => {
-      removeImageSelection(Number(image), passToOs);
-    });
   }
 
   function positionInfo() {
@@ -143,8 +148,8 @@ function SkyBrowserTabs({
       selected: false,
       icon: 'visibility',
       text: 'Look at browser',
-      function(browserId) {
-        luaApi.skybrowser.adjustCamera(browserId);
+      function(id) {
+        luaApi.skybrowser.adjustCamera(id);
       }
     };
     const moveButton = {
@@ -152,19 +157,18 @@ function SkyBrowserTabs({
       selected: false,
       icon: 'filter_center_focus',
       text: 'Move target to center of view',
-      function(browserId) {
-        luaApi.skybrowser.stopAnimations(browserId);
-        luaApi.skybrowser.centerTargetOnScreen(browserId);
+      function(id) {
+        luaApi.skybrowser.stopAnimations(id);
+        luaApi.skybrowser.centerTargetOnScreen(id);
       }
     };
-    const _this = this;
     const trashButton = {
       id: ButtonIds.RemoveImages,
       selected: false,
       icon: 'delete',
       text: 'Remove all images',
-      function(browserId) {
-        removeAllSelectedImages(browserId);
+      function(id) {
+        removeAllSelectedImages(id);
       }
     };
     const scrollInButton = {
@@ -172,10 +176,10 @@ function SkyBrowserTabs({
       selected: false,
       icon: 'zoom_in',
       text: 'Zoom in',
-      function(browserId) {
-        luaApi.skybrowser.stopAnimations(browserId);
+      function(id) {
+        luaApi.skybrowser.stopAnimations(id);
         const newFov = Math.max(browser.fov - 5, 0.01);
-        luaApi.skybrowser.setVerticalFov(browserId, Number(newFov));
+        luaApi.skybrowser.setVerticalFov(id, Number(newFov));
       }
     };
     const scrollOutButton = {
@@ -183,10 +187,10 @@ function SkyBrowserTabs({
       selected: false,
       icon: 'zoom_out',
       text: 'Zoom out',
-      function(browserId) {
-        luaApi.skybrowser.stopAnimations(browserId);
+      function(id) {
+        luaApi.skybrowser.stopAnimations(id);
         const newFov = Math.min(browser.fov + 5, 70);
-        luaApi.skybrowser.setVerticalFov(browserId, Number(newFov));
+        luaApi.skybrowser.setVerticalFov(id, Number(newFov));
       }
     };
     const showSettingsButton = {
@@ -194,12 +198,19 @@ function SkyBrowserTabs({
       selected: showSettings,
       icon: 'settings',
       text: 'Settings',
-      function(browserId) {
+      function() {
         toggleSettings();
       }
     };
 
-    const buttonsData = [lookButton, moveButton, scrollInButton, scrollOutButton, trashButton, showSettingsButton];
+    const buttonsData = [
+      lookButton,
+      moveButton,
+      scrollInButton,
+      scrollOutButton,
+      trashButton,
+      showSettingsButton
+    ];
 
     const buttons = buttonsData.map((button) => (
       <Button
@@ -237,7 +248,7 @@ function SkyBrowserTabs({
     return (
       <span
         className={styles.tabButtonContainer}
-        ref={(element) => infoButton.current = element}
+        ref={infoButton}
       >
         {buttons}
       </span>
@@ -274,11 +285,11 @@ function SkyBrowserTabs({
   function createTabs() {
     const buttons = browsers[selectedBrowserId] && createButtons(browsers[selectedBrowserId]);
 
-    const allTabs = Object.keys(browsers).map((browser, index) => {
+    const allTabs = Object.keys(browsers).map((browser) => {
       const browserColor = `rgb(${browsers[browser].color})`;
       return (
         <div
-          key={index}
+          key={browser}
           style={
             selectedBrowserId === browser ?
               { borderTopRightRadius: '4px', borderTop: `3px solid ${browserColor}` } :
@@ -287,7 +298,7 @@ function SkyBrowserTabs({
         >
           <div
             className={selectedBrowserId === browser ? styles.tabActive : styles.tabInactive}
-            onClick={(e) => {
+            onKeyDown={(e) => {
               const event = e ?? window.event;
               event.cancelBubble = true;
               e?.stopPropagation();
@@ -295,14 +306,20 @@ function SkyBrowserTabs({
                 setSelectedBrowser(browser);
               }
             }}
+            role="button"
+            tabIndex={0}
           >
             <span className={styles.tabHeader}>
               <span className={styles.tabTitle}>{browsers[browser].name}</span>
               <Button
                 onClick={(e) => {
-                  if (!e) var e = window.event;
                   e.cancelBubble = true;
                   if (e.stopPropagation) e.stopPropagation();
+                  if (!e) {
+                    const { event } = window;
+                    event.cancelBubble = true;
+                    if (event.stopPropagation) e.stopPropagation();
+                  }
                   removeTargetBrowserPair(browser);
                 }}
                 className={styles.closeTabButton}
@@ -363,7 +380,7 @@ function SkyBrowserTabs({
   }
 
   return (
-    <section className={styles.tabContainer} ref={(element) => tabsDiv.current = element}>
+    <section className={styles.tabContainer} ref={tabsDiv}>
       <Resizable
         enable={{ top: true, bottom: false }}
         handleClasses={{ top: styles.topHandle }}
@@ -385,17 +402,17 @@ function SkyBrowserTabs({
 }
 
 SkyBrowserTabs.propTypes = {
-  activeImage: PropTypes.string,
-  currentBrowserColor: PropTypes.func,
-  height: PropTypes.number,
-  imageCollectionIsLoaded: PropTypes.bool,
-  maxHeight: PropTypes.number,
-  minHeight: PropTypes.number,
-  passMessageToWwt: PropTypes.func,
-  selectImage: PropTypes.func,
-  setBorderRadius: PropTypes.func,
-  setCurrentTabHeight: PropTypes.func,
-  setWwtRatio: PropTypes.func
+  activeImage: PropTypes.string.isRequired,
+  currentBrowserColor: PropTypes.func.isRequired,
+  height: PropTypes.number.isRequired,
+  imageCollectionIsLoaded: PropTypes.bool.isRequired,
+  maxHeight: PropTypes.number.isRequired,
+  minHeight: PropTypes.number.isRequired,
+  passMessageToWwt: PropTypes.func.isRequired,
+  selectImage: PropTypes.func.isRequired,
+  setBorderRadius: PropTypes.func.isRequired,
+  setCurrentTabHeight: PropTypes.func.isRequired,
+  setWwtRatio: PropTypes.func.isRequired
 };
 
 export default SkyBrowserTabs;
