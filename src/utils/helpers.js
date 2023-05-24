@@ -41,3 +41,13 @@ export function openUrl(url) {
   const newWindow = window.open(url, '_blank', 'noopener,noreferrer');
   if (newWindow) newWindow.opener = null;
 }
+
+export function stopEventPropagation(e) {
+  e.cancelBubble = true;
+  if (e.stopPropagation) e.stopPropagation();
+  if (!e) {
+    const { event } = window;
+    event.cancelBubble = true;
+    if (event.stopPropagation) event.stopPropagation();
+  }
+}

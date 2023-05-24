@@ -3,6 +3,7 @@ import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
+import { stopEventPropagation } from '../../../utils/helpers';
 import Button from '../../common/Input/Button/Button';
 import NumericInput from '../../common/Input/NumericInput/NumericInput';
 import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
@@ -107,13 +108,7 @@ function SkyBrowserTabEntry({
         />
         <Button
           onClick={(e) => {
-            e.cancelBubble = true;
-            if (e.stopPropagation) e.stopPropagation();
-            if (!e) {
-              const { event } = window;
-              event.cancelBubble = true;
-              if (event.stopPropagation) event.stopPropagation();
-            }
+            stopEventPropagation(e);
             removeImageSelection(identifier);
           }}
           className={styles.removeImageButton}

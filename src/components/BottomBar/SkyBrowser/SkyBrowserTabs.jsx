@@ -7,6 +7,7 @@ import { Resizable } from 're-resizable';
 import {
   reloadPropertyTree
 } from '../../../api/Actions';
+import { stopEventPropagation } from '../../../utils/helpers';
 import CenteredLabel from '../../common/CenteredLabel/CenteredLabel';
 import Button from '../../common/Input/Button/Button';
 import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
@@ -313,13 +314,7 @@ function SkyBrowserTabs({
               <span className={styles.tabTitle}>{browsers[browser].name}</span>
               <Button
                 onClick={(e) => {
-                  e.cancelBubble = true;
-                  if (e.stopPropagation) e.stopPropagation();
-                  if (!e) {
-                    const { event } = window;
-                    event.cancelBubble = true;
-                    if (event.stopPropagation) e.stopPropagation();
-                  }
+                  stopEventPropagation(e);
                   removeTargetBrowserPair(browser);
                 }}
                 className={styles.closeTabButton}

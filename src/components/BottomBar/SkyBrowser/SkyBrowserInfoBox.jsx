@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { openUrl } from '../../../utils/helpers';
+import { openUrl, stopEventPropagation } from '../../../utils/helpers';
 import Button from '../../common/Input/Button/Button';
 import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
 
@@ -29,9 +29,7 @@ function SkyBrowserInfoBox({
 
   function togglePopup(e) {
     setIsPopupShowing(!isPopupShowing);
-    if (!e) var e = window.event;
-    e.cancelBubble = true;
-    if (e.stopPropagation) e.stopPropagation();
+    stopEventPropagation(e);
   }
 
   function openEsaSky(ra, dec, fov) {
