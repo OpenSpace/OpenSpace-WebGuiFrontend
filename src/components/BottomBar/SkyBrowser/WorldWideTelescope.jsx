@@ -112,10 +112,8 @@ function WorldWideTelescope({
 
   // When WorldWide Telescope has replied with a message, stop sending it unnecessary messages
   function stopSetupWwtFunc() {
-    setSetupWwtFunc.current = (interval) => {
-      clearInterval(interval);
-      return null;
-    };
+    clearInterval(setSetupWwtFunc.current);
+    setSetupWwtFunc.current = null;
   }
 
   function sendMessageToWwt(message) {
