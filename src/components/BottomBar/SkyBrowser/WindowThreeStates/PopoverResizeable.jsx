@@ -1,52 +1,49 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Resizable } from 're-resizable';
 
 import styles from './WindowThreeStates.scss';
 
-class PopoverResizeable extends Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    const { children, sizeCallback } = this.props;
-    return (
-      <section
-        className={`${styles.popover}`}
-        ref={(divElement) => {
-          this.windowDiv = divElement;
+function PopoverResizeable({
+  children, sizeCallback, size, minHeight
+}) {
+  const windowDiv = React.useRef(null);
+  return (
+    <section
+      className={`${styles.popover}`}
+      ref={windowDiv}
+    >
+      <Resizable
+        enable={{
+          top: true,
+          right: false,
+          left: false,
+          bottom: false,
+          topRight: false,
+          bottomRight: false,
+          bottomLeft: false,
+          topLeft: false
+        }}
+        defaultSize={{
+          width: size.width,
+          height: size.height
+        }}
+        minHeight={minHeight}
+        maxHeight={900}
+        handleClasses={{
+          top: styles.topHandle,
+          right: styles.rightHandle,
+          left: styles.leftHandle
+        }}
+        onResizeStop={() => {
+          const { clientWidth, clientHeight } = windowDiv.current;
+          sizeCallback(clientWidth, clientHeight);
         }}
       >
-        <Resizable
-          enable={{
-            top: true,
-            right: false,
-            left: false,
-            bottom: false,
-            topRight: false,
-            bottomRight: false,
-            bottomLeft: false,
-            topLeft: false
-          }}
-          defaultSize={{
-            width: this.props.size.width,
-            height: this.props.size.height
-          }}
-          minHeight={this.props.minHeight}
-          maxHeight={900}
-          handleClasses={{
-            top: styles.topHandle,
-            right: styles.rightHandle,
-            left: styles.leftHandle
-          }}
-          onResizeStop={() => sizeCallback(this.windowDiv.clientWidth, this.windowDiv.clientHeight)}
-        >
-          {children}
-        </Resizable>
-      </section>
-    );
-  }
+        {children}
+      </Resizable>
+    </section>
+  );
 }
 
 PopoverResizeable.propTypes = {
