@@ -25,7 +25,7 @@ function SkyBrowserFocusEntry({
 }) {
   const luaApi = useSelector((state) => state.luaApi);
 
-  function select(e) {
+  function select() {
     if (onSelect && identifier) {
       onSelect(identifier);
     }
@@ -36,8 +36,13 @@ function SkyBrowserFocusEntry({
       className={`${styles.entry} ${isActive && styles.active}`}
       style={{ borderLeftColor: currentBrowserColor(), ...style }}
       onMouseOver={() => { moveCircleToHoverImage(identifier); }}
+      onFocus={() => { moveCircleToHoverImage(identifier); }}
       onMouseOut={() => { luaApi.skybrowser.disableHoverCircle(); }}
+      onBlur={() => { luaApi.skybrowser.disableHoverCircle(); }}
       onClick={select}
+      onKeyDown={select}
+      role="button"
+      tabIndex={0}
     >
       <div className={styles.image}>
         <LazyLoadImage src={thumbnail} alt="" className={styles.imageText} />
@@ -71,19 +76,27 @@ SkyBrowserFocusEntry.propTypes = {
   currentBrowserColor: PropTypes.func,
   dec: PropTypes.number,
   fov: PropTypes.number,
-  hasCelestialCoords: PropTypes.bool,
+  hasCelestialCoords: PropTypes.bool.isRequired,
   identifier: PropTypes.string.isRequired,
   isActive: PropTypes.bool,
   name: PropTypes.string,
   onSelect: PropTypes.func,
   ra: PropTypes.number,
   thumbnail: PropTypes.string,
-  moveCircleToHoverImage: PropTypes.func
+  moveCircleToHoverImage: PropTypes.func.isRequired
 };
 
 SkyBrowserFocusEntry.defaultProps = {
   isActive: false,
-  onSelect: null
+  onSelect: null,
+  credits: '',
+  creditsUrl: '',
+  currentBrowserColor: null,
+  dec: 0,
+  fov: 90,
+  name: '',
+  ra: 0,
+  thumbnail: ''
 };
 
 export default SkyBrowserFocusEntry;
