@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { throttle } from 'lodash/function';
 
@@ -126,11 +126,11 @@ function SimulationIncrement({
     }
   }
 
-  function setNextDeltaTimeStep(event) {
+  function setNextDeltaTimeStep() {
     luaApi.time.interpolateNextDeltaTimeStep();
   }
 
-  function setPrevDeltaTimeStep(event) {
+  function setPrevDeltaTimeStep() {
     luaApi.time.interpolatePreviousDeltaTimeStep();
   }
 
@@ -150,15 +150,15 @@ function SimulationIncrement({
             block
             disabled={!hasPrevDeltaTimeStep}
             onClick={setPrevDeltaTimeStep}
-            ref={(el) => refs.current.SpeedBackward = el}
+            ref={(el) => { refs.current.SpeedBackward = el; }}
           >
             <MaterialIcon icon="fast_rewind" />
           </Button>
-          <label className={styles.deltaTimeStepLabel}>
+          <p className={styles.deltaTimeStepLabel}>
             {prevLabel}
-          </label>
+          </p>
         </div>
-        <div style={{ flex: 2 }} ref={(el) => refs.current.Pause = el}>
+        <div style={{ flex: 2 }} ref={(el) => { refs.current.Pause = el; }}>
           <Button block onClick={togglePause}>
             {isPaused ? <MaterialIcon icon="play_arrow" /> : <MaterialIcon icon="pause" />}
           </Button>
@@ -168,13 +168,13 @@ function SimulationIncrement({
             block
             disabled={!hasNextDeltaTimeStep}
             onClick={setNextDeltaTimeStep}
-            ref={(el) => refs.current.SpeedForward = el}
+            ref={(el) => { refs.current.SpeedForward = el; }}
           >
             <MaterialIcon icon="fast_forward" />
           </Button>
-          <label className={styles.deltaTimeStepLabel}>
+          <p className={styles.deltaTimeStepLabel}>
             {nextLabel}
-          </label>
+          </p>
         </div>
       </Row>
     );
@@ -192,7 +192,9 @@ function SimulationIncrement({
         <Select
           label="Display unit"
           menuPlacement="top"
-          onChange={({ value }) => (Object.values(Steps).includes(value) ? setStepSize(value) : null)}
+          onChange={({ value }) => (
+            Object.values(Steps).includes(value) ? setStepSize(value) : null
+          )}
           options={options}
           value={stepSize}
         />
