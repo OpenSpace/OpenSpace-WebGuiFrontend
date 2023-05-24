@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { reloadPropertyTree, setPopoverVisibility } from '../../api/Actions';
 import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
@@ -15,70 +15,68 @@ import Picker from './Picker';
 
 import styles from './ScreenSpaceRenderablePanel.scss';
 
-class ScreenSpaceRenderablePanel extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      slideName: undefined
-    };
-    this.togglePopover = this.togglePopover.bind(this);
-    this.addSlide = this.addSlide.bind(this);
+function ScreenSpaceRenderablePanel() {
+  const [slideName, setSlideName] = React.useState(undefined);
+  const [slideURL, setSlideURL] = React.useState(undefined);
+
+  const luaApi = useSelector((state) => state.luaApi);
+  const popoverVisible = useSelector(
+    (state) => state.local.popovers.screenSpaceRenderables.visible
+  );
+  const screenSpaceRenderables = useSelector(
+    (state) => (state.propertyTree.propertyOwners.ScreenSpace ?
+      state.propertyTree.propertyOwners.ScreenSpace.subowners :
+      [])
+  );
+
+  const dispatch = useDispatch();
+
+  function togglePopover() {
+    dispatch(setPopoverVisibility({
+      popover: 'screenSpaceRenderables',
+      visible: !popoverVisible
+    }));
   }
 
-  togglePopover() {
-    this.props.setPopoverVisibility(!this.props.popoverVisible);
+  function updateSlideName(evt) {
+    setSlideName(evt.target.value);
   }
 
-  updateSlideName(evt) {
-    this.setState({
-      slideName: evt.target.value
-    });
+  function updateSlideURL(evt) {
+    setSlideURL(evt.target.value);
   }
 
-  updateSlideURL(evt) {
-    this.setState({
-      slideURL: evt.target.value
-    });
-  }
-
-  updateSlideURLForFile(evt) {
-    const url = evt.target.files[0].name;
-    this.setState({
-      slideURL: url
-    });
-  }
-
-  addSlide() {
+  function addSlide() {
     const renderable = {
-      Identifier: this.state.slideName,
-      Name: this.state.slideName
+      Identifier: slideName,
+      Name: slideName
     };
 
-    if (this.state.slideURL.indexOf('http') != 0) {
+    if (slideURL.indexOf('http') !== 0) {
       renderable.Type = 'ScreenSpaceImageLocal';
-      renderable.TexturePath = this.state.slideURL;
+      renderable.TexturePath = slideURL;
     } else {
       renderable.Type = 'ScreenSpaceImageOnline';
-      renderable.URL = this.state.slideURL;
+      renderable.URL = slideURL;
     }
 
-    this.props.luaApi.addScreenSpaceRenderable(renderable);
+    luaApi.addScreenSpaceRenderable(renderable);
 
     // TODO: Once we have a proper way to subscribe to additions and removals
     // of property owners, this 'hard' refresh should be removed.
     setTimeout(() => {
-      this.props.refresh();
+      dispatch(reloadPropertyTree());
     }, 500);
   }
 
-  get popover() {
+  function popover() {
     const slideNameLabel = <span>Slide name</span>;
     const slideURLLabel = <span>URL</span>;
     const noSlidesLabel = <CenteredLabel>No active slides</CenteredLabel>;
-    const renderables = this.props.screenSpaceRenderables;
+    const renderables = screenSpaceRenderables;
 
     let slideContent;
-    if (renderables.length == 0) {
+    if (renderables.length === 0) {
       slideContent = noSlidesLabel;
     } else {
       slideContent = renderables.map((prop) => (
@@ -95,32 +93,32 @@ class ScreenSpaceRenderablePanel extends Component {
       <Popover
         className={Picker.Popover}
         title="ScreenSpace Renderables"
-        closeCallback={this.togglePopover}
+        closeCallback={() => togglePopover()}
         detachable
         attached
       >
         <div className={Popover.styles.content}>
           <Row>
             <Input
-              value={this.state.slideName}
+              value={slideName}
               label={slideNameLabel}
               placeholder="Slide name..."
-              onChange={(evt) => this.updateSlideName(evt)}
+              onChange={(evt) => updateSlideName(evt)}
             />
             <div className="urlbox">
               <Input
-                value={this.state.slideURL}
+                value={slideURL}
                 label={slideURLLabel}
                 placeholder="URL"
-                onChange={(evt) => this.updateSlideURL(evt)}
+                onChange={(evt) => updateSlideURL(evt)}
               />
             </div>
             <div className={Popover.styles.row}>
               <Button
-                onClick={this.addSlide}
+                onClick={addSlide}
                 title="Add slide"
                 style={{ width: 90 }}
-                disabled={!this.state.slideName || !this.state.slideURL}
+                disabled={!slideName || !slideURL}
               >
                 <MaterialIcon icon="insert_photo" />
                 <span style={{ marginLeft: 5 }}>Add Slide</span>
@@ -139,53 +137,20 @@ class ScreenSpaceRenderablePanel extends Component {
     );
   }
 
-  render() {
-    const { popoverVisible } = this.props;
-    return (
-      <div className={Picker.Wrapper}>
-        <Picker
-          className={`${popoverVisible && Picker.Active}`}
-          onClick={this.togglePopover}
-          refKey="ScreenSpaceRenderable"
-        >
-          <div>
-            <MaterialIcon className={styles.photoIcon} icon="insert_photo" />
-          </div>
-        </Picker>
-        { popoverVisible && this.popover }
-      </div>
-    );
-  }
+  return (
+    <div className={Picker.Wrapper}>
+      <Picker
+        className={`${popoverVisible && Picker.Active}`}
+        onClick={togglePopover}
+        refKey="ScreenSpaceRenderable"
+      >
+        <div>
+          <MaterialIcon className={styles.photoIcon} icon="insert_photo" />
+        </div>
+      </Picker>
+      { popoverVisible && popover() }
+    </div>
+  );
 }
-
-const mapStateToProps = (state) => {
-  const renderables = state.propertyTree.propertyOwners.ScreenSpace ?
-    state.propertyTree.propertyOwners.ScreenSpace.subowners :
-    [];
-
-  const { visible } = state.local.popovers.screenSpaceRenderables;
-  return {
-    popoverVisible: visible,
-    screenSpaceRenderables: renderables,
-    luaApi: state.luaApi
-  };
-};
-
-const mapDispatchToProps = (dispatch) => ({
-  setPopoverVisibility: (visible) => {
-    dispatch(setPopoverVisibility({
-      popover: 'screenSpaceRenderables',
-      visible
-    }));
-  },
-  refresh: () => {
-    dispatch(reloadPropertyTree());
-  }
-});
-
-ScreenSpaceRenderablePanel = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ScreenSpaceRenderablePanel);
 
 export default ScreenSpaceRenderablePanel;
