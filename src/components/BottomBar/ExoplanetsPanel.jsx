@@ -11,7 +11,7 @@ import { NavigationAimKey, NavigationAnchorKey } from '../../api/keys';
 import propertyDispatcher from '../../api/propertyDispatcher';
 import subStateToProps from '../../utils/subStateToProps';
 import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
-import { FilterList, FilterListData, FilterListFavorites } from '../common/FilterList/FilterList';
+import { FilterList, FilterListData } from '../common/FilterList/FilterList';
 import Button from '../common/Input/Button/Button';
 import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import Popover from '../common/Popover/Popover';
@@ -24,64 +24,50 @@ import Picker from './Picker';
 
 import styles from './ExoplanetsPanel.scss';
 
-class ExoplanetsPanel extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      starName: undefined
-    };
-    this.togglePopover = this.togglePopover.bind(this);
-    this.addSystem = this.addSystem.bind(this);
-    this.onSelect = this.onSelect.bind(this);
-    this.removeExoplanetSystem = this.removeExoplanetSystem.bind(this);
-  }
+function ExoplanetsPanel({
+  isDataInitialized, loadData, luaApi, setPopoverVisibility, popoverVisible,
+  anchor, aim, anchorDispatcher, aimDispatcher, removeSystem, refresh,
+  exoplanetSystems, hasSystems, systemList
+}) {
+  const [starName, setStarName] = React.useState(undefined);
 
-  componentDidMount() {
-    const { isDataInitialized, loadData, luaApi } = this.props;
-    if (!isDataInitialized) {
+  React.useEffect(() => {
+     if (!isDataInitialized) {
       loadData(luaApi);
     }
+  }, []);
+
+  function togglePopover() {
+    setPopoverVisibility(!popoverVisible);
   }
 
-  togglePopover() {
-    this.props.setPopoverVisibility(!this.props.popoverVisible);
+  function onSelect(identifier) {
+    setStarName(identifier);
   }
 
-  updateStarName(evt) {
-    this.setState({
-      starName: evt.target.value
-    });
-  }
-
-  onSelect(identifier, evt) {
-    this.setState({
-      starName: identifier
-    });
-  }
-
-  removeExoplanetSystem(systemName) {
-    const matchingAnchor = (this.props.anchor.value.indexOf(systemName) == 0);
-    const matchingAim = (this.props.aim.value.indexOf(systemName) == 0);
+  function removeExoplanetSystem(systemName) {
+    const matchingAnchor = (anchor.value.indexOf(systemName) == 0);
+    const matchingAim = (aim.value.indexOf(systemName) == 0);
     if (matchingAnchor || matchingAim) {
-      this.props.anchorDispatcher.set('Sun');
-      this.props.aimDispatcher.set('');
+      anchorDispatcher.set('Sun');
+      aimDispatcher.set('');
     }
 
-    this.props.removeSystem(systemName);
+    removeSystem(systemName);
   }
 
-  addSystem() {
-    this.props.luaApi.exoplanets.addExoplanetSystem(this.state.starName);
+  function addSystem() {
+    luaApi.exoplanets.addExoplanetSystem(starName);
     // TODO: Once we have a proper way to subscribe to additions and removals
     // of property owners, this 'hard' refresh should be removed.
     setTimeout(() => {
-      this.props.refresh();
+      refresh();
     }, 500);
   }
 
-  get popover() {
+  function popover() {
     const noContentLabel = <CenteredLabel>No active systems</CenteredLabel>;
-    const renderables = this.props.exoplanetSystems;
+    const renderables = exoplanetSystems;
     let panelContent;
 
     if (renderables.length === 0) {
@@ -92,7 +78,7 @@ class ExoplanetsPanel extends Component {
           autoExpand={false}
           key={prop}
           uri={prop}
-          trashAction={this.removeExoplanetSystem}
+          trashAction={removeExoplanetSystem}
           expansionIdentifier={`P:${prop}`}
         />
       ));
@@ -101,22 +87,22 @@ class ExoplanetsPanel extends Component {
       <Popover
         className={Picker.Popover}
         title="Exoplanet Systems"
-        closeCallback={this.togglePopover}
+        closeCallback={togglePopover}
         detachable
         attached
       >
         <div className={Popover.styles.content}>
           <Row>
-            { this.props.hasSystems ? (
+            { hasSystems ? (
               <FilterList
                 className={styles.list}
                 searchText="Star name..."
               >
                 <FilterListData>
-                  {this.props.systemList.map((system) => (
+                  {systemList.map((system) => (
                     <FocusEntry
-                      onSelect={this.onSelect}
-                      active={this.state.starName}
+                      onSelect={onSelect}
+                      active={starName}
                       {...system}
                     />
                   ))}
@@ -129,10 +115,10 @@ class ExoplanetsPanel extends Component {
             )}
             <div className={Popover.styles.row}>
               <Button
-                onClick={this.addSystem}
+                onClick={addSystem}
                 title="Add system"
                 style={{ width: 90 }}
-                disabled={!this.state.starName}
+                disabled={!starName}
               >
                 <MaterialIcon icon="public" />
                 <span style={{ marginLeft: 5 }}>Add System</span>
@@ -151,24 +137,20 @@ class ExoplanetsPanel extends Component {
     );
   }
 
-  render() {
-    const { popoverVisible } = this.props;
-
-    return (
-      <div className={Picker.Wrapper}>
-        <Picker
-          className={`${popoverVisible && Picker.Active}`}
-          onClick={this.togglePopover}
-          refKey="Exoplanets"
-        >
-          <div>
-            <MaterialIcon className={styles.photoIcon} icon="hdr_strong" />
-          </div>
-        </Picker>
-        { popoverVisible && this.popover }
-      </div>
-    );
-  }
+  return (
+    <div className={Picker.Wrapper}>
+      <Picker
+        className={`${popoverVisible && Picker.Active}`}
+        onClick={togglePopover}
+        refKey="Exoplanets"
+      >
+        <div>
+          <MaterialIcon className={styles.photoIcon} icon="hdr_strong" />
+        </div>
+      </Picker>
+      { popoverVisible && popover() }
+    </div>
+  );
 }
 
 const mapSubStateToProps = ({
