@@ -16,10 +16,12 @@ export const RequiredOpenSpaceVersion = {
   patch: 0
 };
 
-export const isCompatible = (actualVersion, requiredVersion) => actualVersion.major === requiredVersion.major &&
+export const isCompatible = (actualVersion, requiredVersion) => (
+  actualVersion.major === requiredVersion.major &&
   actualVersion.minor >= requiredVersion.minor &&
   (actualVersion.minor > requiredVersion.minor ||
-    actualVersion.patch >= requiredVersion.patch);
+   actualVersion.patch >= requiredVersion.patch)
+);
 
 export const isOlder = (a, b) => {
   if (a.major < b.major) {
