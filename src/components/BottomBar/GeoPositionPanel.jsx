@@ -26,8 +26,17 @@ function MultiStateToggle({
 }) {
   return (
     <div className={styles.wrapper}>
-      <p className={`${styles.toggleTitle} ${styles.resultsTitle}`} id="multiStateToggle">Mode</p>
-      <InfoBox panelscroll="multiStateToggle" text={infoText} style={{ paddingTop: '3px', paddingRight: '3px' }} />
+      <p
+        className={`${styles.toggleTitle} ${styles.resultsTitle}`}
+        id="multiStateToggle"
+      >
+        Mode
+      </p>
+      <InfoBox
+        panelscroll="multiStateToggle"
+        text={infoText}
+        style={{ paddingTop: '3px', paddingRight: '3px' }}
+      />
       <div className={styles.toggles}>
         {labels.map((label) => (
           <React.Fragment key={`${label}fragment`}>
@@ -40,7 +49,12 @@ function MultiStateToggle({
               onChange={() => setChecked(label)}
               checked={label === checked ? 'checked' : ''}
             />
-            <label htmlFor={label} key={`${label}label`} onClick={() => setChecked(label)}>{label}</label>
+            <label
+              htmlFor={label}
+              key={`${label}label`}
+            >
+              {label}
+            </label>
           </React.Fragment>
         ))}
         <div className={styles.toggle_option_slider} />
@@ -131,7 +145,7 @@ function GeoPositionPanel({
         });
         setPlaces(unique);
       })
-      .catch((error) => console.log('Error fetching: ', error));
+      .catch((error) => console.error('Error fetching: ', error));
   }
 
   function pushSceneGraphNode(nodeId) {
@@ -171,7 +185,9 @@ function GeoPositionPanel({
         }
         addressUtf8 = addressUtf8.replaceAll(' ', '_');
         addressUtf8 = addressUtf8.replaceAll(',', '');
-        luaApi?.addSceneGraphNode(createSceneGraphNodeTable(currentAnchor, addressUtf8, lat, long, altitude));
+        luaApi?.addSceneGraphNode(
+          createSceneGraphNodeTable(currentAnchor, addressUtf8, lat, long, altitude)
+        );
         // TODO: Once we have a proper way to subscribe to additions and removals
         // of property owners, this 'hard' refresh should be removed.
         setTimeout(() => refresh(), 300);
@@ -227,7 +243,12 @@ function GeoPositionPanel({
                 }}
                 value={altitude}
               />
-              <Button onClick={() => enterLatLongAlt()} className={styles.latLongButton}>{interaction}</Button>
+              <Button
+                onClick={() => enterLatLongAlt()}
+                className={styles.latLongButton}
+              >
+                {interaction}
+              </Button>
             </div>
             <hr className={Popover.styles.delimiter} />
             <div className={styles.searchField}>
@@ -243,22 +264,18 @@ function GeoPositionPanel({
             </div>
             <p className={styles.resultsTitle}>Results</p>
             {places && (
-              (places.length < 4) ? (
-                <>
-                  {places?.map?.((place) => {
-                    const address = place.attributes.LongLabel;
-                    const found = Boolean(addedSceneGraphNodes.indexOf(address) > -1);
-                    return (
-                      <Place
-                        key={place.attributes.LongLabel}
-                        onClick={() => selectCoordinate(place.location, address)}
-                        address={address}
-                        found={found}
-                      />
-                    );
-                  })}
-                </>
-              ) :
+              (places.length < 4) ? places?.map?.((place) => {
+                const address = place.attributes.LongLabel;
+                const found = Boolean(addedSceneGraphNodes.indexOf(address) > -1);
+                return (
+                  <Place
+                    key={place.attributes.LongLabel}
+                    onClick={() => selectCoordinate(place.location, address)}
+                    address={address}
+                    found={found}
+                  />
+                );
+              }) :
                 (
                   <FilterList
                     searchText="Filter results..."
@@ -285,7 +302,11 @@ function GeoPositionPanel({
           </>
         );
       default:
-        return <CenteredLabel>{`Currently there is no data for locations on ${currentAnchor}`}</CenteredLabel>;
+        return (
+          <CenteredLabel>
+            {`Currently there is no data for locations on ${currentAnchor}`}
+          </CenteredLabel>
+        );
     }
   }
 
