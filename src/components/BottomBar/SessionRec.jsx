@@ -117,27 +117,38 @@ class SessionRec extends Component {
       case SessionStatePlaying:
         return (
           <>
-            <div className={styles.playbackButton} onClick={this.togglePlaybackPaused}>
+            <Button
+              className={styles.playbackButton}
+              onClick={this.togglePlaybackPaused}
+              regular
+            >
               <MaterialIcon icon="pause" />
               {' Pause'}
-            </div>
-            <div onClick={this.stopPlayback}>
+            </Button>
+            <Button onClick={this.stopPlayback} regular>
               <MaterialIcon icon="stop" />
               {' Stop playback'}
-            </div>
+            </Button>
           </>
         );
       case SessionStatePaused:
         return (
           <>
-            <div className={styles.playbackButton} onClick={this.togglePlaybackPaused}>
+            <Button
+              className={styles.playbackButton}
+              onClick={this.togglePlaybackPaused}
+              regular
+            >
               <MaterialIcon icon="play_arrow" />
               {' Resume'}
-            </div>
-            <div onClick={this.stopPlayback}>
+            </Button>
+            <Button
+              onClick={this.stopPlayback}
+              regular
+            >
               <MaterialIcon icon="stop" />
               {' Stop playback'}
-            </div>
+            </Button>
           </>
         );
       default:
@@ -226,9 +237,10 @@ class SessionRec extends Component {
               <p>Output frames</p>
               <InfoBox
                 className={styles.infoBox}
-                text={`If checked, the specified number of frames will be recorded as screenshots and
-                saved to disk. Per default, they are saved in the user/screenshots folder. 
-                This feature can not be used together with 'loop playback'`}
+                text={`If checked, the specified number of frames will be recorded as 
+                screenshots and saved to disk. Per default, they are saved in the  
+                user/screenshots folder. This feature can not be used together with
+                'loop playback'`}
               />
             </Checkbox>
             { shouldOutputFrames && (
@@ -269,6 +281,30 @@ class SessionRec extends Component {
         </div>
       </Popover>
     );
+  }
+
+  setUseTextFormat(useTextFormat) {
+    this.setState({ useTextFormat });
+  }
+
+  setForceTiming(forceTime) {
+    this.setState({ forceTime });
+  }
+
+  setLoopPlayback(loopPlayback) {
+    if (loopPlayback) {
+      this.setState({ loopPlayback: true, shouldOutputFrames: false });
+    } else {
+      this.setState({ loopPlayback });
+    }
+  }
+
+  setShouldOutputFrames(shouldOutputFrames) {
+    if (shouldOutputFrames) {
+      this.setState({ loopPlayback: false, shouldOutputFrames: true });
+    } else {
+      this.setState({ shouldOutputFrames });
+    }
   }
 
   setPlaybackFile({ value }) {
@@ -336,30 +372,6 @@ class SessionRec extends Component {
     );
   }
 
-  setUseTextFormat(useTextFormat, event) {
-    this.setState({ useTextFormat });
-  }
-
-  setForceTiming(forceTime, event) {
-    this.setState({ forceTime });
-  }
-
-  setLoopPlayback(loopPlayback, event) {
-    if (loopPlayback) {
-      this.setState({ loopPlayback: true, shouldOutputFrames: false });
-    } else {
-      this.setState({ loopPlayback });
-    }
-  }
-
-  setShouldOutputFrames(shouldOutputFrames, event) {
-    if (shouldOutputFrames) {
-      this.setState({ loopPlayback: false, shouldOutputFrames: true });
-    } else {
-      this.setState({ shouldOutputFrames });
-    }
-  }
-
   togglePopover() {
     const { showPopover } = this.state;
     if (!showPopover) {
@@ -405,7 +417,7 @@ const mapSubStateToProps = ({ engineMode, sessionRecording, luaApi }) => {
     },
     startPlaybackLua: (filename, forceTime, shouldOutputFrames, outputFramerate, loopPlayback) => {
       if (shouldOutputFrames) {
-        luaApi.sessionRecording.enableTakeScreenShotDuringPlayback(parseInt(outputFramerate));
+        luaApi.sessionRecording.enableTakeScreenShotDuringPlayback(parseInt(outputFramerate, 10));
       }
       if (forceTime) {
         luaApi.sessionRecording.startPlayback(filename, loopPlayback);
@@ -443,9 +455,7 @@ const mapDispatchToProps = (dispatch) => ({
   }
 });
 
-SessionRec = connect(
+export default connect(
   subStateToProps(mapSubStateToProps, mapStateToSubState),
   mapDispatchToProps,
 )(SessionRec);
-
-export default SessionRec;
