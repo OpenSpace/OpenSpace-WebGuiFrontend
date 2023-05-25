@@ -41,7 +41,7 @@ const getWwtData = async (luaApi, callback) => {
           ...image,
           key: image.identifier
         }));
-        callback({ imageList: imgDataWithKey, collectionUrl });
+        callback({ imageList: imgDataWithKey, url: collectionUrl });
       }
     } else {
       throw new Error('No AAS WorldWide Telescope images!');
