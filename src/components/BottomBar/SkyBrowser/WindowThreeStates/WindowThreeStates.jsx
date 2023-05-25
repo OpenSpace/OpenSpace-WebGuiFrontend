@@ -51,7 +51,7 @@ class WindowThreeStates extends Component {
 
   get asPopup() {
     const {
-      children, height, sizeCallback, minHeight
+      children, height, minHeight, sizeCallback
     } = this.props;
     return (
       <PopoverResizeable
@@ -67,7 +67,7 @@ class WindowThreeStates extends Component {
 
   get asWindow() {
     const {
-      children, height, sizeCallback, minHeight
+      children, height, minHeight, sizeCallback
     } = this.props;
     return (
       <FloatingWindow
@@ -172,6 +172,8 @@ WindowThreeStates.propTypes = {
   sizeCallback: PropTypes.func,
   defaultHeight: PropTypes.number,
   defaultStyle: PropTypes.string,
+  height: PropTypes.number,
+  minHeight: PropTypes.number,
   acceptedStyles: PropTypes.array
 };
 
@@ -180,6 +182,8 @@ WindowThreeStates.defaultProps = {
   closeCallback: null,
   sizeCallback: null,
   defaultHeight: 440,
+  height: 440,
+  minHeight: 100,
   defaultStyle: WindowStyle.ATTACHED,
   acceptedStyles: [WindowStyle.ATTACHED, WindowStyle.DETACHED, WindowStyle.PANE]
 };
