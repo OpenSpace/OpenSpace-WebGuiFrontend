@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 
 import {
   loadExoplanetsData,
@@ -9,7 +9,6 @@ import {
 } from '../../api/Actions';
 import { NavigationAimKey, NavigationAnchorKey } from '../../api/keys';
 import propertyDispatcher from '../../api/propertyDispatcher';
-import subStateToProps from '../../utils/subStateToProps';
 import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
 import { FilterList, FilterListData } from '../common/FilterList/FilterList';
 import Button from '../common/Input/Button/Button';
@@ -24,21 +23,41 @@ import Picker from './Picker';
 
 import styles from './ExoplanetsPanel.scss';
 
-function ExoplanetsPanel({
-  isDataInitialized, loadData, luaApi, setPopoverVisibility, popoverVisible,
-  anchor, aim, anchorDispatcher, aimDispatcher, removeSystem, refresh,
-  exoplanetSystems, hasSystems, systemList
-}) {
+function ExoplanetsPanel() {
   const [starName, setStarName] = React.useState(undefined);
 
+  const popoverVisible = useSelector((state) => state.local.popovers.exoplanets.visible);
+  const luaApi = useSelector((state) => state.luaApi);
+  const exoplanetSystems = useSelector((state) => {
+    // Find already existing systems
+    const systems = [];
+    for (const [key, value] of Object.entries(state.propertyTree.propertyOwners)) {
+      if (value.tags.includes('exoplanet_system')) {
+        systems.push(`Scene.${value.identifier}`);
+      }
+    }
+    return systems;
+  });
+  const isDataInitialized = useSelector((state) => state.exoplanets.isInitialized);
+  const anchor = useSelector((state) => state.propertyTree.properties[NavigationAnchorKey]);
+  const systemList = useSelector((state) => state.exoplanets.data);
+  const aim = useSelector((state) => state.propertyTree.properties[NavigationAimKey]);
+
+  const hasSystems = systemList && systemList.length > 0;
+
+  const dispatch = useDispatch();
+
   React.useEffect(() => {
-     if (!isDataInitialized) {
-      loadData(luaApi);
+    if (!isDataInitialized) {
+      dispatch(loadExoplanetsData(luaApi));
     }
   }, []);
 
   function togglePopover() {
-    setPopoverVisibility(!popoverVisible);
+    dispatch(setPopoverVisibility({
+      popover: 'exoplanets',
+      visible: !popoverVisible
+    }));
   }
 
   function onSelect(identifier) {
@@ -46,14 +65,14 @@ function ExoplanetsPanel({
   }
 
   function removeExoplanetSystem(systemName) {
-    const matchingAnchor = (anchor.value.indexOf(systemName) == 0);
-    const matchingAim = (aim.value.indexOf(systemName) == 0);
+    const matchingAnchor = (anchor.value.indexOf(systemName) === 0);
+    const matchingAim = (aim.value.indexOf(systemName) === 0);
     if (matchingAnchor || matchingAim) {
-      anchorDispatcher.set('Sun');
-      aimDispatcher.set('');
+      propertyDispatcher(dispatch, NavigationAnchorKey).set('Sun');
+      propertyDispatcher(dispatch, NavigationAimKey).set('');
     }
 
-    removeSystem(systemName);
+    dispatch(removeExoplanets({ system : systemName}));
   }
 
   function addSystem() {
@@ -61,7 +80,7 @@ function ExoplanetsPanel({
     // TODO: Once we have a proper way to subscribe to additions and removals
     // of property owners, this 'hard' refresh should be removed.
     setTimeout(() => {
-      refresh();
+      dispatch(reloadPropertyTree());
     }, 500);
   }
 
@@ -152,69 +171,5 @@ function ExoplanetsPanel({
     </div>
   );
 }
-
-const mapSubStateToProps = ({
-  propertyOwners,
-  popoverVisible,
-  luaApi,
-  isDataInitialized,
-  exoplanetsData,
-  anchor,
-  aim
-}) => {
-  // Find already existing systems
-  const systems = [];
-  for (const [key, value] of Object.entries(propertyOwners)) {
-    if (value.tags.includes('exoplanet_system')) {
-      systems.push(`Scene.${value.identifier}`);
-    }
-  }
-
-  return {
-    popoverVisible,
-    exoplanetSystems: systems,
-    isDataInitialized,
-    luaApi,
-    systemList: exoplanetsData,
-    hasSystems: (exoplanetsData && exoplanetsData.length > 0),
-    anchor,
-    aim
-  };
-};
-
-const mapStateToSubState = (state) => ({
-  propertyOwners: state.propertyTree.propertyOwners,
-  popoverVisible: state.local.popovers.exoplanets.visible,
-  luaApi: state.luaApi,
-  isDataInitialized: state.exoplanets.isInitialized,
-  exoplanetsData: state.exoplanets.data,
-  anchor: state.propertyTree.properties[NavigationAnchorKey],
-  aim: state.propertyTree.properties[NavigationAimKey]
-});
-
-const mapDispatchToProps = (dispatch) => ({
-  loadData: (luaApi) => {
-    dispatch(loadExoplanetsData(luaApi));
-  },
-  setPopoverVisibility: (visible) => {
-    dispatch(setPopoverVisibility({
-      popover: 'exoplanets',
-      visible
-    }));
-  },
-  refresh: () => {
-    dispatch(reloadPropertyTree());
-  },
-  removeSystem: (system) => {
-    dispatch(removeExoplanets({ system }));
-  },
-  anchorDispatcher: propertyDispatcher(dispatch, NavigationAnchorKey),
-  aimDispatcher: propertyDispatcher(dispatch, NavigationAimKey)
-});
-
-ExoplanetsPanel = connect(
-  subStateToProps(mapSubStateToProps, mapStateToSubState),
-  mapDispatchToProps
-)(ExoplanetsPanel);
 
 export default ExoplanetsPanel;
