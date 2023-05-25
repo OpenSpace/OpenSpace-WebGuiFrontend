@@ -11,7 +11,7 @@ import { ActionsButton } from '../ActionsPanel';
 import Picker from '../Picker';
 import WindowThreeStates from '../SkyBrowser/WindowThreeStates/WindowThreeStates';
 
-import { DisplayType, makeUtcDate } from './missionUtils';
+import { DisplayType, makeUtcDate, uppercaseFirstLetter } from './missionUtils';
 import Timeline from './Timeline';
 
 import styles from './Missions.scss';
@@ -24,25 +24,30 @@ function SetTimeButton({ onClick, name }) {
   );
 }
 
-export default function Missions({ }) {
+export default function Missions() {
   // Make panel being shown stored in local storage
   const [popoverVisible, setPopoverVisibility] = useLocalStorageState('missionsPanelVisible', true);
 
   // Access Redux state
   const missions = useSelector((state) => state.missions);
+  const overview = useSelector((state) => state.missions?.data?.missions[0]);
   const allActions = useSelector((state) => state.shortcuts?.data?.shortcuts);
   const luaApi = useSelector((state) => state.luaApi);
-  const now = useSelector((state) => state.time.timeCapped); // Use time that is updated every second - optimization
+  // Use time that is updated every second - optimization
+  const now = useSelector((state) => state.time.timeCapped);
 
-  const [overview, setOverview] = React.useState(missions?.data?.missions[0]);
-  const [displayedPhase, setDisplayedPhase] = React.useState({ type: DisplayType.phase, data: overview });
+  const [displayedPhase, setDisplayedPhase] = React.useState({
+    type: DisplayType.phase,
+    data: overview
+  });
   const [currentActions, setCurrentActions] = React.useState([]);
   const [size, setSize] = React.useState({ width: 350, height: window.innerHeight });
   const [displayCurrentPhase, setDisplayCurrentPhase] = React.useState(false);
-  const [wholeTimeRange, setWholeTimeRange] = React.useState(
-    [makeUtcDate(missions.data.missions[0].timerange.start), makeUtcDate(missions.data.missions[0].timerange.end)]
-  );
 
+  const wholeTimeRange = [
+    makeUtcDate(overview.timerange.start),
+    makeUtcDate(overview.timerange.end)
+  ];
   const allPhasesNested = React.useRef(null);
   const topBarHeight = 30;
   const browserHasLoaded = window.innerHeight > 1;
@@ -56,6 +61,7 @@ export default function Missions({ }) {
 
   React.useEffect(() => {
     if (displayCurrentPhase) {
+      // eslint-disable-next-line no-use-before-define
       setPhaseToCurrent();
     }
   }, [now]);
@@ -63,8 +69,10 @@ export default function Missions({ }) {
   // Every time a phase changes, get the actions that are valid for that phase
   React.useEffect(() => {
     const result = [];
+    // eslint-disable-next-line no-use-before-define
     findCurrentActions(result, overview);
     if (displayedPhase.data && displayedPhase.data?.actions && overview !== displayedPhase.data) {
+      // eslint-disable-next-line no-use-before-define
       findCurrentActions(result, displayedPhase.data);
     }
     setCurrentActions(result);
@@ -73,6 +81,7 @@ export default function Missions({ }) {
   // When missions data changes, update phases
   React.useEffect(() => {
     const phases = [];
+    // eslint-disable-next-line no-use-before-define
     findAllPhases(phases, missions.data.missions[0].phases, 0);
     allPhasesNested.current = phases;
   }, [missions.data]);
@@ -83,7 +92,7 @@ export default function Missions({ }) {
     } else {
       result[nestedLevel].push(...phases);
     }
-    phases.map((phase) => {
+    phases.forEach((phase) => {
       if (phase?.phases && phase.phases.length > 0) {
         findAllPhases(result, phase.phases, nestedLevel + 1);
       }
@@ -91,7 +100,7 @@ export default function Missions({ }) {
   }
 
   function findCurrentActions(result, phase) {
-    phase.actions.map((action) => {
+    phase.actions.forEach((action) => {
       const found = allActions?.find((item) => item.identifier === action);
       if (found) {
         result.push(found);
@@ -101,51 +110,39 @@ export default function Missions({ }) {
 
   // Locate the next instrument activity capture
   function nextCapture() {
-    if (!now || overview.capturetimes.length === 0) {
+    if (!now) {
       return null;
     }
-    let nextFoundCapture = null;
-
     // Assume the captures are sorted w regards to time
-    for (const capture of overview.capturetimes) {
+    // Find the first time that is after the current time
+    const result = overview.capturetimes.find((capture) => {
       const utcDate = makeUtcDate(capture);
-      if (!utcDate) {
-        return null;
-      }
-      // Find the first time that is after the current time
-      if (now.getTime() < utcDate.getTime()) {
-        nextFoundCapture = utcDate;
-        break;
-      }
-    }
-    return nextFoundCapture;
+      return utcDate !== null && now.getTime() < utcDate.getTime();
+    });
+    return makeUtcDate(result);
   }
 
   // Locate the previous instrument activity capture
   function lastCapture() {
-    if (!now || overview.capturetimes.length === 0) {
+    if (!now) {
       return null;
     }
-    let lastFoundCapture = null;
     // Assume the captures are sorted w regards to time
-    for (const capture of overview.capturetimes.toReversed()) {
+    // Find the last time that is before the current time
+    const result = overview.capturetimes.findLast((capture) => {
       const utcDate = makeUtcDate(capture);
-      // Find the first time that is before the current time
-      if (!utcDate) {
-        return null;
-      }
-      if (now.getTime() > utcDate.getTime()) {
-        lastFoundCapture = utcDate;
-        break;
-      }
-    }
-    return lastFoundCapture;
+      return utcDate !== null && now.getTime() > utcDate.getTime();
+    });
+    return makeUtcDate(result);
   }
 
   function setPhaseToCurrent() {
     const flatAllPhases = allPhasesNested.current.flat();
-    const filteredPhases = flatAllPhases.filter((mission) => Date.parse(now) < Date.parse(makeUtcDate(mission.timerange.end)) &&
-        Date.parse(now) > Date.parse(makeUtcDate(mission.timerange.start)));
+    const filteredPhases = flatAllPhases.filter((mission) => {
+      const isBeforeEnd = Date.parse(now) < Date.parse(makeUtcDate(mission.timerange.end));
+      const isAfterStart = Date.parse(now) > Date.parse(makeUtcDate(mission.timerange.start));
+      return isBeforeEnd && isAfterStart;
+    });
     const found = filteredPhases.pop();
     // If the found phase is already displayed, do nothing
     if (!found) {
@@ -169,14 +166,14 @@ export default function Missions({ }) {
   // Fadetime is in seconds
   async function jumpToTime(timeNow, time, fadeTime = 1) {
     const utcTime = time instanceof Date ? time : makeUtcDate(time);
-    const timeDiffSeconds = parseInt(Math.abs(timeNow - utcTime) / 1000);
+    const timeDiffSeconds = parseInt(Math.abs(timeNow - utcTime) / 1000, 10);
     const diffBiggerThanADay = timeDiffSeconds > 86400; // No of seconds in a day
     if (diffBiggerThanADay) {
-      const promise = new Promise((resolve, reject) => {
+      const promise = new Promise((resolve) => {
         luaApi.setPropertyValueSingle('RenderEngine.BlackoutFactor', 0, fadeTime, 'QuadraticEaseOut');
         setTimeout(() => resolve('done!'), fadeTime * 1000);
       });
-      const result = await promise;
+      await promise;
       luaApi.time.setTime(utcTime.toISOString());
       luaApi.setPropertyValueSingle('RenderEngine.BlackoutFactor', 1, fadeTime, 'QuadraticEaseIn');
     } else {
@@ -216,36 +213,59 @@ export default function Missions({ }) {
   }
 
   function createTimeButtons() {
-    if (displayedPhase.type === DisplayType.phase) {
-      const phaseType = displayedPhase.data === overview ? 'Mission' : 'Phase';
-      return (
-        <>
-          <SetTimeButton name={`Set Time to End of ${phaseType}`} onClick={jumpToEndOfPhase} />
-          <SetTimeButton name={`Set Time to Beginning of ${phaseType}`} onClick={jumpToStartOfPhase} />
-        </>
-      );
-    }
-    if (displayedPhase.type === DisplayType.milestone) {
-      return <SetTimeButton name="Set Time" onClick={jumpToDate} />;
+    switch (displayedPhase.type) {
+      case DisplayType.phase: {
+        const phaseType = displayedPhase.data === overview ? 'Mission' : 'Phase';
+        return (
+          <>
+            <SetTimeButton
+              name={`Set Time to End of ${phaseType}`}
+              onClick={jumpToEndOfPhase}
+            />
+            <SetTimeButton
+              name={`Set Time to Beginning of ${phaseType}`}
+              onClick={jumpToStartOfPhase}
+            />
+          </>
+        );
+      }
+      case DisplayType.milestone: {
+        return <SetTimeButton name="Set Time" onClick={jumpToDate} />;
+      }
+      default: {
+        return null;
+      }
     }
   }
 
+  // Time display string shown under the title
   function getTimeString() {
-    if (displayedPhase.type === DisplayType.milestone) {
-      return `${new Date(displayedPhase.data.date).toDateString()}`;
-    }
-    if (displayedPhase.type === DisplayType.phase) {
-      const start = new Date(displayedPhase.data.timerange.start).toDateString();
-      const end = new Date(displayedPhase.data.timerange.end).toDateString();
-      return `${start} - ${end}`;
+    switch (displayedPhase.type) {
+      case DisplayType.milestone: {
+        return `${new Date(displayedPhase.data.date).toDateString()}`;
+      }
+      case DisplayType.phase: {
+        const start = new Date(displayedPhase.data.timerange.start).toDateString();
+        const end = new Date(displayedPhase.data.timerange.end).toDateString();
+        return `${start} - ${end}`;
+      }
+      default: {
+        return null;
+      }
     }
   }
 
   function popover() {
     const timeString = getTimeString();
-    const typeTitle = displayedPhase.type && displayedPhase.type === DisplayType.phase ? 'Phase' : 'Milestone';
-    const title = `${typeTitle}: ${displayedPhase?.data?.name}`;
-    const hideTitle = displayedPhase.type === DisplayType.phase && displayedPhase?.data?.name === overview.name;
+    // Title for type: "Milestone" or "Phase"
+    const hasType = displayedPhase.type;
+    const typeTitle = hasType && uppercaseFirstLetter(displayedPhase.type);
+    // Hide title if the overview is currently shown
+    const isPhase = displayedPhase.type === DisplayType.phase;
+    const isShowingOverview = displayedPhase?.data?.name === overview.name;
+    const hideTitle = isPhase && isShowingOverview;
+    // Title of the current milestone or phase
+    const title = hideTitle ? '' : `${typeTitle}: ${displayedPhase?.data?.name}`;
 
     return (
       <>
@@ -274,7 +294,11 @@ export default function Missions({ }) {
         >
           <div style={{ height: size.height - topBarHeight, overflow: 'auto' }}>
             <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-              <Button onClick={() => setPhaseManually({ type: DisplayType.phase, data: overview })}>Overview</Button>
+              <Button
+                onClick={() => setPhaseManually({ type: DisplayType.phase, data: overview })}
+              >
+                Overview
+              </Button>
               <Button
                 onClick={() => setDisplayCurrentPhase((lastValue) => !lastValue)}
                 className={displayCurrentPhase ? styles.selectedButton : null}
@@ -285,7 +309,7 @@ export default function Missions({ }) {
             <div style={{ padding: '10px' }}>
               {displayedPhase.data ? (
                 <>
-                  <p>{!hideTitle && title}</p>
+                  <p>{title}</p>
                   <p style={{ color: 'darkgray' }}>
                     {timeString}
                   </p>
@@ -295,8 +319,17 @@ export default function Missions({ }) {
                   </p>
                   {displayedPhase.data?.link &&
                   <Button onClick={() => openUrl(displayedPhase.data.link)}>Read more</Button>}
-                  {displayedPhase.data?.image &&
-                  <img style={{ width: '100%', padding: '20px 5px', maxWidth: window.innerWidth * 0.25 }} src={displayedPhase.data.image} />}
+                  {displayedPhase.data?.image && (
+                    <img
+                      style={{
+                        width: '100%',
+                        padding: '20px 5px',
+                        maxWidth: window.innerWidth * 0.25
+                      }}
+                      src={displayedPhase.data.image}
+                      alt=""
+                    />
+                  )}
                 </>
               ) :
                 <CenteredLabel>No current phase in this mission</CenteredLabel>}
@@ -305,10 +338,22 @@ export default function Missions({ }) {
               }}
               >
                 {createTimeButtons()}
-                {nextCapture() && <SetTimeButton name="Set Time to Next Capture" onClick={jumpToNextCapture} />}
-                {lastCapture() && <SetTimeButton name="Set Time to Last Capture" onClick={jumpToLastCapture} />}
+                {nextCapture() && (
+                  <SetTimeButton
+                    name="Set Time to Next Capture"
+                    onClick={jumpToNextCapture}
+                  />
+                )}
+                {lastCapture() && (
+                  <SetTimeButton
+                    name="Set Time to Last Capture"
+                    onClick={jumpToLastCapture}
+                  />
+                )}
               </div>
-              {currentActions.map((action) => <ActionsButton key={action.identifier} action={action} />)}
+              {currentActions.map(
+                (action) => <ActionsButton key={action.identifier} action={action} />
+              )}
             </div>
           </div>
         </WindowThreeStates>

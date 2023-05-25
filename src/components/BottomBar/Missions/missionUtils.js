@@ -10,3 +10,7 @@ export const DisplayType = {
   phase: 'phase',
   milestone: 'milestone'
 };
+
+export function uppercaseFirstLetter(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
