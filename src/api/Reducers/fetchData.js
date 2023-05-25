@@ -26,7 +26,7 @@ const info = (state = {}, action) => {
   }
 };
 
-const fetchData = (state = {}, action) => {
+const fetchData = (state = [], action) => {
   switch (action.type) {
     case actionTypes.fetchData:
       return [...state, info(undefined, action)];
