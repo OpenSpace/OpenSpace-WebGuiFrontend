@@ -25,13 +25,14 @@ import '../styles/base.scss';
 import styles from './OnScreenGui.scss';
 
 function OnScreenGui({
-  showFlightController, showAbout, isInBrowser
+  isInBrowser
 }) {
   let hasCheckedVersion = false;
   const [showTutorial, setShowTutorial] = React.useState(false);
   const [luaConsoleVisible, setLuaConsoleVisible] = React.useState(false);
 
   const version = useSelector((state) => state.version);
+  const showAbout = useSelector((state) => state.local.showAbout);
 
   const dispatch = useDispatch();
 
@@ -101,7 +102,7 @@ function OnScreenGui({
           {isInBrowser && luaConsoleVisible && <LuaConsole />}
           <NodePopOverContainer />
           <NodeMetaContainer />
-          <BottomBar showFlightController={showFlightController} />
+          <BottomBar />
           <KeybindingPanel />
           <TourPopup isVisible={showTutorial} setVisibility={(show) => setShowTutorial(show)} />
         </section>
