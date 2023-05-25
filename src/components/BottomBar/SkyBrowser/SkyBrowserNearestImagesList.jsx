@@ -123,6 +123,7 @@ SkyBrowserNearestImagesList.propTypes = {
   activeImage: PropTypes.string.isRequired,
   currentBrowserColor: PropTypes.func.isRequired,
   height: PropTypes.number.isRequired,
+  moveCircleToHoverImage: PropTypes.func.isRequired,
   selectImage: PropTypes.func.isRequired
 };
 
