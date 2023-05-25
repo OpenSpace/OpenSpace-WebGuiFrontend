@@ -74,7 +74,7 @@ const mapStateToProps = (state) => ({
 });
 
 FocusEntry.propTypes = {
-  closePopoverIfSet: PropTypes.func.isRequired,
+  closePopoverIfSet: PropTypes.func,
   identifier: PropTypes.string.isRequired,
   name: PropTypes.string,
   onSelect: PropTypes.func,
@@ -84,6 +84,7 @@ FocusEntry.propTypes = {
 };
 
 FocusEntry.defaultProps = {
+  closePopoverIfSet: () => {},
   name: undefined,
   onSelect: null,
   showNavigationButtons: false,
