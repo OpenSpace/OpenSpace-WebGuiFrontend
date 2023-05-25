@@ -50,7 +50,7 @@ const defaultState = {
 const time = (state = defaultState, action = {}) => {
   switch (action.type) {
     case actionTypes.updateTime: {
-      const { time } = action.payload;
+      const { time: newTime } = action.payload;
       const { deltaTime } = action.payload;
       const { targetDeltaTime } = action.payload;
       const { isPaused } = action.payload;
@@ -61,11 +61,11 @@ const time = (state = defaultState, action = {}) => {
       const { deltaTimeSteps } = action.payload;
       const newState = { ...state };
 
-      if (time !== undefined) {
-        newState.time = new Date(dateStringWithTimeZone(time));
+      if (newTime !== undefined) {
+        newState.time = new Date(dateStringWithTimeZone(newTime));
 
         // Make optimized time that only updates every second
-        const date = new Date(dateStringWithTimeZone(time));
+        const date = new Date(dateStringWithTimeZone(newTime));
         date.setMilliseconds(0);
         // If it is the first time the time is sent, just set the state
         // Else cap the update of the state to every second for performance
