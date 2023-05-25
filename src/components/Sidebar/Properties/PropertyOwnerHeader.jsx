@@ -5,7 +5,7 @@ import DraggableIcon from 'svg-react-loader?name=Aim!../../../icons/draggable_li
 import Focus from 'svg-react-loader?name=Focus!../../../icons/focus.svg';
 
 import {
-  Engine_FadeDurationKey,
+  EngineFadeDurationKey,
   NavigationAimKey,
   NavigationAnchorKey,
   RetargetAnchorKey
@@ -264,7 +264,7 @@ const mapStateToProps = (state, ownProps) => {
     enabled = false;
   }
 
-  const fadeDuration = state.propertyTree.properties[Engine_FadeDurationKey]?.value || 1.0;
+  const fadeDuration = state.propertyTree.properties[EngineFadeDurationKey]?.value || 1.0;
 
   return {
     enabled,

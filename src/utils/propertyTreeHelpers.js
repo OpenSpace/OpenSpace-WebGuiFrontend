@@ -1,7 +1,7 @@
 // TODO: Revisit these functions and determine if any should be
 // kept since most of this functionality is now more easily handled
 // by the lua API
-import { LayerGroupKeys } from '../api/keys';
+import { EnginePropertyVisibilityKey, LayerGroupKeys } from '../api/keys';
 
 // Function to return a deep copy of an object
 export const keepCloning = (objectpassed) => {
@@ -83,7 +83,7 @@ export function isPropertyVisible(properties, uri) {
   }
 
   // Only show properties matching the current visibility setting
-  const visibility = properties['OpenSpaceEngine.PropertyVisibility'];
+  const visibility = properties[EnginePropertyVisibilityKey];
   let propertyVisibility = '';
   switch (property.description.MetaData.Visibility) {
     case 'Hidden':
