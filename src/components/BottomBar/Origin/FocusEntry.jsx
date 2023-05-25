@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import Button from '../../common/Input/Button/Button';
@@ -9,8 +9,10 @@ import { useContextRefs } from '../../GettingStartedTour/GettingStartedContext';
 import styles from './FocusEntry.scss';
 
 function FocusEntry({
-  luaApi, name, identifier, onSelect, active, showNavigationButtons, closePopoverIfSet
+  name, identifier, onSelect, active, showNavigationButtons, closePopoverIfSet
 }) {
+
+  const luaApi = useSelector((state) => state.luaApi);
   function isActive() {
     return identifier === active;
   }
@@ -69,10 +71,6 @@ function FocusEntry({
   );
 }
 
-const mapStateToProps = (state) => ({
-  luaApi: state.luaApi
-});
-
 FocusEntry.propTypes = {
   closePopoverIfSet: PropTypes.func,
   identifier: PropTypes.string.isRequired,
@@ -80,7 +78,6 @@ FocusEntry.propTypes = {
   onSelect: PropTypes.func,
   active: PropTypes.string,
   showNavigationButtons: PropTypes.bool,
-  luaApi: PropTypes.object.isRequired
 };
 
 FocusEntry.defaultProps = {
@@ -90,7 +87,5 @@ FocusEntry.defaultProps = {
   showNavigationButtons: false,
   active: ''
 };
-
-FocusEntry = connect(mapStateToProps)(FocusEntry);
 
 export default FocusEntry;
