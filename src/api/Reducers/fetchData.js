@@ -35,6 +35,7 @@ const fetchData = (state = [], action) => {
         if (action.payload.id === element.id) {
           return info(element, action);
         }
+        return element;
       }));
     case actionTypes.fetchDataFailed:
       return state.map((element) => {

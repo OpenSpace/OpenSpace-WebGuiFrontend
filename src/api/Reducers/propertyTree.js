@@ -11,7 +11,6 @@ import actionTypes from '../Actions/actionTypes';
 // setPropertyValue
 
 const property = (state = {}, action) => {
-  const { uri } = action.payload;
   switch (action.type) {
     case actionTypes.updatePropertyValue:
     case actionTypes.setPropertyValue:

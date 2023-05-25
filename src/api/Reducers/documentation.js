@@ -5,7 +5,7 @@ const defaultState = {
   data: {}
 };
 
-const documentation = (state = defaultState, action) => { // state refers to docu
+const documentation = (state = defaultState, action) => { // state refers to documentation
   switch (action.type) {
     case actionTypes.initializeDocumentation:
       return {
