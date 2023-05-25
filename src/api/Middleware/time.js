@@ -36,6 +36,7 @@ const time = (store) => (next) => (action) => {
     if (nSubscribers > 0) {
       setupSubscription(store);
     }
+    break;
   case actionTypes.subscribeToTime:
     ++nSubscribers;
     if (nSubscribers === 1 && state.connection.isConnected) {

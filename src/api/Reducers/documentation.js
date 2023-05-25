@@ -5,7 +5,7 @@ const defaultState = {
   data: {}
 };
 
-export const documentation = (state = defaultState, action) => { // state refers to docu
+const documentation = (state = defaultState, action) => { // state refers to docu
   switch (action.type) {
   case actionTypes.initializeDocumentation:
     return {
@@ -16,3 +16,4 @@ export const documentation = (state = defaultState, action) => { // state refers
     return state;
   }
 };
+export default documentation;

@@ -2,7 +2,7 @@ import actionTypes from '../Actions/actionTypes';
 
 const initStoryTree = { story: { storyidentifier: 'story_default' }, reset: false, info: {} };
 
-export const storyTree = (state = initStoryTree, action) => {
+const storyTree = (state = initStoryTree, action) => {
   switch (action.type) {
   case actionTypes.addStoryTree:
     return {
@@ -31,3 +31,4 @@ export const storyTree = (state = initStoryTree, action) => {
     };
   }
 };
+export default storyTree;

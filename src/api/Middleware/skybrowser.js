@@ -25,9 +25,10 @@ const getWwtData = async (luaApi, callback) => {
       throw new Error('The Sky Browser Module is not loaded!');
     }
     let imgData = await luaApi.skybrowser.getListOfImages();
-    let url = await luaApi.skybrowser.getWwtImageCollectionUrl();
-    if (url) {
-      url = url[1].url;
+    let collectionUrl = await luaApi.skybrowser.getWwtImageCollectionUrl();
+    if (collectionUrl) {
+      const { url } = collectionUrl[1];
+      collectionUrl = url;
     } else {
       throw new Error('No AAS WorldWide Telescope image collection!');
     }
@@ -40,7 +41,7 @@ const getWwtData = async (luaApi, callback) => {
           ...image,
           key: image.identifier
         }));
-        callback({ imageList: imgDataWithKey, url });
+        callback({ imageList: imgDataWithKey, collectionUrl });
       }
     } else {
       throw new Error('No AAS WorldWide Telescope images!');

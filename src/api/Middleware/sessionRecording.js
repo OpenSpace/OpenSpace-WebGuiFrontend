@@ -61,7 +61,7 @@ const sessionRecording = (store) => (next) => (action) => {
     }
     break;
   case actionTypes.refreshSessionRecording:
-    dataCallback = (data) => store.dispatch(updateSessionRecording(data)),
+    dataCallback = (data) => store.dispatch(updateSessionRecording(data));
     refresh();
     break;
   case actionTypes.subscribeToSessionRecording:

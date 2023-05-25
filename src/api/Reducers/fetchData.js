@@ -26,7 +26,7 @@ const info = (state = {}, action) => {
   }
 };
 
-export const fetchData = (state = [], action) => {
+const fetchData = (state = {}, action) => {
   switch (action.type) {
   case actionTypes.fetchData:
     return [...state, info(undefined, action)];
@@ -47,3 +47,4 @@ export const fetchData = (state = [], action) => {
     return state;
   }
 };
+export default fetchData;

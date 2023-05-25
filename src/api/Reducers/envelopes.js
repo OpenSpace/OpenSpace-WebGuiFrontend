@@ -1,3 +1,5 @@
+// This is currently an unused file, so disable eslint until we revive the transfer function editor
+/* eslint-disable */
 import actionTypes from '../Actions/actionTypes';
 
 const point = (state = {}, action, value, id) => {
@@ -57,7 +59,7 @@ const envelope = (state = {}, action) => { // state refers to individual envelop
       },
       color: action.payload.color
     };
-      // TODO Clean up
+    // TODO Clean up
     state.points.splice(pointPos, 0, point(undefined, action, pointValue, pointId));
     return {
       ...state,

@@ -79,6 +79,19 @@ const handleUpdatedValues = (store, uri, value) => {
   }
 };
 
+const createSubscription = (store, uri) => {
+  const subscription = api.subscribeToProperty(uri);
+  const handleUpdates = (value) => handleUpdatedValues(store, uri, value);
+  const throttledHandleUpdates = throttle(handleUpdates, 200);
+
+  (async () => {
+    for await (const data of subscription.iterator()) {
+      throttledHandleUpdates(data.Value);
+    }
+  })();
+  return subscription;
+};
+
 const tryPromoteSubscription = (store, uri) => {
   const state = store.getState();
   const { isConnected } = state.connection;
@@ -110,19 +123,6 @@ const markAllSubscriptionsAsPending = () => {
   Object.keys(subscriptionInfos).forEach((uri) => {
     subscriptionInfos[uri].state = PendingState;
   });
-};
-
-const createSubscription = (store, uri) => {
-  const subscription = api.subscribeToProperty(uri);
-  const handleUpdates = (value) => handleUpdatedValues(store, uri, value);
-  const throttledHandleUpdates = throttle(handleUpdates, 200);
-
-  (async () => {
-    for await (const data of subscription.iterator()) {
-      throttledHandleUpdates(data.Value);
-    }
-  })();
-  return subscription;
 };
 
 const flattenPropertyTree = (propertyOwner, baseUri) => {
@@ -168,7 +168,7 @@ const flattenPropertyTree = (propertyOwner, baseUri) => {
 const getPropertyTree = async (dispatch) => {
   const value = await api.getProperty(rootOwnerKey);
 
-  const { propertyOwners, properties, groups } = flattenPropertyTree(value);
+  const { propertyOwners, properties } = flattenPropertyTree(value);
   dispatch(addPropertyOwners(propertyOwners));
   dispatch(addProperties(properties));
   dispatch(refreshGroups());

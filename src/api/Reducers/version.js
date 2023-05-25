@@ -5,7 +5,7 @@ const defaultState = {
   data: {}
 };
 
-export const version = (state = defaultState, action) => { // state refers to version
+const version = (state = defaultState, action) => { // state refers to version
   switch (action.type) {
   case actionTypes.initializeVersion:
     return {
@@ -16,3 +16,4 @@ export const version = (state = defaultState, action) => { // state refers to ve
     return state;
   }
 };
+export default version;

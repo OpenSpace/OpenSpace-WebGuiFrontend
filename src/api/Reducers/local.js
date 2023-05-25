@@ -98,39 +98,72 @@ const popovers = (state = defaultPopovers, action) => {
     }
     return {
       ...state,
-      activeNodePropertyPanels: { ...state.activeNodePropertyPanels, [action.payload.identifier]: popover({ attached: false, visible: true, activeTab: 0 }, action) }
+      activeNodePropertyPanels: {
+        ...state.activeNodePropertyPanels,
+        [action.payload.identifier]: popover(
+          { attached: false, visible: true, activeTab: 0 },
+          action
+        )
+      }
     };
 
   case actionTypes.removeNodePropertyPopover:
     return {
       ...state,
-      activeNodePropertyPanels: { ...state.activeNodePropertyPanels, [action.payload.identifier]: undefined }
+      activeNodePropertyPanels: {
+        ...state.activeNodePropertyPanels,
+        [action.payload.identifier]: undefined
+      }
     };
   case actionTypes.addNodeMetaPopover:
     return {
       ...state,
-      activeNodeMetaPanels: { ...state.activeNodeMetaPanels, [action.payload.identifier]: popover({ attached: false, visible: true, activeTab: 0 }, action) }
+      activeNodeMetaPanels: {
+        ...state.activeNodeMetaPanels,
+        [action.payload.identifier]: popover(
+          { attached: false, visible: true, activeTab: 0 },
+          action
+        )
+      }
     };
   case actionTypes.removeNodeMetaPopover:
     return {
       ...state,
-      activeNodeMetaPanels: { ...state.activeNodeMetaPanels, [action.payload.identifier]: undefined }
+      activeNodeMetaPanels: {
+        ...state.activeNodeMetaPanels,
+        [action.payload.identifier]: undefined
+      }
     };
   case actionTypes.setPopoverActiveTab:
     if (action.payload.isFocusNodePanel) {
       return {
         ...state,
-        focusNodePropertiesPanel: { ...state.focusNodePropertiesPanel, activeTab: action.payload.activeTab }
+        focusNodePropertiesPanel: {
+          ...state.focusNodePropertiesPanel,
+          activeTab: action.payload.activeTab
+        }
       };
     } if (action.payload.isMeta) {
       return {
         ...state,
-        activeNodeMetaPanels: { ...state.activeNodeMetaPanels, [action.payload.identifier]: { ...state.activeNodeMetaPanels[action.payload.identifier], activeTab: action.payload.activeTab } }
+        activeNodeMetaPanels: {
+          ...state.activeNodeMetaPanels,
+          [action.payload.identifier]: {
+            ...state.activeNodeMetaPanels[action.payload.identifier],
+            activeTab: action.payload.activeTab
+          }
+        }
       };
     }
     return {
       ...state,
-      activeNodePropertyPanels: { ...state.activeNodePropertyPanels, [action.payload.identifier]: { ...state.activeNodePropertyPanels[action.payload.identifier], activeTab: action.payload.activeTab } }
+      activeNodePropertyPanels: {
+        ...state.activeNodePropertyPanels,
+        [action.payload.identifier]: {
+          ...state.activeNodePropertyPanels[action.payload.identifier],
+          activeTab: action.payload.activeTab
+        }
+      }
     };
 
   default:
@@ -163,10 +196,12 @@ const showAbout = (state = false, action) => {
   }
 };
 
-export const local = combineReducers({
+const local = combineReducers({
   originPicker,
   timePicker,
   popovers,
   propertyTreeExpansion,
   showAbout
 });
+
+export default local;

@@ -40,7 +40,7 @@ const computeGroups = (propertyTree) => {
   return groups;
 };
 
-export const groups = (state = {}, action, propertyTree) => {
+const groups = (state = {}, action, propertyTree) => {
   switch (action.type) {
   case actionTypes.refreshGroups:
     return computeGroups(propertyTree);
@@ -48,3 +48,5 @@ export const groups = (state = {}, action, propertyTree) => {
     return state;
   }
 };
+
+export default groups;

@@ -3,7 +3,7 @@ import api from '../api';
 
 let topic;
 
-async function connectToFlightControllerTopic(store) {
+async function connectToFlightControllerTopic() {
   topic = api.startTopic('flightcontroller', { type: 'connect' });
 }
 
@@ -11,9 +11,8 @@ function sendFlightControlMessage(data) {
   topic.talk(data);
 }
 
-const flightController = (store) => (next) => (action) => {
+const flightController = () => (next) => (action) => {
   const result = next(action);
-  const state = store.getState();
   switch (action.type) {
   case actionTypes.onOpenConnection:
     connectToFlightControllerTopic();

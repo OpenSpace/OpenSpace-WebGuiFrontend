@@ -1,20 +1,20 @@
-import { camera } from './camera';
-import { connection } from './connection';
-import { documentation } from './documentation';
-import { engineMode } from './engineMode';
-import { exoplanets } from './exoplanets';
-import { fetchData } from './fetchData';
-import { groups } from './groups';
-import { local } from './local';
-import { luaApi } from './luaApi';
-import { missions } from './missions';
-import { propertyTree } from './propertyTree';
-import { sessionRecording } from './sessionRecording';
-import { shortcuts } from './shortcuts';
-import { skybrowser } from './skybrowser';
-import { storyTree } from './storyTree';
-import { time } from './time';
-import { version } from './version';
+import camera from './camera';
+import connection from './connection';
+import documentation from './documentation';
+import engineMode from './engineMode';
+import exoplanets from './exoplanets';
+import fetchData from './fetchData';
+import groups from './groups';
+import local from './local';
+import luaApi from './luaApi';
+import missions from './missions';
+import propertyTree from './propertyTree';
+import sessionRecording from './sessionRecording';
+import shortcuts from './shortcuts';
+import skybrowser from './skybrowser';
+import storyTree from './storyTree';
+import time from './time';
+import version from './version';
 
 // Add more reducers here
 const openspaceApp = (state = {}, action) => {

@@ -7,7 +7,7 @@ const defaultState = {
   showKeybinds: false
 };
 
-export const shortcuts = (state = defaultState, action) => { // state refers to version
+const shortcuts = (state = defaultState, action) => { // state refers to version
   switch (action.type) {
   case actionTypes.initializeShortcuts:
     return {
@@ -31,3 +31,4 @@ export const shortcuts = (state = defaultState, action) => { // state refers to 
     return state;
   }
 };
+export default shortcuts;

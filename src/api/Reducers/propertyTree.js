@@ -30,10 +30,10 @@ const properties = (state = {}, action) => {
     const inputProperties = action.payload.properties;
     const newState = { ...state };
 
-    inputProperties.forEach((property) => {
-      newState[property.uri] = {
-        description: property.description,
-        value: property.value
+    inputProperties.forEach((p) => {
+      newState[p.uri] = {
+        description: p.description,
+        value: p.value
       };
     });
 
@@ -84,7 +84,9 @@ const propertyOwners = (state = {}, action) => {
   }
 };
 
-export const propertyTree = combineReducers({
+const propertyTree = combineReducers({
   properties,
   propertyOwners
 });
+
+export default propertyTree;

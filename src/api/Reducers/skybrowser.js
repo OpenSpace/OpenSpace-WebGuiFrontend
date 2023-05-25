@@ -10,7 +10,7 @@ const defaultState = {
   url: ''
 };
 
-export const skybrowser = (state = defaultState, action) => {
+const skybrowser = (state = defaultState, action) => {
   const newState = { ...state };
   switch (action.type) {
   case actionTypes.initializeSkyBrowser:
@@ -29,6 +29,5 @@ export const skybrowser = (state = defaultState, action) => {
   default:
     return state;
   }
-
-  return state;
 };
+export default skybrowser;

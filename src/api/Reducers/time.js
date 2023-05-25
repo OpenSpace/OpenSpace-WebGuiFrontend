@@ -47,9 +47,9 @@ const defaultState = {
   deltaTimeSteps: undefined
 };
 
-export const time = (state = defaultState, action = {}) => {
+const time = (state = defaultState, action = {}) => {
   switch (action.type) {
-  case actionTypes.updateTime:
+  case actionTypes.updateTime: {
     const { time } = action.payload;
     const { deltaTime } = action.payload;
     const { targetDeltaTime } = action.payload;
@@ -101,6 +101,8 @@ export const time = (state = defaultState, action = {}) => {
     }
     return newState;
   }
-
-  return state;
+  default:
+    return state;
+  }
 };
+export default time;

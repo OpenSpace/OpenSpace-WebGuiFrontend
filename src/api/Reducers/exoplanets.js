@@ -5,7 +5,7 @@ const defaultState = {
   data: {}
 };
 
-export const exoplanets = (state = defaultState, action) => {
+const exoplanets = (state = defaultState, action) => {
   switch (action.type) {
   case actionTypes.initializeExoplanets:
     return {
@@ -16,3 +16,4 @@ export const exoplanets = (state = defaultState, action) => {
     return state;
   }
 };
+export default exoplanets;

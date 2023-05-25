@@ -5,7 +5,7 @@ const defaultState = {
   data: {}
 };
 
-export const missions = (state = defaultState, action) => {
+const missions = (state = defaultState, action) => {
   switch (action.type) {
   case actionTypes.initializeMissions:
     return {
@@ -16,3 +16,4 @@ export const missions = (state = defaultState, action) => {
     return state;
   }
 };
+export default missions;

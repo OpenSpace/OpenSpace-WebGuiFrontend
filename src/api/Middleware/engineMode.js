@@ -55,7 +55,7 @@ const engineMode = (store) => (next) => (action) => {
     }
     break;
   case actionTypes.refreshEngineMode:
-    dataCallback = (data) => store.dispatch(updateEngineMode(data)),
+    dataCallback = (data) => store.dispatch(updateEngineMode(data));
     refresh();
     break;
   case actionTypes.subscribeToEngineMode:
