@@ -11,7 +11,6 @@ import styles from './FocusEntry.scss';
 function FocusEntry({
   name, identifier, onSelect, active, showNavigationButtons, closePopoverIfSet
 }) {
-
   const luaApi = useSelector((state) => state.luaApi);
   function isActive() {
     return identifier === active;
@@ -46,11 +45,14 @@ function FocusEntry({
   const refs = useContextRefs();
 
   return (
-    <li
+    <div
       className={`${styles.entry} ${isActive() && styles.active}`}
       onClick={select}
+      onKeyPress={select}
       key={name}
-      ref={(el) => refs.current[name] = el}
+      role="button"
+      ref={(el) => { refs.current[name] = el; }}
+      tabIndex={0}
     >
       <span className={styles.title}>
         { name || identifier }
@@ -67,7 +69,7 @@ function FocusEntry({
           </Button>
         </div>
       )}
-    </li>
+    </div>
   );
 }
 
@@ -77,7 +79,7 @@ FocusEntry.propTypes = {
   name: PropTypes.string,
   onSelect: PropTypes.func,
   active: PropTypes.string,
-  showNavigationButtons: PropTypes.bool,
+  showNavigationButtons: PropTypes.bool
 };
 
 FocusEntry.defaultProps = {
