@@ -7,7 +7,7 @@ import { Resizable } from 're-resizable';
 
 import styles from './WindowThreeStates.scss';
 
-function PaneRightHandSide({ sizeCallback, width, children }) {
+function PaneRightHandSide({ children, sizeCallback, width }) {
   const windowDiv = React.useRef(null);
 
   React.useEffect(() => {
@@ -58,12 +58,13 @@ function PaneRightHandSide({ sizeCallback, width, children }) {
 
 PaneRightHandSide.propTypes = {
   children: PropTypes.node,
-  sizeCallback: PropTypes.func.isRequired,
+  sizeCallback: PropTypes.func,
   width: PropTypes.number.isRequired
 };
 
 PaneRightHandSide.defaultProps = {
-  children: []
+  children: [],
+  sizeCallback: () => {}
 };
 
 PaneRightHandSide.styles = styles;
