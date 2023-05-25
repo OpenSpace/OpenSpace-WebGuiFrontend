@@ -137,8 +137,9 @@ export default function Missions({ }) {
       return null;
     }
     let lastFoundCapture = null;
+    const reverseCaptures = [...overview.capturetimes].reverse();
     // Assume the captures are sorted w regards to time
-    for (const capture of overview.capturetimes.toReversed()) {
+    for (const capture of reverseCaptures) {
       const utcDate = makeUtcDate(capture);
       // Find the first time that is before the current time
       if (!utcDate) {
