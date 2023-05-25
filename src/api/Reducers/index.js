@@ -17,7 +17,7 @@ import time from './time';
 import version from './version';
 
 // Add more reducers here
-const openspaceApp = (state = {}, action) => {
+const openspaceApp = (state = {}, action = {}) => {
   const propertyTreeReducer = propertyTree(state.propertyTree, action);
   const shortcutsReducer = shortcuts(state.shortcuts, action);
   return {

@@ -5,7 +5,7 @@ const defaultState = {
   data: {}
 };
 
-const missions = (state = defaultState, action) => {
+const missions = (state = defaultState, action = {}) => {
   switch (action.type) {
     case actionTypes.initializeMissions:
       return {

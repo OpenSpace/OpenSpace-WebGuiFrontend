@@ -175,7 +175,7 @@ const popovers = (state = defaultPopovers, action) => {
  * Expanded properties
  */
 const defaultPropertyTreeExpansion = {};
-const propertyTreeExpansion = (state = defaultPropertyTreeExpansion, action) => {
+const propertyTreeExpansion = (state = defaultPropertyTreeExpansion, action = {}) => {
   switch (action.type) {
     case actionTypes.setPropertyTreeExpansion:
       return {
@@ -187,7 +187,7 @@ const propertyTreeExpansion = (state = defaultPropertyTreeExpansion, action) => 
   }
 };
 
-const showAbout = (state = false, action) => {
+const showAbout = (state = false, action = {}) => {
   switch (action.type) {
     case actionTypes.setShowAbout:
       return action.payload;

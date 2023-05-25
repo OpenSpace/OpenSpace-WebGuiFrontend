@@ -5,7 +5,7 @@ const defaultState = {
   data: {}
 };
 
-const exoplanets = (state = defaultState, action) => {
+const exoplanets = (state = defaultState, action = {}) => {
   switch (action.type) {
     case actionTypes.initializeExoplanets:
       return {

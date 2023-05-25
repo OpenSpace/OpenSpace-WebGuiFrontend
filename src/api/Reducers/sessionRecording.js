@@ -6,7 +6,8 @@ const defaultState = {
   recordingState: SessionStateIdle
 };
 
-const sessionRecording = (state = defaultState, action) => { // state refers to version
+// state refers to sessionRecording
+const sessionRecording = (state = defaultState, action = {}) => {
   switch (action.type) {
     case actionTypes.updateSessionRecording:
       return {

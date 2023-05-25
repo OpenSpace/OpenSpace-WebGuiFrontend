@@ -7,7 +7,7 @@ const defaultState = {
   showKeybinds: false
 };
 
-const shortcuts = (state = defaultState, action) => { // state refers to version
+const shortcuts = (state = defaultState, action = {}) => { // state refers to shortcuts
   switch (action.type) {
     case actionTypes.initializeShortcuts:
       return {

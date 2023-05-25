@@ -1,8 +1,12 @@
 import actionTypes from '../Actions/actionTypes';
 
-const initStoryTree = { story: { storyidentifier: 'story_default' }, reset: false, info: {} };
+const initStoryTree = {
+  story: { storyidentifier: 'story_default' },
+  reset: false,
+  info: {}
+};
 
-const storyTree = (state = initStoryTree, action) => {
+const storyTree = (state = initStoryTree, action = {}) => {
   switch (action.type) {
     case actionTypes.addStoryTree:
       return {

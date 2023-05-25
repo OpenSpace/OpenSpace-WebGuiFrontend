@@ -36,7 +36,7 @@ const point = (state = {}, action, value, id) => {
 /*
   Envelopes are just an arbitrary amount of points that can be moved in the TF-editor
 */
-const envelope = (state = {}, action) => { // state refers to individual envelope
+const envelope = (state = {}, action = {}) => { // state refers to individual envelope
   switch (action.payload.type) {
   case actionTypes.addTransferFunction:
     return [...state];
@@ -135,7 +135,7 @@ const envelope = (state = {}, action) => { // state refers to individual envelop
   }
 };
 
-const envelopes = (state = [], action) => { // state refers to array of envelopes
+const envelopes = (state = [], action = {}) => { // state refers to array of envelopes
   switch (action.payload.type) {
   case actionTypes.addEnvelope:
     return [...state, envelope(undefined, action)];

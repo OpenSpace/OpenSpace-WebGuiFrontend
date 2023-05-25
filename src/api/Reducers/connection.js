@@ -5,7 +5,7 @@ const defaultState = {
   connectedLost: false
 };
 
-const connection = (state = defaultState, action) => { // state refers to connection
+const connection = (state = defaultState, action = {}) => { // state refers to connection
   switch (action.type) {
     case actionTypes.startConnection:
       return {

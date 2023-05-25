@@ -7,7 +7,7 @@ const defaultState = {
   altitudeUnit: undefined
 };
 
-const camera = (state = defaultState, action) => {
+const camera = (state = defaultState, action = {}) => {
   const newState = { ...state };
   switch (action.type) {
     case actionTypes.updateCamera:

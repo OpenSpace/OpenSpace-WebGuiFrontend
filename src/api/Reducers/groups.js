@@ -41,7 +41,7 @@ const computeGroups = (propertyTree) => {
   return groups;
 };
 
-const groups = (state = {}, action, propertyTree) => {
+const groups = (state = {}, action = {}, propertyTree = {}) => {
   switch (action.type) {
     case actionTypes.refreshGroups:
       return computeGroups(propertyTree);

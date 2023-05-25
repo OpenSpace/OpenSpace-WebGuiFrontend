@@ -1,6 +1,6 @@
 import actionTypes from '../Actions/actionTypes';
 
-const info = (state = {}, action) => {
+const info = (state = {}, action = {}) => {
   switch (action.type) {
     case actionTypes.fetchData:
       return {

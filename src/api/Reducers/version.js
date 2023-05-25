@@ -5,7 +5,7 @@ const defaultState = {
   data: {}
 };
 
-const version = (state = defaultState, action) => { // state refers to version
+const version = (state = defaultState, action = {}) => { // state refers to version
   switch (action.type) {
     case actionTypes.initializeVersion:
       return {

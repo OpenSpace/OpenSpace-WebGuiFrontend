@@ -10,7 +10,7 @@ import actionTypes from '../Actions/actionTypes';
 // updatePropertyValue
 // setPropertyValue
 
-const property = (state = {}, action) => {
+const property = (state = {}, action = {}) => {
   switch (action.type) {
     case actionTypes.updatePropertyValue:
     case actionTypes.setPropertyValue:
@@ -23,7 +23,7 @@ const property = (state = {}, action) => {
   }
 };
 
-const properties = (state = {}, action) => {
+const properties = (state = {}, action = {}) => {
   switch (action.type) {
     case actionTypes.addProperties: {
       const inputProperties = action.payload.properties;
@@ -55,7 +55,7 @@ const properties = (state = {}, action) => {
   }
 };
 
-const propertyOwners = (state = {}, action) => {
+const propertyOwners = (state = {}, action = {}) => {
   switch (action.type) {
     case actionTypes.addPropertyOwners: {
       const inputOwners = action.payload.propertyOwners;

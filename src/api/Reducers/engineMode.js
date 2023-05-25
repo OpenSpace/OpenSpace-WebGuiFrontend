@@ -5,7 +5,7 @@ const defaultState = {
   mode: EngineModeUserControl
 };
 
-const engineMode = (state = defaultState, action) => {
+const engineMode = (state = defaultState, action = {}) => {
   switch (action.type) {
     case actionTypes.updateEngineMode:
       return {
