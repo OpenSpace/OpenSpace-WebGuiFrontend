@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Aim from 'svg-react-loader?name=Aim!../../../icons/aim.svg';
@@ -57,9 +57,11 @@ const NavigationActions = {
 };
 
 function OriginPicker({
-  favorites, allNodes, searchableNodes, engineMode, anchorName, luaApi, sessionRecordingState,
-  setPopoverVisibility, popoverVisible, aim, anchor, aimDispatcher, navigationAction, connectFlightController, sendFlightControl,
-  retargetAimDispatcher, retargetAnchorDispatcher, anchorDispatcher, startSubscriptions, stopSubscriptions, setNavigationAction, aimName
+  aim, aimDispatcher, aimName, allNodes, anchor, anchorDispatcher, anchorName,
+  connectFlightController, engineMode, favorites, luaApi, navigationAction,
+  popoverVisible, retargetAimDispatcher, retargetAnchorDispatcher,
+  searchableNodes, sendFlightControl, sessionRecordingState, setNavigationAction,
+  setPopoverVisibility, startSubscriptions, stopSubscriptions
 }) {
   const [closeAfterSelection, setCloseAfterSelection] = useLocalStorageState('closeAfterSelection', false);
   const cappedAnchorName = anchorName?.substring(0, 20);
@@ -77,6 +79,23 @@ function OriginPicker({
     aimDispatcher.subscribe();
     return () => aimDispatcher.unsubscribe();
   }, [aimDispatcher]);
+
+  function hasDistinctAim() {
+    return (aim !== '') && (aim !== anchor);
+  }
+
+  function closePopoverIfSet() {
+    if (closeAfterSelection) {
+      setPopoverVisibility(false);
+    }
+  }
+
+  function togglePopover() {
+    setPopoverVisibility(!popoverVisible);
+    if (!popoverVisible) {
+      connectFlightController();
+    }
+  }
 
   function onSelect(identifier, evt) {
     const updateViewPayload = {
@@ -126,12 +145,6 @@ function OriginPicker({
       aimDispatcher.set(updateViewPayload.aim);
     }
     closePopoverIfSet();
-  }
-
-  function closePopoverIfSet() {
-    if (closeAfterSelection) {
-      setPopoverVisibility(false);
-    }
   }
 
   function focusPicker() {
@@ -210,9 +223,7 @@ function OriginPicker({
     if (engineMode === EngineModeCameraPath) {
       return cameraPathPicker();
     }
-    return (
-      <>{hasDistinctAim() ? anchorAndAimPicker() : focusPicker()}</>
-    );
+    return hasDistinctAim() ? anchorAndAimPicker() : focusPicker();
   }
 
   // OBS same as timepicker
@@ -352,17 +363,6 @@ function OriginPicker({
     );
   }
 
-  function hasDistinctAim() {
-    return (aim !== '') && (aim !== anchor);
-  }
-
-  function togglePopover() {
-    setPopoverVisibility(!popoverVisible);
-    if (!popoverVisible) {
-      connectFlightController();
-    }
-  }
-
   const enabled = (engineMode === EngineModeUserControl);
   const popoverEnabledAndVisible = popoverVisible && enabled;
 
@@ -407,8 +407,12 @@ const mapSubStateToProps = ({
     return !isHidden;
   });
 
+  const nodesWithInterestingTag = uris.filter((uri) => propertyOwners[uri].tags.some(
+    (tag) => tag.includes(REQUIRED_TAG)
+  ));
+
   // Find interesting nodes
-  const favorites = uris.filter((uri) => propertyOwners[uri].tags.some((tag) => tag.includes(REQUIRED_TAG))).map((uri) => ({
+  const favorites = nodesWithInterestingTag.map((uri) => ({
     ...propertyOwners[uri],
     key: uri
   }));
