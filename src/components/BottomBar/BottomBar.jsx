@@ -70,9 +70,9 @@ export default function BottomBar({
 }
 
 BottomBar.propTypes = {
-  showFlightController: PropTypes.bool,
+  showFlightController: PropTypes.bool
 };
 
 BottomBar.defaultProps = {
-  showFlightController: false,
+  showFlightController: false
 };
