@@ -85,9 +85,7 @@ function OriginPicker({
   }
 
   function closePopoverIfSet() {
-    if (closeAfterSelection) {
-      setPopoverVisibility(false);
-    }
+    setPopoverVisibility(false);
   }
 
   function togglePopover() {
@@ -144,7 +142,9 @@ function OriginPicker({
       anchorDispatcher.set(updateViewPayload.focus);
       aimDispatcher.set(updateViewPayload.aim);
     }
-    closePopoverIfSet();
+    if (closeAfterSelection) {
+      closePopoverIfSet();
+    }
   }
 
   function focusPicker() {
@@ -342,7 +342,7 @@ function OriginPicker({
                 onSelect={onSelect}
                 active={active}
                 showNavigationButtons={isInFocusMode}
-                closePopoverIfSet={closePopoverIfSet}
+                closePopoverIfSet={closeAfterSelection ? closePopoverIfSet : () => { }}
                 {...entry}
               />
             ))}
@@ -353,7 +353,7 @@ function OriginPicker({
                 onSelect={onSelect}
                 active={active}
                 showNavigationButtons={isInFocusMode}
-                closePopoverIfSet={closePopoverIfSet}
+                closePopoverIfSet={closeAfterSelection ? closePopoverIfSet : () => {}}
                 {...entry}
               />
             ))}

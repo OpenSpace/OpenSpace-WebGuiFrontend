@@ -54,7 +54,7 @@ class Popover extends Component {
               { title }
             </div>
 
-            <div>
+            <div style={{ display: 'flex' }}>
               { headerButton && headerButton }
               { detachable && (
                 <Button onClick={this.toggleDetach} transparent small>

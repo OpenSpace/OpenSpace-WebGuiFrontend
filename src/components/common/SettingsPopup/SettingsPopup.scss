@@ -1,21 +1,19 @@
 @import "../../../styles/all";
 
-$icon-size: 18px;
+$icon-size: 12px;
 
 .settings {
   background: none;
-  color: $text-color-blur;
-  padding-top: 5px;
+  color: $text-color-focus;
+  padding: 2px 4px;
   margin-left: auto;
   background: $ui-background;
+  font-size: 14px;
+  align-self: center;
 
   &:hover,
   &:focus {
     color: $text-color-focus;
-  }
-
-  i {
-    font-size: $icon-size !important;
   }
 }
 

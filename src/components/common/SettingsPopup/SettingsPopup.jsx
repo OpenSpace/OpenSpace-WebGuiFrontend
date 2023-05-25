@@ -1,18 +1,21 @@
 import React from 'react';
 
-import Button from '../Input/Button/Button';
 import MaterialIcon from '../MaterialIcon/MaterialIcon';
 import Tooltip from '../Tooltip/Tooltip';
 
 import styles from './SettingsPopup.scss';
+import buttonStyles from '../Input/Button/Button.scss';
 
 export default function SettingsPopup({ children }) {
   const [showSearchSettings, setShowSearchSettings] = React.useState(false);
 
   return (
-    <Button
+    <div
       onClick={() => setShowSearchSettings((current) => !current)}
-      className={`${styles.settings} ${showSearchSettings && styles.settingsFocus}`}
+      onKeyDown={() => setShowSearchSettings((current) => !current)}
+      className={`${styles.settings} ${buttonStyles.button} ${showSearchSettings && styles.settingsFocus}`}
+      role="button"
+      tabIndex={0}
     >
       <MaterialIcon icon="settings" className="small" />
       {showSearchSettings && (
@@ -20,6 +23,6 @@ export default function SettingsPopup({ children }) {
           { children }
         </Tooltip>
       )}
-    </Button>
+    </div>
   );
 }
