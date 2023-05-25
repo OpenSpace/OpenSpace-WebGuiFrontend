@@ -17,11 +17,11 @@ const fetchingInfo = (dispatch, id) => {
 const fetchData = (store) => (next) => (action) => {
   const result = next(action);
   switch (action.type) {
-  case actionTypes.fetchData:
-    fetchingInfo(store.dispatch, action.payload.id);
-    break;
-  default:
-    break;
+    case actionTypes.fetchData:
+      fetchingInfo(store.dispatch, action.payload.id);
+      break;
+    default:
+      break;
   }
   return result;
 };

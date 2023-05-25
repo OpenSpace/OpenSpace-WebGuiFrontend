@@ -7,13 +7,13 @@ const defaultState = {
 
 const version = (state = defaultState, action) => { // state refers to version
   switch (action.type) {
-  case actionTypes.initializeVersion:
-    return {
-      isInitialized: true,
-      data: { ...action.payload }
-    };
-  default:
-    return state;
+    case actionTypes.initializeVersion:
+      return {
+        isInitialized: true,
+        data: { ...action.payload }
+      };
+    default:
+      return state;
   }
 };
 export default version;

@@ -49,60 +49,60 @@ const defaultState = {
 
 const time = (state = defaultState, action = {}) => {
   switch (action.type) {
-  case actionTypes.updateTime: {
-    const { time } = action.payload;
-    const { deltaTime } = action.payload;
-    const { targetDeltaTime } = action.payload;
-    const { isPaused } = action.payload;
-    const { hasNextStep } = action.payload;
-    const { hasPrevStep } = action.payload;
-    const { nextStep } = action.payload;
-    const { prevStep } = action.payload;
-    const { deltaTimeSteps } = action.payload;
-    const newState = { ...state };
+    case actionTypes.updateTime: {
+      const { time } = action.payload;
+      const { deltaTime } = action.payload;
+      const { targetDeltaTime } = action.payload;
+      const { isPaused } = action.payload;
+      const { hasNextStep } = action.payload;
+      const { hasPrevStep } = action.payload;
+      const { nextStep } = action.payload;
+      const { prevStep } = action.payload;
+      const { deltaTimeSteps } = action.payload;
+      const newState = { ...state };
 
-    if (time !== undefined) {
-      newState.time = new Date(dateStringWithTimeZone(time));
+      if (time !== undefined) {
+        newState.time = new Date(dateStringWithTimeZone(time));
 
-      // Make optimized time that only updates every second
-      const date = new Date(dateStringWithTimeZone(time));
-      date.setMilliseconds(0);
-      // If it is the first time the time is sent, just set the state
-      // Else cap the update of the state to every second for performance
-      if (!state.timeCapped) {
-        newState.timeCapped = date;
-      } else if (date.toISOString() !== newState.timeCapped.toISOString()) {
-        newState.timeCapped = date;
+        // Make optimized time that only updates every second
+        const date = new Date(dateStringWithTimeZone(time));
+        date.setMilliseconds(0);
+        // If it is the first time the time is sent, just set the state
+        // Else cap the update of the state to every second for performance
+        if (!state.timeCapped) {
+          newState.timeCapped = date;
+        } else if (date.toISOString() !== newState.timeCapped.toISOString()) {
+          newState.timeCapped = date;
+        }
       }
+      if (deltaTime !== undefined) {
+        newState.deltaTime = deltaTime;
+      }
+      if (targetDeltaTime !== undefined) {
+        newState.targetDeltaTime = targetDeltaTime;
+      }
+      if (isPaused !== undefined) {
+        newState.isPaused = isPaused;
+      }
+      if (hasNextStep !== undefined) {
+        newState.hasNextDeltaTimeStep = hasNextStep;
+      }
+      if (hasPrevStep !== undefined) {
+        newState.hasPrevDeltaTimeStep = hasPrevStep;
+      }
+      if (nextStep !== undefined) {
+        newState.nextDeltaTimeStep = nextStep;
+      }
+      if (prevStep !== undefined) {
+        newState.prevDeltaTimeStep = prevStep;
+      }
+      if (deltaTimeSteps !== undefined) {
+        newState.deltaTimeSteps = deltaTimeSteps;
+      }
+      return newState;
     }
-    if (deltaTime !== undefined) {
-      newState.deltaTime = deltaTime;
-    }
-    if (targetDeltaTime !== undefined) {
-      newState.targetDeltaTime = targetDeltaTime;
-    }
-    if (isPaused !== undefined) {
-      newState.isPaused = isPaused;
-    }
-    if (hasNextStep !== undefined) {
-      newState.hasNextDeltaTimeStep = hasNextStep;
-    }
-    if (hasPrevStep !== undefined) {
-      newState.hasPrevDeltaTimeStep = hasPrevStep;
-    }
-    if (nextStep !== undefined) {
-      newState.nextDeltaTimeStep = nextStep;
-    }
-    if (prevStep !== undefined) {
-      newState.prevDeltaTimeStep = prevStep;
-    }
-    if (deltaTimeSteps !== undefined) {
-      newState.deltaTimeSteps = deltaTimeSteps;
-    }
-    return newState;
-  }
-  default:
-    return state;
+    default:
+      return state;
   }
 };
 export default time;

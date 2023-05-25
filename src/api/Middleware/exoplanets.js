@@ -25,16 +25,16 @@ const removeSystem = async (data, callback) => {
 const exoplanets = (store) => (next) => (action) => {
   const result = next(action);
   switch (action.type) {
-  case actionTypes.loadExoplanetsData:
-    getExoplanets(action.payload, (data) => {
-      store.dispatch(initializeExoplanets(data));
-    });
-    break;
-  case actionTypes.removeExoplanets:
-    removeSystem(action.payload.system, () => {});
-    break;
-  default:
-    break;
+    case actionTypes.loadExoplanetsData:
+      getExoplanets(action.payload, (data) => {
+        store.dispatch(initializeExoplanets(data));
+      });
+      break;
+    case actionTypes.removeExoplanets:
+      removeSystem(action.payload.system, () => {});
+      break;
+    default:
+      break;
   }
   return result;
 };

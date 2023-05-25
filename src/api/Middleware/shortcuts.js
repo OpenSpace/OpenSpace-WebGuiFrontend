@@ -28,22 +28,22 @@ const unsubscribeToShortcuts = () => {
 const shortcuts = (store) => (next) => (action) => {
   const result = next(action);
   switch (action.type) {
-  case actionTypes.onOpenConnection:
-    subscribeToShortcuts((data) => {
-      store.dispatch(initializeShortcuts(data));
-    });
-    break;
-  case actionTypes.onCloseConnection:
-    unsubscribeToShortcuts();
-    break;
-  case actionTypes.triggerAction: {
-    const actionName = action.payload;
-    console.log(api);
-    store.getState().luaApi.action.triggerAction(actionName);
-    break;
-  }
-  default:
-    break;
+    case actionTypes.onOpenConnection:
+      subscribeToShortcuts((data) => {
+        store.dispatch(initializeShortcuts(data));
+      });
+      break;
+    case actionTypes.onCloseConnection:
+      unsubscribeToShortcuts();
+      break;
+    case actionTypes.triggerAction: {
+      const actionName = action.payload;
+      console.log(api);
+      store.getState().luaApi.action.triggerAction(actionName);
+      break;
+    }
+    default:
+      break;
   }
   return result;
 };

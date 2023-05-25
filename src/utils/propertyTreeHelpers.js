@@ -86,27 +86,27 @@ export function isPropertyVisible(properties, uri) {
   const visibility = properties['OpenSpaceEngine.PropertyVisibility'];
   let propertyVisibility = '';
   switch (property.description.MetaData.Visibility) {
-  case 'Hidden':
-    propertyVisibility = 5;
-    break;
-  case 'Developer':
-    propertyVisibility = 4;
-    break;
-  case 'AdvancedUser':
-    propertyVisibility = 3;
-    break;
-  case 'User':
-    propertyVisibility = 2;
-    break;
-  case 'NoviceUser':
-    propertyVisibility = 1;
-    break;
-  case 'Always':
-    propertyVisibility = 0;
-    break;
-  default:
-    propertyVisibility = 0;
-    break;
+    case 'Hidden':
+      propertyVisibility = 5;
+      break;
+    case 'Developer':
+      propertyVisibility = 4;
+      break;
+    case 'AdvancedUser':
+      propertyVisibility = 3;
+      break;
+    case 'User':
+      propertyVisibility = 2;
+      break;
+    case 'NoviceUser':
+      propertyVisibility = 1;
+      break;
+    case 'Always':
+      propertyVisibility = 0;
+      break;
+    default:
+      propertyVisibility = 0;
+      break;
   }
   return visibility.value >= propertyVisibility;
 }

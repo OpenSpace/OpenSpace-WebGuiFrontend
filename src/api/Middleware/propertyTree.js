@@ -190,53 +190,53 @@ const propertyTree = (store) => (next) => (action) => {
   }
 
   switch (action.type) {
-  case actionTypes.onOpenConnection: {
-    store.dispatch(reloadPropertyTree());
-    break;
-  }
-  case actionTypes.reloadPropertyTree: {
-    getPropertyTree(store.dispatch);
-    break;
-  }
-  case actionTypes.onCloseConnection: {
-    markAllSubscriptionsAsPending();
-    break;
-  }
-  case actionTypes.addProperties: {
+    case actionTypes.onOpenConnection: {
+      store.dispatch(reloadPropertyTree());
+      break;
+    }
+    case actionTypes.reloadPropertyTree: {
+      getPropertyTree(store.dispatch);
+      break;
+    }
+    case actionTypes.onCloseConnection: {
+      markAllSubscriptionsAsPending();
+      break;
+    }
+    case actionTypes.addProperties: {
     // The added properteis may include properties whose
     // uri is marked as a `pending`/`orphan` subscription, so
     // we check if any subscriptions can be promoted to `active`.
-    promoteSubscriptions(store);
-    break;
-  }
-  case actionTypes.setPropertyValue: {
-    setBackendValue(action.payload.uri, action.payload.value);
-    break;
-  }
-  case actionTypes.subscribeToProperty: {
-    const { uri } = action.payload;
-    const subscriptionInfo = subscriptionInfos[uri];
-    if (subscriptionInfo) {
-      ++subscriptionInfo.nSubscribers;
-    } else {
-      subscriptionInfos[uri] = {
-        state: PendingState,
-        nSubscribers: 1
-      };
+      promoteSubscriptions(store);
+      break;
     }
-    tryPromoteSubscription(store, uri);
-    break;
-  }
-  case actionTypes.unsubscribeToProperty: {
-    const { uri } = action.payload;
-    const subscriptionInfo = subscriptionInfos[uri];
-    if (subscriptionInfo) {
-      --subscriptionInfo.nSubscribers;
+    case actionTypes.setPropertyValue: {
+      setBackendValue(action.payload.uri, action.payload.value);
+      break;
     }
-    break;
-  }
-  default:
-    break;
+    case actionTypes.subscribeToProperty: {
+      const { uri } = action.payload;
+      const subscriptionInfo = subscriptionInfos[uri];
+      if (subscriptionInfo) {
+        ++subscriptionInfo.nSubscribers;
+      } else {
+        subscriptionInfos[uri] = {
+          state: PendingState,
+          nSubscribers: 1
+        };
+      }
+      tryPromoteSubscription(store, uri);
+      break;
+    }
+    case actionTypes.unsubscribeToProperty: {
+      const { uri } = action.payload;
+      const subscriptionInfo = subscriptionInfos[uri];
+      if (subscriptionInfo) {
+        --subscriptionInfo.nSubscribers;
+      }
+      break;
+    }
+    default:
+      break;
   }
   return result;
 };

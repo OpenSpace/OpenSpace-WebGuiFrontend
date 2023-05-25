@@ -12,13 +12,13 @@ const getDocumentation = async (callback) => {
 const documentation = (store) => (next) => (action) => {
   const result = next(action);
   switch (action.type) {
-  case actionTypes.onOpenConnection:
-    getDocumentation((data) => {
-      store.dispatch(initializeDocumentation(data));
-    });
-    break;
-  default:
-    break;
+    case actionTypes.onOpenConnection:
+      getDocumentation((data) => {
+        store.dispatch(initializeDocumentation(data));
+      });
+      break;
+    default:
+      break;
   }
   return result;
 };

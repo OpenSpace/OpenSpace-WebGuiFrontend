@@ -32,28 +32,28 @@ const time = (store) => (next) => (action) => {
   const result = next(action);
   const state = store.getState();
   switch (action.type) {
-  case actionTypes.onOpenConnection:
-    if (nSubscribers > 0) {
-      setupSubscription(store);
+    case actionTypes.onOpenConnection:
+      if (nSubscribers > 0) {
+        setupSubscription(store);
+      }
+      break;
+    case actionTypes.subscribeToTime:
+      ++nSubscribers;
+      if (nSubscribers === 1 && state.connection.isConnected) {
+        setupSubscription(store);
+      }
+      break;
+    case actionTypes.unsubscribeToTime: {
+      if (nSubscribers > 0) {
+        --nSubscribers;
+      }
+      if (timeTopic && nSubscribers === 0) {
+        tearDownSubscription();
+      }
+      break;
     }
-    break;
-  case actionTypes.subscribeToTime:
-    ++nSubscribers;
-    if (nSubscribers === 1 && state.connection.isConnected) {
-      setupSubscription(store);
-    }
-    break;
-  case actionTypes.unsubscribeToTime: {
-    if (nSubscribers > 0) {
-      --nSubscribers;
-    }
-    if (timeTopic && nSubscribers === 0) {
-      tearDownSubscription();
-    }
-    break;
-  }
-  default:
-    break;
+    default:
+      break;
   }
   return result;
 };

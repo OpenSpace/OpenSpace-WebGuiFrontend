@@ -34,11 +34,11 @@ function initializeConnection(store) {
 const connection = (store) => (next) => (action) => {
   const result = next(action);
   switch (action.type) {
-  case actionTypes.startConnection:
-    initializeConnection(store);
-    break;
-  default:
-    break;
+    case actionTypes.startConnection:
+      initializeConnection(store);
+      break;
+    default:
+      break;
   }
   return result;
 };

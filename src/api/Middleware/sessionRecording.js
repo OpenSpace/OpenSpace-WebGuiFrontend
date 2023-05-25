@@ -54,31 +54,31 @@ const sessionRecording = (store) => (next) => (action) => {
   const state = store.getState();
 
   switch (action.type) {
-  case actionTypes.onOpenConnection:
-    if (nSubscribers > 0) {
+    case actionTypes.onOpenConnection:
+      if (nSubscribers > 0) {
+        dataCallback = (data) => store.dispatch(updateSessionRecording(data));
+        subscribe();
+      }
+      break;
+    case actionTypes.refreshSessionRecording:
       dataCallback = (data) => store.dispatch(updateSessionRecording(data));
-      subscribe();
-    }
-    break;
-  case actionTypes.refreshSessionRecording:
-    dataCallback = (data) => store.dispatch(updateSessionRecording(data));
-    refresh();
-    break;
-  case actionTypes.subscribeToSessionRecording:
-    ++nSubscribers;
-    if (nSubscribers === 1 && state.connection.isConnected) {
-      dataCallback = (data) => store.dispatch(updateSessionRecording(data));
-      subscribe();
-    }
-    break;
-  case actionTypes.unsubscribeToSessionRecording:
-    --nSubscribers;
-    if (nSubscribers === 0) {
-      unsubscribe();
-    }
-    break;
-  default:
-    break;
+      refresh();
+      break;
+    case actionTypes.subscribeToSessionRecording:
+      ++nSubscribers;
+      if (nSubscribers === 1 && state.connection.isConnected) {
+        dataCallback = (data) => store.dispatch(updateSessionRecording(data));
+        subscribe();
+      }
+      break;
+    case actionTypes.unsubscribeToSessionRecording:
+      --nSubscribers;
+      if (nSubscribers === 0) {
+        unsubscribe();
+      }
+      break;
+    default:
+      break;
   }
   return result;
 };

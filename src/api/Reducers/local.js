@@ -10,13 +10,13 @@ const defaultOriginPicker = {
 };
 const originPicker = (state = defaultOriginPicker, action) => {
   switch (action.type) {
-  case actionTypes.setNavigationAction:
-    return {
-      ...state,
-      action: action.payload
-    };
-  default:
-    return state;
+    case actionTypes.setNavigationAction:
+      return {
+        ...state,
+        action: action.payload
+      };
+    default:
+      return state;
   }
 };
 
@@ -28,8 +28,8 @@ const defaultTimePicker = {
 };
 const timePicker = (state = defaultTimePicker, action) => {
   switch (action.type) {
-  default:
-    return state;
+    default:
+      return state;
   }
 };
 
@@ -44,23 +44,23 @@ const defaultPopover = {
 };
 const popover = (state = defaultPopover, action = {}) => {
   switch (action.type) {
-  case actionTypes.setPopoverVisibility:
-    return {
-      ...state,
-      visible: action.payload.visible
-    };
-  case actionTypes.setPopoverPosition:
-    return {
-      ...state,
-      position: action.payload.position
-    };
-  case actionTypes.setPopoverAttachment:
-    return {
-      ...state,
-      attached: action.payload.attached
-    };
-  default:
-    return state;
+    case actionTypes.setPopoverVisibility:
+      return {
+        ...state,
+        visible: action.payload.visible
+      };
+    case actionTypes.setPopoverPosition:
+      return {
+        ...state,
+        position: action.payload.position
+      };
+    case actionTypes.setPopoverAttachment:
+      return {
+        ...state,
+        attached: action.payload.attached
+      };
+    default:
+      return state;
   }
 };
 
@@ -82,92 +82,92 @@ const defaultPopovers = {
 
 const popovers = (state = defaultPopovers, action) => {
   switch (action.type) {
-  case actionTypes.setPopoverPosition:
-  case actionTypes.setPopoverVisibility:
-  case actionTypes.setPopoverAttachment:
-    return {
-      ...state,
-      [action.payload.popover]: popover(state[action.payload.popover], action)
-    };
-  case actionTypes.addNodePropertyPopover:
-    if (action.payload.focus) {
+    case actionTypes.setPopoverPosition:
+    case actionTypes.setPopoverVisibility:
+    case actionTypes.setPopoverAttachment:
       return {
         ...state,
-        focusNodePropertiesPanel: { ...state.focusNodePropertiesPanel, visible: true }
+        [action.payload.popover]: popover(state[action.payload.popover], action)
       };
-    }
-    return {
-      ...state,
-      activeNodePropertyPanels: {
-        ...state.activeNodePropertyPanels,
-        [action.payload.identifier]: popover(
-          { attached: false, visible: true, activeTab: 0 },
-          action
-        )
+    case actionTypes.addNodePropertyPopover:
+      if (action.payload.focus) {
+        return {
+          ...state,
+          focusNodePropertiesPanel: { ...state.focusNodePropertiesPanel, visible: true }
+        };
       }
-    };
-
-  case actionTypes.removeNodePropertyPopover:
-    return {
-      ...state,
-      activeNodePropertyPanels: {
-        ...state.activeNodePropertyPanels,
-        [action.payload.identifier]: undefined
-      }
-    };
-  case actionTypes.addNodeMetaPopover:
-    return {
-      ...state,
-      activeNodeMetaPanels: {
-        ...state.activeNodeMetaPanels,
-        [action.payload.identifier]: popover(
-          { attached: false, visible: true, activeTab: 0 },
-          action
-        )
-      }
-    };
-  case actionTypes.removeNodeMetaPopover:
-    return {
-      ...state,
-      activeNodeMetaPanels: {
-        ...state.activeNodeMetaPanels,
-        [action.payload.identifier]: undefined
-      }
-    };
-  case actionTypes.setPopoverActiveTab:
-    if (action.payload.isFocusNodePanel) {
       return {
         ...state,
-        focusNodePropertiesPanel: {
-          ...state.focusNodePropertiesPanel,
-          activeTab: action.payload.activeTab
+        activeNodePropertyPanels: {
+          ...state.activeNodePropertyPanels,
+          [action.payload.identifier]: popover(
+            { attached: false, visible: true, activeTab: 0 },
+            action
+          )
         }
       };
-    } if (action.payload.isMeta) {
+
+    case actionTypes.removeNodePropertyPopover:
+      return {
+        ...state,
+        activeNodePropertyPanels: {
+          ...state.activeNodePropertyPanels,
+          [action.payload.identifier]: undefined
+        }
+      };
+    case actionTypes.addNodeMetaPopover:
       return {
         ...state,
         activeNodeMetaPanels: {
           ...state.activeNodeMetaPanels,
+          [action.payload.identifier]: popover(
+            { attached: false, visible: true, activeTab: 0 },
+            action
+          )
+        }
+      };
+    case actionTypes.removeNodeMetaPopover:
+      return {
+        ...state,
+        activeNodeMetaPanels: {
+          ...state.activeNodeMetaPanels,
+          [action.payload.identifier]: undefined
+        }
+      };
+    case actionTypes.setPopoverActiveTab:
+      if (action.payload.isFocusNodePanel) {
+        return {
+          ...state,
+          focusNodePropertiesPanel: {
+            ...state.focusNodePropertiesPanel,
+            activeTab: action.payload.activeTab
+          }
+        };
+      } if (action.payload.isMeta) {
+        return {
+          ...state,
+          activeNodeMetaPanels: {
+            ...state.activeNodeMetaPanels,
+            [action.payload.identifier]: {
+              ...state.activeNodeMetaPanels[action.payload.identifier],
+              activeTab: action.payload.activeTab
+            }
+          }
+        };
+      }
+      return {
+        ...state,
+        activeNodePropertyPanels: {
+          ...state.activeNodePropertyPanels,
           [action.payload.identifier]: {
-            ...state.activeNodeMetaPanels[action.payload.identifier],
+            ...state.activeNodePropertyPanels[action.payload.identifier],
             activeTab: action.payload.activeTab
           }
         }
       };
-    }
-    return {
-      ...state,
-      activeNodePropertyPanels: {
-        ...state.activeNodePropertyPanels,
-        [action.payload.identifier]: {
-          ...state.activeNodePropertyPanels[action.payload.identifier],
-          activeTab: action.payload.activeTab
-        }
-      }
-    };
 
-  default:
-    return state;
+    default:
+      return state;
   }
 };
 
@@ -177,22 +177,22 @@ const popovers = (state = defaultPopovers, action) => {
 const defaultPropertyTreeExpansion = {};
 const propertyTreeExpansion = (state = defaultPropertyTreeExpansion, action) => {
   switch (action.type) {
-  case actionTypes.setPropertyTreeExpansion:
-    return {
-      ...state,
-      [action.payload.identifier]: action.payload.expanded
-    };
-  default:
-    return state;
+    case actionTypes.setPropertyTreeExpansion:
+      return {
+        ...state,
+        [action.payload.identifier]: action.payload.expanded
+      };
+    default:
+      return state;
   }
 };
 
 const showAbout = (state = false, action) => {
   switch (action.type) {
-  case actionTypes.setShowAbout:
-    return action.payload;
-  default:
-    return state;
+    case actionTypes.setShowAbout:
+      return action.payload;
+    default:
+      return state;
   }
 };
 

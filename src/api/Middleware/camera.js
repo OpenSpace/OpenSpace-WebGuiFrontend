@@ -32,27 +32,27 @@ const camera = (store) => (next) => (action) => {
   const result = next(action);
   const state = store.getState();
   switch (action.type) {
-  case actionTypes.onOpenConnection:
-    if (nSubscribers > 0) {
-      setupSubscription(store);
-    }
-    break;
-  case actionTypes.subscribeToCamera:
-    ++nSubscribers;
-    if (nSubscribers === 1 && state.connection.isConnected) {
-      setupSubscription(store);
-    }
-    break;
-  case actionTypes.unsubscribeToCamera:
-    if (nSubscribers > 0) {
-      --nSubscribers;
-    }
-    if (cameraTopic && nSubscribers === 0) {
-      tearDownSubscription();
-    }
-    break;
-  default:
-    break;
+    case actionTypes.onOpenConnection:
+      if (nSubscribers > 0) {
+        setupSubscription(store);
+      }
+      break;
+    case actionTypes.subscribeToCamera:
+      ++nSubscribers;
+      if (nSubscribers === 1 && state.connection.isConnected) {
+        setupSubscription(store);
+      }
+      break;
+    case actionTypes.unsubscribeToCamera:
+      if (nSubscribers > 0) {
+        --nSubscribers;
+      }
+      if (cameraTopic && nSubscribers === 0) {
+        tearDownSubscription();
+      }
+      break;
+    default:
+      break;
   }
   return result;
 };

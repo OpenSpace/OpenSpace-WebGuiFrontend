@@ -29,16 +29,16 @@ function NodePropertiesPanel({
 
   function propertiesForRenderableType() {
     switch (renderableType) {
-    case RenderableTypes.RenderableGlobe:
-      return ['Enabled', 'PerformShading', 'TargetLodScaleFactor'];
-    case RenderableTypes.RenderableBillboardsCloud:
-      return ['Enabled', 'DrawElements', 'RenderOption', 'Opacity', 'DrawLabels'];
-    case RenderableTypes.RenderablePlaneImageLocal:
-      return ['Enabled', 'Opacity', 'Billboard'];
-    case RenderableTypes.RenderableStars:
-      return ['Enabled', 'ColorOption', 'Transparency', 'ScaleFactor'];
-    default:
-      return null;
+      case RenderableTypes.RenderableGlobe:
+        return ['Enabled', 'PerformShading', 'TargetLodScaleFactor'];
+      case RenderableTypes.RenderableBillboardsCloud:
+        return ['Enabled', 'DrawElements', 'RenderOption', 'Opacity', 'DrawLabels'];
+      case RenderableTypes.RenderablePlaneImageLocal:
+        return ['Enabled', 'Opacity', 'Billboard'];
+      case RenderableTypes.RenderableStars:
+        return ['Enabled', 'ColorOption', 'Transparency', 'ScaleFactor'];
+      default:
+        return null;
     }
   }
 
@@ -78,17 +78,17 @@ function NodePropertiesPanel({
 
     if (isGlobe) {
       switch (activeTab) {
-      case 1: {
-        const uri = `${nodeURI}.Renderable.Layers.ColorLayers`;
-        return propertyOwnerForUri(uri);
-      }
-      case 2: {
-        const uri = `${nodeURI}.Renderable.Layers.HeightLayers`;
-        return propertyOwnerForUri(uri);
-      }
-      default: {
-        return null;
-      }
+        case 1: {
+          const uri = `${nodeURI}.Renderable.Layers.ColorLayers`;
+          return propertyOwnerForUri(uri);
+        }
+        case 2: {
+          const uri = `${nodeURI}.Renderable.Layers.HeightLayers`;
+          return propertyOwnerForUri(uri);
+        }
+        default: {
+          return null;
+        }
       }
     }
     return null;

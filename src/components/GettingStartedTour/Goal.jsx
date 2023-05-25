@@ -27,82 +27,82 @@ function checkConditionsStatus(content, valueStart, currentValue) {
   const conditionsStatus = new Array(content.goalType.length);
   content.goalType.forEach((goal, i) => {
     switch (goal) {
-    case GoalTypes.uri: {
-      conditionsStatus[i] = content.uriValue === currentValue[i];
-      break;
-    }
-    case GoalTypes.geoPosition: {
-      let isTrue = true;
-      Object.keys(content.position).forEach((dimension) => {
-        const { operator, value, unit } = content.position[dimension];
-        const cameraPosition = currentValue[i];
-        if (unit && unit !== cameraPosition.altitudeUnit) {
-          isTrue = false;
-        }
-        switch (operator) {
-        case '<': {
-          isTrue = isTrue && cameraPosition[dimension] < value;
-          break;
-        }
-        case '>': {
-          isTrue = isTrue && cameraPosition[dimension] > value;
-          break;
-        }
-        case 'between': {
-          const isBetween = cameraPosition[dimension] > Math.min(...value) &&
-                cameraPosition[dimension] < Math.max(...value);
-          isTrue = isTrue && isBetween;
-          break;
-        }
-        default: {
-          isTrue = false;
-          break;
-        }
-        }
-      });
-      conditionsStatus[i] = isTrue;
-      break;
-    }
-    case GoalTypes.pauseTime: {
-      conditionsStatus[i] = currentValue[i] === true;
-      break;
-    }
-    case GoalTypes.changeTime:
-    case GoalTypes.changeDeltaTime:
-    case GoalTypes.changeUri: {
-      if (!valueStart?.[i]) {
-        conditionsStatus[i] = false;
+      case GoalTypes.uri: {
+        conditionsStatus[i] = content.uriValue === currentValue[i];
         break;
       }
-      if (typeof valueStart[i] === 'number') {
-        conditionsStatus[i] = !(Math.abs(valueStart[i] - currentValue[i]) < Number.EPSILON);
-      } else if (valueStart[i]?.length) {
-        let hasChanged = false;
-        valueStart[i].forEach((channel, j) => {
-          hasChanged = hasChanged || !(Math.abs(channel - currentValue[i][j]) < Number.EPSILON);
+      case GoalTypes.geoPosition: {
+        let isTrue = true;
+        Object.keys(content.position).forEach((dimension) => {
+          const { operator, value, unit } = content.position[dimension];
+          const cameraPosition = currentValue[i];
+          if (unit && unit !== cameraPosition.altitudeUnit) {
+            isTrue = false;
+          }
+          switch (operator) {
+            case '<': {
+              isTrue = isTrue && cameraPosition[dimension] < value;
+              break;
+            }
+            case '>': {
+              isTrue = isTrue && cameraPosition[dimension] > value;
+              break;
+            }
+            case 'between': {
+              const isBetween = cameraPosition[dimension] > Math.min(...value) &&
+                cameraPosition[dimension] < Math.max(...value);
+              isTrue = isTrue && isBetween;
+              break;
+            }
+            default: {
+              isTrue = false;
+              break;
+            }
+          }
         });
-        conditionsStatus[i] = Boolean(hasChanged);
-      } else {
-        conditionsStatus[i] = valueStart[i] !== currentValue[i];
+        conditionsStatus[i] = isTrue;
+        break;
       }
-      break;
-    }
-    case GoalTypes.multiUri: {
-      // The multi uri will be true if either of the uris are true, equivalent to the OR operator
-      let isFulfilled = false;
-      currentValue[i].forEach(((value) => {
-        if (content.uriValue === value.uri) {
-          isFulfilled = true;
+      case GoalTypes.pauseTime: {
+        conditionsStatus[i] = currentValue[i] === true;
+        break;
+      }
+      case GoalTypes.changeTime:
+      case GoalTypes.changeDeltaTime:
+      case GoalTypes.changeUri: {
+        if (!valueStart?.[i]) {
+          conditionsStatus[i] = false;
+          break;
         }
-      }));
+        if (typeof valueStart[i] === 'number') {
+          conditionsStatus[i] = !(Math.abs(valueStart[i] - currentValue[i]) < Number.EPSILON);
+        } else if (valueStart[i]?.length) {
+          let hasChanged = false;
+          valueStart[i].forEach((channel, j) => {
+            hasChanged = hasChanged || !(Math.abs(channel - currentValue[i][j]) < Number.EPSILON);
+          });
+          conditionsStatus[i] = Boolean(hasChanged);
+        } else {
+          conditionsStatus[i] = valueStart[i] !== currentValue[i];
+        }
+        break;
+      }
+      case GoalTypes.multiUri: {
+      // The multi uri will be true if either of the uris are true, equivalent to the OR operator
+        let isFulfilled = false;
+        currentValue[i].forEach(((value) => {
+          if (content.uriValue === value.uri) {
+            isFulfilled = true;
+          }
+        }));
 
-      conditionsStatus[i] = isFulfilled;
-      break;
-    }
-    default: {
-      conditionsStatus[i] = true;
-      break;
-    }
+        conditionsStatus[i] = isFulfilled;
+        break;
+      }
+      default: {
+        conditionsStatus[i] = true;
+        break;
+      }
     }
   });
   return conditionsStatus;
@@ -228,46 +228,46 @@ const mapStateToProps = (state, ownProps) => {
     currentValue = new Array(content.goalType.length);
     content.goalType.forEach((goal, i) => {
       switch (goal) {
-      case GoalTypes.geoPosition: {
-        currentValue[i] = {
-          latitude: state.camera.latitude,
-          longitude: state.camera.longitude,
-          altitude: state.camera.altitude,
-          altitudeUnit: state.camera.altitudeUnit
-        };
-        break;
-      }
-      case GoalTypes.changeDeltaTime: {
-        currentValue[i] = state.time.targetDeltaTime;
-        break;
-      }
-      case GoalTypes.changeTime: {
-        currentValue[i] = new Date(state.time.time).getFullYear();
-        break;
-      }
-      case GoalTypes.changeUri:
-      case GoalTypes.uri: {
-        currentValue[i] = state.propertyTree.properties[content.uri]?.value;
-        break;
-      }
-      case GoalTypes.multiUri: {
-        currentValue[i] = [];
-        content.uri.forEach((uri) => {
-          const value = state.propertyTree.properties[uri]?.value;
-          if (value !== undefined) {
-            currentValue[i].push(value);
-          }
-        });
-        break;
-      }
-      case GoalTypes.pauseTime: {
-        currentValue[i] = state.time.isPaused;
-        break;
-      }
-      default: {
-        currentValue[i] = undefined;
-        break;
-      }
+        case GoalTypes.geoPosition: {
+          currentValue[i] = {
+            latitude: state.camera.latitude,
+            longitude: state.camera.longitude,
+            altitude: state.camera.altitude,
+            altitudeUnit: state.camera.altitudeUnit
+          };
+          break;
+        }
+        case GoalTypes.changeDeltaTime: {
+          currentValue[i] = state.time.targetDeltaTime;
+          break;
+        }
+        case GoalTypes.changeTime: {
+          currentValue[i] = new Date(state.time.time).getFullYear();
+          break;
+        }
+        case GoalTypes.changeUri:
+        case GoalTypes.uri: {
+          currentValue[i] = state.propertyTree.properties[content.uri]?.value;
+          break;
+        }
+        case GoalTypes.multiUri: {
+          currentValue[i] = [];
+          content.uri.forEach((uri) => {
+            const value = state.propertyTree.properties[uri]?.value;
+            if (value !== undefined) {
+              currentValue[i].push(value);
+            }
+          });
+          break;
+        }
+        case GoalTypes.pauseTime: {
+          currentValue[i] = state.time.isPaused;
+          break;
+        }
+        default: {
+          currentValue[i] = undefined;
+          break;
+        }
       }
     });
   }

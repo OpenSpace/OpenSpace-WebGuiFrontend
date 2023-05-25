@@ -149,38 +149,38 @@ function GeoPositionPanel({
     const lat = location.y;
     const long = location.x;
     switch (interaction) {
-    case Interaction.flyTo: {
-      luaApi?.globebrowsing?.flyToGeo(currentAnchor, lat, long, altitude);
-      break;
-    }
-    case Interaction.jumpTo: {
-      luaApi?.globebrowsing?.goToGeo(currentAnchor, lat, long, altitude);
-      break;
-    }
-    case Interaction.addFocus: {
-      // Don't add if it is already added
-      if (addedSceneGraphNodes.indexOf(address) > -1) {
+      case Interaction.flyTo: {
+        luaApi?.globebrowsing?.flyToGeo(currentAnchor, lat, long, altitude);
         break;
       }
-      pushSceneGraphNode(address);
-      let addressUtf8 = '';
-      for (let i = 0; i < address.length; i++) {
-        if (address.charCodeAt(i) <= 127) {
-          addressUtf8 += address.charAt(i);
-        }
+      case Interaction.jumpTo: {
+        luaApi?.globebrowsing?.goToGeo(currentAnchor, lat, long, altitude);
+        break;
       }
-      addressUtf8 = addressUtf8.replaceAll(' ', '_');
-      addressUtf8 = addressUtf8.replaceAll(',', '');
-      luaApi?.addSceneGraphNode(createSceneGraphNodeTable(currentAnchor, addressUtf8, lat, long, altitude));
-      // TODO: Once we have a proper way to subscribe to additions and removals
-      // of property owners, this 'hard' refresh should be removed.
-      setTimeout(() => refresh(), 300);
-      break;
-    }
-    default: {
-      luaApi?.globebrowsing?.flyToGeo(currentAnchor, lat, long, altitude);
-      break;
-    }
+      case Interaction.addFocus: {
+      // Don't add if it is already added
+        if (addedSceneGraphNodes.indexOf(address) > -1) {
+          break;
+        }
+        pushSceneGraphNode(address);
+        let addressUtf8 = '';
+        for (let i = 0; i < address.length; i++) {
+          if (address.charCodeAt(i) <= 127) {
+            addressUtf8 += address.charAt(i);
+          }
+        }
+        addressUtf8 = addressUtf8.replaceAll(' ', '_');
+        addressUtf8 = addressUtf8.replaceAll(',', '');
+        luaApi?.addSceneGraphNode(createSceneGraphNodeTable(currentAnchor, addressUtf8, lat, long, altitude));
+        // TODO: Once we have a proper way to subscribe to additions and removals
+        // of property owners, this 'hard' refresh should be removed.
+        setTimeout(() => refresh(), 300);
+        break;
+      }
+      default: {
+        luaApi?.globebrowsing?.flyToGeo(currentAnchor, lat, long, altitude);
+        break;
+      }
     }
   }
 
@@ -193,99 +193,99 @@ function GeoPositionPanel({
 
   function anchorPanel(anchor) {
     switch (anchor) {
-    case 'Earth':
-      return (
-        <>
-          <MultiStateToggle
-            title="Mode"
-            labels={Object.values(Interaction)}
-            checked={interaction}
-            setChecked={setInteraction}
-            infoText={"'Fly to' will fly the camera to the position, " +
+      case 'Earth':
+        return (
+          <>
+            <MultiStateToggle
+              title="Mode"
+              labels={Object.values(Interaction)}
+              checked={interaction}
+              setChecked={setInteraction}
+              infoText={"'Fly to' will fly the camera to the position, " +
                 "'Jump to' will place the camera at the position instantaneously and " +
                 "'Add Focus' will add a scene graph node at the position."}
-          />
-          <div className={styles.latLongInput}>
-            <Input
-              placeholder="Latitude..."
-              onChange={(e) => {
-                setLatitude(e.target.value);
-              }}
-              value={latitude}
             />
-            <Input
-              placeholder="Longitude..."
-              onChange={(e) => {
-                setLongitude(e.target.value);
-              }}
-              value={longitude}
-            />
-            <Input
-              placeholder="Altitude..."
-              onChange={(e) => {
-                setAltitude(e.target.value);
-              }}
-              value={altitude}
-            />
-            <Button onClick={() => enterLatLongAlt()} className={styles.latLongButton}>{interaction}</Button>
-          </div>
-          <hr className={Popover.styles.delimiter} />
-          <div className={styles.searchField}>
-            <Input
-              placeholder="Search places..."
-              onEnter={() => getPlaces()}
-              onChange={(e) => {
-                setInputValue(e.target.value);
-              }}
-              clearable
-            />
-            <Button onClick={() => getPlaces()}>Search</Button>
-          </div>
-          <p className={styles.resultsTitle}>Results</p>
-          {places && (
-            (places.length < 4) ? (
-              <>
-                {places?.map?.((place) => {
-                  const address = place.attributes.LongLabel;
-                  const found = Boolean(addedSceneGraphNodes.indexOf(address) > -1);
-                  return (
-                    <Place
-                      key={place.attributes.LongLabel}
-                      onClick={() => selectCoordinate(place.location, address)}
-                      address={address}
-                      found={found}
-                    />
-                  );
-                })}
-              </>
-            ) :
-              (
-                <FilterList
-                  searchText="Filter results..."
-                  height="170px"
-                >
-                  <FilterListData>
-                    {places?.map?.((place) => {
-                      const address = place.attributes.LongLabel;
-                      const found = Boolean(addedSceneGraphNodes.indexOf(address) > -1);
-                      return (
-                        <Place
-                          key={place.attributes.LongLabel}
-                          onClick={() => selectCoordinate(place.location, address)}
-                          address={address}
-                          found={found}
-                        />
-                      );
-                    })}
-                  </FilterListData>
-                </FilterList>
-              )
-          )}
+            <div className={styles.latLongInput}>
+              <Input
+                placeholder="Latitude..."
+                onChange={(e) => {
+                  setLatitude(e.target.value);
+                }}
+                value={latitude}
+              />
+              <Input
+                placeholder="Longitude..."
+                onChange={(e) => {
+                  setLongitude(e.target.value);
+                }}
+                value={longitude}
+              />
+              <Input
+                placeholder="Altitude..."
+                onChange={(e) => {
+                  setAltitude(e.target.value);
+                }}
+                value={altitude}
+              />
+              <Button onClick={() => enterLatLongAlt()} className={styles.latLongButton}>{interaction}</Button>
+            </div>
+            <hr className={Popover.styles.delimiter} />
+            <div className={styles.searchField}>
+              <Input
+                placeholder="Search places..."
+                onEnter={() => getPlaces()}
+                onChange={(e) => {
+                  setInputValue(e.target.value);
+                }}
+                clearable
+              />
+              <Button onClick={() => getPlaces()}>Search</Button>
+            </div>
+            <p className={styles.resultsTitle}>Results</p>
+            {places && (
+              (places.length < 4) ? (
+                <>
+                  {places?.map?.((place) => {
+                    const address = place.attributes.LongLabel;
+                    const found = Boolean(addedSceneGraphNodes.indexOf(address) > -1);
+                    return (
+                      <Place
+                        key={place.attributes.LongLabel}
+                        onClick={() => selectCoordinate(place.location, address)}
+                        address={address}
+                        found={found}
+                      />
+                    );
+                  })}
+                </>
+              ) :
+                (
+                  <FilterList
+                    searchText="Filter results..."
+                    height="170px"
+                  >
+                    <FilterListData>
+                      {places?.map?.((place) => {
+                        const address = place.attributes.LongLabel;
+                        const found = Boolean(addedSceneGraphNodes.indexOf(address) > -1);
+                        return (
+                          <Place
+                            key={place.attributes.LongLabel}
+                            onClick={() => selectCoordinate(place.location, address)}
+                            address={address}
+                            found={found}
+                          />
+                        );
+                      })}
+                    </FilterListData>
+                  </FilterList>
+                )
+            )}
 
-        </>
-      );
-    default:
-      return <CenteredLabel>{`Currently there is no data for locations on ${currentAnchor}`}</CenteredLabel>;
+          </>
+        );
+      default:
+        return <CenteredLabel>{`Currently there is no data for locations on ${currentAnchor}`}</CenteredLabel>;
     }
   }
 

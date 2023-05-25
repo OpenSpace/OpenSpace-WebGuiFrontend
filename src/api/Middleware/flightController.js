@@ -14,17 +14,17 @@ function sendFlightControlMessage(data) {
 const flightController = () => (next) => (action) => {
   const result = next(action);
   switch (action.type) {
-  case actionTypes.onOpenConnection:
-    connectToFlightControllerTopic();
-    break;
-  case actionTypes.sendFlightControl: {
-    if (topic) {
-      sendFlightControlMessage(action.payload);
+    case actionTypes.onOpenConnection:
+      connectToFlightControllerTopic();
+      break;
+    case actionTypes.sendFlightControl: {
+      if (topic) {
+        sendFlightControlMessage(action.payload);
+      }
+      break;
     }
-    break;
-  }
-  default:
-    break;
+    default:
+      break;
   }
   return result;
 };

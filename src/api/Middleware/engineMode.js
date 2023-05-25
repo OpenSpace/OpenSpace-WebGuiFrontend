@@ -48,31 +48,31 @@ const engineMode = (store) => (next) => (action) => {
   const state = store.getState();
 
   switch (action.type) {
-  case actionTypes.onOpenConnection:
-    if (nSubscribers > 0) {
+    case actionTypes.onOpenConnection:
+      if (nSubscribers > 0) {
+        dataCallback = (data) => store.dispatch(updateEngineMode(data));
+        subscribe();
+      }
+      break;
+    case actionTypes.refreshEngineMode:
       dataCallback = (data) => store.dispatch(updateEngineMode(data));
-      subscribe();
-    }
-    break;
-  case actionTypes.refreshEngineMode:
-    dataCallback = (data) => store.dispatch(updateEngineMode(data));
-    refresh();
-    break;
-  case actionTypes.subscribeToEngineMode:
-    ++nSubscribers;
-    if (nSubscribers === 1 && state.connection.isConnected) {
-      dataCallback = (data) => store.dispatch(updateEngineMode(data));
-      subscribe();
-    }
-    break;
-  case actionTypes.unsubscribeToEngineMode:
-    --nSubscribers;
-    if (nSubscribers === 0) {
-      unsubscribe();
-    }
-    break;
-  default:
-    break;
+      refresh();
+      break;
+    case actionTypes.subscribeToEngineMode:
+      ++nSubscribers;
+      if (nSubscribers === 1 && state.connection.isConnected) {
+        dataCallback = (data) => store.dispatch(updateEngineMode(data));
+        subscribe();
+      }
+      break;
+    case actionTypes.unsubscribeToEngineMode:
+      --nSubscribers;
+      if (nSubscribers === 0) {
+        unsubscribe();
+      }
+      break;
+    default:
+      break;
   }
   return result;
 };

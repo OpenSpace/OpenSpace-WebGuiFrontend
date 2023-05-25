@@ -107,24 +107,24 @@ class KeybindingPanel extends Component {
       // keypad but not number
       let keyswap = '';
       switch (number) {
-      case '*':
-        keyswap = 'multiply';
-        break;
-      case '/':
-        keyswap = 'divide';
-        break;
-      case '-':
-        keyswap = 'minus';
-        break;
-      case '+':
-        keyswap = 'add';
-        break;
-      case 'Enter':
-        keyswap = 'enter';
-        break;
-      default:
-        keyswap = number;
-        break;
+        case '*':
+          keyswap = 'multiply';
+          break;
+        case '/':
+          keyswap = 'divide';
+          break;
+        case '-':
+          keyswap = 'minus';
+          break;
+        case '+':
+          keyswap = 'add';
+          break;
+        case 'Enter':
+          keyswap = 'enter';
+          break;
+        default:
+          keyswap = number;
+          break;
       }
       return `{numpad${keyswap}}`;
     } if (!Number.isNaN(key - parseFloat(key))) {

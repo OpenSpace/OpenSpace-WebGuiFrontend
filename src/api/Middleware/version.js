@@ -14,13 +14,13 @@ const getVersion = async (callback) => {
 const version = (store) => (next) => (action) => {
   const result = next(action);
   switch (action.type) {
-  case actionTypes.onOpenConnection:
-    getVersion((data) => {
-      store.dispatch(initializeVersion(data));
-    });
-    break;
-  default:
-    break;
+    case actionTypes.onOpenConnection:
+      getVersion((data) => {
+        store.dispatch(initializeVersion(data));
+      });
+      break;
+    default:
+      break;
   }
   return result;
 };

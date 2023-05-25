@@ -133,35 +133,35 @@ function Group({
         sortedEntries.map((entry) => {
           const expandSingle = entries.length === 1;
           switch (entry.type) {
-          case 'group': {
-            const childNodeIdentifier = `${expansionIdentifier}/${
-              nodeExpansionIdentifier(entry.payload)}`;
+            case 'group': {
+              const childNodeIdentifier = `${expansionIdentifier}/${
+                nodeExpansionIdentifier(entry.payload)}`;
 
-            return (
-              <Group
-                autoExpand={autoExpand || expandSingle}
-                key={entry.payload}
-                path={entry.payload}
-                expansionIdentifier={childNodeIdentifier}
-                showOnlyEnabled={showOnlyEnabled}
-              />
-            );
-          }
-          case 'propertyOwner': {
-            const childNodeIdentifier = `${expansionIdentifier}/${
-              propertyOwnerNodeExpansionIdentifier(entry.payload)}`;
+              return (
+                <Group
+                  autoExpand={autoExpand || expandSingle}
+                  key={entry.payload}
+                  path={entry.payload}
+                  expansionIdentifier={childNodeIdentifier}
+                  showOnlyEnabled={showOnlyEnabled}
+                />
+              );
+            }
+            case 'propertyOwner': {
+              const childNodeIdentifier = `${expansionIdentifier}/${
+                propertyOwnerNodeExpansionIdentifier(entry.payload)}`;
 
-            return (
-              <PropertyOwner
-                autoExpand={autoExpand || expandSingle}
-                key={entry.payload}
-                uri={entry.payload}
-                expansionIdentifier={childNodeIdentifier}
-              />
-            );
-          }
-          default:
-            return null;
+              return (
+                <PropertyOwner
+                  autoExpand={autoExpand || expandSingle}
+                  key={entry.payload}
+                  uri={entry.payload}
+                  expansionIdentifier={childNodeIdentifier}
+                />
+              );
+            }
+            default:
+              return null;
           }
         })
       }

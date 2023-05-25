@@ -14,13 +14,13 @@ const getMissions = async (callback) => {
 const missions = (store) => (next) => (action) => {
   const result = next(action);
   switch (action.type) {
-  case actionTypes.onOpenConnection:
-    getMissions((data) => {
-      store.dispatch(initializeMissions(data));
-    });
-    break;
-  default:
-    break;
+    case actionTypes.onOpenConnection:
+      getMissions((data) => {
+        store.dispatch(initializeMissions(data));
+      });
+      break;
+    default:
+      break;
   }
   return result;
 };

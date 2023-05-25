@@ -42,10 +42,10 @@ const computeGroups = (propertyTree) => {
 
 const groups = (state = {}, action, propertyTree) => {
   switch (action.type) {
-  case actionTypes.refreshGroups:
-    return computeGroups(propertyTree);
-  default:
-    return state;
+    case actionTypes.refreshGroups:
+      return computeGroups(propertyTree);
+    default:
+      return state;
   }
 };
 

@@ -65,32 +65,32 @@ const skybrowser = (store) => (next) => (action) => {
   const result = next(action);
   const state = store.getState();
   switch (action.type) {
-  case actionTypes.loadSkyBrowserData:
-    getWwtData(action.payload, (data) => {
-      store.dispatch(initializeSkyBrowser(data));
-    });
-    break;
-  case actionTypes.onOpenConnection:
-    if (nSubscribers > 0) {
-      setupSubscription(store);
-    }
-    break;
-  case actionTypes.subscribeToSkyBrowser:
-    ++nSubscribers;
-    if (nSubscribers === 1 && state.connection.isConnected) {
-      setupSubscription(store);
-    }
-    break;
-  case actionTypes.unsubscribeToSkyBrowser:
-    if (nSubscribers > 0) {
-      --nSubscribers;
-    }
-    if (skybrowserTopic && nSubscribers === 0) {
-      tearDownSubscription();
-    }
-    break;
-  default:
-    break;
+    case actionTypes.loadSkyBrowserData:
+      getWwtData(action.payload, (data) => {
+        store.dispatch(initializeSkyBrowser(data));
+      });
+      break;
+    case actionTypes.onOpenConnection:
+      if (nSubscribers > 0) {
+        setupSubscription(store);
+      }
+      break;
+    case actionTypes.subscribeToSkyBrowser:
+      ++nSubscribers;
+      if (nSubscribers === 1 && state.connection.isConnected) {
+        setupSubscription(store);
+      }
+      break;
+    case actionTypes.unsubscribeToSkyBrowser:
+      if (nSubscribers > 0) {
+        --nSubscribers;
+      }
+      if (skybrowserTopic && nSubscribers === 0) {
+        tearDownSubscription();
+      }
+      break;
+    default:
+      break;
   }
   return result;
 };

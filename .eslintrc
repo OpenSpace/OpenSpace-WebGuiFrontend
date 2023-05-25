@@ -17,7 +17,7 @@
   "env": {
     "browser": true
   },
-  "plugins": ["react", "simple-import-sort"], 
+  "plugins": ["react", "simple-import-sort"],
   "rules": {
     "linebreak-style": "off", // We should not bother with this since git converts line endings anyways
     "no-plusplus": "off", // overly strict - maybe only allow in for loops though?
@@ -40,7 +40,7 @@
     // increase the severity of rules so they are auto-fixable
     "simple-import-sort/imports": "error",
     "simple-import-sort/exports": "error",
-    "indent": ["error", 2], // Indentation
+    "indent": ["error", 2, { "SwitchCase": 1 }], // Indentation
     "eol-last": ["error", "always"], // End of file
     "key-spacing": [1, {
       "mode": "strict",

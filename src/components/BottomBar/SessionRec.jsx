@@ -107,45 +107,45 @@ class SessionRec extends Component {
   get pickerContent() {
     const { recordingState } = this.props;
     switch (recordingState) {
-    case SessionStateRecording:
-      return (
-        <div>
-          <MaterialIcon icon="videocam" />
-          {' Stop recording'}
-        </div>
-      );
-    case SessionStatePlaying:
-      return (
-        <>
-          <div className={styles.playbackButton} onClick={this.togglePlaybackPaused}>
-            <MaterialIcon icon="pause" />
-            {' Pause'}
+      case SessionStateRecording:
+        return (
+          <div>
+            <MaterialIcon icon="videocam" />
+            {' Stop recording'}
           </div>
-          <div onClick={this.stopPlayback}>
-            <MaterialIcon icon="stop" />
-            {' Stop playback'}
+        );
+      case SessionStatePlaying:
+        return (
+          <>
+            <div className={styles.playbackButton} onClick={this.togglePlaybackPaused}>
+              <MaterialIcon icon="pause" />
+              {' Pause'}
+            </div>
+            <div onClick={this.stopPlayback}>
+              <MaterialIcon icon="stop" />
+              {' Stop playback'}
+            </div>
+          </>
+        );
+      case SessionStatePaused:
+        return (
+          <>
+            <div className={styles.playbackButton} onClick={this.togglePlaybackPaused}>
+              <MaterialIcon icon="play_arrow" />
+              {' Resume'}
+            </div>
+            <div onClick={this.stopPlayback}>
+              <MaterialIcon icon="stop" />
+              {' Stop playback'}
+            </div>
+          </>
+        );
+      default:
+        return (
+          <div>
+            <MaterialIcon className={styles.cameraIcon} icon="videocam" />
           </div>
-        </>
-      );
-    case SessionStatePaused:
-      return (
-        <>
-          <div className={styles.playbackButton} onClick={this.togglePlaybackPaused}>
-            <MaterialIcon icon="play_arrow" />
-            {' Resume'}
-          </div>
-          <div onClick={this.stopPlayback}>
-            <MaterialIcon icon="stop" />
-            {' Stop playback'}
-          </div>
-        </>
-      );
-    default:
-      return (
-        <div>
-          <MaterialIcon className={styles.cameraIcon} icon="videocam" />
-        </div>
-      );
+        );
     }
   }
 
