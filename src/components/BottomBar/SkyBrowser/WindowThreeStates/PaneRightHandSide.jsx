@@ -57,7 +57,9 @@ function PaneRightHandSide({ sizeCallback, width, children }) {
 }
 
 PaneRightHandSide.propTypes = {
-  children: PropTypes.node
+  children: PropTypes.node,
+  sizeCallback: PropTypes.func.isRequired,
+  width: PropTypes.number.isRequired
 };
 
 PaneRightHandSide.defaultProps = {
