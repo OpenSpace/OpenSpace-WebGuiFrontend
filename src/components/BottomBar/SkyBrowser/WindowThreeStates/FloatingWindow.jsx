@@ -6,12 +6,12 @@ import { Resizable } from 're-resizable';
 import styles from './WindowThreeStates.scss';
 
 function FloatingWindow({
-  children, defaultSize, position, sizeCallback, size, handleStop, minHeight
+  children, defaultSize, handleDragStop, minHeight, position, size, sizeCallback
 }) {
   const windowDiv = React.useRef(null);
 
   return (
-    <Draggable defaultPosition={position} handle=".header" onStop={handleStop}>
+    <Draggable defaultPosition={position} handle=".header" onStop={handleDragStop}>
       <section
         className={`${styles.floatingWindow}`}
         ref={windowDiv}
@@ -39,20 +39,31 @@ function FloatingWindow({
 
 FloatingWindow.propTypes = {
   children: PropTypes.node,
+  defaultSize: PropTypes.shape({
+    height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    width: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+  }),
+  handleDragStop: PropTypes.func,
+  minHeight: PropTypes.number,
   position: PropTypes.shape({
     x: PropTypes.number,
     y: PropTypes.number
   }),
-  defaultSize: PropTypes.shape({
+  size: PropTypes.shape({
     height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     width: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
-  })
+  }),
+  sizeCallback: PropTypes.func
 };
 
 FloatingWindow.defaultProps = {
   children: [],
+  defaultSize: { height: 'auto', width: 'auto' },
+  handleDragStop: () => {},
+  minHeight: undefined,
+  size: undefined,
   position: { x: 10, y: -600 },
-  defaultSize: { height: 'auto', width: 'auto' }
+  sizeCallback: undefined
 };
 
 export default FloatingWindow;

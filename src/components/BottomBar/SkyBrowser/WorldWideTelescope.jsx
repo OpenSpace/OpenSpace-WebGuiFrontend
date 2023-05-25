@@ -252,7 +252,7 @@ function WorldWideTelescope({
       defaultSize={{ height: `425px`, width: `400px` }}
       size={{ height: `${size.height}px`, width: `${size.width}px` }}
       position={position}
-      handleStop={setPosition}
+      handleDragStop={setPosition}
       sizeCallback={changeSize}
     >
       {topBar}
