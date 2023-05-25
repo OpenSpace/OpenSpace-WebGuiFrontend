@@ -2,6 +2,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { AutoSizer, Grid } from 'react-virtualized';
+import PropTypes from 'prop-types';
 
 import { ObjectWordBeginningSubstring } from '../../../utils/StringMatchers';
 import CenteredLabel from '../../common/CenteredLabel/CenteredLabel';
@@ -17,7 +18,7 @@ const ImageViewingOptions = {
   skySurveys: 'Sky surveys'
 };
 
-export default function SkyBrowserImageList({
+function SkyBrowserImageList({
   activeImage,
   currentBrowserColor,
   height,
@@ -122,3 +123,15 @@ export default function SkyBrowserImageList({
     </>
   );
 }
+
+SkyBrowserImageList.propTypes = {
+  activeImage: PropTypes.string.isRequired,
+  currentBrowserColor: PropTypes.func.isRequired,
+  height: PropTypes.number.isRequired,
+  selectImage: PropTypes.func.isRequired,
+  moveCircleToHoverImage: PropTypes.func.isRequired
+};
+
+SkyBrowserImageList.defaultProps = {};
+
+export default SkyBrowserImageList;
