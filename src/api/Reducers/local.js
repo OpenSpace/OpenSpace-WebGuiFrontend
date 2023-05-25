@@ -8,7 +8,7 @@ import actionTypes from '../Actions/actionTypes';
 const defaultOriginPicker = {
   action: 'Focus'
 };
-const originPicker = (state = defaultOriginPicker, action) => {
+const originPicker = (state = defaultOriginPicker, action = {}) => {
   switch (action.type) {
     case actionTypes.setNavigationAction:
       return {
@@ -26,7 +26,7 @@ const originPicker = (state = defaultOriginPicker, action) => {
 const defaultTimePicker = {
   // Todo: move state such as lock and calendar here.
 };
-const timePicker = (state = defaultTimePicker, action) => {
+const timePicker = (state = defaultTimePicker, action = {}) => {
   switch (action.type) {
     default:
       return state;
@@ -80,7 +80,7 @@ const defaultPopovers = {
   flightController: {}
 };
 
-const popovers = (state = defaultPopovers, action) => {
+const popovers = (state = defaultPopovers, action = {}) => {
   switch (action.type) {
     case actionTypes.setPopoverPosition:
     case actionTypes.setPopoverVisibility:
