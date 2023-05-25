@@ -3,8 +3,8 @@ import React from 'react';
 import MaterialIcon from '../MaterialIcon/MaterialIcon';
 import Tooltip from '../Tooltip/Tooltip';
 
-import styles from './SettingsPopup.scss';
 import buttonStyles from '../Input/Button/Button.scss';
+import styles from './SettingsPopup.scss';
 
 export default function SettingsPopup({ children }) {
   const [showSearchSettings, setShowSearchSettings] = React.useState(false);
@@ -13,7 +13,8 @@ export default function SettingsPopup({ children }) {
     <div
       onClick={() => setShowSearchSettings((current) => !current)}
       onKeyDown={() => setShowSearchSettings((current) => !current)}
-      className={`${styles.settings} ${buttonStyles.button} ${showSearchSettings && styles.settingsFocus}`}
+      className={`${styles.settings} ${buttonStyles.button} 
+        ${showSearchSettings && styles.settingsFocus}`}
       role="button"
       tabIndex={0}
     >
