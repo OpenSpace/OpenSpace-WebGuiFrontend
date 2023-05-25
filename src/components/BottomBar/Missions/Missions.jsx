@@ -11,22 +11,10 @@ import { ActionsButton } from '../ActionsPanel';
 import Picker from '../Picker';
 import WindowThreeStates from '../SkyBrowser/WindowThreeStates/WindowThreeStates';
 
+import { DisplayType, makeUtcDate } from './missionUtils';
 import Timeline from './Timeline';
 
 import styles from './Missions.scss';
-
-export function makeUtcDate(time) {
-  if (!time) {
-    return null;
-  }
-  const utcString = time.includes('Z') ? time : `${time}Z`;
-  return new Date(utcString);
-}
-
-export const DisplayType = {
-  phase: 'phase',
-  milestone: 'milestone'
-};
 
 function SetTimeButton({ onClick, name }) {
   return (

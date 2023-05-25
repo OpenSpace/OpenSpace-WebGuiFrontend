@@ -5,7 +5,7 @@ import * as d3 from 'd3';
 import Button from '../../common/Input/Button/Button';
 import Tooltip from '../../common/Tooltip/Tooltip';
 
-import { DisplayType, makeUtcDate } from './Missions';
+import { DisplayType, makeUtcDate } from './missionUtils';
 
 import styles from './Timeline.scss';
 
@@ -63,17 +63,28 @@ export default function Timeline({
   const margin = {
     top: 0, right: 10, bottom: 70, left: 60
   };
-  const minLevelWidth = 15; // Minimum width of a phase
-  const minWidth = (minLevelWidth * nestedLevels) + margin.left + margin.right; // Ensure graph is large enough to show all phases
-  const zoomButtonHeight = 40; // Height of buttons that control zoom
-  const height = fullHeight - zoomButtonHeight; // Height of graph
-  const width = Math.max(fullWidth, minWidth); // Width of graph
-  const scaleExtent = [1, 1000]; // Min and max scale
-  const translateExtent = [[0, 0], [width, height - margin.bottom]]; // Min and max translation
-  const paddingGraph = 10; // How many pixels over and below graph will still show content
-  const arrowOffsetY = 25; // "Padding" for the arrow - how far away from the edge it is displayed
-  const radiusPhase = 2; // Radius for the rectangles that represent phases
-  const transitionTime = 750; // Milliseconds
+  // Minimum width of a phase
+  const minLevelWidth = 15;
+  // Ensure graph is large enough to show all phases
+  const minWidth = (minLevelWidth * nestedLevels) + margin.left + margin.right;
+  // Height of buttons that control zoom
+  const zoomButtonHeight = 40;
+  // Height of graph
+  const height = fullHeight - zoomButtonHeight;
+  // Width of graph
+  const width = Math.max(fullWidth, minWidth);
+  // Min and max scale
+  const scaleExtent = [1, 1000];
+  // Min and max translation
+  const translateExtent = [[0, 0], [width, height - margin.bottom]];
+  // How many pixels over and below graph will still show content
+  const paddingGraph = 10;
+  // "Padding" for the arrow - how far away from the edge it is displayed
+  const arrowOffsetY = 25;
+  // Radius for the rectangles that represent phases
+  const radiusPhase = 2;
+  // Milliseconds
+  const transitionTime = 750;
 
   // Styling
   const milestoneColor = 'rgba(255, 150, 0, 1)';
@@ -89,13 +100,17 @@ export default function Timeline({
   const tooltipMargin = 10;
 
   // Calculate scaling for x and y
-  const xScale = d3.scaleLinear().range([margin.left, width - margin.right]).domain([0, nestedLevels]);
-  let yScale = d3.scaleUtc().range([height - margin.bottom, margin.top]).domain(timeRange);
+  const xScale = d3.scaleLinear()
+    .range([margin.left, width - margin.right])
+    .domain([0, nestedLevels]);
+  let yScale = d3.scaleUtc()
+    .range([height - margin.bottom, margin.top])
+    .domain(timeRange);
 
   // Calculate axes
   const xAxis = d3.axisTop()
     .scale(xScale)
-    .tickFormat((d) => ``)
+    .tickFormat(() => ``)
     .tickSize(0)
     .ticks(nestedLevels);
   let yAxis = d3.axisLeft().scale(yScale); // Y axis will change
@@ -152,19 +167,30 @@ export default function Timeline({
 
     // Apply transform
     const transform = d3.zoomIdentity.scale(k).translate(1, deltaY);
-    d3.select(svgRef.current).transition().duration(transitionTime).call(zoomRef.current.transform, transform);
+    d3.select(svgRef.current)
+      .transition()
+      .duration(transitionTime)
+      .call(zoomRef.current.transform, transform);
   }
 
   function reset() {
-    d3.select(svgRef.current).transition().duration(transitionTime).call(
-      zoomRef.current.transform,
-      d3.zoomIdentity,
-      d3.zoomTransform(d3.select(svgRef.current).node()).invert([width * 0.5, height * 0.5])
-    );
+    d3.select(svgRef.current)
+      .transition()
+      .duration(transitionTime)
+      .call(
+        zoomRef.current.transform,
+        d3.zoomIdentity,
+        d3.zoomTransform(
+          d3.select(svgRef.current).node()
+        ).invert([width * 0.5, height * 0.5])
+      );
   }
 
   function zoomByButton(zoomValue) {
-    d3.select(svgRef.current).transition().duration(transitionTime).call(zoomRef.current.scaleBy, zoomValue);
+    d3.select(svgRef.current)
+      .transition()
+      .duration(transitionTime)
+      .call(zoomRef.current.scaleBy, zoomValue);
   }
 
   function onClick(event, time) {
@@ -195,7 +221,9 @@ export default function Timeline({
     }
     const startTime = makeUtcDate(phase.timerange.start);
     const endTime = makeUtcDate(phase.timerange.end);
-    const isCurrent = Date.parse(now) < Date.parse(endTime) && Date.parse(now) > Date.parse(startTime);
+    const isBeforeEndTime = Date.parse(now) < Date.parse(endTime);
+    const isAfterBeginning = Date.parse(now) > Date.parse(startTime);
+    const isCurrent = isBeforeEndTime && isAfterBeginning;
     const paddingY = padding / k; // Make sure padding doesn't get stretched when zooming
     const radiusY = radiusPhase / k; // Same here
     return (
@@ -221,22 +249,22 @@ export default function Timeline({
   }
 
   // Used for the current time indicator
-  function createLine(time, color, ref) {
+  function createTimeIndicator() {
     // Check so time is valid
-    if (!(time instanceof Date && !Number.isNaN(time))) {
+    if (!(now instanceof Date && !Number.isNaN(now))) {
       return null;
     }
     const lineWidthScaled = lineWidth / k; // Ensure line doesn't get stretched when zooming
-    const yPosition = yScale(time) - (lineWidthScaled * 0.5); // Center line around time
+    const yPosition = yScale(now) - (lineWidthScaled * 0.5); // Center line around time
     return (
       <rect
-        key={time.toUTCString()}
-        ref={(el) => (ref ? ref.current = el : null)}
+        key={now.toUTCString()}
+        ref={timeIndicatorRef}
         x={margin.left}
         y={yPosition}
         height={lineWidthScaled}
         width={width - margin.left - margin.right}
-        fill={color}
+        fill={timeIndicatorColor}
         stroke={borderColor}
         strokeWidth={borderWidth / k}
       />
@@ -264,18 +292,18 @@ export default function Timeline({
   // Used for milestones
   function createPolygon(date, color = undefined, noBorder = false, padding = 0) {
     const time = makeUtcDate(date.date);
-    const width = polygonSize + (2 * padding);
-    const y = yScale(time) - (width * 0.5 / k);
-    const x = margin.left - width;
-    const centerOffsetX = 0.5 * width;
+    const w = polygonSize + (2 * padding); // width of polygon
+    const yPoly = yScale(time) - ((w * 0.5) / k);
+    const x = margin.left - w;
+    const centerOffsetX = 0.5 * w;
     // To make the key unique we need to make sure that the time is different for each
     // polygon - the color and padding are added when two polygons are placed at the same
     // time (when it is selected)
     const uniqueKey = `${time.toUTCString()}${padding}${color}`;
     return (
       <polygon
-        points={`0, ${width * 0.5} ${width * 0.5}, ${width} ${width}, ${width * 0.5} ${width * 0.5}, 0`}
-        transform={`translate(${x + centerOffsetX}, ${y})scale(1, ${1 / k})`}
+        points={`0, ${w * 0.5} ${w * 0.5}, ${w} ${w}, ${w * 0.5} ${w * 0.5}, 0`}
+        transform={`translate(${x + centerOffsetX}, ${yPoly})scale(1, ${1 / k})`}
         fill={color}
         stroke={borderColor}
         strokeWidth={noBorder ? 0 : borderWidth}
@@ -401,18 +429,20 @@ export default function Timeline({
           position: 'absolute',
           top: zoomButtonHeight - paddingGraph,
           right: panelWidth,
-          clipPath: `polygon(0% ${clippathTop}px, 100% ${clippathTop}px, 100% ${clippathBottom}px, 0% ${clippathBottom}px`
+          clipPath: `polygon(0% ${clippathTop}px, 100% ${clippathTop}px, 
+            100% ${clippathBottom}px, 0% ${clippathBottom}px`
         }}
       >
         <g transform={`translate(0, ${paddingGraph})`}>
           <g ref={xAxisRef} transform={`translate(0, ${height - margin.bottom})`} />
           <g ref={yAxisRef} transform={`translate(${margin.left}, ${0})`} />
           <g transform={`translate(0, ${y})scale(1, ${k})`}>
-            {currentPhases?.map((phase, index) => phase.map((phase) => {
+            {currentPhases?.map((currentPhase, index) => currentPhase.map((phase) => {
               if (!phase.timerange?.start || !phase.timerange?.end) {
                 return null;
               }
-              if (displayedPhase.type === DisplayType.phase && phase.name === displayedPhase.data.name) {
+              if (displayedPhase.type === DisplayType.phase &&
+                  displayedPhase.data.name === phase.name) {
                 // We want to draw the selected phase last so it appears on top
                 // Save for later
                 selectedPhase = phase;
@@ -430,10 +460,13 @@ export default function Timeline({
               null}
           </g>
           <g transform={`translate(0, ${y})scale(1, ${k})`}>
-            {createLine(now, timeIndicatorColor, timeIndicatorRef)}
-            {captureTimes?.map((capture, index) => createCircle(makeUtcDate(capture), captureColor, index))}
+            {createTimeIndicator()}
+            {captureTimes?.map(
+              (capture, index) => createCircle(makeUtcDate(capture), captureColor, index)
+            )}
             {milestones?.map((milestone) => {
-              if (displayedPhase.type === DisplayType.milestone && milestone.name === displayedPhase.data.name) {
+              if (displayedPhase.type === DisplayType.milestone &&
+                  displayedPhase.data.name === milestone.name) {
                 // We want to draw the selected phase last so it appears on top
                 // Save for later
                 selectedMilestone = milestone;
