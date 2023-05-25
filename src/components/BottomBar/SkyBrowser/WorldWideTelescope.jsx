@@ -26,6 +26,8 @@ function WorldWideTelescope({
   const [isDragging, setIsDragging] = React.useState(false);
   const [startDragPosition, setStartDragPosition] = React.useState([0, 0]);
   const [wwtHasLoaded, setWwtHasLoaded] = React.useState(false);
+  const [isPinching, setIsPinching] = React.useState(false);
+  const [startPinchPositions, setStartPinchPositions] = React.useState([]);
   const [setupWwtFunc, setSetupWwtFunc] = React.useState(null);
   const TopBarHeight = 25;
   // Refs
@@ -160,42 +162,93 @@ function WorldWideTelescope({
     });
   }
 
-  function handleDrag(mouse) {
-    if (isDragging) {
+  function getClientXY(interaction) {
+    let position = undefined;
+    if (interaction.type === "touchstart" || interaction.type === "touchmove") {
+      if (!interaction?.touches?.[0]?.clientX || !interaction?.touches?.[0]?.clientY) {
+        return;
+      }
+      if (interaction?.touches?.length > 1) {
+        const touches = interaction.touches;
+        position = [
+          [touches[0].clientX, touches[0].clientY],
+          [touches[1].clientX, touches[1].clientY]
+        ];
+      }
+      else {
+        const touch = interaction.touches[0]; 
+        position = [touch.clientX, touch.clientY];
+      }
+    }
+    else { // mouse
+      position = [interaction.clientX, interaction.clientY];
+    }
+    if (!position) {
+      return undefined;
+    }
+    return position;
+  }
+
+  function scrollZoom(scroll) {
+    if (inverseZoom) {
+      scroll *= -1;
+    }
+    skybrowserApi.scrollOverBrowser(browserId, scroll);
+    skybrowserApi.stopAnimations(browserId);
+  }
+
+  function handleDrag(interaction) {
+    const end = getClientXY(interaction);
+    if (isDragging && end) {
       // Calculate pixel translation
-      const end = [mouse.clientX, mouse.clientY];
       const width = size.width - BorderWidth;
       const height = size.height - BorderWidth;
       const translation = [end[0] - startDragPosition[0], end[1] - startDragPosition[1]];
+      
+      const percentageX = translation[0] / width;
+      const percentageY = translation[1] / height;
       // Calculate [ra, dec] translation without roll
-      const percentageTranslation = [translation[0] / width, translation[1] / height];  
+      const percentageTranslation = [ percentageX, percentageY ]; 
+      
       // Call lua function
       skybrowserApi.finetuneTargetPosition(
         browserId,
         percentageTranslation
       );
     }
-  }
+    else if (isPinching && end) {
+      const euclidianDistance = (coord => {
+        const a = coord[0][0] - coord[1][0];
+        const b = coord[0][1] - coord[1][1];
+        return Math.sqrt(a * a + b * b);
+      });
+      // See if distance is larger or smaller compared to first
+      // interaction
+      const startDistance = euclidianDistance(startPinchPositions);
+      const endDistance = euclidianDistance(end);
 
-  function mouseDown(mouse) {
-    skybrowserApi.startFinetuningTarget(browserId);
-    const position = [mouse.clientX, mouse.clientY];
-    setIsDragging(true);
-    setStartDragPosition(position);
-    skybrowserApi.stopAnimations(browserId);
-  }
-
-  function mouseUp(mouse) {
-    setIsDragging(false);
-  }
-
-  function scroll(e) {
-    let scroll = e.deltaY;
-    if (inverseZoom) {
-      scroll *= -1;
+      const scroll = startDistance < endDistance ? 1 : -1;
+      scrollZoom(scroll);
     }
-    skybrowserApi.scrollOverBrowser(browserId, scroll);
+  }
+
+  function startInteraction(interaction) {
+    const position = getClientXY(interaction);
+    skybrowserApi.startFinetuningTarget(browserId);
+    const hasMultipleCoords = Array.isArray(position[0]);
+    if (hasMultipleCoords) {
+      setIsPinching(true);
+      setStartPinchPositions(position);
+    } else {
+      setIsDragging(true);
+      setStartDragPosition(position);
+    }
     skybrowserApi.stopAnimations(browserId);
+  }
+
+  function endInteraction() {
+    setIsDragging(false);
+    setIsPinching(false);
   }
 
   function changeSize(widthWwt, heightWwt) {
@@ -218,10 +271,13 @@ function WorldWideTelescope({
   const interactionDiv = <div
     className={styles.container}
     onMouseMove={handleDrag}
-    onMouseDown={mouseDown}
-    onMouseUp={mouseUp}
-    onMouseLeave={mouseUp}
-    onWheel = {(e) => scroll(e)}
+    onMouseDown={startInteraction}
+    onMouseUp={endInteraction}
+    onMouseLeave={endInteraction}
+    onTouchStart={startInteraction}
+    onTouchMove={handleDrag}
+    onTouchEnd={endInteraction}
+    onWheel = {(e) => scrollZoom(e.deltaY)}
   />
 
   return (
