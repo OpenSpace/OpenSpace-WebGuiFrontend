@@ -25,8 +25,12 @@ import styles from './BottomBar.scss';
 export default function BottomBar({
   showFlightController
 }) {
-  const showExoplanets = useSelector((state) => getBoolPropertyValue(state, ExoplanetsModuleEnabledKey));
-  const showSkyBrowser = useSelector((state) => getBoolPropertyValue(state, SkyBrowserModuleEnabledKey));
+  const showExoplanets = useSelector(
+    (state) => getBoolPropertyValue(state, ExoplanetsModuleEnabledKey)
+  );
+  const showSkyBrowser = useSelector(
+    (state) => getBoolPropertyValue(state, SkyBrowserModuleEnabledKey)
+  );
   const missions = useSelector((state) => state.missions);
   const showMissions = missions?.isInitialized && missions?.data?.missions;
 
@@ -66,13 +70,9 @@ export default function BottomBar({
 }
 
 BottomBar.propTypes = {
-  showExoplanets: PropTypes.bool,
   showFlightController: PropTypes.bool,
-  showSkyBrowser: PropTypes.bool
 };
 
 BottomBar.defaultProps = {
-  showExoplanets: false,
   showFlightController: false,
-  showSkyBrowser: false
 };
