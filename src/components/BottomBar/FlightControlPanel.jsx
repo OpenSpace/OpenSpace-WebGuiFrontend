@@ -1,10 +1,8 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
 
 import {
   connectFlightController,
-  disconnectFlightController,
   sendFlightControl,
   setPopoverVisibility,
   subscribeToProperty,
@@ -21,36 +19,64 @@ import Picker from './Picker';
 
 import styles from './FlightControlPanel.scss';
 
-function FlightControlPanel({
-  popoverVisible,
-  rotationFriction,
-  rollFriction,
-  zoomFriction,
-  luaApi,
-  setPopoverVisibility,
-  sendFlightControl,
-  connectFlightController,
-  disconnectFlightController,
-  startListening,
-  stopListening
-}) {
-  React.useEffect(() => {
-    startListening(RotationalFrictionKey);
-    startListening(ZoomFrictionKey);
-    startListening(RollFrictionKey);
-    return () => {
-      stopListening(RotationalFrictionKey);
-      stopListening(ZoomFrictionKey);
-      stopListening(RollFrictionKey);
-    };
-  }, []);
+export default function FlightControlPanel() {
+  const luaApi = useSelector((state) => state.luaApi);
+  const popoverVisible = useSelector((state) => state.local.popovers.flightController.visible);
+
+  const rotationFriction = useSelector(
+    (state) => state.propertyTree.properties[RotationalFrictionKey]?.value || false
+  );
+
+  const zoomFriction = useSelector(
+    (state) => state.propertyTree.properties[ZoomFrictionKey]?.value || false
+  );
+
+  const rollFriction = useSelector(
+    (state) => state.propertyTree.properties[RollFrictionKey]?.value || false
+  );
+
+  const dispatch = useDispatch();
 
   let touchStartX = 0;
   let touchStartY = 0;
   let mouseIsDown = false;
 
+  React.useEffect(() => {
+    function subscribeTo(uri) {
+      dispatch(subscribeToProperty(uri));
+    }
+
+    function unsubscribe(uri) {
+      dispatch(unsubscribeToProperty(uri));
+    }
+
+    subscribeTo(RotationalFrictionKey);
+    subscribeTo(ZoomFrictionKey);
+    subscribeTo(RollFrictionKey);
+    return () => {
+      unsubscribe(RotationalFrictionKey);
+      unsubscribe(ZoomFrictionKey);
+      unsubscribe(RollFrictionKey);
+    };
+  }, []);
+
+  function sendFlightControlInput(payload) {
+    dispatch(sendFlightControl(payload));
+  }
+
   function togglePopover() {
-    setPopoverVisibility(!popoverVisible);
+    const visible = !popoverVisible;
+
+    dispatch(setPopoverVisibility({
+      popover: 'flightController',
+      visible
+    }));
+
+    // @TODO (2023-05-26, emmbr)I believe we should also handle disconnection a bit better, or at
+    // least try to avoid connecting if alreday connected
+    if (visible) {
+      dispatch(connectFlightController());
+    }
   }
 
   function toggleRotation() {
@@ -124,7 +150,7 @@ function FlightControlPanel({
           inputState.values.localRollX = -deltaX;
         }
 
-        sendFlightControl({
+        sendFlightControlInput({
           type: 'inputState',
           inputState
         });
@@ -133,7 +159,7 @@ function FlightControlPanel({
 
     function touchUp() {
       touchStartX = 0;
-      sendFlightControl({
+      sendFlightControlInput({
         type: 'inputState',
         inputState: {
           values: {
@@ -153,7 +179,7 @@ function FlightControlPanel({
         return;
       }
       mouseIsDown = false;
-      sendFlightControl({
+      sendFlightControlInput({
         type: 'inputState',
         inputState: {
           values: {
@@ -188,7 +214,7 @@ function FlightControlPanel({
         inputState.values.orbitY = deltaY;
       }
 
-      sendFlightControl({
+      sendFlightControlInput({
         type: 'inputState',
         inputState
       });
@@ -266,70 +292,3 @@ function FlightControlPanel({
     </div>
   );
 }
-
-const mapStateToProps = (state) => {
-  const { visible } = state.local.popovers.flightController;
-
-  const rotationFrictionProp = state.propertyTree.properties[RotationalFrictionKey];
-  const zoomFrictionProp = state.propertyTree.properties[ZoomFrictionKey];
-  const rollFrictionProp = state.propertyTree.properties[RollFrictionKey];
-
-  return {
-    popoverVisible: visible,
-    luaApi: state.luaApi,
-    rotationFriction: rotationFrictionProp ? rotationFrictionProp.value : false,
-    zoomFriction: zoomFrictionProp ? zoomFrictionProp.value : false,
-    rollFriction: rollFrictionProp ? rollFrictionProp.value : false
-  };
-};
-
-const mapDispatchToProps = (dispatch) => ({
-  setPopoverVisibility: (visible) => {
-    dispatch(setPopoverVisibility({
-      popover: 'flightController',
-      visible
-    }));
-    if (visible) {
-      connectFlightController();
-    }
-  },
-  sendFlightControl: (payload) => {
-    dispatch(sendFlightControl(payload));
-  },
-  connectFlightController: () => {
-    dispatch(connectFlightController());
-  },
-  disconnectFlightController: () => {
-    dispatch(disconnectFlightController());
-  },
-  startListening: (uri) => {
-    dispatch(subscribeToProperty(uri));
-  },
-  stopListening: (uri) => {
-    dispatch(unsubscribeToProperty(uri));
-  }
-});
-
-FlightControlPanel.propTypes = {
-  popoverVisible: PropTypes.bool,
-  rotationFriction: PropTypes.bool.isRequired,
-  rollFriction: PropTypes.bool.isRequired,
-  zoomFriction: PropTypes.bool.isRequired,
-  luaApi: PropTypes.object,
-  // Functions
-  setPopoverVisibility: PropTypes.func.isRequired,
-  sendFlightControl: PropTypes.func.isRequired,
-  connectFlightController: PropTypes.func.isRequired,
-  disconnectFlightController: PropTypes.func.isRequired,
-  startListening: PropTypes.func.isRequired,
-  stopListening: PropTypes.func.isRequired
-};
-
-FlightControlPanel.defaultProps = {
-  popoverVisible: false,
-  luaApi: undefined
-};
-
-FlightControlPanel = connect(mapStateToProps, mapDispatchToProps)(FlightControlPanel);
-
-export default FlightControlPanel;
