@@ -83,14 +83,6 @@ function SessionRec({
     setOutputFramerate(evt.target.value);
   }
 
-  function toggleRecording() {
-    if (isIdle()) {
-      startRecording();
-    } else {
-      stopRecording();
-    }
-  }
-
   function startRecording() {
     if (useTextFormat) {
       startRecordingAscii(filenameRecording);
@@ -99,11 +91,11 @@ function SessionRec({
     }
   }
 
-  function togglePlayback() {
+  function toggleRecording() {
     if (isIdle()) {
-      startPlayback();
+      startRecording();
     } else {
-      stopPlayback();
+      stopRecording();
     }
   }
 
@@ -117,44 +109,19 @@ function SessionRec({
     );
   }
 
+  function togglePlayback() {
+    if (isIdle()) {
+      startPlayback();
+    } else {
+      stopPlayback();
+    }
+  }
+
   function togglePopover() {
     if (!showPopover) {
       refreshPlaybackFilesList();
     }
     setShowPopover((current) => !current);
-  }
-
-  function picker() {
-    const classes = [];
-    let onClick = togglePopover;
-
-    // The picker works and looks differently depending on the
-    // different states and modes
-    if (engineMode === EngineModeCameraPath) {
-      classes.push(Picker.DisabledBlue);
-      onClick = undefined;
-    } else if (recordingState === SessionStateRecording) {
-      classes.push(Picker.Red);
-      onClick = toggleRecording;
-    } else if (recordingState === SessionStatePlaying) {
-      classes.push(Picker.Blue);
-      onClick = undefined;
-    } else if (recordingState === SessionStatePaused) {
-      classes.push(Picker.Orange);
-      onClick = undefined;
-    } else if (showPopover) {
-      classes.push(Picker.Active);
-    }
-
-    return (
-      <Picker
-        onClick={onClick}
-        className={classes.join(' ')}
-        refKey="SessionRecording"
-      >
-        { pickerContent() }
-      </Picker>
-    );
   }
 
   function pickerContent() {
@@ -210,6 +177,39 @@ function SessionRec({
           </div>
         );
     }
+  }
+
+  function picker() {
+    const classes = [];
+    let onClick = togglePopover;
+
+    // The picker works and looks differently depending on the
+    // different states and modes
+    if (engineMode === EngineModeCameraPath) {
+      classes.push(Picker.DisabledBlue);
+      onClick = undefined;
+    } else if (recordingState === SessionStateRecording) {
+      classes.push(Picker.Red);
+      onClick = toggleRecording;
+    } else if (recordingState === SessionStatePlaying) {
+      classes.push(Picker.Blue);
+      onClick = undefined;
+    } else if (recordingState === SessionStatePaused) {
+      classes.push(Picker.Orange);
+      onClick = undefined;
+    } else if (showPopover) {
+      classes.push(Picker.Active);
+    }
+
+    return (
+      <Picker
+        onClick={onClick}
+        className={classes.join(' ')}
+        refKey="SessionRecording"
+      >
+        { pickerContent() }
+      </Picker>
+    );
   }
 
   function popover() {
@@ -289,7 +289,7 @@ function SessionRec({
                 'loop playback'`}
               />
             </Checkbox>
-            { shouldOutputFrames && (
+            {shouldOutputFrames && (
               <Input
                 value={outputFramerate}
                 label={fpsLabel}
