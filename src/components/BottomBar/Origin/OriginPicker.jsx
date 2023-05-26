@@ -1,8 +1,9 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Aim from 'svg-react-loader?name=Aim!../../../icons/aim.svg';
 import Anchor from 'svg-react-loader?name=Anchor!../../../icons/anchor.svg';
 import Focus from 'svg-react-loader?name=Focus!../../../icons/focus.svg';
+
 import {
   connectFlightController,
   sendFlightControl,
@@ -11,7 +12,7 @@ import {
   subscribeToEngineMode,
   subscribeToSessionRecording,
   unsubscribeToEngineMode,
-  unsubscribeToSessionRecording,
+  unsubscribeToSessionRecording
 } from '../../../api/Actions';
 import {
   EngineModeCameraPath,
@@ -23,32 +24,34 @@ import {
   RetargetAnchorKey,
   ScenePrefixKey,
   SessionStatePaused,
-  SessionStatePlaying,
+  SessionStatePlaying
 } from '../../../api/keys';
 import propertyDispatcher from '../../../api/propertyDispatcher';
+import { useLocalStorageState } from '../../../utils/customHooks';
 import {
-  FilterList, FilterListData, FilterListFavorites, FilterListShowMoreButton,
+  FilterList, FilterListData, FilterListFavorites, FilterListShowMoreButton
 } from '../../common/FilterList/FilterList';
 import Button from '../../common/Input/Button/Button';
+import Checkbox from '../../common/Input/Checkbox/Checkbox';
 import LoadingString from '../../common/LoadingString/LoadingString';
 import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
 import Popover from '../../common/Popover/Popover';
+import SettingsPopup from '../../common/SettingsPopup/SettingsPopup';
 import SmallLabel from '../../common/SmallLabel/SmallLabel';
 import SvgIcon from '../../common/SvgIcon/SvgIcon';
 import Picker from '../Picker';
-import FocusEntry from './FocusEntry';
-import styles from './OriginPicker.scss';
-import SettingsPopup from '../../common/SettingsPopup/SettingsPopup';
-import Checkbox from '../../common/Input/Checkbox/Checkbox';
-import { useLocalStorageState } from '../../../utils/customHooks';
 
-// tag that each focusable node must have
-const REQUIRED_TAG = 'GUI.Interesting';
+import FocusEntry from './FocusEntry';
+
+import styles from './OriginPicker.scss';
+
+// Tag that each focusable node must have
+const InterestingTag = 'GUI.Interesting';
 
 const NavigationActions = {
   Focus: 'Focus',
   Anchor: 'Anchor',
-  Aim: 'Aim',
+  Aim: 'Aim'
 };
 
 function OriginPicker() {
@@ -63,17 +66,22 @@ function OriginPicker() {
     // Get all the nodes in the scene
     return uris.map((uri) => ({
       ...state.propertyTree.propertyOwners[uri],
-      key: uri,
+      key: uri
     }));
   });
   const favorites = useSelector((state) => {
     const { propertyOwners } = state.propertyTree;
     const scene = propertyOwners.Scene;
     const uris = scene ? scene.subowners : [];
+
+    function hasInterestingTag(uri) {
+      return propertyOwners[uri].tags.some((tag) => tag.includes(InterestingTag));
+    }
     // Find interesting nodes
-    return uris.filter((uri) => propertyOwners[uri].tags.some((tag) => tag.includes(REQUIRED_TAG))).map((uri) => ({
+    const urisWithTags = uris.filter((uri) => hasInterestingTag(uri));
+    return urisWithTags.map((uri) => ({
       ...propertyOwners[uri],
-      key: uri,
+      key: uri
     }));
   });
   const anchor = useSelector((state) => {
@@ -95,13 +103,14 @@ function OriginPicker() {
   const popoverVisible = useSelector((state) => state.local.popovers.originPicker.visible);
   const sessionRecordingState = useSelector((state) => state.sessionRecording.recordingState);
   const navigationAction = useSelector((state) => state.local.originPicker.action);
-  const searchableNodes = useSelector((state) =>
-    // Searchable nodes => nodes that are not hidden in the GUI
-    allNodes.filter((node) => {
+  // Searchable nodes => nodes that are not hidden in the GUI
+  const searchableNodes = useSelector(
+    (state) => allNodes.filter((node) => {
       const isHiddenProp = state.propertyTree.properties[`${node.key}.GuiHidden`];
       const isHidden = isHiddenProp && isHiddenProp.value;
       return !isHidden;
-    }));
+    })
+  );
 
   const dispatch = useDispatch();
   // Use refs so these aren't recalculated each render and trigger useEffect
@@ -134,8 +143,25 @@ function OriginPicker() {
   function dispatchPopoverVisibility(visible) {
     dispatch(setPopoverVisibility({
       popover: 'originPicker',
-      visible,
+      visible
     }));
+  }
+
+  function closePopoverIfSet() {
+    if (closeAfterSelection) {
+      dispatchPopoverVisibility(false);
+    }
+  }
+
+  function hasDistinctAim() {
+    return (aim !== '') && (aim !== anchor);
+  }
+
+  function togglePopover() {
+    dispatchPopoverVisibility(!popoverVisible);
+    if (!popoverVisible) {
+      dispatch(connectFlightController());
+    }
   }
 
   function onSelect(identifier, evt) {
@@ -143,7 +169,7 @@ function OriginPicker() {
       type: 'updateView',
       focus: '',
       aim: '',
-      anchor: '',
+      anchor: ''
     };
 
     if (navigationAction === NavigationActions.Focus) {
@@ -191,12 +217,6 @@ function OriginPicker() {
 
   function dispatchSetNavigationAction(action) {
     dispatch(setNavigationAction(action));
-  }
-
-  function closePopoverIfSet() {
-    if (closeAfterSelection) {
-      dispatchPopoverVisibility(false);
-    }
   }
 
   function focusPicker() {
@@ -249,6 +269,9 @@ function OriginPicker() {
       <div
         className={`${styles.Grid} ${styles.cancelButton}`}
         onClick={cancelFlight}
+        onKeyPress={cancelFlight}
+        role="button"
+        tabIndex={0}
       >
         <MaterialIcon className={styles.Icon} icon="airplanemode_inactive" />
         <div className={Picker.Title}>
@@ -275,18 +298,16 @@ function OriginPicker() {
     if (engineMode === EngineModeCameraPath) {
       return cameraPathPicker();
     }
-    return (
-      <>{hasDistinctAim() ? anchorAndAimPicker() : focusPicker()}</>
-    );
+    return hasDistinctAim() ? anchorAndAimPicker() : focusPicker();
   }
 
   // OBS same as timepicker
   function pickerStyle() {
-    const isSessionRecordingPlaying = (engineMode === EngineModeSessionRecordingPlayback)
-      && (sessionRecordingState === SessionStatePlaying);
+    const isSessionRecordingPlaying = (engineMode === EngineModeSessionRecordingPlayback) &&
+      (sessionRecordingState === SessionStatePlaying);
 
-    const isSessionRecordingPaused = (engineMode === EngineModeSessionRecordingPlayback)
-      && (sessionRecordingState === SessionStatePaused);
+    const isSessionRecordingPaused = (engineMode === EngineModeSessionRecordingPlayback) &&
+      (sessionRecordingState === SessionStatePaused);
 
     const isCameraPathPlaying = (engineMode === EngineModeCameraPath);
 
@@ -344,7 +365,7 @@ function OriginPicker() {
     const searchPlaceholder = {
       Focus: 'Search for a new focus...',
       Anchor: 'Search for a new anchor...',
-      Aim: 'Search for a new aim...',
+      Aim: 'Search for a new aim...'
     }[navigationAction];
 
     const isInFocusMode = navigationAction === NavigationActions.Focus;
@@ -417,24 +438,13 @@ function OriginPicker() {
     );
   }
 
-  function hasDistinctAim() {
-    return (aim !== '') && (aim !== anchor);
-  }
-
-  function togglePopover() {
-    dispatchPopoverVisibility(!popoverVisible);
-    if (!popoverVisible) {
-      dispatch(connectFlightController());
-    }
-  }
-
   const enabled = (engineMode === EngineModeUserControl);
   const popoverEnabledAndVisible = popoverVisible && enabled;
 
   const pickerClasses = [
     styles.originPicker,
     popoverEnabledAndVisible ? Picker.Active : '',
-    enabled ? '' : pickerStyle(),
+    enabled ? '' : pickerStyle()
   ].join(' ');
 
   return (
