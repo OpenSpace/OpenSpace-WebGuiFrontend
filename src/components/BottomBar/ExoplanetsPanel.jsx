@@ -102,6 +102,7 @@ function ExoplanetsPanel() {
         />
       ));
     }
+
     return (
       <Popover
         className={Picker.Popover}

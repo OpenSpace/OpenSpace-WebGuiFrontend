@@ -1,3 +1,4 @@
+@use  "../common/Input/Button/Button.scss";
 @import "../../styles/all";
 
 @import "../common/Popover/Popover.scss";
@@ -20,10 +21,6 @@
   overflow-x: hidden;
 }
 
-.buttonIcon {
-  font-size: 1em;
-}
-
 .bottomBarIcon {
   font-size: 2em;
 }
@@ -37,20 +34,10 @@
   font-size: 1em;
 }
 
-.actionButton {
-  padding-top: 10px !important;
-  padding-bottom: 12px !important;
-  width: 120px;
-  margin-bottom: 5px;
-  margin: 2px;
-  max-height: 50%;
-  overflow-wrap: break-word;
-}
-
 .windowContainer {
- .actionButton {
-    min-width: 310px;
-    min-height: 100px;
+  .button {
+    min-width: 310px !important;
+    min-height: 100px !important;
   }
 
   .navPathTitle {
@@ -85,16 +72,4 @@
   height: 400px;
   max-height: 400px;
   min-height: 400px;
-}
-
-.iconRow {
-  display: flex;
-  justify-content: center;
-  gap: 3px;
-  padding-bottom: 2px !important;
-}
-
-.localText {
-  color: $ui-highlight-secondary;
-  font-size: smaller;
 }
