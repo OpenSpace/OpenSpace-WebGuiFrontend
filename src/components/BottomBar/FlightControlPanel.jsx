@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
@@ -21,41 +21,51 @@ import Picker from './Picker';
 
 import styles from './FlightControlPanel.scss';
 
-class FlightControlPanel extends Component {
-  constructor(props) {
-    super(props);
-    this.togglePopover = this.togglePopover.bind(this);
-    this.toggleRotation = this.toggleRotation.bind(this);
-    this.toggleZoom = this.toggleZoom.bind(this);
-    this.toggleRoll = this.toggleRoll.bind(this);
-    this.touchDown = this.touchDown.bind(this);
-    this.mouseDown = this.mouseDown.bind(this);
-    this.mouseMove = this.mouseMove.bind(this);
-    this.touchMove = this.touchMove.bind(this);
-    this.touchUp = this.touchUp.bind(this);
-    this.mouseUp = this.mouseUp.bind(this);
-
-    this.touchStartX = 0;
-    this.touchStartY = 0;
-    this.mouseIsDown = false;
-  }
-
-  componentDidMount() {
-    const { startListening } = this.props;
+function FlightControlPanel({
+  popoverVisible,
+  rotationFriction,
+  rollFriction,
+  zoomFriction,
+  luaApi,
+  setPopoverVisibility,
+  sendFlightControl,
+  connectFlightController,
+  disconnectFlightController,
+  startListening,
+  stopListening
+}) {
+  React.useEffect(() => {
     startListening(RotationalFrictionKey);
     startListening(ZoomFrictionKey);
     startListening(RollFrictionKey);
+    return () => {
+      stopListening(RotationalFrictionKey);
+      stopListening(ZoomFrictionKey);
+      stopListening(RollFrictionKey);
+    };
+  }, []);
+
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let mouseIsDown = false;
+
+  function togglePopover() {
+    setPopoverVisibility(!popoverVisible);
   }
 
-  componentWillUnmount() {
-    const { stopListening } = this.props;
-    stopListening(RotationalFrictionKey);
-    stopListening(ZoomFrictionKey);
-    stopListening(RollFrictionKey);
+  function toggleRotation() {
+    luaApi.setPropertyValue(RotationalFrictionKey, !rotationFriction);
   }
 
-  get popover() {
-    const { rotationFriction, rollFriction, zoomFriction } = this.props;
+  function toggleZoom() {
+    luaApi.setPropertyValue(ZoomFrictionKey, !zoomFriction);
+  }
+
+  function toggleRoll() {
+    luaApi.setPropertyValue(RollFrictionKey, !rollFriction);
+  }
+
+  function popover() {
     const rotationButtonColor = rotationFriction ? '#222' : '#888';
     const zoomButtonColor = zoomFriction ? '#222' : '#888';
     const rollButtonColor = rollFriction ? '#222' : '#888';
@@ -81,11 +91,114 @@ class FlightControlPanel extends Component {
       </>
     );
 
+    function touchDown(event) {
+      touchStartX = event.touches[0].clientX;
+      touchStartY = event.touches[0].clientY;
+    }
+
+    function mouseDown() {
+      mouseIsDown = true;
+    }
+
+    function touchMove(event) {
+      const touchX = event.touches[0].clientX;
+      const touchY = event.touches[0].clientY;
+
+      if (touchStartX !== 0) {
+        let deltaX = touchX - touchStartX;
+        let deltaY = touchY - touchStartY;
+        const scaleFactor = 300;
+        deltaX /= scaleFactor;
+        deltaY /= scaleFactor;
+
+        const inputState = { values: {} };
+
+        if (event.touches.length === 1) {
+          inputState.values.orbitX = -deltaX;
+          inputState.values.orbitY = -deltaY;
+        } else if (event.touches.length === 2) {
+          inputState.values.panX = -deltaX;
+          inputState.values.panY = -deltaY;
+        } else if (event.touches.length === 3) {
+          inputState.values.zoomIn = -deltaY;
+          inputState.values.localRollX = -deltaX;
+        }
+
+        sendFlightControl({
+          type: 'inputState',
+          inputState
+        });
+      }
+    }
+
+    function touchUp() {
+      touchStartX = 0;
+      sendFlightControl({
+        type: 'inputState',
+        inputState: {
+          values: {
+            zoomIn: 0.00,
+            orbitX: 0.0,
+            orbitY: 0.0,
+            panX: 0.0,
+            panY: 0.0,
+            localRollX: 0.0
+          }
+        }
+      });
+    }
+
+    function mouseUp() {
+      if (!mouseIsDown) {
+        return;
+      }
+      mouseIsDown = false;
+      sendFlightControl({
+        type: 'inputState',
+        inputState: {
+          values: {
+            zoomIn: 0.00,
+            orbitX: 0.0,
+            orbitY: 0.0,
+            panX: 0.0,
+            panY: 0.0,
+            localRollX: 0.0
+          }
+        }
+      });
+    }
+
+    function mouseMove(event) {
+      if (!mouseIsDown) {
+        return;
+      }
+
+      const deltaX = event.movementX / 20;
+      const deltaY = -event.movementY / 20;
+      const inputState = { values: {} };
+
+      if (event.shiftKey) {
+        inputState.values.panX = -deltaX;
+        inputState.values.panY = deltaY;
+      } else if (event.ctrlKey) {
+        inputState.values.zoomIn = deltaY;
+        inputState.values.localRollX = -deltaX;
+      } else {
+        inputState.values.orbitX = -deltaX;
+        inputState.values.orbitY = deltaY;
+      }
+
+      sendFlightControl({
+        type: 'inputState',
+        inputState
+      });
+    }
+
     return (
       <Popover
         className={`${Picker.Popover} && ${styles.flightControlPopover}`}
         title="Flight Control"
-        closeCallback={this.togglePopover}
+        closeCallback={togglePopover}
         detachable
         position={{ x: -350, y: -50 }}
         attached={false}
@@ -93,7 +206,7 @@ class FlightControlPanel extends Component {
         <div className={Popover.styles.content}>
           <Row>
             <Button
-              onClick={this.toggleRotation}
+              onClick={toggleRotation}
               title="Rotation friction"
               style={{ width: 133, background: rotationButtonColor }}
               disabled={false}
@@ -101,7 +214,7 @@ class FlightControlPanel extends Component {
               <span style={{ marginLeft: 5 }}>Rotation</span>
             </Button>
             <Button
-              onClick={this.toggleZoom}
+              onClick={toggleZoom}
               title="Zoom friction"
               style={{ width: 133, background: zoomButtonColor }}
               disabled={false}
@@ -109,7 +222,7 @@ class FlightControlPanel extends Component {
               <span style={{ marginLeft: 5 }}>Zoom</span>
             </Button>
             <Button
-              onClick={this.toggleRoll}
+              onClick={toggleRoll}
               title="Roll friction"
               style={{ width: 133, background: rollButtonColor }}
               disabled={false}
@@ -126,158 +239,32 @@ class FlightControlPanel extends Component {
         </Row>
         <div
           className={styles.control_area}
-          onPointerDown={this.mouseDown}
-          onPointerUp={this.mouseUp}
-          onPointerCancel={this.mouseUp}
-          onPointerLeave={this.mouseUp}
-          onLostPointerCapture={this.mouseUp}
-          onPointerMove={this.mouseMove}
-          onTouchStart={this.touchDown}
-          onTouchEnd={this.touchUp}
-          onTouchCancel={this.touchUp}
-          onTouchMove={this.touchMove}
+          onPointerDown={mouseDown}
+          onPointerUp={mouseUp}
+          onPointerCancel={mouseUp}
+          onPointerLeave={mouseUp}
+          onLostPointerCapture={mouseUp}
+          onPointerMove={mouseMove}
+          onTouchStart={touchDown}
+          onTouchEnd={touchUp}
+          onTouchCancel={touchUp}
+          onTouchMove={touchMove}
           id="controlArea"
         />
       </Popover>
     );
   }
 
-  togglePopover() {
-    const { popoverVisible } = this.props;
-    this.props.setPopoverVisibility(!popoverVisible);
-  }
-
-  toggleRotation() {
-    const { luaApi, rotationFriction } = this.props;
-    luaApi.setPropertyValue(RotationalFrictionKey, !rotationFriction);
-  }
-
-  toggleZoom() {
-    const { luaApi, zoomFriction } = this.props;
-    luaApi.setPropertyValue(ZoomFrictionKey, !zoomFriction);
-  }
-
-  toggleRoll() {
-    const { luaApi, rollFriction } = this.props;
-    luaApi.setPropertyValue(RollFrictionKey, !rollFriction);
-  }
-
-  touchDown(event) {
-    this.touchStartX = event.touches[0].clientX;
-    this.touchStartY = event.touches[0].clientY;
-  }
-
-  mouseDown() {
-    this.mouseIsDown = true;
-  }
-
-  touchMove(event) {
-    const touchX = event.touches[0].clientX;
-    const touchY = event.touches[0].clientY;
-
-    if (this.touchStartX !== 0) {
-      let deltaX = touchX - this.touchStartX;
-      let deltaY = touchY - this.touchStartY;
-      const scaleFactor = 300;
-      deltaX /= scaleFactor;
-      deltaY /= scaleFactor;
-
-      const inputState = { values: {} };
-
-      if (event.touches.length === 1) {
-        inputState.values.orbitX = -deltaX;
-        inputState.values.orbitY = -deltaY;
-      } else if (event.touches.length === 2) {
-        inputState.values.panX = -deltaX;
-        inputState.values.panY = -deltaY;
-      } else if (event.touches.length === 3) {
-        inputState.values.zoomIn = -deltaY;
-        inputState.values.localRollX = -deltaX;
-      }
-
-      this.props.sendFlightControl({
-        type: 'inputState',
-        inputState
-      });
-    }
-  }
-
-  touchUp() {
-    this.touchStartX = 0;
-    this.props.sendFlightControl({
-      type: 'inputState',
-      inputState: {
-        values: {
-          zoomIn: 0.00,
-          orbitX: 0.0,
-          orbitY: 0.0,
-          panX: 0.0,
-          panY: 0.0,
-          localRollX: 0.0
-        }
-      }
-    });
-  }
-
-  mouseUp() {
-    if (!this.mouseIsDown) {
-      return;
-    }
-    this.mouseIsDown = false;
-    this.props.sendFlightControl({
-      type: 'inputState',
-      inputState: {
-        values: {
-          zoomIn: 0.00,
-          orbitX: 0.0,
-          orbitY: 0.0,
-          panX: 0.0,
-          panY: 0.0,
-          localRollX: 0.0
-        }
-      }
-    });
-  }
-
-  mouseMove(event) {
-    if (!this.mouseIsDown) {
-      return;
-    }
-
-    const deltaX = event.movementX / 20;
-    const deltaY = -event.movementY / 20;
-    const inputState = { values: {} };
-
-    if (event.shiftKey) {
-      inputState.values.panX = -deltaX;
-      inputState.values.panY = deltaY;
-    } else if (event.ctrlKey) {
-      inputState.values.zoomIn = deltaY;
-      inputState.values.localRollX = -deltaX;
-    } else {
-      inputState.values.orbitX = -deltaX;
-      inputState.values.orbitY = deltaY;
-    }
-
-    this.props.sendFlightControl({
-      type: 'inputState',
-      inputState
-    });
-  }
-
-  render() {
-    const { popoverVisible } = this.props;
-    return (
-      <div className={Picker.Wrapper}>
-        <Picker onClick={this.togglePopover}>
-          <div>
-            <MaterialIcon className={styles.icon} icon="open_with" />
-          </div>
-        </Picker>
-        { popoverVisible && this.popover }
-      </div>
-    );
-  }
+  return (
+    <div className={Picker.Wrapper}>
+      <Picker onClick={togglePopover}>
+        <div>
+          <MaterialIcon className={styles.icon} icon="open_with" />
+        </div>
+      </Picker>
+      { popoverVisible && popover() }
+    </div>
+  );
 }
 
 const mapStateToProps = (state) => {
