@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import {
   loadExoplanetsData,
@@ -11,7 +12,7 @@ import { NavigationAimKey, NavigationAnchorKey } from '../../api/keys';
 import propertyDispatcher from '../../api/propertyDispatcher';
 import subStateToProps from '../../utils/subStateToProps';
 import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
-import { FilterList, FilterListData, FilterListFavorites } from '../common/FilterList/FilterList';
+import { FilterList, FilterListData } from '../common/FilterList/FilterList';
 import Button from '../common/Input/Button/Button';
 import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import Popover from '../common/Popover/Popover';
@@ -43,43 +44,12 @@ class ExoplanetsPanel extends Component {
     }
   }
 
-  togglePopover() {
-    this.props.setPopoverVisibility(!this.props.popoverVisible);
-  }
-
-  updateStarName(evt) {
-    this.setState({
-      starName: evt.target.value
-    });
-  }
-
-  onSelect(identifier, evt) {
-    this.setState({
-      starName: identifier
-    });
-  }
-
-  removeExoplanetSystem(systemName) {
-    const matchingAnchor = (this.props.anchor.value.indexOf(systemName) == 0);
-    const matchingAim = (this.props.aim.value.indexOf(systemName) == 0);
-    if (matchingAnchor || matchingAim) {
-      this.props.anchorDispatcher.set('Sun');
-      this.props.aimDispatcher.set('');
-    }
-
-    this.props.removeSystem(systemName);
-  }
-
-  addSystem() {
-    this.props.luaApi.exoplanets.addExoplanetSystem(this.state.starName);
-    // TODO: Once we have a proper way to subscribe to additions and removals
-    // of property owners, this 'hard' refresh should be removed.
-    setTimeout(() => {
-      this.props.refresh();
-    }, 500);
+  onSelect(identifier) {
+    this.setState({ starName: identifier });
   }
 
   get popover() {
+    const { hasSystems, systemList } = this.props;
     const noContentLabel = <CenteredLabel>No active systems</CenteredLabel>;
     const renderables = this.props.exoplanetSystems;
     let panelContent;
@@ -97,6 +67,7 @@ class ExoplanetsPanel extends Component {
         />
       ));
     }
+
     return (
       <Popover
         className={Picker.Popover}
@@ -107,14 +78,15 @@ class ExoplanetsPanel extends Component {
       >
         <div className={Popover.styles.content}>
           <Row>
-            { this.props.hasSystems ? (
+            { hasSystems ? (
               <FilterList
                 className={styles.list}
                 searchText="Star name..."
               >
                 <FilterListData>
-                  {this.props.systemList.map((system) => (
+                  {systemList.map((system) => (
                     <FocusEntry
+                      key={system.identifier}
                       onSelect={this.onSelect}
                       active={this.state.starName}
                       {...system}
@@ -151,6 +123,30 @@ class ExoplanetsPanel extends Component {
     );
   }
 
+  togglePopover() {
+    this.props.setPopoverVisibility(!this.props.popoverVisible);
+  }
+
+  removeExoplanetSystem(systemName) {
+    const matchingAnchor = (this.props.anchor.value.indexOf(systemName) === 0);
+    const matchingAim = (this.props.aim.value.indexOf(systemName) === 0);
+    if (matchingAnchor || matchingAim) {
+      this.props.anchorDispatcher.set('Sun');
+      this.props.aimDispatcher.set('');
+    }
+
+    this.props.removeSystem(systemName);
+  }
+
+  addSystem() {
+    this.props.luaApi.exoplanets.addExoplanetSystem(this.state.starName);
+    // TODO: Once we have a proper way to subscribe to additions and removals
+    // of property owners, this 'hard' refresh should be removed.
+    setTimeout(() => {
+      this.props.refresh();
+    }, 500);
+  }
+
   render() {
     const { popoverVisible } = this.props;
 
@@ -182,18 +178,18 @@ const mapSubStateToProps = ({
 }) => {
   // Find already existing systems
   const systems = [];
-  for (const [key, value] of Object.entries(propertyOwners)) {
+  Object.values(propertyOwners).forEach((value) => {
     if (value.tags.includes('exoplanet_system')) {
       systems.push(`Scene.${value.identifier}`);
     }
-  }
+  });
 
   return {
     popoverVisible,
     exoplanetSystems: systems,
     isDataInitialized,
     luaApi,
-    systemList: exoplanetsData,
+    systemList: exoplanetsData.length > 0 ? exoplanetsData : [],
     hasSystems: (exoplanetsData && exoplanetsData.length > 0),
     anchor,
     aim
@@ -229,6 +225,25 @@ const mapDispatchToProps = (dispatch) => ({
   anchorDispatcher: propertyDispatcher(dispatch, NavigationAnchorKey),
   aimDispatcher: propertyDispatcher(dispatch, NavigationAimKey)
 });
+
+ExoplanetsPanel.propTypes = {
+  anchor: PropTypes.object.isRequired, // property object
+  anchorDispatcher: PropTypes.object.isRequired,
+  aim: PropTypes.object.isRequired, // property object
+  aimDispatcher: PropTypes.object.isRequired,
+  exoplanetSystems: PropTypes.array.isRequired,
+  hasSystems: PropTypes.bool.isRequired,
+  isDataInitialized: PropTypes.bool.isRequired,
+  loadData: PropTypes.func.isRequired,
+  luaApi: PropTypes.object.isRequired,
+  popoverVisible: PropTypes.bool.isRequired,
+  refresh: PropTypes.func.isRequired,
+  removeSystem: PropTypes.func.isRequired,
+  setPopoverVisibility: PropTypes.func.isRequired,
+  systemList: PropTypes.array.isRequired
+};
+
+ExoplanetsPanel.defaultProps = {};
 
 ExoplanetsPanel = connect(
   subStateToProps(mapSubStateToProps, mapStateToSubState),
