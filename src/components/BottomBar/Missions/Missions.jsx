@@ -7,7 +7,7 @@ import { useLocalStorageState } from '../../../utils/customHooks';
 import { openUrl } from '../../../utils/helpers';
 import CenteredLabel from '../../common/CenteredLabel/CenteredLabel';
 import Button from '../../common/Input/Button/Button';
-import { ActionsButton } from '../ActionsPanel';
+import ActionsButton from '../Actions/ActionsButton';
 import Picker from '../Picker';
 import WindowThreeStates from '../SkyBrowser/WindowThreeStates/WindowThreeStates';
 
@@ -91,7 +91,7 @@ export default function Missions({ }) {
   }
 
   function findCurrentActions(result, phase) {
-    phase.actions.map((action) => {
+    phase.actions.forEach((action) => {
       const found = allActions?.find((item) => item.identifier === action);
       if (found) {
         result.push(found);
