@@ -54,13 +54,6 @@ class FlightControlPanel extends Component {
     stopListening(RollFrictionKey);
   }
 
-  get position() {
-    if (!this.wrapper) return { top: '0px', left: '0px' };
-
-    const { top, right } = this.wrapper.getBoundingClientRect();
-    return { top: `${top}px`, left: `${right}px` };
-  }
-
   get popover() {
     const { rotationFriction, rollFriction, zoomFriction } = this.props;
     const rotationButtonColor = rotationFriction ? '#222' : '#888';
@@ -174,7 +167,7 @@ class FlightControlPanel extends Component {
     this.touchStartY = event.touches[0].clientY;
   }
 
-  mouseDown(event) {
+  mouseDown() {
     this.mouseIsDown = true;
   }
 
@@ -209,7 +202,7 @@ class FlightControlPanel extends Component {
     }
   }
 
-  touchUp(event) {
+  touchUp() {
     this.touchStartX = 0;
     this.props.sendFlightControl({
       type: 'inputState',
@@ -226,7 +219,7 @@ class FlightControlPanel extends Component {
     });
   }
 
-  mouseUp(event) {
+  mouseUp() {
     if (!this.mouseIsDown) {
       return;
     }
