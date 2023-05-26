@@ -43,15 +43,17 @@ export default function ActionsButton({ action, className }) {
 }
 
 ActionsButton.propTypes = {
-  action: PropTypes.oneOfType(
+  action: PropTypes.oneOfType([
     PropTypes.string,
-    PropTypes.objectOf(PropTypes.shape({
-      documentation: PropTypes.string,
-      identifier: PropTypes.string,
-      name: PropTypes.string,
-      synchronization: PropTypes.bool
-    }))
-  ),
+    PropTypes.object
+    // Does not work for some reason
+    // PropTypes.objectOf(PropTypes.shape({
+    //   documentation: PropTypes.string,
+    //   identifier: PropTypes.string,
+    //   name: PropTypes.string,
+    //   synchronization: PropTypes.bool
+    // }))
+  ]),
   className: PropTypes.string
 };
 
