@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import {
   loadExoplanetsData,
@@ -30,13 +30,10 @@ function ExoplanetsPanel() {
   const luaApi = useSelector((state) => state.luaApi);
   const exoplanetSystems = useSelector((state) => {
     // Find already existing systems
-    const systems = [];
-    for (const [key, value] of Object.entries(state.propertyTree.propertyOwners)) {
-      if (value.tags.includes('exoplanet_system')) {
-        systems.push(`Scene.${value.identifier}`);
-      }
-    }
-    return systems;
+    const systems = Object.values(state.propertyTree.propertyOwners).filter(
+      (owner) => owner.tags.includes('exoplanet_system')
+    );
+    return systems.map((owner) => `Scene.${owner.identifier}`);
   });
   const isDataInitialized = useSelector((state) => state.exoplanets.isInitialized);
   const anchor = useSelector((state) => state.propertyTree.properties[NavigationAnchorKey]);
@@ -60,10 +57,6 @@ function ExoplanetsPanel() {
     }));
   }
 
-  function onSelect(identifier) {
-    setStarName(identifier);
-  }
-
   function removeExoplanetSystem(systemName) {
     const matchingAnchor = (anchor.value.indexOf(systemName) === 0);
     const matchingAim = (aim.value.indexOf(systemName) === 0);
@@ -72,7 +65,7 @@ function ExoplanetsPanel() {
       propertyDispatcher(dispatch, NavigationAimKey).set('');
     }
 
-    dispatch(removeExoplanets({ system : systemName}));
+    dispatch(removeExoplanets({ system: systemName }));
   }
 
   function addSystem() {
@@ -102,7 +95,6 @@ function ExoplanetsPanel() {
         />
       ));
     }
-
     return (
       <Popover
         className={Picker.Popover}
@@ -121,7 +113,8 @@ function ExoplanetsPanel() {
                 <FilterListData>
                   {systemList.map((system) => (
                     <FocusEntry
-                      onSelect={onSelect}
+                      key={system.name}
+                      onSelect={setStarName}
                       active={starName}
                       {...system}
                     />
