@@ -43,6 +43,7 @@ function SessionRec({
   const [outputFramerate, setOutputFramerate] = React.useState(60);
   const [loopPlayback, setLoopPlayback] = React.useState(false);
   const [showPopover, setShowPopover] = React.useState(false);
+  const [waitForGlobeRendering, setWaitForGlobeRendering] = React.useState(false);
 
   React.useEffect(() => {
     subscribe();
@@ -105,7 +106,8 @@ function SessionRec({
       forceTime,
       shouldOutputFrames,
       outputFramerate,
-      loopPlayback
+      loopPlayback,
+      waitForGlobeRendering
     );
   }
 
@@ -300,6 +302,21 @@ function SessionRec({
               />
             )}
           </Row>
+          {shouldOutputFrames && (
+            <Checkbox
+              checked={waitForGlobeRendering}
+              setChecked={setWaitForGlobeRendering}
+              name="waitForGlobeRendering"
+            >
+              <p>Wait for Globe Loading</p>
+              <InfoBox
+                className={styles.infoBox}
+                text={`If this is checked, the session recording will pause the rendering 
+                    while images on Globes are loading. While this usually works well, it might 
+                    cause the application to freeze if a data provider is unavailable`}
+              />
+            </Checkbox>
+          )}
           <Row>
             <Select
               menuPlacement="top"
@@ -356,12 +373,19 @@ const mapSubStateToProps = ({ engineMode, sessionRecording, luaApi }) => {
     stopRecording: () => {
       luaApi.sessionRecording.stopRecording();
     },
-    startPlaybackLua: (filename, forceTime, shouldOutputFrames, outputFramerate, loopPlayback) => {
+    startPlaybackLua: (
+      filename,
+      forceTime,
+      shouldOutputFrames,
+      outputFramerate,
+      loopPlayback,
+      waitForGlobe
+    ) => {
       if (shouldOutputFrames) {
         luaApi.sessionRecording.enableTakeScreenShotDuringPlayback(parseInt(outputFramerate, 10));
       }
       if (forceTime) {
-        luaApi.sessionRecording.startPlayback(filename, loopPlayback);
+        luaApi.sessionRecording.startPlayback(filename, loopPlayback, waitForGlobe);
       } else {
         luaApi.sessionRecording.startPlaybackRecordedTime(filename, loopPlayback);
       }
