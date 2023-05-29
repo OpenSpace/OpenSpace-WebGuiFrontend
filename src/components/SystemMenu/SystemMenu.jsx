@@ -91,14 +91,16 @@ function SystemMenu({ showTutorial }) {
             <button type="button" onClick={() => { onClick(openTutorials); }}>
               Open Web Tutorials
             </button>
-            <button
-              type="button"
-              style={{ position: 'relative' }}
-              onClick={() => { onClick(showTutorial, true); }}
-              ref={(el) => { refs.current.Tutorial = el; }}
-            >
-              Open Getting Started Tour
-            </button>
+            {showTutorial && (
+              <button
+                type="button"
+                style={{ position: 'relative' }}
+                onClick={() => { onClick(showTutorial, true); }}
+                ref={(el) => { refs.current.Tutorial = el; }}
+              >
+                Open Getting Started Tour
+              </button>
+            )}
             <button type="button" onClick={() => onClick(openFeedback)}>
               Send Feedback
             </button>
@@ -159,7 +161,7 @@ SystemMenu.propTypes = {
 };
 
 SystemMenu.defaultProps = {
-  showTutorial: () => {}
+  showTutorial: undefined
 };
 
 export default SystemMenu;

@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { Resizable } from 're-resizable';
 
 import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
@@ -17,81 +18,72 @@ const views = {
   scene: ScenePane
 };
 
-class Sidebar extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      view: null,
-      width: 300
-    };
+function Sidebar({ showTutorial }) {
+  const [view, setView] = React.useState(null);
+  const [width, setWidth] = React.useState(300);
 
-    this.selectView = this.selectView.bind(this);
-    this.isActive = this.isActive.bind(this);
-    this.onResizeStop = this.onResizeStop.bind(this);
+  function onResizeStop(e, direction, ref, delta) {
+    setWidth((current) => current + delta.width);
   }
 
-  onResizeStop(e, direction, ref, delta) {
-    this.setState({
-      width: (current) => current + delta.width
-    });
-  }
-
-  selectView(selectedView) {
+  function selectView(selectedView) {
     return () => {
-      this.setState((previous) => {
-        const view = (previous.view === selectedView ? null : selectedView);
-        return { ...previous, view };
-      });
+      setView((previous) => (previous === selectedView ? null : selectedView));
     };
   }
 
-  isActive(view) {
-    return this.state.view === view;
+  function isActive(viewName) {
+    return view === viewName;
   }
 
-  render() {
-    const { view } = this.state;
-    const SelectedView = views[view];
+  const SelectedView = views[view];
 
-    const size = { height: this.state.view ? '100%' : 60, width: this.state.width };
+  const size = { height: view ? '100%' : 60, width };
 
-    return (
-      <Resizable
-        enable={{
-          top: false,
-          bottom: false,
-          left: false,
-          topRight: false,
-          bottomRight: false,
-          bottomLeft: false,
-          topLeft: false,
-          right: !!this.state.view
-        }}
-        size={size}
-        minHeight={size.height}
-        maxHeight={size.height}
-        minWidth={200}
-        maxWidth={window.innerWidth - 50}
-        handleClasses={{ right: styles.rightHandle }}
-        onResizeStop={this.onResizeStop}
-      >
-        <section className={`${styles.Sidebar} ${view ? styles.active : ''}`}>
-          { SelectedView && (<SelectedView closeCallback={this.selectView} />)}
-          <TabMenu>
-            <SystemMenu showTutorial={this.props.showTutorial} />
-            <TabMenuItem active={this.isActive('scene')} onClick={this.selectView('scene')}>
-              <MaterialIcon className={styles.icon} icon="layers" />
-              <SmallLabel refKey="Scene">Scene</SmallLabel>
-            </TabMenuItem>
-            <TabMenuItem active={this.isActive('settings')} onClick={this.selectView('settings')}>
-              <MaterialIcon className={styles.icon} icon="settings" />
-              <SmallLabel>Settings</SmallLabel>
-            </TabMenuItem>
-          </TabMenu>
-        </section>
-      </Resizable>
-    );
-  }
+  return (
+    <Resizable
+      enable={{
+        top: false,
+        bottom: false,
+        left: false,
+        topRight: false,
+        bottomRight: false,
+        bottomLeft: false,
+        topLeft: false,
+        right: !!view
+      }}
+      size={size}
+      minHeight={size.height}
+      maxHeight={size.height}
+      minWidth={200}
+      maxWidth={window.innerWidth - 50}
+      handleClasses={{ right: styles.rightHandle }}
+      onResizeStop={onResizeStop}
+    >
+      <section className={`${styles.Sidebar} ${view ? styles.active : ''}`}>
+        { SelectedView && (<SelectedView closeCallback={selectView} />)}
+        <TabMenu>
+          <SystemMenu showTutorial={showTutorial} />
+          <TabMenuItem active={isActive('scene')} onClick={selectView('scene')}>
+            <MaterialIcon className={styles.icon} icon="layers" />
+            <SmallLabel refKey="Scene">Scene</SmallLabel>
+          </TabMenuItem>
+          <TabMenuItem active={isActive('settings')} onClick={selectView('settings')}>
+            <MaterialIcon className={styles.icon} icon="settings" />
+            <SmallLabel>Settings</SmallLabel>
+          </TabMenuItem>
+        </TabMenu>
+      </section>
+    </Resizable>
+  );
 }
+
+Sidebar.propTypes = {
+  showTutorial: PropTypes.func
+};
+
+Sidebar.defaultProps = {
+  showTutorial: undefined
+};
 
 export default Sidebar;
