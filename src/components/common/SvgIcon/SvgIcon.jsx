@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 function SvgIcon({ style, children, ...props }) {
   return (
@@ -10,5 +11,14 @@ function SvgIcon({ style, children, ...props }) {
     </div>
   );
 }
+
+SvgIcon.propTypes = {
+  children: PropTypes.node.isRequired,
+  style: PropTypes.object
+};
+
+SvgIcon.defaultProps = {
+  style: {}
+};
 
 export default SvgIcon;

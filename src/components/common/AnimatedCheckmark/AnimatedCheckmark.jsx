@@ -1,8 +1,9 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import styles from './AnimatedCheckmark.scss';
 
-function AnimatedCheckmark({ color, isAnimated = true, ...props }) {
+function AnimatedCheckmark({ color, isAnimated, ...props }) {
   return (
     <div {...props}>
       <svg className={`${styles.checkmark} ${isAnimated && styles.checkmarkAnimated}`} style={{ color }} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
@@ -12,5 +13,15 @@ function AnimatedCheckmark({ color, isAnimated = true, ...props }) {
     </div>
   );
 }
+
+AnimatedCheckmark.propTypes = {
+  color: PropTypes.string,
+  isAnimated: PropTypes.bool
+};
+
+AnimatedCheckmark.defaultProps = {
+  color: undefined, // default is set in css
+  isAnimated: true
+};
 
 export default AnimatedCheckmark;

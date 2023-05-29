@@ -1,5 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import { setShowAbout, startConnection } from '../api/Actions';
 import environment from '../api/Environment';
@@ -110,5 +111,13 @@ function OnScreenGui({
     </div>
   );
 }
+
+OnScreenGui.propTypes = {
+  isInBrowser: PropTypes.bool
+};
+
+OnScreenGui.defaultProps = {
+  isInBrowser: false
+};
 
 export default OnScreenGui;

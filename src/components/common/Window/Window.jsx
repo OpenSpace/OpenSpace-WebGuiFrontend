@@ -45,6 +45,7 @@ Window.propTypes = {
   children: PropTypes.node,
   closeCallback: PropTypes.func,
   className: PropTypes.string,
+  headerButton: PropTypes.element,
   position: PropTypes.shape({
     x: PropTypes.number,
     y: PropTypes.number
@@ -60,6 +61,7 @@ Window.defaultProps = {
   children: '',
   closeCallback: null,
   className: '',
+  headerButton: undefined,
   position: { x: 10, y: 10 },
   size: { width: '300px' },
   title: 'Window'

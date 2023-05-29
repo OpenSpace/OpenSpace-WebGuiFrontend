@@ -99,20 +99,22 @@ class Popover extends Component {
 
 Popover.propTypes = {
   arrow: PropTypes.string,
-  children: PropTypes.node.isRequired,
-  closeCallback: PropTypes.func,
-  className: PropTypes.string,
-  detachable: PropTypes.bool,
   attached: PropTypes.bool,
+  children: PropTypes.node.isRequired,
+  className: PropTypes.string,
+  closeCallback: PropTypes.func,
+  detachable: PropTypes.bool,
+  headerButton: PropTypes.element,
   title: PropTypes.string
 };
 
 Popover.defaultProps = {
   arrow: 'arrow bottom center',
-  closeCallback: null,
-  className: '',
-  detachable: false,
   attached: true,
+  className: '',
+  closeCallback: null,
+  detachable: false,
+  headerButton: undefined,
   title: null
 };
 

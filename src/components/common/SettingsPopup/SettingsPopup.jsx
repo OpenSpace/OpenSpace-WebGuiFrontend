@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import MaterialIcon from '../MaterialIcon/MaterialIcon';
 import Tooltip from '../Tooltip/Tooltip';
@@ -6,14 +7,14 @@ import Tooltip from '../Tooltip/Tooltip';
 import buttonStyles from '../Input/Button/Button.scss';
 import styles from './SettingsPopup.scss';
 
-export default function SettingsPopup({ children }) {
+function SettingsPopup({ children }) {
   const [showSearchSettings, setShowSearchSettings] = React.useState(false);
 
   return (
     <div
       onClick={() => setShowSearchSettings((current) => !current)}
       onKeyDown={() => setShowSearchSettings((current) => !current)}
-      className={`${styles.settings} ${buttonStyles.button} 
+      className={`${styles.settings} ${buttonStyles.button}
         ${showSearchSettings && styles.settingsFocus}`}
       role="button"
       tabIndex={0}
@@ -27,3 +28,13 @@ export default function SettingsPopup({ children }) {
     </div>
   );
 }
+
+SettingsPopup.propTypes = {
+  children: PropTypes.node
+};
+
+SettingsPopup.defaultProps = {
+  children: []
+};
+
+export default SettingsPopup;

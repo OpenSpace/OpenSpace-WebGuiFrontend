@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { startConnection } from '../api/Actions';
 import {
@@ -12,11 +12,15 @@ import ErrorMessage from './ErrorMessage';
 import '../styles/base.scss';
 import styles from './ActionsGui.scss';
 
-function ActionsGui({ dispatchStartConnection, version }) {
+function ActionsGui() {
   const [checkedVersion, setCheckedVersion] = React.useState(false);
 
+  const version = useSelector((state) => state.version);
+
+  const dispatch = useDispatch();
+
   React.useEffect(() => {
-    dispatchStartConnection();
+    dispatch(startConnection());
   }, []);
 
   if (!checkedVersion && version.isInitialized) {
@@ -47,20 +51,5 @@ function ActionsGui({ dispatchStartConnection, version }) {
     </div>
   );
 }
-
-const mapStateToProps = (state) => ({
-  version: state.version
-});
-
-const mapDispatchToProps = (dispatch) => ({
-  dispatchStartConnection: () => {
-    dispatch(startConnection());
-  }
-});
-
-ActionsGui = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(ActionsGui);
 
 export default ActionsGui;

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import MaterialIcon from '../../MaterialIcon/MaterialIcon';
@@ -6,44 +6,37 @@ import Button from '../Button/Button';
 
 import styles from './Checkbox.scss';
 
-class Checkbox extends Component {
-  constructor(props) {
-    super(props);
-    this.onClick = this.onClick.bind(this);
-  }
-
-  onClick(evt) {
-    if (this.props.disabled) {
+function Checkbox({
+  checked, disabled, wide, left, className, setChecked, children, ...rest
+}) {
+  function onClick(evt) {
+    if (disabled) {
       return;
     }
-    this.props.setChecked(!this.props.checked, evt);
+    setChecked(!checked, evt);
     evt.stopPropagation();
   }
 
-  render() {
-    const {
-      checked, wide, left, className, setChecked, children, ...rest
-    } = this.props;
-
-    return (
-      <Button
-        onClick={this.onClick}
-        className={`${styles.wrapper} ${className} ${wide ? styles.wide : ''} ${left ? styles.left : ''}`}
-        {...rest}
-        regular
-      >
-        <MaterialIcon
-          className={styles.checkbox}
-          icon={checked ? 'check_box' : 'check_box_outline_blank'}
-        />
-        { children }
-      </Button>
-    );
-  }
+  return (
+    <Button
+      onClick={onClick}
+      className={`${styles.wrapper} ${className} ${wide ? styles.wide : ''} ${left ? styles.left : ''}`}
+      {...rest}
+      regular
+    >
+      <MaterialIcon
+        className={styles.checkbox}
+        icon={checked ? 'check_box' : 'check_box_outline_blank'}
+      />
+      { children }
+    </Button>
+  );
 }
 
 Checkbox.propTypes = {
   checked: PropTypes.bool,
+  children: PropTypes.node,
+  className: PropTypes.string,
   disabled: PropTypes.bool,
   left: PropTypes.bool,
   onChange: PropTypes.func,
@@ -54,6 +47,8 @@ Checkbox.propTypes = {
 
 Checkbox.defaultProps = {
   checked: false,
+  children: [],
+  className: '',
   disabled: false,
   left: false,
   onChange: () => {},

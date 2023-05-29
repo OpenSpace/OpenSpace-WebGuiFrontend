@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { setShowAbout, startConnection } from '../api/Actions';
 import environment from '../api/Environment';
@@ -21,14 +21,21 @@ import ErrorMessage from './ErrorMessage';
 import '../styles/base.scss';
 import styles from './RemoteGui.scss';
 
-function RemoteGui({
-  dispatchStartConnection, version, hideAbout, showAbout
-}) {
+function RemoteGui() {
   let hasCheckedVersion = false;
 
+  const version = useSelector((state) => state.version);
+  const showAbout = useSelector((state) => state.local.showAbout);
+
+  const dispatch = useDispatch();
+
   React.useEffect(() => {
-    dispatchStartConnection();
+    dispatch(startConnection());
   }, []);
+
+  function hideAbout() {
+    dispatch(setShowAbout(false));
+  }
 
   if (!hasCheckedVersion && version.isInitialized) {
     const versionData = version.data;
@@ -82,24 +89,5 @@ function RemoteGui({
     </div>
   );
 }
-
-const mapStateToProps = (state) => ({
-  version: state.version,
-  showAbout: state.local.showAbout
-});
-
-const mapDispatchToProps = (dispatch) => ({
-  dispatchStartConnection: () => {
-    dispatch(startConnection());
-  },
-  hideAbout: () => {
-    dispatch(setShowAbout(false));
-  }
-});
-
-RemoteGui = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(RemoteGui);
 
 export default RemoteGui;

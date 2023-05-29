@@ -78,21 +78,27 @@ function Select({
 
 Select.propTypes = {
   clearable: PropTypes.bool,
+  disabled: PropTypes.bool,
   id: PropTypes.string,
   label: PropTypes.node.isRequired,
+  onChange: PropTypes.func,
   options: PropTypes.arrayOf(
     PropTypes.shape({
       value: PropTypes.string,
       label: PropTypes.string
     })
   ).isRequired,
-  searchable: PropTypes.bool
+  searchable: PropTypes.bool,
+  value: PropTypes.string
 };
 
 Select.defaultProps = {
+  clearable: false,
+  disabled: false,
   id: null,
+  onChange: () => {},
   searchable: false,
-  clearable: false
+  value: undefined
 };
 
 export default Select;

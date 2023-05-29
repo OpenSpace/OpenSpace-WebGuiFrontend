@@ -26,11 +26,13 @@ function SmallLabel({ children, refKey, ...props }) {
 }
 
 SmallLabel.propTypes = {
-  children: PropTypes.node
+  children: PropTypes.node,
+  refKey: PropTypes.string
 };
 
 SmallLabel.defaultProps = {
-  children: []
+  children: [],
+  refKey: undefined
 };
 
 export default SmallLabel;

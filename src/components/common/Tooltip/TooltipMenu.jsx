@@ -85,6 +85,7 @@ function TooltipMenu({
 }
 
 TooltipMenu.propTypes = {
+  children: PropTypes.node,
   className: PropTypes.string,
   disabled: PropTypes.bool,
   // An object that this tooltip menu should originate from
@@ -92,6 +93,7 @@ TooltipMenu.propTypes = {
 };
 
 TooltipMenu.defaultProps = {
+  children: undefined,
   className: '',
   disabled: false
 };

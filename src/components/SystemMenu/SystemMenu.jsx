@@ -1,10 +1,10 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import { setPopoverVisibility, setShowAbout } from '../../api/Actions';
 import api from '../../api/api';
 import environment from '../../api/Environment';
-import subStateToProps from '../../utils/subStateToProps';
 import Button from '../common/Input/Button/Button';
 import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import Popover from '../common/Popover/Popover';
@@ -12,24 +12,73 @@ import { useContextRefs } from '../GettingStartedTour/GettingStartedContext';
 
 import styles from './SystemMenu.scss';
 
-function SystemMenu({
-  console,
-  keybindsIsVisible,
-  nativeGui,
-  openTutorials,
-  openFeedback,
-  showAbout,
-  showTutorial,
-  setShowKeybinds,
-  quit
-}) {
+function SystemMenu({ showTutorial }) {
   const [showMenu, setShowMenu] = React.useState(false);
   const refs = useContextRefs();
+
+  const luaApi = useSelector((state) => state.luaApi);
+  const keybindsIsVisible = useSelector((state) => state.local.popovers.keybinds.visible);
+
+  const dispatch = useDispatch();
+
+  const openlinkScript = (url) => {
+    let startString = 'open';
+    if (navigator.platform === 'Win32') {
+      startString = 'start';
+    }
+    const script = `os.execute('${startString} ${url}')`;
+    return script;
+  };
 
   function onClick(func, value) {
     setShowMenu(!showMenu);
     func(value);
   }
+
+  function quit() {
+    if (!luaApi) { return; }
+    luaApi.toggleShutdown();
+  }
+
+  async function console() {
+    if (!luaApi) { return; }
+    const data = await luaApi.getPropertyValue('LuaConsole.IsVisible');
+    const visible = data[1] || false;
+    luaApi.setPropertyValue('LuaConsole.IsVisible', !visible);
+  }
+
+  async function nativeGui() {
+    if (!luaApi) { return; }
+    const data = await luaApi.getPropertyValue('Modules.ImGUI.Enabled');
+    const visible = data[1] || false;
+    luaApi.setPropertyValue('Modules.ImGUI.Enabled', !visible);
+  }
+
+  function openTutorials() {
+    const script = openlinkScript('http://wiki.openspaceproject.com/docs/tutorials/users/');
+    api.executeLuaScript(script);
+  }
+
+  function openFeedback() {
+    const script = openlinkScript('http://data.openspaceproject.com/feedback');
+    api.executeLuaScript(script);
+  }
+
+  function showAbout() {
+    dispatch(setShowAbout(true));
+  }
+
+  function setShowKeybinds(visible) {
+    dispatch(setPopoverVisibility({
+      popover: 'keybinds',
+      visible
+    }));
+  }
+
+  // function saveChange() {
+  //   if (!luaApi) { return; }
+  //   luaApi.saveSettingsToProfile();
+  // }
 
   return (
     <div className={styles.SystemMenu}>
@@ -105,65 +154,12 @@ function SystemMenu({
   );
 }
 
-const mapStateToSubState = (state) => ({
-  luaApi: state.luaApi,
-  keybindsIsVisible: state.local.popovers.keybinds.visible
-});
-
-const mapSubStateToProps = ({ luaApi, keybindsIsVisible }) => {
-  if (!luaApi) {
-    return {};
-  }
-
-  const openlinkScript = (url) => {
-    let startString = 'open';
-    if (navigator.platform === 'Win32') {
-      startString = 'start';
-    }
-    const script = `os.execute('${startString} ${url}')`;
-    return script;
-  };
-
-  return {
-    quit: () => luaApi.toggleShutdown(),
-    console: async () => {
-      const data = await luaApi.getPropertyValue('LuaConsole.IsVisible');
-      const visible = data[1] || false;
-      luaApi.setPropertyValue('LuaConsole.IsVisible', !visible);
-    },
-    nativeGui: async () => {
-      const data = await luaApi.getPropertyValue('Modules.ImGUI.Enabled');
-      const visible = data[1] || false;
-      luaApi.setPropertyValue('Modules.ImGUI.Enabled', !visible);
-    },
-    openTutorials: () => {
-      const script = openlinkScript('http://wiki.openspaceproject.com/docs/tutorials/users/');
-      api.executeLuaScript(script);
-    },
-    openFeedback: () => {
-      const script = openlinkScript('http://data.openspaceproject.com/feedback');
-      api.executeLuaScript(script);
-    },
-    saveChange: async () => {
-      luaApi.saveSettingsToProfile();
-    },
-    keybindsIsVisible
-  };
+SystemMenu.propTypes = {
+  showTutorial: PropTypes.func
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  showAbout: () => dispatch(setShowAbout(true)),
-  setShowKeybinds: (visible) => {
-    dispatch(setPopoverVisibility({
-      popover: 'keybinds',
-      visible
-    }));
-  }
-});
-
-SystemMenu = connect(
-  subStateToProps(mapSubStateToProps, mapStateToSubState),
-  mapDispatchToProps,
-)(SystemMenu);
+SystemMenu.defaultProps = {
+  showTutorial: () => {}
+};
 
 export default SystemMenu;
