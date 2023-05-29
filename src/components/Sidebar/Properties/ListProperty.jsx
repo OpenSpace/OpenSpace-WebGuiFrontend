@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import Input from '../../common/Input/Input/Input';
@@ -7,42 +7,33 @@ import PropertyLabel from './PropertyLabel';
 
 import styles from './Property.scss';
 
-class ListProperty extends Component {
-  constructor(props) {
-    super(props);
-    this.onChange = this.onChange.bind(this);
-  }
+function ListProperty({ description, dispatcher, value }) {
+  const disabled = description.MetaData.isReadOnly;
 
-  onChange(evt) {
-    const value = evt.target.value.trim();
+  function onChange(evt) {
+    const newValue = evt.target.value.trim();
 
-    if (value === '') {
-      this.props.dispatcher.set({});
+    if (newValue === '') {
+      dispatcher.set({});
       return;
     }
 
-    this.props.dispatcher.set(value.split(','));
+    dispatcher.set(newValue.split(','));
   }
 
-  get disabled() {
-    return this.props.description.MetaData.isReadOnly;
-  }
+  const label = <PropertyLabel description={description} />;
 
-  render() {
-    const { description, value } = this.props;
-    const label = <PropertyLabel description={description} />;
-    return (
-      <div className={`${this.disabled ? styles.disabled : ''}`}>
-        <Input
-          value={value.join(',')}
-          label={label}
-          placeholder={description.Name}
-          onEnter={this.onChange}
-          disabled={this.disabled}
-        />
-      </div>
-    );
-  }
+  return (
+    <div className={`${disabled ? styles.disabled : ''}`}>
+      <Input
+        value={value.join(',')}
+        label={label}
+        placeholder={description.Name}
+        onEnter={onChange}
+        disabled={disabled}
+      />
+    </div>
+  );
 }
 
 ListProperty.propTypes = {
@@ -54,6 +45,7 @@ ListProperty.propTypes = {
     }),
     description: PropTypes.string
   }).isRequired,
+  dispatcher: PropTypes.object.isRequired,
   value: PropTypes.any.isRequired
 };
 

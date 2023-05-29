@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 
 import Checkbox from '../../common/Input/Checkbox/Checkbox';
 
@@ -6,37 +7,46 @@ import PropertyLabel from './PropertyLabel';
 
 import styles from './Property.scss';
 
-class BoolProperty extends Component {
-  constructor(props) {
-    super(props);
-    this.onChange = this.onChange.bind(this);
+function BoolProperty({
+  checkBoxOnly, description, dispatcher, value
+}) {
+  const disabled = description.MetaData.isReadOnly;
+  const showText = !checkBoxOnly;
+
+  function onChange(newValue) {
+    dispatcher.set(newValue);
   }
 
-  onChange(value) {
-    this.props.dispatcher.set(value);
-  }
-
-  get disabled() {
-    return this.props.description.MetaData.isReadOnly;
-  }
-
-  render() {
-    const { description, value } = this.props;
-    const showText = !this.props.checkBoxOnly;
-
-    return (
-      <div className={`${this.disabled ? styles.disabled : ''}`}>
-        <Checkbox
-          wide={!this.props.checkBoxOnly}
-          checked={value}
-          setChecked={this.onChange}
-          disabled={this.disabled}
-        >
-          {showText && <PropertyLabel description={description} />}
-        </Checkbox>
-      </div>
-    );
-  }
+  return (
+    <div className={`${disabled ? styles.disabled : ''}`}>
+      <Checkbox
+        wide={!checkBoxOnly}
+        checked={value}
+        setChecked={onChange}
+        disabled={disabled}
+      >
+        {showText && <PropertyLabel description={description} />}
+      </Checkbox>
+    </div>
+  );
 }
+
+BoolProperty.propTypes = {
+  checkBoxOnly: PropTypes.bool,
+  description: PropTypes.shape({
+    Identifier: PropTypes.string,
+    Name: PropTypes.string,
+    MetaData: PropTypes.shape({
+      isReadOnly: PropTypes.bool
+    }),
+    description: PropTypes.string
+  }).isRequired,
+  dispatcher: PropTypes.object.isRequired,
+  value: PropTypes.any.isRequired
+};
+
+BoolProperty.defaultProps = {
+  checkBoxOnly: false
+};
 
 export default BoolProperty;

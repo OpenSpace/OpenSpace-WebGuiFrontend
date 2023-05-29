@@ -1,5 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import propertyDispatcher from '../../../api/propertyDispatcher';
 
@@ -91,6 +92,10 @@ function Property({ uri, ...props }) {
     />
   );
 }
+
+Property.propTypes = {
+  uri: PropTypes.string.isRequired
+};
 
 export default Property;
 export const Types = concreteProperties;

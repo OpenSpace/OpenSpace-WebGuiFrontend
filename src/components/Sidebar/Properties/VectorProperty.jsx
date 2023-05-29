@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import ColorPickerPopup from '../../common/ColorPicker/ColorPickerPopup';
 import MinMaxRangeInput from '../../common/Input/MinMaxRangeInput/MinMaxRangeInput';
@@ -16,13 +17,13 @@ function VectorProperty({ dispatcher, description, value }) {
   } = description.AdditionalData;
   const { MetaData } = description;
   const isDisabled = MetaData.isReadOnly;
-  const couldBeColor = value.length < 3 || value.length > 4;
+  const couldBeColor = value.length <= 4 && value.length > 2;
   const isColor = couldBeColor && MetaData.ViewOptions.Color;
   const hasAlpha = isColor && value.length === 4;
   const isMinMaxRange = value.length === 2 ? MetaData.ViewOptions.MinMaxRange : false;
   // eslint-disable-next-line react/no-array-index-key
   const values = value.map((element, index) => ({
-    key: `${description.Name}-${index}`, element
+    key: `${description.Name}-${index}`, value: element
   }));
 
   function valueToColor() {
@@ -119,4 +120,23 @@ function VectorProperty({ dispatcher, description, value }) {
   );
 }
 
+VectorProperty.propTypes = {
+  description: PropTypes.shape({
+    Identifier: PropTypes.string,
+    Name: PropTypes.string,
+    MetaData: PropTypes.shape({
+      isReadOnly: PropTypes.bool,
+      ViewOptions: PropTypes.object
+    }),
+    AdditionalData: PropTypes.shape({
+      SteppingValue: PropTypes.arrayOf(PropTypes.number),
+      MaximumValue: PropTypes.arrayOf(PropTypes.number),
+      MinimumValue: PropTypes.arrayOf(PropTypes.number),
+      Exponent: PropTypes.number
+    }),
+    description: PropTypes.string
+  }).isRequired,
+  dispatcher: PropTypes.object.isRequired,
+  value: PropTypes.array.isRequired
+};
 export default VectorProperty;
