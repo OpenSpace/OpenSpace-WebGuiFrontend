@@ -172,11 +172,13 @@ function Group({
 Group.propTypes = {
   path: PropTypes.string.isRequired,
   expansionIdentifier: PropTypes.string.isRequired,
-  autoExpand: PropTypes.bool
+  autoExpand: PropTypes.bool,
+  showOnlyEnabled: PropTypes.bool
 };
 
 Group.defaultProps = {
-  autoExpand: false
+  autoExpand: false,
+  showOnlyEnabled: false
 };
 
 export default Group;
