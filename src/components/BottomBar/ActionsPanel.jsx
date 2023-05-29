@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import { setActionsPath, setPopoverVisibility, triggerAction } from '../../api/Actions';
@@ -24,12 +24,17 @@ function ActionsPanel({
   allActions,
   displayedNavigationPath,
   navigationPath,
-  popoverVisible,
-  setPopoverVisibility,
   singlewindow
 }) {
+  const popoverVisible = useSelector((state) => state.local.popovers.actions.visible);
+
+  const dispatch = useDispatch();
+
   function togglePopover() {
-    setPopoverVisibility(!popoverVisible);
+    dispatch(setPopoverVisibility({
+      popover: 'actions',
+      visible: !popoverVisible
+    }));
   }
 
   function addNavPath(e) {
@@ -190,13 +195,11 @@ function ActionsPanel({
   );
 }
 
-const mapSubStateToProps = ({ popoverVisible, luaApi, actions }) => {
+const mapSubStateToProps = ({ actions }) => {
   const actionsMapped = { '/': { actions: [], children: {} } };
   if (!actions.isInitialized) {
     return {
       actions: actionsMapped,
-      popoverVisible,
-      luaApi,
       navigationPath: '/',
       displayedNavigationPath: '/'
     };
@@ -286,8 +289,6 @@ const mapSubStateToProps = ({ popoverVisible, luaApi, actions }) => {
 
   return {
     actionLevel: actionsForPath,
-    popoverVisible,
-    luaApi,
     navigationPath: actions.navigationPath,
     displayedNavigationPath: truncatedPath,
     allActions
@@ -295,18 +296,10 @@ const mapSubStateToProps = ({ popoverVisible, luaApi, actions }) => {
 };
 
 const mapStateToSubState = (state) => ({
-  popoverVisible: state.local.popovers.actions.visible,
-  luaApi: state.luaApi,
   actions: state.shortcuts
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  setPopoverVisibility: (visible) => {
-    dispatch(setPopoverVisibility({
-      popover: 'actions',
-      visible
-    }));
-  },
   trigger: (action) => {
     dispatch(triggerAction(action));
   },
@@ -321,15 +314,12 @@ ActionsPanel.propTypes = {
   allActions: PropTypes.arrayOf(PropTypes.object),
   displayedNavigationPath: PropTypes.string.isRequired,
   navigationPath: PropTypes.string.isRequired,
-  popoverVisible: PropTypes.bool,
-  setPopoverVisibility: PropTypes.func.isRequired,
   singlewindow: PropTypes.bool
 };
 
 ActionsPanel.defaultProps = {
   actionLevel: undefined,
   allActions: undefined,
-  popoverVisible: false,
   singlewindow: false
 };
 
