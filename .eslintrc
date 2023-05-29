@@ -49,7 +49,8 @@
       "afterColon": true // Make it pretty :)
     }],
     "react/destructuring-assignment": "off",
-    "prefer-destructuring": ["error", {"object": true, "array": false}]
+    "prefer-destructuring": ["error", {"object": true, "array": false}],
+    "jsx-a11y/click-events-have-key-events": "warn" // This should be considered when rewriting for disabilities
   },
   "ignorePatterns": ["*.story.jsx", "src/components/TouchBar/*", "src/components/ImageSlider/*", "src/components/BottomBar/TfEditor/*", "src/components/common/Graph/*"],
   "overrides": [
