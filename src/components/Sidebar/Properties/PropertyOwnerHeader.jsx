@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
+/* eslint-disable import/no-webpack-loader-syntax */
 import DraggableIcon from 'svg-react-loader?name=Aim!../../../icons/draggable_list.svg';
 import Focus from 'svg-react-loader?name=Focus!../../../icons/focus.svg';
 
@@ -24,31 +25,107 @@ import toggleHeaderStyles from '../../common/ToggleContent/ToggleHeader.scss';
 import styles from './PropertyOwnerHeader.scss';
 
 function PropertyOwnerHeader({
-  enabled, enabledUri, expanded, fadeDuration, fadeUri, fadeValue, focusAction,
-  getPropertyDispatcher, identifier, isLayer, luaApi, metaAction, offIcon, onIcon,
-  popOutAction, setExpanded, shiftFocusAction, title, trashAction
+  expanded, metaAction, offIcon, onIcon, popOutAction, setExpanded, title, trashAction, uri
 }) {
+  const splitUri = uri.split('.');
+  const identifier = splitUri.length > 1 && splitUri[1];
+  const isRenderable = (splitUri.length > 1 && splitUri[splitUri.length - 1] === 'Renderable');
+  const isSceneObject = (splitUri.length === 2 && splitUri[0] === 'Scene');
+
+  // Check for layers so we can change their visuals (e.g makes the titles of enabled
+  // layers green and have different behavior on hover)
+  const isLayer = isGlobeBrowsingLayer(uri);
+
   // 1 is positive => fading in, -1 negative => fading out. Undefined or 0 means no fading
   const [fadeDirection, setFadeDirection] = React.useState(0);
+
+  const luaApi = useSelector((state) => state.luaApi);
+
+  const renderedTitle = useSelector((state) => (
+    title || displayName(state, state.propertyTree.properties, uri)
+  ));
+
+  const fadeDuration = useSelector((state) => (
+    state.propertyTree.properties[EngineFadeDurationKey]?.value || 1.0
+  ));
+
+  // Check if this property owner has a fade property, or a renderable with the property
+  const fadeUri = useSelector((state) => {
+    if (state.propertyTree.properties[`${uri}.Fade`] && !isRenderable) {
+      return `${uri}.Fade`;
+    }
+    if (state.propertyTree.properties[`${uri}.Renderable.Fade`]) {
+      return `${uri}.Renderable.Fade`;
+    }
+    return undefined;
+  });
+
+  const fadeValue = useSelector((state) => state.propertyTree.properties[fadeUri]?.value);
   const prevFadeValueRef = useRef(fadeValue);
 
-  useEffect(() => {
-    if (!fadeUri) { return; }
+  // Check if this property owner has an enabled property, or a renderable with the property
+  const enabledUri = useSelector((state) => {
+    if (state.propertyTree.properties[`${uri}.Enabled`] && !isRenderable) {
+      return `${uri}.Enabled`;
+    }
+    if (state.propertyTree.properties[`${uri}.Renderable.Enabled`]) {
+      return `${uri}.Renderable.Enabled`;
+    }
+    return undefined;
+  });
 
-    getPropertyDispatcher(fadeUri).subscribe();
+  // Get the state for the rendered checkbox. Note that this does not exactly correspond to
+  // the enabled property value
+  const isVisible = useSelector((state) => {
+    let enabled = state.propertyTree.properties[enabledUri]?.value;
+    // Make fade == 0 correspond to disabled, according to the checkbox
+    if (fadeUri && state.propertyTree.properties[fadeUri].value === 0) {
+      enabled = false;
+    }
+    return enabled;
+  });
+
+  const dispatch = useDispatch();
+
+  // Return the dispatcher object for the given property URI
+  function property(propertyUri) {
+    return propertyDispatcher(dispatch, propertyUri);
+  }
+
+  function focusAction() {
+    propertyDispatcher(dispatch, NavigationAnchorKey).set(identifier);
+    propertyDispatcher(dispatch, NavigationAimKey).set('');
+    propertyDispatcher(dispatch, RetargetAnchorKey).set(null);
+  }
+
+  function shiftFocusAction() {
+    propertyDispatcher(dispatch, NavigationAnchorKey).set(identifier);
+    propertyDispatcher(dispatch, NavigationAimKey).set('');
+  }
+
+  useEffect(() => {
+    if (fadeUri) {
+      property(fadeUri).subscribe();
+    }
+
     return () => {
       // unsubscribe on component unmount
-      getPropertyDispatcher(fadeUri).unsubscribe();
+      if (fadeUri) {
+        property(fadeUri).unsubscribe();
+      }
     };
   }, []);
 
   useEffect(() => {
-    if (!enabledUri) { return; }
+    if (enabledUri) {
+      property(enabledUri).subscribe();
+    }
 
-    getPropertyDispatcher(enabledUri).subscribe();
     return () => {
       // unsubscribe on component unmount
-      getPropertyDispatcher(enabledUri).unsubscribe();
+      if (enabledUri) {
+        property(enabledUri).unsubscribe();
+      }
     };
   }, []);
 
@@ -70,21 +147,23 @@ function PropertyOwnerHeader({
     // Disable after finished fading out
     const isFadingOut = fadeDirection < 0;
     if (fadeValue < 0.0001 && isFadingOut) {
-      getPropertyDispatcher(enabledUri).set(false);
+      property(enabledUri).set(false);
     }
   }, [fadeValue]);
 
-  function onClick(evt) {
+  function onClick() {
     setExpanded(!expanded);
   }
 
   function onClickFocus(evt) {
-    if (evt.shiftKey && shiftFocusAction) {
+    evt.stopPropagation();
+    if (!isSceneObject) { return; }
+
+    if (evt.shiftKey) {
       shiftFocusAction();
-    } else if (focusAction) {
+    } else {
       focusAction();
     }
-    evt.stopPropagation();
   }
 
   function onToggleCheckboxClick(shouldBeEnabled, event) {
@@ -94,10 +173,10 @@ function PropertyOwnerHeader({
     const shouldNotFade = !fadeUri || (fadeDuration < 0.001) || holdingShift;
 
     if (shouldNotFade) {
-      getPropertyDispatcher(enabledUri).set(shouldBeEnabled);
+      property(enabledUri).set(shouldBeEnabled);
       if (fadeUri) {
-      // Also set the fade value to 1
-        getPropertyDispatcher(fadeUri).set(1.0);
+        // Also set the fade value to 1
+        property(fadeUri).set(1.0);
       }
       setFadeDirection(0);
       return;
@@ -113,7 +192,7 @@ function PropertyOwnerHeader({
         luaApi.setPropertyValueSingle(fadeUri, 0.0);
       }
       // Enable the thing immediately so we see the visual changes
-      getPropertyDispatcher(enabledUri).set(true);
+      property(enabledUri).set(true);
       luaApi.setPropertyValueSingle(fadeUri, 1.0, fadeDuration);
     } else { // fade out
       luaApi.setPropertyValueSingle(fadeUri, 0.0, fadeDuration);
@@ -168,14 +247,14 @@ function PropertyOwnerHeader({
   // Headers look slightly different for globe browsing layers
   let titleClass = '';
   if (isLayer) {
-    titleClass = enabled ? styles.enabledLayerTitle : styles.disabledLayerTitle;
+    titleClass = isVisible ? styles.enabledLayerTitle : styles.disabledLayerTitle;
   }
   // And additionally for height layers
   const isHeightLayer = isLayer && enabledUri.includes('Layers.HeightLayers.');
   const refs = useContextRefs();
 
-  let refName = `PropertyOwner ${title}`;
-  const titleNoSpaces = title.replace(/\s/g, '');
+  let refName = `PropertyOwner ${renderedTitle}`;
+  const titleNoSpaces = renderedTitle.replace(/\s/g, '');
   if (titleNoSpaces !== identifier) {
     refName += ` ${identifier}`;
   }
@@ -201,14 +280,14 @@ function PropertyOwnerHeader({
             <Checkbox
               className={styles.enabledCheckbox}
               wide={false}
-              checked={enabled}
+              checked={isVisible}
               setChecked={onToggleCheckboxClick}
               style={shouldFadeCheckbox ? { opacity: fadeValue } : null}
             />
           </span>
         )}
         <span className={`${toggleHeaderStyles.title} ${styles.title} ${titleClass}`}>
-          { title }
+          { renderedTitle }
           { isHeightLayer && <MaterialIcon className={styles.heightLayerIcon} icon="landscape" /> }
           { isLayer && <SvgIcon className={styles.layerDraggableIcon}><DraggableIcon /></SvgIcon> }
         </span>
@@ -229,101 +308,25 @@ function PropertyOwnerHeader({
   );
 }
 
-const mapStateToProps = (state, ownProps) => {
-  const { uri, title } = ownProps;
-
-  const splitUri = uri.split('.');
-  const isRenderable = splitUri.length > 1 && splitUri[splitUri.length - 1] === 'Renderable';
-
-  const identifier = splitUri.length > 1 && splitUri[1];
-
-  // Check for layers so we can change their visuals (e.g makes the titles of enabled
-  // layers green and have different behavior on hover)
-  const isLayer = isGlobeBrowsingLayer(uri);
-
-  // Check if this property owner has an enabled property, or a renderable with the property
-  let enabledUri;
-  if (state.propertyTree.properties[`${uri}.Enabled`] && !isRenderable) {
-    enabledUri = `${uri}.Enabled`;
-  } else if (state.propertyTree.properties[`${uri}.Renderable.Enabled`]) {
-    enabledUri = `${uri}.Renderable.Enabled`;
-  }
-  let enabled = enabledUri && state.propertyTree.properties[enabledUri].value;
-
-  // Check if this property owner has a fade property, or a renderable with the property
-  let fadeUri;
-  if (state.propertyTree.properties[`${uri}.Fade`] && !isRenderable) {
-    fadeUri = `${uri}.Fade`;
-  } else if (state.propertyTree.properties[`${uri}.Renderable.Fade`]) {
-    fadeUri = `${uri}.Renderable.Fade`;
-  }
-  const fadeValue = state.propertyTree.properties[fadeUri]?.value;
-
-  // Make fade == 0 correspond to disabled, according to the checkbox
-  if (fadeUri && state.propertyTree.properties[fadeUri].value === 0) {
-    enabled = false;
-  }
-
-  const fadeDuration = state.propertyTree.properties[EngineFadeDurationKey]?.value || 1.0;
-
-  return {
-    enabled,
-    enabledUri,
-    fadeDuration,
-    fadeValue,
-    fadeUri,
-    identifier,
-    isLayer,
-    luaApi: state.luaApi,
-    title: title || displayName(state, state.propertyTree.properties, uri)
-  };
-};
-
-const mapDispatchToProps = (dispatch, ownProps) => {
-  const { uri } = ownProps;
-  const splitUri = uri.split('.');
-
-  const identifier = splitUri[1];
-
-  let focusAction;
-  let shiftFocusAction;
-
-  if (splitUri.length === 2 && splitUri[0] === 'Scene') {
-    focusAction = () => {
-      propertyDispatcher(dispatch, NavigationAnchorKey).set(identifier);
-      propertyDispatcher(dispatch, NavigationAimKey).set('');
-      propertyDispatcher(dispatch, RetargetAnchorKey).set(null);
-    },
-    shiftFocusAction = () => {
-      propertyDispatcher(dispatch, NavigationAnchorKey).set(identifier);
-      propertyDispatcher(dispatch, NavigationAimKey).set('');
-    };
-  }
-  return {
-    getPropertyDispatcher: (uri) => propertyDispatcher(dispatch, uri),
-    focusAction,
-    shiftFocusAction
-  };
-};
-
-PropertyOwnerHeader = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(PropertyOwnerHeader);
-
 PropertyOwnerHeader.propTypes = {
   expanded: PropTypes.bool.isRequired,
   setExpanded: PropTypes.func.isRequired,
-  uri: PropTypes.string.isRequired,
+  metaAction: PropTypes.func,
   offIcon: PropTypes.string,
-  onIcon: PropTypes.string
+  onIcon: PropTypes.string,
+  popOutAction: PropTypes.func,
+  title: PropTypes.string,
+  trashAction: PropTypes.func,
+  uri: PropTypes.string.isRequired
 };
 
 PropertyOwnerHeader.defaultProps = {
-  properties: [],
-  subowners: [],
+  metaAction: undefined,
   offIcon: 'chevron_right',
-  onIcon: 'expand_more'
+  onIcon: 'expand_more',
+  popOutAction: undefined,
+  title: undefined,
+  trashAction: undefined
 };
 
 export default PropertyOwnerHeader;
