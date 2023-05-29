@@ -36,10 +36,6 @@ class KeybindingPanel extends Component {
     this.checkForModifiers = this.checkForModifiers.bind(this);
   }
 
-  togglePopover() {
-    this.props.setPopoverVisibility(!this.props.popoverVisible);
-  }
-
   onKeyPress = (button) => {
     // Handle modifier clicks
     if ((button === '{shift}') || (button === '{alt}') || (button === '{control}') || (button === '{super}')) {
@@ -59,10 +55,10 @@ class KeybindingPanel extends Component {
     };
 
     const mappedActions = this.getActionForKey(button);
-    if (mappedActions.length == 0) {
+    if (mappedActions.length === 0) {
       let modifier = '';
       if (this.state.activeModifiers.length > 0) {
-        this.state.activeModifiers.map((am) => {
+        this.state.activeModifiers.forEach((am) => {
           modifier += `${am} + `;
         });
       }
@@ -74,7 +70,7 @@ class KeybindingPanel extends Component {
         action.documentation += mappedAction.documentation;
         action.isLocal += mappedAction.synchronization ? 'No' : 'Yes';
         action.guiPath += mappedAction.guiPath;
-        if (i != (mappedActions.length - 1)) {
+        if (i !== (mappedActions.length - 1)) {
           action.name += '  &&  ';
           action.documentation += '  &&  ';
           action.isLocal += '  &&  ';
@@ -93,13 +89,17 @@ class KeybindingPanel extends Component {
     });
   };
 
+  togglePopover() {
+    this.props.setPopoverVisibility(!this.props.popoverVisible);
+  }
+
   reverseSpecialKey = (key) => {
-    if (key == 'Right') {
+    if (key === 'Right') {
       return '{arrowright}';
-    } if (key == 'Left') {
+    } if (key === 'Left') {
       return '{arrowleft}';
     }
-    if (key.indexOf('Keypad') == 0) {
+    if (key.indexOf('Keypad') === 0) {
       const number = key.substring(7);
       if (!Number.isNaN(number - parseFloat(number))) {
         return `{numpad${number}}`;
@@ -136,18 +136,18 @@ class KeybindingPanel extends Component {
 
   specialKeyMatch = (key, actionKey) => {
     let strippedKey = key.substr(1, key.indexOf('}') - 1);
-    if (strippedKey.indexOf('arrow') == 0) {
+    if (strippedKey.indexOf('arrow') === 0) {
       strippedKey = strippedKey.substring(5);
     }
     strippedKey = strippedKey.charAt(0).toUpperCase() + strippedKey.slice(1);
-    if (strippedKey.indexOf('Numpad') == 0) {
+    if (strippedKey.indexOf('Numpad') === 0) {
       strippedKey = `Keypad ${strippedKey.substring(6)}`;
     }
     if (strippedKey.indexOf('lock') > -1) {
       strippedKey = `${strippedKey.substring(0, strippedKey.indexOf('lock'))}Lock`;
     }
 
-    return actionKey.toLowerCase() == strippedKey.toLowerCase();
+    return actionKey.toLowerCase() === strippedKey.toLowerCase();
   };
 
   checkForModifiers = (action) => {
@@ -163,7 +163,7 @@ class KeybindingPanel extends Component {
     const matchingModifiers = (Object.entries(modifierObject).toString() ===
                                Object.entries(action.modifiers).toString());
 
-    const noActiveModifiers = this.state.activeModifiers.length == 0;
+    const noActiveModifiers = this.state.activeModifiers.length === 0;
 
     return matchingModifiers || (!actionHasModifier && noActiveModifiers);
   };
@@ -175,7 +175,7 @@ class KeybindingPanel extends Component {
       const action = this.props.actions.data.shortcuts[i];
       if (action.key) {
         if (this.checkForModifiers(action)) {
-          if ((action.key.toLowerCase() == key) || this.specialKeyMatch(key, action.key)) {
+          if ((action.key.toLowerCase() === key) || this.specialKeyMatch(key, action.key)) {
             keyActions.push(action);
           }
         }
@@ -194,7 +194,7 @@ class KeybindingPanel extends Component {
   handleModifier = (modifier) => {
     let modifiers = this.state.activeModifiers;
     if (modifiers.includes(modifier)) {
-      modifiers = modifiers.filter((e) => e != modifier);
+      modifiers = modifiers.filter((e) => e !== modifier);
     } else {
       modifiers.push(modifier);
     }
@@ -321,13 +321,13 @@ class KeybindingPanel extends Component {
     }
 
     const buttonTheme = [];
-    if (mappedButtonString != '') {
+    if (mappedButtonString !== '') {
       buttonTheme.push({ class: 'hg-mapped', buttons: mappedButtonString });
     }
-    if (toggledModifierString != '') {
+    if (toggledModifierString !== '') {
       buttonTheme.push({ class: 'hg-toggled', buttons: toggledModifierString });
     }
-    if (inputString != '') {
+    if (inputString !== '') {
       buttonTheme.push({ class: 'hg-highlight', buttons: inputString });
     }
 
