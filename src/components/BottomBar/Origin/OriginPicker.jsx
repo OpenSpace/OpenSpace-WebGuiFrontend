@@ -1,5 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+/* eslint-disable import/no-webpack-loader-syntax */
 import Aim from 'svg-react-loader?name=Aim!../../../icons/aim.svg';
 import Anchor from 'svg-react-loader?name=Anchor!../../../icons/anchor.svg';
 import Focus from 'svg-react-loader?name=Focus!../../../icons/focus.svg';
