@@ -56,6 +56,7 @@ async function setupSubscription(store) {
   skybrowserTopic = api.startTopic('skybrowser', {
     event: 'start_subscription'
   });
+  // eslint-disable-next-line no-restricted-syntax
   for await (const data of skybrowserTopic.iterator()) {
     handleData(store, data);
   }

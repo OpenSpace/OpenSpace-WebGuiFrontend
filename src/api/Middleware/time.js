@@ -13,6 +13,7 @@ async function setupSubscription(store) {
   timeTopic = api.startTopic('time', {
     event: 'start_subscription'
   });
+  // eslint-disable-next-line no-restricted-syntax
   for await (const data of timeTopic.iterator()) {
     handleData(store, data);
   }

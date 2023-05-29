@@ -85,6 +85,7 @@ const createSubscription = (store, uri) => {
   const throttledHandleUpdates = throttle(handleUpdates, 200);
 
   (async () => {
+    // eslint-disable-next-line no-restricted-syntax
     for await (const data of subscription.iterator()) {
       throttledHandleUpdates(data.Value);
     }

@@ -14,8 +14,11 @@ const subscribe = () => {
     properties: ['state', 'files']
   });
   (async () => {
+    // eslint-disable-next-line no-restricted-syntax
     for await (const data of topic.iterator()) {
-      dataCallback && dataCallback(data);
+      if (dataCallback) {
+        dataCallback(data);
+      }
     }
   })();
 };

@@ -9,6 +9,7 @@ const subscribeToShortcuts = (callback) => {
     event: 'start_subscription'
   });
   (async () => {
+    // eslint-disable-next-line no-restricted-syntax
     for await (const data of topic.iterator()) {
       callback(data);
     }

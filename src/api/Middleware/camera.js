@@ -23,6 +23,7 @@ async function setupSubscription(store) {
   cameraTopic = api.startTopic('camera', {
     event: 'start_subscription'
   });
+  // eslint-disable-next-line no-restricted-syntax
   for await (const data of cameraTopic.iterator()) {
     handleData(store, data);
   }
