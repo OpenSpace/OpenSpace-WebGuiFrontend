@@ -1,7 +1,8 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
 
-import { removeNodeMetaPopover, setPopoverActiveTab, setPopoverVisibility } from '../../api/Actions';
+import { removeNodeMetaPopover, setPopoverActiveTab } from '../../api/Actions';
 import { openUrl } from '../../utils/helpers';
 import Picker from '../BottomBar/Picker';
 import Button from '../common/Input/Button/Button';
@@ -10,12 +11,50 @@ import Row from '../common/Row/Row';
 
 import styles from './NodeMetaPanel.scss';
 
-function NodeMetaPanel({
-  removeNodeMetaPopoverAction, node, setPopoverActiveTabAction, showPopover,
-  documentation, activeTab, attached, nodeName, description
-}) {
-  function togglePopover() {
-    removeNodeMetaPopoverAction(node);
+function NodeMetaPanel({ uri }) {
+  const myPopover = useSelector((state) => state.local.popovers.activeNodeMetaPanels[uri]);
+  const showPopover = myPopover ? myPopover.visible : false;
+  const attached = myPopover ? myPopover.attached : false;
+  const activeTab = myPopover && myPopover.activeTab ? myPopover.activeTab : 0;
+
+  // Find name, gui description and documentation
+  const nodeName = useSelector((state) => state.propertyTree.propertyOwners[uri]?.name);
+
+  const description = useSelector((state) => {
+    let guiDescription = null;
+    if (state.propertyTree.properties[`${uri}.GuiDescription`]) {
+      guiDescription = state.propertyTree.properties[`${uri}.GuiDescription`].value;
+      guiDescription = guiDescription.replace(/\\n/g, '');
+      guiDescription = guiDescription.replace(/<br>/g, '');
+    }
+    return guiDescription || 'No description found';
+  });
+
+  const documentation = useSelector((state) => {
+    const identifier = uri.split('.').pop(); // Get last word in uri
+    const foundDoc = state.documentation.data.find((doc) => {
+      if (doc?.identifiers && doc.identifiers.includes(identifier)) {
+        return true;
+      }
+      return false;
+    });
+    return foundDoc;
+  });
+
+  const dispatch = useDispatch();
+
+  function closePopover() {
+    dispatch(removeNodeMetaPopover({
+      identifier: uri
+    }));
+  }
+
+  function setActiveTab(index) {
+    dispatch(setPopoverActiveTab({
+      identifier: uri,
+      activeTab: index,
+      isMeta: true
+    }));
   }
 
   function contentForTab() {
@@ -65,7 +104,7 @@ function NodeMetaPanel({
       <Popover
         className={`${Picker.Popover} && ${styles.nodePopover}`}
         title={windowTitle}
-        closeCallback={togglePopover}
+        closeCallback={closePopover}
         attached={attached}
         detachable
       >
@@ -80,7 +119,7 @@ function NodeMetaPanel({
             largetext={activeTab === 0}
             smalltext={activeTab !== 0}
             key={0}
-            onClick={() => setPopoverActiveTabAction(0)}
+            onClick={() => setActiveTab(0)}
           >
             Description
           </Button>
@@ -89,7 +128,7 @@ function NodeMetaPanel({
             largetext={activeTab === 1}
             smalltext={activeTab !== 0}
             key={1}
-            onClick={() => setPopoverActiveTabAction(1)}
+            onClick={() => setActiveTab(1)}
           >
             Info
           </Button>
@@ -105,81 +144,8 @@ function NodeMetaPanel({
   );
 }
 
-const mapStateToProps = (state, ownProps) => {
-  const nodeURI = ownProps.uri;
-
-  const myPopover = state.local.popovers.activeNodeMetaPanels[ownProps.uri];
-  const popoverVisible = myPopover ? myPopover.visible : false;
-  const popoverAttached = myPopover ? myPopover.attached : false;
-  const popoverActiveTab = myPopover && myPopover.activeTab ? myPopover.activeTab : 0;
-
-  let node = {};
-  if (state.propertyTree.propertyOwners[nodeURI]) {
-    node = state.propertyTree.propertyOwners[nodeURI];
-  }
-  const nodeName = node.name;
-
-  let guiDescription = null;
-  if (state.propertyTree.properties[`${nodeURI}.GuiDescription`]) {
-    guiDescription = state.propertyTree.properties[`${nodeURI}.GuiDescription`].value;
-    guiDescription = guiDescription.replace(/\\n/g, '');
-    guiDescription = guiDescription.replace(/<br>/g, '');
-  }
-  if (!guiDescription) {
-    guiDescription = 'No description found';
-  }
-
-  // Find documentation
-  const identifier = nodeURI.split('.').pop(); // Get last word in uri
-  const foundDoc = state.documentation.data.find((doc) => {
-    if (doc?.identifiers && doc.identifiers.includes(identifier)) {
-      return true;
-    }
-    return false;
-  });
-
-  return {
-    nodeName,
-    activeTab: popoverActiveTab,
-    showPopover: popoverVisible,
-    attached: popoverAttached,
-    documentation: foundDoc,
-    description: guiDescription
-  };
+NodeMetaPanel.propTypes = {
+  uri: PropTypes.string.isRequired
 };
-
-const mapDispatchToProps = (dispatch, ownProps) => {
-  const setPopoverVisibilityAction = (visible, uri) => {
-    dispatch(setPopoverVisibility({
-      popover: uri,
-      visible
-    }));
-  };
-
-  const removeNodeMetaPopoverAction = () => {
-    dispatch(removeNodeMetaPopover({
-      identifier: ownProps.uri
-    }));
-  };
-
-  const setPopoverActiveTabAction = (index) => {
-    dispatch(setPopoverActiveTab({
-      identifier: ownProps.uri,
-      activeTab: index,
-      isMeta: true
-    }));
-  };
-
-  return {
-    setPopoverVisibilityAction,
-    removeNodeMetaPopoverAction,
-    setPopoverActiveTabAction
-  };
-};
-
-NodeMetaPanel = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(NodeMetaPanel);
 
 export default NodeMetaPanel;
