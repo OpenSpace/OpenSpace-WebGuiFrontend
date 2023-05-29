@@ -215,9 +215,9 @@ function PropertyOwnerHeader({
   }
 
   const focusButton = (
-    <div className={styles.rightButton} onClick={onClickFocus}>
+    <Button className={styles.rightButton} onClick={onClickFocus} small>
       <SvgIcon><Focus /></SvgIcon>
-    </div>
+    </Button>
   );
 
   const popoutButton = (
@@ -268,7 +268,7 @@ function PropertyOwnerHeader({
       onClick={onClick}
       role="button"
       tabIndex={0}
-      ref={(el) => refs.current[refName] = el}
+      ref={(el) => { refs.current[refName] = el; }}
     >
       <Row>
         <MaterialIcon

@@ -18,6 +18,12 @@
                       And does not actually prevent dragging from happening)*/
 }
 
+.rightButton {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  background: rgba(0, 0, 0, 0); // Completely transparent
+}
+
 .menuButton {
   width: 100%;
   padding: 2px;
