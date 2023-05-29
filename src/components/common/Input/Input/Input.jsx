@@ -132,6 +132,7 @@ Input.idCounter = Input.idCounter || 1;
 Input.propTypes = {
   onChange: PropTypes.func,
   onEnter: PropTypes.func,
+  children: PropTypes.node,
   className: PropTypes.string,
   clearable: PropTypes.bool,
   label: PropTypes.node,
@@ -144,6 +145,7 @@ Input.propTypes = {
 Input.defaultProps = {
   onChange: () => {},
   onEnter: () => {},
+  children: [],
   className: '',
   clearable: false,
   label: null,

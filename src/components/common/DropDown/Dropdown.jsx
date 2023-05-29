@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import Button from '../Input/Button/Button';
 
@@ -127,5 +128,20 @@ function Dropdown({
     </div>
   );
 }
+
+Dropdown.propTypes = {
+  value: PropTypes.node.isRequired,
+  placeholder: PropTypes.string.isRequired,
+  options: PropTypes.node.isRequired,
+  onChange: PropTypes.func,
+  onFocus: PropTypes.func,
+  disabled: PropTypes.bool
+};
+
+Dropdown.defaultProps = {
+  onChange: () => {},
+  onFocus: () => {},
+  disabled: false
+};
 
 export default Dropdown;
