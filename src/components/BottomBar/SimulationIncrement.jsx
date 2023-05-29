@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { throttle } from 'lodash/function';
 
 import { subscribeToTime, unsubscribeToTime } from '../../api/Actions';
@@ -67,13 +67,29 @@ Object.freeze(StepSizes);
 Object.freeze(StepPrecisions);
 Object.freeze(Limits);
 
-function SimulationIncrement({
-  hasNextDeltaTimeStep, hasPrevDeltaTimeStep, nextDeltaTimeStep,
-  prevDeltaTimeStep, startSubscriptions, targetDeltaTime, isPaused, stopSubscriptions, luaApi
-}) {
+function SimulationIncrement() {
   const [stepSize, setStepSize] = React.useState(Steps.seconds);
   const [beforeAdjust, setBeforeAdjust] = React.useState(0);
   const refs = useContextRefs();
+
+  // const deltaTime = useSelector((state) => state.time.deltaTime);
+  const targetDeltaTime = useSelector((state) => state.time.targetDeltaTime);
+  const isPaused = useSelector((state) => state.time.isPaused);
+  const hasNextDeltaTimeStep = useSelector((state) => state.time.hasNextDeltaTimeStep);
+  const hasPrevDeltaTimeStep = useSelector((state) => state.time.hasPrevDeltaTimeStep);
+  const nextDeltaTimeStep = useSelector((state) => state.time.nextDeltaTimeStep);
+  const prevDeltaTimeStep = useSelector((state) => state.time.prevDeltaTimeStep);
+  const luaApi = useSelector((state) => state.luaApi);
+
+  const dispatch = useDispatch();
+
+  function startSubscriptions() {
+    dispatch(subscribeToTime());
+  }
+
+  function stopSubscriptions() {
+    dispatch(unsubscribeToTime());
+  }
 
   React.useEffect(() => {
     startSubscriptions();
@@ -235,25 +251,4 @@ function SimulationIncrement({
   );
 }
 
-const mapStateToProps = (state) => ({
-  deltaTime: state.time.deltaTime,
-  targetDeltaTime: state.time.targetDeltaTime,
-  isPaused: state.time.isPaused,
-  hasNextDeltaTimeStep: state.time.hasNextDeltaTimeStep,
-  hasPrevDeltaTimeStep: state.time.hasPrevDeltaTimeStep,
-  nextDeltaTimeStep: state.time.nextDeltaTimeStep,
-  prevDeltaTimeStep: state.time.prevDeltaTimeStep,
-  luaApi: state.luaApi
-});
-
-const mapDispatchToProps = (dispatch) => ({
-  startSubscriptions: () => {
-    dispatch(subscribeToTime());
-  },
-  stopSubscriptions: () => {
-    dispatch(unsubscribeToTime());
-  }
-});
-
-SimulationIncrement = connect(mapStateToProps, mapDispatchToProps)(SimulationIncrement);
 export default SimulationIncrement;

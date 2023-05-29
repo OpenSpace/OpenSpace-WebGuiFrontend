@@ -1,5 +1,6 @@
 import React from 'react';
 import { Rnd as ResizeableDraggable } from 'react-rnd';
+import PropTypes from 'prop-types';
 
 import { useLocalStorageState } from '../../utils/customHooks';
 import Button from '../common/Input/Button/Button';
@@ -140,6 +141,8 @@ function TourPopup({ setVisibility, isVisible }) {
 }
 
 TourPopup.propTypes = {
+  isVisible: PropTypes.bool.isRequired,
+  setVisibility: PropTypes.func.isRequired
 };
 
 TourPopup.defaultProps = {

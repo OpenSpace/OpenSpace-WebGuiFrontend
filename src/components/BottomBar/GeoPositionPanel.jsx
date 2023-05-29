@@ -1,13 +1,13 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Icon } from '@iconify/react';
+import PropTypes from 'prop-types';
 
 import {
   reloadPropertyTree,
   setPopoverVisibility
 } from '../../api/Actions';
 import { useLocalStorageState } from '../../utils/customHooks';
-import subStateToProps from '../../utils/subStateToProps';
 import AnimatedCheckmark from '../common/AnimatedCheckmark/AnimatedCheckmark';
 import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
 import Dropdown from '../common/DropDown/Dropdown';
@@ -21,6 +21,7 @@ import Picker from './Picker';
 
 import styles from './GeoPositionPanel.scss';
 
+// @TODO: Put in its own file, somewhere in common
 function MultiStateToggle({
   labels, checked, setChecked, infoText
 }) {
@@ -32,11 +33,13 @@ function MultiStateToggle({
       >
         Mode
       </p>
-      <InfoBox
-        panelscroll="multiStateToggle"
-        text={infoText}
-        style={{ paddingTop: '3px', paddingRight: '3px' }}
-      />
+      {infoText && (
+        <InfoBox
+          panelscroll="multiStateToggle"
+          text={infoText}
+          style={{ paddingTop: '3px', paddingRight: '3px' }}
+        />
+      )}
       <div className={styles.toggles}>
         {labels.map((label) => (
           <React.Fragment key={`${label}fragment`}>
@@ -62,6 +65,18 @@ function MultiStateToggle({
     </div>
   );
 }
+
+MultiStateToggle.propTypes = {
+  labels: PropTypes.arrayOf(PropTypes.string).isRequired,
+  checked: PropTypes.string.isRequired,
+  setChecked: PropTypes.func,
+  infoText: PropTypes.string
+};
+
+MultiStateToggle.defaultProps = {
+  setChecked: () => {},
+  infoText: undefined
+};
 
 const Interaction = {
   flyTo: 'Fly To',
@@ -108,9 +123,13 @@ function Place({ address, onClick, found }) {
   );
 }
 
-function GeoPositionPanel({
-  refresh, luaApi, popoverVisible, setPopoverVisibilityProp
-}) {
+Place.propTypes = {
+  address: PropTypes.string.isRequired,
+  onClick: PropTypes.func.isRequired,
+  found: PropTypes.bool.isRequired
+};
+
+function GeoPositionPanel() {
   const [inputValue, setInputValue] = useLocalStorageState('inputValue', '');
   const [places, setPlaces] = useLocalStorageState('places', undefined);
   const [addedSceneGraphNodes, setAddedSceneGraphNodes] = useLocalStorageState('addedSceneGraphNodes', undefined);
@@ -121,6 +140,22 @@ function GeoPositionPanel({
   const [currentAnchor, setCurrentAnchor] = useLocalStorageState('anchor', 'Earth');
   const [customNodeCounter, setCustomNodeCounter] = useLocalStorageState('counter', 0);
   const options = ['Earth'];
+
+  const luaApi = useSelector((state) => state.luaApi);
+  const popoverVisible = useSelector((state) => state.local.popovers.geoposition.visible);
+
+  const dispatch = useDispatch();
+
+  function refresh() {
+    dispatch(reloadPropertyTree());
+  }
+
+  function togglePopover() {
+    dispatch(setPopoverVisibility({
+      popover: 'geoposition',
+      visible: !popoverVisible
+    }));
+  }
 
   function getPlaces() {
     if (inputValue === '') {
@@ -153,10 +188,6 @@ function GeoPositionPanel({
     const nodes = [...addedSceneGraphNodes];
     nodes.push(nodeId);
     setAddedSceneGraphNodes(nodes);
-  }
-
-  function togglePopover() {
-    setPopoverVisibilityProp(!popoverVisible);
   }
 
   function selectCoordinate(location, address) {
@@ -345,32 +376,5 @@ function GeoPositionPanel({
     </div>
   );
 }
-
-const mapSubStateToProps = ({ popoverVisible, luaApi }) => ({
-  popoverVisible,
-  luaApi
-});
-
-const mapStateToSubState = (state) => ({
-  popoverVisible: state.local.popovers.geoposition.visible,
-  luaApi: state.luaApi
-});
-
-const mapDispatchToProps = (dispatch) => ({
-  refresh: () => {
-    dispatch(reloadPropertyTree());
-  },
-  setPopoverVisibilityProp: (visible) => {
-    dispatch(setPopoverVisibility({
-      popover: 'geoposition',
-      visible
-    }));
-  }
-});
-
-GeoPositionPanel = connect(
-  subStateToProps(mapSubStateToProps, mapStateToSubState),
-  mapDispatchToProps
-)(GeoPositionPanel);
 
 export default GeoPositionPanel;

@@ -22,11 +22,13 @@ function Picker({
 
 Picker.propTypes = {
   children: PropTypes.node.isRequired,
-  className: PropTypes.string
+  className: PropTypes.string,
+  refKey: PropTypes.string
 };
 
 Picker.defaultProps = {
-  className: ''
+  className: '',
+  refKey: ''
 };
 
 Picker.Active = styles.Active;

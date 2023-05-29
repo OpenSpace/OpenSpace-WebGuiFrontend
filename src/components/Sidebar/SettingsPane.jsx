@@ -154,6 +154,12 @@ const mapSubStateToProps = ({ properties, propertyOwners, propertyTree }) => {
   };
 };
 
+SettingsPane.propTypes = {
+  topPropertyOwners: PropTypes.array.isRequired,
+  subPropertyOwners: PropTypes.array.isRequired,
+  properties: PropTypes.array.isRequired
+};
+
 export default connect(
   subStateToProps(mapSubStateToProps, mapStateToSubState)
 )(SettingsPane);
