@@ -37,6 +37,12 @@ function OpacitySlider({ opacity, setOpacity, identifier }) {
   );
 }
 
+OpacitySlider.propTypes = {
+  identifier: PropTypes.string.isRequired,
+  opacity: PropTypes.number.isRequired,
+  setOpacity: PropTypes.func.isRequired
+};
+
 function SkyBrowserTabEntry({
   credits,
   creditsUrl,

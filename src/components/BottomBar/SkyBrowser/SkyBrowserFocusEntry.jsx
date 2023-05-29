@@ -83,7 +83,8 @@ SkyBrowserFocusEntry.propTypes = {
   onSelect: PropTypes.func,
   ra: PropTypes.number,
   thumbnail: PropTypes.string,
-  moveCircleToHoverImage: PropTypes.func.isRequired
+  moveCircleToHoverImage: PropTypes.func.isRequired,
+  style: PropTypes.object
 };
 
 SkyBrowserFocusEntry.defaultProps = {
@@ -96,7 +97,8 @@ SkyBrowserFocusEntry.defaultProps = {
   fov: 90,
   name: '',
   ra: 0,
-  thumbnail: ''
+  thumbnail: '',
+  style: {}
 };
 
 export default SkyBrowserFocusEntry;

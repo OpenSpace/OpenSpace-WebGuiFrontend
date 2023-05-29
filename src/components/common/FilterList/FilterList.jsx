@@ -111,12 +111,13 @@ function FilterListInputButton({
 }
 
 FilterListInputButton.propTypes = {
-  key: PropTypes.string.isRequired,
+  key: PropTypes.string,
   children: PropTypes.node,
   className: PropTypes.string
 };
 
 FilterListInputButton.defaultProps = {
+  key: undefined,
   children: [],
   className: ''
 };

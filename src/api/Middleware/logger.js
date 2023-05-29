@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 // To log everything:
 import actionTypes from '../Actions/actionTypes';
 

@@ -403,10 +403,13 @@ SkyBrowserTabs.propTypes = {
   imageCollectionIsLoaded: PropTypes.bool.isRequired,
   maxHeight: PropTypes.number.isRequired,
   minHeight: PropTypes.number.isRequired,
+  moveCircleToHoverImage: PropTypes.func.isRequired,
   passMessageToWwt: PropTypes.func.isRequired,
+  removeImageSelection: PropTypes.func.isRequired,
   selectImage: PropTypes.func.isRequired,
   setBorderRadius: PropTypes.func.isRequired,
   setCurrentTabHeight: PropTypes.func.isRequired,
+  setOpacityOfImage: PropTypes.func.isRequired,
   setWwtRatio: PropTypes.func.isRequired
 };
 

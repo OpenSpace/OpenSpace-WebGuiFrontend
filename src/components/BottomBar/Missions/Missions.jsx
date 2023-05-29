@@ -1,6 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Icon } from '@iconify/react';
+import PropTypes from 'prop-types';
 
 import { subscribeToTime, unsubscribeToTime } from '../../../api/Actions';
 import { useLocalStorageState } from '../../../utils/customHooks';
@@ -23,6 +24,11 @@ function SetTimeButton({ onClick, name }) {
     </Button>
   );
 }
+
+SetTimeButton.propTypes = {
+  name: PropTypes.string.isRequired,
+  onClick: PropTypes.func.isRequired
+};
 
 export default function Missions() {
   // Make panel being shown stored in local storage
