@@ -1,5 +1,6 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import { removeNodePropertyPopover, setPopoverActiveTab, setPopoverVisibility } from '../../api/Actions';
 import { NavigationAnchorKey, RenderableTypes, ScenePrefixKey } from '../../api/keys';
@@ -11,20 +12,62 @@ import PropertyOwner from '../Sidebar/Properties/PropertyOwner';
 
 import styles from './NodePropertiesPanel.scss';
 
-function NodePropertiesPanel({
-  isFocusNodePanel, showPopover, node, renderableType, setPopoverVisibilityAction,
-  removeNodePropertyPopoverAction, nodeURI, renderableProps, setPopoverActiveTabAction,
-  activeTab, attached, nodeName
-}) {
+function NodePropertiesPanel({ isFocusNodePanel, uri }) {
+  const anchor = useSelector((state) => (
+    state.propertyTree.properties[NavigationAnchorKey]?.value
+  ));
+  const nodeURI = isFocusNodePanel ? ScenePrefixKey + anchor : uri;
+
+  const nodeName = useSelector((state) => (
+    state.propertyTree.propertyOwners[nodeURI]?.name
+  ));
+
+  // Renderable type and info
+  const renderableType = useSelector((state) => (
+    state.propertyTree.properties[`${nodeURI}.Renderable.Type`]?.value
+  ));
+
+  const renderableProps = useSelector((state) => (
+    state.propertyTree.propertyOwners[`${nodeURI}.Renderable`]?.properties
+  ));
+
   const isDefined = RenderableTypes[renderableType];
   const isGlobe = isDefined && renderableType === RenderableTypes.RenderableGlobe;
 
+  // Popover visiblity
+  const myPopover = useSelector((state) => (
+    isFocusNodePanel ?
+      state.local.popovers.focusNodePropertiesPanel :
+      state.local.popovers.activeNodePropertyPanels[uri]
+  ));
+  let showPopover = myPopover?.visible || false;
+  if (!renderableType || (isFocusNodePanel && !anchor)) {
+    showPopover = false;
+  }
+  const attached = myPopover?.attached || false;
+  const activeTab = myPopover?.activeTab || 0;
+
+  const dispatch = useDispatch();
+
   function togglePopover() {
     if (isFocusNodePanel) {
-      setPopoverVisibilityAction(!showPopover, 'focusNodePropertiesPanel');
+      dispatch(setPopoverVisibility({
+        popover: 'focusNodePropertiesPanel',
+        visible: !showPopover
+      }));
     } else {
-      removeNodePropertyPopoverAction(node);
+      dispatch(removeNodePropertyPopover({
+        identifier: uri
+      }));
     }
+  }
+
+  function setPopoverActiveTabAction(index) {
+    dispatch(setPopoverActiveTab({
+      identifier: uri,
+      activeTab: index,
+      isFocusNodePanel
+    }));
   }
 
   function propertiesForRenderableType() {
@@ -42,13 +85,13 @@ function NodePropertiesPanel({
     }
   }
 
-  function propertyOwnerForUri(uri) {
+  function propertyOwnerForUri(ownerUri) {
     return (
       <PropertyOwner
         autoExpand
         key={activeTab}
-        uri={uri}
-        expansionIdentifier={`P:${uri}`}
+        uri={ownerUri}
+        expansionIdentifier={`P:${ownerUri}`}
       />
     );
   }
@@ -79,12 +122,12 @@ function NodePropertiesPanel({
     if (isGlobe) {
       switch (activeTab) {
         case 1: {
-          const uri = `${nodeURI}.Renderable.Layers.ColorLayers`;
-          return propertyOwnerForUri(uri);
+          const layerUri = `${nodeURI}.Renderable.Layers.ColorLayers`;
+          return propertyOwnerForUri(layerUri);
         }
         case 2: {
-          const uri = `${nodeURI}.Renderable.Layers.HeightLayers`;
-          return propertyOwnerForUri(uri);
+          const layerUri = `${nodeURI}.Renderable.Layers.HeightLayers`;
+          return propertyOwnerForUri(layerUri);
         }
         default: {
           return null;
@@ -149,82 +192,13 @@ function NodePropertiesPanel({
   );
 }
 
-const mapStateToProps = (state, ownProps) => {
-  const aim = state.propertyTree.properties[NavigationAnchorKey] ?
-    state.propertyTree.properties[NavigationAnchorKey].value :
-    undefined;
-
-  const nodeURI = ownProps.isFocusNodePanel ? ScenePrefixKey + aim : ownProps.uri;
-
-  const myPopover = ownProps.isFocusNodePanel ?
-    state.local.popovers.focusNodePropertiesPanel :
-    state.local.popovers.activeNodePropertyPanels[ownProps.uri];
-
-  let popoverVisible = myPopover ? myPopover.visible : false;
-  const popoverAttached = myPopover ? myPopover.attached : false;
-  const popoverActiveTab = myPopover && myPopover.activeTab ? myPopover.activeTab : 0;
-
-  const node = state.propertyTree.propertyOwners[nodeURI] ?? {};
-  const nodeName = node.name;
-
-  const renderableProps = state.propertyTree.propertyOwners[`${nodeURI}.Renderable`] ?
-    state.propertyTree.propertyOwners[`${nodeURI}.Renderable`].properties :
-    null;
-
-  if (ownProps.isFocusNodePanel && !aim) {
-    popoverVisible = false;
-  }
-
-  const renderableTypeProp = state.propertyTree.properties[`${nodeURI}.Renderable.Type`];
-  const renderableType = renderableTypeProp ? renderableTypeProp.value : undefined;
-
-  if (!renderableType) {
-    popoverVisible = false;
-  }
-
-  return {
-    nodeURI,
-    nodeName,
-    renderableType,
-    activeTab: popoverActiveTab,
-    showPopover: popoverVisible,
-    attached: popoverAttached,
-    renderableProps
-  };
+NodePropertiesPanel.propTypes = {
+  isFocusNodePanel: PropTypes.bool,
+  uri: PropTypes.string.isRequired
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-  const setPopoverVisibilityAction = (visible, uri) => {
-    dispatch(setPopoverVisibility({
-      popover: uri,
-      visible
-    }));
-  };
-
-  const removeNodePropertyPopoverAction = () => {
-    dispatch(removeNodePropertyPopover({
-      identifier: ownProps.uri
-    }));
-  };
-
-  const setPopoverActiveTabAction = (index) => {
-    dispatch(setPopoverActiveTab({
-      identifier: ownProps.uri,
-      activeTab: index,
-      isFocusNodePanel: ownProps.isFocusNodePanel
-    }));
-  };
-
-  return {
-    setPopoverVisibilityAction,
-    removeNodePropertyPopoverAction,
-    setPopoverActiveTabAction
-  };
+NodePropertiesPanel.defaultProps = {
+  isFocusNodePanel: false
 };
-
-NodePropertiesPanel = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(NodePropertiesPanel);
 
 export default NodePropertiesPanel;
