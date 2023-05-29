@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import {
   refreshSessionRecording,
@@ -16,7 +16,6 @@ import {
   SessionStatePlaying,
   SessionStateRecording
 } from '../../api/keys';
-import subStateToProps from '../../utils/subStateToProps';
 import InfoBox from '../common/InfoBox/InfoBox';
 import Button from '../common/Input/Button/Button';
 import Checkbox from '../common/Input/Checkbox/Checkbox';
@@ -30,11 +29,7 @@ import Picker from './Picker';
 
 import styles from './SessionRec.scss';
 
-function SessionRec({
-  recordingState, engineMode, fileList, refreshPlaybackFilesList,
-  subscribe, unsubscribe, stopRecording, stopPlayback, startRecordingAscii, startRecordingBinary,
-  togglePlaybackPaused, startPlaybackLua
-}) {
+function SessionRec() {
   const [useTextFormat, setUseTextFormat] = React.useState(false);
   const [forceTime, setForceTime] = React.useState(true);
   const [filenameRecording, setFilenameRecording] = React.useState('');
@@ -43,6 +38,25 @@ function SessionRec({
   const [outputFramerate, setOutputFramerate] = React.useState(60);
   const [loopPlayback, setLoopPlayback] = React.useState(false);
   const [showPopover, setShowPopover] = React.useState(false);
+
+  const luaApi = useSelector((state) => state.luaApi);
+
+  const fileList = useSelector((state) => state.sessionRecording.files || []);
+  const recordingState = useSelector((state) => (
+    state.sessionRecording.recordingState || SessionStateIdle
+  ));
+  const engineMode = useSelector((state) => state.engineMode.mode || EngineModeUserControl);
+
+  const dispatch = useDispatch();
+
+  function subscribe() {
+    dispatch(subscribeToSessionRecording());
+    dispatch(subscribeToEngineMode());
+  }
+
+  function unsubscribe() {
+    dispatch(unsubscribeToSessionRecording());
+  }
 
   React.useEffect(() => {
     subscribe();
@@ -85,9 +99,10 @@ function SessionRec({
 
   function startRecording() {
     if (useTextFormat) {
-      startRecordingAscii(filenameRecording);
+      luaApi.sessionRecording.startRecordingAscii(filenameRecording);
     } else {
-      startRecordingBinary(filenameRecording);
+      // Binary
+      luaApi.sessionRecording.startRecording(filenameRecording);
     }
   }
 
@@ -95,18 +110,23 @@ function SessionRec({
     if (isIdle()) {
       startRecording();
     } else {
-      stopRecording();
+      luaApi.sessionRecording.stopRecording();
     }
   }
 
   function startPlayback() {
-    startPlaybackLua(
-      filenamePlayback,
-      forceTime,
-      shouldOutputFrames,
-      outputFramerate,
-      loopPlayback
-    );
+    if (shouldOutputFrames) {
+      luaApi.sessionRecording.enableTakeScreenShotDuringPlayback(parseInt(outputFramerate, 10));
+    }
+    if (forceTime) {
+      luaApi.sessionRecording.startPlayback(filenamePlayback, loopPlayback);
+    } else {
+      luaApi.sessionRecording.startPlaybackRecordedTime(filenamePlayback, loopPlayback);
+    }
+  }
+
+  function stopPlayback() {
+    luaApi.sessionRecording.stopPlayback();
   }
 
   function togglePlayback() {
@@ -115,6 +135,15 @@ function SessionRec({
     } else {
       stopPlayback();
     }
+  }
+
+  function togglePlaybackPaused() {
+    luaApi.sessionRecording.togglePlaybackPause();
+  }
+
+  function refreshPlaybackFilesList() {
+    dispatch(refreshSessionRecording());
+    dispatch(unsubscribeToEngineMode());
   }
 
   function togglePopover() {
@@ -338,65 +367,4 @@ function SessionRec({
   );
 }
 
-const mapSubStateToProps = ({ engineMode, sessionRecording, luaApi }) => {
-  const fileList = sessionRecording.files || [];
-  const recordingState = sessionRecording.recordingState || SessionStateIdle;
-  const mode = engineMode.mode || EngineModeUserControl;
-
-  return {
-    engineMode: mode,
-    fileList,
-    recordingState,
-    startRecordingAscii: (filename) => {
-      luaApi.sessionRecording.startRecordingAscii(filename);
-    },
-    startRecordingBinary: (filename) => {
-      luaApi.sessionRecording.startRecording(filename);
-    },
-    stopRecording: () => {
-      luaApi.sessionRecording.stopRecording();
-    },
-    startPlaybackLua: (filename, forceTime, shouldOutputFrames, outputFramerate, loopPlayback) => {
-      if (shouldOutputFrames) {
-        luaApi.sessionRecording.enableTakeScreenShotDuringPlayback(parseInt(outputFramerate, 10));
-      }
-      if (forceTime) {
-        luaApi.sessionRecording.startPlayback(filename, loopPlayback);
-      } else {
-        luaApi.sessionRecording.startPlaybackRecordedTime(filename, loopPlayback);
-      }
-    },
-    stopPlayback: () => {
-      luaApi.sessionRecording.stopPlayback();
-    },
-    togglePlaybackPaused: () => {
-      luaApi.sessionRecording.togglePlaybackPause();
-    }
-  };
-};
-
-const mapStateToSubState = (state) => ({
-  engineMode: state.engineMode,
-  sessionRecording: state.sessionRecording,
-  originPickerPopover: state.local.popovers.sessionRecording,
-  luaApi: state.luaApi
-});
-
-const mapDispatchToProps = (dispatch) => ({
-  subscribe: () => {
-    dispatch(subscribeToSessionRecording());
-    dispatch(subscribeToEngineMode());
-  },
-  unsubscribe: () => {
-    dispatch(unsubscribeToSessionRecording());
-  },
-  refreshPlaybackFilesList: () => {
-    dispatch(refreshSessionRecording());
-    dispatch(unsubscribeToEngineMode());
-  }
-});
-
-export default connect(
-  subStateToProps(mapSubStateToProps, mapStateToSubState),
-  mapDispatchToProps,
-)(SessionRec);
+export default SessionRec;
