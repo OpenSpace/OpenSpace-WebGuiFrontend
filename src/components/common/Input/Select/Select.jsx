@@ -89,7 +89,7 @@ Select.propTypes = {
     })
   ).isRequired,
   searchable: PropTypes.bool,
-  value: PropTypes.string
+  value: PropTypes.node
 };
 
 Select.defaultProps = {
