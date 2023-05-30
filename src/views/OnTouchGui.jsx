@@ -223,7 +223,7 @@ function OnTouchGui() {
         {story.title}
       </p>
       {(currentStory === DefaultStory) ?
-        <Slider startSlider={sliderStartStory} changeStory={setStory} /> :
+        <Slider startSlide={sliderStartStory} changeStory={setStory} /> :
         <TouchBar resetStory={resetStory} />}
     </div>
   );
