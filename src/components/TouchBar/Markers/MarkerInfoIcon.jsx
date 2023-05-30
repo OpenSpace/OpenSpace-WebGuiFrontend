@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import Icon from '../../common/MaterialIcon/MaterialIcon';
@@ -6,49 +6,35 @@ import Popover from '../../common/Popover/Popover';
 
 import styles from './MarkerInfo.scss';
 
-class MarkerInfoIcon extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      showInfoWindow: false
-    };
+function MarkerInfoIcon({ positionStyles, identifier, infoText }) {
+  const [showInfoWindow, setShowInfoWindow] = React.useState(false);
+
+  function toggleInfoWindow() {
+    setShowInfoWindow(!showInfoWindow);
   }
 
-  componentWillUnmount() {
-    this.setState({ showInfoWindow: false });
-  }
-
-  toggleInfoWindow() {
-    this.setState({
-      showInfoWindow: !this.state.showInfoWindow
-    });
-  }
-
-  render() {
-    const { positionStyles, identifier, infoText } = this.props;
-    return (
-      <div>
-        <Icon
-          onClick={() => this.toggleInfoWindow()}
-          className={styles.Icon}
-          icon="info_outline"
-          style={positionStyles.Icon}
-        />
-        {this.state.showInfoWindow && (
-          <Popover
-            className={styles.InfoPopover}
-            arrow=""
-            title={identifier}
-            closeCallback={() => this.toggleInfoWindow()}
-          >
-            <p className={styles.InfoText}>
-              {infoText || 'No data available'}
-            </p>
-          </Popover>
-        )}
-      </div>
-    );
-  }
+  return (
+    <div>
+      <Icon
+        onClick={() => toggleInfoWindow()}
+        className={styles.Icon}
+        icon="info_outline"
+        style={positionStyles.Icon}
+      />
+      {showInfoWindow && (
+        <Popover
+          className={styles.InfoPopover}
+          arrow=""
+          title={identifier}
+          closeCallback={() => toggleInfoWindow()}
+        >
+          <p className={styles.InfoText}>
+            {infoText || 'No data available'}
+          </p>
+        </Popover>
+      )}
+    </div>
+  );
 }
 
 MarkerInfoIcon.propTypes = {

@@ -7,11 +7,9 @@ import MarkerInfoIcon from './MarkerInfoIcon';
 
 import styles from './MarkerInfo.scss';
 
-function MarkerInfo(props) {
-  const {
-    position, size, showInfoIcon, identifier, showLabel, offset, infoText
-  } = props;
-
+function MarkerInfo({
+  position, size, showInfoIcon, identifier, showLabel, offset, infoText
+}) {
   const positionStyles = {
     MarkerInfo: {
       left: `${Number(position[0])}px`,
@@ -55,8 +53,6 @@ MarkerInfo.propTypes = {
 
 MarkerInfo.defaultProps = {
   position: ''
-  // showInfoIcon: false, // required, so should not have default value
-  // infoText: 'No info available', // required, so should not have default value
 };
 
 export default MarkerInfo;
