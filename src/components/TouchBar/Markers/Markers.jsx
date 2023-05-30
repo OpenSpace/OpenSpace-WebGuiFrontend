@@ -5,21 +5,88 @@ import { setPropertyValue, subscribeToProperty, unsubscribeToProperty } from '..
 
 import MarkerInfo from './MarkerInfo';
 
+// Check if the point [x,y] is outside the circle with the center [centerX,centerY] and radius r
+function outsideCircle(centerX, centerY, r, x, y) {
+  const squareDist = ((x - centerX) ** 2) + ((y - centerY) ** 2);
+  return (squareDist > r ** 2);
+}
+
+// Determines whether this marker is visible by checking possible
+// occlusion by all nodes that are currently visible on the screen
+function updateVisibility(markerNodes) {
+  for (let index = 0; index < markerNodes.length; index++) {
+    const node = markerNodes[index];
+
+    if (!node.visibility) {
+      continue;
+    }
+    const nodeCenterX = node.screenSpacePos[0];
+    const nodeCenterY = node.screenSpacePos[1];
+    const occlusionMarginFactor = 1.3;
+
+    for (let compareIndex = 0; compareIndex < markerNodes.length; compareIndex++) {
+      const compareNode = markerNodes[compareIndex];
+
+      if (!compareNode.visibility || compareNode.name === node.name) {
+        continue;
+      }
+
+      const compareNodeCenterX = compareNode.screenSpacePos[0];
+      const compareNodeCenterY = compareNode.screenSpacePos[1];
+
+      // check if this marker position is occluded by the comparing node
+      const thisMarkerOutsideCircle = outsideCircle(
+        compareNodeCenterX,
+        compareNodeCenterY,
+        compareNode.screenSpaceRadius * occlusionMarginFactor,
+        nodeCenterX,
+        nodeCenterY + node.screenSpaceRadius
+      );
+
+      const compareIsInfront = (node.distanceFromCamera > compareNode.distanceFromCamera);
+
+      if (!thisMarkerOutsideCircle && compareIsInfront) {
+        node.visibility = false;
+      }
+    }
+  }
+}
+
+// Determines size of the marker
+function determineSize(nodeRadius) {
+  // Factor controlling size of a marker in
+  // relation to screen space radius of a node
+  const radiusFactor = 0.1;
+
+  let size = nodeRadius * radiusFactor;
+  const MaxMarkerSize = 3;
+  const MinMarkerSize = 1.5;
+
+  if (size >= MaxMarkerSize) size = MaxMarkerSize;
+  if (size <= MinMarkerSize) size = MinMarkerSize;
+
+  return size;
+}
+
+// Returns info text for the node if it exists, otherwise warn
+function getInfoText(node, infoNodes) {
+  if (infoNodes) { // else get infotext for the icon
+    for (let i = 0; i < infoNodes.length; i++) {
+      if (node === infoNodes[i].name) {
+        return infoNodes[i].info;
+      }
+    }
+    console.warn(`No info text available for ${node}`);
+  }
+  console.warn('No info file available for this story');
+  return 'No info available';
+}
+
 class Markers extends Component {
-  constructor(props) {
-    super(props);
-  }
-
-  // Check if the point [x,y] is outside the circle with the center [centerX,centerY] and radius r
-  static outsideCircle(centerX, centerY, r, x, y) {
-    const squareDist = ((x - centerX) ** 2) + ((y - centerY) ** 2);
-    return (squareDist > r ** 2);
-  }
-
   componentDidMount() {
     if (!this.props.trackingNodes) return;
 
-    this.props.trackingNodes.map((node) => {
+    this.props.trackingNodes.forEach((node) => {
       this.props.changePropertyValue(`Scene.${node}.ComputeScreenSpaceData`, true);
       this.props.startListening(`Scene.${node}.ScreenSpacePosition`);
       this.props.startListening(`Scene.${node}.ScreenSizeRadius`);
@@ -28,10 +95,10 @@ class Markers extends Component {
     });
   }
 
-  componentWillUnMount() {
+  componentWillUnmount() {
     if (!this.props.trackingNodes) return;
 
-    this.props.trackingNodes.map((node) => {
+    this.props.trackingNodes.forEach((node) => {
       this.props.changePropertyValue(`Scene.${node}.ComputeScreenSpaceData`, false);
       this.props.stopListening(`Scene.${node}.ScreenSpacePosition`);
       this.props.stopListening(`Scene.${node}.ScreenSizeRadius`);
@@ -42,96 +109,23 @@ class Markers extends Component {
 
   createInfoMarkers() {
     const markers = [];
-
-    for (const [index, node] of this.props.markerNodes.entries()) {
-      if (!node.visibility) {
-        continue;
-      }
-
-      markers.push(
-        <MarkerInfo
-          key={node.name}
-          identifier={node.name}
-          position={node.screenSpacePos}
-          size={node.size}
-          showInfoIcon={node.showInfoIcon}
-          infoText={node.infoText}
-          showLabel={node.showLabel}
-          offset={node.screenSpaceRadius}
-        />
-      );
-    }
-    return markers;
-  }
-
-  // Determines size of the marker
-  static determineSize(nodeRadius) {
-    // Factor controlling size of a marker in
-    // relation to screen space radius of a node
-    const radiusFactor = 0.1;
-
-    let size = nodeRadius * radiusFactor;
-    const max_marker_size = 3;
-    const min_marker_size = 1.5;
-
-    if (size >= max_marker_size) size = max_marker_size;
-    if (size <= min_marker_size) size = min_marker_size;
-
-    return size;
-  }
-
-  // Returns info text for the node if it exists, otherwise warn
-  static getInfoText(node, infoNodes) {
-    if (infoNodes) { // else get infotext for the icon
-      for (let i = 0; i < infoNodes.length; i++) {
-        if (node === infoNodes[i].name) {
-          return infoNodes[i].info;
-        }
-      }
-      console.warn(`No info text available for ${node}`);
-    }
-    console.warn('No info file available for this story');
-  }
-
-  // Determines whether this marker is visible by checking possible
-  // occlusion by all nodes that are currently visible on the screen
-  static updateVisibility(markerNodes) {
-    for (let index = 0; index < markerNodes.length; index++) {
-      const node = markerNodes[index];
-
-      if (!node.visibility) {
-        continue;
-      }
-      const nodeCenterX = node.screenSpacePos[0];
-      const nodeCenterY = node.screenSpacePos[1];
-      const occlusionMarginFactor = 1.3;
-
-      for (let compareIndex = 0; compareIndex < markerNodes.length; compareIndex++) {
-        const compareNode = markerNodes[compareIndex];
-
-        if (!compareNode.visibility || compareNode.name === node.name) {
-          continue;
-        }
-
-        const compareNodeCenterX = compareNode.screenSpacePos[0];
-        const compareNodeCenterY = compareNode.screenSpacePos[1];
-
-        // check if this marker position is occluded by the comparing node
-        const thisMarkerOutsideCircle = Markers.outsideCircle(
-          compareNodeCenterX,
-          compareNodeCenterY,
-          compareNode.screenSpaceRadius * occlusionMarginFactor,
-          nodeCenterX,
-          nodeCenterY + node.screenSpaceRadius
+    Object.values(this.props.markerNodes).forEach((node) => {
+      if (node.visibility) {
+        markers.push(
+          <MarkerInfo
+            key={node.name}
+            identifier={node.name}
+            position={node.screenSpacePos}
+            size={node.size}
+            showInfoIcon={node.showInfoIcon}
+            infoText={node.infoText}
+            showLabel={node.showLabel}
+            offset={node.screenSpaceRadius}
+          />
         );
-
-        const compareIsInfront = (node.distanceFromCamera > compareNode.distanceFromCamera);
-
-        if (!thisMarkerOutsideCircle && compareIsInfront) {
-          node.visibility = false;
-        }
       }
-    }
+    });
+    return markers;
   }
 
   render() {
@@ -165,20 +159,20 @@ const mapStateToProps = (state) => {
   trackingNodes = [];
 
   if (labelNodes) {
-    labelNodes.map((node) => {
+    labelNodes.forEach((node) => {
       trackingNodes.push(node);
     });
   }
 
   if (infoIconNodes) {
-    infoIconNodes.map((node) => {
+    infoIconNodes.forEach((node) => {
       if (!trackingNodes.includes(node)) {
         trackingNodes.push(node);
       }
     });
   }
 
-  trackingNodes.map((node) => {
+  trackingNodes.forEach((node) => {
     let infoText;
     let showInfoIcon = false;
     let showLabel = false;
@@ -197,7 +191,7 @@ const mapStateToProps = (state) => {
       for (let i = 0; i < infoIconNodes.length; i++) {
         if (node === infoIconNodes[i]) {
           showInfoIcon = true;
-          infoText = Markers.getInfoText(node, infoNodes);
+          infoText = getInfoText(node, infoNodes);
         }
       }
     }
@@ -217,12 +211,12 @@ const mapStateToProps = (state) => {
     markerNodes.push(markerProperties);
   });
 
-  Markers.updateVisibility(markerNodes);
+  updateVisibility(markerNodes);
 
-  markerNodes.map((markerNode) => {
+  markerNodes.forEach((markerNode) => {
     // if the marker is not occluded, calculate its size
     if (markerNode.visibility) {
-      markerNode.size = Markers.determineSize(markerNode.screenSpaceRadius);
+      markerNode.size = determineSize(markerNode.screenSpaceRadius);
     }
   });
 
@@ -244,9 +238,7 @@ const mapDispatchToProps = (dispatch) => ({
   }
 });
 
-Markers = connect(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(Markers);
-
-export default Markers;
