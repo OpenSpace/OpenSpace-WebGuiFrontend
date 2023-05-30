@@ -1,11 +1,9 @@
 import React from 'react';
-import { connect, useDispatch, useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
 
 import {
   addStoryInfo, addStoryTree, fetchData, resetStoryInfo, setPropertyValue,
-  startConnection, subscribeToProperty, triggerAction,
-  unsubscribeToProperty
+  startConnection, triggerAction
 } from '../api/Actions';
 import {
   DefaultStory, InfoIconKey, NavigationAnchorKey, ScaleKey,
