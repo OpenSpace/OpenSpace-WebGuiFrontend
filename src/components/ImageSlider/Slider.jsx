@@ -70,7 +70,7 @@ class Slider extends Component {
     const prevIndex = this.state.index;
     const nImages = this.state.imagePaths.length;
     if (prevIndex !== 0) {
-      this.setState({ index: prevIndex- 1 });
+      this.setState({ index: prevIndex - 1 });
     } else {
       this.setState({ index: nImages - 1 });
     }
