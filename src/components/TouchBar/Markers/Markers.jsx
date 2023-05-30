@@ -145,7 +145,7 @@ const mapStateToProps = (state) => {
   // Keeps track of the nodes we need to subscribe screen space data from
   let trackingNodes;
   // Keeps track of the markers we want to render
-  const markerNodes = [];
+  const markerNodesToRender = [];
   const infoIconNodes = state.storyTree.story.showinfoicons;
   const labelNodes = state.storyTree.story.showlabels;
 
@@ -201,27 +201,30 @@ const mapStateToProps = (state) => {
       visibility: state.propertyTree.properties[`Scene.${node}.ScreenVisibility`].value,
       screenSpacePos: state.propertyTree.properties[`Scene.${node}.ScreenSpacePosition`].value,
       screenSpaceRadius: state.propertyTree.properties[`Scene.${node}.ScreenSizeRadius`].value,
-      distanceFromCamera: state.propertyTree.properties[`Scene.${node}.DistanceFromCamToNode`].value,
+      distanceFromCamera:
+        state.propertyTree.properties[`Scene.${node}.DistanceFromCamToNode`].value,
       size: 0,
       infoText: infoText || 'No available info',
       showInfoIcon,
       showLabel
     };
 
-    markerNodes.push(markerProperties);
+    markerNodesToRender.push(markerProperties);
   });
 
-  updateVisibility(markerNodes);
+  updateVisibility(markerNodesToRender);
 
-  markerNodes.forEach((markerNode) => {
+  const markerNodesWithSize = markerNodesToRender.map((node) => {
     // if the marker is not occluded, calculate its size
-    if (markerNode.visibility) {
-      markerNode.size = determineSize(markerNode.screenSpaceRadius);
+    const updatedNode = node;
+    if (node.visibility) {
+      updatedNode.size = determineSize(node.screenSpaceRadius);
     }
+    return updatedNode;
   });
 
   return {
-    markerNodes,
+    markerNodes: markerNodesWithSize,
     trackingNodes
   };
 };
