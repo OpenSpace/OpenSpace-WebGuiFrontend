@@ -53,7 +53,7 @@
     "no-continue": "off",
     "jsx-a11y/click-events-have-key-events": "warn" // This should be considered when rewriting for disabilities
   },
-  "ignorePatterns": ["*.story.jsx", "src/components/TouchBar/*", "src/components/ImageSlider/*", "src/components/BottomBar/TfEditor/*", "src/components/common/Graph/*"],
+  "ignorePatterns": ["*.story.jsx", "src/components/BottomBar/TfEditor/*", "src/components/common/Graph/*"],
   "overrides": [
     // override "simple-import-sort" config
     {
