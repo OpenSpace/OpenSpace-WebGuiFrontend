@@ -6,7 +6,7 @@ import SmallLabel from '../../../common/SmallLabel/SmallLabel';
 
 import styles from '../style/UtilitiesButtons.scss';
 
-function HelpButton(props) {
+function HelpButton() {
   const [showInstructions, setShowInstructions] = useState(false);
 
   useEffect(() => {
@@ -16,6 +16,7 @@ function HelpButton(props) {
       }, 9500); // match with animation-delay in UtilitiesButtons.scss
       return () => { clearTimeout(timeout); };
     }
+    return () => {};
   }, [showInstructions]);
 
   return (

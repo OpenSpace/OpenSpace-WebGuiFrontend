@@ -49,7 +49,6 @@ function FocusMenu() {
     }
   }, [anchor]);
 
-
   function applyFlyTo() {
     luaApi.pathnavigation.zoomToDistanceRelative(DISTANCE_FACTOR, SWITCH_FOCUS_DURATION);
     // TODO: use camera path instead
