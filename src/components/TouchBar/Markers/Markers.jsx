@@ -1,5 +1,6 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React from 'react';
+import { connect, useDispatch } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import { setPropertyValue, subscribeToProperty, unsubscribeToProperty } from '../../../api/Actions/index';
 
@@ -82,34 +83,35 @@ function getInfoText(node, infoNodes) {
   return 'No info available';
 }
 
-class Markers extends Component {
-  componentDidMount() {
-    if (!this.props.trackingNodes) return;
+function Markers({ trackingNodes, markerNodes }) {
+  const dispatch = useDispatch();
 
-    this.props.trackingNodes.forEach((node) => {
-      this.props.changePropertyValue(`Scene.${node}.ComputeScreenSpaceData`, true);
-      this.props.startListening(`Scene.${node}.ScreenSpacePosition`);
-      this.props.startListening(`Scene.${node}.ScreenSizeRadius`);
-      this.props.startListening(`Scene.${node}.ScreenVisibility`);
-      this.props.startListening(`Scene.${node}.DistanceFromCamToNode`);
-    });
+  function changePropertyValue(uri, value) {
+    dispatch(setPropertyValue(uri, value));
   }
 
-  componentWillUnmount() {
-    if (!this.props.trackingNodes) return;
-
-    this.props.trackingNodes.forEach((node) => {
-      this.props.changePropertyValue(`Scene.${node}.ComputeScreenSpaceData`, false);
-      this.props.stopListening(`Scene.${node}.ScreenSpacePosition`);
-      this.props.stopListening(`Scene.${node}.ScreenSizeRadius`);
-      this.props.stopListening(`Scene.${node}.ScreenVisibility`);
-      this.props.stopListening(`Scene.${node}.DistanceFromCamToNode`);
+  React.useEffect(() => {
+    trackingNodes.forEach((node) => {
+      changePropertyValue(`Scene.${node}.ComputeScreenSpaceData`, true);
+      dispatch(subscribeToProperty(`Scene.${node}.ScreenSpacePosition`));
+      dispatch(subscribeToProperty(`Scene.${node}.ScreenSizeRadius`));
+      dispatch(subscribeToProperty(`Scene.${node}.ScreenVisibility`));
+      dispatch(subscribeToProperty(`Scene.${node}.DistanceFromCamToNode`));
     });
-  }
+    return () => {
+      trackingNodes.forEach((node) => {
+        changePropertyValue(`Scene.${node}.ComputeScreenSpaceData`, false);
+        dispatch(unsubscribeToProperty(`Scene.${node}.ScreenSpacePosition`));
+        dispatch(unsubscribeToProperty(`Scene.${node}.ScreenSizeRadius`));
+        dispatch(unsubscribeToProperty(`Scene.${node}.ScreenVisibility`));
+        dispatch(unsubscribeToProperty(`Scene.${node}.DistanceFromCamToNode`));
+      });
+    };
+  }, []);
 
-  createInfoMarkers() {
+  function createInfoMarkers() {
     const markers = [];
-    Object.values(this.props.markerNodes).forEach((node) => {
+    Object.values(markerNodes).forEach((node) => {
       if (node.visibility) {
         markers.push(
           <MarkerInfo
@@ -128,22 +130,20 @@ class Markers extends Component {
     return markers;
   }
 
-  render() {
-    if (!this.props.trackingNodes) {
-      return null;
-    }
-
-    return (
-      <div className="Markers">
-        {this.createInfoMarkers()}
-      </div>
-    );
+  if (!trackingNodes) {
+    return null;
   }
+
+  return (
+    <div className="Markers">
+      {createInfoMarkers()}
+    </div>
+  );
 }
 
 const mapStateToProps = (state) => {
   // Keeps track of the nodes we need to subscribe screen space data from
-  let trackingNodes;
+  const trackingNodes = [];
   // Keeps track of the markers we want to render
   const markerNodesToRender = [];
   const infoIconNodes = state.storyTree.story.showinfoicons;
@@ -156,7 +156,6 @@ const mapStateToProps = (state) => {
 
   // the nodes containing info that may or may not be shown
   const infoNodes = state.storyTree.info.infonodes;
-  trackingNodes = [];
 
   if (labelNodes) {
     labelNodes.forEach((node) => {
@@ -229,19 +228,16 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  changePropertyValue: (uri, value) => {
-    dispatch(setPropertyValue(uri, value));
-  },
-  startListening: (uri) => {
-    dispatch(subscribeToProperty(uri));
-  },
-  stopListening: (uri) => {
-    dispatch(unsubscribeToProperty(uri));
-  }
-});
+Markers.propTypes = {
+  // Keeps track of the markers we want to render
+  markerNodes: PropTypes.arrayOf(PropTypes.object),
+  // Keeps track of the nodes we need to subscribe screen space data from
+  trackingNodes: PropTypes.arrayOf(PropTypes.string)
+};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Markers);
+Markers.defaultProps = {
+  markerNodes: [],
+  trackingNodes: []
+};
+
+export default connect(mapStateToProps)(Markers);
