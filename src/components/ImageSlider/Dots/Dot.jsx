@@ -12,7 +12,9 @@ function Dot({ storyId, active, dotClick }) {
       role="button"
       tabIndex={0}
       onClick={() => dotClick(storyId)}
-    />
+    >
+      {}
+    </div>
   );
 }
 
