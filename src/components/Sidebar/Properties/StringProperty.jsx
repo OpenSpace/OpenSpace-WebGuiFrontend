@@ -10,8 +10,9 @@ import styles from './Property.scss';
 function StringProperty({ description, dispatcher, value }) {
   const disabled = description.MetaData.isReadOnly;
 
-  function onChange() {
-    dispatcher.set(value);
+  function onChange(evt) {
+    const newValue = evt.target.value;
+    dispatcher.set(newValue);
   }
 
   return (
