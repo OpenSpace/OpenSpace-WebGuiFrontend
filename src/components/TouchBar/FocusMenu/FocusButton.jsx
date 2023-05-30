@@ -7,19 +7,10 @@ import SmallLabel from '../../common/SmallLabel/SmallLabel';
 
 import styles from './FocusButton.scss';
 
-class FocusButton extends Component {
-  constructor(props) {
-    super(props);
-    this.select = this.select.bind(this);
-  }
+function FocusButton({ active, identifier, onChangeFocus }) {
+  const isActive = identifier === active;
 
-  get isActive() {
-    const { active, identifier } = this.props;
-    return identifier === active;
-  }
-
-  get icon() {
-    const { identifier } = this.props;
+  function rednerIcon() {
     const icon = icons[identifier];
     if (icon) {
       return <img src={icon} className={styles.iconImage} alt={identifier} />;
@@ -27,25 +18,21 @@ class FocusButton extends Component {
     return <Icon icon="language" className={styles.Icon} />;
   }
 
-  select() {
-    const { identifier, onChangeFocus } = this.props;
+  function select() {
     onChangeFocus(identifier);
   }
 
-  render() {
-    const { identifier } = this.props;
-    return (
-      <div
-        className={`${styles.FocusButton} ${this.isActive && styles.active}`}
-        onClick={this.select}
-        role="button"
-        tabIndex="0"
-      >
-        { this.icon }
-        <SmallLabel>{identifier}</SmallLabel>
-      </div>
-    );
-  }
+  return (
+    <div
+      className={`${styles.FocusButton} ${isActive && styles.active}`}
+      onClick={select}
+      role="button"
+      tabIndex="0"
+    >
+      { rednerIcon() }
+      <SmallLabel>{identifier}</SmallLabel>
+    </div>
+  );
 }
 
 FocusButton.propTypes = {
