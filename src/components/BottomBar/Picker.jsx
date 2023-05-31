@@ -1,24 +1,34 @@
-import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import { useContextRefs } from '../GettingStartedTour/GettingStartedContext';
+
 import styles from './Picker.scss';
 
-const Picker = ({children, className, refKey, ...props}) => {
+function Picker({
+  children, className, refKey, ...props
+}) {
   const refs = refKey ? useContextRefs() : null;
   return (
-    <div ref={refKey ? el => refs.current[refKey] = el : null} {...props} className={`${styles.Picker} ${className}`}>
+    <div
+      ref={refKey ? (el) => { refs.current[refKey] = el; } : null}
+      {...props}
+      className={`${styles.Picker} ${className}`}
+    >
       { children }
     </div>
   );
-};
+}
 
 Picker.propTypes = {
   children: PropTypes.node.isRequired,
   className: PropTypes.string,
+  refKey: PropTypes.string
 };
 
 Picker.defaultProps = {
   className: '',
+  refKey: ''
 };
 
 Picker.Active = styles.Active;

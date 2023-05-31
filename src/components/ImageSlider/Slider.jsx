@@ -1,11 +1,14 @@
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
 import { storyImages } from '../../api/resources';
 import stories from '../../stories/stories.json';
+
 import LeftArrow from './Arrows/LeftArrow';
 import RightArrow from './Arrows/RightArrow';
 import Dots from './Dots/Dots';
 import Slide from './Slide';
+
 import styles from './Slider.scss';
 
 class Slider extends Component {
@@ -15,20 +18,18 @@ class Slider extends Component {
     const { startSlider } = this.props;
 
     let startIndex = stories.stories.findIndex(
-      function (element) {
-        return startSlider === element.identifier;
-      }
-    )
-    
+      (element) => startSlider === element.identifier
+    );
+
     // if startSlider was not in the listed stories, pick the first
-    if (startIndex < 0) { 
-      startIndex = 0
-    };
+    if (startIndex < 0) {
+      startIndex = 0;
+    }
 
     this.state = {
       index: startIndex,
       imagePaths: [],
-      stories: stories.stories,
+      stories: stories.stories
     };
 
     // Push images from stories object into images array
@@ -43,6 +44,12 @@ class Slider extends Component {
     this.onChangeStory = this.onChangeStory.bind(this);
   }
 
+  // Handle the click of a dot
+  handleDotClick(i) {
+    if (i === this.state.index) { return; }
+    this.setState({ index: i });
+  }
+
   onChangeStory(story) {
     this.props.changeStory(story);
   }
@@ -50,7 +57,7 @@ class Slider extends Component {
   // Set the state to the next slide
   nextSlide() {
     if (this.state.index !== this.state.imagePaths.length - 1) {
-      this.setState({ index: this.state.index + 1 });
+      this.setState(({ prevState }) => ({ index: prevState.index + 1, ...prevState }));
     } else {
       this.setState({ index: 0 });
     }
@@ -59,16 +66,10 @@ class Slider extends Component {
   // Set the state to the previous slide
   prevSlide() {
     if (this.state.index !== 0) {
-      this.setState({ index: this.state.index - 1 });
+      this.setState(({ prevState }) => ({ index: prevState.index - 1, ...prevState }));
     } else {
-      this.setState({ index: this.state.imagePaths.length - 1 });
+      this.setState(({ prevState }) => ({ index: prevState.imagePaths.length - 1, ...prevState }));
     }
-  }
-
-  // Handle the click of a dot
-  handleDotClick(i) {
-    if (i === this.state.index) { return; }
-    this.setState({ index: i });
   }
 
   render() {
@@ -101,7 +102,7 @@ class Slider extends Component {
 }
 
 Slider.propTypes = {
-  changeStory: PropTypes.func.isRequired,
+  changeStory: PropTypes.func.isRequired
 };
 
 export default Slider;

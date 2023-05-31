@@ -1,18 +1,19 @@
-import { actionTypes } from '../Actions/actionTypes';
+import actionTypes from '../Actions/actionTypes';
 
 const defaultState = {
   isInitialized: false,
   data: {}
-}
+};
 
-export const missions = (state = defaultState, action) => { 
+const missions = (state = defaultState, action = {}) => {
   switch (action.type) {
     case actionTypes.initializeMissions:
       return {
         isInitialized: true,
-        data: {...action.payload}
-      }
+        data: { ...action.payload }
+      };
     default:
       return state;
   }
 };
+export default missions;

@@ -1,11 +1,13 @@
-import PropTypes from 'prop-types';
 import React from 'react';
-import Button from '../../../common/Input/Button/Button';
+import PropTypes from 'prop-types';
+
 import stories from '../../../../stories/stories.json';
+import Button from '../../../common/Input/Button/Button';
+
 import styles from '../style/DeveloperMenu.scss';
 
-const DeveloperMenu = (props) => {
-  const buttons = stories.stories.map(story => (
+function DeveloperMenu(props) {
+  const buttons = stories.stories.map((story) => (
     <Button
       onClick={props.changeStory}
       id={story.identifier}
@@ -21,11 +23,11 @@ const DeveloperMenu = (props) => {
       {buttons}
     </div>
   );
-};
+}
 
 DeveloperMenu.propTypes = {
   changeStory: PropTypes.func.isRequired,
-  storyIdentifier: PropTypes.string.isRequired,
+  storyIdentifier: PropTypes.string.isRequired
 };
 
 export default DeveloperMenu;

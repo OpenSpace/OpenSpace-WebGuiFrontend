@@ -1,8 +1,10 @@
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import AutosizeInput from 'react-input-autosize';
+import PropTypes from 'prop-types';
+
 import { excludeKeys } from '../../../../utils/helpers';
 import Input from '../Input/Input';
+
 import styles from './InlineInput.scss';
 
 class InlineInput extends Component {
@@ -11,27 +13,12 @@ class InlineInput extends Component {
     this.state = {
       value: props.value,
       focus: false
-    }
+    };
 
     this.onFocus = this.onFocus.bind(this);
     this.onBlur = this.onBlur.bind(this);
     this.onKeyUp = this.onKeyUp.bind(this);
     this.onChange = this.onChange.bind(this);
-  }
-
-  render() {
-    const { props, state, onKeyUp } = this;
-    return <AutosizeInput
-      {...excludeKeys(props, "noExtraWidth onEnter")}
-      id={props.id || `inlineinput-${Input.nextId}`}
-      value={state.value}
-      onChange={this.onChange}
-      onKeyUp={onKeyUp}
-      onBlur={this.onBlur}
-      onFocus={this.onFocus}
-      className={`${styles.input} ${props.className}`}
-      extraWidth={props.noExtraWidth ? 0 : undefined}
-    />
   }
 
   componentDidUpdate() {
@@ -67,12 +54,28 @@ class InlineInput extends Component {
   }
 
   onChange(event) {
-    const { props, state } = this;
     const { value } = event.currentTarget;
     this.setState({
       value
     });
     this.props.onChange(event);
+  }
+
+  render() {
+    const { props, state, onKeyUp } = this;
+    return (
+      <AutosizeInput
+        {...excludeKeys(props, 'noExtraWidth onEnter')}
+        id={props.id || `inlineinput-${Input.nextId}`}
+        value={state.value}
+        onChange={this.onChange}
+        onKeyUp={onKeyUp}
+        onBlur={this.onBlur}
+        onFocus={this.onFocus}
+        className={`${styles.input} ${props.className}`}
+        extraWidth={props.noExtraWidth ? 0 : undefined}
+      />
+    );
   }
 }
 

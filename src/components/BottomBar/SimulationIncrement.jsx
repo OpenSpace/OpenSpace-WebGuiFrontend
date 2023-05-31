@@ -1,6 +1,7 @@
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { throttle } from 'lodash/function';
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+
 import { subscribeToTime, unsubscribeToTime } from '../../api/Actions';
 import { round10 } from '../../utils/rounding';
 import Button from '../common/Input/Button/Button';
@@ -10,6 +11,7 @@ import Select from '../common/Input/Select/Select';
 import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import Row from '../common/Row/Row';
 import { useContextRefs } from '../GettingStartedTour/GettingStartedContext';
+
 import styles from './SimulationIncrement.scss';
 
 const updateDelayMs = 1000;
@@ -34,7 +36,7 @@ const Steps = {
   hours: 'Hours',
   days: 'Days',
   months: 'Months',
-  years: 'Years',
+  years: 'Years'
 };
 const StepSizes = {
   [Steps.seconds]: 1,
@@ -42,7 +44,7 @@ const StepSizes = {
   [Steps.hours]: 3600,
   [Steps.days]: 86400,
   [Steps.months]: 2678400,
-  [Steps.years]: 31536000,
+  [Steps.years]: 31536000
 };
 const StepPrecisions = {
   [Steps.seconds]: 0,
@@ -50,7 +52,7 @@ const StepPrecisions = {
   [Steps.hours]: -4,
   [Steps.days]: -5,
   [Steps.months]: -7,
-  [Steps.years]: -10,
+  [Steps.years]: -10
 };
 const Limits = {
   [Steps.seconds]: { min: 0, max: 300, step: 1 },
@@ -58,26 +60,44 @@ const Limits = {
   [Steps.hours]: { min: 0, max: 300, step: 0.0001 },
   [Steps.days]: { min: 0, max: 10, step: 0.000001 },
   [Steps.months]: { min: 0, max: 10, step: 0.00000001 },
-  [Steps.years]: { min: 0, max: 1, step: 0.0000000001 },
+  [Steps.years]: { min: 0, max: 1, step: 0.0000000001 }
 };
 Object.freeze(Steps);
 Object.freeze(StepSizes);
 Object.freeze(StepPrecisions);
 Object.freeze(Limits);
 
-function SimulationIncrement({hasNextDeltaTimeStep, hasPrevDeltaTimeStep, nextDeltaTimeStep, 
-  prevDeltaTimeStep, startSubscriptions, targetDeltaTime, isPaused, stopSubscriptions, luaApi}) {
+function SimulationIncrement() {
   const [stepSize, setStepSize] = React.useState(Steps.seconds);
   const [beforeAdjust, setBeforeAdjust] = React.useState(0);
   const refs = useContextRefs();
-  
+
+  // const deltaTime = useSelector((state) => state.time.deltaTime);
+  const targetDeltaTime = useSelector((state) => state.time.targetDeltaTime);
+  const isPaused = useSelector((state) => state.time.isPaused);
+  const hasNextDeltaTimeStep = useSelector((state) => state.time.hasNextDeltaTimeStep);
+  const hasPrevDeltaTimeStep = useSelector((state) => state.time.hasPrevDeltaTimeStep);
+  const nextDeltaTimeStep = useSelector((state) => state.time.nextDeltaTimeStep);
+  const prevDeltaTimeStep = useSelector((state) => state.time.prevDeltaTimeStep);
+  const luaApi = useSelector((state) => state.luaApi);
+
+  const dispatch = useDispatch();
+
+  function startSubscriptions() {
+    dispatch(subscribeToTime());
+  }
+
+  function stopSubscriptions() {
+    dispatch(unsubscribeToTime());
+  }
+
   React.useEffect(() => {
     startSubscriptions();
     return stopSubscriptions();
   }, []);
 
   function togglePause(e) {
-    const shift = e.getModifierState("Shift");
+    const shift = e.getModifierState('Shift');
     if (shift) {
       luaApi.time.togglePause();
     } else {
@@ -87,7 +107,7 @@ function SimulationIncrement({hasNextDeltaTimeStep, hasPrevDeltaTimeStep, nextDe
 
   function setDeltaTime(value) {
     const deltaTime = parseFloat(value) * StepSizes[stepSize];
-    if (isNaN(deltaTime)) {
+    if (Number.isNaN(deltaTime)) {
       return;
     }
     if (luaApi) {
@@ -115,18 +135,18 @@ function SimulationIncrement({hasNextDeltaTimeStep, hasPrevDeltaTimeStep, nextDe
       updateDeltaTimeNow(luaApi, quickAdjust);
     } else {
       updateDeltaTime.cancel();
-      if(beforeAdjust) {
+      if (beforeAdjust) {
         updateDeltaTimeNow(luaApi, beforeAdjust);
       }
       setBeforeAdjust(null);
     }
   }
 
-  function setNextDeltaTimeStep(event) {
+  function setNextDeltaTimeStep() {
     luaApi.time.interpolateNextDeltaTimeStep();
   }
 
-  function setPrevDeltaTimeStep(event) {
+  function setPrevDeltaTimeStep() {
     luaApi.time.interpolatePreviousDeltaTimeStep();
   }
 
@@ -139,46 +159,48 @@ function SimulationIncrement({hasNextDeltaTimeStep, hasPrevDeltaTimeStep, nextDe
     const nextLabel = hasNextDeltaTimeStep ? `${adjustedNextDelta} ${stepSize} / second` : 'None';
     const prevLabel = hasPrevDeltaTimeStep ? `${adjustedPrevDelta} ${stepSize} / second` : 'None';
 
-    return <Row> 
-        <div style={{flex: 3}}>
-          <Button 
-            block 
+    return (
+      <Row>
+        <div style={{ flex: 3 }}>
+          <Button
+            block
             disabled={!hasPrevDeltaTimeStep}
             onClick={setPrevDeltaTimeStep}
-            ref={el => refs.current["SpeedBackward"] = el}
+            ref={(el) => { refs.current.SpeedBackward = el; }}
           >
             <MaterialIcon icon="fast_rewind" />
           </Button>
-          <label className={styles.deltaTimeStepLabel}>
+          <p className={styles.deltaTimeStepLabel}>
             {prevLabel}
-          </label>
+          </p>
         </div>
-        <div style={{flex: 2}} ref={el => refs.current["Pause"] = el}>
+        <div style={{ flex: 2 }} ref={(el) => { refs.current.Pause = el; }}>
           <Button block onClick={togglePause}>
-              {isPaused ? <MaterialIcon icon="play_arrow" /> : <MaterialIcon icon="pause" />}
+            {isPaused ? <MaterialIcon icon="play_arrow" /> : <MaterialIcon icon="pause" />}
           </Button>
         </div>
-        <div style={{flex: 3}}>
-          <Button 
-            block 
+        <div style={{ flex: 3 }}>
+          <Button
+            block
             disabled={!hasNextDeltaTimeStep}
             onClick={setNextDeltaTimeStep}
-            ref={el => refs.current["SpeedForward"] = el}
+            ref={(el) => { refs.current.SpeedForward = el; }}
           >
             <MaterialIcon icon="fast_forward" />
           </Button>
-          <label className={styles.deltaTimeStepLabel}>
+          <p className={styles.deltaTimeStepLabel}>
             {nextLabel}
-          </label>
+          </p>
         </div>
-    </Row>
+      </Row>
+    );
   }
 
   const adjustedDelta =
     round10(targetDeltaTime / StepSizes[stepSize], StepPrecisions[stepSize]);
 
   const options = Object.values(Steps)
-    .map(step => ({ value: step, label: step, isSelected: step === stepSize }));
+    .map((step) => ({ value: step, label: step, isSelected: step === stepSize }));
 
   return (
     <div>
@@ -186,7 +208,9 @@ function SimulationIncrement({hasNextDeltaTimeStep, hasPrevDeltaTimeStep, nextDe
         <Select
           label="Display unit"
           menuPlacement="top"
-          onChange={({value}) => Object.values(Steps).includes(value) ? setStepSize(value) : null}
+          onChange={({ value }) => (
+            Object.values(Steps).includes(value) ? setStepSize(value) : null
+          )}
           options={options}
           value={stepSize}
         />
@@ -227,29 +251,4 @@ function SimulationIncrement({hasNextDeltaTimeStep, hasPrevDeltaTimeStep, nextDe
   );
 }
 
-const mapStateToProps = (state) => {
-  return {
-    deltaTime: state.time.deltaTime,
-    targetDeltaTime: state.time.targetDeltaTime,
-    isPaused: state.time.isPaused,
-    hasNextDeltaTimeStep: state.time.hasNextDeltaTimeStep,
-    hasPrevDeltaTimeStep: state.time.hasPrevDeltaTimeStep,
-    nextDeltaTimeStep: state.time.nextDeltaTimeStep,
-    prevDeltaTimeStep: state.time.prevDeltaTimeStep,
-    luaApi: state.luaApi
-  }
-}
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    startSubscriptions: () => {
-      dispatch(subscribeToTime());
-    },
-    stopSubscriptions: () => {
-      dispatch(unsubscribeToTime());
-    }
-  }
-}
-
-SimulationIncrement = connect(mapStateToProps, mapDispatchToProps)(SimulationIncrement);
 export default SimulationIncrement;

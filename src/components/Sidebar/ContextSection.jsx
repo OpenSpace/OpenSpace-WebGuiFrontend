@@ -1,68 +1,65 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React from 'react';
+import { useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
+
 import { NavigationAimKey, NavigationAnchorKey, ScenePrefixKey } from '../../api/keys';
+
 import PropertyOwner from './Properties/PropertyOwner';
 
-class ContextSection extends Component {
-  render() {
-    const focusOrAnchor = this.props.aim ? "Anchor" : "Focus";
-    return <>
-      {this.props.anchor &&
-        <PropertyOwner expansionIdentifier={this.props.expansionIdentifier + '/anchor'}
-                       name={"Current " + focusOrAnchor + ": " + this.props.anchorName}
-                       uri={this.props.anchor}
-                       autoExpand={false} />
-      }
-      {this.props.aim &&
-        <PropertyOwner expansionIdentifier={this.props.expansionIdentifier + '/aim'}
-                       name={"Current Aim: " + this.props.aimName}
-                       uri={this.props.aim}
-                       autoExpand={false} />
-      }
+function ContextSection({ expansionIdentifier }) {
+  const aim = useSelector((state) => {
+    const aimProp = state.propertyTree.properties[NavigationAimKey];
+    return aimProp && aimProp.value !== '' && ScenePrefixKey + aimProp.value;
+  });
+
+  const aimName = useSelector((state) => {
+    if (aim) {
+      const aimNode = state.propertyTree.propertyOwners[aim];
+      return aimNode ? aimNode.name : aim;
+    }
+
+    return '';
+  });
+
+  const anchor = useSelector((state) => {
+    const anchorProp = state.propertyTree.properties[NavigationAnchorKey];
+    return anchorProp && anchorProp.value !== '' && ScenePrefixKey + anchorProp.value;
+  });
+
+  const anchorName = useSelector((state) => {
+    if (anchor) {
+      const anchorNode = state.propertyTree.propertyOwners[anchor];
+      return anchorNode ? anchorNode.name : anchor;
+    }
+
+    return '';
+  });
+
+  const focusOrAnchor = aim ? 'Anchor' : 'Focus';
+  return (
+    <>
+      {anchor && (
+        <PropertyOwner
+          expansionIdentifier={`${expansionIdentifier}/anchor`}
+          name={`Current ${focusOrAnchor}: ${anchorName}`}
+          uri={anchor}
+          autoExpand={false}
+        />
+      )}
+      {aim && (
+        <PropertyOwner
+          expansionIdentifier={`${expansionIdentifier}/aim`}
+          name={`Current Aim: ${aimName}`}
+          uri={aim}
+          autoExpand={false}
+        />
+      )}
     </>
-  }
+  );
 }
 
 ContextSection.propTypes = {
+  expansionIdentifier: PropTypes.string.isRequired
 };
-
-ContextSection.defaultProps = {
-};
-
-const mapStateToProps = state => {
-  const anchorProp = state.propertyTree.properties[NavigationAnchorKey];
-  const aimProp = state.propertyTree.properties[NavigationAimKey];
-
-  const anchor = anchorProp &&
-                 anchorProp.value !== '' &&
-                 (ScenePrefixKey + anchorProp.value);
-
-  const aim = aimProp &&
-              aimProp.value !== '' &&
-              (ScenePrefixKey + aimProp.value);
-
-  let anchorName = "";
-  if (anchor) {
-    const anchorNode = state.propertyTree.propertyOwners[anchor];
-    anchorName = anchorNode ? anchorNode.name : anchor;
-  }
-
-  let aimName = "";
-  if (aim) {
-    const aimNode = state.propertyTree.propertyOwners[aim];
-    aimName = aimNode ? aimNode.name : aim;
-  }
-
-  return {
-    anchor,
-    anchorName,
-    aim,
-    aimName
-  };
-}
-
-ContextSection = connect(
-  mapStateToProps,
-)(ContextSection);
 
 export default ContextSection;

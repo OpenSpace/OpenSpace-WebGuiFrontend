@@ -1,6 +1,7 @@
 import React from 'react';
-import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd';
 import { shallowEqual, useSelector } from 'react-redux';
+import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd';
+
 import SkyBrowserTabEntry from './SkyBrowserTabEntry';
 
 function SkyBrowserSelectedImagesList({
@@ -31,12 +32,17 @@ function SkyBrowserSelectedImagesList({
     }
     return Object.values(browser.selectedImages);
   }, shallowEqual);
-  const imagesIndicesLengthRedux = useSelector((state) => state.skybrowser.browsers[selectedBrowserId].selectedImages.length);
+  const imagesIndicesLengthRedux = useSelector(
+    (state) => state.skybrowser.browsers[selectedBrowserId].selectedImages.length
+  );
   const imageList = useSelector((state) => state.skybrowser.imageList);
-  const imageOpacitiesRedux = useSelector((state) => state.skybrowser.browsers[selectedBrowserId].opacities, shallowEqual);
+  const imageOpacitiesRedux = useSelector(
+    (state) => state.skybrowser.browsers[selectedBrowserId].opacities,
+    shallowEqual
+  );
 
   if (!imageList || imageList.length === 0) {
-    return <></>;
+    return null;
   }
 
   // Create a cache so that the right images are displayed in the right order,
@@ -47,10 +53,14 @@ function SkyBrowserSelectedImagesList({
   }, [selectedBrowserId, imagesIndicesLengthRedux]);
 
   // Set image indices and opacities to the order they should currently have
-  // Check if they are currently loading or not
-  const imageIndicesCurrent = shouldUseCache.current ? imageIndicesCache.current : imageIndicesRedux;
-  const imageOpacitiesCurrent = shouldUseCache.current ? imageOpacitiesCache.current : imageOpacitiesRedux;
-  const imagesCurrent = imageIndicesCurrent.map(index => imageList[index.toString()]);
+  let imageIndicesCurrent = imageIndicesRedux;
+  let imageOpacitiesCurrent = imageOpacitiesRedux;
+  // Check if they are currently loading or not - if they are, use cache
+  if (shouldUseCache.current) {
+    imageIndicesCurrent = imageIndicesCache.current;
+    imageOpacitiesCurrent = imageOpacitiesCache.current;
+  }
+  const imagesCurrent = imageIndicesCurrent.map((index) => imageList[index.toString()]);
 
   // Stop using the cache when the Redux store is up to date
   if (imageIndicesRedux.toString() === imageIndicesCache.current.toString()) {
@@ -61,7 +71,7 @@ function SkyBrowserSelectedImagesList({
     luaApi.skybrowser.setImageLayerOrder(browserId, imageList[identifier].url, order);
     const reverseOrder = imageIndicesCurrent.length - order - 1;
     passMessageToWwt({
-      event: "image_layer_order",
+      event: 'image_layer_order',
       id: String(identifier),
       order: Number(reverseOrder),
       version: messageCounter
@@ -75,9 +85,9 @@ function SkyBrowserSelectedImagesList({
     return layers;
   }
 
-  function onDragStart () {
+  function onDragStart() {
     setIsDragging(true);
-  };
+  }
 
   async function onDragEnd(result) {
     if (!result.destination || result.source.index === result.destination.index) {
@@ -86,57 +96,59 @@ function SkyBrowserSelectedImagesList({
     }
     // First update the order manually, so we keep it while the properties
     // are being refreshed below
-    imageIndicesCache.current = getCurrentOrder(imageIndicesCurrent, result.source.index, result.destination.index);
-    imageOpacitiesCache.current = getCurrentOrder(imageOpacitiesCurrent, result.source.index, result.destination.index);
+    const sourceIndex = result.source.index;
+    const destIndex = result.destination.index;
+    imageIndicesCache.current = getCurrentOrder(imageIndicesCurrent, sourceIndex, destIndex);
+    imageOpacitiesCache.current = getCurrentOrder(imageOpacitiesCurrent, sourceIndex, destIndex);
 
     shouldUseCache.current = true;
     setIsDragging(false);
 
     // Move image logic
-    await setImageLayerOrder(selectedBrowserId, Number(result.draggableId), result.destination.index)
-  };
+    await setImageLayerOrder(selectedBrowserId, Number(result.draggableId), destIndex);
+  }
 
   // Invisible overlay that covers the entire body and prevents other hover effects
   // from being triggered while dragging
   const overlay = (
     <div style={{
-      position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100,
+      position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100
     }}
     />
   );
-    return (
-      <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
-        { isDragging && overlay }
-        <Droppable droppableId="layers">
-          { provided => (
-            <div {...provided.droppableProps} ref={provided.innerRef}>
-              { imagesCurrent.map((entry, index) => (
-                <Draggable key={entry.identifier} draggableId={entry.identifier} index={index}>
-                  {provided => (
-                    <div {...provided.draggableProps} ref={provided.innerRef}>
-                      <SkyBrowserTabEntry
-                        dragHandleTitleProps={provided.dragHandleProps}
-                        {...entry}
-                        luaApi={luaApi}
-                        key={entry.identifier}
-                        onSelect={selectImage}
-                        removeImageSelection={removeImageSelection}
-                        opacity={imageOpacitiesCurrent[index]}
-                        setOpacity={setOpacityOfImage}
-                        currentBrowserColor={currentBrowserColor}
-                        isActive={activeImage === entry.identifier}
-                        moveCircleToHoverImage={moveCircleToHoverImage}
-                      />
-                    </div>
-                  )}
-                </Draggable>
-              ))}
-              { provided.placeholder }
-            </div>
-          )}
-        </Droppable>
-      </DragDropContext>
-    );
+  return (
+    <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
+      { isDragging && overlay }
+      <Droppable droppableId="layers">
+        { (provided) => (
+          <div {...provided.droppableProps} ref={provided.innerRef}>
+            { imagesCurrent.map((entry, index) => (
+              <Draggable key={entry.identifier} draggableId={entry.identifier} index={index}>
+                {(providedDraggable) => (
+                  <div {...providedDraggable.draggableProps} ref={providedDraggable.innerRef}>
+                    <SkyBrowserTabEntry
+                      dragHandleTitleProps={providedDraggable.dragHandleProps}
+                      {...entry}
+                      luaApi={luaApi}
+                      key={entry.identifier}
+                      onSelect={selectImage}
+                      removeImageSelection={removeImageSelection}
+                      opacity={imageOpacitiesCurrent[index]}
+                      setOpacity={setOpacityOfImage}
+                      currentBrowserColor={currentBrowserColor}
+                      isActive={activeImage === entry.identifier}
+                      moveCircleToHoverImage={moveCircleToHoverImage}
+                    />
+                  </div>
+                )}
+              </Draggable>
+            ))}
+            { provided.placeholder }
+          </div>
+        )}
+      </Droppable>
+    </DragDropContext>
+  );
 }
 
 export default React.memo(SkyBrowserSelectedImagesList);

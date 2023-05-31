@@ -1,14 +1,16 @@
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
 import Icon from '../../common/MaterialIcon/MaterialIcon';
 import Popover from '../../common/Popover/Popover';
+
 import styles from './MarkerInfo.scss';
 
 class MarkerInfoIcon extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      showInfoWindow: false,
+      showInfoWindow: false
     };
   }
 
@@ -18,7 +20,7 @@ class MarkerInfoIcon extends Component {
 
   toggleInfoWindow() {
     this.setState({
-      showInfoWindow: !this.state.showInfoWindow,
+      showInfoWindow: !this.state.showInfoWindow
     });
   }
 
@@ -32,7 +34,7 @@ class MarkerInfoIcon extends Component {
           icon="info_outline"
           style={positionStyles.Icon}
         />
-        {this.state.showInfoWindow &&
+        {this.state.showInfoWindow && (
           <Popover
             className={styles.InfoPopover}
             arrow=""
@@ -40,18 +42,19 @@ class MarkerInfoIcon extends Component {
             closeCallback={() => this.toggleInfoWindow()}
           >
             <p className={styles.InfoText}>
-              {infoText ? infoText : 'No data available'}
+              {infoText || 'No data available'}
             </p>
           </Popover>
-        }
-      </div>);
+        )}
+      </div>
+    );
   }
 }
 
 MarkerInfoIcon.propTypes = {
   positionStyles: PropTypes.objectOf(PropTypes.shape({})).isRequired,
   identifier: PropTypes.string.isRequired,
-  infoText: PropTypes.string.isRequired,
+  infoText: PropTypes.string.isRequired
 };
 
 export default MarkerInfoIcon;

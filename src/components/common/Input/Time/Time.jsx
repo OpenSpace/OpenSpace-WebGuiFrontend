@@ -1,9 +1,11 @@
+import React from 'react';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+
 import { useContextRefs } from '../../../GettingStartedTour/GettingStartedContext';
 import MaterialIcon from '../../MaterialIcon/MaterialIcon';
 import Button from '../Button/Button';
 import InlineInput from '../InlineInput/InlineInput';
+
 import styles from './Time.scss';
 
 const Elements = {
@@ -21,25 +23,42 @@ Elements.FullDate = [Elements.FullYear, Elements.Month, Elements.Date];
 Elements.DateAndTime = Elements.FullDate.concat(null).concat(Elements.Time);
 Object.freeze(Elements);
 
-const Months = "January February March April May June July August September October November December".split(" ");
+const Months = 'January February March April May June July August September October November December'.split(' ');
 
-const Interpretors = {
-  Month: (input) => {
-    const index = Months.findIndex((month) => {
-      return month.toLowerCase().indexOf(input.toLowerCase()) === 0
-    });
-    if (index !== -1) {
-      return index;
-    }
-    return Number.parseFloat(index);
+function findIndexForMonth(input) {
+  // If input is number
+  if (!Number.isNaN(input)) {
+    // Assume that people use 1-indexed months
+    return Number.parseFloat(input - 1);
   }
+  const lowerInput = input.toLowerCase();
+
+  const index = Months.findIndex((mm) => {
+    const lowerMonth = mm.toLowerCase();
+    // Finds the first occurence of the input substring
+    // Should be 0 when found
+    return lowerMonth.indexOf(lowerInput) === 0;
+  });
+
+  if (index !== -1) {
+    return index;
+  }
+  return null;
 }
 
 function zeroPad(number) {
   return number < 10 ? `0${number}` : number;
 }
 
-function Time({elements, onChange, time}) {
+function Time({ elements, onChange, time }) {
+  function hasCallback() {
+    return onChange !== null;
+  }
+
+  function shouldInclude(what) {
+    return elements.includes(what);
+  }
+
   function onClick(what, change) {
     const getterFunc = `getUTC${what}`;
     const setterFunc = `setUTC${what}`;
@@ -47,13 +66,13 @@ function Time({elements, onChange, time}) {
     return (e) => {
       const newTime = new Date(time);
       newTime[setterFunc](newTime[getterFunc]() + change);
-      const shift = e.getModifierState("Shift");
+      const shift = e.getModifierState('Shift');
 
       if (hasCallback) {
         onChange({
           time: newTime,
           interpolate: !shift,
-          delta: (newTime - time)/1000,
+          delta: (newTime - time) / 1000,
           relative: true
         });
       }
@@ -62,13 +81,13 @@ function Time({elements, onChange, time}) {
 
   function onInput(what) {
     const setterFunc = `setUTC${what}`;
-    const interpretFunc = Interpretors[what] || Number.parseFloat;
+    const interpretFunc = what === 'Month' ? findIndexForMonth : Number.parseFloat;
 
     return (event) => {
       const newTime = new Date(time);
       const { value } = event.currentTarget;
       const param = interpretFunc(value);
-      if (isNaN(param)) {
+      if (Number.isNaN(param)) {
         return;
       }
       newTime[setterFunc](param);
@@ -77,69 +96,11 @@ function Time({elements, onChange, time}) {
         onChange({
           time: newTime,
           interpolate: false,
-          delta: (newTime - time)/1000,
+          delta: (newTime - time) / 1000,
           relative: false
         });
       }
     };
-  }
-
-  function fullYear() {
-    const month = shouldInclude(Elements.Month);
-    return wrap(`${zeroPad(time.getUTCFullYear())}`, 'FullYear', month && ':');
-  }
-
-  function month() {
-    const date = shouldInclude(Elements.Date);
-
-    let month = Months[time.getUTCMonth()];
-    if (!month) {
-      month = Months[0];
-    }
-    month = month.substring(0, 3);
-
-    return wrap(month, 'Month', date && ':');
-  }
-
-  function date() {
-    const hours = shouldInclude(Elements.Hours);
-    const d = time.getUTCDate();
-    const zpd = zeroPad(d);
-    return wrap(`${zpd}`, 'Date', hours && ':');
-  }
-
-  function hours() {
-    const minutes = shouldInclude(Elements.Minutes);
-    const h = time.getUTCHours();
-    const zph = zeroPad(h);
-    return wrap(`${zph}`, 'Hours', minutes && ':');
-  }
-
-  function minutes() {
-    const seconds = shouldInclude(Elements.Seconds);
-    const m = time.getUTCMinutes();
-    const zpm = zeroPad(m);
-    return wrap(`${zpm}`, 'Minutes', seconds && ':');
-  }
-
-  function seconds() {
-    const milliseconds = shouldInclude(Elements.Milliseconds);
-    const s = time.getUTCSeconds();
-    const zps = zeroPad(s);
-    return wrap(`${zps}`, 'Seconds', milliseconds && '.');
-  }
-
-  function milliseconds() {
-    const ms = time.getUTCMilliseconds();
-    return wrap(ms, 'Milliseconds');
-  }
-
-  function hasCallback() {
-    return onChange !== null;
-  }
-
-  function shouldInclude(what) {
-    return elements.includes(what);
   }
 
   /**
@@ -153,14 +114,14 @@ function Time({elements, onChange, time}) {
     // make it editable with input and such?
     if (hasCallback) {
       const width = (what === 'Milliseconds' || what === 'Month') ? 3 : 2;
-      const type = (what === 'Month') ? "text" : "number";
+      const type = (what === 'Month') ? 'text' : 'number';
       const ref = useContextRefs();
       return (
         <div key={what} className={styles.element}>
           <Button nopadding transparent onClick={onClick(what, 1)}>
             <MaterialIcon icon="expand_less" />
           </Button>
-          <span key={`span${what}`} ref={ el => ref.current[what] = el}>
+          <span key={`span${what}`} ref={(el) => { ref.current[what] = el; }}>
             <InlineInput
               value={inner}
               size={width}
@@ -179,31 +140,82 @@ function Time({elements, onChange, time}) {
 
     return (
       <div className={styles.element}>
-        { inner }{after}
+        { inner }
+        {after}
       </div>
     );
   }
 
-  const functionMapping = { 
+  function fullYear() {
+    const mm = shouldInclude(Elements.Month);
+    return wrap(`${zeroPad(time.getUTCFullYear())}`, 'FullYear', mm && ':');
+  }
+
+  function month() {
+    const dd = shouldInclude(Elements.Date);
+
+    let mm = Months[time.getUTCMonth()];
+    if (!mm) {
+      mm = Months[0];
+    }
+    mm = mm.substring(0, 3);
+
+    return wrap(mm, 'Month', dd && ':');
+  }
+
+  function date() {
+    const hh = shouldInclude(Elements.Hours);
+    const dd = time.getUTCDate();
+    const zpd = zeroPad(dd);
+    return wrap(`${zpd}`, 'Date', hh && ':');
+  }
+
+  function hours() {
+    const mm = shouldInclude(Elements.Minutes);
+    const hh = time.getUTCHours();
+    const zph = zeroPad(hh);
+    return wrap(`${zph}`, 'Hours', mm && ':');
+  }
+
+  function minutes() {
+    const ss = shouldInclude(Elements.Seconds);
+    const mm = time.getUTCMinutes();
+    const zpm = zeroPad(mm);
+    return wrap(`${zpm}`, 'Minutes', ss && ':');
+  }
+
+  function seconds() {
+    const ms = shouldInclude(Elements.Milliseconds);
+    const ss = time.getUTCSeconds();
+    const zps = zeroPad(ss);
+    return wrap(`${zps}`, 'Seconds', ms && '.');
+  }
+
+  function milliseconds() {
+    const ms = time.getUTCMilliseconds();
+    return wrap(ms, 'Milliseconds');
+  }
+
+  const functionMapping = {
     fullYear,
-    month, 
+    month,
     date,
-    hours, 
+    hours,
     seconds,
-    minutes, 
-    milliseconds 
+    minutes,
+    milliseconds
   };
   return (
     <div className={styles.clock}>
-    {
-      elements.map((getterName) => {
-        const value = functionMapping?.[getterName]?.();
-        if (!value) {
-          return <div key={getterName} className={styles.padding}></div>
-        }
-        return value;
-      })
-    }
+      {
+        elements.map((getterName) => {
+          const value = functionMapping?.[getterName]?.();
+          if (!value) {
+            return <div key={getterName} className={styles.padding} />;
+          }
+          return value;
+        })
+      }
     </div>
   );
 }
@@ -216,12 +228,12 @@ Time.propTypes = {
    */
   elements: PropTypes.arrayOf(PropTypes.string),
   onChange: PropTypes.func,
-  time: PropTypes.instanceOf(Date).isRequired,
+  time: PropTypes.instanceOf(Date).isRequired
 };
 
 Time.defaultProps = {
   elements: Elements.DateAndTime,
-  onChange: null,
+  onChange: null
 };
 
 export default Time;

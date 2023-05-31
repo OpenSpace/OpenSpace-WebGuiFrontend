@@ -1,12 +1,13 @@
-
+/* eslint-disable no-console */
 // To log everything:
-import { actionTypes } from '../Actions/actionTypes';
-const actionFilter = { ... actionTypes };
+import actionTypes from '../Actions/actionTypes';
+
+const actionFilter = { ...actionTypes };
 
 // To log everything except time:
 // delete actionFilter.updateTime;
 
-const logger = store => next => (action) => {
+const logger = (store) => (next) => (action) => {
   const matchesFilter = (Object.values(actionFilter).indexOf(action.type) !== -1);
 
   if (matchesFilter) {

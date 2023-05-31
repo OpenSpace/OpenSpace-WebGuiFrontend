@@ -1,8 +1,10 @@
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
 import { icons } from '../../../api/resources';
 import Icon from '../../common/MaterialIcon/MaterialIcon';
 import SmallLabel from '../../common/SmallLabel/SmallLabel';
+
 import styles from './FocusButton.scss';
 
 class FocusButton extends Component {
@@ -33,10 +35,10 @@ class FocusButton extends Component {
   render() {
     const { identifier } = this.props;
     return (
-      <div 
-        className={`${styles.FocusButton} ${this.isActive && styles.active}`} 
-        onClick={this.select} 
-        role="button" 
+      <div
+        className={`${styles.FocusButton} ${this.isActive && styles.active}`}
+        onClick={this.select}
+        role="button"
         tabIndex="0"
       >
         { this.icon }
@@ -49,7 +51,7 @@ class FocusButton extends Component {
 FocusButton.propTypes = {
   active: PropTypes.string.isRequired,
   identifier: PropTypes.string.isRequired,
-  onChangeFocus: PropTypes.func.isRequired,
+  onChangeFocus: PropTypes.func.isRequired
 };
 
 export default FocusButton;

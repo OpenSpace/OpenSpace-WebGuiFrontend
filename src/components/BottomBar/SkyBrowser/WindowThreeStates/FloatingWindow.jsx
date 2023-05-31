@@ -1,64 +1,69 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React from 'react';
 import Draggable from 'react-draggable';
+import PropTypes from 'prop-types';
 import { Resizable } from 're-resizable';
+
 import styles from './WindowThreeStates.scss';
 
-class FloatingWindow extends Component {
-  constructor(props) {
-    super(props);
-  }
+function FloatingWindow({
+  children, defaultSize, handleDragStop, minHeight, position, size, sizeCallback
+}) {
+  const windowDiv = React.useRef(null);
 
-  render() {
-    const {
-      children, defaultSize, position, sizeCallback, size, handleStop
-    } = this.props;
-
-    return (
-      <Draggable defaultPosition={position} handle=".header" onStop={handleStop}>
-        <section
-          className={`${styles.floatingWindow}`}
-          ref={(divElement) => {
-            this.windowDiv = divElement;
+  return (
+    <Draggable defaultPosition={position} handle=".header" onStop={handleDragStop}>
+      <section
+        className={`${styles.floatingWindow}`}
+        ref={windowDiv}
+      >
+        <Resizable
+          enable={{ right: true, bottom: true, bottomRight: true }}
+          defaultSize={{ width: defaultSize.width, height: defaultSize.height }}
+          size={size || undefined}
+          minWidth={280}
+          minHeight={minHeight}
+          handleClasses={{ right: styles.rightHandle, bottom: styles.bottomHandle }}
+          onResizeStop={() => {
+            if (sizeCallback) {
+              const { clientHeight, clientWidth } = windowDiv.current;
+              sizeCallback(clientWidth, clientHeight);
+            }
           }}
         >
-          <Resizable
-            enable={{ right: true, bottom: true, bottomRight: true }}
-            defaultSize={{ width: defaultSize.width, height: defaultSize.height }}
-            size={size ? size : undefined}
-            minWidth={280}
-            minHeight={this.props.minHeight}
-            handleClasses={{ right: styles.rightHandle, bottom: styles.bottomHandle }}
-            onResizeStop={() => {
-              if (sizeCallback) {
-                sizeCallback(this.windowDiv.clientWidth, this.windowDiv.clientHeight)
-              }
-            }}
-          >
-            {children}
-          </Resizable>
-        </section>
-      </Draggable>
-    );
-  }
+          {children}
+        </Resizable>
+      </section>
+    </Draggable>
+  );
 }
 
 FloatingWindow.propTypes = {
   children: PropTypes.node,
-  position: PropTypes.shape({
-    x: PropTypes.number,
-    y: PropTypes.number,
-  }),
   defaultSize: PropTypes.shape({
     height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    width: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
   }),
+  handleDragStop: PropTypes.func,
+  minHeight: PropTypes.number,
+  position: PropTypes.shape({
+    x: PropTypes.number,
+    y: PropTypes.number
+  }),
+  size: PropTypes.shape({
+    height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    width: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+  }),
+  sizeCallback: PropTypes.func
 };
 
 FloatingWindow.defaultProps = {
   children: [],
-  position: { x: 10, y: -600 },
   defaultSize: { height: 'auto', width: 'auto' },
+  handleDragStop: () => {},
+  minHeight: undefined,
+  size: undefined,
+  position: { x: 10, y: -600 },
+  sizeCallback: undefined
 };
 
 export default FloatingWindow;

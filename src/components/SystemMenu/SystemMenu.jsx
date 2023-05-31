@@ -1,151 +1,167 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { setShowAbout, setPopoverVisibility } from '../../api/Actions';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
+
+import { setPopoverVisibility, setShowAbout } from '../../api/Actions';
 import api from '../../api/api';
 import environment from '../../api/Environment';
-import subStateToProps from '../../utils/subStateToProps';
 import Button from '../common/Input/Button/Button';
 import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import Popover from '../common/Popover/Popover';
 import { useContextRefs } from '../GettingStartedTour/GettingStartedContext';
+
 import styles from './SystemMenu.scss';
 
-function SystemMenu({
-  console,
-  keybindsIsVisible,
-  nativeGui,
-  openTutorials,
-  openFeedback,
-  saveChange,
-  showAbout,
-  showTutorial,
-  setShowKeybinds,
-  quit
-}) {
+function SystemMenu({ showTutorial }) {
   const [showMenu, setShowMenu] = React.useState(false);
   const refs = useContextRefs();
+
+  const luaApi = useSelector((state) => state.luaApi);
+  const keybindsIsVisible = useSelector((state) => state.local.popovers.keybinds.visible);
+
+  const dispatch = useDispatch();
+
+  const openlinkScript = (url) => {
+    let startString = 'open';
+    if (navigator.platform === 'Win32') {
+      startString = 'start';
+    }
+    const script = `os.execute('${startString} ${url}')`;
+    return script;
+  };
+
+  function onClick(func, value) {
+    setShowMenu(!showMenu);
+    func(value);
+  }
+
+  function quit() {
+    if (!luaApi) { return; }
+    luaApi.toggleShutdown();
+  }
+
+  async function console() {
+    if (!luaApi) { return; }
+    const data = await luaApi.getPropertyValue('LuaConsole.IsVisible');
+    const visible = data[1] || false;
+    luaApi.setPropertyValue('LuaConsole.IsVisible', !visible);
+  }
+
+  async function nativeGui() {
+    if (!luaApi) { return; }
+    const data = await luaApi.getPropertyValue('Modules.ImGUI.Enabled');
+    const visible = data[1] || false;
+    luaApi.setPropertyValue('Modules.ImGUI.Enabled', !visible);
+  }
+
+  function openTutorials() {
+    const script = openlinkScript('http://wiki.openspaceproject.com/docs/tutorials/users/');
+    api.executeLuaScript(script);
+  }
+
+  function openFeedback() {
+    const script = openlinkScript('http://data.openspaceproject.com/feedback');
+    api.executeLuaScript(script);
+  }
+
+  function showAbout() {
+    dispatch(setShowAbout(true));
+  }
+
+  function setShowKeybinds(visible) {
+    dispatch(setPopoverVisibility({
+      popover: 'keybinds',
+      visible
+    }));
+  }
+
+  // function saveChange() {
+  //   if (!luaApi) { return; }
+  //   luaApi.saveSettingsToProfile();
+  // }
+
   return (
     <div className={styles.SystemMenu}>
       { showMenu && (
-        <Popover className={styles.popover} arrow="arrow bottom leftside" attached={true}>
-          <nav className={styles.links} onClick={() => setShowMenu(!showMenu)}>
-
-            <button onClick={showAbout}>
+        <Popover className={styles.popover} arrow="arrow bottom leftside" attached>
+          <nav className={styles.links}>
+            <button type="button" onClick={() => { onClick(showAbout); }}>
               About OpenSpace
             </button>
-            <button onClick={openTutorials}>
+            <button type="button" onClick={() => { onClick(openTutorials); }}>
               Open Web Tutorials
             </button>
-            <button style={{position : 'relative'}} onClick={() => showTutorial(true)} ref={el => refs.current["Tutorial"] = el}>
-              Open Getting Started Tour
-            </button>
-            <button onClick={openFeedback}>
+            {showTutorial && (
+              <button
+                type="button"
+                style={{ position: 'relative' }}
+                onClick={() => { onClick(showTutorial, true); }}
+                ref={(el) => { refs.current.Tutorial = el; }}
+              >
+                Open Getting Started Tour
+              </button>
+            )}
+            <button type="button" onClick={() => onClick(openFeedback)}>
               Send Feedback
             </button>
             <hr className={Popover.styles.delimiter} />
-            <button onClick={() => setShowKeybinds(!keybindsIsVisible)}>
+            <button type="button" onClick={() => { onClick(setShowKeybinds, !keybindsIsVisible); }}>
               <MaterialIcon className={styles.linkIcon} icon="keyboard" />
-              {keybindsIsVisible ? "Hide" : "Show"} keybindings
+              {keybindsIsVisible ? 'Hide' : 'Show'}
+              {' '}
+              keybindings
             </button>
             {
-              environment.developmentMode &&
+              environment.developmentMode && (
                 <div>
                   <hr className={Popover.styles.delimiter} />
                   <div className={styles.devModeNotifier}>GUI running in dev mode</div>
                 </div>
+              )
             }
             <hr className={Popover.styles.delimiter} />
 
-            <button onClick={console}>
-              Toggle console <span className={styles.shortcut}>~</span>
+            <button type="button" onClick={() => onClick(console)}>
+              Toggle console
+              {' '}
+              <span className={styles.shortcut}>~</span>
             </button>
-            <button onClick={nativeGui}>
-              Toggle native GUI <span className={styles.shortcut}>F1</span>
+            <button type="button" onClick={() => { onClick(nativeGui); }}>
+              Toggle native GUI
+              {' '}
+              <span className={styles.shortcut}>F1</span>
             </button>
-
-{/*              <button onClick={saveChange}>
+            {/*              <button onClick={saveChange}>
               Save settings to profile
-            </button>*/}
-
-
+            </button> */}
             <hr className={Popover.styles.delimiter} />
-
-            <button onClick={quit}>
+            <button type="button" onClick={() => { onClick(quit); }}>
               <MaterialIcon icon="exit_to_app" className={styles.linkIcon} />
-              Quit OpenSpace <span className={styles.shortcut}>ESC</span>
+              Quit OpenSpace
+              {' '}
+              <span className={styles.shortcut}>ESC</span>
             </button>
           </nav>
         </Popover>
       )}
-
-      <Button ref={el => refs.current["System"] = el} className={styles.button} transparent onClick={() => setShowMenu(!showMenu)}>
+      <Button
+        ref={(el) => { refs.current.System = el; }}
+        className={styles.button}
+        transparent
+        onClick={() => setShowMenu(!showMenu)}
+      >
         <MaterialIcon icon="more_vert" className={styles.icon} />
       </Button>
     </div>
   );
 }
 
-const mapStateToSubState = (state) => ({
-  luaApi: state.luaApi,
-  keybindsIsVisible: state.local.popovers.keybinds.visible,
-});
-
-const mapSubStateToProps = ({ luaApi, keybindsIsVisible }) => {
-  if (!luaApi) {
-    return {};
-  }
-
-  var openlinkScript = (url) => {
-    var startString = "open";
-    if (navigator.platform == 'Win32') {
-      startString = 'start'
-    }
-    var script = "os.execute('" + startString + " " + url + "')";
-    return script;
-  };
-
-  return {
-    quit: () => luaApi.toggleShutdown(),
-    console: async () => {
-      const data = await luaApi.getPropertyValue("LuaConsole.IsVisible");
-      const visible = data[1] || false;
-      luaApi.setPropertyValue("LuaConsole.IsVisible", !visible);
-    },
-    nativeGui: async () => {
-      const data = await luaApi.getPropertyValue("Modules.ImGUI.Enabled");
-      const visible = data[1] || false;
-      luaApi.setPropertyValue("Modules.ImGUI.Enabled", !visible);
-    },
-    openTutorials: () => {
-      var script = openlinkScript('http://wiki.openspaceproject.com/docs/tutorials/users/');
-      api.executeLuaScript(script);
-    },
-    openFeedback: () => {
-      var script = openlinkScript('http://data.openspaceproject.com/feedback');
-      api.executeLuaScript(script);
-    },
-    saveChange: async () => {
-      luaApi.saveSettingsToProfile();
-    },
-    keybindsIsVisible
-  };
+SystemMenu.propTypes = {
+  showTutorial: PropTypes.func
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    showAbout: () => dispatch(setShowAbout(true)),
-    setShowKeybinds: (visible) => {
-      dispatch(setPopoverVisibility({
-        popover: 'keybinds',
-        visible
-      }));
-    },
-  }
-}
-
-SystemMenu = connect(
-  subStateToProps(mapSubStateToProps, mapStateToSubState),
-  mapDispatchToProps,
-)(SystemMenu);
+SystemMenu.defaultProps = {
+  showTutorial: undefined
+};
 
 export default SystemMenu;

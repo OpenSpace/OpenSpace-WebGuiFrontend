@@ -1,64 +1,45 @@
 import React from 'react';
-import { connect, useSelector } from 'react-redux';
+import { connect, useDispatch, useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
+
 import { setActionsPath, setPopoverVisibility, triggerAction } from '../../api/Actions';
+import { ObjectWordBeginningSubstring } from '../../utils/StringMatchers';
 import subStateToProps from '../../utils/subStateToProps';
-import InfoBox from '../common/InfoBox/InfoBox';
+import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
+import { FilterList, FilterListData, FilterListFavorites } from '../common/FilterList/FilterList';
 import Button from '../common/Input/Button/Button';
 import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import Popover from '../common/Popover/Popover';
 import Row from '../common/Row/Row';
-import styles from './ActionsPanel.scss';
+
+import ActionsButton from './Actions/ActionsButton';
 import Picker from './Picker';
-import { FilterList, FilterListData, FilterListFavorites } from '../common/FilterList/FilterList';
-import { ObjectWordBeginningSubstring } from '../../utils/StringMatchers';
-import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
 
-export function ActionsButton({ action }) {
-  const luaApi = useSelector(state => state.luaApi);
+import buttonStyles from './Actions/ActionsButton.scss';
+import styles from './ActionsPanel.scss';
 
-  function sendAction(e) {
-    const actionId = e.currentTarget.getAttribute('actionid');
-    luaApi.action.triggerAction(actionId);
-  }
-  
-  const isLocal = (action.synchronization === false);
-
-  return (
-    <Button
-      block
-      smalltext
-      onClick={sendAction}
-      className={styles.actionButton}
-      actionid={action.identifier}
-    >
-      <p className={styles.iconRow}>
-        <MaterialIcon className={styles.buttonIcon} icon="launch" />
-        {isLocal && <span className={styles.localText}> (Local)</span>}
-      </p>
-      {action.name} {' '}
-      {action.documentation && <InfoBox text={action.documentation} />}
-    </Button>
-  );
-}
-
-
-function ActionsPanel ({
+function ActionsPanel({
   actionLevel,
   actionPath,
   allActions,
   displayedNavigationPath,
   navigationPath,
-  popoverVisible,
-  setPopoverVisibility,
-  singlewindow,
+  singlewindow
 }) {
+  const popoverVisible = useSelector((state) => state.local.popovers.actions.visible);
+
+  const dispatch = useDispatch();
+
   function togglePopover() {
-    setPopoverVisibility(!popoverVisible);
+    dispatch(setPopoverVisibility({
+      popover: 'actions',
+      visible: !popoverVisible
+    }));
   }
 
   function addNavPath(e) {
     let navString = navigationPath;
-    if (navigationPath == '/') {
+    if (navigationPath === '/') {
       navString += e.currentTarget.getAttribute('foldername');
     } else {
       navString += `/${e.currentTarget.getAttribute('foldername')}`;
@@ -66,10 +47,10 @@ function ActionsPanel ({
     actionPath(navString);
   }
 
-  function goBack(e) {
+  function goBack() {
     let navString = navigationPath;
     navString = navString.substring(0, navString.lastIndexOf('/'));
-    if (navString.length == 0) {
+    if (navString.length === 0) {
       navString = '/';
     }
     actionPath(navString);
@@ -83,24 +64,43 @@ function ActionsPanel ({
         onClick={addNavPath}
         key={key}
         foldername={key}
-        className={`${styles.actionButton} ${styles.folderButton}`}
+        className={`${buttonStyles.actionButton} ${styles.button} ${styles.folderButton}`}
       >
-        <p><MaterialIcon className={styles.buttonIcon} icon="folder" /></p>
+        <p><MaterialIcon className={buttonStyles.buttonIcon} icon="folder" /></p>
         {key}
       </Button>
     );
   }
 
-  function getChildrenContent(level) {
+  function getFoldersContent(level) {
     return Object.keys(level.children).sort().map((key) => folderButton(key));
   }
 
   function getActionContent(level) {
-    return level.actions.map((action) => <ActionsButton action={action} key={`${action.identifier}Action`} />);
+    if (level.actions.length === 0) {
+      return null;
+    }
+    return level.actions.map(
+      (action) => (
+        <ActionsButton
+          className={`${styles.button}`}
+          action={action}
+          key={`${action.identifier}Action`}
+        />
+      )
+    );
   }
 
   function getAllActions() {
-    return allActions.map((action) => <ActionsButton action={action} key={`${action.identifier}Filtered`} />);
+    return allActions.map(
+      (action) => (
+        <ActionsButton
+          className={`${styles.button}`}
+          action={action}
+          key={`${action.identifier}Filtered`}
+        />
+      )
+    );
   }
 
   function getBackButton() {
@@ -111,6 +111,7 @@ function ActionsPanel ({
         </Button>
       );
     }
+    return null;
   }
 
   function matcher(test, search) {
@@ -119,11 +120,11 @@ function ActionsPanel ({
 
   function actionsContent(filterListHeight) {
     if (actionLevel === undefined) {
-      return <CenteredLabel>{"Loading..."}</CenteredLabel>;
+      return <CenteredLabel>Loading...</CenteredLabel>;
     }
     const isEmpty = (actionLevel.length === 0);
-    const actionsContent = isEmpty ? <div>No Actions</div> : getActionContent(actionLevel);
-    const childrenContent = isEmpty ? <div>No Children</div> : getChildrenContent(actionLevel);
+    const actions = isEmpty ? <div>No Actions</div> : getActionContent(actionLevel);
+    const folders = isEmpty ? <div>No Children</div> : getFoldersContent(actionLevel);
     const backButton = getBackButton();
 
     return (
@@ -138,8 +139,8 @@ function ActionsPanel ({
         <hr className={Popover.styles.delimiter} />
         <FilterList matcher={matcher} height={filterListHeight}>
           <FilterListFavorites className={styles.Grid}>
-            {childrenContent}
-            {actionsContent}
+            {folders}
+            {actions}
           </FilterListFavorites>
           <FilterListData className={styles.Grid}>
             {getAllActions()}
@@ -194,13 +195,11 @@ function ActionsPanel ({
   );
 }
 
-const mapSubStateToProps = ({ popoverVisible, luaApi, actions }) => {
+const mapSubStateToProps = ({ actions }) => {
   const actionsMapped = { '/': { actions: [], children: {} } };
   if (!actions.isInitialized) {
     return {
       actions: actionsMapped,
-      popoverVisible,
-      luaApi,
       navigationPath: '/',
       displayedNavigationPath: '/'
     };
@@ -215,28 +214,28 @@ const mapSubStateToProps = ({ popoverVisible, luaApi, actions }) => {
     // If there is no backslash at beginning of GUI path, add that manually
     // (there should always be though)
     if (action.guiPath.length > 0 && action.guiPath[0] !== '/') {
-      action.guiPath = '/' + action.guiPath;
+      action.guiPath = `/${action.guiPath}`;
     }
 
     let splits = action.guiPath.split('/');
     // Remove all empty strings: which is what we get before initial slash and
     // if the path is just a slash
-    splits = splits.filter((s) => s !== "");
+    splits = splits.filter((s) => s !== '');
 
     let parent = actionsMapped['/'];
 
     // Add to top level actions (no gui path)
-    if (splits.length == 0) {
+    if (splits.length === 0) {
       parent.actions.push(action);
     }
 
     // Add actions of other levels
     while (splits.length > 0) {
-      var index = splits.shift();
-      if (parent.children[index] == undefined) {
+      const index = splits.shift();
+      if (parent.children[index] === undefined) {
         parent.children[index] = { actions: [], children: {} };
       }
-      if (splits.length == 0) {
+      if (splits.length === 0) {
         parent.children[index].actions.push(action);
       } else {
         parent = parent.children[index];
@@ -247,28 +246,26 @@ const mapSubStateToProps = ({ popoverVisible, luaApi, actions }) => {
   const navPath = actions.navigationPath;
   let actionsForPath = actionsMapped['/'];
   if (navPath.length > 1) {
-    var splits = navPath.split('/');
+    const splits = navPath.split('/');
     splits.shift();
     while (splits.length > 0) {
-      var index = splits.shift();
+      const index = splits.shift();
       actionsForPath = actionsForPath.children[index];
     }
   }
 
-  const allActions = actions.data.shortcuts.filter(action => {
+  const allActions = actions.data.shortcuts.filter((action) => {
     if (navPath.length === 1) {
       return true;
     }
-    else {
-      var navPathGui = navPath.split('/');
-      var actionPathGui = action.guiPath?.split('/');
-      for (let i = 0; i < navPathGui.length; i++) {
-        if (actionPathGui?.[i] !== navPathGui[i]) {
-          return false;
-        }
+    const navPathGui = navPath.split('/');
+    const actionPathGui = action.guiPath?.split('/');
+    for (let i = 0; i < navPathGui.length; i++) {
+      if (actionPathGui?.[i] !== navPathGui[i]) {
+        return false;
       }
-      return true;
     }
+    return true;
   });
 
   // Truncate navigation path if too long
@@ -281,7 +278,7 @@ const mapSubStateToProps = ({ popoverVisible, luaApi, actions }) => {
     if (originalPath[0] === '/') {
       originalPath = originalPath.substring(1);
     }
-    let pieces = originalPath.split('/');
+    const pieces = originalPath.split('/');
     if (pieces.length > 1) {
       // TODO: maybe keep more pieces of the path, if possible?
       truncatedPath = `/${pieces[0]}/.../${pieces[pieces.length - 1]}`;
@@ -292,34 +289,39 @@ const mapSubStateToProps = ({ popoverVisible, luaApi, actions }) => {
 
   return {
     actionLevel: actionsForPath,
-    popoverVisible,
-    luaApi,
     navigationPath: actions.navigationPath,
     displayedNavigationPath: truncatedPath,
-    allActions: allActions,
+    allActions
   };
 };
 
 const mapStateToSubState = (state) => ({
-  popoverVisible: state.local.popovers.actions.visible,
-  luaApi: state.luaApi,
-  actions: state.shortcuts,
+  actions: state.shortcuts
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  setPopoverVisibility: (visible) => {
-    dispatch(setPopoverVisibility({
-      popover: 'actions',
-      visible,
-    }));
-  },
   trigger: (action) => {
     dispatch(triggerAction(action));
   },
   actionPath: (action) => {
     dispatch(setActionsPath(action));
-  },
+  }
 });
+
+ActionsPanel.propTypes = {
+  actionLevel: PropTypes.object,
+  actionPath: PropTypes.func.isRequired,
+  allActions: PropTypes.arrayOf(PropTypes.object),
+  displayedNavigationPath: PropTypes.string.isRequired,
+  navigationPath: PropTypes.string.isRequired,
+  singlewindow: PropTypes.bool
+};
+
+ActionsPanel.defaultProps = {
+  actionLevel: undefined,
+  allActions: undefined,
+  singlewindow: false
+};
 
 ActionsPanel = connect(
   subStateToProps(mapSubStateToProps, mapStateToSubState),

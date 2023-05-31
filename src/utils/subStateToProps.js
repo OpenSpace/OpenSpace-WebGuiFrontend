@@ -18,8 +18,8 @@ export default (mapSubStateToProps, mapStateToSubstate) => () => {
   let prevProps = {};
   return (state, ownProps) => {
     const subState = mapStateToSubstate(state);
-    if (shallowEqual(subState, prevSubState)
-        && shallowEqual(ownProps, prevOwnProps)) {
+    if (shallowEqual(subState, prevSubState) &&
+        shallowEqual(ownProps, prevOwnProps)) {
       return prevProps;
     }
     prevSubState = subState;

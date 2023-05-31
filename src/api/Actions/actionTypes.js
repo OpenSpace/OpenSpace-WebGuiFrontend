@@ -1,6 +1,5 @@
 /* All the action types are collected here, to make it easier for debugging. */
-
-export const actionTypes = {
+const actionTypes = {
   // action types for property tree
   updatePropertyValue: 'PROPERTY_TREE_UPDATE_NODE',
   setPropertyValue: 'PROPERTY_TREE_SET',
@@ -34,7 +33,7 @@ export const actionTypes = {
   getVersion: 'VERSION_GET',
   initializeVersion: 'VERSION_INITIALIZE',
 
- // action types for missions
+  // action types for missions
   getMissions: 'MISSIONS_GET',
   initializeMissions: 'MISSIONS_INITIALIZE',
 
@@ -115,5 +114,7 @@ export const actionTypes = {
   addStoryTree: 'STORY_TREE_ADD',
   addStoryInfo: 'STORY_TREE_ADD_INFO',
   resetStoryInfo: 'STORY_TREE_RESET_INFO',
-  resetStoryTree: 'STORY_TREE_RESET',
+  resetStoryTree: 'STORY_TREE_RESET'
 };
+
+export default actionTypes;

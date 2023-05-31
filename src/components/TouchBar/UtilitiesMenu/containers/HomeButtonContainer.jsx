@@ -1,6 +1,7 @@
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+
 import { resetStoryTree } from '../../../../api/Actions';
 import HomeButton from '../presentational/HomeButton';
 
@@ -23,10 +24,10 @@ class HomeButtonContainer extends Component {
   }
 }
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   ResetStoryTree: (reset) => {
     dispatch(resetStoryTree(reset));
-  },
+  }
 });
 
 HomeButtonContainer = connect(
@@ -34,13 +35,12 @@ HomeButtonContainer = connect(
   mapDispatchToProps,
 )(HomeButtonContainer);
 
-
 HomeButtonContainer.propTypes = {
-  ResetStoryTree: PropTypes.func,
+  ResetStoryTree: PropTypes.func
 };
 
 HomeButtonContainer.defaultProps = {
-  ResetStoryTree: () => {},
+  ResetStoryTree: () => {}
 };
 
 export default HomeButtonContainer;

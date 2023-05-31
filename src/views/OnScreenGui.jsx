@@ -1,54 +1,57 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
+import PropTypes from 'prop-types';
+
 import { setShowAbout, startConnection } from '../api/Actions';
+import environment from '../api/Environment';
 import {
-  formatVersion, isCompatible, RequiredOpenSpaceVersion, RequiredSocketApiVersion,
+  formatVersion, isCompatible, RequiredOpenSpaceVersion, RequiredSocketApiVersion
 } from '../api/Version';
 import BottomBar from '../components/BottomBar/BottomBar';
 import KeybindingPanel from '../components/BottomBar/KeybindingPanel';
-import environment from '../api/Environment'
-import Error from '../components/common/Error/Error';
 import Button from '../components/common/Input/Button/Button';
 import Overlay from '../components/common/Overlay/Overlay';
 import Stack from '../components/common/Stack/Stack';
+import { RefsProvider } from '../components/GettingStartedTour/GettingStartedContext';
+import TourPopup from '../components/GettingStartedTour/TourPopup';
 import LuaConsole from '../components/LuaConsole/LuaConsole';
 import NodeMetaContainer from '../components/NodeMetaPanel/NodeMetaContainer';
 import NodePopOverContainer from '../components/NodePropertiesPanel/NodePopOverContainer';
 import Sidebar from '../components/Sidebar/Sidebar';
-import '../styles/base.scss';
+
 import About from './About/About';
+import ErrorMessage from './ErrorMessage';
+
+import '../styles/base.scss';
 import styles from './OnScreenGui.scss';
-import TourPopup from '../components/GettingStartedTour/TourPopup'
-import { RefsProvider } from '../components/GettingStartedTour/GettingStartedContext';
 
 function OnScreenGui({
-  showFlightController, showAbout, isInBrowser
+  isInBrowser
 }) {
   let hasCheckedVersion = false;
-  const location = useLocation();
   const [showTutorial, setShowTutorial] = React.useState(false);
   const [luaConsoleVisible, setLuaConsoleVisible] = React.useState(false);
 
-  const connectionLost = useSelector((state) => state.connection.connectionLost);
   const version = useSelector((state) => state.version);
+  const showAbout = useSelector((state) => state.local.showAbout);
 
   const dispatch = useDispatch();
 
   React.useEffect(() => {
     dispatch(startConnection());
-    window.addEventListener("keydown", toggleConsole);
+
+    function toggleConsole(e) {
+      if (e.code === 'Backquote') {
+        setLuaConsoleVisible((current) => !current);
+      }
+    }
+
+    window.addEventListener('keydown', toggleConsole);
     return () => window.removeEventListener('keydown', toggleConsole);
   }, []);
 
   function hideAbout() {
     dispatch(setShowAbout(false));
-  }
- 
-  function toggleConsole(e) {
-    if (e.code === "Backquote") {
-      setLuaConsoleVisible(current => !current);
-    }
   }
 
   // Check the version
@@ -73,17 +76,13 @@ function OnScreenGui({
     hasCheckedVersion = true;
   }
 
-  function reloadGui() {
-    location.reload();
-  }
-
   return (
     <div className={styles.app} style={environment.developmentMode ? { borderStyle: 'solid', borderWidth: '3px', borderColor: 'orange' } : null}>
-      {environment.developmentMode &&
+      {environment.developmentMode && (
         <div className={styles.devModeTextBox}>
           <p>Dev Gui</p>
         </div>
-      }
+      )}
       <RefsProvider>
         { showAbout && (
 
@@ -96,31 +95,29 @@ function OnScreenGui({
             </Stack>
           </Overlay>
         )}
-        { connectionLost && (
-          <Overlay>
-            <Error>
-              <h2>Houston, we've had a...</h2>
-              <p>...disconnection between the user interface and OpenSpace.</p>
-              <p>Trying to reconnect automatically, but you may want to...</p>
-              <Button className={Error.styles.errorButton} onClick={reloadGui}>Reload the user interface</Button>
-            </Error>
-          </Overlay>
-        )}
+        <ErrorMessage />
         <section className={styles.Grid__Left}>
-          <Sidebar showTutorial={ setShowTutorial } />
+          <Sidebar showTutorial={setShowTutorial} />
         </section>
         <section className={styles.Grid__Right}>
           {isInBrowser && luaConsoleVisible && <LuaConsole />}
           <NodePopOverContainer />
           <NodeMetaContainer />
-          <BottomBar showFlightController={showFlightController} />
+          <BottomBar />
           <KeybindingPanel />
-          <TourPopup isVisible={showTutorial} setVisibility = { (show) => setShowTutorial(show)}/>
+          <TourPopup isVisible={showTutorial} setVisibility={(show) => setShowTutorial(show)} />
         </section>
       </RefsProvider>
     </div>
-  );  
-
+  );
 }
+
+OnScreenGui.propTypes = {
+  isInBrowser: PropTypes.bool
+};
+
+OnScreenGui.defaultProps = {
+  isInBrowser: false
+};
 
 export default OnScreenGui;

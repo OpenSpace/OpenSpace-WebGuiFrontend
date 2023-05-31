@@ -1,4 +1,4 @@
-import { actionTypes } from '../Actions/actionTypes';
+import actionTypes from '../Actions/actionTypes';
 
 /**
  * Make sure the date string contains a time zone
@@ -16,25 +16,23 @@ const dateStringWithTimeZone = (date, zone = 'Z') => {
     // Remove first dash so we can split it where the year ends
     const unsignedDate = whitespaceRemoved.substring(1);
     // Get the year by searching for first -
-    const unsignedYear = unsignedDate.substring(0 , unsignedDate.indexOf('-'));
+    const unsignedYear = unsignedDate.substring(0, unsignedDate.indexOf('-'));
     // Create year for the pattern -00YYYY for negative years (see link above)
-    const filledYear = `-${unsignedYear.padStart(6, "0")}`;
+    const filledYear = `-${unsignedYear.padStart(6, '0')}`;
     // Get everything after the year
     const rest = unsignedDate.substring(unsignedDate.indexOf('-'));
     // Add new filled year together with the rest
     result = `${filledYear}${rest}`;
-  }
-  else { // After year 0
+  } else { // After year 0
     // Ensure year always has 4 digits - fill with 0 in front
     const year = whitespaceRemoved.substring(0, whitespaceRemoved.indexOf('-'));
     const rest = whitespaceRemoved.substring(whitespaceRemoved.indexOf('-'));
     const filledYear = year.padStart(4, '0');
     result = `${filledYear}${rest}`;
   }
- 
-  return !result.includes('Z') ? `${result}${zone}` : result;
-}
 
+  return !result.includes('Z') ? `${result}${zone}` : result;
+};
 
 const defaultState = {
   time: undefined,
@@ -49,32 +47,31 @@ const defaultState = {
   deltaTimeSteps: undefined
 };
 
-export const time = (state = defaultState, action = {}) => {
+const time = (state = defaultState, action = {}) => {
   switch (action.type) {
-    case actionTypes.updateTime:
-      const time = action.payload.time;
-      const deltaTime = action.payload.deltaTime;
-      const targetDeltaTime = action.payload.targetDeltaTime;
-      const isPaused = action.payload.isPaused;
-      const hasNextStep = action.payload.hasNextStep;
-      const hasPrevStep = action.payload.hasPrevStep;
-      const nextStep = action.payload.nextStep;
-      const prevStep = action.payload.prevStep;
-      const deltaTimeSteps = action.payload.deltaTimeSteps;
-      const newState = {...state};
+    case actionTypes.updateTime: {
+      const { time: newTime } = action.payload;
+      const { deltaTime } = action.payload;
+      const { targetDeltaTime } = action.payload;
+      const { isPaused } = action.payload;
+      const { hasNextStep } = action.payload;
+      const { hasPrevStep } = action.payload;
+      const { nextStep } = action.payload;
+      const { prevStep } = action.payload;
+      const { deltaTimeSteps } = action.payload;
+      const newState = { ...state };
 
-      if (time !== undefined) {
-        newState.time = new Date(dateStringWithTimeZone(time));
-        
+      if (newTime !== undefined) {
+        newState.time = new Date(dateStringWithTimeZone(newTime));
+
         // Make optimized time that only updates every second
-        let date = new Date(dateStringWithTimeZone(time));
+        const date = new Date(dateStringWithTimeZone(newTime));
         date.setMilliseconds(0);
         // If it is the first time the time is sent, just set the state
-        // Else cap the update of the state to every second for performance 
+        // Else cap the update of the state to every second for performance
         if (!state.timeCapped) {
           newState.timeCapped = date;
-        }
-        else if (date.toISOString() !== newState.timeCapped.toISOString()) {
+        } else if (date.toISOString() !== newState.timeCapped.toISOString()) {
           newState.timeCapped = date;
         }
       }
@@ -103,7 +100,9 @@ export const time = (state = defaultState, action = {}) => {
         newState.deltaTimeSteps = deltaTimeSteps;
       }
       return newState;
+    }
+    default:
+      return state;
   }
-
-  return state;
 };
+export default time;

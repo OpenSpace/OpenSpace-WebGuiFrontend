@@ -1,23 +1,38 @@
-import PropTypes from 'prop-types';
 import React from 'react';
-import styles from './SmallLabel.scss';
-import {useContextRefs} from './../../GettingStartedTour/GettingStartedContext'
+import PropTypes from 'prop-types';
 
-const SmallLabel = ({children, refKey, ...props}) => {
+import { useContextRefs } from '../../GettingStartedTour/GettingStartedContext';
+
+import styles from './SmallLabel.scss';
+
+function SmallLabel({ children, refKey, ...props }) {
   const refs = refKey ? useContextRefs() : null;
+
+  function setRef(el) {
+    if (refKey) {
+      refs.current[refKey] = el;
+    }
+  }
+
   return (
-    <span ref={ el => refKey ? refs.current[refKey] = el : null} {...props} className={styles.SmallLabel}>
+    <span
+      ref={setRef}
+      className={styles.SmallLabel}
+      {...props}
+    >
       { children }
     </span>
   );
-};
+}
 
 SmallLabel.propTypes = {
   children: PropTypes.node,
+  refKey: PropTypes.string
 };
 
 SmallLabel.defaultProps = {
   children: [],
+  refKey: undefined
 };
 
 export default SmallLabel;

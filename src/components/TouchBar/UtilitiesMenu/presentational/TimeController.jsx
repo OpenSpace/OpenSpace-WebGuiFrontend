@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
+
 import { CurrentTimeKey, DeltaTime } from '../../../../api/keys';
 import * as timeHelpers from '../../../../utils/timeHelpers';
 import Button from '../../../common/Input/Button/Button';
 import ScaleInput from '../../../common/Input/ScaleInput/ScaleInput';
+
 import styles from '../style/TimeController.scss';
 
 class TimeController extends Component {
@@ -16,7 +18,7 @@ class TimeController extends Component {
       time: new Date(),
       subscriptionIdCurrent: -1,
       subscriptionIdDelta: -1,
-      deltaTime: 1,
+      deltaTime: 1
     };
 
     this.handleOnTogglePause = this.handleOnTogglePause.bind(this);
@@ -26,7 +28,6 @@ class TimeController extends Component {
     this.setDate = this.setDate.bind(this);
     this.setSimulationSpeed = this.setSimulationSpeed.bind(this);
   }
-
 
   componentDidMount() {
     this.mounted = true;

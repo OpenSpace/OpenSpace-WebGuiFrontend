@@ -1,13 +1,14 @@
 /* eslint import/no-extraneous-dependencies: 0 */
+import React from 'react';
 import { action } from '@storybook/addon-actions';
 import { storiesOf } from '@storybook/react';
-import React from 'react';
+
 import Time from './Time';
 
 /* globals module */
 
 storiesOf('Input/Time', module)
-  .addDecorator(story => (
+  .addDecorator((story) => (
     <div style={{ background: '#d8d8d8' }}>
       { story() }
     </div>

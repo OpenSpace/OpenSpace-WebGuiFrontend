@@ -1,15 +1,15 @@
 import { initializeShortcuts } from '../Actions';
-import { actionTypes } from '../Actions/actionTypes';
-
+import actionTypes from '../Actions/actionTypes';
 import api from '../api';
 
-let topic = undefined;
+let topic;
 
-const subscribeToShortcuts = callback => {
+const subscribeToShortcuts = (callback) => {
   topic = api.startTopic('shortcuts', {
-    event: 'start_subscription',
+    event: 'start_subscription'
   });
   (async () => {
+    // eslint-disable-next-line no-restricted-syntax
     for await (const data of topic.iterator()) {
       callback(data);
     }
@@ -24,9 +24,9 @@ const unsubscribeToShortcuts = () => {
     event: 'stop_subscription'
   });
   topic.cancel();
-}
+};
 
-export const shortcuts = store => next => (action) => {
+const shortcuts = (store) => (next) => (action) => {
   const result = next(action);
   switch (action.type) {
     case actionTypes.onOpenConnection:
@@ -37,14 +37,15 @@ export const shortcuts = store => next => (action) => {
     case actionTypes.onCloseConnection:
       unsubscribeToShortcuts();
       break;
-    case actionTypes.triggerAction:
+    case actionTypes.triggerAction: {
       const actionName = action.payload;
       console.log(api);
       store.getState().luaApi.action.triggerAction(actionName);
       break;
-    break;
+    }
     default:
       break;
   }
   return result;
 };
+export default shortcuts;

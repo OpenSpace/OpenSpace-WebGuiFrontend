@@ -1,9 +1,11 @@
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
 import Picker from '../../../BottomBar/Picker';
 import Icon from '../../../common/MaterialIcon/MaterialIcon';
 import Popover from '../../../common/Popover/Popover';
 import SmallLabel from '../../../common/SmallLabel/SmallLabel';
+
 import buttonStyle from '../style/UtilitiesButtons.scss';
 
 class InfoButton extends Component {
@@ -11,7 +13,7 @@ class InfoButton extends Component {
     super(props);
 
     this.state = {
-      showPopover: false,
+      showPopover: false
     };
 
     this.togglePopover = this.togglePopover.bind(this);
@@ -54,7 +56,7 @@ class InfoButton extends Component {
 
 InfoButton.propTypes = {
   storyTitle: PropTypes.string.isRequired,
-  storyInfo: PropTypes.string.isRequired,
+  storyInfo: PropTypes.string.isRequired
 };
 
 export default InfoButton;

@@ -1,9 +1,15 @@
-import React, { Component, createRef } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
+
+import Button from '../Input/Button/Button';
+
 import styles from './Dropdown.scss';
 
 const DEFAULT_PLACEHOLDER_STRING = 'Select...';
 
-function Dropdown({value, placeholder, options, onFocus, disabled, onChange, ...props}) {
+function Dropdown({
+  value, placeholder, options, onFocus, disabled, onChange, ...props
+}) {
   const [selected, setSelected] = React.useState(value || {
     label: typeof placeholder === 'undefined' ? DEFAULT_PLACEHOLDER_STRING : placeholder,
     value: ''
@@ -11,9 +17,14 @@ function Dropdown({value, placeholder, options, onFocus, disabled, onChange, ...
   const [isOpen, setIsOpen] = React.useState(false);
   const mounted = React.useRef(true);
   const dropdownRef = React.useRef(null);
-  
+
   // Add and remove event listeners
   React.useEffect(() => {
+    function handleDocumentClick(event) {
+      if (mounted.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    }
     document.addEventListener('click', handleDocumentClick, false);
     document.addEventListener('touchend', handleDocumentClick, false);
     return () => {
@@ -26,19 +37,18 @@ function Dropdown({value, placeholder, options, onFocus, disabled, onChange, ...
   // Re-render when the value changes
   React.useEffect(() => {
     if (value) {
-      if (selected !== value) {
+      if (selected.value !== value) {
         setSelected(value);
       }
-    }
-    else {
+    } else {
       setSelected({
-          label: typeof placeholder === 'undefined' ? DEFAULT_PLACEHOLDER_STRING : placeholder,
-          value: ''
+        label: typeof placeholder === 'undefined' ? DEFAULT_PLACEHOLDER_STRING : placeholder,
+        value: ''
       });
     }
   }, [value]);
 
-  function handleMouseDown (event) {
+  function handleMouseDown(event) {
     if (onFocus && typeof onFocus === 'function') {
       onFocus(isOpen);
     }
@@ -53,38 +63,38 @@ function Dropdown({value, placeholder, options, onFocus, disabled, onChange, ...
     }
   }
 
-  function setValue (value, label) {
-    fireChangeEvent({ value, label });
-    setSelected({ value, label });
-    setIsOpen(false);
-  }
-
-  function fireChangeEvent (newSelected) {
+  function fireChangeEvent(newSelected) {
     if (newSelected !== selected && onChange) {
       onChange(newSelected);
     }
   }
 
-  function buildMenu () {
+  function setValue(newValue, label) {
+    fireChangeEvent({ value: newValue, label });
+    setSelected({ value: newValue, label });
+    setIsOpen(false);
+  }
+
+  function buildMenu() {
     const optionDivs = options.map((option) => {
-      let value = option.value;
-      if (typeof value === 'undefined') {
-        value = option.label || option;
+      let newValue = option.value;
+      if (typeof newValue === 'undefined') {
+        newValue = option.label || option;
       }
       const label = option.label || option.value || option;
-      const isSelected = value === selected.value || value === selected;
-
+      const isSelected = newValue === selected.value || newValue === selected;
       return (
-        <div
-          key={value}
+        <Button
+          key={newValue}
           className={`${styles.DropdownOption} ${isSelected && styles.isSelected}`}
-          onMouseDown={() => setValue(value, label)}
-          onClick={() => setValue(value, label)}
-          role='option'
+          onMouseDown={() => setValue(newValue, label)}
+          onClick={() => setValue(newValue, label)}
           aria-selected={isSelected ? 'true' : 'false'}
+          wide
+          regular
         >
           {label}
-        </div>
+        </Button>
       );
     });
 
@@ -93,19 +103,15 @@ function Dropdown({value, placeholder, options, onFocus, disabled, onChange, ...
       <div className={styles.DropdownNoresults}>No options found</div>;
   }
 
-  function handleDocumentClick(event) {
-    if (mounted.current && !dropdownRef.current.contains(event.target)) {
-      setIsOpen(false);
-    }
-  }
-
   return (
     <div ref={dropdownRef} className={styles.DropdownRoot} {...props}>
-      <div
+      <Button
         className={styles.DropdownControl}
         onMouseDown={handleMouseDown}
         onTouchEnd={handleMouseDown}
-        aria-haspopup='listbox'
+        aria-haspopup="listbox"
+        wide
+        regular
       >
         <div className={styles.DropdownPlaceholder}>
           {typeof selected === 'string' ? selected : selected.label}
@@ -113,14 +119,29 @@ function Dropdown({value, placeholder, options, onFocus, disabled, onChange, ...
         <div className={styles.DropdownArrowWrapper}>
           <span className={styles.DropdownArrow} />
         </div>
-      </div>
+      </Button>
       {isOpen && (
-        <div className={styles.DropdownMenu} aria-expanded='true' {...props}>
+        <div className={styles.DropdownMenu} aria-expanded="true" {...props}>
           {buildMenu()}
         </div>
       )}
     </div>
   );
 }
+
+Dropdown.propTypes = {
+  value: PropTypes.node.isRequired,
+  placeholder: PropTypes.string.isRequired,
+  options: PropTypes.node.isRequired,
+  onChange: PropTypes.func,
+  onFocus: PropTypes.func,
+  disabled: PropTypes.bool
+};
+
+Dropdown.defaultProps = {
+  onChange: () => {},
+  onFocus: () => {},
+  disabled: false
+};
 
 export default Dropdown;

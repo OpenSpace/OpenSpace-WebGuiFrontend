@@ -1,21 +1,25 @@
 import React from 'react';
-import * as d3 from 'd3';
-import styles from './Timeline.scss';
-import Button from '../../common/Input/Button/Button';
 import { Icon } from '@iconify/react';
-import Tooltip from '../../common/Tooltip/Tooltip';
-import { makeUtcDate, DisplayType } from './Missions';
+import * as d3 from 'd3';
 
-function Arrow({ x, y, orientation, onClick, width = 20 }) {
+import Button from '../../common/Input/Button/Button';
+import Tooltip from '../../common/Tooltip/Tooltip';
+
+import { DisplayType, makeUtcDate } from './missionUtils';
+
+import styles from './Timeline.scss';
+
+function Arrow({
+  x, y, orientation, onClick, width = 20
+}) {
   // Pad in different directions depending on rotation
   let rotation = 0;
   let centerX = 0;
 
-  if (orientation === "down") {
+  if (orientation === 'down') {
     rotation = 90;
     centerX = 0.5 * width;
-  }
-  else if (orientation === "up") {
+  } else if (orientation === 'up') {
     centerX = -0.5 * width; // Because svg is rotated, offset is in other direction
     rotation = -90;
   }
@@ -46,29 +50,42 @@ export default function Timeline({
   // d3 state and translation
   const [k, setK] = React.useState(1); // Scale, d3 notation
   const [y, setY] = React.useState(0); // Translation, d3 notation
-  
+
   // Tooltip
   const [showToolTip, setShowToolTip] = React.useState(false);
-  const [toolTipData, setToolTipData] = React.useState({ title: "", text: "" });
+  const [toolTipData, setToolTipData] = React.useState({ title: '', text: '' });
   const [toolTipPosition, setToolTipPosition] = React.useState([0, 0]);
-  
+
   // Depth of nesting for phases
   const nestedLevels = currentPhases?.length ?? 0;
 
   // Set the dimensions and margins of the graph
-  const margin = { top: 0, right: 10, bottom: 70, left: 60 };
-  const minLevelWidth = 15; // Minimum width of a phase
-  const minWidth = (minLevelWidth * nestedLevels) + margin.left + margin.right; // Ensure graph is large enough to show all phases
-  const zoomButtonHeight = 40; // Height of buttons that control zoom
-  const height = fullHeight - zoomButtonHeight; // Height of graph
-  const width = Math.max(fullWidth, minWidth); // Width of graph
-  const scaleExtent = [1, 1000]; // Min and max scale
-  const translateExtent = [[0, 0], [width, height - margin.bottom]]; // Min and max translation
-  const paddingGraph = 10; // How many pixels over and below graph will still show content
-  const arrowOffsetY = 25; // "Padding" for the arrow - how far away from the edge it is displayed
-  const radiusPhase = 2; // Radius for the rectangles that represent phases
-  const transitionTime = 750; // Milliseconds
-  
+  const margin = {
+    top: 0, right: 10, bottom: 70, left: 60
+  };
+  // Minimum width of a phase
+  const minLevelWidth = 15;
+  // Ensure graph is large enough to show all phases
+  const minWidth = (minLevelWidth * nestedLevels) + margin.left + margin.right;
+  // Height of buttons that control zoom
+  const zoomButtonHeight = 40;
+  // Height of graph
+  const height = fullHeight - zoomButtonHeight;
+  // Width of graph
+  const width = Math.max(fullWidth, minWidth);
+  // Min and max scale
+  const scaleExtent = [1, 1000];
+  // Min and max translation
+  const translateExtent = [[0, 0], [width, height - margin.bottom]];
+  // How many pixels over and below graph will still show content
+  const paddingGraph = 10;
+  // "Padding" for the arrow - how far away from the edge it is displayed
+  const arrowOffsetY = 25;
+  // Radius for the rectangles that represent phases
+  const radiusPhase = 2;
+  // Milliseconds
+  const transitionTime = 750;
+
   // Styling
   const milestoneColor = 'rgba(255, 150, 0, 1)';
   const captureColor = 'rgba(255, 255, 0, 0.8)';
@@ -83,13 +100,17 @@ export default function Timeline({
   const tooltipMargin = 10;
 
   // Calculate scaling for x and y
-  const xScale = d3.scaleLinear().range([margin.left, width - margin.right]).domain([0, nestedLevels]);
-  let yScale = d3.scaleUtc().range([height - margin.bottom, margin.top]).domain(timeRange);
+  const xScale = d3.scaleLinear()
+    .range([margin.left, width - margin.right])
+    .domain([0, nestedLevels]);
+  let yScale = d3.scaleUtc()
+    .range([height - margin.bottom, margin.top])
+    .domain(timeRange);
 
   // Calculate axes
   const xAxis = d3.axisTop()
     .scale(xScale)
-    .tickFormat(d => ``)
+    .tickFormat(() => ``)
     .tickSize(0)
     .ticks(nestedLevels);
   let yAxis = d3.axisLeft().scale(yScale); // Y axis will change
@@ -107,16 +128,16 @@ export default function Timeline({
     d3.select(xAxisRef.current).call(xAxis);
     d3.select(yAxisRef.current).call(yAxis);
 
-    d3.select(yAxisRef.current).selectAll(".tick text")
-      .style("font-size", "1.3em")
-      .style("font-family", "Segoe UI")
-    
-    d3.select(xAxisRef.current).selectAll(".tick line").attr("stroke", 'grey');
+    d3.select(yAxisRef.current).selectAll('.tick text')
+      .style('font-size', '1.3em')
+      .style('font-family', 'Segoe UI');
+
+    d3.select(xAxisRef.current).selectAll('.tick line').attr('stroke', 'grey');
   }, []);
 
   // When height changes of window, rescale y axis
   React.useEffect(() => {
-    // Update the axis every time window rescales 
+    // Update the axis every time window rescales
     yScale = d3.scaleUtc().range([height - margin.bottom, margin.top]).domain(timeRange);
     yAxis = d3.axisLeft().scale(yScale);
     d3.select(yAxisRef.current).call(yAxis);
@@ -126,7 +147,7 @@ export default function Timeline({
   // Update zoom function every time the y scale changes (when window is resized)
   React.useEffect(() => {
     zoomRef.current = d3.zoom()
-      .on("zoom", (event) => {
+      .on('zoom', (event) => {
         const newScaleY = event.transform.rescaleY(yScale);
         d3.select(yAxisRef.current).call(yAxis.scale(newScaleY));
         setK(event.transform.k);
@@ -144,21 +165,32 @@ export default function Timeline({
     const centerY = (height * 0.5) / (k);
     const deltaY = centerY - yScale(now);
 
-    // Apply transform 
+    // Apply transform
     const transform = d3.zoomIdentity.scale(k).translate(1, deltaY);
-    d3.select(svgRef.current).transition().duration(transitionTime).call(zoomRef.current.transform, transform);
-  };
+    d3.select(svgRef.current)
+      .transition()
+      .duration(transitionTime)
+      .call(zoomRef.current.transform, transform);
+  }
 
   function reset() {
-    d3.select(svgRef.current).transition().duration(transitionTime).call(
-      zoomRef.current.transform,
-      d3.zoomIdentity,
-      d3.zoomTransform(d3.select(svgRef.current).node()).invert([width * 0.5, height * 0.5])
-    );
+    d3.select(svgRef.current)
+      .transition()
+      .duration(transitionTime)
+      .call(
+        zoomRef.current.transform,
+        d3.zoomIdentity,
+        d3.zoomTransform(
+          d3.select(svgRef.current).node()
+        ).invert([width * 0.5, height * 0.5])
+      );
   }
 
   function zoomByButton(zoomValue) {
-    d3.select(svgRef.current).transition().duration(transitionTime).call(zoomRef.current.scaleBy, zoomValue);
+    d3.select(svgRef.current)
+      .transition()
+      .duration(transitionTime)
+      .call(zoomRef.current.scaleBy, zoomValue);
   }
 
   function onClick(event, time) {
@@ -172,7 +204,7 @@ export default function Timeline({
   function mouseOver(e, title, value) {
     setToolTipData({ title, value });
     setShowToolTip(true);
-    setToolTipPosition([e.clientX, e.clientY])
+    setToolTipPosition([e.clientX, e.clientY]);
   }
 
   // Hide tooltip
@@ -189,7 +221,9 @@ export default function Timeline({
     }
     const startTime = makeUtcDate(phase.timerange.start);
     const endTime = makeUtcDate(phase.timerange.end);
-    const isCurrent = Date.parse(now) < Date.parse(endTime) && Date.parse(now) > Date.parse(startTime);
+    const isBeforeEndTime = Date.parse(now) < Date.parse(endTime);
+    const isAfterBeginning = Date.parse(now) > Date.parse(startTime);
+    const isCurrent = isBeforeEndTime && isAfterBeginning;
     const paddingY = padding / k; // Make sure padding doesn't get stretched when zooming
     const radiusY = radiusPhase / k; // Same here
     return (
@@ -205,7 +239,7 @@ export default function Timeline({
           setDisplayedPhase({ type: DisplayType.phase, data: phase });
           onClick(e, startTime);
         }}
-        onMouseOver={(e) => mouseOver(e, "Phase", phase.name)}
+        onMouseOver={(e) => mouseOver(e, 'Phase', phase.name)}
         onMouseLeave={mouseLeave}
         className={isCurrent ? styles.barHighlighted : styles.bar}
         strokeWidth={0}
@@ -215,26 +249,26 @@ export default function Timeline({
   }
 
   // Used for the current time indicator
-  function createLine(time, color, ref) {
+  function createTimeIndicator() {
     // Check so time is valid
-    if (!(time instanceof Date && !isNaN(time))) {
+    if (!(now instanceof Date && !Number.isNaN(now))) {
       return null;
     }
     const lineWidthScaled = lineWidth / k; // Ensure line doesn't get stretched when zooming
-    const yPosition = yScale(time) - (lineWidthScaled * 0.5); // Center line around time
+    const yPosition = yScale(now) - (lineWidthScaled * 0.5); // Center line around time
     return (
       <rect
-        key={time.toUTCString()}
-        ref={el => ref ? ref.current = el : null}
+        key={now.toUTCString()}
+        ref={timeIndicatorRef}
         x={margin.left}
         y={yPosition}
         height={lineWidthScaled}
         width={width - margin.left - margin.right}
-        fill={color}
+        fill={timeIndicatorColor}
         stroke={borderColor}
         strokeWidth={borderWidth / k}
       />
-    )
+    );
   }
 
   // Used for instrument activity / capture times
@@ -249,27 +283,27 @@ export default function Timeline({
         fill={color}
         onClick={(e) => onClick(e, time)}
         className={styles.capture}
-        onMouseOver={(e) => mouseOver(e, "Instrument Activity")}
+        onMouseOver={(e) => mouseOver(e, 'Instrument Activity')}
         onMouseLeave={mouseLeave}
       />
-    )
+    );
   }
 
   // Used for milestones
   function createPolygon(date, color = undefined, noBorder = false, padding = 0) {
     const time = makeUtcDate(date.date);
-    const width = polygonSize + (2 * padding);
-    const y = yScale(time) - (width * 0.5 / k);
-    const x = margin.left - width;
-    const centerOffsetX = 0.5 * width;
+    const w = polygonSize + (2 * padding); // width of polygon
+    const yPoly = yScale(time) - ((w * 0.5) / k);
+    const x = margin.left - w;
+    const centerOffsetX = 0.5 * w;
     // To make the key unique we need to make sure that the time is different for each
     // polygon - the color and padding are added when two polygons are placed at the same
     // time (when it is selected)
     const uniqueKey = `${time.toUTCString()}${padding}${color}`;
     return (
       <polygon
-        points={`0, ${width * 0.5} ${width * 0.5}, ${width} ${width}, ${width * 0.5} ${width * 0.5}, 0`}
-        transform={`translate(${x + centerOffsetX}, ${y})scale(1, ${1 / k})`}
+        points={`0, ${w * 0.5} ${w * 0.5}, ${w} ${w}, ${w * 0.5} ${w * 0.5}, 0`}
+        transform={`translate(${x + centerOffsetX}, ${yPoly})scale(1, ${1 / k})`}
         fill={color}
         stroke={borderColor}
         strokeWidth={noBorder ? 0 : borderWidth}
@@ -278,11 +312,11 @@ export default function Timeline({
           onClick(e, time);
           setDisplayedPhase({ type: DisplayType.milestone, data: date });
         }}
-        onMouseOver={(e) => mouseOver(e, "Milestone", date.name)}
+        onMouseOver={(e) => mouseOver(e, 'Milestone', date.name)}
         onMouseLeave={mouseLeave}
         className={styles.polygon}
       />
-    )
+    );
   }
 
   function createCurrentTimeArrow() {
@@ -304,24 +338,24 @@ export default function Timeline({
       <Arrow
         x={centerX}
         y={isAtTop ? yTop : yBottom}
-        orientation={isAtTop ? "up" : "down"}
+        orientation={isAtTop ? 'up' : 'down'}
         onClick={centerTime}
       />
     );
   }
 
   function createFade(placement) {
-    const firstColor = placement === "top" ? 'black' : 'transparent';
-    const secondColor = placement === "top" ? 'transparent' : 'black';
+    const firstColor = placement === 'top' ? 'black' : 'transparent';
+    const secondColor = placement === 'top' ? 'transparent' : 'black';
     const id = `Gradient${placement}`;
-    const yPlacement = placement === "top" ? 0 : height - margin.top - margin.bottom + paddingGraph;
-    
+    const yPlacement = placement === 'top' ? 0 : height - margin.top - margin.bottom + paddingGraph;
+
     return (
       <>
         <defs>
           <linearGradient id={id} x1={0} x2={0} y1={0} y2={1}>
-            <stop stopColor={firstColor} offset={"0%"} />
-            <stop stopColor={secondColor} offset={"100%"} />
+            <stop stopColor={firstColor} offset="0%" />
+            <stop stopColor={secondColor} offset="100%" />
           </linearGradient>
         </defs>
         <rect
@@ -331,7 +365,7 @@ export default function Timeline({
             x: margin.left - polygonSize + 3,
             y: yPlacement,
             fill: `url(#${id})`,
-            pointerEvents: 'none' 
+            pointerEvents: 'none'
           }}
         />
       </>
@@ -354,7 +388,7 @@ export default function Timeline({
           top: 0,
           right: panelWidth,
           display: 'flex',
-          width: width,
+          width,
           height: zoomButtonHeight,
           justifyContent: 'right',
           padding: '10px 12px 8px 8px ',
@@ -362,22 +396,23 @@ export default function Timeline({
         }}
       >
         <Button onClick={() => zoomByButton(0.5)} style={{ margin: 0, padding: 0 }}>
-          <Icon icon={"mi:zoom-out"} color={"white"} alt={"zoom-in"} style={{ fontSize: '1.5em' }}/>
+          <Icon icon="mi:zoom-out" color="white" alt="zoom-in" style={{ fontSize: '1.5em' }} />
         </Button>
         <Button onClick={() => zoomByButton(2)} style={{ margin: 0, padding: 0 }}>
-          <Icon icon={"mi:zoom-in"} color={"white"} alt={"zoom-out"} style={{ fontSize: '1.5em' }}/>
+          <Icon icon="mi:zoom-in" color="white" alt="zoom-out" style={{ fontSize: '1.5em' }} />
         </Button>
         <Button onClick={() => reset()} style={{ margin: 0, padding: 0 }}>
-          <Icon icon={"fluent:full-screen-zoom-24-filled"} color={"white"} alt={"full-view"} style={{ fontSize: '1.5em' }}/>
+          <Icon icon="fluent:full-screen-zoom-24-filled" color="white" alt="full-view" style={{ fontSize: '1.5em' }} />
         </Button>
       </div>
       <Tooltip
         fixed
-        placement={"left"}
+        placement="left"
         className={styles.toolTip}
         style={{
           display: showToolTip ? 'block' : 'none',
-          top: toolTipPosition[1], left: toolTipPosition[0] - tooltipWidth - (2 * tooltipMargin),
+          top: toolTipPosition[1],
+          left: toolTipPosition[0] - tooltipWidth - (2 * tooltipMargin),
           marginRight: tooltipMargin,
           width: tooltipWidth,
           overflowWrap: 'break-word'
@@ -394,43 +429,44 @@ export default function Timeline({
           position: 'absolute',
           top: zoomButtonHeight - paddingGraph,
           right: panelWidth,
-          clipPath: `polygon(0% ${clippathTop}px, 100% ${clippathTop}px, 100% ${clippathBottom}px, 0% ${clippathBottom}px`,
+          clipPath: `polygon(0% ${clippathTop}px, 100% ${clippathTop}px, 
+            100% ${clippathBottom}px, 0% ${clippathBottom}px`
         }}
       >
         <g transform={`translate(0, ${paddingGraph})`}>
           <g ref={xAxisRef} transform={`translate(0, ${height - margin.bottom})`} />
           <g ref={yAxisRef} transform={`translate(${margin.left}, ${0})`} />
           <g transform={`translate(0, ${y})scale(1, ${k})`}>
-            {currentPhases?.map((phase, index) => {
-              return phase.map(phase => {
-                if (!phase.timerange?.start || !phase.timerange?.end) {
-                  return null;
-                }
-                if (displayedPhase.type === DisplayType.phase && phase.name === displayedPhase.data.name) {
-                  // We want to draw the selected phase last so it appears on top
-                  // Save for later
-                  selectedPhase = phase;
-                  selectedPhaseIndex = index;
-                  return null;
-                }
-                return createRectangle(phase, index);
-              })
-            }
-            )}
-            {selectedPhase ?
+            {currentPhases?.map((currentPhase, index) => currentPhase.map((phase) => {
+              if (!phase.timerange?.start || !phase.timerange?.end) {
+                return null;
+              }
+              if (displayedPhase.type === DisplayType.phase &&
+                  displayedPhase.data.name === phase.name) {
+                // We want to draw the selected phase last so it appears on top
+                // Save for later
+                selectedPhase = phase;
+                selectedPhaseIndex = index;
+                return null;
+              }
+              return createRectangle(phase, index);
+            }))}
+            {selectedPhase ? (
               <>
                 {createRectangle(selectedPhase, selectedPhaseIndex, 2, selectedBorder)}
                 {createRectangle(selectedPhase, selectedPhaseIndex)}
               </>
-              :
-              null
-            }
+            ) :
+              null}
           </g>
           <g transform={`translate(0, ${y})scale(1, ${k})`}>
-            {createLine(now, timeIndicatorColor, timeIndicatorRef)}
-            {captureTimes?.map((capture, index) => createCircle(makeUtcDate(capture), captureColor, index))}
-            {milestones?.map(milestone => {
-              if (displayedPhase.type === DisplayType.milestone && milestone.name === displayedPhase.data.name) {
+            {createTimeIndicator()}
+            {captureTimes?.map(
+              (capture, index) => createCircle(makeUtcDate(capture), captureColor, index)
+            )}
+            {milestones?.map((milestone) => {
+              if (displayedPhase.type === DisplayType.milestone &&
+                  displayedPhase.data.name === milestone.name) {
                 // We want to draw the selected phase last so it appears on top
                 // Save for later
                 selectedMilestone = milestone;
@@ -438,19 +474,18 @@ export default function Timeline({
               }
               return createPolygon(milestone, milestoneColor);
             })}
-            {selectedMilestone ?
+            {selectedMilestone ? (
               <>
                 {createPolygon(selectedMilestone, selectedBorder, true, 3)}
                 {createPolygon(selectedMilestone, milestoneColor, true)}
               </>
-              :
-              null
-            }
+            ) :
+              null}
           </g>
           {createCurrentTimeArrow()}
         </g>
-        {createFade("top")}
-        {createFade("bottom")}
+        {createFade('top')}
+        {createFade('bottom')}
       </svg>
     </>
   );

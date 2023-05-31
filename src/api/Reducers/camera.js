@@ -1,14 +1,14 @@
-import { actionTypes } from '../Actions/actionTypes';
+import actionTypes from '../Actions/actionTypes';
 
 const defaultState = {
-    latitude: undefined,
-    longitude: undefined,
-    altitude: undefined,
-    altitudeUnit: undefined
+  latitude: undefined,
+  longitude: undefined,
+  altitude: undefined,
+  altitudeUnit: undefined
 };
 
-export const camera = (state = defaultState, action) => {
-  const newState = {...state};
+const camera = (state = defaultState, action = {}) => {
+  const newState = { ...state };
   switch (action.type) {
     case actionTypes.updateCamera:
       newState.altitude = action.payload.altitude;
@@ -22,6 +22,5 @@ export const camera = (state = defaultState, action) => {
     default:
       return state;
   }
-
-  return state;
 };
+export default camera;

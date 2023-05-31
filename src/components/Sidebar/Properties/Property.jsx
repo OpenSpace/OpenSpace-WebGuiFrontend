@@ -1,6 +1,10 @@
-import React, { Component } from 'react';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
+
+import propertyDispatcher from '../../../api/propertyDispatcher';
+
 import BoolProperty from './BoolProperty';
-import { connectProperty } from './connectProperty';
 import ListProperty from './ListProperty';
 import MatrixProperty from './MatrixProperty';
 import NumericProperty from './NumericProperty';
@@ -14,13 +18,13 @@ const concreteProperties = {
   BoolProperty,
   OptionProperty,
   TriggerProperty,
-  StringProperty: StringProperty,
+  StringProperty,
 
   DoubleListProperty: ListProperty,
   IntListProperty: ListProperty,
   StringListProperty: ListProperty,
 
-  SelectionProperty: SelectionProperty,
+  SelectionProperty,
 
   FloatProperty: NumericProperty,
   DoubleProperty: NumericProperty,
@@ -46,39 +50,53 @@ const concreteProperties = {
   DVec2Property: VecProperty,
   DVec3Property: VecProperty,
   DVec4Property: VecProperty,
-  
+
   Mat2Property: MatrixProperty,
   Mat3Property: MatrixProperty,
   Mat4Property: MatrixProperty,
 
   DMat2Property: MatrixProperty,
   DMat3Property: MatrixProperty,
-  DMat4Property: MatrixProperty,
+  DMat4Property: MatrixProperty
 };
 
-class Property extends Component {
-  render() {
-    const { description, value } = this.props;
+function Property({ uri, ...props }) {
+  const description = useSelector((state) => state.propertyTree.properties[uri].description);
+  const value = useSelector((state) => state.propertyTree.properties[uri].value);
 
-    if (!description) return <></>;
-    
-    const ConcreteProperty = concreteProperties[description.Type];
- 
-    if (!ConcreteProperty) {
-      console.error("Missing property", description?.Type, description);
-      return null;
-    }
+  if (!description) return null;
 
-    return <ConcreteProperty {...this.props}
-                        key={description.Identifier}
-                        description={description}
-                        value={value}
-                        subscribe />;
+  const dispatch = useDispatch();
+  const dispatcher = propertyDispatcher(dispatch, uri);
+
+  React.useEffect(() => {
+    dispatcher.subscribe();
+    return dispatcher.unsubscribe;
+  }, []);
+
+  const ConcreteProperty = concreteProperties[description.Type];
+
+  if (!ConcreteProperty) {
+    console.error('Missing property', description?.Type, description);
+    return null;
   }
+
+  return (
+    <ConcreteProperty
+      dispatcher={dispatcher}
+      key={description.Identifier}
+      description={description}
+      value={value}
+      subscribe
+      {...props}
+    />
+  );
 }
 
-Property = connectProperty(Property);
+Property.propTypes = {
+  uri: PropTypes.string.isRequired
+};
 
 export default Property;
 export const Types = concreteProperties;
-export const GetType = type => concreteProperties[type];
+export const GetType = (type) => concreteProperties[type];

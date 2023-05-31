@@ -1,23 +1,40 @@
 import React from 'react';
-import Tooltip from '../Tooltip/Tooltip';
-import MaterialIcon from '../MaterialIcon/MaterialIcon';
-import styles from './SettingsPopup.scss';
-import Button from '../Input/Button/Button';
+import PropTypes from 'prop-types';
 
-export default function SettingsPopup({ children }) {
+import MaterialIcon from '../MaterialIcon/MaterialIcon';
+import Tooltip from '../Tooltip/Tooltip';
+
+import buttonStyles from '../Input/Button/Button.scss';
+import styles from './SettingsPopup.scss';
+
+function SettingsPopup({ children }) {
   const [showSearchSettings, setShowSearchSettings] = React.useState(false);
 
   return (
-    <Button
-      onClick={() => setShowSearchSettings(current => !current)}
-      className={`${styles.settings} ${showSearchSettings && styles.settingsFocus}`}
+    <div
+      onClick={() => setShowSearchSettings((current) => !current)}
+      onKeyDown={() => setShowSearchSettings((current) => !current)}
+      className={`${styles.settings} ${buttonStyles.button}
+        ${showSearchSettings && styles.settingsFocus}`}
+      role="button"
+      tabIndex={0}
     >
       <MaterialIcon icon="settings" className="small" />
-      {showSearchSettings &&
-        <Tooltip placement={'right'} className={styles.toolTip}>
+      {showSearchSettings && (
+        <Tooltip placement="right" className={styles.toolTip}>
           { children }
         </Tooltip>
-      }
-    </Button>
+      )}
+    </div>
   );
 }
+
+SettingsPopup.propTypes = {
+  children: PropTypes.node
+};
+
+SettingsPopup.defaultProps = {
+  children: []
+};
+
+export default SettingsPopup;

@@ -1,50 +1,59 @@
+import React from 'react';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+
 import MaterialIcon from '../../MaterialIcon/MaterialIcon';
+import Button from '../Button/Button';
+
 import styles from './Checkbox.scss';
 
-class Checkbox extends Component {
-  constructor(props) {
-    super(props);
-    this.onClick = this.onClick.bind(this);
-  }
-
-  onClick(evt) {
-    if(this.props.disabled) {
+function Checkbox({
+  checked, disabled, wide, left, className, setChecked, children, ...rest
+}) {
+  function onClick(evt) {
+    if (disabled) {
       return;
     }
-    this.props.setChecked(!this.props.checked, evt);
+    setChecked(!checked, evt);
     evt.stopPropagation();
   }
 
-  render() {
-    const { checked, label, wide, left, className, setChecked, ...rest } = this.props;
-
-    return (
-      <div onClick={this.onClick} className={`${styles.wrapper} ${className} ${wide ? styles.wide : ''} ${left ? styles.left : ''}`} {...rest}>
-        <MaterialIcon className={styles.checkbox} icon={checked ? "check_box" : "check_box_outline_blank"} />
-        { label && <label>{ label }</label> }
-      </div>
-    );
-  }
+  return (
+    <Button
+      onClick={onClick}
+      className={`${styles.wrapper} ${className} ${wide ? styles.wide : ''} ${left ? styles.left : ''}`}
+      {...rest}
+      regular
+    >
+      <MaterialIcon
+        className={styles.checkbox}
+        icon={checked ? 'check_box' : 'check_box_outline_blank'}
+      />
+      { children }
+    </Button>
+  );
 }
 
 Checkbox.propTypes = {
   checked: PropTypes.bool,
+  children: PropTypes.node,
+  className: PropTypes.string,
   disabled: PropTypes.bool,
-  setChecked: PropTypes.func,
-  label: PropTypes.node,
   left: PropTypes.bool,
+  onChange: PropTypes.func,
+  setChecked: PropTypes.func.isRequired,
   value: PropTypes.bool,
-  wide: PropTypes.bool,
+  wide: PropTypes.bool
 };
 
 Checkbox.defaultProps = {
   checked: false,
+  children: [],
+  className: '',
+  disabled: false,
   left: false,
   onChange: () => {},
   value: false,
-  wide: true,
+  wide: true
 };
 
 export default Checkbox;

@@ -1,10 +1,12 @@
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
 import Picker from '../../../BottomBar/Picker';
 import Button from '../../../common/Input/Button/Button';
 import Icon from '../../../common/MaterialIcon/MaterialIcon';
 import Popover from '../../../common/Popover/Popover';
 import SmallLabel from '../../../common/SmallLabel/SmallLabel';
+
 import styles from '../style/SightsController.scss';
 import buttonStyle from '../style/UtilitiesButtons.scss';
 
@@ -13,7 +15,7 @@ class SightsController extends Component {
     super(props);
 
     this.state = {
-      showPopover: false,
+      showPopover: false
     };
 
     this.togglePopover = this.togglePopover.bind(this);
@@ -33,7 +35,7 @@ class SightsController extends Component {
   }
 
   get sightsButtons() {
-    return (this.props.sightsList.map(sight => (
+    return (this.props.sightsList.map((sight) => (
       <Button
         className={styles.sightsLabel}
         key={sight.info}
@@ -42,8 +44,10 @@ class SightsController extends Component {
         onClick={this.selectSight}
         id={sight.info}
       >
-        <SmallLabel id={sight.info} >
-          {sight.planet},{sight.info}
+        <SmallLabel id={sight.info}>
+          {sight.planet}
+          ,
+          {sight.info}
         </SmallLabel>
       </Button>
     )));
@@ -51,7 +55,7 @@ class SightsController extends Component {
 
   selectSight(e) {
     this.togglePopover();
-    const selectedSight = this.props.sightsList.find(sight => sight.info === e.target.id);
+    const selectedSight = this.props.sightsList.find((sight) => sight.info === e.target.id);
     this.props.onChangeSight(selectedSight);
   }
 
@@ -61,7 +65,7 @@ class SightsController extends Component {
 
   render() {
     return (
-      <div className={Picker.Wrapper} >
+      <div className={Picker.Wrapper}>
         <Picker
           onClick={this.togglePopover}
           className={`${styles.sightsController} ${this.state.showPopover && styles.active}
@@ -82,15 +86,14 @@ SightsController.propTypes = {
     PropTypes.shape({
       place: PropTypes.string,
       planet: PropTypes.string,
-      location: PropTypes.object,
+      location: PropTypes.object
     }),
-  ),
+  )
 };
 
 SightsController.defaultProps = {
   onChangeSight: () => {},
-  sightsList: [],
+  sightsList: []
 };
-
 
 export default SightsController;

@@ -1,15 +1,15 @@
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+
 import { setPropertyValue, subscribeToProperty, unsubscribeToProperty } from '../../../../api/Actions';
 import { NavigationAnchorKey, ScaleKey, ValuePlaceholder } from '../../../../api/keys';
 import { UpdateDeltaTimeNow } from '../../../../utils/timeHelpers';
-import DateController from './../presentational/DateController';
-import ScaleController from './../presentational/ScaleController';
-import SightsController from './../presentational/SightsController';
-import TimePlayerController from './../presentational/TimePlayerController';
-import ToggleBoolButtons from './../presentational/ToggleBoolButtons';
-
+import DateController from '../presentational/DateController';
+import ScaleController from '../presentational/ScaleController';
+import SightsController from '../presentational/SightsController';
+import TimePlayerController from '../presentational/TimePlayerController';
+import ToggleBoolButtons from '../presentational/ToggleBoolButtons';
 
 class Controllers extends Component {
   constructor(props) {
@@ -22,14 +22,14 @@ class Controllers extends Component {
   componentDidMount() {
     const { scaleNodes, startListening } = this.props;
     if (scaleNodes.length !== 0) {
-      scaleNodes.forEach(n => startListening(n.description.Identifier));
+      scaleNodes.forEach((n) => startListening(n.description.Identifier));
     }
   }
 
   componentWillUnmount() {
     const { scaleNodes, stopListening } = this.props;
     if (scaleNodes.length !== 0) {
-      scaleNodes.forEach(n => stopListening(n.description.Identifier));
+      scaleNodes.forEach((n) => stopListening(n.description.Identifier));
     }
   }
 
@@ -52,7 +52,7 @@ class Controllers extends Component {
   onChangeScale() {
     const { changePropertyValue, scaleNodes, story } = this.props;
 
-    const scale = story.scalenodes.scale;
+    const { scale } = story.scalenodes;
     const currentScale = scaleNodes[0].value;
 
     if (Number(currentScale) !== Number(scale)) {
@@ -91,8 +91,8 @@ class Controllers extends Component {
         {(story && story.scalenodes) && (
           <ScaleController
             info={story.scalenodes.info}
-            scale={(Number(scaleNodes[0].value) !== Number(story.scalenodes.scale))
-              ? 1 : Number(story.scalenodes.scale)}
+            scale={(Number(scaleNodes[0].value) !== Number(story.scalenodes.scale)) ?
+              1 : Number(story.scalenodes.scale)}
             onChangeScale={this.onChangeScale}
           />
         )}
@@ -125,11 +125,11 @@ const mapStateToProps = (state) => {
     originNode,
     story,
     scaleNodes,
-    luaApi: state.luaApi,
+    luaApi: state.luaApi
   };
 };
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   changePropertyValue: (uri, value) => {
     dispatch(setPropertyValue(uri, value));
   },
@@ -138,7 +138,7 @@ const mapDispatchToProps = dispatch => ({
   },
   stopListening: (uri) => {
     dispatch(unsubscribeToProperty(uri));
-  },
+  }
 });
 
 Controllers = connect(
@@ -151,16 +151,16 @@ Controllers.propTypes = {
     id: PropTypes.string,
     description: PropTypes.string,
     value: PropTypes.string,
-    listeners: PropTypes.number,
+    listeners: PropTypes.number
   })),
   changePropertyValue: PropTypes.func,
   startListening: PropTypes.func,
   stopListening: PropTypes.func,
   scaleNodes: PropTypes.objectOf(PropTypes.shape({
     value: PropTypes.string,
-    description: PropTypes.string,
+    description: PropTypes.string
   })),
-  story: PropTypes.objectOf(PropTypes.shape({})),
+  story: PropTypes.objectOf(PropTypes.shape({}))
 };
 
 Controllers.defaultProps = {
@@ -169,7 +169,7 @@ Controllers.defaultProps = {
   story: {},
   changePropertyValue: () => {},
   startListening: () => {},
-  stopListening: () => {},
+  stopListening: () => {}
 };
 
 export default Controllers;

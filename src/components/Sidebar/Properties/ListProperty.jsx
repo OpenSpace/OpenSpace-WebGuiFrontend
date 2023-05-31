@@ -1,66 +1,39 @@
+import React from 'react';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import { copyTextToClipboard } from '../../../utils/helpers';
-import InfoBox from '../../common/InfoBox/InfoBox';
+
 import Input from '../../common/Input/Input/Input';
+
+import PropertyLabel from './PropertyLabel';
+
 import styles from './Property.scss';
 
-class ListProperty extends Component {
-  constructor(props) {
-    super(props);
-    this.onChange = this.onChange.bind(this);
-    this.copyUri = this.copyUri.bind(this);
-  }
+function ListProperty({ description, dispatcher, value }) {
+  const disabled = description.MetaData.isReadOnly;
 
-  componentDidMount() {
-    this.props.dispatcher.subscribe();
-  }
+  function onChange(evt) {
+    const newValue = evt.target.value.trim();
 
-  componentWillUnmount() {
-    this.props.dispatcher.unsubscribe();
-  }
-
-  get descriptionPopup() {
-    const { description } = this.props.description;
-    return description ? (<InfoBox text={description} />) : '';
-  }
-
-  copyUri() {
-    copyTextToClipboard(this.props.description.Identifier);
-  }
-
-  get disabled() {
-    return this.props.description.MetaData.isReadOnly;
-  }
-
-  onChange(evt) {
-    const value = evt.target.value.trim();
-
-    if (value === "") {
-      this.props.dispatcher.set({});
+    if (newValue === '') {
+      dispatcher.set({});
       return;
     }
 
-    this.props.dispatcher.set(value.split(','));
+    dispatcher.set(newValue.split(','));
   }
 
-  render() {
-    const { description, value } = this.props;
-    const label = (<span onClick={this.copyUri}>
-      { description.Name } { this.descriptionPopup }
-    </span>);
-    return (
-      <div className={`${this.disabled ? styles.disabled : ''}`}>
-        <Input
-          value={value.join(',')}
-          label={label}
-          placeholder={description.Name}
-          onEnter={this.onChange}
-          disabled={this.disabled}
-        />
-      </div>
-    );
-  }
+  const label = <PropertyLabel description={description} />;
+
+  return (
+    <div className={`${disabled ? styles.disabled : ''}`}>
+      <Input
+        value={value.join(',')}
+        label={label}
+        placeholder={description.Name}
+        onEnter={onChange}
+        disabled={disabled}
+      />
+    </div>
+  );
 }
 
 ListProperty.propTypes = {
@@ -68,11 +41,12 @@ ListProperty.propTypes = {
     Identifier: PropTypes.string,
     Name: PropTypes.string,
     MetaData: PropTypes.shape({
-      isReadOnly: PropTypes.bool,
+      isReadOnly: PropTypes.bool
     }),
-    description: PropTypes.string,
+    description: PropTypes.string
   }).isRequired,
-  value: PropTypes.any
+  dispatcher: PropTypes.object.isRequired,
+  value: PropTypes.any.isRequired
 };
 
 export default ListProperty;

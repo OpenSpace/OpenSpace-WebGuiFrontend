@@ -1,18 +1,19 @@
-import { actionTypes } from '../Actions/actionTypes';
+import actionTypes from '../Actions/actionTypes';
 
 const defaultState = {
   isInitialized: false,
   data: {}
-}
+};
 
-export const documentation = (state = defaultState, action) => { // state refers to docu
+const documentation = (state = defaultState, action = {}) => { // state refers to documentation
   switch (action.type) {
     case actionTypes.initializeDocumentation:
       return {
         isInitialized: true,
         data: [...action.payload]
-      }
+      };
     default:
       return state;
   }
 };
+export default documentation;

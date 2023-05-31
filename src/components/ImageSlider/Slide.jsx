@@ -1,8 +1,11 @@
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
 import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
-import styles from './Slide.scss';
+
 import StoryButton from './StoryButton';
+
+import styles from './Slide.scss';
 
 class Slide extends Component {
   constructor(props) {
@@ -20,7 +23,7 @@ class Slide extends Component {
 
     return (
       <div className={styles.Container}>
-        <img src={image} className={styles.Slide} alt={'Story'} />
+        <img src={image} className={styles.Slide} alt="Story" />
         <div className={styles.StoryInfo}>
           <CenteredLabel className={styles.StoryName}>{storyInfo.title}</CenteredLabel>
           <CenteredLabel className={styles.Description}>{storyInfo.info}</CenteredLabel>
@@ -39,8 +42,8 @@ Slide.propTypes = {
   onChangeStory: PropTypes.func.isRequired,
   storyInfo: PropTypes.shape({
     title: PropTypes.string,
-    info: PropTypes.string,
-  }).isRequired,
+    info: PropTypes.string
+  }).isRequired
 };
 
 export default Slide;

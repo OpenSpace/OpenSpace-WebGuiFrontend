@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+
 import ToggleBoolButton from './ToggleBoolButton';
 
 class ToggleBoolButtons extends Component {
@@ -11,7 +12,7 @@ class ToggleBoolButtons extends Component {
 
   handleGroup(clickedProperty) {
     const { properties } = this.props;
-    properties.map((p, i) => {
+    properties.forEach((p) => {
       if (clickedProperty.property.URI !== p.URI && clickedProperty.property.group === p.group) {
         this.toggleButtons[p.URI].disableIfChecked();
       }
@@ -21,9 +22,9 @@ class ToggleBoolButtons extends Component {
   get propertiesButtons() {
     const { properties } = this.props;
     return (
-      properties.map((property, i) => (
+      properties.map((property) => (
         <ToggleBoolButton
-          ref={ref => this.toggleButtons[property.URI] = ref}
+          ref={(ref) => { this.toggleButtons[property.URI] = ref; }}
           key={property.URI}
           property={property}
           handleGroup={this.handleGroup}
@@ -41,15 +42,11 @@ class ToggleBoolButtons extends Component {
   }
 }
 
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = (state) => {
   const properties = state.storyTree.story.toggleboolproperties;
   return {
-    properties,
+    properties
   };
 };
 
-ToggleBoolButtons = connect(
-  mapStateToProps,
-)(ToggleBoolButtons);
-
-export default ToggleBoolButtons;
+export default connect(mapStateToProps,)(ToggleBoolButtons);

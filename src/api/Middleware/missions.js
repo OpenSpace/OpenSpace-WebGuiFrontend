@@ -1,19 +1,17 @@
 import {
-  initializeMissions,
+  initializeMissions
 } from '../Actions';
-
+import actionTypes from '../Actions/actionTypes';
 import api from '../api';
 
-import { actionTypes } from '../Actions/actionTypes';
-
-const getMissions = async callback => {
+const getMissions = async (callback) => {
   const missionsTopic = api.startTopic('missions', {});
   const { value } = await missionsTopic.iterator().next();
   callback(value);
   missionsTopic.cancel();
 };
 
-export const missions = store => next => (action) => {
+const missions = (store) => (next) => (action) => {
   const result = next(action);
   switch (action.type) {
     case actionTypes.onOpenConnection:
@@ -26,3 +24,4 @@ export const missions = store => next => (action) => {
   }
   return result;
 };
+export default missions;

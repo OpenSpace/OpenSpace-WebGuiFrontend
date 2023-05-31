@@ -1,67 +1,60 @@
-import React, { Component } from 'react';
-import { copyTextToClipboard } from '../../../utils/helpers';
-import InfoBox from '../../common/InfoBox/InfoBox';
+import React from 'react';
+import PropTypes from 'prop-types';
+
 import NumericInput from '../../common/Input/NumericInput/NumericInput';
+
+import PropertyLabel from './PropertyLabel';
+
 import styles from './Property.scss';
 
-class NumericProperty extends Component {
-  constructor(props) {
-    super(props);
-    this.onChange = this.onChange.bind(this);
-    this.copyUri = this.copyUri.bind(this);
+function NumericProperty({ description, dispatcher, value }) {
+  const disabled = description.MetaData.isReadOnly;
+
+  function onChange(newValue) {
+    dispatcher.set(newValue);
   }
 
-  componentDidMount() {
-    this.props.dispatcher.subscribe();
-  }
-
-  componentWillUnmount() {
-    this.props.dispatcher.unsubscribe();
-  }
-
-  get descriptionPopup() {
-    const { description } = this.props.description;
-    return description ? <InfoBox text={description} /> : '';
-  }
-
-  get disabled() {
-    return this.props.description.MetaData.isReadOnly;
-  }
-
-  onChange(newValue) {
-    this.props.dispatcher.set(newValue);
-  }
-
-  get descriptionPopup() {
-    let { description } = this.props;
-    const { MaximumValue, MinimumValue } = description.AdditionalData;
-    const descriptionString = `${description.description}\nMin: ${MinimumValue}, max: ${MaximumValue}`;
-    return descriptionString ? (<InfoBox text={descriptionString} />) : '';
-  }
-
-  copyUri() {
-    copyTextToClipboard(this.props.description.Identifier);
-  }
-
-  render() {
-    const { description, value } = this.props;
-    const { SteppingValue, MaximumValue, MinimumValue, Exponent } = description.AdditionalData;
-    return (
-      <div className={`${this.disabled ? styles.disabled : ''}`}>
-        <NumericInput
-          value={value}
-          label={(<span onClick={this.copyUri}>{description.Name} {this.descriptionPopup}</span>)}
-          placeholder={description.Name}
-          onValueChanged={this.onChange}
-          step={SteppingValue}
-          exponent={Exponent}
-          max={MaximumValue}
-          min={MinimumValue}
-          disabled={this.disabled}
-        />
-      </div>
-    );
-  }
+  const {
+    SteppingValue, MaximumValue, MinimumValue, Exponent
+  } = description.AdditionalData;
+  // Add min & max value to description
+  const enhancedDescription = { ...description };
+  const minMaxString = `${description.description}\nMin: ${MinimumValue}, max: ${MaximumValue}`;
+  enhancedDescription.description = minMaxString;
+  return (
+    <div className={`${disabled ? styles.disabled : ''}`}>
+      <NumericInput
+        value={value}
+        label={<PropertyLabel description={enhancedDescription} />}
+        placeholder={description.Name}
+        onValueChanged={onChange}
+        step={SteppingValue}
+        exponent={Exponent}
+        max={MaximumValue}
+        min={MinimumValue}
+        disabled={disabled}
+      />
+    </div>
+  );
 }
+
+NumericProperty.propTypes = {
+  description: PropTypes.shape({
+    Identifier: PropTypes.string,
+    Name: PropTypes.string,
+    MetaData: PropTypes.shape({
+      isReadOnly: PropTypes.bool
+    }),
+    AdditionalData: PropTypes.shape({
+      SteppingValue: PropTypes.number,
+      MaximumValue: PropTypes.number,
+      MinimumValue: PropTypes.number,
+      Exponent: PropTypes.number
+    }),
+    description: PropTypes.string
+  }).isRequired,
+  dispatcher: PropTypes.object.isRequired,
+  value: PropTypes.any.isRequired
+};
 
 export default NumericProperty;

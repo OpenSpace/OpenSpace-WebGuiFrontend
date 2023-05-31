@@ -1,60 +1,31 @@
+import React from 'react';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import { copyTextToClipboard } from '../../../utils/helpers';
-import InfoBox from '../../common/InfoBox/InfoBox';
+
 import Input from '../../common/Input/Input/Input';
+
+import PropertyLabel from './PropertyLabel';
+
 import styles from './Property.scss';
 
-class StringProperty extends Component {
-  constructor(props) {
-    super(props);
-    this.onChange = this.onChange.bind(this);
-    this.copyUri = this.copyUri.bind(this);
+function StringProperty({ description, dispatcher, value }) {
+  const disabled = description.MetaData.isReadOnly;
+
+  function onChange(evt) {
+    const newValue = evt.target.value;
+    dispatcher.set(newValue);
   }
 
-  componentDidMount() {
-    this.props.dispatcher.subscribe();
-  }
-
-  componentWillUnmount() {
-    this.props.dispatcher.unsubscribe();
-  }
-
-  get descriptionPopup() {
-    const { description } = this.props.description;
-    return description ? (<InfoBox text={description} />) : '';
-  }
-
-  copyUri() {
-    copyTextToClipboard(this.props.description.Identifier);
-  }
-
-  get disabled() {
-    return this.props.description.MetaData.isReadOnly;
-  }
-
-  onChange(evt) {
-    const value = evt.target.value;
-    this.props.dispatcher.set(value);
-  }
-
-  render() {
-    const { description, value } = this.props;
-    const label = (<span onClick={this.copyUri}>
-      { description.Name } { this.descriptionPopup }
-    </span>);
-    return (
-      <div className={`${this.disabled ? styles.disabled : ''}`}>
-        <Input
-          value={value}
-          label={label}
-          placeholder={description.Name}
-          onEnter={this.onChange}
-          disabled={this.disabled}
-        />
-      </div>
-    );
-  }
+  return (
+    <div className={`${disabled ? styles.disabled : ''}`}>
+      <Input
+        value={value}
+        label={<PropertyLabel description={description} />}
+        placeholder={description.Name}
+        onEnter={onChange}
+        disabled={description.MetaData.isReadOnly}
+      />
+    </div>
+  );
 }
 
 StringProperty.propTypes = {
@@ -62,11 +33,12 @@ StringProperty.propTypes = {
     Identifier: PropTypes.string,
     Name: PropTypes.string,
     MetaData: PropTypes.shape({
-      isReadOnly: PropTypes.bool,
+      isReadOnly: PropTypes.bool
     }),
-    description: PropTypes.string,
+    description: PropTypes.string
   }).isRequired,
-  value: PropTypes.any
+  dispatcher: PropTypes.object.isRequired,
+  value: PropTypes.any.isRequired
 };
 
 export default StringProperty;

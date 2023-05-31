@@ -1,14 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
+
+import { openUrl, stopEventPropagation } from '../../../utils/helpers';
 import Button from '../../common/Input/Button/Button';
-import SkyBrowserTooltip from './SkyBrowserTooltip';
-import styles from './SkyBrowserTooltip.scss';
+import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
+
 import esaSkyLogo from './ESASKY.png';
+import SkyBrowserTooltip from './SkyBrowserTooltip';
+
+import styles from './SkyBrowserTooltip.scss';
 
 function SkyBrowserInfoBox({
   dec, fov, hasCelestialCoords, infoPlacement, ra, text, textUrl, title, ...props
- }) {
+}) {
   const [isPopupShowing, setIsPopupShowing] = React.useState(false);
 
   const ref = React.useRef(null);
@@ -17,35 +21,30 @@ function SkyBrowserInfoBox({
     if (!ref.current) {
       return { top: '0px', left: '0px' };
     }
-    const { top, left, right, bottom } = ref.current.getBoundingClientRect();
-    return { top: `${top}`, left: `${right}`};
-  }
-
-  function openImageUrl(imageUrl) {
-    const newWindow = window.open(imageUrl, '_blank', 'noopener,noreferrer');
-    if (newWindow) newWindow.opener = null;
+    const {
+      top, right
+    } = ref.current.getBoundingClientRect();
+    return { top: `${top}`, left: `${right}` };
   }
 
   function togglePopup(e) {
     setIsPopupShowing(!isPopupShowing);
-    if (!e) var e = window.event;
-    e.cancelBubble = true;
-    if (e.stopPropagation) e.stopPropagation();
+    stopEventPropagation(e);
   }
 
-  function openEsaSky(ra, dec, fov) {
-    let esaSkyUrl = "http://sky.esa.int/?target="+ra+"%"+dec+"&hips=DSS2+color&fov="+fov+"&cooframe=J2000&sci=true&lang=en";
-    window.open(esaSkyUrl, "EsaSky");
+  function openEsaSky() {
+    const esaSkyUrl = `http://sky.esa.int/?target=${ra}%${dec}&hips=DSS2+color&fov=${fov}&cooframe=J2000&sci=true&lang=en`;
+    window.open(esaSkyUrl, 'EsaSky');
   }
 
   return (
-    <span ref={(el) => ref.current = el} {...props}>
+    <span ref={ref} {...props}>
       <Button
         transparent
         small
         onClick={togglePopup}
       >
-        <MaterialIcon icon={"help"} style={{fontSize: '15px'}}/>
+        <MaterialIcon icon="help" style={{ fontSize: '15px' }} />
       </Button>
       {isPopupShowing && (
         <SkyBrowserTooltip
@@ -54,22 +53,22 @@ function SkyBrowserInfoBox({
         >
           <span className={styles.tooltipTitle}>{ title }</span>
           {text}
-          {textUrl !== "" && (
+          {textUrl !== '' && (
             <Button
               className={styles.tooltipButton}
-              onClick={() => openImageUrl(textUrl)}
+              onClick={() => openUrl(textUrl)}
             >
               Read more
             </Button>
           )}
           {hasCelestialCoords && (
             <Button
-              onClick={() => { openEsaSky(ra, dec, fov) }}
+              onClick={() => { openEsaSky(); }}
               className={styles.tooltipButton}
               transparent
               small
             >
-              <img src={esaSkyLogo} alt="EsaSky" style={{width:'100%'}} />
+              <img src={esaSkyLogo} alt="EsaSky" style={{ width: '100%' }} />
             </Button>
           )}
         </SkyBrowserTooltip>
@@ -79,18 +78,23 @@ function SkyBrowserInfoBox({
 }
 
 SkyBrowserInfoBox.defaultProps = {
-  infoPlacement: "bottom-left"
+  infoPlacement: 'bottom-left',
+  dec: 0,
+  fov: 0,
+  ra: 0,
+  text: '',
+  textUrl: ''
 };
 
 SkyBrowserInfoBox.propTypes = {
   dec: PropTypes.number,
   fov: PropTypes.number,
-  hasCelestialCoords: PropTypes.bool,
+  hasCelestialCoords: PropTypes.bool.isRequired,
   infoPlacement: PropTypes.string,
   ra: PropTypes.number,
   text: PropTypes.string,
   textUrl: PropTypes.string,
-  title: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired
 };
 
 export default SkyBrowserInfoBox;

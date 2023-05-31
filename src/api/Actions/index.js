@@ -1,382 +1,380 @@
-import { actionTypes } from './actionTypes';
+import actionTypes from './actionTypes';
 
 export const updatePropertyValue = (uri, value) => ({
   type: actionTypes.updatePropertyValue,
   payload: {
     uri,
-    value,
-  },
+    value
+  }
 });
 
 export const setPropertyValue = (uri, value) => ({
   type: actionTypes.setPropertyValue,
   payload: {
     uri,
-    value,
-  },
+    value
+  }
 });
 
-export const addPropertyOwners = propertyOwners => ({
+export const addPropertyOwners = (propertyOwners) => ({
   type: actionTypes.addPropertyOwners,
   payload: {
-    propertyOwners,
-  },
+    propertyOwners
+  }
 });
 
-export const addProperties = properties => ({
+export const addProperties = (properties) => ({
   type: actionTypes.addProperties,
   payload: {
-    properties,
-  },
+    properties
+  }
 });
 
 export const refreshGroups = () => ({
   type: actionTypes.refreshGroups,
-  payload: {},
+  payload: {}
 });
 
-export const subscribeToProperty = uri => ({
+export const subscribeToProperty = (uri) => ({
   type: actionTypes.subscribeToProperty,
   payload: {
-    uri,
-  },
+    uri
+  }
 });
 
-export const unsubscribeToProperty = uri => ({
+export const unsubscribeToProperty = (uri) => ({
   type: actionTypes.unsubscribeToProperty,
   payload: {
-    uri,
-  },
+    uri
+  }
 });
 
 export const subscribeToTime = () => ({
   type: actionTypes.subscribeToTime,
-  payload: {},
+  payload: {}
 });
 
 export const unsubscribeToTime = () => ({
   type: actionTypes.unsubscribeToTime,
-  payload: {},
+  payload: {}
 });
 
-export const updateTime = timeData => ({
+export const updateTime = (timeData) => ({
   type: actionTypes.updateTime,
-  payload: timeData,
+  payload: timeData
 });
 
 export const connectFlightController = () => ({
   type: actionTypes.connectFlightController,
-  payload: {},
+  payload: {}
 });
 
 export const disconnectFlightController = () => ({
   type: actionTypes.disconnectFlightController,
-  payload: {},
+  payload: {}
 });
 
-export const sendFlightControl = flightControl => ({
+export const sendFlightControl = (flightControl) => ({
   type: actionTypes.sendFlightControl,
-  payload: flightControl,
+  payload: flightControl
 });
 
 export const startConnection = () => ({
   type: actionTypes.startConnection,
   payload: {
-  },
+  }
 });
 
 export const onOpenConnection = () => ({
   type: actionTypes.onOpenConnection,
   payload: {
-  },
+  }
 });
 
 export const reloadPropertyTree = () => ({
   type: actionTypes.reloadPropertyTree,
   payload: {
-  },
+  }
 });
 
 export const onCloseConnection = () => ({
   type: actionTypes.onCloseConnection,
   payload: {
-  },
+  }
 });
 
-export const changeConnectionWait = value => ({
+export const changeConnectionWait = (value) => ({
   type: actionTypes.changeConnectionWait,
   payload: {
-    value,
-  },
+    value
+  }
 });
 
-export const fetchData = id => ({
+export const fetchData = (id) => ({
   type: actionTypes.fetchData,
   payload: {
-    id,
-  },
+    id
+  }
 });
 
 export const fetchDataDone = (data, id) => ({
   type: actionTypes.fetchDataDone,
   payload: {
     data,
-    id,
-  },
+    id
+  }
 });
 
-export const fetchDataFailed = id => ({
+export const fetchDataFailed = (id) => ({
   type: actionTypes.fetchDataFailed,
   payload: {
-    id,
-  },
+    id
+  }
 });
 
-export const addStoryTree = story => ({
+export const addStoryTree = (story) => ({
   type: actionTypes.addStoryTree,
   payload: {
-    story,
-  },
+    story
+  }
 });
 
-export const resetStoryTree = reset => ({
+export const resetStoryTree = (reset) => ({
   type: actionTypes.resetStoryTree,
   payload: {
-    reset,
-  },
+    reset
+  }
 });
 
-export const addStoryInfo = info => ({
+export const addStoryInfo = (info) => ({
   type: actionTypes.addStoryInfo,
   payload: {
-    info,
-  },
+    info
+  }
 });
 
 export const resetStoryInfo = () => ({
   type: actionTypes.resetStoryInfo,
   payload: {
-  },
+  }
 });
 
 export const getVersion = () => ({
   type: actionTypes.getVersion,
-  payload: {},
+  payload: {}
 });
 
 export const getMissions = () => ({
   type: actionTypes.getMissions,
-  payload: {},
+  payload: {}
 });
 
 export const getDocumentation = () => ({
   type: actionTypes.getDocumentation,
-  payload: {},
+  payload: {}
 });
 
-export const initializeLuaApi = data => ({
+export const initializeLuaApi = (data) => ({
   type: actionTypes.initializeLuaApi,
-  payload: data,
+  payload: data
 });
 
-export const initializeVersion = data => ({
+export const initializeVersion = (data) => ({
   type: actionTypes.initializeVersion,
-  payload: data,
+  payload: data
 });
 
-export const initializeMissions = data => ({
+export const initializeMissions = (data) => ({
   type: actionTypes.initializeMissions,
   payload: data
 });
 
-export const initializeDocumentation = data => ({
+export const initializeDocumentation = (data) => ({
   type: actionTypes.initializeDocumentation,
-  payload: data,
+  payload: data
 });
 
-export const loadExoplanetsData = luaApi => ({
+export const loadExoplanetsData = (luaApi) => ({
   type: actionTypes.loadExoplanetsData,
-  payload: luaApi,
+  payload: luaApi
 });
 
-export const initializeExoplanets = data => ({
+export const initializeExoplanets = (data) => ({
   type: actionTypes.initializeExoplanets,
-  payload: data,
+  payload: data
 });
 
-export const addExoplanets = data => ({
+export const addExoplanets = (data) => ({
   type: actionTypes.addExoplanets,
-  payload: data,
+  payload: data
 });
 
-export const removeExoplanets = data => ({
+export const removeExoplanets = (data) => ({
   type: actionTypes.removeExoplanets,
-  payload: data,
+  payload: data
 });
 
-export const loadSkyBrowserData = luaApi => ({
+export const loadSkyBrowserData = (luaApi) => ({
   type: actionTypes.loadSkyBrowserData,
-  payload: luaApi,
+  payload: luaApi
 });
 
-export const initializeSkyBrowser = data => ({
+export const initializeSkyBrowser = (data) => ({
   type: actionTypes.initializeSkyBrowser,
   payload: data
 });
 
-export const subscribeToSkyBrowser = data => ({
+export const subscribeToSkyBrowser = (data) => ({
   type: actionTypes.subscribeToSkyBrowser,
   payload: data
 });
 
-export const unsubscribeToSkyBrowser = data => ({
+export const unsubscribeToSkyBrowser = (data) => ({
   type: actionTypes.unsubscribeToSkyBrowser,
   payload: data
 });
 
-export const updateSkyBrowser = data => ({
+export const updateSkyBrowser = (data) => ({
   type: actionTypes.updateSkyBrowser,
-  payload: data,
+  payload: data
 });
 
-export const subscribeToCamera = data => ({
+export const subscribeToCamera = (data) => ({
   type: actionTypes.subscribeToCamera,
   payload: data
 });
 
-export const updateCamera = data => ({
+export const updateCamera = (data) => ({
   type: actionTypes.updateCamera,
   payload: data
 });
 
-export const unsubscribeToCamera = data => ({
+export const unsubscribeToCamera = (data) => ({
   type: actionTypes.unsubscribeToCamera,
   payload: data
 });
 
 export const subscribeToShortcuts = () => ({
   type: actionTypes.subscribeToShortcuts,
-  payload: {},
+  payload: {}
 });
 
 export const unsubscribeToShortcuts = () => ({
   type: actionTypes.unsubscribeToShortcuts,
-  payload: {},
+  payload: {}
 });
 
-export const initializeShortcuts = data => ({
+export const initializeShortcuts = (data) => ({
   type: actionTypes.initializeShortcuts,
-  payload: data,
+  payload: data
 });
 
-export const triggerAction = data => ({
+export const triggerAction = (data) => ({
   type: actionTypes.triggerAction,
-  payload: data,
+  payload: data
 });
 
-export const setActionsPath = data => ({
+export const setActionsPath = (data) => ({
   type: actionTypes.setActionsPath,
-  payload: data,
+  payload: data
 });
 
-export const toggleKeybindViewer = data => ({
+export const toggleKeybindViewer = (data) => ({
   type: actionTypes.toggleKeybindViewer,
-  payload: data,
+  payload: data
 });
 
-
-export const setNavigationAction = data => ({
+export const setNavigationAction = (data) => ({
   type: actionTypes.setNavigationAction,
-  payload: data,
+  payload: data
 });
 
-export const setPopoverVisibility = data => ({
+export const setPopoverVisibility = (data) => ({
   type: actionTypes.setPopoverVisibility,
-  payload: data,
+  payload: data
 });
 
-export const setShowAbout = show => ({
+export const setShowAbout = (show) => ({
   type: actionTypes.setShowAbout,
-  payload: show,
+  payload: show
 });
 
-export const setPopoverAttachment = data => ({
+export const setPopoverAttachment = (data) => ({
   type: actionTypes.setPopoverPosition,
-  payload: data,
+  payload: data
 });
 
-export const setPopoverPosition = data => ({
+export const setPopoverPosition = (data) => ({
   type: actionTypes.setPopoverPosition,
-  payload: data,
+  payload: data
 });
 
-export const addNodePropertyPopover = data => ({
+export const addNodePropertyPopover = (data) => ({
   type: actionTypes.addNodePropertyPopover,
-  payload: data,
+  payload: data
 });
 
-export const removeNodePropertyPopover = data => ({
+export const removeNodePropertyPopover = (data) => ({
   type: actionTypes.removeNodePropertyPopover,
-  payload: data,
+  payload: data
 });
 
-export const addNodeMetaPopover = data => ({
+export const addNodeMetaPopover = (data) => ({
   type: actionTypes.addNodeMetaPopover,
-  payload: data,
+  payload: data
 });
 
-export const removeNodeMetaPopover = data => ({
+export const removeNodeMetaPopover = (data) => ({
   type: actionTypes.removeNodeMetaPopover,
-  payload: data,
+  payload: data
 });
 
-
-export const setPopoverActiveTab = data => ({
+export const setPopoverActiveTab = (data) => ({
   type: actionTypes.setPopoverActiveTab,
-  payload: data,
+  payload: data
 });
 
-export const setPropertyTreeExpansion = data => ({
+export const setPropertyTreeExpansion = (data) => ({
   type: actionTypes.setPropertyTreeExpansion,
-  payload: data,
+  payload: data
 });
 
 export const subscribeToEngineMode = () => ({
   type: actionTypes.subscribeToEngineMode,
-  payload: {},
+  payload: {}
 });
 
 export const unsubscribeToEngineMode = () => ({
   type: actionTypes.unsubscribeToEngineMode,
-  payload: {},
+  payload: {}
 });
 
 export const refreshEngineMode = () => ({
   type: actionTypes.refreshEngineMode,
-  payload: {},
+  payload: {}
 });
 
-export const updateEngineMode = data => ({
+export const updateEngineMode = (data) => ({
   type: actionTypes.updateEngineMode,
-  payload: data,
+  payload: data
 });
 
 export const subscribeToSessionRecording = () => ({
   type: actionTypes.subscribeToSessionRecording,
-  payload: {},
+  payload: {}
 });
 
 export const unsubscribeToSessionRecording = () => ({
   type: actionTypes.unsubscribeToSessionRecording,
-  payload: {},
+  payload: {}
 });
 
 export const refreshSessionRecording = () => ({
   type: actionTypes.refreshSessionRecording,
-  payload: {},
+  payload: {}
 });
 
-export const updateSessionRecording = data => ({
+export const updateSessionRecording = (data) => ({
   type: actionTypes.updateSessionRecording,
-  payload: data,
+  payload: data
 });

@@ -1,13 +1,17 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import styles from './FocusEntry.scss';
+
 import Button from '../../common/Input/Button/Button';
 import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
 import { useContextRefs } from '../../GettingStartedTour/GettingStartedContext';
 
-function FocusEntry({ luaApi, name, identifier, onSelect, active, showNavigationButtons, closePopoverIfSet }) {
+import styles from './FocusEntry.scss';
 
+function FocusEntry({
+  name, identifier, onSelect, active, showNavigationButtons, closePopoverIfSet
+}) {
+  const luaApi = useSelector((state) => state.luaApi);
   function isActive() {
     return identifier === active;
   }
@@ -21,8 +25,7 @@ function FocusEntry({ luaApi, name, identifier, onSelect, active, showNavigation
   const flyTo = (event) => {
     if (event.shiftKey) {
       luaApi.pathnavigation.flyTo(identifier, 0.0);
-    }
-    else {
+    } else {
       luaApi.pathnavigation.flyTo(identifier);
     }
     event.stopPropagation();
@@ -32,8 +35,7 @@ function FocusEntry({ luaApi, name, identifier, onSelect, active, showNavigation
   const zoomToFocus = (event) => {
     if (event.shiftKey) {
       luaApi.pathnavigation.zoomToFocus(0.0);
-    }
-    else {
+    } else {
       luaApi.pathnavigation.zoomToFocus();
     }
     event.stopPropagation();
@@ -43,16 +45,19 @@ function FocusEntry({ luaApi, name, identifier, onSelect, active, showNavigation
   const refs = useContextRefs();
 
   return (
-    <li
+    <div
       className={`${styles.entry} ${isActive() && styles.active}`}
       onClick={select}
+      onKeyPress={select}
       key={name}
-      ref={el => refs.current[name] = el}
+      role="button"
+      ref={(el) => { refs.current[name] = el; }}
+      tabIndex={0}
     >
       <span className={styles.title}>
         { name || identifier }
       </span>
-      {showNavigationButtons &&
+      {showNavigationButtons && (
         <div className={styles.buttonContainer}>
           { isActive() && (
             <Button className={styles.flyToButton} onClick={zoomToFocus} title="Zoom to">
@@ -63,31 +68,26 @@ function FocusEntry({ luaApi, name, identifier, onSelect, active, showNavigation
             <MaterialIcon className={styles.buttonIcon} icon="flight" />
           </Button>
         </div>
-      }
-    </li>
+      )}
+    </div>
   );
 }
 
-const mapStateToProps = state => ({
-  luaApi: state.luaApi,
-});
-
 FocusEntry.propTypes = {
+  closePopoverIfSet: PropTypes.func,
   identifier: PropTypes.string.isRequired,
   name: PropTypes.string,
   onSelect: PropTypes.func,
   active: PropTypes.string,
-  showNavigationButtons: PropTypes.bool,
-  luaApi: PropTypes.object.isRequired,
+  showNavigationButtons: PropTypes.bool
 };
 
 FocusEntry.defaultProps = {
+  closePopoverIfSet: () => {},
   name: undefined,
   onSelect: null,
   showNavigationButtons: false,
-  active: '',
+  active: ''
 };
-
-FocusEntry = connect(mapStateToProps)(FocusEntry);
 
 export default FocusEntry;

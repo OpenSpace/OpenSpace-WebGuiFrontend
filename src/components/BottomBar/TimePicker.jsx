@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
 import {
-  setPopoverVisibility, subscribeToSessionRecording, subscribeToTime,
-  unsubscribeToSessionRecording, unsubscribeToTime, 
-  subscribeToEngineMode, unsubscribeToEngineMode
+  setPopoverVisibility, subscribeToEngineMode, subscribeToSessionRecording,
+  subscribeToTime, unsubscribeToEngineMode,
+  unsubscribeToSessionRecording, unsubscribeToTime
 } from '../../api/Actions';
 import {
   EngineModeCameraPath,
@@ -20,25 +20,113 @@ import LoadingString from '../common/LoadingString/LoadingString';
 import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import Popover from '../common/Popover/Popover';
 import SmallLabel from '../common/SmallLabel/SmallLabel';
-import Picker from './Picker';
-import SimulationIncrement from './SimulationIncrement';
-import styles from './TimePicker.scss';
 import { useContextRefs } from '../GettingStartedTour/GettingStartedContext';
 
-function TimePicker({ startSubscriptions, stopSubscriptions, time, isPaused, targetDeltaTime, luaApi, popoverVisible, setPopoverVisibility, engineMode, sessionRecordingState }) {
+import Picker from './Picker';
+import SimulationIncrement from './SimulationIncrement';
 
+import styles from './TimePicker.scss';
+
+function TimePicker() {
   const [pendingTime, setPendingTime] = React.useState(new Date());
   const [showCalendar, setShowCalendar] = React.useState(false);
   const [useLock, setUseLock] = React.useState(false);
   const refs = useContextRefs();
 
+  const engineMode = useSelector((state) => state.engineMode.mode);
+  const time = useSelector((state) => state.time.time);
+  const targetDeltaTime = useSelector((state) => state.time.targetDeltaTime);
+  const isPaused = useSelector((state) => state.time.isPaused);
+  const popoverVisible = useSelector((state) => state.local.popovers.timePicker.visible);
+  const sessionRecordingState = useSelector((state) => state.sessionRecording.recordingState);
+  const luaApi = useSelector((state) => state.luaApi);
+
+  const dispatch = useDispatch();
+
   React.useEffect(() => {
-    startSubscriptions();
-    return () => stopSubscriptions();
-  }, [startSubscriptions, stopSubscriptions])
+    dispatch(subscribeToTime());
+    dispatch(subscribeToSessionRecording());
+    dispatch(subscribeToEngineMode());
+    return () => {
+      dispatch(unsubscribeToTime());
+      dispatch(unsubscribeToSessionRecording());
+      dispatch(unsubscribeToEngineMode());
+    };
+  }, []);
+
+  function setDate(newTime) {
+    // Spice, that is handling the time parsing in OpenSpace does not support
+    // ISO 8601-style time zones (the Z). It does, however, always assume that UTC
+    // is given.
+    const fixedTimeString = newTime.toJSON().replace('Z', '');
+    luaApi.time.setTime(fixedTimeString);
+  }
+
+  function setDateRelative(delta) {
+    const newTime = new Date(time);
+    newTime.setSeconds(newTime.getSeconds() + delta);
+    // Spice, that is handling the time parsing in OpenSpace does not support
+    // ISO 8601-style time zones (the Z). It does, however, always assume that UTC
+    // is given.
+    const fixedTimeString = newTime.toJSON().replace('Z', '');
+    luaApi.time.setTime(fixedTimeString);
+  }
+
+  function interpolateDate(newTime) {
+    const fixedTimeString = newTime.toJSON().replace('Z', '');
+    luaApi.time.interpolateTime(fixedTimeString);
+  }
+
+  function interpolateDateRelative(delta) {
+    luaApi.time.interpolateTimeRelative(delta);
+  }
+
+  function toggleCalendar() {
+    setShowCalendar(!showCalendar);
+  }
+
+  function realtime(e) {
+    const shift = e.getModifierState('Shift');
+    if (shift) {
+      luaApi.time.setDeltaTime(1);
+    } else {
+      luaApi.time.interpolateDeltaTime(1);
+    }
+  }
+
+  function now() {
+    setDate(new Date());
+  }
+
+  function togglePopover() {
+    dispatch(setPopoverVisibility({
+      popover: 'timePicker',
+      visible: !popoverVisible
+    }));
+  }
+
+  function toggleLock() {
+    setPendingTime(new Date(time));
+    setUseLock(!useLock);
+  }
 
   function timeLabel() {
     return time && time.toUTCString();
+  }
+
+  function setToPendingTime() {
+    setDate(pendingTime);
+    setUseLock(false);
+  }
+
+  function interpolateToPendingTime() {
+    interpolateDate(pendingTime);
+    setUseLock(false);
+  }
+
+  function resetPendingTime() {
+    setPendingTime(new Date(time));
+    setUseLock(false);
   }
 
   function speedLabel() {
@@ -70,7 +158,7 @@ function TimePicker({ startSubscriptions, stopSubscriptions, time, isPaused, tar
       increment /= 24;
       unit = 'day';
 
-      if (increment < 365 / 12 * 2) {
+      if ((increment < 365) / (12 * 2)) {
         return;
       }
       increment /= 265 / 12;
@@ -89,19 +177,29 @@ function TimePicker({ startSubscriptions, stopSubscriptions, time, isPaused, tar
     return `${sign + increment} ${unit}${pluralSuffix} / second${isPaused ? ' (Paused)' : ''}`;
   }
 
-  function date() {
-    const t = timeLabel;
-    return t.split(' ', 4).join(' ');
+  function changeDate(event) {
+    if (useLock) {
+      setPendingTime(new Date(event.time));
+    } else if (event.interpolate) {
+      if (event.relative) {
+        interpolateDateRelative(event.delta);
+      } else {
+        interpolateDate(event.time);
+      }
+    } else if (event.relative) {
+      setDateRelative(event.delta);
+    } else {
+      setDate(event.time);
+    }
   }
 
   function calendar() {
-
     return showCalendar && (
-    <div>
-      <hr className={Popover.styles.delimiter} />
-      <Calendar selected={time} activeMonth={time} onChange={changeDate} todayButton />
-      <hr className={Popover.styles.delimiter} />
-    </div>
+      <div>
+        <hr className={Popover.styles.delimiter} />
+        <Calendar selected={time} activeMonth={time} onChange={changeDate} todayButton />
+        <hr className={Popover.styles.delimiter} />
+      </div>
     );
   }
 
@@ -116,6 +214,7 @@ function TimePicker({ startSubscriptions, stopSubscriptions, time, isPaused, tar
   }
 
   function popover() {
+    const displayedTime = useLock ? pendingTime : time;
     return (
       <Popover
         className={`${styles.timePopover} ${Picker.Popover}`}
@@ -130,7 +229,7 @@ function TimePicker({ startSubscriptions, stopSubscriptions, time, isPaused, tar
               <MaterialIcon icon={useLock ? 'lock' : 'lock_open'} />
             </Button>
           </div>
-          <Time time={useLock ? pendingTime : time} onChange={changeDate} />
+          {displayedTime && <Time time={displayedTime} onChange={changeDate} />}
           <div style={{ marginTop: 20 }}>
             <Button onClick={toggleCalendar} title="Toggle calendar" small transparent={!showCalendar}>
               <MaterialIcon icon="view_day" />
@@ -161,108 +260,21 @@ function TimePicker({ startSubscriptions, stopSubscriptions, time, isPaused, tar
 
   // OBS! same as origin picker
   function pickerStyle() {
-    const isSessionRecordingPlaying = (engineMode === EngineModeSessionRecordingPlayback) 
-      && (sessionRecordingState === SessionStatePlaying);
+    const isSessionRecordingPlaying = (engineMode === EngineModeSessionRecordingPlayback) &&
+      (sessionRecordingState === SessionStatePlaying);
 
-    const isSessionRecordingPaused = (engineMode === EngineModeSessionRecordingPlayback) 
-      && (sessionRecordingState === SessionStatePaused);
+    const isSessionRecordingPaused = (engineMode === EngineModeSessionRecordingPlayback) &&
+      (sessionRecordingState === SessionStatePaused);
 
     const isCameraPathPlaying = (engineMode === EngineModeCameraPath);
 
-    if (isSessionRecordingPaused) {  // TODO: add camera path paused check
+    if (isSessionRecordingPaused) { // TODO: add camera path paused check
       return Picker.DisabledOrange;
     }
-    else if (isCameraPathPlaying || isSessionRecordingPlaying) {
+    if (isCameraPathPlaying || isSessionRecordingPlaying) {
       return Picker.DisabledBlue;
     }
     return '';
-  }
-
-  function setToPendingTime() {
-    setDate(pendingTime);
-    setUseLock(false);
-  }
-
-  function interpolateToPendingTime() {
-    interpolateDate(pendingTime);
-    setUseLock(false);
-  }
-
-  function resetPendingTime() {
-    setPendingTime(new Date(time));
-    setUseLock(false);
-  }
-
-  function setDate(time) {
-    // Spice, that is handling the time parsing in OpenSpace does not support
-    // ISO 8601-style time zones (the Z). It does, however, always assume that UTC
-    // is given.
-    const fixedTimeString = time.toJSON().replace('Z', '');
-    luaApi.time.setTime(fixedTimeString);
-  }
-
-  function setDateRelative(delta) {
-    const newTime = new Date(time);
-    newTime.setSeconds(newTime.getSeconds() + delta);
-    // Spice, that is handling the time parsing in OpenSpace does not support
-    // ISO 8601-style time zones (the Z). It does, however, always assume that UTC
-    // is given.
-    const fixedTimeString = newTime.toJSON().replace('Z', '');
-    luaApi.time.setTime(fixedTimeString);
-  }
-
-  function interpolateDate(time) {
-    const fixedTimeString = time.toJSON().replace('Z', '');
-    luaApi.time.interpolateTime(fixedTimeString);
-  }
-
-  function interpolateDateRelative(delta) {
-    luaApi.time.interpolateTimeRelative(delta);
-  }
-
-  function changeDate(event) {
-    const {
-      time, interpolate, delta, relative,
-    } = event;
-    if (useLock) {
-      setPendingTime(new Date(time));
-    } else if (interpolate) {
-      if (relative) {
-        interpolateDateRelative(delta);
-      } else {
-        interpolateDate(time);
-      }
-    } else if (relative) {
-      setDateRelative(delta);
-    } else {
-      setDate(time);
-    }
-  }
-
-  function togglePopover() {
-    setPopoverVisibility(!popoverVisible);
-  }
-
-  function toggleLock() {
-    setPendingTime(new Date(time));
-    setUseLock(!useLock);
-  }
-
-  function toggleCalendar() {
-    setShowCalendar(!showCalendar);
-  }
-
-  function realtime(e) {
-    const shift = e.getModifierState('Shift');
-    if (shift) {
-      luaApi.time.setDeltaTime(1);
-    } else {
-      luaApi.time.interpolateDeltaTime(1);
-    }
-  }
-
-  function now() {
-    setDate(new Date());
   }
 
   const enabled = (engineMode === EngineModeUserControl);
@@ -272,11 +284,11 @@ function TimePicker({ startSubscriptions, stopSubscriptions, time, isPaused, tar
   const pickerClasses = [
     styles.timePicker,
     popoverEnabledAndVisible ? Picker.Active : '',
-    disableClass,
+    disableClass
   ].join(' ');
 
   return (
-    <div ref={el => refs.current["Time"] = el} className={Picker.Wrapper}>
+    <div ref={(el) => { refs.current.Time = el; }} className={Picker.Wrapper}>
       <Picker onClick={enabled ? () => togglePopover() : undefined} className={pickerClasses}>
         <div className={Picker.Title}>
           <span className={Picker.Name}>
@@ -293,55 +305,12 @@ function TimePicker({ startSubscriptions, stopSubscriptions, time, isPaused, tar
   );
 }
 
-
 TimePicker.propTypes = {
-  engineMode: PropTypes.string.isRequired,
-  isPaused: PropTypes.bool,
-  luaApi: PropTypes.object,
-  popoverVisible: PropTypes.bool,
-  sessionRecordingState: PropTypes.string.isRequired,
-  targetDeltaTime: PropTypes.number,
-  time: PropTypes.instanceOf(Date),
+
 };
 
 TimePicker.defaultProps = {
-  isPaused: undefined,
-  luaApi: undefined,
-  popoverVisible: false,
-  time: undefined,
-  targetDeltaTime: undefined,
+
 };
-
-const mapStateToProps = state => ({
-  engineMode: state.engineMode.mode,
-  time: state.time.time,
-  // deltaTime: state.time.deltaTime, // unused
-  targetDeltaTime: state.time.targetDeltaTime,
-  isPaused: state.time.isPaused,
-  popoverVisible: state.local.popovers.timePicker.visible,
-  sessionRecordingState: state.sessionRecording.recordingState,
-  luaApi: state.luaApi,
-});
-
-const mapDispatchToProps = dispatch => ({
-  startSubscriptions: () => {
-    dispatch(subscribeToTime());
-    dispatch(subscribeToSessionRecording());
-    dispatch(subscribeToEngineMode());
-  },
-  stopSubscriptions: () => {
-    dispatch(unsubscribeToTime());
-    dispatch(unsubscribeToSessionRecording());
-    dispatch(unsubscribeToEngineMode());
-  },
-  setPopoverVisibility: (visible) => {
-    dispatch(setPopoverVisibility({
-      popover: 'timePicker',
-      visible,
-    }));
-  },
-});
-
-TimePicker = connect(mapStateToProps, mapDispatchToProps)(TimePicker);
 
 export default TimePicker;

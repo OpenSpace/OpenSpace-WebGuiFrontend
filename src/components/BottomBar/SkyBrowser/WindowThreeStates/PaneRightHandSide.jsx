@@ -1,73 +1,70 @@
-import React, { Component } from 'react';
+// Turning off linting for no using before define in this file
+// due to the many useEffects that use functions, @ylvse 2023-05-24
+/* eslint-disable no-use-before-define */
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Resizable } from 're-resizable';
+
 import styles from './WindowThreeStates.scss';
 
-class PaneRightHandSide extends Component {
-  constructor(props) {
-    super(props);
-    this.onResizeStop = this.onResizeStop.bind(this);
-  }
+function PaneRightHandSide({ children, sizeCallback, width }) {
+  const windowDiv = React.useRef(null);
 
-  onResizeStop() {
-    const { sizeCallback } = this.props;
+  React.useEffect(() => {
+    onResizeStop();
+    window.addEventListener('resize', onResizeStop);
+    return () => window.removeEventListener('resize', onResizeStop);
+  }, []);
+
+  function onResizeStop() {
     if (sizeCallback) {
-      sizeCallback(this.windowDiv.clientWidth, this.windowDiv.clientHeight)
+      const { clientHeight, clientWidth } = windowDiv.current;
+      sizeCallback(clientWidth, clientHeight);
     }
   }
 
-  componentDidMount() {
-    this.onResizeStop();
-    window.addEventListener('resize', this.onResizeStop);
-  }
+  const resizablePlacement = {
+    top: false,
+    right: false,
+    bottom: false,
+    left: true,
+    topRight: false,
+    bottomRight: false,
+    bottomLeft: false,
+    topLeft: false
+  };
 
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.onResizeStop)
-  }
-
-  render() {
-    const { children } = this.props;
-
-    const resizablePlacement = {
-      top: false,
-      right: false,
-      bottom: false,
-      left: true,
-      topRight: false,
-      bottomRight: false,
-      bottomLeft: false,
-      topLeft: false,
-    };
-
-    return (
-      <section
-        className={`${styles.pane}`}
-        ref={(divElement) => { this.windowDiv = divElement; }}
+  return (
+    <section
+      className={styles.pane}
+      ref={windowDiv}
+    >
+      <Resizable
+        enable={resizablePlacement}
+        defaultSize={{
+          width,
+          height: '100%'
+        }}
+        minWidth={250}
+        handleClasses={{ left: styles.leftHandle }}
+        onResizeStop={onResizeStop}
+        onResize={onResizeStop}
       >
-        <Resizable
-          enable={resizablePlacement}
-          defaultSize={{
-            width: this.props.width,
-            height: '100%',
-          }}
-          minWidth={250}
-          handleClasses={{ left: styles.leftHandle }}
-          onResizeStop={this.onResizeStop}
-          onResize={this.onResizeStop}
-        >
-          {children}
-        </Resizable>
-      </section>
-    );
-  }
+        {children}
+      </Resizable>
+    </section>
+  );
 }
 
 PaneRightHandSide.propTypes = {
   children: PropTypes.node,
+  sizeCallback: PropTypes.func,
+  width: PropTypes.string.isRequired // css style for width
 };
 
 PaneRightHandSide.defaultProps = {
   children: [],
+  sizeCallback: () => {}
 };
 
 PaneRightHandSide.styles = styles;
