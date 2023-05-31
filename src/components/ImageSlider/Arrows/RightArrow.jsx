@@ -7,7 +7,7 @@ import styles from './Arrows.scss';
 
 function RightArrow({ nextSlide }) {
   return (
-    <div className={styles.RightArrow} onClick={nextSlide}>
+    <div className={styles.RightArrow} onClick={nextSlide} role="button" tabIndex="0">
       <Icon icon="keyboard_arrow_right" className={styles.Icon} />
     </div>
   );
