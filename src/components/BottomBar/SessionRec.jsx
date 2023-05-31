@@ -38,6 +38,7 @@ function SessionRec() {
   const [outputFramerate, setOutputFramerate] = React.useState(60);
   const [loopPlayback, setLoopPlayback] = React.useState(false);
   const [showPopover, setShowPopover] = React.useState(false);
+  const [waitForGlobeRendering, setWaitForGlobeRendering] = React.useState(false);
 
   const luaApi = useSelector((state) => state.luaApi);
 
@@ -119,7 +120,7 @@ function SessionRec() {
       luaApi.sessionRecording.enableTakeScreenShotDuringPlayback(parseInt(outputFramerate, 10));
     }
     if (forceTime) {
-      luaApi.sessionRecording.startPlayback(filenamePlayback, loopPlayback);
+      luaApi.sessionRecording.startPlayback(filenamePlayback, loopPlayback, waitForGlobeRendering);
     } else {
       luaApi.sessionRecording.startPlaybackRecordedTime(filenamePlayback, loopPlayback);
     }
@@ -312,8 +313,8 @@ function SessionRec() {
               <p>Output frames</p>
               <InfoBox
                 className={styles.infoBox}
-                text={`If checked, the specified number of frames will be recorded as 
-                screenshots and saved to disk. Per default, they are saved in the  
+                text={`If checked, the specified number of frames will be recorded as
+                screenshots and saved to disk. Per default, they are saved in the
                 user/screenshots folder. This feature can not be used together with
                 'loop playback'`}
               />
@@ -329,6 +330,21 @@ function SessionRec() {
               />
             )}
           </Row>
+          {shouldOutputFrames && (
+            <Checkbox
+              checked={waitForGlobeRendering}
+              setChecked={setWaitForGlobeRendering}
+              name="waitForGlobeRendering"
+            >
+              <p>Wait for Globe Loading</p>
+              <InfoBox
+                className={styles.infoBox}
+                text={`If this is checked, the session recording will pause the rendering
+                    while images on Globes are loading. While this usually works well, it might
+                    cause the application to freeze if a data provider is unavailable`}
+              />
+            </Checkbox>
+          )}
           <Row>
             <Select
               menuPlacement="top"
