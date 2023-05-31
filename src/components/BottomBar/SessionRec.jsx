@@ -247,7 +247,16 @@ function SessionRec() {
       .map((fname) => ({ value: fname, label: fname }));
 
     const fileNameLabel = <span>Name of recording</span>;
-    const fpsLabel = <span>FPS</span>;
+    const fpsLabel = (
+      <span>
+        FPS
+        {' '}
+        <InfoBox
+          className={styles.infoBox}
+          text="The number of frames that will be outputted per second in the saved recording"
+        />
+      </span>
+    );
     const textFormatLabel = <span>Text file format</span>;
 
     return (
@@ -303,7 +312,7 @@ function SessionRec() {
           >
             <p>Loop playback</p>
           </Checkbox>
-          <Row className={styles.lastRow}>
+          <Row>
             <Checkbox
               checked={shouldOutputFrames}
               name="outputFramesInput"
@@ -319,31 +328,37 @@ function SessionRec() {
                 'loop playback'`}
               />
             </Checkbox>
-            {shouldOutputFrames && (
-              <Input
-                value={outputFramerate}
-                label={fpsLabel}
-                placeholder="framerate"
-                className={styles.fpsInput}
-                visible={shouldOutputFrames ? 'visible' : 'hidden'}
-                onChange={(evt) => updateOutputFramerate(evt)}
-              />
-            )}
           </Row>
           {shouldOutputFrames && (
-            <Checkbox
-              checked={waitForGlobeRendering}
-              setChecked={setWaitForGlobeRendering}
-              name="waitForGlobeRendering"
-            >
-              <p>Wait for Globe Loading</p>
-              <InfoBox
-                className={styles.infoBox}
-                text={`If this is checked, the session recording will pause the rendering
-                    while images on Globes are loading. While this usually works well, it might
-                    cause the application to freeze if a data provider is unavailable`}
-              />
-            </Checkbox>
+            <>
+              <Row>
+                <span className={styles.checkBoxGroupIndent} />
+                <Input
+                  value={outputFramerate}
+                  label={fpsLabel}
+                  placeholder="framerate"
+                  className={styles.fpsInput}
+                  visible={shouldOutputFrames ? 'visible' : 'hidden'}
+                  onChange={(evt) => updateOutputFramerate(evt)}
+                />
+              </Row>
+              <Row>
+                <span className={styles.checkBoxGroupIndent} />
+                <Checkbox
+                  checked={waitForGlobeRendering}
+                  setChecked={setWaitForGlobeRendering}
+                  name="waitForGlobeRendering"
+                >
+                  <p>Wait for Globe loading</p>
+                  <InfoBox
+                    className={styles.infoBox}
+                    text={`If this is checked, the session recording will pause the rendering
+                      while images on Globes are loading. While this usually works well, it might
+                      cause the application to freeze if a data provider is unavailable`}
+                  />
+                </Checkbox>
+              </Row>
+            </>
           )}
           <Row>
             <Select
