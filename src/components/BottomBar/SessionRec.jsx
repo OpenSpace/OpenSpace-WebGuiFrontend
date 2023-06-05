@@ -24,7 +24,7 @@ import Select from '../common/Input/Select/Select';
 import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import Popover from '../common/Popover/Popover';
 import Row from '../common/Row/Row';
-
+import PropertyLabel from '../Sidebar/Properties/PropertyLabel';
 import Picker from './Picker';
 
 import styles from './SessionRec.scss';
@@ -247,17 +247,11 @@ function SessionRec() {
       .map((fname) => ({ value: fname, label: fname }));
 
     const fileNameLabel = <span>Name of recording</span>;
-    const fpsLabel = (
-      <span>
-        FPS
-        {' '}
-        <InfoBox
-          className={styles.infoBox}
-          text="The number of frames that will be outputted per second in the saved recording"
-        />
-      </span>
-    );
-    const textFormatLabel = <span>Text file format</span>;
+    const fpsDescription = {
+      Name: "FPS",
+      description: "The number of frames that will be outputted per second in the saved recording"
+    };
+    const fpsLabel = <PropertyLabel description={fpsDescription} />;
 
     return (
       <Popover
@@ -272,7 +266,7 @@ function SessionRec() {
             checked={useTextFormat}
             setChecked={setUseTextFormat}
           >
-            <p>{textFormatLabel}</p>
+            <p>Text file format</p>
           </Checkbox>
           <Row>
             <Input
