@@ -163,7 +163,6 @@ class PropertyOwnerComponent extends Component {
                         dragHandleTitleProps={item.dragHandleProps}
                         uri={uri}
                         expansionIdentifier={id(uri)}
-                        autoExpand={false}
                       />
                     </div>
                   )}
@@ -201,17 +200,14 @@ class PropertyOwnerComponent extends Component {
       >
         { this.renderLayersList() }
         { sortedSubowners.map((uri) => {
-          let autoExpand = sortedSubowners.length + properties.length === 1 ? true : undefined;
           const splitUri = uri.split('.');
-          if (splitUri.length > 0 && splitUri[splitUri.length - 1] === 'Renderable') {
-            autoExpand = true;
-          }
+          const isRenderable = splitUri.length > 0 && splitUri[splitUri.length - 1] === 'Renderable';
           return (
             <PropertyOwner
               key={uri}
               uri={uri}
               expansionIdentifier={`${expansionIdentifier}/${nodeExpansionIdentifier(uri)}`}
-              autoExpand={autoExpand}
+              autoExpand={isRenderable}
             />
           );
         })}
@@ -263,10 +259,10 @@ const mapSubStateToProps = (
   subProperties = subProperties.filter((prop) => isPropertyVisible(properties, prop));
 
   const shouldSort = shouldSortAlphabetically(uri);
-
   const nameResult = name || displayName(propertyOwners, properties, uri);
-  let isExpanded = propertyTreeExpansion[expansionIdentifier];
-  if (isExpanded === undefined) {
+
+  let isExpanded = Boolean(propertyTreeExpansion[expansionIdentifier]);
+  if (isExpanded === false) {
     isExpanded = autoExpand || false;
   }
 

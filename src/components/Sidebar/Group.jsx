@@ -57,12 +57,12 @@ function nodeExpansionIdentifier(path) {
 }
 
 function Group({
-  path, expansionIdentifier, autoExpand, showOnlyEnabled
+  path, expansionIdentifier, showOnlyEnabled
 }) {
   const isExpanded = useSelector((state) => {
     const expanded = state.local.propertyTreeExpansion[expansionIdentifier];
-    return (expanded === undefined) ? autoExpand : expanded;
-  }, shallowEqual);
+    return Boolean(expanded);
+  });
 
   const propertyOwners = useSelector((state) => {
     let owners;
@@ -131,7 +131,6 @@ function Group({
     >
       {
         sortedEntries.map((entry) => {
-          const expandSingle = entries.length === 1;
           switch (entry.type) {
             case 'group': {
               const childNodeIdentifier = `${expansionIdentifier}/${
@@ -139,7 +138,6 @@ function Group({
 
               return (
                 <Group
-                  autoExpand={autoExpand || expandSingle}
                   key={entry.payload}
                   path={entry.payload}
                   expansionIdentifier={childNodeIdentifier}
@@ -153,7 +151,6 @@ function Group({
 
               return (
                 <PropertyOwner
-                  autoExpand={autoExpand || expandSingle}
                   key={entry.payload}
                   uri={entry.payload}
                   expansionIdentifier={childNodeIdentifier}
@@ -172,12 +169,10 @@ function Group({
 Group.propTypes = {
   path: PropTypes.string.isRequired,
   expansionIdentifier: PropTypes.string.isRequired,
-  autoExpand: PropTypes.bool,
   showOnlyEnabled: PropTypes.bool
 };
 
 Group.defaultProps = {
-  autoExpand: false,
   showOnlyEnabled: false
 };
 
