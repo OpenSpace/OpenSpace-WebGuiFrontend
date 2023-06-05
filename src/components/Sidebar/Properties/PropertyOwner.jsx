@@ -261,8 +261,8 @@ const mapSubStateToProps = (
   const shouldSort = shouldSortAlphabetically(uri);
   const nameResult = name || displayName(propertyOwners, properties, uri);
 
-  let isExpanded = Boolean(propertyTreeExpansion[expansionIdentifier]);
-  if (isExpanded === false) {
+  let isExpanded = propertyTreeExpansion[expansionIdentifier];
+  if (isExpanded === undefined) {
     isExpanded = autoExpand || false;
   }
 
