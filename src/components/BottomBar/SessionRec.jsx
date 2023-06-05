@@ -38,7 +38,7 @@ function SessionRec() {
   const [outputFramerate, setOutputFramerate] = React.useState(60);
   const [loopPlayback, setLoopPlayback] = React.useState(false);
   const [showPopover, setShowPopover] = React.useState(false);
-  const [waitForGlobeRendering, setWaitForGlobeRendering] = React.useState(true);
+  const [waitForGlobeRendering, setWaitForGlobeRendering] = React.useState(false);
 
   const luaApi = useSelector((state) => state.luaApi);
 
