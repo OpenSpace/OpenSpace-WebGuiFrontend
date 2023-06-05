@@ -1,6 +1,7 @@
 import React from 'react';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
+import shallowEqualArrays from 'shallow-equal/arrays';
 
 import { setPropertyTreeExpansion } from '../../api/Actions';
 import { sortGroups } from '../../api/keys';
@@ -15,22 +16,18 @@ function isEnabled(properties, uri) {
   return properties[`${uri}.Renderable.Enabled`]?.value;
 }
 
-function enabledPropertyOwners(state, path) {
-  const data = state.groups[path] || {};
-  const propertyOwners = data.propertyOwners || [];
-  const props = state.propertyTree.properties;
-
-  // Filter PropertyOwners
-  return propertyOwners.filter((propertyOwner) => isEnabled(props, propertyOwner));
-}
-
 function shouldShowGroup(state, path) {
   const data = state.groups[path] || {};
   const subGroups = data.subgroups || [];
   // If there are any enabled property owners in the result,
   // show the groups
   if (subGroups.length === 0) {
-    return enabledPropertyOwners(state, path).length !== 0;
+    const propertyOwners = data.propertyOwners || [];
+    const props = state.propertyTree.properties;
+
+    // Filter PropertyOwners
+    const visible = propertyOwners.filter((propertyOwner) => isEnabled(props, propertyOwner));
+    return visible.length !== 0;
   }
   const initialValue = false;
   const result = subGroups.reduce(
@@ -63,43 +60,47 @@ function Group({
     const expanded = state.local.propertyTreeExpansion[expansionIdentifier];
     return Boolean(expanded);
   });
-
-  const propertyOwners = useSelector((state) => {
-    let owners;
-    if (showOnlyEnabled) {
-      owners = enabledPropertyOwners(state, path);
-    } else {
-      const data = state.groups[path] || {};
-      owners = data.propertyOwners || [];
-    }
-    const propOwners = state.propertyTree.propertyOwners;
-    const props = state.propertyTree.properties;
-    // Extract propertyOwners
-    return owners.map((owner) => ({
-      type: 'propertyOwner',
-      payload: owner,
-      name: propertyOwnerName(propOwners, props, owner)
-    }));
-  }, shallowEqual);
-
-  const groups = useSelector((state) => {
+  const groupPaths = useSelector((state) => {
     const data = state.groups[path] || {};
-    const subGroups = data.subgroups || [];
-
-    // Extract groups
-    const result = subGroups.map((subGroup) => ({
-      type: 'group',
-      payload: subGroup,
-      name: displayName(subGroup)
-    }));
+    const result = data.subgroups || [];
     // See if the groups contain any PropertyOwners
     if (showOnlyEnabled) {
-      return result.filter((group) => shouldShowGroup(state, group.payload));
+      return result.filter((group) => shouldShowGroup(state, group));
     }
     return result;
-  });
+  }, shallowEqualArrays);
+
+  const ownerUris = useSelector((state) => {
+    const data = state.groups[path] || {};
+    const groupPropOwners = data.propertyOwners || [];
+    if (!showOnlyEnabled) {
+      return groupPropOwners;
+    }
+    // Filter PropertyOwners
+    const props = state.propertyTree.properties;
+    return groupPropOwners.filter((propertyOwner) => isEnabled(props, propertyOwner));
+  }, shallowEqualArrays);
+
+  const ownerNames = useSelector((state) => {
+    const props = state.propertyTree.properties;
+    const propOwners = state.propertyTree.propertyOwners;
+    return ownerUris.map((uri) => propertyOwnerName(propOwners, props, uri));
+  }, shallowEqualArrays);
+
+  const propertyOwners = ownerUris.map((uri, index) => ({
+    type: 'propertyOwner',
+    payload: uri,
+    name: ownerNames[index]
+  }));
+
+  const groups = groupPaths.map((groupPath) => ({
+    type: 'group',
+    payload: groupPath,
+    name: displayName(groupPath)
+  }));
 
   const entries = groups.concat(propertyOwners);
+
   const hasEntries = entries.length !== 0;
   const pathFragments = path.split('/');
   const groupName = pathFragments[pathFragments.length - 1];
