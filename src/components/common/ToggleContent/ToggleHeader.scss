@@ -5,8 +5,8 @@
   position: relative;
   background-color: transparent;
   width: 100%;
-  font-size: 16px;
   text-align: left;
+  font-size: $font-size;
   letter-spacing: normal;
   font-family: $font-family;
   &:hover {
@@ -20,7 +20,11 @@
   margin-left: -3px;
 }
 
-.title { }
+@media only screen and (min-width: 1600px) {
+  .toggle {
+    font-size: $font-size-hires;
+  }
+}
 
 .icon {
   position: relative;
