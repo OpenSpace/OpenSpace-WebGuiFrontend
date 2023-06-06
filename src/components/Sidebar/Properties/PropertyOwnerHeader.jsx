@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 /* eslint-disable import/no-webpack-loader-syntax */
@@ -37,7 +37,7 @@ function PropertyOwnerHeader({
   const isLayer = isGlobeBrowsingLayer(uri);
 
   // 1 is positive => fading in, -1 negative => fading out. Undefined or 0 means no fading
-  const [fadeDirection, setFadeDirection] = React.useState(0);
+  const [fadeDirection, setFadeDirection] = useState(0);
 
   const luaApi = useSelector((state) => state.luaApi);
 
