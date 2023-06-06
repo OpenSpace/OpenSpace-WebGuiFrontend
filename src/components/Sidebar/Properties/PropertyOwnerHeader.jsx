@@ -292,7 +292,7 @@ function PropertyOwnerHeader({
           { isLayer && <SvgIcon className={styles.layerDraggableIcon}><DraggableIcon /></SvgIcon> }
         </span>
         <span className={styles.rightButtonContainer}>
-          { focusAction && focusButton }
+          { isSceneObject && focusButton }
           { hasMoreButtons && (
             <TooltipMenu
               sourceObject={<MaterialIcon icon="more_vert" />}
