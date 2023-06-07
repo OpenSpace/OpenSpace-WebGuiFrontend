@@ -44,25 +44,35 @@ function PropertyOwner({
     const { propertyOwners, properties } = state.propertyTree;
     return name || displayName(propertyOwners, properties, uri);
   });
-  const subownersRaw = useSelector((state) => {
-    const data = state.propertyTree.propertyOwners[uri];
-    return data ? data.subowners : [];
-  }, shallowEqualArrays);
-  const subowners = useSelector((state) => subownersRaw.filter((subowner) => {
-    const { propertyOwners, properties } = state.propertyTree;
-    const isOwnerVisible = !isPropertyOwnerHidden(properties, subowner);
-    const isOwnerDeadEnd = isDeadEnd(propertyOwners, properties, subowner);
 
-    return isOwnerVisible && !isOwnerDeadEnd && !isGlobeBrowsingLayer(subowner);
-  }), shallowEqualArrays);
-  const subownerNames = useSelector((state) => {
-    const result = {};
-    const { propertyOwners, properties } = state.propertyTree;
-    subowners.forEach((subowner) => {
-      result[subowner] = displayName(propertyOwners, properties, subowner);
-    });
-    return result;
+  const layers = useSelector((state) => {
+    const data = state.propertyTree.propertyOwners[uri];
+    const subownersRaw = data ? data.subowners : [];
+    return subownersRaw.filter((subowner) => (isGlobeBrowsingLayer(subowner)));
   }, shallowEqualArrays);
+
+  const subowners = useSelector((state) => {
+    const { propertyOwners, properties } = state.propertyTree;
+    const data = state.propertyTree.propertyOwners[uri];
+    const subownersRaw = data ? data.subowners : [];
+    const shownSubowners = subownersRaw.filter((subowner) => {
+      const isOwnerVisible = !isPropertyOwnerHidden(properties, subowner);
+      const isOwnerDeadEnd = isDeadEnd(propertyOwners, properties, subowner);
+
+      return isOwnerVisible && !isOwnerDeadEnd && !isGlobeBrowsingLayer(subowner);
+    });
+
+    if (shouldSortAlphabetically(uri)) {
+      return shownSubowners.slice(0).sort((a, b) => {
+        const firstName = displayName(propertyOwners, properties, a);
+        const secondName = displayName(propertyOwners, properties, b);
+
+        return firstName.localeCompare(secondName, 'en');
+      });
+    }
+    return shownSubowners;
+  }, shallowEqualArrays);
+
   const properties = useSelector((state) => {
     const data = state.propertyTree.propertyOwners[uri];
     const subProperties = data ? data.properties : [];
@@ -70,6 +80,7 @@ function PropertyOwner({
     // Find all the subproperties of this owner (do not include the enabled property)
     return subProperties.filter((prop) => isPropertyVisible(state.propertyTree.properties, prop));
   }, shallowEqualArrays);
+
   const isExpanded = useSelector((state) => {
     // Check if undefined - that means the property tree expansion has not
     // been initialized yet (no stored history of expanding)
@@ -79,10 +90,12 @@ function PropertyOwner({
     }
     return result;
   });
+
   const isRenderable = useSelector((state) => {
     const renderableTypeProp = state.propertyTree.properties[`${uri}.Renderable.Type`];
     return (renderableTypeProp !== undefined);
   });
+
   const isHidden = useSelector((state) => {
     const showHidden = state.propertyTree.properties['OpenSpaceEngine.ShowHiddenSceneGraphNodes'];
     return isPropertyOwnerHidden(state.propertyTree.properties, uri) && !showHidden.value;
@@ -90,8 +103,6 @@ function PropertyOwner({
   // @TODO (emmbr 2023-02-21) Make this work for other propety owners that have
   // descriptions too, such as geojson layers
   const isSceneGraphNodeOrLayer = isSceneGraphNode(uri) || isGlobeBrowsingLayer(uri);
-  const layers = subownersRaw.filter((subowner) => (isGlobeBrowsingLayer(subowner)));
-  const shouldSort = shouldSortAlphabetically(uri);
   const isFocus = propertyOwnerName && (propertyOwnerName.lastIndexOf('Current') > -1);
 
   // Use refs so they don't trigger re-renders
@@ -142,7 +153,7 @@ function PropertyOwner({
     return (
       <div {...dragHandleTitleProps}>
         {' '}
-        { headerComponent }
+        {headerComponent}
       </div>
     );
   }
@@ -201,11 +212,11 @@ function PropertyOwner({
 
     return (
       <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
-        { isDragging.current && overlay }
+        {isDragging.current && overlay}
         <Droppable droppableId="layers">
-          { (provided) => (
+          {(provided) => (
             <div {...provided.droppableProps} ref={provided.innerRef}>
-              { shownLayers.current.map((layerUri, index) => (
+              {shownLayers.current.map((layerUri, index) => (
                 <Draggable key={layerUri} draggableId={layerUri} index={index}>
                   {(item) => ( // Draggable expects functions as children
                     <div {...item.draggableProps} ref={item.innerRef}>
@@ -218,17 +229,13 @@ function PropertyOwner({
                   )}
                 </Draggable>
               ))}
-              { provided.placeholder }
+              {provided.placeholder}
             </div>
           )}
         </Droppable>
       </DragDropContext>
     );
   }
-
-  const sortedSubowners = shouldSort ?
-    (subowners.slice(0).sort((a, b) => subownerNames[a].localeCompare(subownerNames[b], 'en'))) :
-    subowners;
 
   return !isHidden && (
     <ToggleContent
@@ -237,7 +244,7 @@ function PropertyOwner({
       setExpanded={setExpanded}
     >
       { renderLayersList() }
-      { sortedSubowners.map((ownerUri) => {
+      { subowners.map((ownerUri) => {
         const splitUri = ownerUri.split('.');
         const uriIsRenderable = splitUri.length > 0 && splitUri[splitUri.length - 1] === 'Renderable';
         return (
