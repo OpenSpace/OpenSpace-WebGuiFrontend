@@ -1,5 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Icon } from '@iconify/react';
 import { throttle } from 'lodash/function';
 
 import { subscribeToTime, unsubscribeToTime } from '../../api/Actions';
@@ -8,7 +9,6 @@ import Button from '../common/Input/Button/Button';
 import NumericInput from '../common/Input/NumericInput/NumericInput';
 import ScaleInput from '../common/Input/ScaleInput/ScaleInput';
 import Select from '../common/Input/Select/Select';
-import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import Row from '../common/Row/Row';
 import { useContextRefs } from '../GettingStartedTour/GettingStartedContext';
 
@@ -168,7 +168,7 @@ function SimulationIncrement() {
             onClick={setPrevDeltaTimeStep}
             ref={(el) => { refs.current.SpeedBackward = el; }}
           >
-            <MaterialIcon icon="fast_rewind" />
+            <Icon icon="mdi:fast-rewind" />
           </Button>
           <p className={styles.deltaTimeStepLabel}>
             {prevLabel}
@@ -176,7 +176,7 @@ function SimulationIncrement() {
         </div>
         <div style={{ flex: 2 }} ref={(el) => { refs.current.Pause = el; }}>
           <Button block onClick={togglePause}>
-            {isPaused ? <MaterialIcon icon="play_arrow" /> : <MaterialIcon icon="pause" />}
+            {isPaused ? <Icon icon="mdi:play-arrow" /> : <Icon icon="mdi:pause" />}
           </Button>
         </div>
         <div style={{ flex: 3 }}>
@@ -186,7 +186,7 @@ function SimulationIncrement() {
             onClick={setNextDeltaTimeStep}
             ref={(el) => { refs.current.SpeedForward = el; }}
           >
-            <MaterialIcon icon="fast_forward" />
+            <Icon icon="mdi:fast-forward" />
           </Button>
           <p className={styles.deltaTimeStepLabel}>
             {nextLabel}
