@@ -1,5 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Icon } from '@iconify/react';
 
 import {
   setPopoverVisibility, subscribeToEngineMode, subscribeToSessionRecording,
@@ -17,7 +18,6 @@ import Calendar from '../common/Calendar/Calendar';
 import Button from '../common/Input/Button/Button';
 import Time from '../common/Input/Time/Time';
 import LoadingString from '../common/LoadingString/LoadingString';
-import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import Popover from '../common/Popover/Popover';
 import SmallLabel from '../common/SmallLabel/SmallLabel';
 import { useContextRefs } from '../GettingStartedTour/GettingStartedContext';
@@ -226,13 +226,13 @@ function TimePicker() {
         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
           <div style={{ marginTop: 20 }}>
             <Button onClick={toggleLock} title="Toggle lock" small transparent={!useLock}>
-              <MaterialIcon icon={useLock ? 'lock' : 'lock_open'} />
+              <Icon icon={useLock ? 'mdi:lock' : 'mdi:lock-open'} />
             </Button>
           </div>
           {displayedTime && <Time time={displayedTime} onChange={changeDate} />}
           <div style={{ marginTop: 20 }}>
             <Button onClick={toggleCalendar} title="Toggle calendar" small transparent={!showCalendar}>
-              <MaterialIcon icon="view_day" />
+              <Icon icon="mdi:view-day" />
             </Button>
           </div>
         </div>
