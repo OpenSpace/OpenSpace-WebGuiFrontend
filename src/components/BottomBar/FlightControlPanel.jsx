@@ -1,5 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Icon } from '@iconify/react';
 
 import {
   connectFlightController,
@@ -11,7 +12,6 @@ import {
 import { RollFrictionKey, RotationalFrictionKey, ZoomFrictionKey } from '../../api/keys';
 import InfoBox from '../common/InfoBox/InfoBox';
 import Button from '../common/Input/Button/Button';
-import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import Popover from '../common/Popover/Popover';
 import Row from '../common/Row/Row';
 
@@ -285,7 +285,7 @@ export default function FlightControlPanel() {
     <div className={Picker.Wrapper}>
       <Picker onClick={togglePopover}>
         <div>
-          <MaterialIcon className={styles.icon} icon="open_with" />
+          <Icon className={Picker.Icon} icon="material-symbols:open-with" alt="flightcontrol" />
         </div>
       </Picker>
       { popoverVisible && popover() }
