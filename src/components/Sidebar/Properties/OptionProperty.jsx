@@ -10,9 +10,9 @@ import styles from './Property.scss';
 function OptionProperty({ description, dispatcher, value }) {
   const disabled = description.MetaData.isReadOnly;
 
-  function onChange({ newValue }) {
+  function onChange(newSelection) {
     // 10 is the base, radix, for parsing the int
-    dispatcher.set(parseInt(newValue, 10));
+    dispatcher.set(parseInt(newSelection.value, 10));
   }
 
   const label = <PropertyLabel description={description} />;

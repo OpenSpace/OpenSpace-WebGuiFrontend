@@ -5,6 +5,8 @@ import Button from '../Input/Button/Button';
 
 import Tooltip from './Tooltip';
 
+import styles from './TooltipMenu.scss';
+
 function TooltipMenu({
   children, className, disabled, sourceObject
 }) {
@@ -58,12 +60,8 @@ function TooltipMenu({
     >
       <Button
         ref={buttonClickWrapperRef}
+        className={styles.menuButton}
         onClick={togglePopup}
-        style={{
-          backgroundColor: 'transparent',
-          cursor: 'default'
-        }}
-        block
         small
         nopadding
       >
