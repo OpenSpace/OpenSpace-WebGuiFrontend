@@ -1,5 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Icon } from '@iconify/react';
 
 import {
   refreshSessionRecording,
@@ -21,7 +22,6 @@ import Button from '../common/Input/Button/Button';
 import Checkbox from '../common/Input/Checkbox/Checkbox';
 import Input from '../common/Input/Input/Input';
 import Select from '../common/Input/Select/Select';
-import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import Popover from '../common/Popover/Popover';
 import Row from '../common/Row/Row';
 
@@ -158,7 +158,7 @@ function SessionRec() {
       case SessionStateRecording:
         return (
           <div>
-            <MaterialIcon icon="videocam" />
+            <Icon icon="mdi:videocam" alt="videocam" />
             {' Stop recording'}
           </div>
         );
@@ -170,11 +170,11 @@ function SessionRec() {
               onClick={togglePlaybackPaused}
               regular
             >
-              <MaterialIcon icon="pause" />
+              <Icon icon="mdi:pause" alt="pause" />
               {' Pause'}
             </Button>
             <Button onClick={stopPlayback} regular>
-              <MaterialIcon icon="stop" />
+              <Icon icon="mdi:stop" alt="stop" />
               {' Stop playback'}
             </Button>
           </>
@@ -187,14 +187,14 @@ function SessionRec() {
               onClick={togglePlaybackPaused}
               regular
             >
-              <MaterialIcon icon="play_arrow" />
+              <Icon icon="mdi:play-arrow" alt="resume" />
               {' Resume'}
             </Button>
             <Button
               onClick={stopPlayback}
               regular
             >
-              <MaterialIcon icon="stop" />
+              <Icon icon="mdi:stop" alt="stop" />
               {' Stop playback'}
             </Button>
           </>
@@ -202,7 +202,7 @@ function SessionRec() {
       default:
         return (
           <div>
-            <MaterialIcon className={styles.cameraIcon} icon="videocam" />
+            <Icon className={Picker.Icon} icon="mdi:videocam" alt="videocam" />
           </div>
         );
     }
@@ -279,7 +279,7 @@ function SessionRec() {
                 style={{ width: 90 }}
                 disabled={!filenameRecording}
               >
-                <MaterialIcon icon="fiber_manual_record" />
+                <Icon icon="mdi:fiber-manual-record" alt="record" />
                 <span style={{ marginLeft: 5 }}>Record</span>
               </Button>
             </div>
@@ -348,7 +348,7 @@ function SessionRec() {
                 style={{ width: 90 }}
                 disabled={!filenamePlayback}
               >
-                <MaterialIcon icon="play_arrow" />
+                <Icon icon="mdi:play-arrow" alt="resume" />
                 <span style={{ marginLeft: 5 }}>Play</span>
               </Button>
             </div>
