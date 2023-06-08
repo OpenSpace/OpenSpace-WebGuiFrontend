@@ -118,7 +118,7 @@ function Time({ elements, onChange, time }) {
       const ref = useContextRefs();
       return (
         <div key={what} className={styles.element}>
-          <Button nopadding transparent onClick={onClick(what, 1)}>
+          <Button nopadding transparent onClick={() => onClick(what, 1)}>
             <MaterialIcon icon="expand_less" />
           </Button>
           <span key={`span${what}`} ref={(el) => { ref.current[what] = el; }}>
@@ -131,7 +131,7 @@ function Time({ elements, onChange, time }) {
               noExtraWidth
             />
           </span>
-          <Button nopadding transparent onClick={onClick(what, -1)}>
+          <Button nopadding transparent onClick={() => onClick(what, -1)}>
             <MaterialIcon icon="expand_more" />
           </Button>
         </div>
@@ -141,7 +141,7 @@ function Time({ elements, onChange, time }) {
     return (
       <div className={styles.element}>
         { inner }
-        {after}
+        { after }
       </div>
     );
   }
@@ -205,6 +205,7 @@ function Time({ elements, onChange, time }) {
     minutes,
     milliseconds
   };
+
   return (
     <div className={styles.clock}>
       {
