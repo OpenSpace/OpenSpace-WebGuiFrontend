@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 
 import { excludeKeys } from '../../../utils/helpers';
 import Button from '../Input/Button/Button';
-import MaterialIcon from '../MaterialIcon/MaterialIcon';
+import { Icon } from '@iconify/react';
+
 import Window from '../Window/Window';
 
 import styles from './Popover.scss';
@@ -58,12 +59,12 @@ class Popover extends Component {
               { headerButton && headerButton }
               { detachable && (
                 <Button onClick={this.toggleDetach} transparent small>
-                  <MaterialIcon icon="filter_none" />
+                  <Icon icon="material-symbols:filter-none-outline" />
                 </Button>
               )}
               { closeCallback && (
                 <Button onClick={closeCallback} transparent small>
-                  <MaterialIcon icon="close" className="small" />
+                  <Icon icon="material-symbols:close" className="small"/>
                 </Button>
               )}
             </div>
