@@ -1,7 +1,6 @@
 import React from 'react';
+import { Icon } from '@iconify/react';
 import PropTypes from 'prop-types';
-
-import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 
 import styles from './Pane.scss';
 
@@ -17,7 +16,7 @@ function Pane({
         { headerButton }
         { closeCallback && (
           <button type="button" onClick={closeCallback(false)} className={styles.close}>
-            <MaterialIcon icon="close" className="small" />
+            <Icon icon="material-symbols:close" className="small" />
           </button>
         )}
       </header>
