@@ -43,7 +43,6 @@ function ContextSection({ expansionIdentifier }) {
           expansionIdentifier={`${expansionIdentifier}/anchor`}
           name={`Current ${focusOrAnchor}: ${anchorName}`}
           uri={anchor}
-          autoExpand={false}
         />
       )}
       {aim && (
@@ -51,7 +50,6 @@ function ContextSection({ expansionIdentifier }) {
           expansionIdentifier={`${expansionIdentifier}/aim`}
           name={`Current Aim: ${aimName}`}
           uri={aim}
-          autoExpand={false}
         />
       )}
     </>

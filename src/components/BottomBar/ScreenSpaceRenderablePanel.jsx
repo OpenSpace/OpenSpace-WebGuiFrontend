@@ -81,7 +81,6 @@ function ScreenSpaceRenderablePanel() {
     } else {
       slideContent = renderables.map((prop) => (
         <PropertyOwner
-          autoExpand={false}
           key={prop}
           uri={prop}
           expansionIdentifier={`P:${prop}`}
