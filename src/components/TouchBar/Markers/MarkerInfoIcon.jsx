@@ -1,7 +1,7 @@
 import React from 'react';
+import { Icon } from '@iconify/react';
 import PropTypes from 'prop-types';
 
-import Icon from '../../common/MaterialIcon/MaterialIcon';
 import Popover from '../../common/Popover/Popover';
 
 import styles from './MarkerInfo.scss';
@@ -18,7 +18,7 @@ function MarkerInfoIcon({ positionStyles, identifier, infoText }) {
       <Icon
         onClick={() => toggleInfoWindow()}
         className={styles.Icon}
-        icon="info_outline"
+        icon="material-symbols:info-outline"
         style={positionStyles.Icon}
       />
       {showInfoWindow && (

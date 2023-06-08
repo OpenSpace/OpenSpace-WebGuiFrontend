@@ -1,7 +1,7 @@
 import React from 'react';
+import { Icon } from '@iconify/react';
 import PropTypes from 'prop-types';
 
-import Icon from '../../../common/MaterialIcon/MaterialIcon';
 import SmallLabel from '../../../common/SmallLabel/SmallLabel';
 
 import styles from '../style/UtilitiesButtons.scss';
@@ -14,7 +14,7 @@ function HomeButton(props) {
       role="button"
       tabIndex="0"
     >
-      <Icon icon="home" className={styles.Icon} />
+      <Icon icon="material-symbols:home" className={styles.Icon} />
       <SmallLabel>Home</SmallLabel>
     </div>
   );
