@@ -141,7 +141,7 @@ function Time({ elements, onChange, time }) {
     return (
       <div className={styles.element}>
         { inner }
-        {after}
+        { after }
       </div>
     );
   }
@@ -205,6 +205,7 @@ function Time({ elements, onChange, time }) {
     minutes,
     milliseconds
   };
+
   return (
     <div className={styles.clock}>
       {
