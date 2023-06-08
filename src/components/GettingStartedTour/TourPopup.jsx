@@ -1,11 +1,11 @@
 import React from 'react';
 import { Rnd as ResizeableDraggable } from 'react-rnd';
 import PropTypes from 'prop-types';
+import { Icon } from '@iconify/react';
 
 import { useLocalStorageState } from '../../utils/customHooks';
 import Button from '../common/Input/Button/Button';
 import Checkbox from '../common/Input/Checkbox/Checkbox';
-import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 
 import contents from './GettingStartedContent.json';
 import Goal from './Goal';
@@ -44,7 +44,7 @@ function TourPopup({ setVisibility, isVisible }) {
           <div className={styles.spaceBetweenContent}>
             <h1 className={styles.title}>{content.title}</h1>
             <Button onClick={() => setVisibility(false)} transparent small>
-              <MaterialIcon icon="close" />
+              <Icon icon="material-symbols:close" />
             </Button>
           </div>
           {isFirstSlide && (
