@@ -1,12 +1,12 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Icon } from '@iconify/react';
 import PropTypes from 'prop-types';
 
 import { setPopoverVisibility, setShowAbout } from '../../api/Actions';
 import api from '../../api/api';
 import environment from '../../api/Environment';
 import Button from '../common/Input/Button/Button';
-import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import Popover from '../common/Popover/Popover';
 import { useContextRefs } from '../GettingStartedTour/GettingStartedContext';
 
@@ -106,7 +106,7 @@ function SystemMenu({ showTutorial }) {
             </button>
             <hr className={Popover.styles.delimiter} />
             <button type="button" onClick={() => { onClick(setShowKeybinds, !keybindsIsVisible); }}>
-              <MaterialIcon className={styles.linkIcon} icon="keyboard" />
+              <Icon className={styles.linkIcon} icon="material-symbols:keyboard" />
               {keybindsIsVisible ? 'Hide' : 'Show'}
               {' '}
               keybindings
@@ -136,7 +136,7 @@ function SystemMenu({ showTutorial }) {
             </button> */}
             <hr className={Popover.styles.delimiter} />
             <button type="button" onClick={() => { onClick(quit); }}>
-              <MaterialIcon icon="exit_to_app" className={styles.linkIcon} />
+              <Icon icon="material-symbols:exit-to-app" className={styles.linkIcon} />
               Quit OpenSpace
               {' '}
               <span className={styles.shortcut}>ESC</span>
@@ -150,7 +150,7 @@ function SystemMenu({ showTutorial }) {
         transparent
         onClick={() => setShowMenu(!showMenu)}
       >
-        <MaterialIcon icon="more_vert" className={styles.icon} />
+        <Icon icon="material-symbols:more-vert" className={styles.icon} />
       </Button>
     </div>
   );
