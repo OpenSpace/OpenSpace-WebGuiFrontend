@@ -1,9 +1,9 @@
 import React from 'react';
+import { Icon } from '@iconify/react';
 import PropTypes from 'prop-types';
 
 import { openUrl, stopEventPropagation } from '../../../utils/helpers';
 import Button from '../../common/Input/Button/Button';
-import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
 
 import esaSkyLogo from './ESASKY.png';
 import SkyBrowserTooltip from './SkyBrowserTooltip';
@@ -44,7 +44,7 @@ function SkyBrowserInfoBox({
         small
         onClick={togglePopup}
       >
-        <MaterialIcon icon="help" style={{ fontSize: '15px' }} />
+        <Icon icon="material-symbols:help" style={{ fontSize: '15px' }} />
       </Button>
       {isPopupShowing && (
         <SkyBrowserTooltip

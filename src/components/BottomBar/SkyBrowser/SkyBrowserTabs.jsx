@@ -10,7 +10,6 @@ import {
 import { stopEventPropagation } from '../../../utils/helpers';
 import CenteredLabel from '../../common/CenteredLabel/CenteredLabel';
 import Button from '../../common/Input/Button/Button';
-import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
 
 import SkyBrowserSelectedImagesList from './SkyBrowserSelectedImagesList';
 import SkyBrowserSettings from './SkyBrowserSettings';
@@ -147,7 +146,7 @@ function SkyBrowserTabs({
     const lookButton = {
       id: ButtonIds.LookAtTarget,
       selected: false,
-      icon: 'visibility',
+      icon: 'material-symbols:visibility',
       text: 'Look at browser',
       function(id) {
         luaApi.skybrowser.adjustCamera(id);
@@ -156,7 +155,7 @@ function SkyBrowserTabs({
     const moveButton = {
       id: ButtonIds.MoveTarget,
       selected: false,
-      icon: 'filter_center_focus',
+      icon: 'material-symbols:filter-center-focus',
       text: 'Move target to center of view',
       function(id) {
         luaApi.skybrowser.stopAnimations(id);
@@ -166,7 +165,7 @@ function SkyBrowserTabs({
     const trashButton = {
       id: ButtonIds.RemoveImages,
       selected: false,
-      icon: 'delete',
+      icon: 'material-symbols:delete',
       text: 'Remove all images',
       function(id) {
         removeAllSelectedImages(id);
@@ -175,7 +174,7 @@ function SkyBrowserTabs({
     const scrollInButton = {
       id: ButtonIds.ZoomIn,
       selected: false,
-      icon: 'zoom_in',
+      icon: 'material-symbols:zoom-in',
       text: 'Zoom in',
       function(id) {
         luaApi.skybrowser.stopAnimations(id);
@@ -186,7 +185,7 @@ function SkyBrowserTabs({
     const scrollOutButton = {
       id: ButtonIds.ZoomOut,
       selected: false,
-      icon: 'zoom_out',
+      icon: 'material-symbols:zoom-out',
       text: 'Zoom out',
       function(id) {
         luaApi.skybrowser.stopAnimations(id);
@@ -197,7 +196,7 @@ function SkyBrowserTabs({
     const showSettingsButton = {
       id: ButtonIds.Settings,
       selected: showSettings,
-      icon: 'settings',
+      icon: 'material-symbols:settings',
       text: 'Settings',
       function() {
         toggleSettings();
@@ -224,20 +223,11 @@ function SkyBrowserTabs({
         transparent
         small
       >
-        {button.iconify ? (
-          <Icon
-            icon={button.icon}
-            rotate={2}
-            onMouseOver={() => showTooltip(button.id, true)}
-          />
-        ) :
-          (
-            <MaterialIcon
-              icon={button.icon}
-              className="medium"
-              onMouseOver={() => showTooltip(button.id, true)}
-            />
-          )}
+        <Icon
+          icon={button.icon}
+          onMouseOver={() => showTooltip(button.id, true)}
+          className="medium"
+        />
         {isShowingInfoButtons[button.id] && (
           <SkyBrowserTooltip placement="bottom-right" style={positionInfo()}>
             {button.text}
@@ -321,7 +311,7 @@ function SkyBrowserTabs({
                 transparent
                 small
               >
-                <MaterialIcon icon="close" className="small" />
+                <Icon icon="material-symbols:close" className="small" />
               </Button>
             </span>
             {selectedBrowserId === browser && buttons}
@@ -338,7 +328,7 @@ function SkyBrowserTabs({
           className={styles.addTabButton}
           transparent
         >
-          <MaterialIcon icon="add" />
+          <Icon icon="material-symbols:add" className="small" />
         </Button>
       </div>
     );
