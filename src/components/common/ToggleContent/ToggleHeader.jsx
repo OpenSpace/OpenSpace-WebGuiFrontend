@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Icon } from '@iconify/react';
 
 import { useContextRefs } from '../../GettingStartedTour/GettingStartedContext';
 import Button from '../Input/Button/Button';
-import MaterialIcon from '../MaterialIcon/MaterialIcon';
 
 import styles from './ToggleHeader.scss';
 
@@ -18,7 +18,7 @@ function ToggleHeader({
       className={styles.toggle}
       onClick={onClick}
     >
-      <MaterialIcon
+      <Icon
         icon={expanded ? onIcon : offIcon}
         className={styles.icon}
       />
@@ -41,8 +41,8 @@ ToggleHeader.propTypes = {
 };
 
 ToggleHeader.defaultProps = {
-  offIcon: 'chevron_right',
-  onIcon: 'expand_more'
+  offIcon: 'material-symbols:chevron-right',
+  onIcon: 'material-symbols:expand-more'
 };
 
 export default ToggleHeader;
