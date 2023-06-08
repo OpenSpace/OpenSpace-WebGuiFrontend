@@ -1,11 +1,11 @@
 // @flow
 import React, { Component } from 'react';
+import { Icon } from '@iconify/react';
 import PropTypes from 'prop-types';
 
 import { rotate } from '../../../utils/helpers';
 import Button from '../Input/Button/Button';
 import InlineInput from '../Input/InlineInput/InlineInput';
-import MaterialIcon from '../MaterialIcon/MaterialIcon';
 
 import styles from './Calendar.scss';
 
@@ -196,12 +196,12 @@ class Calendar extends Component {
       <section>
         <header className={styles.header}>
           <Button transparent small onClick={this.changeMonth(-1)}>
-            <MaterialIcon icon="chevron_left" />
+            <Icon icon="material-symbols:chevron-left" />
           </Button>
           <div>
             { this.props.todayButton && (
               <Button onClick={this.setCurrentMonth} title="Today" small transparent>
-                <MaterialIcon icon="today" />
+                <Icon icon="material-symbols:today" />
               </Button>
             )}
             {' '}
@@ -217,7 +217,7 @@ class Calendar extends Component {
             />
           </div>
           <Button regular transparent small onClick={this.changeMonth(1)}>
-            <MaterialIcon icon="chevron_right" />
+            <Icon icon="material-symbols:chevron-right" />
           </Button>
         </header>
 
