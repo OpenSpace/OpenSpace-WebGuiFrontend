@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
+import { Icon } from '@iconify/react';
 import PropTypes from 'prop-types';
 
 import { excludeKeys } from '../../../utils/helpers';
 import Button from '../Input/Button/Button';
-import { Icon } from '@iconify/react';
-
 import Window from '../Window/Window';
 
 import styles from './Popover.scss';
@@ -64,7 +63,7 @@ class Popover extends Component {
               )}
               { closeCallback && (
                 <Button onClick={closeCallback} transparent small>
-                  <Icon icon="material-symbols:close" className="small"/>
+                  <Icon icon="material-symbols:close" className="small" />
                 </Button>
               )}
             </div>

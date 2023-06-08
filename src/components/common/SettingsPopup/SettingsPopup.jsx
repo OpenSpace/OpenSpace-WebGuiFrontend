@@ -1,7 +1,7 @@
 import React from 'react';
+import { Icon } from '@iconify/react';
 import PropTypes from 'prop-types';
 
-import { Icon } from '@iconify/react';
 import Tooltip from '../Tooltip/Tooltip';
 
 import buttonStyles from '../Input/Button/Button.scss';

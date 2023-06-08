@@ -1,7 +1,7 @@
 import React from 'react';
 import Draggable from 'react-draggable';
-import PropTypes from 'prop-types';
 import { Icon } from '@iconify/react';
+import PropTypes from 'prop-types';
 
 import { excludeKeys } from '../../../utils/helpers';
 import Button from '../Input/Button/Button';
