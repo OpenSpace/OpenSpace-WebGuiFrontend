@@ -16,7 +16,7 @@ const Button = React.forwardRef((props, ref) => {
 
   function onClick(evt) {
     props.onClick(evt);
-    evt.target.blur();
+    evt.currentTarget.blur();
   }
 
   return (
