@@ -1,46 +1,40 @@
+import React from 'react';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+
 import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
-import styles from './Slide.scss';
+
 import StoryButton from './StoryButton';
 
-class Slide extends Component {
-  constructor(props) {
-    super(props);
+import styles from './Slide.scss';
 
-    this.handleStory = this.handleStory.bind(this);
+function Slide({ image, onChangeStory, storyInfo }) {
+  function handleStory(e) {
+    onChangeStory(e.target.id);
   }
 
-  handleStory(e) {
-    this.props.onChangeStory(e.target.id);
-  }
-
-  render() {
-    const { image, storyInfo } = this.props;
-
-    return (
-      <div className={styles.Container}>
-        <img src={image} className={styles.Slide} alt={'Story'} />
-        <div className={styles.StoryInfo}>
-          <CenteredLabel className={styles.StoryName}>{storyInfo.title}</CenteredLabel>
-          <CenteredLabel className={styles.Description}>{storyInfo.info}</CenteredLabel>
-          <StoryButton
-            pickStory={this.handleStory}
-            storyIdentifier={storyInfo.identifier}
-          />
-        </div>
+  return (
+    <div className={styles.Container}>
+      <img src={image} className={styles.Slide} alt="Story" />
+      <div className={styles.StoryInfo}>
+        <CenteredLabel className={styles.StoryName}>{storyInfo.title}</CenteredLabel>
+        <CenteredLabel className={styles.Description}>{storyInfo.info}</CenteredLabel>
+        <StoryButton
+          pickStory={handleStory}
+          storyIdentifier={storyInfo.identifier}
+        />
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 Slide.propTypes = {
   image: PropTypes.string.isRequired,
   onChangeStory: PropTypes.func.isRequired,
   storyInfo: PropTypes.shape({
+    identifier: PropTypes.string,
     title: PropTypes.string,
-    info: PropTypes.string,
-  }).isRequired,
+    info: PropTypes.string
+  }).isRequired
 };
 
 export default Slide;

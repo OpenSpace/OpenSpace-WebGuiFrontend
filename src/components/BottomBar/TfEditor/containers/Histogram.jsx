@@ -1,19 +1,18 @@
 import React from 'react';
 import { connect } from 'react-redux';
+
 import HistogramCanvas from '../presentational/HistogramCanvas';
 
 const normalizeHistogramDataToCanvas = (Value, width, height) => {
   let normalizedHistogramData;
   const convertedData = (eval(`(${Value})`));
   if (convertedData.length < width) {
-    const maxValue = Math.max(...convertedData.map(o => o));
-    normalizedHistogramData = convertedData.map((value, index) =>
-      Object.assign({},
-        { x: (index / convertedData.length) * width,
-          y: (value / maxValue) * height,
-        },
-      ),
-    );
+    const maxValue = Math.max(...convertedData.map((o) => o));
+    normalizedHistogramData = convertedData.map((value, index) => ({
+
+      x: (index / convertedData.length) * width,
+      y: (value / maxValue) * height
+    }),);
     // Making sure the graphs body gets filled properly by adding 0 in the
     // beginning and end of the histogram
     normalizedHistogramData.unshift({ x: 0, y: 0 });
@@ -23,17 +22,17 @@ const normalizeHistogramDataToCanvas = (Value, width, height) => {
 };
 
 const mapStateToProps = (state, ownProps) => {
-  const histogram = normalizeHistogramDataToCanvas(ownProps.activeVolume.properties.find(obj => obj.id === 'Histogram').Value, ownProps.width, ownProps.height);
+  const histogram = normalizeHistogramDataToCanvas(ownProps.activeVolume.properties.find((obj) => obj.id === 'Histogram').Value, ownProps.width, ownProps.height);
 
-  const unit = ownProps.activeVolume.properties.find(obj => obj.id === 'DataUnit').Value;
-  const minValue = Number(ownProps.activeVolume.properties.find(obj => obj.id === 'MinValue').Value);
-  const maxValue = Number(ownProps.activeVolume.properties.find(obj => obj.id === 'MaxValue').Value);
+  const unit = ownProps.activeVolume.properties.find((obj) => obj.id === 'DataUnit').Value;
+  const minValue = Number(ownProps.activeVolume.properties.find((obj) => obj.id === 'MinValue').Value);
+  const maxValue = Number(ownProps.activeVolume.properties.find((obj) => obj.id === 'MaxValue').Value);
 
   return {
     histogram,
     minValue,
     maxValue,
-    unit,
+    unit
   };
 };
 

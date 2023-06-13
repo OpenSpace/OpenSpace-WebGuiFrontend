@@ -1,41 +1,27 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import styles from '../NodePropertiesPanel/NodePopOverContainer.scss';
+import React from 'react';
+import { useSelector } from 'react-redux';
+
 import NodeMetaPanel from './NodeMetaPanel';
 
-class NodeMetaContainer extends Component {
-  constructor(props) {
-    super(props);
-  }
+import styles from '../NodePropertiesPanel/NodePopOverContainer.scss';
 
-  render() {
-    const { activeNodeMetaPanels } = this.props;
-    return (
-      <div className={styles.NodePopOverContainer}>
-      { activeNodeMetaPanels.map(uri => (
-              <NodeMetaPanel
-                uri={uri}
-                key={uri}
-              />)) }
-
-      </div>
-    );
-  }
-}
-
-const mapStateToProps = (state) => {
-  const activeNodeMetaPanels = state.local.popovers.activeNodeMetaPanels;
-  const panels = Object.keys(activeNodeMetaPanels).map(function(key) {
-      return key;
+function NodeMetaContainer() {
+  const activeNodeMetaPanels = useSelector((state) => {
+    const panels = state.local.popovers.activeNodeMetaPanels;
+    return [...Object.keys(panels)];
   });
 
-  return {
-    activeNodeMetaPanels: panels,
-  };
-};
+  return (
+    <div className={styles.NodePopOverContainer}>
+      { activeNodeMetaPanels.map((uri) => (
+        <NodeMetaPanel
+          uri={uri}
+          key={uri}
+        />
+      )) }
 
-NodeMetaContainer = connect(
-  mapStateToProps,
-)(NodeMetaContainer);
+    </div>
+  );
+}
 
 export default NodeMetaContainer;

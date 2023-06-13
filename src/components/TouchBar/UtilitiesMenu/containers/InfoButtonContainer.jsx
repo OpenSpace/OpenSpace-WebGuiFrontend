@@ -1,48 +1,21 @@
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import InfoButton from './../presentational/InfoButton';
+import React from 'react';
+import { useSelector } from 'react-redux';
 
-class InfoButtonController extends Component {
-  constructor(props) {
-    super(props);
+import InfoButton from '../presentational/InfoButton';
 
-    this.state = {
-      showPopover: false,
-    };
-  }
+function InfoButtonController() {
+  const story = useSelector((state) => state.storyTree.story);
 
-  render() {
-    return (
-      <div>
-        {this.props.story.title &&
-          <InfoButton
-            storyTitle={this.props.story.title}
-            storyInfo={this.props.story.storyinfo}
-          />
-        }
-      </div>
-    );
-  }
+  return (
+    <div>
+      {story.title && (
+        <InfoButton
+          storyTitle={story.title}
+          storyInfo={story.storyinfo}
+        />
+      )}
+    </div>
+  );
 }
-
-const mapStateToProps = state => ({
-  story: state.storyTree.story,
-});
-
-InfoButtonController = connect(
-  mapStateToProps,
-)(InfoButtonController);
-
-InfoButtonController.propTypes = {
-  story: PropTypes.objectOf(PropTypes.shape({
-    storyTitle: PropTypes.string,
-    storyInfo: PropTypes.string,
-  })),
-};
-
-InfoButtonController.defaultProps = {
-  story: {},
-};
 
 export default InfoButtonController;

@@ -1,91 +1,83 @@
-import React, { Component } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
+
 import NumericInput from '../../common/Input/NumericInput/NumericInput';
 import Row from '../../common/Row/Row';
-import InfoBox from '../../common/InfoBox/InfoBox';
-import { copyTextToClipboard } from '../../../utils/helpers';
+
+import PropertyLabel from './PropertyLabel';
+
 import styles from './Property.scss';
 
-class MatrixProperty extends Component {
-  constructor(props) {
-    super(props);
-    this.onChange = this.onChange.bind(this);
-    this.copyUri = this.copyUri.bind(this);
-  }
+function MatrixProperty({ description, dispatcher, value }) {
+  const disabled = description.MetaData.isReadOnly;
 
-  componentDidMount() {
-    this.props.dispatcher.subscribe();
-  }
-
-  componentWillUnmount() {
-    this.props.dispatcher.unsubscribe();
-  }
-
-  get descriptionPopup() {
-    const { description } = this.props.description;
-    return description ? <InfoBox text={description} /> : '';
-  }
-
-  copyUri() {
-    copyTextToClipboard(this.props.description.Identifier);
-  }
-
-  get disabled() {
-    return this.props.description.MetaData.isReadOnly;
-  }
-
-  onChange(index) {
+  function onChange(index) {
     return (newValue) => {
-      const stateValue = this.props.value;
+      const stateValue = value;
       stateValue[index] = parseFloat(newValue);
-      this.props.dispatcher.set(stateValue);
+      dispatcher.set(stateValue);
     };
   }
 
-  render() {
-    const { description, value } = this.props;
-    const { SteppingValue, MaximumValue, MinimumValue, Exponent } = description.AdditionalData;
-    const firstLabel = (
-      <span onClick={this.copyUri}>
-        { description.Name } { this.descriptionPopup }
-      </span>
-    );
+  const {
+    SteppingValue, MaximumValue, MinimumValue, Exponent
+  } = description.AdditionalData;
+  const firstLabel = <PropertyLabel description={description} />;
 
-    const values = value.map((value, index) => ({
-        key: `${description.Name}-${index}`,
-        value: parseFloat(value),
-        index,
-      }));
-    // Find N
-    const matrixSize = Math.sqrt(values.length);
-    // actually convert into N arrays of N length
-    const groups = Array.from(new Array(matrixSize), () => values.splice(0, matrixSize));
+  const values = value.map((val, index) => ({
+    key: `${description.Name}-${index}`,
+    value: parseFloat(val),
+    index
+  }));
+  // Find N
+  const matrixSize = Math.sqrt(values.length);
+  // actually convert into N arrays of N length
+  const groups = Array.from(new Array(matrixSize), () => values.splice(0, matrixSize));
 
-    // eslint-disable react/no-array-index-key
-    return (
-      <div className={`${styles.matrixProperty} ${this.disabled ? styles.disabled : ''}`}>>
-        { groups.map((group, index) => (
-          <Row key={`row-${index}`}>
-            { group.map(comp => (
-              <NumericInput
-                inputOnly
-                key={comp.key}
-                value={comp.value}
-                label={comp.index === 0 ? firstLabel : ' '}
-                placeholder={`value ${comp.index}`}
-                onValueChanged={this.onChange(comp.index)}
-                exponent={Exponent}
-                step={SteppingValue[comp.index] || 0.01}
-                max={MaximumValue[comp.index] || 100}
-                min={MinimumValue[comp.index] || -100}
-                disabled={this.disabled}
-                noTooltip
-              />
-            ))}
-          </Row>
-        ))}
-      </div>
-    );
-  }
+  // eslint-disable react/no-array-index-key
+  return (
+    <div className={`${styles.matrixProperty} ${disabled ? styles.disabled : ''}`}>
+      { groups.map((group) => (
+        <Row key={`row-${group[0].key}`}>
+          { group.map((comp) => (
+            <NumericInput
+              inputOnly
+              key={comp.key}
+              value={comp.value}
+              label={comp.index === 0 ? firstLabel : ' '}
+              placeholder={`value ${comp.index}`}
+              onValueChanged={onChange(comp.index)}
+              exponent={Exponent}
+              step={SteppingValue[comp.index] || 0.01}
+              max={MaximumValue[comp.index] || 100}
+              min={MinimumValue[comp.index] || -100}
+              disabled={disabled}
+              noTooltip
+            />
+          ))}
+        </Row>
+      ))}
+    </div>
+  );
 }
+
+MatrixProperty.propTypes = {
+  description: PropTypes.shape({
+    Identifier: PropTypes.string,
+    Name: PropTypes.string,
+    MetaData: PropTypes.shape({
+      isReadOnly: PropTypes.bool
+    }),
+    AdditionalData: PropTypes.shape({
+      SteppingValue: PropTypes.arrayOf(PropTypes.number),
+      MaximumValue: PropTypes.arrayOf(PropTypes.number),
+      MinimumValue: PropTypes.arrayOf(PropTypes.number),
+      Exponent: PropTypes.number
+    }),
+    description: PropTypes.string
+  }).isRequired,
+  dispatcher: PropTypes.object.isRequired,
+  value: PropTypes.any.isRequired
+};
 
 export default MatrixProperty;

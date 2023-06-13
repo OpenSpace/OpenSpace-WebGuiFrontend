@@ -1,6 +1,7 @@
 /* eslint import/no-extraneous-dependencies: 0 */
-import { storiesOf } from '@storybook/react';
 import React from 'react';
+import { storiesOf } from '@storybook/react';
+
 import MaterialIcon from './MaterialIcon';
 
 /* globals module */

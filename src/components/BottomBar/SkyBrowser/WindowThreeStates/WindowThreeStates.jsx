@@ -1,16 +1,19 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import styles from './WindowThreeStates.scss';
+
+import Button from '../../../common/Input/Button/Button';
+import MaterialIcon from '../../../common/MaterialIcon/MaterialIcon';
+
 import FloatingWindow from './FloatingWindow';
 import PaneRightHandSide from './PaneRightHandSide';
 import PopoverResizeable from './PopoverResizeable';
-import Button from '../../../common/Input/Button/Button';
-import MaterialIcon from '../../../common/MaterialIcon/MaterialIcon';
+
+import styles from './WindowThreeStates.scss';
 
 const WindowStyle = {
   DETACHED: 'DETACHED',
   PANE: 'PANE',
-  ATTACHED: 'ATTACHED',
+  ATTACHED: 'ATTACHED'
 };
 
 class WindowThreeStates extends Component {
@@ -18,7 +21,7 @@ class WindowThreeStates extends Component {
     super(props);
     this.state = {
       windowStyle: WindowStyle.ATTACHED,
-      windowWidth: 350,
+      windowWidth: 350
     };
 
     this.setAsPane = this.setAsPane.bind(this);
@@ -29,16 +32,32 @@ class WindowThreeStates extends Component {
 
   componentDidMount() {
     // Reset height when component is mounted
-    this.props.heightCallback(0, this.props.defaultHeight);
+    this.props.sizeCallback(this.state.windowWidth, this.props.defaultHeight);
+    switch (this.props.defaultStyle) {
+      case WindowStyle.ATTACHED:
+        this.setAsAttached();
+        break;
+      case WindowStyle.DETACHED:
+        this.setAsDetached();
+        break;
+      case WindowStyle.PANE:
+        this.setAsPane();
+        break;
+      default:
+        this.setAsAttached();
+        break;
+    }
   }
 
   get asPopup() {
-    const { children, height } = this.props;
+    const {
+      children, height, minHeight, sizeCallback
+    } = this.props;
     return (
       <PopoverResizeable
-        setNewHeight={this.props.heightCallback}
+        sizeCallback={sizeCallback}
         size={{ height: `${height}px`, width: `${this.state.windowWidth}px` }}
-        minHeight={this.props.minHeight}
+        minHeight={minHeight}
       >
         {this.createTopBar()}
         {children}
@@ -47,12 +66,14 @@ class WindowThreeStates extends Component {
   }
 
   get asWindow() {
-    const { children, height } = this.props;
+    const {
+      children, height, minHeight, sizeCallback
+    } = this.props;
     return (
       <FloatingWindow
-        setNewHeight={this.props.heightCallback}
+        sizeCallback={sizeCallback}
         defaultSize={{ height, width: `${this.state.windowWidth}px` }}
-        minHeight={this.props.minHeight}
+        minHeight={minHeight}
       >
         {this.createTopBar()}
         {children}
@@ -61,11 +82,11 @@ class WindowThreeStates extends Component {
   }
 
   get asSideview() {
-    const { children } = this.props;
+    const { children, sizeCallback } = this.props;
     return (
       <PaneRightHandSide
         width={`${this.state.windowWidth}px`}
-        heightCallback={this.props.heightCallback}
+        sizeCallback={sizeCallback}
       >
         {this.createTopBar()}
         {children}
@@ -75,7 +96,7 @@ class WindowThreeStates extends Component {
 
   setAsDetached() {
     this.setState({ windowStyle: WindowStyle.DETACHED });
-    this.props.heightCallback(0, this.props.defaultHeight);
+    this.props.sizeCallback(this.state.windowWidth, this.props.defaultHeight);
   }
 
   setAsPane() {
@@ -84,22 +105,27 @@ class WindowThreeStates extends Component {
 
   setAsAttached() {
     this.setState({ windowStyle: WindowStyle.ATTACHED });
-    this.props.heightCallback(0, this.props.defaultHeight);
+    this.props.sizeCallback(this.state.windowWidth, this.props.defaultHeight);
   }
 
   createTopBar() {
     const { windowStyle } = this.state;
-    const detachedButton = windowStyle != WindowStyle.DETACHED && (
+    const { acceptedStyles } = this.props;
+
+    const hasDetached = acceptedStyles.find((item) => item === WindowStyle.DETACHED);
+    const detachedButton = hasDetached && windowStyle !== WindowStyle.DETACHED && (
       <Button onClick={this.setAsDetached} transparent small>
         <MaterialIcon icon="filter_none" />
       </Button>
     );
-    const paneButton = windowStyle != WindowStyle.PANE && (
+    const hasPane = acceptedStyles.find((item) => item === WindowStyle.PANE);
+    const paneButton = hasPane && windowStyle !== WindowStyle.PANE && (
       <Button onClick={this.setAsPane} transparent small>
         <MaterialIcon icon="exit_to_app" />
       </Button>
     );
-    const attachedButton = windowStyle != WindowStyle.ATTACHED && (
+    const hasAttached = acceptedStyles.find((item) => item === WindowStyle.ATTACHED);
+    const attachedButton = hasAttached && windowStyle !== WindowStyle.ATTACHED && (
       <Button onClick={this.setAsAttached} transparent small>
         <MaterialIcon icon="open_in_browser" />
       </Button>
@@ -143,18 +169,23 @@ WindowThreeStates.propTypes = {
   children: PropTypes.node.isRequired,
   title: PropTypes.string,
   closeCallback: PropTypes.func,
-  heightCallback: PropTypes.func,
-  heightWindow: PropTypes.number,
+  sizeCallback: PropTypes.func,
   defaultHeight: PropTypes.number,
+  defaultStyle: PropTypes.string,
+  height: PropTypes.number,
+  minHeight: PropTypes.number,
+  acceptedStyles: PropTypes.array
 };
 
 WindowThreeStates.defaultProps = {
-  children: [],
   title: '',
   closeCallback: null,
-  heightCallback: null,
-  heightWindow: 440,
+  sizeCallback: null,
   defaultHeight: 440,
+  height: 440,
+  minHeight: 100,
+  defaultStyle: WindowStyle.ATTACHED,
+  acceptedStyles: [WindowStyle.ATTACHED, WindowStyle.DETACHED, WindowStyle.PANE]
 };
 
 WindowThreeStates.styles = styles;

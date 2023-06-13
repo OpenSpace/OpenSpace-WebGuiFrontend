@@ -1,20 +1,23 @@
-import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import styles from './Stack.scss';
 
-const Stack = props => (
-  <div {...props} className={`${styles.stack} ${props.className}`}>
-    { props.children }
-  </div>
-);
+function Stack({ className, children, ...props }) {
+  return (
+    <div {...props} className={`${styles.stack} ${className}`}>
+      { children }
+    </div>
+  );
+}
 
 Stack.propTypes = {
   children: PropTypes.node.isRequired,
-  className: PropTypes.string,
+  className: PropTypes.string
 };
 
 Stack.defaultProps = {
-  className: '',
+  className: ''
 };
 
 export default Stack;

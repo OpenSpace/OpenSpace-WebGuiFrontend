@@ -1,157 +1,95 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { setPropertyValue } from '../../../api/Actions';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
+import {
+  NavigationAnchorKey, RetargetAnchorKey, ScenePrefixKey
+} from '../../../api/keys';
 import propertyDispatcher from '../../../api/propertyDispatcher';
 import { UpdateDeltaTimeNow } from '../../../utils/timeHelpers';
-import { abortFlight } from '../../../utils/storyHelpers';
+
 import FocusButton from './FocusButton';
-import {
-  ScenePrefixKey, NavigationAnchorKey, RetargetAnchorKey,
-} from '../../../api/keys';
-import styles from './FocusMenu.scss';
 import OverViewButton from './OverViewButton';
+
+import styles from './FocusMenu.scss';
 
 const DISTANCE_FACTOR = 4.0; // target radii
 const SWITCH_FOCUS_DURATION = 5.0; // seconds
 
-class FocusMenu extends Component {
-  constructor(props) {
-    super(props);
+function FocusMenu() {
+  const [origin, setOrigin] = React.useState('');
 
-    this.state = {
-      origin: '',
-    };
-
-    this.applyOverview = this.applyOverview.bind(this);
-    this.applyFlyTo = this.applyFlyTo.bind(this);
-  }
-
-  componentDidMount() {
-    const {
-      anchorDispatcher,
-      retargetAnchorDispatcher,
-    } = this.props;
-
-    anchorDispatcher.subscribe();
-    retargetAnchorDispatcher.subscribe();
-  }
-
-  componentDidUpdate() {
-    const { anchor } = this.props;
-    const { origin } = this.state;
-
-    if (anchor !== undefined && origin !== anchor.value) {
-      this.setState({ origin: anchor.value });
+  const luaApi = useSelector((state) => state.luaApi);
+  const overviewLimit = useSelector((state) => state.storyTree.story.overviewlimit);
+  const anchor = useSelector((state) => state.propertyTree.properties[NavigationAnchorKey]);
+  const focusNodes = useSelector((state) => {
+    const buttons = state.storyTree.story.focusbuttons;
+    let nodes = [];
+    if (buttons) {
+      nodes = buttons.map(
+        (button) => state.propertyTree.propertyOwners[ScenePrefixKey + button]
+      );
     }
+    return nodes;
+  });
+
+  const dispatch = useDispatch();
+
+  React.useEffect(() => {
+    propertyDispatcher(dispatch, NavigationAnchorKey).subscribe();
+    propertyDispatcher(dispatch, RetargetAnchorKey).subscribe();
+    return () => {
+      propertyDispatcher(dispatch, NavigationAnchorKey).unsubscribe();
+      propertyDispatcher(dispatch, RetargetAnchorKey).unsubscribe();
+    };
+  }, []);
+
+  React.useEffect(() => {
+    if (anchor !== undefined && origin !== anchor.value) {
+      setOrigin(anchor.value);
+    }
+  }, [anchor]);
+
+  function applyFlyTo() {
+    luaApi.pathnavigation.zoomToDistanceRelative(DISTANCE_FACTOR, SWITCH_FOCUS_DURATION);
+    // TODO: use camera path instead
   }
 
-  componentWillUnmount() {
-    const { anchorDispatcher, retargetAnchorDispatcher } = this.props;
-
-    anchorDispatcher.unsubscribe();
-    retargetAnchorDispatcher.unsubscribe();
-  }
-
-  async onChangeFocus(origin) {
-    const { anchorDispatcher, luaApi, retargetAnchorDispatcher } = this.props;
-
+  async function onChangeFocus(newOrigin) {
     luaApi.pathnavigation.stopPath();
 
     // Reset time controls
     luaApi.time.setPause(false);
     UpdateDeltaTimeNow(luaApi, 1);
 
-    anchorDispatcher.set(origin.origin);
-    retargetAnchorDispatcher.set(null);
-    this.applyFlyTo();
+    propertyDispatcher(dispatch, NavigationAnchorKey).set(newOrigin);
+    propertyDispatcher(dispatch, RetargetAnchorKey).set(null);
+    applyFlyTo();
   }
 
-  applyFlyTo() {
-    const { luaApi } = this.props;
-    luaApi.pathnavigation.zoomToDistanceRelative(DISTANCE_FACTOR, SWITCH_FOCUS_DURATION);
-    // TODO: use camera path instead
-  }
-
-  applyOverview() {
-    const { luaApi, overviewLimit } = this.props;
-
+  function applyOverview() {
     // TODO: Handle an interpolation of SetNavigationState to be able to have a
     // smooth navigation to a pre-defined overview location
-
     luaApi.pathnavigation.zoomToDistance(overviewLimit, SWITCH_FOCUS_DURATION);
   }
 
-  createFocusButtons() {
-    const { anchor, focusNodes } = this.props;
-    const focusPicker = focusNodes.map(node => (
+  function createFocusButtons() {
+    const focusPicker = focusNodes.map((node) => (
       <FocusButton
         key={node.identifier}
         identifier={node.identifier}
         active={anchor.value}
-        onChangeFocus={origin => this.onChangeFocus({ origin })}
+        onChangeFocus={(o) => onChangeFocus(o)}
       />
     ));
     return (focusPicker);
   }
 
-  render() {
-    const { anchor, focusNodes } = this.props;
-
-    return (
-      <div className={styles.FocusMenu}>
-        {anchor !== undefined && <OverViewButton onClick={this.applyOverview} /> }
-        {focusNodes.length > 0 && this.createFocusButtons()}
-      </div>
-    );
-  }
+  return (
+    <div className={styles.FocusMenu}>
+      {anchor !== undefined && <OverViewButton onClick={applyOverview} /> }
+      {focusNodes.length > 0 && createFocusButtons()}
+    </div>
+  );
 }
-
-const mapStateToProps = (state) => {
-  let anchor = [];
-  let focusNodes = [];
-
-  const overviewLimit = state.storyTree.story.overviewlimit;
-
-  if (Object.keys(state.propertyTree).length !== 0) {
-    const buttons = state.storyTree.story.focusbuttons;
-    if (buttons) {
-      focusNodes = buttons.map(button => 
-        state.propertyTree.propertyOwners[ScenePrefixKey + button]
-      );
-    }
-
-    anchor = state.propertyTree.properties[NavigationAnchorKey];
-  }
-
-  return {
-    overviewLimit,
-    focusNodes,
-    anchor,
-    luaApi: state.luaApi,
-  };
-};
-
-const mapDispatchToProps = dispatch => ({
-  changePropertyValue: (uri, value) => {
-    dispatch(setPropertyValue(uri, value));
-  },
-  anchorDispatcher: propertyDispatcher(
-    dispatch, NavigationAnchorKey
-  ),
-  retargetAnchorDispatcher: propertyDispatcher(
-    dispatch, RetargetAnchorKey
-  )
-});
-
-FocusMenu = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(FocusMenu);
-
-FocusMenu.defaultProps = {
-  focusNodes: [],
-  properties: [],
-  changePropertyValue: null,
-};
 
 export default FocusMenu;

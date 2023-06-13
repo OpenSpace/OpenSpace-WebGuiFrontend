@@ -1,17 +1,17 @@
-import { actionTypes } from '../Actions/actionTypes';
+import actionTypes from '../Actions/actionTypes';
 
 const defaultState = {
   isInitialized: false,
   data: {},
   imageList: [],
-  selectedBrowserId: "",
+  selectedBrowserId: '',
   cameraIsInSolarSystem: true,
   targets: {},
-  url: ""
+  url: ''
 };
 
-export const skybrowser = (state = defaultState, action) => {
-  const newState = {...state};
+const skybrowser = (state = defaultState, action = {}) => {
+  const newState = { ...state };
   switch (action.type) {
     case actionTypes.initializeSkyBrowser:
       newState.isInitialized = true;
@@ -29,6 +29,5 @@ export const skybrowser = (state = defaultState, action) => {
     default:
       return state;
   }
-
-  return state;
 };
+export default skybrowser;

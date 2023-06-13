@@ -1,25 +1,28 @@
 import React from 'react';
-import { HashRouter as Router, Route, Switch } from 'react-router-dom';
+import { HashRouter as Router, Route, Routes } from 'react-router-dom';
+
 import ActionsGui from './views/ActionsGui';
 import BrowserGui from './views/BrowserGui';
 import NotFound from './views/NotFound';
 import OnScreenGui from './views/OnScreenGui';
-import OnTouchGui from './views/OnTouchGui';
+import WrappedOnTouchGui from './views/OnTouchGui';
 import RemoteGui from './views/RemoteGui';
 
-const App = () => (
-  <Router>
-    <Switch>
-      <Route path="/onscreen" component={OnScreenGui} />
-      <Route path="/remote" component={RemoteGui} />
-      <Route path="/ontouch" component={OnTouchGui} />
-      <Route path="/actions" component={ActionsGui} />
-      {/* Here, more GUI variations can be added. */}
-      {/* <Route path="/tablet" component={TabletGui} /> */}
-      <Route path="/" component={BrowserGui} />
-      <Route component={NotFound} />
-    </Switch>
-  </Router>
-);
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/onscreen" element={<OnScreenGui />} />
+        <Route path="/remote" element={<RemoteGui />} />
+        <Route path="/ontouch" element={<WrappedOnTouchGui />} />
+        <Route path="/actions" element={<ActionsGui />} />
+        {/* Here, more GUI variations can be added. */}
+        {/* <Route path="/tablet" element={TabletGui} /> */}
+        <Route path="/" element={<BrowserGui />} />
+        <Route element={<NotFound />} />
+      </Routes>
+    </Router>
+  );
+}
 
 export default App;

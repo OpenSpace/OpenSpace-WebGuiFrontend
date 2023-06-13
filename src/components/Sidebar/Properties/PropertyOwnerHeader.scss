@@ -4,30 +4,32 @@
   display: inline-block;
   position: relative;
   top: 2px;
-  margin-right: 5px;
-  cursor: default; /* visually distinguish from dragging (OBS! Kind of ugly. 
+  margin-right: 2px;
+  margin-left: 0px;
+  cursor: default; /* visually distinguish from dragging (OBS! Kind of ugly.
                       And does not actually prevent dragging from happening)*/
 }
 
 .rightButtonContainer {
-  position: absolute;
-  right: 0;
-  top: 0;
-  bottom: 0;
+  position: relative;
   display: flex;
-  overflow: hidden;
-  cursor: default; /* visually distinguish from dragging (OBS! Kind of ugly. 
+  margin-left: auto; // Right align flex item
+  cursor: default; /* visually distinguish from dragging (OBS! Kind of ugly.
                       And does not actually prevent dragging from happening)*/
 }
 
 .rightButton {
-  padding-top: 4px;
-  padding-left: 12px;
-  padding-right: 12px;
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-  }
-  cursor: default;
+  height: fit-content;
+  background: rgba(0, 0, 0, 0); // Completely transparent
+  vertical-align: top;
+}
+
+.menuButton {
+  width: 100%;
+  padding: 2px;
+  padding-bottom: 6px;
+  padding-top: 6px;
+  text-align: left;
 }
 
 .heightLayerIcon {
@@ -55,4 +57,12 @@
 
 .disabledLayerTitle {
   color: #ddd;
+}
+
+.title {
+  word-break: break-word;
+}
+
+.enabledCheckbox:active {
+  opacity: 1 !important;
 }

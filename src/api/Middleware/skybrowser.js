@@ -1,8 +1,8 @@
 import { initializeSkyBrowser, updateSkyBrowser } from '../Actions';
-import { actionTypes } from '../Actions/actionTypes';
+import actionTypes from '../Actions/actionTypes';
 import api from '../api';
 
-let skybrowserTopic = undefined;
+let skybrowserTopic;
 let nSubscribers = 0;
 
 function handleData(store, data) {
@@ -25,45 +25,44 @@ const getWwtData = async (luaApi, callback) => {
       throw new Error('The Sky Browser Module is not loaded!');
     }
     let imgData = await luaApi.skybrowser.getListOfImages();
-    let url = await luaApi.skybrowser.getWwtImageCollectionUrl();
-    if (url) {
-      url = url[1].url;
-    }
-    else {
+    let collectionUrl = await luaApi.skybrowser.getWwtImageCollectionUrl();
+    if (collectionUrl) {
+      const { url } = collectionUrl[1];
+      collectionUrl = url;
+    } else {
       throw new Error('No AAS WorldWide Telescope image collection!');
     }
     if (imgData) {
       imgData = Object.values(imgData[1]);
-      if(imgData.length === 0) {
+      if (imgData.length === 0) {
         callback([]);
-      }
-      else {
-        const imgDataWithKey = imgData.map(image => ({
+      } else {
+        const imgDataWithKey = imgData.map((image) => ({
           ...image,
-          key: image.identifier,
+          key: image.identifier
         }));
-        callback({imageList: imgDataWithKey, url: url});
+        callback({ imageList: imgDataWithKey, url: collectionUrl });
       }
     } else {
       throw new Error('No AAS WorldWide Telescope images!');
     }
-  }
-  catch(e) {
+  } catch (e) {
     console.error(e);
   }
 };
 
 async function setupSubscription(store) {
-  console.log("Set up skybrowser subscription");
+  console.log('Set up skybrowser subscription');
   skybrowserTopic = api.startTopic('skybrowser', {
-    event: 'start_subscription',
+    event: 'start_subscription'
   });
+  // eslint-disable-next-line no-restricted-syntax
   for await (const data of skybrowserTopic.iterator()) {
     handleData(store, data);
   }
 }
 
-export const skybrowser = store => next => (action) => {
+const skybrowser = (store) => (next) => (action) => {
   const result = next(action);
   const state = store.getState();
   switch (action.type) {

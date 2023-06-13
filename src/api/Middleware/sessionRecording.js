@@ -1,13 +1,11 @@
-import { actionTypes } from '../Actions/actionTypes';
-
 import {
   updateSessionRecording
-} from '../Actions'
-
+} from '../Actions';
+import actionTypes from '../Actions/actionTypes';
 import api from '../api';
 
-let topic = undefined;
-let dataCallback = undefined;
+let topic;
+let dataCallback;
 let nSubscribers = 0;
 
 const subscribe = () => {
@@ -16,8 +14,11 @@ const subscribe = () => {
     properties: ['state', 'files']
   });
   (async () => {
+    // eslint-disable-next-line no-restricted-syntax
     for await (const data of topic.iterator()) {
-      dataCallback && dataCallback(data);
+      if (dataCallback) {
+        dataCallback(data);
+      }
     }
   })();
 };
@@ -30,7 +31,7 @@ const unsubscribe = () => {
     event: 'stop_subscription'
   });
   topic.cancel();
-}
+};
 
 const refresh = () => {
   if (topic) {
@@ -49,9 +50,9 @@ const refresh = () => {
       tempTopic.cancel();
     })();
   }
-}
+};
 
-export const sessionRecording = store => next => action => {
+const sessionRecording = (store) => (next) => (action) => {
   const result = next(action);
   const state = store.getState();
 
@@ -63,7 +64,7 @@ export const sessionRecording = store => next => action => {
       }
       break;
     case actionTypes.refreshSessionRecording:
-      dataCallback = (data) => store.dispatch(updateSessionRecording(data)),
+      dataCallback = (data) => store.dispatch(updateSessionRecording(data));
       refresh();
       break;
     case actionTypes.subscribeToSessionRecording:
@@ -84,3 +85,4 @@ export const sessionRecording = store => next => action => {
   }
   return result;
 };
+export default sessionRecording;

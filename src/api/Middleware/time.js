@@ -1,9 +1,8 @@
 import { updateTime } from '../Actions';
-import { actionTypes } from '../Actions/actionTypes';
-
+import actionTypes from '../Actions/actionTypes';
 import api from '../api';
 
-let timeTopic = undefined;
+let timeTopic;
 let nSubscribers = 0;
 
 function handleData(store, data) {
@@ -12,8 +11,9 @@ function handleData(store, data) {
 
 async function setupSubscription(store) {
   timeTopic = api.startTopic('time', {
-    event: 'start_subscription',
+    event: 'start_subscription'
   });
+  // eslint-disable-next-line no-restricted-syntax
   for await (const data of timeTopic.iterator()) {
     handleData(store, data);
   }
@@ -29,7 +29,7 @@ function tearDownSubscription() {
   timeTopic.cancel();
 }
 
-export const time = store => next => action => {
+const time = (store) => (next) => (action) => {
   const result = next(action);
   const state = store.getState();
   switch (action.type) {
@@ -37,6 +37,7 @@ export const time = store => next => action => {
       if (nSubscribers > 0) {
         setupSubscription(store);
       }
+      break;
     case actionTypes.subscribeToTime:
       ++nSubscribers;
       if (nSubscribers === 1 && state.connection.isConnected) {
@@ -57,6 +58,5 @@ export const time = store => next => action => {
   }
   return result;
 };
-
 
 export default time;

@@ -1,196 +1,204 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
 import {
   connectFlightController,
-  disconnectFlightController,
   sendFlightControl,
   setPopoverVisibility,
   subscribeToProperty,
-  unsubscribeToProperty,
+  unsubscribeToProperty
 } from '../../api/Actions';
 import { RollFrictionKey, RotationalFrictionKey, ZoomFrictionKey } from '../../api/keys';
+import InfoBox from '../common/InfoBox/InfoBox';
 import Button from '../common/Input/Button/Button';
 import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import Popover from '../common/Popover/Popover';
 import Row from '../common/Row/Row';
-import styles from './FlightControlPanel.scss';
+
 import Picker from './Picker';
 
-class FlightControlPanel extends Component {
-  constructor(props) {
-    super(props);
-    this.togglePopover = this.togglePopover.bind(this);
-    this.toggleRotation = this.toggleRotation.bind(this);
-    this.toggleZoom = this.toggleZoom.bind(this);
-    this.toggleRoll = this.toggleRoll.bind(this);
-    this.touchDown = this.touchDown.bind(this);
-    this.mouseDown = this.mouseDown.bind(this);
-    this.mouseMove = this.mouseMove.bind(this);
-    this.touchMove = this.touchMove.bind(this);
-    this.touchUp = this.touchUp.bind(this);
-    this.touchStartX = 0;
-    this.touchStartY = 0;
+import styles from './FlightControlPanel.scss';
+
+export default function FlightControlPanel() {
+  const luaApi = useSelector((state) => state.luaApi);
+  const popoverVisible = useSelector((state) => state.local.popovers.flightController.visible);
+
+  const rotationFriction = useSelector(
+    (state) => state.propertyTree.properties[RotationalFrictionKey]?.value || false
+  );
+
+  const zoomFriction = useSelector(
+    (state) => state.propertyTree.properties[ZoomFrictionKey]?.value || false
+  );
+
+  const rollFriction = useSelector(
+    (state) => state.propertyTree.properties[RollFrictionKey]?.value || false
+  );
+
+  const dispatch = useDispatch();
+
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let mouseIsDown = false;
+
+  React.useEffect(() => {
+    function subscribeTo(uri) {
+      dispatch(subscribeToProperty(uri));
+    }
+
+    function unsubscribe(uri) {
+      dispatch(unsubscribeToProperty(uri));
+    }
+
+    subscribeTo(RotationalFrictionKey);
+    subscribeTo(ZoomFrictionKey);
+    subscribeTo(RollFrictionKey);
+    return () => {
+      unsubscribe(RotationalFrictionKey);
+      unsubscribe(ZoomFrictionKey);
+      unsubscribe(RollFrictionKey);
+    };
+  }, []);
+
+  function sendFlightControlInput(payload) {
+    dispatch(sendFlightControl(payload));
   }
 
-  componentDidMount() {
-    const { startListening } = this.props;
-    startListening(RotationalFrictionKey);
-    startListening(ZoomFrictionKey);
-    startListening(RollFrictionKey);
+  function togglePopover() {
+    const visible = !popoverVisible;
+
+    dispatch(setPopoverVisibility({
+      popover: 'flightController',
+      visible
+    }));
+
+    // @TODO (2023-05-26, emmbr)I believe we should also handle disconnection a bit better, or at
+    // least try to avoid connecting if alreday connected
+    if (visible) {
+      dispatch(connectFlightController());
+    }
   }
 
-  componentWillUnmount() {
-    const { stopListening } = this.props;
-    stopListening(RotationalFrictionKey);
-    stopListening(ZoomFrictionKey);
-    stopListening(RollFrictionKey);
+  function toggleRotation() {
+    luaApi.setPropertyValue(RotationalFrictionKey, !rotationFriction);
   }
 
-  get popover() {
-    const { rotationFriction, rollFriction, zoomFriction } = this.props;
+  function toggleZoom() {
+    luaApi.setPropertyValue(ZoomFrictionKey, !zoomFriction);
+  }
+
+  function toggleRoll() {
+    luaApi.setPropertyValue(RollFrictionKey, !rollFriction);
+  }
+
+  function popover() {
     const rotationButtonColor = rotationFriction ? '#222' : '#888';
     const zoomButtonColor = zoomFriction ? '#222' : '#888';
     const rollButtonColor = rollFriction ? '#222' : '#888';
 
-    return (
-      <Popover
-        className={`${Picker.Popover} && ${styles.flightControlPopover}`}
-        title="Flight Control"
-        closeCallback={this.togglePopover}
-        detachable
-        position={{ x: -350, y: -50 }}
-        attached={false}
-      >
-        <div className={Popover.styles.content}>
-          <Row>
-            <Button
-              onClick={this.toggleRotation}
-              title="orbit"
-              style={{ width: 133, background: rotationButtonColor }}
-              disabled={false}
-            >
-              <span style={{ marginLeft: 5 }}>Rotation</span>
-            </Button>
-            <Button
-              onClick={this.toggleZoom}
-              title="orbit"
-              style={{ width: 133, background: zoomButtonColor }}
-              disabled={false}
-            >
-              <span style={{ marginLeft: 5 }}>Zoom</span>
-            </Button>
-            <Button
-              onClick={this.toggleRoll}
-              title="orbit"
-              style={{ width: 133, background: rollButtonColor }}
-              disabled={false}
-            >
-              <span style={{ marginLeft: 5 }}>Roll</span>
-            </Button>
-
-          </Row>
-        </div>
-        <hr className={Popover.styles.delimiter} />
-        <div className={Popover.styles.title}>Control Area </div>
-        <div
-          className={styles.control_area}
-          onPointerDown={this.mouseDown}
-          onPointerUp={this.touchUp}
-          onPointerCancel={this.touchUp}
-          onPointerLeave={this.touchUp}
-          onLostPointerCapture={this.touchUp}
-          onPointerMove={this.mouseMove}
-          onTouchStart={this.touchDown}
-          onTouchEnd={this.touchUp}
-          onTouchCancel={this.touchUp}
-          onTouchMove={this.touchMove}
-          id="controlArea"
-        />
-      </Popover>
+    const infoBoxContent = (
+      <>
+        <p>Interact with the area to control the camera. </p>
+        {' '}
+        <br />
+        <p><b>Mouse controls:</b></p>
+        <p>Click and drag to rotate. Hold</p>
+        <ul className={styles.list}>
+          <li>SHIFT to pan</li>
+          <li>CTRL to zoom (y-axis) or roll (x-axis)</li>
+        </ul>
+        <br />
+        <p><b>Touch controls:</b></p>
+        <ul className={styles.list}>
+          <li>1 finger to rotate</li>
+          <li>2 fingers to pan</li>
+          <li>3 fingers to zoom (y-axis) or roll (x-axis)</li>
+        </ul>
+      </>
     );
-  }
 
-  togglePopover() {
-    const { popoverVisible } = this.props;
-    this.props.setPopoverVisibility(!popoverVisible);
-  }
+    function touchDown(event) {
+      touchStartX = event.touches[0].clientX;
+      touchStartY = event.touches[0].clientY;
+    }
 
-  toggleRotation() {
-    const { luaApi, rotationFriction } = this.props;
-    luaApi.setPropertyValue(RotationalFrictionKey, !rotationFriction);
-  }
+    function mouseDown() {
+      mouseIsDown = true;
+    }
 
-  toggleZoom() {
-    const { luaApi, zoomFriction } = this.props;
-    luaApi.setPropertyValue(ZoomFrictionKey, !zoomFriction);
-  }
+    function touchMove(event) {
+      const touchX = event.touches[0].clientX;
+      const touchY = event.touches[0].clientY;
 
-  toggleRoll() {
-    const { luaApi, rollFriction } = this.props;
-    luaApi.setPropertyValue(RollFrictionKey, !rollFriction);
-  }
+      if (touchStartX !== 0) {
+        let deltaX = touchX - touchStartX;
+        let deltaY = touchY - touchStartY;
+        const scaleFactor = 300;
+        deltaX /= scaleFactor;
+        deltaY /= scaleFactor;
 
-  touchDown(event) {
-    this.touchStartX = event.touches[0].clientX;
-    this.touchStartY = event.touches[0].clientY;
-  }
+        const inputState = { values: {} };
 
-  mouseDown(event) {
-    this.touchStartX = event.clientX;
-    this.touchStartY = event.clientY;
-  }
+        if (event.touches.length === 1) {
+          inputState.values.orbitX = -deltaX;
+          inputState.values.orbitY = -deltaY;
+        } else if (event.touches.length === 2) {
+          inputState.values.panX = -deltaX;
+          inputState.values.panY = -deltaY;
+        } else if (event.touches.length === 3) {
+          inputState.values.zoomIn = -deltaY;
+          inputState.values.localRollX = -deltaX;
+        }
 
-  touchMove(event) {
-    const touchX = event.touches[0].clientX;
-    const touchY = event.touches[0].clientY;
-
-    if (this.touchStartX !== 0) {
-      let deltaX = touchX - this.touchStartX;
-      let deltaY = touchY - this.touchStartY;
-      const scaleFactor = 300;
-      deltaX /= scaleFactor;
-      deltaY /= scaleFactor;
-
-      const inputState = { values: {} };
-
-      if (event.touches.length === 1) {
-        inputState.values.orbitX = -deltaX;
-        inputState.values.orbitY = -deltaY;
-      } else if (event.touches.length === 2) {
-        inputState.values.panX = -deltaX;
-        inputState.values.panY = -deltaY;
-      } else if (event.touches.length === 3) {
-        inputState.values.zoomIn = -deltaY;
-        inputState.values.localRollX = -deltaX;
+        sendFlightControlInput({
+          type: 'inputState',
+          inputState
+        });
       }
+    }
 
-      this.props.sendFlightControl({
+    function touchUp() {
+      touchStartX = 0;
+      sendFlightControlInput({
         type: 'inputState',
-        inputState,
+        inputState: {
+          values: {
+            zoomIn: 0.00,
+            orbitX: 0.0,
+            orbitY: 0.0,
+            panX: 0.0,
+            panY: 0.0,
+            localRollX: 0.0
+          }
+        }
       });
     }
-  }
 
-  touchUp(event) {
-    this.touchStartX = 0;
-    this.props.sendFlightControl({
-      type: 'inputState',
-      inputState: {
-        values: {
-          zoomIn: 0.00,
-          orbitX: 0.0,
-          orbitY: 0.0,
-          panX: 0.0,
-          panY: 0.0,
-          localRollX: 0.0,
-        },
-      },
-    });
-  }
+    function mouseUp() {
+      if (!mouseIsDown) {
+        return;
+      }
+      mouseIsDown = false;
+      sendFlightControlInput({
+        type: 'inputState',
+        inputState: {
+          values: {
+            zoomIn: 0.00,
+            orbitX: 0.0,
+            orbitY: 0.0,
+            panX: 0.0,
+            panY: 0.0,
+            localRollX: 0.0
+          }
+        }
+      });
+    }
 
-  mouseMove(event) {
-    if (this.touchStartX !== 0) {
+    function mouseMove(event) {
+      if (!mouseIsDown) {
+        return;
+      }
+
       const deltaX = event.movementX / 20;
       const deltaY = -event.movementY / 20;
       const inputState = { values: {} };
@@ -206,91 +214,81 @@ class FlightControlPanel extends Component {
         inputState.values.orbitY = deltaY;
       }
 
-      this.props.sendFlightControl({
+      sendFlightControlInput({
         type: 'inputState',
-        inputState,
+        inputState
       });
     }
-  }
 
-  render() {
-    const { popoverVisible } = this.props;
     return (
-      <div className={Picker.Wrapper}>
-        <Picker onClick={this.togglePopover}>
-          <div>
-            <MaterialIcon className={styles.icon} icon="open_with" />
-          </div>
-        </Picker>
-        { popoverVisible && this.popover }
-      </div>
+      <Popover
+        className={`${Picker.Popover} && ${styles.flightControlPopover}`}
+        title="Flight Control"
+        closeCallback={togglePopover}
+        detachable
+        position={{ x: -350, y: -50 }}
+        attached={false}
+      >
+        <div className={Popover.styles.content}>
+          <Row>
+            <Button
+              onClick={toggleRotation}
+              title="Rotation friction"
+              style={{ width: 133, background: rotationButtonColor }}
+              disabled={false}
+            >
+              <span style={{ marginLeft: 5 }}>Rotation</span>
+            </Button>
+            <Button
+              onClick={toggleZoom}
+              title="Zoom friction"
+              style={{ width: 133, background: zoomButtonColor }}
+              disabled={false}
+            >
+              <span style={{ marginLeft: 5 }}>Zoom</span>
+            </Button>
+            <Button
+              onClick={toggleRoll}
+              title="Roll friction"
+              style={{ width: 133, background: rollButtonColor }}
+              disabled={false}
+            >
+              <span style={{ marginLeft: 5 }}>Roll</span>
+            </Button>
+            <InfoBox className={styles.infoButton} text="Controls to disable friction for different camera movements" />
+          </Row>
+        </div>
+        <hr className={Popover.styles.delimiter} />
+        <Row>
+          <div className={Popover.styles.title}>Control Area</div>
+          <InfoBox className={styles.infoButton} text={infoBoxContent} />
+        </Row>
+        <div
+          className={styles.control_area}
+          onPointerDown={mouseDown}
+          onPointerUp={mouseUp}
+          onPointerCancel={mouseUp}
+          onPointerLeave={mouseUp}
+          onLostPointerCapture={mouseUp}
+          onPointerMove={mouseMove}
+          onTouchStart={touchDown}
+          onTouchEnd={touchUp}
+          onTouchCancel={touchUp}
+          onTouchMove={touchMove}
+          id="controlArea"
+        />
+      </Popover>
     );
   }
+
+  return (
+    <div className={Picker.Wrapper}>
+      <Picker onClick={togglePopover}>
+        <div>
+          <MaterialIcon className={styles.icon} icon="open_with" />
+        </div>
+      </Picker>
+      { popoverVisible && popover() }
+    </div>
+  );
 }
-
-const mapStateToProps = (state) => {
-  const { visible } = state.local.popovers.flightController;
-
-  const rotationFrictionProp = state.propertyTree.properties[RotationalFrictionKey];
-  const zoomFrictionProp = state.propertyTree.properties[ZoomFrictionKey];
-  const rollFrictionProp = state.propertyTree.properties[RollFrictionKey];
-
-  return {
-    popoverVisible: visible,
-    luaApi: state.luaApi,
-    rotationFriction: rotationFrictionProp ? rotationFrictionProp.value : false,
-    zoomFriction: zoomFrictionProp ? zoomFrictionProp.value : false,
-    rollFriction: rollFrictionProp ? rollFrictionProp.value : false,
-  };
-};
-
-const mapDispatchToProps = dispatch => ({
-  setPopoverVisibility: (visible) => {
-    dispatch(setPopoverVisibility({
-      popover: 'flightController',
-      visible,
-    }));
-    if (visible) {
-      connectFlightController();
-    }
-  },
-  sendFlightControl: (payload) => {
-    dispatch(sendFlightControl(payload));
-  },
-  connectFlightController: () => {
-    dispatch(connectFlightController());
-  },
-  disconnectFlightController: () => {
-    dispatch(disconnectFlightController());
-  },
-  startListening: (uri) => {
-    dispatch(subscribeToProperty(uri));
-  },
-  stopListening: (uri) => {
-    dispatch(unsubscribeToProperty(uri));
-  },
-});
-
-FlightControlPanel.propTypes = {
-  popoverVisible: PropTypes.bool,
-  rotationFriction: PropTypes.bool.isRequired,
-  rollFriction: PropTypes.bool.isRequired,
-  zoomFriction: PropTypes.bool.isRequired,
-  luaApi: PropTypes.object,
-  // Functions
-  setPopoverVisibility: PropTypes.func.isRequired,
-  sendFlightControl: PropTypes.func.isRequired,
-  connectFlightController: PropTypes.func.isRequired,
-  disconnectFlightController: PropTypes.func.isRequired,
-  startListening: PropTypes.func.isRequired,
-  stopListening: PropTypes.func.isRequired,
-};
-
-FlightControlPanel.defaultProps = {
-  popoverVisible: false,
-  luaApi: undefined,
-};
-
-FlightControlPanel = connect(mapStateToProps, mapDispatchToProps)(FlightControlPanel);
-
-export default FlightControlPanel;

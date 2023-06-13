@@ -1,20 +1,20 @@
-import { actionTypes } from '../Actions/actionTypes';
-import { fetchDataDone, fetchDataFailed } from "../Actions";
-import { DataEndpointKey } from "../keys";
+import { fetchDataDone, fetchDataFailed } from '../Actions';
+import actionTypes from '../Actions/actionTypes';
+import { DataEndpointKey } from '../keys';
 
 const fetchingInfo = (dispatch, id) => {
   fetch(`${DataEndpointKey}${id}.json`)
-    .then(res => res.json())
-    .then(data => {
+    .then((res) => res.json())
+    .then((data) => {
       dispatch(fetchDataDone(data, id));
     })
-    .catch(error => {
+    .catch((error) => {
       console.log(error);
       dispatch(fetchDataFailed(id));
     });
 };
 
-export const fetchData = store => next => (action) => {
+const fetchData = (store) => (next) => (action) => {
   const result = next(action);
   switch (action.type) {
     case actionTypes.fetchData:
@@ -25,4 +25,4 @@ export const fetchData = store => next => (action) => {
   }
   return result;
 };
-
+export default fetchData;

@@ -1,0 +1,234 @@
+
+[ 
+    {
+        "goalType" : null,
+        "title" : "Welcome to OpenSpace!",
+        "firstText" : "Let's get started with exploring the Observable Universe!"
+    },
+    {
+        "goalType" : null,
+        "title" : "Overview",
+        "firstText" : "In this tutorial we will cover the following topics:",
+        "bulletList": ["Navigation", "Time", "Content"]
+    },
+    {
+        "goalType" : ["geoPosition"],
+        "position" : { "altitude" : { "operator" : "<" , "value" : 3500, "unit" : "km" }}, 
+        "title" : "Navigation",
+        "firstText" : "Let's go closer to Earth!",
+        "goalText" : ["Go to an altitude of max 3500 km"],
+        "showMouse" : [{ "button" : "right", "info" : "Right click + drag", "description" : "Go closer or further away"}], 
+        "arrowPosition" : { "x" : 250, "y" : "calc(100% - 150px)"},
+        "arrowRotation" : "up"
+    },
+    {
+        "goalType" : ["geoPosition"],
+        "position" : {"latitude" : { "operator" : "between" , "value" : [69, 76] }, "longitude" : { "operator" : "between" , "value" : [-40, -48] }},
+        "title" : "Navigation",
+        "firstText" : ["Let's go to Greenland!"],
+        "infoText" : "The position is { latitude, longitude }",
+        "goalText" : ["Go to position { 72 , -44 }"],
+        "showMouse" : [{ "button" : "left", "info" : "Left click + drag", "description" : "Orbit around a planet"}], 
+        "arrowPosition" : { "x" : 70, "y" : "calc(100% - 150px)"},
+        "arrowRotation" : "up"
+    },
+    {
+        "goalType" : null,
+        "title" : "Navigation",
+        "firstText" : "You have two options for rolling the camera:",
+        "showMouse" : [{ "button" : "scroll", "info" : "Scroll click + drag", "description" : "Roll the camera"},
+                       { "button" : "left", "info" : "Left click + drag + shift", "description" : "Roll the camera", "keyboardButton" : "Shift"}]
+    },
+    {
+        "goalType" : null,
+        "title" : "Navigation",
+        "firstText" : "To look around freely, press ctrl and left click drag.",
+        "showMouse" : [{ "button" : "left", "info" : "Left click + drag + ctrl ", "description" : "Look around freely", "keyboardButton" : "ctrl"}]
+    },
+    {
+        "goalType" : ["uri"],
+        "uri" : "NavigationHandler.OrbitalNavigator.Anchor",
+        "uriValue" : "Moon",
+        "title" : "Navigation",
+        "key": ["Origin", "Moon"],
+        "firstText" : "We can also look at other celestial objects.",
+        "goalText" : ["Set the navigation focus to the Moon"],
+        "arrowPosition" : { "x" : 320, "y" : 70},
+        "arrowRotation" : "down"
+    },
+    {
+        "goalType" : ["geoPosition"],
+        "position" : { "altitude" : { "operator" : "<" , "value" : 3500, "unit" : "km" }}, 
+        "title" : "Navigation",
+        "firstText" : "Let's go closer to the Moon.",
+        "goalText" : ["Go to an altitude of max 3500 km"],
+        "showMouse" : [{ "button" : "right", "info" : "Right click + drag", "description" : "Go closer or further away"}], 
+        "arrowPosition" : { "x" : 250, "y" : "calc(100% - 150px)"},
+        "arrowRotation" : "up"
+    },
+    {
+        "goalType" : null,
+        "title" : "Navigation",
+        "firstText" : "Great! Now you know the basics of navigation. Let's start changing the time!"
+    },
+    {
+        "goalType" : ["uri", "geoPosition"],
+        "uri" : "NavigationHandler.OrbitalNavigator.Anchor",
+        "uriValue" : "Sun",
+        "key": ["Origin", "Sun"],
+        "position" : { "altitude" : { "operator" : ">" , "value" : 1, "unit" : "Lighthours" }, "latitude": { "operator" : "between", "value" : [60,  90]}}, 
+        "title" : "Navigation",
+        "firstText" : "Let's take a look at the Solar System from above.",
+        "infoText" : "The order of magnitude is: km < AU < Lighthour. The position is {latitude, longitude}.",
+        "goalText" : ["Set the focus node to Sun", "Go to an altitude of at least 1 Lighthour and a latitude of around 80"],
+        "arrowPosition" : { "x" : 320, "y" : 70},
+        "arrowRotation" : "down"
+    },
+    {
+        "goalType" : ["changeTime"],
+        "changeValue" : "year",
+        "title" : "Time",
+        "key" : ["Time", "FullYear"],
+        "firstText" : "You can view the past as well as the future.",
+        "infoText" : "You can reset the time by pressing 'Now'",
+        "goalText" : ["Change the year"],
+        "arrowPosition" : { "x" : 50, "y" : 70},
+        "arrowRotation" : "down"
+    },
+    {
+        "goalType" : ["changeDeltaTime"],
+        "title" : "Time",
+        "key" : ["Time", ["SpeedForward", "SpeedBackward"]],
+        "firstText" : "You can also change how fast time is playing.",
+        "infoText" : "You can reset the simulation speed by pressing 'Real Time'",
+        "goalText" : ["Change the simulation speed"],
+        "arrowPosition" : { "x" : 50, "y" : 70},
+        "arrowRotation" : "down"
+    },
+    {
+        "goalType" : ["pauseTime"],
+        "title" : "Time",
+        "key" : ["Time", "Pause"],
+        "firstText" : "You can pause the time.",
+        "infoText" : "Note: simulation speed is not set to 0 when you pause",
+        "goalText" : ["Pause the time"],
+        "arrowPosition" : { "x" : 50, "y" : 70},
+        "arrowRotation" : "down"
+    },
+    {
+        "goalType" : null,
+        "title" : "Time",
+        "firstText" : "Fantastic! Now you can move around in both space and time. Let's look at some content!"
+    },
+    {
+        "title" : "Content",
+        "key": ["Scene"],
+        "firstText" : "All the content in OpenSpace can be found in the Scene menu.",
+        "infoText" : "You can search for objects in the top search bar and focus on objects by clicking the focus icon."
+    },
+    {
+        "goalType" : ["uri"],
+        "uri" : "Scene.EarthTrail.Renderable.Enabled",
+        "uriValue" : false,
+        "title" : "Content",
+        "key": ["Scene", "Group Solar System", "Group Planets", "Group Earth", "PropertyOwner Earth Trail"],
+        "firstText" : "You can turn on and off content by checking and unchecking their corresponding checkboxes",
+        "goalText" : ["Turn off the trail of Earth"],
+        "arrowPosition" : { "x" : 50, "y" : 70},
+        "arrowRotation" : "down"
+    },
+    {
+        "goalType" : ["changeUri"],
+        "uri" : "Scene.MarsTrail.Renderable.Appearance.Color",
+        "title" : "Content",
+        "key": ["Scene", "Group Solar System", "Group Planets", "Group Mars", "PropertyOwner Mars Trail", "PropertyOwner Renderable MarsTrail", "PropertyOwner Appearance MarsTrail", "Scene.MarsTrail.Renderable.Appearance.Color"],
+        "firstText" : "All objects have properties, which makes it possible to alter the behaviour or appearance of an object.",
+        "goalText" : ["Change the color of the trail of Mars"],
+        "arrowPosition" : { "x" : 50, "y" : 70},
+        "arrowRotation" : "down"
+    },
+    {
+        "goalType" : ["uri", "geoPosition"],
+        "uri" : "NavigationHandler.OrbitalNavigator.Anchor",
+        "uriValue" : "Mars",
+        "position" : { "altitude" : { "operator" : "<" , "value" : 10000, "unit" : "km" }}, 
+        "title" : "Content",
+        "firstText" : "Let's take a look at the surface of Mars.",
+        "key" : ["Origin", "Mars"],
+        "showMouse" : [{ "button" : "right", "info" : "Right click + drag", "description" : "Go closer or further away"}], 
+        "goalText" : ["Set the focus node to Mars", "Go to an altitude of max 10 000 km"],
+        "arrowPosition" : { "x" : 320, "y" : 70},
+        "arrowRotation" : "down"
+    },
+    {
+        "title" : "Content",
+        "firstText" : "Planets can have multiple maps which show different data. Planets also have height maps, which show elevation. Different maps can have different resolutions.",
+        "infoText" : "All the default layers in OpenSpace are usually named after the satellite or an instrument on a satellite that captured the map. The name [Utah] or [Sweden] states on which server the map is located. It is usually faster to choose the server closest to you."
+    },
+    {
+        "goalType" : ["multiUri"],
+        "uri" : ["Scene.Mars.Renderable.Layers.ColorLayers.CTX_Mosaic_Utah.Enabled", "Scene.Mars.Renderable.Layers.ColorLayers.CTX_Mosaic_Sweden.Enabled"],
+        "uriValue" : true,
+        "title" : "Content",
+        "firstText" : "The layers are ordered, and the layer furthest down in the menu is shown at the top.",
+        "infoText" : "You need access to the internet to display the maps. They might need a few seconds to load.",
+        "key": ["Scene", "Group Solar System", "Group Planets", "Group Mars", "PropertyOwner Mars", "PropertyOwner Renderable Mars", "PropertyOwner Layers Mars", "PropertyOwner ColorLayers Mars", ["PropertyOwner CTX Mosaic [Utah] Mars", "PropertyOwner CTX Mosaic [Sweden] Mars"]],
+        "goalText" : ["Turn on the ColorLayer 'CTX Mosaic [Utah]' or 'CTX Mosaic [Sweden]"],
+        "arrowPosition" : { "x" : 50, "y" : 70},
+        "arrowRotation" : "down"
+    },
+    {
+        "goalType" : ["uri"],
+        "uri" : "Scene.Constellations.Renderable.Enabled",
+        "uriValue" : true,
+        "title" : "Content",
+        "key" : ["Scene", "Group Milky Way", "Group Constellations", "PropertyOwner Constellations"],
+        "firstText" : "All content is not turned on by default. Explore the menus and see what you can find!",
+        "goalText" : ["Turn on 'Constellations'"],
+        "showMouse" : [{ "button" : "left", "info" : "Left click + drag + ctrl ", "description" : "Look around freely", "keyboardButton" : "ctrl"}],
+        "arrowPosition" : { "x" : 50, "y" : 70},
+        "arrowRotation" : "down"
+    },
+    {
+        "title" : "Content",
+        "key" : ["SessionRecording"],
+        "firstText" : "If you want to record an OpenSpace session, you can use the Session Recording."
+    },
+    {
+        "title" : "Content",
+        "key" : ["GeoLocationPanel"],
+        "firstText" : "If you want to search for places on a globe, you can use the Geo Location."
+    },
+    {
+        "title" : "Content",
+        "key" : ["ScreenSpaceRenderable"],
+        "firstText" : "In the Screen Space Renderable panel you can add images or slides to the scene."
+    },
+    {
+        "title" : "Content",
+        "key" : ["Exoplanets"],
+        "firstText" : "You can add exoplanet systems to the scene in the Exoplanets panel."
+    },
+    {
+        "title" : "Content",
+        "key" : ["Actions"],
+        "firstText" : "The Actions panel provides handy shortcuts, which can be useful for shows."
+    },
+    {
+        "title" : "Content",
+        "key" : ["SkyBrowser"],
+        "firstText" : "The Sky Browser panel is a virtual telescope where you can browse astronomy images."
+    },
+    {
+        "title" : "Content",
+        "key" : ["System", "Tutorial"],
+        "firstText" : "If you want to revisit the tutorial, you can find it in the Systems menu."
+    },
+    {
+        "goalType" : null,
+        "title" : "Finished!",
+        "firstText" : "Well done! Now you are ready to explore the Universe on your own. Some ideas:",
+        "bulletList": ["Go to your home town", "Go to the end of the Universe", "Turn on the Sun's orbit in the Milky Way"]
+
+    }
+]

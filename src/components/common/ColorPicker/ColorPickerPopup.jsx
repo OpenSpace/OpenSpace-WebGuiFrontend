@@ -1,107 +1,43 @@
+import React from 'react';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import Button from '../Input/Button/Button';
-import Tooltip from '../Tooltip/Tooltip';
+
+import TooltipMenu from '../Tooltip/TooltipMenu';
+
 import ColorPicker from './ColorPicker';
+
 import styles from './ColorPickerPopup.scss';
-var { Checkboard } = require('react-color/lib/components/common');
 
-class ColorPickerPopup extends Component {
-  constructor(props) {
-    super(props);
+const { Checkboard } = require('react-color/lib/components/common');
 
-    this.mounted = false;
+function ColorPickerPopup({
+  className, color, disableAlpha, disabled, onChange
+}) {
+  const colorSwatchBg = {
+    background: `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`
+  };
 
-    this.state = { showPopup: false };
+  const colorSwatchButton = (
+    <div className={styles.colorSwatch}>
+      <div className={styles.colorOverlay} style={colorSwatchBg} />
+      <div className={styles.checkboard}>
+        <Checkboard size={10} white="#fff" grey="#ccc" />
+      </div>
+    </div>
+  );
 
-    this.setRef = this.setRef.bind(this);
-    this.togglePopup = this.togglePopup.bind(this);
-    this.closePopup = this.closePopup.bind(this);
-    this.handleOutsideClick = this.handleOutsideClick.bind(this);
-  }
-
-  componentDidMount() {
-    this.mounted = true;
-    window.addEventListener('scroll', this.closePopup, true);
-    window.addEventListener('mousedown', this.handleOutsideClick, true);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('scroll', this.closePopup);
-    window.removeEventListener('mousedown', this.handleOutsideClick);
-    this.mounted = false;
-  }
-
-  setRef(what) {
-    return (element) => {
-      this[what] = element;
-    };
-  }
-
-  get position() {
-    if (!this.wrapper) return { top: '0px', left: '0px' };
-    const { top, right } = this.wrapper.getBoundingClientRect();
-    return { top: `${top}px`, left: `${right}px` };
-  }
-
-  togglePopup(evt) {
-    if (this.mounted) {
-      this.setState({ showPopup: !this.state.showPopup });
-    }
-  }
-
-  handleOutsideClick(evt) {
-    if (this.wrapper && !this.wrapper.contains(evt.target)) {
-      this.closePopup();
-    }
-  }
-
-  closePopup() {
-    if (this.mounted) {
-      this.setState({ showPopup: false });
-    }
-  }
-
-  render() {
-    const { className, color, disableAlpha, disabled, onChange } = this.props;
-
-    const colorSwatchBg = {
-      background: `rgba(${ color.r }, ${ color.g }, ${ color.b }, ${ color.a })`
-    };
-
-    const customTooltipCss = {
-      paddingRight: '4px', paddingLeft: '4px', maxWidth: '200px'
-    };
-
-    return (
-      <span
-        ref={this.setRef('wrapper')}
-        className={className}
-      >
-        <Button block small onClick={this.togglePopup} nopadding>
-          <div className={styles.colorSwatch}>
-            <div className={styles.colorOverlay} style={colorSwatchBg}/>
-            <div className={styles.checkboard}>
-              <Checkboard size={ 10 } white="#fff" grey="#ccc" />
-            </div>
-          </div>
-          </Button>
-        { !disabled && this.state.showPopup && (
-            <Tooltip
-              fixed
-              placement="right" // TODO: fix so placement can be set from property
-              style={{...this.position, ...customTooltipCss}}
-            >
-              <ColorPicker
-                disableAlpha={disableAlpha}
-                color={color}
-                onChange={onChange}
-              />
-            </Tooltip>
-        )}
-      </span>
-    );
-  }
+  return (
+    <TooltipMenu
+      className={`${className} ${styles.fullHeight}`}
+      disabled={disabled}
+      sourceObject={colorSwatchButton}
+    >
+      <ColorPicker
+        disableAlpha={disableAlpha}
+        color={color}
+        onChange={onChange}
+      />
+    </TooltipMenu>
+  );
 }
 
 ColorPickerPopup.propTypes = {
@@ -109,13 +45,13 @@ ColorPickerPopup.propTypes = {
   color: PropTypes.object.isRequired,
   disableAlpha: PropTypes.bool,
   disabled: PropTypes.bool,
-  onChange: PropTypes.func,
+  onChange: PropTypes.func.isRequired
 };
 
 ColorPickerPopup.defaultProps = {
-  className: "",
+  className: '',
   disableAlpha: false,
-  disabled: false,
+  disabled: false
 };
 
 export default ColorPickerPopup;

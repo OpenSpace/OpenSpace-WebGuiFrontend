@@ -1,0 +1,27 @@
+@import "../../../styles/all";
+
+.buttonIcon {
+  font-size: 1em;
+}
+
+.actionButton {
+  padding-top: 10px !important;
+  padding-bottom: 12px !important;
+  width: 120px;
+  margin-bottom: 5px;
+  margin: 2px;
+  max-height: 50%;
+  overflow-wrap: break-word;
+}
+
+.iconRow {
+  display: flex;
+  justify-content: center;
+  gap: 3px;
+  padding-bottom: 2px !important;
+}
+
+.localText {
+  color: $ui-highlight-secondary;
+  font-size: smaller;
+}

@@ -1,33 +1,38 @@
-import { actionTypes } from '../Actions/actionTypes';
+import actionTypes from '../Actions/actionTypes';
 
-const initStoryTree = { story: { storyidentifier: 'story_default' }, reset: false, info: {} };
+const initStoryTree = {
+  story: { storyidentifier: 'story_default' },
+  reset: false,
+  info: {}
+};
 
-export const storyTree = (state = initStoryTree, action) => {
+const storyTree = (state = initStoryTree, action = {}) => {
   switch (action.type) {
     case actionTypes.addStoryTree:
       return {
         ...state,
         reset: false,
-        story: action.payload.story,
+        story: action.payload.story
       };
     case actionTypes.resetStoryTree:
       return {
         ...state,
-        reset: action.payload.reset,
+        reset: action.payload.reset
       };
     case actionTypes.addStoryInfo:
       return {
         ...state,
-        info: action.payload.info,
+        info: action.payload.info
       };
     case actionTypes.resetStoryInfo:
       return {
         ...state,
-        info: {},
+        info: {}
       };
     default:
       return {
-        ...state,
+        ...state
       };
   }
 };
+export default storyTree;

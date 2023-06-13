@@ -1,7 +1,5 @@
-import { actionTypes } from '../Actions/actionTypes';
-
 import { updateEngineMode } from '../Actions';
-
+import actionTypes from '../Actions/actionTypes';
 import api from '../api';
 
 let topic;
@@ -11,11 +9,14 @@ let nSubscribers = 0;
 const subscribe = () => {
   topic = api.startTopic('engineMode', {
     event: 'start_subscription',
-    properties: ['mode'],
+    properties: ['mode']
   });
   (async () => {
+    // eslint-disable-next-line no-restricted-syntax
     for await (const data of topic.iterator()) {
-      dataCallback && dataCallback(data);
+      if (dataCallback) {
+        dataCallback(data);
+      }
     }
   })();
 };
@@ -35,7 +36,7 @@ const refresh = () => {
     // If we do not have a subscription, we need to create a new topic
     const tempTopic = api.startTopic('engineMode', {
       event: 'refresh',
-      properties: ['mode'],
+      properties: ['mode']
     });
     (async () => {
       const data = await topic.iterator().next();
@@ -45,25 +46,25 @@ const refresh = () => {
   }
 };
 
-export const engineMode = store => next => (action) => {
+const engineMode = (store) => (next) => (action) => {
   const result = next(action);
   const state = store.getState();
 
   switch (action.type) {
     case actionTypes.onOpenConnection:
       if (nSubscribers > 0) {
-        dataCallback = data => store.dispatch(updateEngineMode(data));
+        dataCallback = (data) => store.dispatch(updateEngineMode(data));
         subscribe();
       }
       break;
     case actionTypes.refreshEngineMode:
-      dataCallback = data => store.dispatch(updateEngineMode(data)),
+      dataCallback = (data) => store.dispatch(updateEngineMode(data));
       refresh();
       break;
     case actionTypes.subscribeToEngineMode:
       ++nSubscribers;
       if (nSubscribers === 1 && state.connection.isConnected) {
-        dataCallback = data => store.dispatch(updateEngineMode(data));
+        dataCallback = (data) => store.dispatch(updateEngineMode(data));
         subscribe();
       }
       break;
@@ -78,3 +79,4 @@ export const engineMode = store => next => (action) => {
   }
   return result;
 };
+export default engineMode;

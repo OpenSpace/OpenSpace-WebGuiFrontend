@@ -1,0 +1,43 @@
+@import "../../../styles/all";
+
+$font-size: 0.8rem;
+
+.bar {
+  fill: grey;
+  opacity: 0.9;
+  stroke: black;
+}
+
+.barHighlighted {
+  fill: $ui-highlight-secondary;
+  opacity: 0.95;
+}
+
+.bar:hover, .barHighlighted:hover {
+  fill: lightgray;
+  cursor: pointer;
+}
+
+.arrow {
+  stroke-width: 0;
+  stroke: white;
+  fill: white;
+  &:hover {
+    stroke-width: 2;
+    stroke: white;
+    fill: $ui-highlight-secondary;
+    cursor: pointer;
+  }
+}
+
+.polygon {
+  &:hover {
+    stroke-width: 2;
+    stroke: white;
+    cursor: pointer;
+  }
+}
+
+.toolTip {
+  z-index: 100;
+}

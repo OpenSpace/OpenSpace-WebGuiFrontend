@@ -1,79 +1,72 @@
+import React from 'react';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+
 import Picker from '../../../BottomBar/Picker';
 import Button from '../../../common/Input/Button/Button';
 import Icon from '../../../common/MaterialIcon/MaterialIcon';
 import Popover from '../../../common/Popover/Popover';
 import SmallLabel from '../../../common/SmallLabel/SmallLabel';
+
 import styles from '../style/SightsController.scss';
 import buttonStyle from '../style/UtilitiesButtons.scss';
 
-class SightsController extends Component {
-  constructor(props) {
-    super(props);
+function SightsController({ onChangeSight, sightsList }) {
+  const [showPopover, setShowPopover] = React.useState(false);
 
-    this.state = {
-      showPopover: false,
-    };
-
-    this.togglePopover = this.togglePopover.bind(this);
-    this.selectSight = this.selectSight.bind(this);
+  function togglePopover() {
+    setShowPopover(!showPopover);
   }
 
-  get popover() {
-    return (
-      <Popover
-        className={`${Picker.Popover} ${styles.popover}`}
-        title="Select sight"
-        closeCallback={this.togglePopover}
-      >
-        {this.sightsButtons}
-      </Popover>
-    );
+  function selectSight(e) {
+    togglePopover();
+    const selectedSight = sightsList.find((sight) => sight.info === e.target.id);
+    onChangeSight(selectedSight);
   }
 
-  get sightsButtons() {
-    return (this.props.sightsList.map(sight => (
+  function sightsButtons() {
+    return (sightsList.map((sight) => (
       <Button
         className={styles.sightsLabel}
         key={sight.info}
         smalltext
         block
-        onClick={this.selectSight}
+        onClick={selectSight}
         id={sight.info}
       >
-        <SmallLabel id={sight.info} >
-          {sight.planet},{sight.info}
+        <SmallLabel id={sight.info}>
+          {sight.planet}
+          ,
+          {sight.info}
         </SmallLabel>
       </Button>
     )));
   }
 
-  selectSight(e) {
-    this.togglePopover();
-    const selectedSight = this.props.sightsList.find(sight => sight.info === e.target.id);
-    this.props.onChangeSight(selectedSight);
-  }
-
-  togglePopover() {
-    this.setState({ showPopover: !this.state.showPopover });
-  }
-
-  render() {
+  function popover() {
     return (
-      <div className={Picker.Wrapper} >
-        <Picker
-          onClick={this.togglePopover}
-          className={`${styles.sightsController} ${this.state.showPopover && styles.active}
-          ${this.state.showPopover && Picker.Active}`}
-        >
-          <Icon icon="place" className={buttonStyle.Icon} />
-          <SmallLabel>Select sight</SmallLabel>
-        </Picker>
-        { this.state.showPopover && this.popover }
-      </div>
+      <Popover
+        className={`${Picker.Popover} ${styles.popover}`}
+        title="Select sight"
+        closeCallback={togglePopover}
+      >
+        {sightsButtons()}
+      </Popover>
     );
   }
+
+  return (
+    <div className={Picker.Wrapper}>
+      <Picker
+        onClick={togglePopover}
+        className={`${styles.sightsController} ${showPopover && styles.active}
+        ${showPopover && Picker.Active}`}
+      >
+        <Icon icon="place" className={buttonStyle.Icon} />
+        <SmallLabel>Select sight</SmallLabel>
+      </Picker>
+      { showPopover && popover() }
+    </div>
+  );
 }
 
 SightsController.propTypes = {
@@ -82,15 +75,14 @@ SightsController.propTypes = {
     PropTypes.shape({
       place: PropTypes.string,
       planet: PropTypes.string,
-      location: PropTypes.object,
+      location: PropTypes.object
     }),
-  ),
+  )
 };
 
 SightsController.defaultProps = {
   onChangeSight: () => {},
-  sightsList: [],
+  sightsList: []
 };
-
 
 export default SightsController;

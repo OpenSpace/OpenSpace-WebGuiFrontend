@@ -1,25 +1,26 @@
-import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import SmallLabel from '../../common/SmallLabel/SmallLabel';
-import styles from './MarkerInfo.scss';
+
 import MarkerInfoIcon from './MarkerInfoIcon';
 
-const MarkerInfo = (props) => {
-  const {
-    position, size, showInfoIcon, identifier, showLabel, offset, infoText
-  } = props;
+import styles from './MarkerInfo.scss';
 
+function MarkerInfo({
+  position, size, showInfoIcon, identifier, showLabel, offset, infoText
+}) {
   const positionStyles = {
     MarkerInfo: {
       left: `${Number(position[0])}px`,
-      bottom: `calc(${Number(position[1])}px + ${offset}px)`,
+      bottom: `calc(${Number(position[1])}px + ${offset}px)`
     },
     Icon: {
-      fontSize: `${size}em`,
+      fontSize: `${size}em`
     },
     Text: {
-      fontSize: `${size / 2}em`,
-    },
+      fontSize: `${size / 2}em`
+    }
   };
 
   return (
@@ -38,7 +39,7 @@ const MarkerInfo = (props) => {
       )}
     </div>
   );
-};
+}
 
 MarkerInfo.propTypes = {
   position: PropTypes.array,
@@ -47,13 +48,11 @@ MarkerInfo.propTypes = {
   showInfoIcon: PropTypes.bool.isRequired,
   infoText: PropTypes.string.isRequired,
   showLabel: PropTypes.bool.isRequired,
-  offset: PropTypes.number.isRequired,
+  offset: PropTypes.number.isRequired
 };
 
 MarkerInfo.defaultProps = {
-  position: '',
-  // showInfoIcon: false, // required, so should not have default value
-  // infoText: 'No info available', // required, so should not have default value
+  position: ''
 };
 
 export default MarkerInfo;

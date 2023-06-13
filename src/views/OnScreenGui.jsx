@@ -1,115 +1,123 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
+
 import { setShowAbout, startConnection } from '../api/Actions';
-import { formatVersion, isCompatible, RequiredOpenSpaceVersion, RequiredSocketApiVersion } from '../api/Version';
+import environment from '../api/Environment';
+import {
+  formatVersion, isCompatible, RequiredOpenSpaceVersion, RequiredSocketApiVersion
+} from '../api/Version';
 import BottomBar from '../components/BottomBar/BottomBar';
 import KeybindingPanel from '../components/BottomBar/KeybindingPanel';
-import Error from '../components/common/Error/Error';
 import Button from '../components/common/Input/Button/Button';
 import Overlay from '../components/common/Overlay/Overlay';
 import Stack from '../components/common/Stack/Stack';
+import { RefsProvider } from '../components/GettingStartedTour/GettingStartedContext';
+import TourPopup from '../components/GettingStartedTour/TourPopup';
+import LuaConsole from '../components/LuaConsole/LuaConsole';
 import NodeMetaContainer from '../components/NodeMetaPanel/NodeMetaContainer';
 import NodePopOverContainer from '../components/NodePropertiesPanel/NodePopOverContainer';
 import Sidebar from '../components/Sidebar/Sidebar';
-import '../styles/base.scss';
+
 import About from './About/About';
+import ErrorMessage from './ErrorMessage';
+
+import '../styles/base.scss';
 import styles from './OnScreenGui.scss';
 
-class OnScreenGui extends Component {
-  constructor(props) {
-    super(props);
-    this.checkedVersion = false;
-    this.showFlightController = props.showFlightController;
-  }
+function OnScreenGui({
+  isInBrowser
+}) {
+  let hasCheckedVersion = false;
+  const [showTutorial, setShowTutorial] = React.useState(false);
+  const [luaConsoleVisible, setLuaConsoleVisible] = React.useState(false);
 
-  componentDidMount() {
-    this.props.startConnection();
-  }
+  const version = useSelector((state) => state.version);
+  const showAbout = useSelector((state) => state.local.showAbout);
 
-  checkVersion() {
-    if (!this.checkedVersion && this.props.version.isInitialized) {
-      const versionData = this.props.version.data;
-      if (!isCompatible(versionData.openSpaceVersion, RequiredOpenSpaceVersion)) {
-        console.warn(
-          'Possible incompatibility: \nRequired OpenSpace version: ' +
-          formatVersion(RequiredOpenSpaceVersion) +
-          '. Currently controlling OpenSpace version ' +
-          formatVersion(versionData.openSpaceVersion) + '.'
-        );
+  const dispatch = useDispatch();
+
+  React.useEffect(() => {
+    dispatch(startConnection());
+
+    function toggleConsole(e) {
+      if (e.code === 'Backquote') {
+        setLuaConsoleVisible((current) => !current);
       }
-      if (!isCompatible(versionData.socketApiVersion, RequiredSocketApiVersion)) {
-        console.warn(
-          "Possible incompatibility: \nRequired Socket API version: " +
-          formatVersion(RequiredSocketApiVersion) +
-          ". Currently operating over API version " +
-          formatVersion(versionData.socketApiVersion) + '.'
-        );
-      }
-      this.checkedVersion = true;
     }
+
+    window.addEventListener('keydown', toggleConsole);
+    return () => window.removeEventListener('keydown', toggleConsole);
+  }, []);
+
+  function hideAbout() {
+    dispatch(setShowAbout(false));
   }
 
-  reloadGui() {
-    location.reload();
+  // Check the version
+  if (!hasCheckedVersion && version.isInitialized) {
+    const versionData = version.data;
+    if (!isCompatible(versionData.openSpaceVersion, RequiredOpenSpaceVersion)) {
+      console.warn(
+        `Possible incompatibility: \nRequired OpenSpace version: ${
+          formatVersion(RequiredOpenSpaceVersion)
+        }. Currently controlling OpenSpace version ${
+          formatVersion(versionData.openSpaceVersion)}.`,
+      );
+    }
+    if (!isCompatible(versionData.socketApiVersion, RequiredSocketApiVersion)) {
+      console.warn(
+        `Possible incompatibility: \nRequired Socket API version: ${
+          formatVersion(RequiredSocketApiVersion)
+        }. Currently operating over API version ${
+          formatVersion(versionData.socketApiVersion)}.`,
+      );
+    }
+    hasCheckedVersion = true;
   }
 
-  render() {
-    this.checkVersion();
-    return (
-      <div className={styles.app}>
-        { this.props.showAbout && (
+  return (
+    <div className={styles.app} style={environment.developmentMode ? { borderStyle: 'solid', borderWidth: '3px', borderColor: 'orange' } : null}>
+      {environment.developmentMode && (
+        <div className={styles.devModeTextBox}>
+          <p>Dev Gui</p>
+        </div>
+      )}
+      <RefsProvider>
+        { showAbout && (
+
           <Overlay>
             <Stack style={{ maxWidth: '500px' }}>
-              <Button style={{ alignSelf: 'flex-end', color: 'white' }} onClick={this.props.hideAbout}>
+              <Button style={{ alignSelf: 'flex-end', color: 'white' }} onClick={hideAbout}>
                 Close
               </Button>
               <About />
             </Stack>
           </Overlay>
         )}
-        { this.props.connectionLost && (
-          <Overlay>
-            <Error>
-              <h2>Houston, we've had a...</h2>
-              <p>...disconnection between the user interface and OpenSpace.</p>
-              <p>Trying to reconnect automatically, but you may want to...</p>
-              <Button className={Error.styles.errorButton} onClick={this.reloadGui}>Reload the user interface</Button>
-            </Error>
-          </Overlay>
-        )}
+        <ErrorMessage />
         <section className={styles.Grid__Left}>
-          <Sidebar />
+          <Sidebar showTutorial={setShowTutorial} />
         </section>
         <section className={styles.Grid__Right}>
+          {isInBrowser && luaConsoleVisible && <LuaConsole />}
           <NodePopOverContainer />
           <NodeMetaContainer />
-          <BottomBar showFlightController={this.props.showFlightController}/>
+          <BottomBar />
           <KeybindingPanel />
+          <TourPopup isVisible={showTutorial} setVisibility={(show) => setShowTutorial(show)} />
         </section>
-      </div>
-    );
-  }
+      </RefsProvider>
+    </div>
+  );
 }
 
-const mapStateToProps = state => ({
-  connectionLost: state.connection.connectionLost,
-  version: state.version,
-  showAbout: state.local.showAbout
-});
+OnScreenGui.propTypes = {
+  isInBrowser: PropTypes.bool
+};
 
-const mapDispatchToProps = dispatch => ({
-  startConnection: () => {
-    dispatch(startConnection());
-  },
-  hideAbout: () => {
-    dispatch(setShowAbout(false))
-  }
-});
-
-OnScreenGui = withRouter(connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(OnScreenGui));
+OnScreenGui.defaultProps = {
+  isInBrowser: false
+};
 
 export default OnScreenGui;

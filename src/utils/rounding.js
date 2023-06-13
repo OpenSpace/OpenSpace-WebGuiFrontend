@@ -16,7 +16,7 @@ const decimalAdjust = (type: string, value: number, exponent: ?number = 0): numb
   returnValue = +returnValue;
   const exp = +exponent;
   // If the value is not a number or the exponent is not an integer...
-  if (isNaN(returnValue) || !(typeof exp === 'number' && exp % 1 === 0)) {
+  if (Number.isNaN(returnValue) || !(typeof exp === 'number' && exp % 1 === 0)) {
     return NaN;
   }
   // If the value is negative...
@@ -34,32 +34,31 @@ export const round10 = (value, exponent) => decimalAdjust('round', value, expone
 export const floor10 = (value, exponent) => decimalAdjust('floor', value, exponent);
 export const ciel10 = (value, exponent) => decimalAdjust('ciel', value, exponent);
 
-
 /**
  * Compute the precision of a number. Any value larger than 0 returns
  * precision 0.
  * @param value - value to compute precision of
  */
 export function precision(value: number) {
-  if (!isFinite(value)) return 0;
+  if (!Number.isFinite(value)) return 0;
 
-  var e = 1, precision = 0;
-  while ((Math.round(value * e) / e) !== value) { 
-    e *= 10; precision++; 
+  let e = 1;
+  let precisionNumber = 0;
+  while ((Math.round(value * e) / e) !== value) {
+    e *= 10; precisionNumber++;
   }
-  return precision;
+  return precisionNumber;
 }
 
 /**
- * Round a floating point value to a nice number with a given precision 
+ * Round a floating point value to a nice number with a given precision
  * (without floating point shenanigans)
  * https://www.kirupa.com/html5/rounding_numbers_in_javascript.htm
  * @param value - value to round
- * @param precision - desired precision of the resulting value
+ * @param desiredPrecision - desired precision of the resulting value
  */
-export function roundToNiceNumber(value: number, precision: number) {
-  // const p = Math.pow(10, precision(step));
-  const p = Math.pow(10, precision);
+export function roundToNiceNumber(value: number, desiredPrecision: number) {
+  const p = 10 ** desiredPrecision;
   return Math.round(value * p) / p;
 }
 
@@ -70,5 +69,13 @@ export function roundToNiceNumber(value: number, precision: number) {
  */
 export function roundValueToStepSize(value: number, step: number) {
   const roundedToStep = Math.round(value / step) * step;
-  return roundToNiceNumber(roundedToStep, precision(step));
+  const res = roundToNiceNumber(roundedToStep, precision(step));
+
+  // If the rounding did not result in a finite value, just return the
+  // initial value (even if it's not "nice" and exactly matching the steps size)
+  if (!Number.isFinite(res)) {
+    return value;
+  }
+
+  return res;
 }

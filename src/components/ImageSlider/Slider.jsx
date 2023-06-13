@@ -1,107 +1,99 @@
+import React from 'react';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+
 import { storyImages } from '../../api/resources';
 import stories from '../../stories/stories.json';
+
 import LeftArrow from './Arrows/LeftArrow';
 import RightArrow from './Arrows/RightArrow';
 import Dots from './Dots/Dots';
 import Slide from './Slide';
+
 import styles from './Slider.scss';
 
-class Slider extends Component {
-  constructor(props) {
-    super(props);
+function Slider({ changeStory, startSlide }) {
+  const sliderStories = stories.stories;
 
-    const { startSlider } = this.props;
-
-    let startIndex = stories.stories.findIndex(
-      function (element) {
-        return startSlider === element.identifier;
-      }
-    )
-    
-    // if startSlider was not in the listed stories, pick the first
-    if (startIndex < 0) { 
-      startIndex = 0
-    };
-
-    this.state = {
-      index: startIndex,
-      imagePaths: [],
-      stories: stories.stories,
-    };
-
-    // Push images from stories object into images array
-    for (let i = 0; i < Object.keys(storyImages).length; i++) {
-      this.state.imagePaths.push(storyImages[Object.keys(storyImages)[i]]);
-    }
-
-    // Bind the functions in the constructor
-    this.nextSlide = this.nextSlide.bind(this);
-    this.prevSlide = this.prevSlide.bind(this);
-    this.handleDotClick = this.handleDotClick.bind(this);
-    this.onChangeStory = this.onChangeStory.bind(this);
+  // Push images from stories object into images array
+  const imagePaths = [];
+  for (let i = 0; i < Object.keys(storyImages).length; i++) {
+    imagePaths.push(storyImages[Object.keys(storyImages)[i]]);
   }
 
-  onChangeStory(story) {
-    this.props.changeStory(story);
+  let startIndex = sliderStories.findIndex(
+    (element) => startSlide === element.identifier
+  );
+  // if startSlider was not in the listed stories, pick the first
+  if (startIndex < 0) {
+    startIndex = 0;
+  }
+
+  const [index, setIndex] = React.useState(startIndex);
+
+  // Handle the click of a dot
+  function handleDotClick(i) {
+    if (i === index) { return; }
+    setIndex(i);
+  }
+
+  function onChangeStory(newStory) {
+    changeStory(newStory);
   }
 
   // Set the state to the next slide
-  nextSlide() {
-    if (this.state.index !== this.state.imagePaths.length - 1) {
-      this.setState({ index: this.state.index + 1 });
+  function nextSlide() {
+    const nImages = imagePaths.length;
+    if (index !== nImages - 1) {
+      setIndex(index + 1);
     } else {
-      this.setState({ index: 0 });
+      setIndex(0);
     }
   }
 
   // Set the state to the previous slide
-  prevSlide() {
-    if (this.state.index !== 0) {
-      this.setState({ index: this.state.index - 1 });
+  function prevSlide() {
+    const nImages = imagePaths.length;
+    if (index !== 0) {
+      setIndex(index - 1);
     } else {
-      this.setState({ index: this.state.imagePaths.length - 1 });
+      setIndex(nImages - 1);
     }
   }
 
-  // Handle the click of a dot
-  handleDotClick(i) {
-    if (i === this.state.index) { return; }
-    this.setState({ index: i });
+  const story = Object.values(sliderStories)[index];
+  if (!story) {
+    return null;
   }
+  const image = storyImages[story.identifier];
 
-  render() {
-    const story = Object.values(this.state.stories)[this.state.index];
-    if (!story) {
-      return null;
-    }
-    const image = storyImages[story.identifier];
-
-    return (
-      <div className={styles.Slider}>
-        <div className={styles.SliderWrapper}>
-          <Slide
-            key={image}
-            image={image}
-            storyInfo={story}
-            onChangeStory={this.onChangeStory}
-          />
-        </div>
-        <Dots
-          index={this.state.index}
-          imagePaths={this.state.imagePaths}
-          dotClick={this.handleDotClick}
+  return (
+    <div className={styles.Slider}>
+      <div className={styles.SliderWrapper}>
+        <Slide
+          key={image}
+          image={image}
+          storyInfo={story}
+          onChangeStory={onChangeStory}
         />
-        <RightArrow nextSlide={this.nextSlide} />
-        <LeftArrow prevSlide={this.prevSlide} />
       </div>
-    );
-  }
+      <Dots
+        index={index}
+        imagePaths={imagePaths}
+        dotClick={handleDotClick}
+      />
+      <RightArrow nextSlide={nextSlide} />
+      <LeftArrow prevSlide={prevSlide} />
+    </div>
+  );
 }
 
 Slider.propTypes = {
   changeStory: PropTypes.func.isRequired,
+  startSlide: PropTypes.string
+};
+
+Slider.defaultProps = {
+  startSlide: ''
 };
 
 export default Slider;

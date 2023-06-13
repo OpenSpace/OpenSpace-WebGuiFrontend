@@ -1,4 +1,4 @@
-import { actionTypes } from '../Actions/actionTypes';
+import actionTypes from '../Actions/actionTypes';
 
 /**
  * Make sure the date string contains a time zone
@@ -6,12 +6,37 @@ import { actionTypes } from '../Actions/actionTypes';
  * @param zone - the time zone in ISO 8601 format
  * @constructor
  */
-const dateStringWithTimeZone = (date, zone = 'Z') =>
-  (!date.includes('Z') ? `${date}${zone}` : date);
+// Using this hack to parse times https://scholarslab.lib.virginia.edu/blog/parsing-bc-dates-with-javascript/
+const dateStringWithTimeZone = (date, zone = 'Z') => {
+  // Ensure we don't have white spaces
+  const whitespaceRemoved = date.replace(/\s/g, '');
+  let result;
+  // If we are in negative years (before year 0)
+  if (whitespaceRemoved[0] === '-') {
+    // Remove first dash so we can split it where the year ends
+    const unsignedDate = whitespaceRemoved.substring(1);
+    // Get the year by searching for first -
+    const unsignedYear = unsignedDate.substring(0, unsignedDate.indexOf('-'));
+    // Create year for the pattern -00YYYY for negative years (see link above)
+    const filledYear = `-${unsignedYear.padStart(6, '0')}`;
+    // Get everything after the year
+    const rest = unsignedDate.substring(unsignedDate.indexOf('-'));
+    // Add new filled year together with the rest
+    result = `${filledYear}${rest}`;
+  } else { // After year 0
+    // Ensure year always has 4 digits - fill with 0 in front
+    const year = whitespaceRemoved.substring(0, whitespaceRemoved.indexOf('-'));
+    const rest = whitespaceRemoved.substring(whitespaceRemoved.indexOf('-'));
+    const filledYear = year.padStart(4, '0');
+    result = `${filledYear}${rest}`;
+  }
 
+  return !result.includes('Z') ? `${result}${zone}` : result;
+};
 
 const defaultState = {
   time: undefined,
+  timeCapped: undefined,
   targetDeltaTime: undefined,
   deltaTime: undefined,
   isPaused: undefined,
@@ -22,46 +47,33 @@ const defaultState = {
   deltaTimeSteps: undefined
 };
 
-export const time = (state = defaultState, action = {}) => {
+const time = (state = defaultState, action = {}) => {
   switch (action.type) {
-    case actionTypes.updateTime:
-      const time = action.payload.time;
-      const deltaTime = action.payload.deltaTime;
-      const targetDeltaTime = action.payload.targetDeltaTime;
-      const isPaused = action.payload.isPaused;
-      const hasNextStep = action.payload.hasNextStep;
-      const hasPrevStep = action.payload.hasPrevStep;
-      const nextStep = action.payload.nextStep;
-      const prevStep = action.payload.prevStep;
-      const deltaTimeSteps = action.payload.deltaTimeSteps;
-      const newState = {...state};
+    case actionTypes.updateTime: {
+      const { time: newTime } = action.payload;
+      const { deltaTime } = action.payload;
+      const { targetDeltaTime } = action.payload;
+      const { isPaused } = action.payload;
+      const { hasNextStep } = action.payload;
+      const { hasPrevStep } = action.payload;
+      const { nextStep } = action.payload;
+      const { prevStep } = action.payload;
+      const { deltaTimeSteps } = action.payload;
+      const newState = { ...state };
 
-      if (time !== undefined) {
-        // The date constructor only accepts a small array of the different types that we
-        // might encounter. In particular it doesn't work with any year ranges that don't
-        // have exactly four digits.
-        // So we parse the date string manually and call the correct function on the date
-        // object instead
-        let date = new Date(dateStringWithTimeZone(time));
+      if (newTime !== undefined) {
+        newState.time = new Date(dateStringWithTimeZone(newTime));
 
-        let wholeParts = time.split('T');
-        console.assert(wholeParts.length === 2);
-
-        //
-        // Dealing with the year
-        let dayParts = wholeParts[0].split('-');
-        console.assert(dayParts.length === 3 || dayParts.length === 4);
-        // If the length is 4, we have a leading - meaning that the date is negative
-        if (dayParts.length === 4) {
-          console.assert(dayParts[0].trim() === '');
-          dayParts.shift();
-          date.setFullYear(-parseInt(dayParts[0]));
+        // Make optimized time that only updates every second
+        const date = new Date(dateStringWithTimeZone(newTime));
+        date.setMilliseconds(0);
+        // If it is the first time the time is sent, just set the state
+        // Else cap the update of the state to every second for performance
+        if (!state.timeCapped) {
+          newState.timeCapped = date;
+        } else if (date.toISOString() !== newState.timeCapped.toISOString()) {
+          newState.timeCapped = date;
         }
-        else {
-          date.setFullYear(parseInt(dayParts[0]));
-        }
-
-        newState.time = date;
       }
       if (deltaTime !== undefined) {
         newState.deltaTime = deltaTime;
@@ -88,7 +100,9 @@ export const time = (state = defaultState, action = {}) => {
         newState.deltaTimeSteps = deltaTimeSteps;
       }
       return newState;
+    }
+    default:
+      return state;
   }
-
-  return state;
 };
+export default time;

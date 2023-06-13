@@ -1,60 +1,52 @@
+import React from 'react';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+
 import Picker from '../../../BottomBar/Picker';
 import Icon from '../../../common/MaterialIcon/MaterialIcon';
 import Popover from '../../../common/Popover/Popover';
 import SmallLabel from '../../../common/SmallLabel/SmallLabel';
+
 import buttonStyle from '../style/UtilitiesButtons.scss';
 
-class InfoButton extends Component {
-  constructor(props) {
-    super(props);
+function InfoButton({ storyInfo, storyTitle }) {
+  const [showPopover, setShowPopover] = React.useState(false);
 
-    this.state = {
-      showPopover: false,
-    };
-
-    this.togglePopover = this.togglePopover.bind(this);
+  function togglePopover() {
+    setShowPopover(!showPopover);
   }
 
-  get popover() {
+  function popover() {
     return (
       <Popover
         className={Picker.Popover}
-        title={this.props.storyTitle}
-        closeCallback={this.togglePopover}
+        title={storyTitle}
+        closeCallback={togglePopover}
       >
         <p>
-          {this.props.storyInfo}
+          {storyInfo}
         </p>
       </Popover>
     );
   }
 
-  togglePopover() {
-    this.setState({ showPopover: !this.state.showPopover });
-  }
-
-  render() {
-    return (
-      <div className={Picker.Wrapper}>
-        <Picker
-          onClick={this.togglePopover}
-          className={`${buttonStyle.UtilitiesButton}
-          ${this.state.showPopover && buttonStyle.active} ${this.state.showPopover && Picker.Active}`}
-        >
-          <Icon icon="info_outline" className={buttonStyle.Icon} />
-          <SmallLabel>Info</SmallLabel>
-        </Picker>
-        { this.state.showPopover && this.popover }
-      </div>
-    );
-  }
+  return (
+    <div className={Picker.Wrapper}>
+      <Picker
+        onClick={togglePopover}
+        className={`${buttonStyle.UtilitiesButton}
+        ${showPopover && buttonStyle.active} ${showPopover && Picker.Active}`}
+      >
+        <Icon icon="info_outline" className={buttonStyle.Icon} />
+        <SmallLabel>Info</SmallLabel>
+      </Picker>
+      { showPopover && popover() }
+    </div>
+  );
 }
 
 InfoButton.propTypes = {
   storyTitle: PropTypes.string.isRequired,
-  storyInfo: PropTypes.string.isRequired,
+  storyInfo: PropTypes.string.isRequired
 };
 
 export default InfoButton;

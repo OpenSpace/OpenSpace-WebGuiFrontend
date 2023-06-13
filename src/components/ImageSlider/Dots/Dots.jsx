@@ -1,9 +1,11 @@
-import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import Dot from './Dot';
+
 import styles from './Dots.scss';
 
-const Dots = ({ index, imagePaths, dotClick }) => {
+function Dots({ index, imagePaths, dotClick }) {
   // Map the dots and the images
   const dotsGroup = imagePaths.map((image, i) => {
     const active = (i === index);
@@ -22,16 +24,16 @@ const Dots = ({ index, imagePaths, dotClick }) => {
       { dotsGroup }
     </div>
   );
-};
+}
 
 Dots.defaultProps = {
-  imagePaths: null,
+  imagePaths: null
 };
 
 Dots.propTypes = {
   index: PropTypes.number.isRequired,
   imagePaths: PropTypes.arrayOf(PropTypes.string),
-  dotClick: PropTypes.func.isRequired,
+  dotClick: PropTypes.func.isRequired
 };
 
 export default Dots;

@@ -1,124 +1,137 @@
-import React, { Component } from 'react';
+/* eslint-disable react/no-unstable-nested-components */
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { AutoSizer, Grid } from 'react-virtualized';
 import PropTypes from 'prop-types';
+
+import { ObjectWordBeginningSubstring } from '../../../utils/StringMatchers';
 import CenteredLabel from '../../common/CenteredLabel/CenteredLabel';
-import FilterList from '../../common/FilterList/FilterList';
-import styles from './SkyBrowserImageList.scss';
+import Dropdown from '../../common/DropDown/Dropdown';
+import Input from '../../common/Input/Input/Input';
+
 import SkyBrowserFocusEntry from './SkyBrowserFocusEntry';
+import SkyBrowserNearestImagesList from './SkyBrowserNearestImagesList';
 
-class SkyBrowserImageList extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      distanceSortThreshold: 0.1
-    };
-    this.lastUpdateTime = new Date().getTime();
-    this.getNearestImages = this.getNearestImages.bind(this);
-  }
+const ImageViewingOptions = {
+  withinView: 'Images within view',
+  all: 'All images',
+  skySurveys: 'Sky surveys'
+};
 
-  shouldComponentUpdate(nextProps, nextState) {
-    if (nextProps.showOnlyNearest) {
-      // TODO: this can probably be made more efficient. We don't need to
-      // rerender if nothing changed.
-      // @micahnyc - I added throttling for now, so we dont update more then twice per second.
-      var time = new Date().getTime();
-      var timeSinceLastUpdate = time - this.lastUpdateTime;
-      var updateInterval = 500;
-      if (timeSinceLastUpdate > updateInterval) {
-        this.lastUpdateTime = time;
-        return true;
-      }
+function SkyBrowserImageList({
+  activeImage,
+  currentBrowserColor,
+  height,
+  moveCircleToHoverImage,
+  selectImage
+}) {
+  const [imageViewingMode, setImageViewingMode] = React.useState(ImageViewingOptions.withinView);
+  const [searchString, setSearchString] = React.useState('');
+  const imageList = useSelector((state) => state.skybrowser.imageList);
+  const skySurveys = imageList.filter((img) => !img.hasCelestialCoords);
+  const allImages = imageList.filter((img) => img.hasCelestialCoords);
+  const entryHeight = 110;
+  const entryWidth = 110;
+  const inputHeight = 41;
+
+  React.useEffect(() => {
+    setSearchString('');
+  }, [imageViewingMode]);
+
+  function getImageList() {
+    if (imageViewingMode === ImageViewingOptions.withinView) {
+      return (
+        <SkyBrowserNearestImagesList
+          activeImage={activeImage}
+          currentBrowserColor={currentBrowserColor}
+          selectImage={selectImage}
+          height={height}
+          moveCircleToHoverImage={moveCircleToHoverImage}
+        />
+      );
     }
-    // Prevent rerendering unless important properties actually changed
+
+    const chosenImageList = imageViewingMode === ImageViewingOptions.all ? allImages : skySurveys;
+    const filteredImageList = chosenImageList.filter(
+      (img) => ObjectWordBeginningSubstring(Object.values(img), searchString.toLowerCase())
+    );
+
     return (
-      this.props.showOnlyNearest !== nextProps.showOnlyNearest ||
-      this.props.height !== nextProps.height ||
-      this.props.selectImage !== nextProps.selectImage ||
-      this.props.activeImage !== nextProps.activeImage
+      <>
+        <Input
+          value={searchString}
+          placeholder={`Search from ${chosenImageList.length.toString()} images...`}
+          onChange={(e) => setSearchString(e.target.value)}
+          clearable
+          autoFocus
+        />
+        { filteredImageList.length > 0 ? (
+          <AutoSizer>
+            {({ width }) => {
+              const noOfCols = Math.floor(width / entryWidth);
+              const rows = Math.ceil(filteredImageList.length / noOfCols);
+              const minRows = Math.max(rows, Math.floor((height - inputHeight) / entryHeight));
+
+              return (
+                <Grid
+                  cellRenderer={({
+                    columnIndex, key, rowIndex, style
+                  }) => {
+                    const index = columnIndex + (rowIndex * noOfCols);
+                    if (index >= filteredImageList.length) {
+                      return null;
+                    }
+                    const item = filteredImageList[index];
+                    return (
+                      <SkyBrowserFocusEntry
+                        key={key}
+                        {...item}
+                        currentBrowserColor={currentBrowserColor}
+                        onSelect={selectImage}
+                        isActive={activeImage === item.identifier}
+                        moveCircleToHoverImage={moveCircleToHoverImage}
+                        style={style}
+                      />
+                    );
+                  }}
+                  columnCount={noOfCols}
+                  columnWidth={entryWidth}
+                  height={height - inputHeight}
+                  rowCount={minRows}
+                  rowHeight={entryHeight}
+                  width={width}
+                />
+              );
+            }}
+          </AutoSizer>
+        ) :
+          <CenteredLabel>Nothing found. Try another search!</CenteredLabel>}
+      </>
     );
   }
 
-  getNearestImages() {
-
-    const { imageList, selectedBrowserData } = this.props;
-    const { distanceSortThreshold } = this.state;
-
-    if (!selectedBrowserData || !imageList || Object.keys(imageList).length === 0) {
-      return [];
-    }
-
-    const searchRadius = selectedBrowserData.fov / 2;
-    const isWithinFOV = (coord, target, FOV) => coord < target + FOV && coord > target - FOV;
-
-    // Only load images that have coordinates within current window
-    const imgsWithinTarget = imageList.filter((img) => {
-      if (!img.hasCelestialCoords) {
-        return false; // skip
-      }
-      return isWithinFOV(img.ra, selectedBrowserData.ra, searchRadius)
-        && isWithinFOV(img.dec, selectedBrowserData.dec, searchRadius);
-    });
-
-    const distPow2 = (a, b) => (a - b) * (a - b);
-
-    const euclidianDistance = (a, b) => {
-      let sum = 0;
-      for (let i = 0; i < 3; i++) {
-        sum += distPow2(a.cartesianDirection[i], b.cartesianDirection[i]);
-      }
-      return Math.sqrt(sum);
-    };
-
-    imgsWithinTarget.sort((a, b) => {
-      const distA = euclidianDistance(a, selectedBrowserData);
-      const distB = euclidianDistance(b, selectedBrowserData);
-      let result = distA > distB;
-      // If both the images are within a certain distance of each other
-      // assume they are taken of the same object and sort on fov.
-      if (euclidianDistance(a, selectedBrowserData) < distanceSortThreshold &&
-          euclidianDistance(b, selectedBrowserData) < distanceSortThreshold ) {
-        result = a.fov > b.fov
-      }
-      return result ? 1 : -1;
-    });
-
-    return imgsWithinTarget;
-  }
-
-  render() {
-
-    const { activeImage, height, imageList, luaApi, showOnlyNearest, selectImage, currentBrowserColor } = this.props;
-    const list = showOnlyNearest ? this.getNearestImages() : imageList !== undefined ? imageList : [];
-
-    const showNoImagesHint = (showOnlyNearest && list.length === 0);
-    if (showNoImagesHint) {
-      return <CenteredLabel>No images within the current view. Zoom out or move the target to look at another portion of the sky</CenteredLabel>
-    }
-
-    return (
-      <FilterList
-        className={styles.filterList}
-        height={height} // TODO: prevent rerendering every time height changes
-        data={list}
-        searchText={`Search from ${list.length.toString()} images...`}
-        viewComponent={SkyBrowserFocusEntry}
-        viewComponentProps={{
-          luaApi: luaApi,
-          currentBrowserColor: currentBrowserColor,
-        }}
-        onSelect={selectImage}
-        active={activeImage}
-        searchAutoFocus
+  return (
+    <>
+      <Dropdown
+        options={Object.values(ImageViewingOptions)}
+        onChange={(anchor) => setImageViewingMode(anchor.value)}
+        value={imageViewingMode}
+        placeholder="Select a viewing mode"
+        style={{ marginRight: '2px' }}
       />
-    );
-  }
+      {getImageList()}
+    </>
+  );
 }
 
 SkyBrowserImageList.propTypes = {
-  api: PropTypes.object,
+  activeImage: PropTypes.string.isRequired,
+  currentBrowserColor: PropTypes.func.isRequired,
+  height: PropTypes.number.isRequired,
+  selectImage: PropTypes.func.isRequired,
+  moveCircleToHoverImage: PropTypes.func.isRequired
 };
 
-SkyBrowserImageList.defaultProps = {
-  api: null,
-};
+SkyBrowserImageList.defaultProps = {};
 
 export default SkyBrowserImageList;

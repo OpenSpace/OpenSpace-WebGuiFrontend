@@ -1,5 +1,6 @@
-import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import styles from './MaterialIcon.scss';
 
 /**
@@ -8,24 +9,17 @@ import styles from './MaterialIcon.scss';
  * @returns {XML}
  * @constructor
  */
-const MaterialIcon = (props) => {
-  const { icon, className } = props;
-  const classNames = className.split(' ')
-                            .map(s => styles[s] || s)
-                            .concat(styles.base)
-                            .join(' ');
-  return (
-    <i {...props} className={classNames}>{ icon }</i>
-  );
-};
+function MaterialIcon({ icon, className, ...props }) {
+  return <span className={`icon ${styles.base} ${className}`} {...props}>{ icon }</span>;
+}
 
 MaterialIcon.propTypes = {
   icon: PropTypes.string.isRequired,
-  className: PropTypes.string,
+  className: PropTypes.string
 };
 
 MaterialIcon.defaultProps = {
-  className: '',
+  className: ''
 };
 
 export default MaterialIcon;

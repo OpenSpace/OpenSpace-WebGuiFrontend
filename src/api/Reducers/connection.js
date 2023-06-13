@@ -1,35 +1,36 @@
-import { actionTypes } from '../Actions/actionTypes';
+import actionTypes from '../Actions/actionTypes';
 
 const defaultState = {
   isConnected: false,
-  connectedLost: false,
-}
+  connectedLost: false
+};
 
-export const connection = (state = defaultState, action) => { // state refers to connection
+const connection = (state = defaultState, action = {}) => { // state refers to connection
   switch (action.type) {
     case actionTypes.startConnection:
       return {
         isConnected: false,
-        connectionLost: false,
+        connectionLost: false
       };
     case actionTypes.onOpenConnection:
       return {
         ...state,
         isConnected: true,
-        connectionLost: false,
+        connectionLost: false
       };
     case actionTypes.onCloseConnection:
       return {
         ...state,
         isConnected: false,
-        connectionLost: true,
+        connectionLost: true
       };
     case actionTypes.changeConnectionWait:
       return {
         ...state,
-        connectionWait: action.payload.value,
+        connectionWait: action.payload.value
       };
     default:
       return state;
   }
 };
+export default connection;

@@ -1,30 +1,35 @@
+import React from 'react';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import { excludeKeys } from '../../../../utils/helpers';
+
 import Input from '../Input/Input';
+
 import styles from './ScaleInput.scss';
 
-class ScaleInput extends Component {
-  constructor(props) {
-    super(props);
+function ScaleInput({
+  centerMarker,
+  defaultValue,
+  leftLabel,
+  rightLabel,
+  leftTicks,
+  rightTicks,
+  label,
+  onChange,
+  min,
+  max,
+  wide,
+  ...rest
+}) {
+  const [value, setValue] = React.useState(defaultValue);
 
-    this.state = {
-      value: props.defaultValue,
-      id: `scale-${Input.nextId}`,
-    };
+  const id = `scale-${Input.nextId}`;
 
-    this.onChange = this.onChange.bind(this);
-    this.reset = this.reset.bind(this);
+  function onValueChange(event) {
+    const newValue = event.currentTarget.value;
+    setValue(newValue);
+    onChange(newValue);
   }
 
-  onChange(event) {
-    const { value } = event.currentTarget;
-    this.setState({ value });
-    this.props.onChange(value);
-  }
-
-  get markers() {
-    const { leftTicks, rightTicks, centerMarker, defaultValue, min, max } = this.props;
+  function markers() {
     const showMarkers = centerMarker || (leftTicks > 0 && rightTicks > 0);
 
     // eslint-disable-next-line no-mixed-operators
@@ -32,51 +37,43 @@ class ScaleInput extends Component {
     return showMarkers && (
       <div className={styles.markers}>
         <div className={styles.ticks} style={{ width: `calc(${width}% - 2px)` }}>
-          { Array.from(new Array(leftTicks), (_, i) =>
-            (<div key={i} className={styles.tick} />))}
+          { Array.from(new Array(leftTicks), (_, i) => (<div key={i} className={styles.tick} />))}
         </div>
         { centerMarker && (<div className={styles.centerMarker} />) }
         <div className={styles.ticks} style={{ width: `calc(${100 - width}% - 2px)` }}>
-          { Array.from(new Array(rightTicks), (_, i) =>
-            (<div key={i} className={styles.tick} />))}
+          { Array.from(new Array(rightTicks), (_, i) => (<div key={i} className={styles.tick} />))}
         </div>
       </div>
     );
   }
 
-  reset() {
-    this.setState({ value: this.props.defaultValue });
-    this.props.onChange(this.props.defaultValue);
+  function reset() {
+    setValue(defaultValue);
+    onChange(defaultValue);
   }
 
-  render() {
-    const { leftLabel, rightLabel, label, wide } = this.props;
-    const { id } = this.state;
-    const inheritedProps = excludeKeys(this.props,
-      'rightLabel leftLabel label onChange wide centerMarker defaultValue leftTicks rightTicks');
-
-    return (
-      <div className={`${styles.group} ${wide ? styles.wide : ''}`}>
-        { this.markers}
-
-        <input
-          {...inheritedProps}
-          id={id}
-          value={this.state.value}
-          onChange={this.onChange}
-          onMouseUp={this.reset}
-          onBlur={this.reset}
-          type="range"
-          className={`${styles.input} ${wide ? styles.wide : ''}`}
-        />
-        <div className={styles.labels}>
-          <span className={styles.leftLabel}>{ leftLabel }</span>
-          <label htmlFor={id}>{ label }</label>
-          <span className={styles.rightLabel}>{ rightLabel }</span>
-        </div>
+  return (
+    <div className={`${styles.group} ${wide ? styles.wide : ''}`}>
+      { markers() }
+      <input
+        {...rest}
+        id={id}
+        value={value}
+        onChange={onValueChange}
+        onMouseUp={reset}
+        onBlur={reset}
+        min={min}
+        max={max}
+        type="range"
+        className={`${styles.input} ${wide ? styles.wide : ''}`}
+      />
+      <div className={styles.labels}>
+        <span className={styles.leftLabel}>{ leftLabel }</span>
+        <label htmlFor={id}>{ label }</label>
+        <span className={styles.rightLabel}>{ rightLabel }</span>
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 ScaleInput.propTypes = {
@@ -91,7 +88,7 @@ ScaleInput.propTypes = {
   rightLabel: PropTypes.string,
   rightTicks: PropTypes.number,
   step: PropTypes.number,
-  wide: PropTypes.bool,
+  wide: PropTypes.bool
 };
 
 ScaleInput.defaultProps = {
@@ -106,7 +103,7 @@ ScaleInput.defaultProps = {
   rightLabel: '+',
   rightTicks: 5,
   step: 0.01,
-  wide: true,
+  wide: true
 };
 
 export default ScaleInput;

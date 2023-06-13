@@ -1,6 +1,7 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { 
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
+import {
   refreshSessionRecording,
   subscribeToEngineMode,
   subscribeToSessionRecording,
@@ -13,9 +14,9 @@ import {
   SessionStateIdle,
   SessionStatePaused,
   SessionStatePlaying,
-  SessionStateRecording,
+  SessionStateRecording
 } from '../../api/keys';
-import subStateToProps from '../../utils/subStateToProps';
+import InfoBox from '../common/InfoBox/InfoBox';
 import Button from '../common/Input/Button/Button';
 import Checkbox from '../common/Input/Checkbox/Checkbox';
 import Input from '../common/Input/Input/Input';
@@ -23,88 +24,136 @@ import Select from '../common/Input/Select/Select';
 import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import Popover from '../common/Popover/Popover';
 import Row from '../common/Row/Row';
+
 import Picker from './Picker';
+
 import styles from './SessionRec.scss';
 
-class SessionRec extends Component {
-  constructor(props) {
-    super(props);
+function SessionRec() {
+  const [useTextFormat, setUseTextFormat] = React.useState(false);
+  const [forceTime, setForceTime] = React.useState(true);
+  const [filenameRecording, setFilenameRecording] = React.useState('');
+  const [filenamePlayback, setFilenamePlayback] = React.useState(undefined);
+  const [shouldOutputFrames, setShouldOutputFrames] = React.useState(false);
+  const [outputFramerate, setOutputFramerate] = React.useState(60);
+  const [loopPlayback, setLoopPlayback] = React.useState(false);
+  const [showPopover, setShowPopover] = React.useState(false);
 
-    this.state = {
-      useTextFormat: false,
-      forceTime: true,
-      filenameRecording: '',
-      filenamePlayback: undefined,
-      shouldOutputFrames: false,
-      outputFramerate: 60,
-      loopPlayback: false,
-    };
+  const luaApi = useSelector((state) => state.luaApi);
 
-    this.togglePopover = this.togglePopover.bind(this);
-    this.toggleRecording = this.toggleRecording.bind(this);
-    this.togglePlayback = this.togglePlayback.bind(this);
-    this.setPlaybackFile = this.setPlaybackFile.bind(this);
-    this.setForceTiming = this.setForceTiming.bind(this);
-    this.setLoopPlayback = this.setLoopPlayback.bind(this);
-    this.setUseTextFormat = this.setUseTextFormat.bind(this);
-    this.setShouldOutputFrames = this.setShouldOutputFrames.bind(this);
-    this.togglePlaybackPaused = this.togglePlaybackPaused.bind(this);
-    this.stopPlayback = this.stopPlayback.bind(this);
+  const fileList = useSelector((state) => state.sessionRecording.files || []);
+  const recordingState = useSelector((state) => (
+    state.sessionRecording.recordingState || SessionStateIdle
+  ));
+  const engineMode = useSelector((state) => state.engineMode.mode || EngineModeUserControl);
+
+  const dispatch = useDispatch();
+
+  function subscribe() {
+    dispatch(subscribeToSessionRecording());
+    dispatch(subscribeToEngineMode());
   }
 
-  componentDidMount() {
-    this.props.subscribe();
+  function unsubscribe() {
+    dispatch(unsubscribeToSessionRecording());
   }
 
-  componentWillUnmount() {
-    this.props.unsubscribe();
-  }
+  React.useEffect(() => {
+    subscribe();
+    return () => unsubscribe();
+  }, []);
 
-  get isIdle() {
-    const { recordingState } = this.props;
+  function isIdle() {
     return (recordingState === SessionStateIdle);
   }
 
-  get picker() {
-    const { engineMode, recordingState } = this.props;
-    const { showPopover } = this.state;
-    const classes = [];
-    let onClick = this.togglePopover;
-
-    // The picker works and looks differently depending on the 
-    // different states and modes
-    if (engineMode === EngineModeCameraPath) {
-      classes.push(Picker.DisabledBlue);
-      onClick = undefined;
+  function onLoopPlaybackChange(newLoopPlayback) {
+    if (newLoopPlayback) {
+      setLoopPlayback(true);
+      setShouldOutputFrames(false);
+    } else {
+      setLoopPlayback(newLoopPlayback);
     }
-    else if (recordingState === SessionStateRecording) {
-      classes.push(Picker.Red);
-      onClick = this.toggleRecording;
-    } 
-    else if (recordingState === SessionStatePlaying) {
-      classes.push(Picker.Blue);
-      onClick = undefined;
-    } 
-    else if (recordingState === SessionStatePaused) {
-      classes.push(Picker.Orange);
-      onClick = undefined;
-    } 
-    else if (showPopover) {
-      classes.push(Picker.Active);
-    }
-
-    return (
-      <Picker
-        onClick={onClick}
-        className={classes.join(' ')}
-      >
-        { this.pickerContent }
-      </Picker>
-    );
   }
 
-  get pickerContent() {
-    const { recordingState } = this.props;
+  function onShouldUpdateFramesChange(newValue) {
+    if (newValue) {
+      setLoopPlayback(false);
+      setShouldOutputFrames(true);
+    } else {
+      setShouldOutputFrames(newValue);
+    }
+  }
+
+  function setPlaybackFile({ value }) {
+    setFilenamePlayback(value);
+  }
+
+  function updateRecordingFilename(evt) {
+    setFilenameRecording(evt.target.value);
+  }
+
+  function updateOutputFramerate(evt) {
+    setOutputFramerate(evt.target.value);
+  }
+
+  function startRecording() {
+    if (useTextFormat) {
+      luaApi.sessionRecording.startRecordingAscii(filenameRecording);
+    } else {
+      // Binary
+      luaApi.sessionRecording.startRecording(filenameRecording);
+    }
+  }
+
+  function toggleRecording() {
+    if (isIdle()) {
+      startRecording();
+    } else {
+      luaApi.sessionRecording.stopRecording();
+    }
+  }
+
+  function startPlayback() {
+    if (shouldOutputFrames) {
+      luaApi.sessionRecording.enableTakeScreenShotDuringPlayback(parseInt(outputFramerate, 10));
+    }
+    if (forceTime) {
+      luaApi.sessionRecording.startPlayback(filenamePlayback, loopPlayback);
+    } else {
+      luaApi.sessionRecording.startPlaybackRecordedTime(filenamePlayback, loopPlayback);
+    }
+  }
+
+  function stopPlayback() {
+    luaApi.sessionRecording.stopPlayback();
+  }
+
+  function togglePlayback() {
+    if (isIdle()) {
+      startPlayback();
+    } else {
+      stopPlayback();
+    }
+  }
+
+  function togglePlaybackPaused() {
+    luaApi.sessionRecording.togglePlaybackPause();
+  }
+
+  function refreshPlaybackFilesList() {
+    dispatch(refreshSessionRecording());
+    dispatch(unsubscribeToEngineMode());
+  }
+
+  function togglePopover() {
+    if (!showPopover) {
+      refreshPlaybackFilesList();
+    }
+    setShowPopover((current) => !current);
+  }
+
+  function pickerContent() {
     switch (recordingState) {
       case SessionStateRecording:
         return (
@@ -116,27 +165,38 @@ class SessionRec extends Component {
       case SessionStatePlaying:
         return (
           <>
-            <div className={styles.playbackButton} onClick={this.togglePlaybackPaused}>
+            <Button
+              className={styles.playbackButton}
+              onClick={togglePlaybackPaused}
+              regular
+            >
               <MaterialIcon icon="pause" />
               {' Pause'}
-            </div>
-            <div onClick={this.stopPlayback}>
+            </Button>
+            <Button onClick={stopPlayback} regular>
               <MaterialIcon icon="stop" />
               {' Stop playback'}
-            </div>
+            </Button>
           </>
         );
       case SessionStatePaused:
         return (
           <>
-            <div className={styles.playbackButton} onClick={this.togglePlaybackPaused}>
+            <Button
+              className={styles.playbackButton}
+              onClick={togglePlaybackPaused}
+              regular
+            >
               <MaterialIcon icon="play_arrow" />
               {' Resume'}
-            </div>
-            <div onClick={this.stopPlayback}>
+            </Button>
+            <Button
+              onClick={stopPlayback}
+              regular
+            >
               <MaterialIcon icon="stop" />
               {' Stop playback'}
-            </div>
+            </Button>
           </>
         );
       default:
@@ -148,15 +208,42 @@ class SessionRec extends Component {
     }
   }
 
-  get popover() {
-    const { fileList } = this.props;
-    const {
-      filenamePlayback, filenameRecording, forceTime, shouldOutputFrames, loopPlayback,
-      useTextFormat, outputFramerate,
-    } = this.state;
+  function picker() {
+    const classes = [];
+    let onClick = togglePopover;
 
+    // The picker works and looks differently depending on the
+    // different states and modes
+    if (engineMode === EngineModeCameraPath) {
+      classes.push(Picker.DisabledBlue);
+      onClick = undefined;
+    } else if (recordingState === SessionStateRecording) {
+      classes.push(Picker.Red);
+      onClick = toggleRecording;
+    } else if (recordingState === SessionStatePlaying) {
+      classes.push(Picker.Blue);
+      onClick = undefined;
+    } else if (recordingState === SessionStatePaused) {
+      classes.push(Picker.Orange);
+      onClick = undefined;
+    } else if (showPopover) {
+      classes.push(Picker.Active);
+    }
+
+    return (
+      <Picker
+        onClick={onClick}
+        className={classes.join(' ')}
+        refKey="SessionRecording"
+      >
+        { pickerContent() }
+      </Picker>
+    );
+  }
+
+  function popover() {
     const options = Object.values(fileList)
-      .map(fname => ({ value: fname, label: fname }));
+      .map((fname) => ({ value: fname, label: fname }));
 
     const fileNameLabel = <span>Name of recording</span>;
     const fpsLabel = <span>FPS</span>;
@@ -165,7 +252,7 @@ class SessionRec extends Component {
     return (
       <Popover
         className={Picker.Popover}
-        closeCallback={this.togglePopover}
+        closeCallback={togglePopover}
         title="Record session"
         attached
         detachable
@@ -173,20 +260,21 @@ class SessionRec extends Component {
         <div className={Popover.styles.content}>
           <Checkbox
             checked={useTextFormat}
-            label={textFormatLabel}
-            setChecked={this.setUseTextFormat}
-          />
+            setChecked={setUseTextFormat}
+          >
+            <p>{textFormatLabel}</p>
+          </Checkbox>
           <Row>
             <Input
               value={filenameRecording}
               label={fileNameLabel}
               placeholder="Enter recording filename..."
-              onChange={evt => this.updateRecordingFilename(evt)}
+              onChange={(evt) => updateRecordingFilename(evt)}
             />
 
             <div className={Popover.styles.row}>
               <Button
-                onClick={this.toggleRecording}
+                onClick={toggleRecording}
                 title="Start Recording"
                 style={{ width: 90 }}
                 disabled={!filenameRecording}
@@ -203,31 +291,41 @@ class SessionRec extends Component {
           <Checkbox
             checked={forceTime}
             name="forceTimeInput"
-            label="Force time change to recorded time"
-            setChecked={this.setForceTiming}
-          />
+            setChecked={setForceTime}
+          >
+            <p>Force time change to recorded time</p>
+          </Checkbox>
           <Checkbox
             checked={loopPlayback}
             name="loopPlaybackInput"
-            label="Loop playback"
-            setChecked={this.setLoopPlayback}
-          />
-          <Row>
+            setChecked={onLoopPlaybackChange}
+          >
+            <p>Loop playback</p>
+          </Checkbox>
+          <Row className={styles.lastRow}>
             <Checkbox
               checked={shouldOutputFrames}
               name="outputFramesInput"
-              label="Output frames"
               className={styles.fpsCheckbox}
-              setChecked={this.setShouldOutputFrames}
-            />
-            { shouldOutputFrames && (
+              setChecked={onShouldUpdateFramesChange}
+            >
+              <p>Output frames</p>
+              <InfoBox
+                className={styles.infoBox}
+                text={`If checked, the specified number of frames will be recorded as 
+                screenshots and saved to disk. Per default, they are saved in the  
+                user/screenshots folder. This feature can not be used together with
+                'loop playback'`}
+              />
+            </Checkbox>
+            {shouldOutputFrames && (
               <Input
                 value={outputFramerate}
                 label={fpsLabel}
                 placeholder="framerate"
                 className={styles.fpsInput}
-                visible={shouldOutputFrames}
-                onChange={evt => this.updateOutputFramerate(evt)}
+                visible={shouldOutputFrames ? 'visible' : 'hidden'}
+                onChange={(evt) => updateOutputFramerate(evt)}
               />
             )}
           </Row>
@@ -236,13 +334,13 @@ class SessionRec extends Component {
               menuPlacement="top"
               label="Playback file"
               placeholder="Select playback file..."
-              onChange={this.setPlaybackFile}
+              onChange={setPlaybackFile}
               options={options}
               value={filenamePlayback}
             />
             <div className={Popover.styles.row}>
               <Button
-                onClick={this.togglePlayback}
+                onClick={togglePlayback}
                 title="Start Playback"
                 block
                 small
@@ -260,177 +358,13 @@ class SessionRec extends Component {
     );
   }
 
-  setPlaybackFile({ value }) {
-    this.setState({ filenamePlayback: value });
-  }
-
-  updateRecordingFilename(evt) {
-    this.setState({ filenameRecording: evt.target.value });
-  }
-
-  updateOutputFramerate(evt) {
-    this.setState({
-      outputFramerate: evt.target.value,
-    });
-  }
-
-  toggleRecording() {
-    if (this.isIdle) {
-      this.startRecording();
-    } else {
-      this.props.stopRecording();
-    }
-  }
-
-  startRecording() {
-    const { useTextFormat, filenameRecording } = this.state;
-    if (useTextFormat) {
-      this.props.startRecordingAscii(filenameRecording);
-    } else {
-      this.props.startRecordingBinary(filenameRecording);
-    }
-  }
-
-  stopPlayback() {
-    this.props.stopPlayback();
-  }
-
-  togglePlaybackPaused() {
-    this.props.togglePlaybackPaused();
-  }
-
-  togglePlayback() {
-    if (this.isIdle) {
-      this.startPlayback();
-    } else {
-      this.props.stopPlayback();
-    }
-  }
-
-  startPlayback() {
-    const {
-      forceTime,
-      filenamePlayback,
-      shouldOutputFrames,
-      outputFramerate,
-      loopPlayback,
-    } = this.state;
-
-    this.props.startPlaybackLua(filenamePlayback,
-      forceTime, shouldOutputFrames, outputFramerate, loopPlayback);
-  }
-
-  setUseTextFormat(useTextFormat) {
-    this.setState({ useTextFormat });
-  }
-
-  setForceTiming(forceTime) {
-    this.setState({ forceTime });
-  }
-
-  setLoopPlayback(loopPlayback) {
-    if (loopPlayback) {
-      this.setState({ loopPlayback: true, shouldOutputFrames: false });
-    } else {
-      this.setState({ loopPlayback });
-    }
-  }
-
-  setShouldOutputFrames(shouldOutputFrames) {
-    if (shouldOutputFrames) {
-      this.setState({ loopPlayback: false, shouldOutputFrames: true });
-    } else {
-      this.setState({ shouldOutputFrames });
-    }
-  }
-
-  togglePopover() {
-    const { showPopover } = this.state;
-    if (!showPopover) {
-      this.props.refreshPlaybackFilesList();
-    }
-    this.setState({ showPopover: !showPopover });
-  }
-
-  render() {
-    const { engineMode } = this.props;
-    const { showPopover } = this.state;
-
-    const enabled = (engineMode === EngineModeUserControl);
-
-    const shouldShowPopover = enabled && showPopover && this.isIdle;
-
-    return (
-      <div className={Picker.Wrapper}>
-        { this.picker }
-        { shouldShowPopover && this.popover }
-      </div>
-    );
-  }
+  const shouldShowPopover = (engineMode === EngineModeUserControl) && showPopover && isIdle();
+  return (
+    <div className={Picker.Wrapper}>
+      { picker() }
+      { shouldShowPopover && popover() }
+    </div>
+  );
 }
-
-const mapSubStateToProps = ({ engineMode, sessionRecording, luaApi }) => {
-  const fileList = sessionRecording.files || [];
-  const recordingState = sessionRecording.recordingState || SessionStateIdle;
-  const mode = engineMode.mode || EngineModeUserControl;
-
-  return {
-    engineMode: mode,
-    fileList,
-    recordingState,
-    startRecordingAscii: (filename) => {
-      luaApi.sessionRecording.startRecordingAscii(filename);
-    },
-    startRecordingBinary: (filename) => {
-      luaApi.sessionRecording.startRecording(filename);
-    },
-    stopRecording: () => {
-      luaApi.sessionRecording.stopRecording();
-    },
-    startPlaybackLua: (filename, forceTime, shouldOutputFrames, outputFramerate, loopPlayback) => {
-      if (shouldOutputFrames) {
-        luaApi.sessionRecording.enableTakeScreenShotDuringPlayback(parseInt(outputFramerate));
-      }
-      if (forceTime) {
-        luaApi.sessionRecording.startPlayback(filename, loopPlayback);
-      } else {
-        luaApi.sessionRecording.startPlaybackRecordedTime(filename, loopPlayback);
-      }
-    },
-    stopPlayback: () => {
-      luaApi.sessionRecording.stopPlayback();
-    },
-    togglePlaybackPaused: () => {
-      luaApi.sessionRecording.togglePlaybackPause();
-    },
-  };
-};
-
-const mapStateToSubState = state => ({
-  engineMode: state.engineMode,
-  sessionRecording: state.sessionRecording,
-  originPickerPopover: state.local.popovers.sessionRecording,
-  luaApi: state.luaApi,
-});
-
-const mapDispatchToProps = dispatch => ({
-  subscribe: () => {
-    dispatch(subscribeToSessionRecording());
-    dispatch(subscribeToEngineMode());
-  },
-  unsubscribe: () => {
-    dispatch(unsubscribeToSessionRecording());
-  },
-  refreshPlaybackFilesList: () => {
-    dispatch(refreshSessionRecording());
-    dispatch(unsubscribeToEngineMode());
-  },
-});
-
-
-SessionRec = connect(
-  subStateToProps(mapSubStateToProps, mapStateToSubState),
-  mapDispatchToProps,
-)(SessionRec);
 
 export default SessionRec;
