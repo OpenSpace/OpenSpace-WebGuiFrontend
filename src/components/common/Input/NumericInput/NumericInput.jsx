@@ -99,6 +99,7 @@ class NumericInput extends Component {
       this.updateValue(value);
     }
     this.disableTextInput();
+    event.currentTarget.blur();
   }
 
   onTextInputChange(event) {
@@ -243,7 +244,6 @@ class NumericInput extends Component {
             onBlur={this.onTextBlurOrEnter}
             onChange={this.onTextInputChange}
             onEnter={this.onTextBlurOrEnter}
-            autoFocus
           />
           {showTooltip && (
             <Tooltip className={inputClassName} fixed style={{ ...this.textTooltipPosition() }} placement="right">
