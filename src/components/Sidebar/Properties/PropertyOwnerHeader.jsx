@@ -151,8 +151,9 @@ function PropertyOwnerHeader({
     }
   }, [fadeValue]);
 
-  function onClick() {
+  function onClick(e) {
     setExpanded(!expanded);
+    e.currentTarget.blur();
   }
 
   function onClickFocus(evt) {

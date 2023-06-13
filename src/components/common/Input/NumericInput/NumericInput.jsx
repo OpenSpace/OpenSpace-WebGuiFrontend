@@ -99,6 +99,7 @@ class NumericInput extends Component {
       this.updateValue(value);
     }
     this.disableTextInput();
+    event.currentTarget.blur();
   }
 
   onTextInputChange(event) {

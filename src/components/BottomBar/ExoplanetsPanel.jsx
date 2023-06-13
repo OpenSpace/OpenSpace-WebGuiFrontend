@@ -87,7 +87,6 @@ function ExoplanetsPanel() {
     } else {
       panelContent = renderables.map((prop) => (
         <PropertyOwner
-          autoExpand={false}
           key={prop}
           uri={prop}
           trashAction={removeExoplanetSystem}

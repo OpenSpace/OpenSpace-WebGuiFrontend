@@ -51,32 +51,26 @@ function zeroPad(number) {
 }
 
 function Time({ elements, onChange, time }) {
-  function hasCallback() {
-    return onChange !== null;
-  }
+  const hasCallback = onChange !== null;
 
   function shouldInclude(what) {
     return elements.includes(what);
   }
 
-  function onClick(what, change) {
+  function onClick(e, what, change) {
     const getterFunc = `getUTC${what}`;
     const setterFunc = `setUTC${what}`;
-
-    return (e) => {
-      const newTime = new Date(time);
-      newTime[setterFunc](newTime[getterFunc]() + change);
-      const shift = e.getModifierState('Shift');
-
-      if (hasCallback) {
-        onChange({
-          time: newTime,
-          interpolate: !shift,
-          delta: (newTime - time) / 1000,
-          relative: true
-        });
-      }
-    };
+    const newTime = new Date(time);
+    newTime[setterFunc](newTime[getterFunc]() + change);
+    const shift = e.getModifierState('Shift');
+    if (hasCallback) {
+      onChange({
+        time: newTime,
+        interpolate: !shift,
+        delta: (newTime - time) / 1000,
+        relative: true
+      });
+    }
   }
 
   function onInput(what) {
@@ -118,7 +112,7 @@ function Time({ elements, onChange, time }) {
       const ref = useContextRefs();
       return (
         <div key={what} className={styles.element}>
-          <Button nopadding transparent onClick={onClick(what, 1)}>
+          <Button nopadding transparent onClick={(e) => onClick(e, what, 1)}>
             <Icon icon="material-symbols:expand-less" />
           </Button>
           <span key={`span${what}`} ref={(el) => { ref.current[what] = el; }}>
@@ -131,7 +125,7 @@ function Time({ elements, onChange, time }) {
               noExtraWidth
             />
           </span>
-          <Button nopadding transparent onClick={onClick(what, -1)}>
+          <Button nopadding transparent onClick={(e) => onClick(e, what, -1)}>
             <Icon icon="material-symbols:expand-more" />
           </Button>
         </div>
