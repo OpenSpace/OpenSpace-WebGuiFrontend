@@ -244,6 +244,7 @@ class NumericInput extends Component {
             onBlur={this.onTextBlurOrEnter}
             onChange={this.onTextInputChange}
             onEnter={this.onTextBlurOrEnter}
+            autoFocus
           />
           {showTooltip && (
             <Tooltip className={inputClassName} fixed style={{ ...this.textTooltipPosition() }} placement="right">
