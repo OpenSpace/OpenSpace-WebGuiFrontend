@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import { Icon } from '@iconify/react';
 
 import { instructionImage } from '../../../../api/resources';
-import Icon from '../../../common/MaterialIcon/MaterialIcon';
 import SmallLabel from '../../../common/SmallLabel/SmallLabel';
 
 import styles from '../style/UtilitiesButtons.scss';
@@ -27,7 +27,7 @@ function HelpButton() {
       role="button"
       tabIndex="0"
     >
-      <Icon icon="help_outline" className={styles.Icon} />
+      <Icon icon="material-symbols:help-outline" className={styles.Icon} />
       { showInstructions && <img src={instructionImage} className={styles.Instructions} alt="instructions" />}
       <SmallLabel>Help</SmallLabel>
     </div>

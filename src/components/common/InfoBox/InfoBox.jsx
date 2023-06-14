@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
+import { Icon } from '@iconify/react';
 import PropTypes from 'prop-types';
 
 import { excludeKeys } from '../../../utils/helpers';
-import MaterialIcon from '../MaterialIcon/MaterialIcon';
 import Tooltip from '../Tooltip/Tooltip';
 
 class InfoBox extends Component {
@@ -46,7 +46,7 @@ class InfoBox extends Component {
         ref={this.setRef('wrapper')}
         {...passOnProps}
       >
-        <MaterialIcon
+        <Icon
           icon={icon}
           onMouseEnter={this.showPopup}
           onMouseLeave={this.hidePopup}
@@ -67,7 +67,7 @@ InfoBox.propTypes = {
 };
 
 InfoBox.defaultProps = {
-  icon: 'info'
+  icon: 'material-symbols:info'
 };
 
 export default InfoBox;

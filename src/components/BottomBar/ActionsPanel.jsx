@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect, useDispatch, useSelector } from 'react-redux';
+import { Icon } from '@iconify/react';
 import PropTypes from 'prop-types';
 
 import { setActionsPath, setPopoverVisibility, triggerAction } from '../../api/Actions';
@@ -8,7 +9,6 @@ import subStateToProps from '../../utils/subStateToProps';
 import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
 import { FilterList, FilterListData, FilterListFavorites } from '../common/FilterList/FilterList';
 import Button from '../common/Input/Button/Button';
-import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import Popover from '../common/Popover/Popover';
 import Row from '../common/Row/Row';
 
@@ -66,7 +66,9 @@ function ActionsPanel({
         foldername={key}
         className={`${buttonStyles.actionButton} ${styles.button} ${styles.folderButton}`}
       >
-        <p><MaterialIcon className={buttonStyles.buttonIcon} icon="folder" /></p>
+        <p>
+          <Icon className={buttonStyles.buttonIcon} icon="material-symbols:folder" alt="folder" />
+        </p>
         {key}
       </Button>
     );
@@ -107,7 +109,7 @@ function ActionsPanel({
     if (navigationPath !== '/') {
       return (
         <Button block className={styles.backButton} onClick={goBack} key="backbtn">
-          <MaterialIcon className={styles.buttonIcon} icon="arrow_back" />
+          <Icon className={styles.buttonIcon} icon="material-symbols:arrow-back" alt="arrow_back" />
         </Button>
       );
     }
@@ -187,7 +189,7 @@ function ActionsPanel({
         onClick={togglePopover}
       >
         <div>
-          <MaterialIcon className={styles.bottomBarIcon} icon="dashboard" />
+          <Icon className={Picker.Icon} icon="material-symbols:dashboard" alt="dashboard" />
         </div>
       </Picker>
       { popoverVisible && popover() }

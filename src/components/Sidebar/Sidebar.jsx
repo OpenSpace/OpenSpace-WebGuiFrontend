@@ -1,8 +1,8 @@
 import React from 'react';
+import { Icon } from '@iconify/react';
 import PropTypes from 'prop-types';
 import { Resizable } from 're-resizable';
 
-import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import SmallLabel from '../common/SmallLabel/SmallLabel';
 import SystemMenu from '../SystemMenu/SystemMenu';
 
@@ -65,11 +65,11 @@ function Sidebar({ showTutorial }) {
         <TabMenu>
           <SystemMenu showTutorial={showTutorial} />
           <TabMenuItem active={isActive('scene')} onClick={selectView('scene')}>
-            <MaterialIcon className={styles.icon} icon="layers" />
+            <Icon className={styles.icon} icon="material-symbols:layers" />
             <SmallLabel refKey="Scene">Scene</SmallLabel>
           </TabMenuItem>
           <TabMenuItem active={isActive('settings')} onClick={selectView('settings')}>
-            <MaterialIcon className={styles.icon} icon="settings" />
+            <Icon className={styles.icon} icon="material-symbols:settings" />
             <SmallLabel>Settings</SmallLabel>
           </TabMenuItem>
         </TabMenu>

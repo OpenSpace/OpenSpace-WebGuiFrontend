@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Icon } from '@iconify/react';
 import PropTypes from 'prop-types';
 /* eslint-disable import/no-webpack-loader-syntax */
 import DraggableIcon from 'svg-react-loader?name=Aim!../../../icons/draggable_list.svg';
@@ -15,7 +16,6 @@ import propertyDispatcher from '../../../api/propertyDispatcher';
 import { displayName, isGlobeBrowsingLayer } from '../../../utils/propertyTreeHelpers';
 import Button from '../../common/Input/Button/Button';
 import Checkbox from '../../common/Input/Checkbox/Checkbox';
-import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
 import Row from '../../common/Row/Row';
 import SvgIcon from '../../common/SvgIcon/SvgIcon';
 import TooltipMenu from '../../common/Tooltip/TooltipMenu';
@@ -223,7 +223,7 @@ function PropertyOwnerHeader({
 
   const popoutButton = (
     <Button className={styles.menuButton} onClick={popoutClick}>
-      <MaterialIcon icon="build" />
+      <Icon icon="material-symbols:build" />
       {' '}
       Quick access settings
     </Button>
@@ -231,7 +231,7 @@ function PropertyOwnerHeader({
 
   const metaButton = (
     <Button className={styles.menuButton} onClick={metaClick}>
-      <MaterialIcon icon="help_outline" />
+      <Icon icon="material-symbols:help-outline" />
       {' '}
       Show asset information
     </Button>
@@ -239,7 +239,7 @@ function PropertyOwnerHeader({
 
   const trashButton = (
     <Button className={styles.menuButton} onClick={trashClick}>
-      <MaterialIcon icon="delete" />
+      <Icon icon="material-symbols:delete" />
       {' '}
       Delete
     </Button>
@@ -272,7 +272,7 @@ function PropertyOwnerHeader({
       ref={(el) => { refs.current[refName] = el; }}
     >
       <Row>
-        <MaterialIcon
+        <Icon
           icon={expanded ? onIcon : offIcon}
           className={toggleHeaderStyles.icon}
         />
@@ -289,14 +289,14 @@ function PropertyOwnerHeader({
         )}
         <span className={`${toggleHeaderStyles.title} ${styles.title} ${titleClass}`}>
           { renderedTitle }
-          { isHeightLayer && <MaterialIcon className={styles.heightLayerIcon} icon="landscape" /> }
+          { isHeightLayer && <Icon className={styles.heightLayerIcon} icon="material-symbols:landscape" /> }
           { isLayer && <SvgIcon className={styles.layerDraggableIcon}><DraggableIcon /></SvgIcon> }
         </span>
         <span className={styles.rightButtonContainer}>
           { isSceneObject && focusButton }
           { hasMoreButtons && (
             <TooltipMenu
-              sourceObject={<MaterialIcon icon="more_vert" />}
+              sourceObject={<Icon icon="material-symbols:more-vert" />}
             >
               { popOutAction && popoutButton }
               { metaAction && metaButton }
@@ -323,8 +323,8 @@ PropertyOwnerHeader.propTypes = {
 
 PropertyOwnerHeader.defaultProps = {
   metaAction: undefined,
-  offIcon: 'chevron_right',
-  onIcon: 'expand_more',
+  offIcon: 'material-symbols:chevron-right',
+  onIcon: 'material-symbols:expand-more',
   popOutAction: undefined,
   title: undefined,
   trashAction: undefined

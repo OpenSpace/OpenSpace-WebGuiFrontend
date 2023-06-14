@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
+import { Icon } from '@iconify/react';
 import PropTypes from 'prop-types';
 
 import { excludeKeys } from '../../../../utils/helpers';
-import MaterialIcon from '../../MaterialIcon/MaterialIcon';
 
 import styles from './Input.scss';
 
@@ -112,8 +112,8 @@ class Input extends Component {
         <div className={styles.buttonsContainer}>
           { children }
           { clearable && (
-            <MaterialIcon
-              icon="cancel"
+            <Icon
+              icon="material-symbols:cancel"
               className={`${styles.clearbutton} ${this.hasInput && styles.hasinput}`}
               onClick={this.clear}
               tabIndex="0"

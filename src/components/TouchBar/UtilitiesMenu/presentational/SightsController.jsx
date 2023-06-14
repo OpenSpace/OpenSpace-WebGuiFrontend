@@ -1,9 +1,9 @@
 import React from 'react';
+import { Icon } from '@iconify/react';
 import PropTypes from 'prop-types';
 
 import Picker from '../../../BottomBar/Picker';
 import Button from '../../../common/Input/Button/Button';
-import Icon from '../../../common/MaterialIcon/MaterialIcon';
 import Popover from '../../../common/Popover/Popover';
 import SmallLabel from '../../../common/SmallLabel/SmallLabel';
 
@@ -61,7 +61,7 @@ function SightsController({ onChangeSight, sightsList }) {
         className={`${styles.sightsController} ${showPopover && styles.active}
         ${showPopover && Picker.Active}`}
       >
-        <Icon icon="place" className={buttonStyle.Icon} />
+        <Icon icon="material-symbols:place" className={buttonStyle.Icon} />
         <SmallLabel>Select sight</SmallLabel>
       </Picker>
       { showPopover && popover() }

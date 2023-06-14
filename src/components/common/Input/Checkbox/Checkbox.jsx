@@ -1,7 +1,7 @@
 import React from 'react';
+import { Icon } from '@iconify/react';
 import PropTypes from 'prop-types';
 
-import MaterialIcon from '../../MaterialIcon/MaterialIcon';
 import Button from '../Button/Button';
 
 import styles from './Checkbox.scss';
@@ -24,9 +24,9 @@ function Checkbox({
       {...rest}
       regular
     >
-      <MaterialIcon
+      <Icon
         className={styles.checkbox}
-        icon={checked ? 'check_box' : 'check_box_outline_blank'}
+        icon={checked ? 'material-symbols:check-box' : 'material-symbols:check-box-outline-blank'}
       />
       { children }
     </Button>

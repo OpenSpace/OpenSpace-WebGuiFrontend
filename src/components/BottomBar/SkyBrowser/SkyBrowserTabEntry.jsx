@@ -1,12 +1,12 @@
 import React from 'react';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { useSelector } from 'react-redux';
+import { Icon } from '@iconify/react';
 import PropTypes from 'prop-types';
 
 import { stopEventPropagation } from '../../../utils/helpers';
 import Button from '../../common/Input/Button/Button';
 import NumericInput from '../../common/Input/NumericInput/NumericInput';
-import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
 
 import SkyBrowserInfoBox from './SkyBrowserInfoBox';
 
@@ -121,7 +121,7 @@ function SkyBrowserTabEntry({
           small
           transparent
         >
-          <MaterialIcon icon="delete" className="small" />
+          <Icon icon="material-symbols:delete" className="small" />
         </Button>
       </div>
     </div>

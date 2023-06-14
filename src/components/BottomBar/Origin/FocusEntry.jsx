@@ -1,9 +1,9 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { Icon } from '@iconify/react';
 import PropTypes from 'prop-types';
 
 import Button from '../../common/Input/Button/Button';
-import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
 import { useContextRefs } from '../../GettingStartedTour/GettingStartedContext';
 
 import styles from './FocusEntry.scss';
@@ -61,11 +61,11 @@ function FocusEntry({
         <div className={styles.buttonContainer}>
           { isActive() && (
             <Button className={styles.flyToButton} onClick={zoomToFocus} title="Zoom to">
-              <MaterialIcon className={styles.buttonIcon} icon="center_focus_strong" />
+              <Icon className={styles.buttonIcon} icon="material-symbols:center-focus-strong" />
             </Button>
           )}
           <Button className={styles.flyToButton} onClick={flyTo} title="Fly to">
-            <MaterialIcon className={styles.buttonIcon} icon="flight" />
+            <Icon className={styles.buttonIcon} icon="material-symbols:flight" />
           </Button>
         </div>
       )}

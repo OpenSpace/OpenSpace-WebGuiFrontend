@@ -1,8 +1,8 @@
 import React from 'react';
+import { Icon } from '@iconify/react';
 import PropTypes from 'prop-types';
 
 import Picker from '../../../BottomBar/Picker';
-import Icon from '../../../common/MaterialIcon/MaterialIcon';
 import Popover from '../../../common/Popover/Popover';
 import SmallLabel from '../../../common/SmallLabel/SmallLabel';
 
@@ -36,7 +36,7 @@ function InfoButton({ storyInfo, storyTitle }) {
         className={`${buttonStyle.UtilitiesButton}
         ${showPopover && buttonStyle.active} ${showPopover && Picker.Active}`}
       >
-        <Icon icon="info_outline" className={buttonStyle.Icon} />
+        <Icon icon="material-symbols:info-outline" className={buttonStyle.Icon} />
         <SmallLabel>Info</SmallLabel>
       </Picker>
       { showPopover && popover() }

@@ -1,5 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Icon } from '@iconify/react';
 
 import { subscribeToTime, unsubscribeToTime } from '../../../../api/Actions';
 import {
@@ -7,7 +8,6 @@ import {
 } from '../../../../api/keys';
 import * as timeHelpers from '../../../../utils/timeHelpers';
 import LoadingString from '../../../common/LoadingString/LoadingString';
-import Icon from '../../../common/MaterialIcon/MaterialIcon';
 import SmallLabel from '../../../common/SmallLabel/SmallLabel';
 
 import styles from '../style/TimeController.scss';
@@ -76,7 +76,7 @@ function TimePlayerController() {
           role="button"
           tabIndex="0"
         >
-          <Icon icon="replay" className={styles.Icon} />
+          <Icon icon="material-symbols:replay" className={styles.Icon} />
           <SmallLabel>Time</SmallLabel>
         </div>
       </div>
@@ -88,31 +88,31 @@ function TimePlayerController() {
         </div>
         <div className={styles.PlayerContainer}>
           <Icon
-            icon="fast_rewind"
+            icon="material-symbols:fast-rewind"
             id={FastRewind}
             className={`${styles.Icon} ${(deltaTime === -FastSpeed) && styles.active}`}
             onClick={clickPlayer}
           />
           <Icon
-            icon="fast_rewind"
+            icon="material-symbols:fast-rewind"
             id={Rewind}
             className={`${styles.Icon} ${(deltaTime === -Speed) && styles.active}`}
             onClick={clickPlayer}
           />
           <Icon
-            icon={isPaused ? 'pause' : 'play_arrow'}
+            icon={isPaused ? 'material-symbols:pause' : 'material-symbols:play-arrow'}
             id={Play}
             className={`${styles.Icon} ${(deltaTime === 0 || deltaTime === 1) && styles.active}`}
             onClick={clickPlayer}
           />
           <Icon
-            icon="fast_forward"
+            icon="material-symbols:fast-forward"
             id={Forward}
             className={`${styles.Icon} ${(deltaTime === Speed) && styles.active}`}
             onClick={clickPlayer}
           />
           <Icon
-            icon="fast_forward"
+            icon="material-symbols:fast-forward"
             id={FastForward}
             className={`${styles.Icon} ${(deltaTime === FastSpeed) && styles.active}`}
             onClick={clickPlayer}

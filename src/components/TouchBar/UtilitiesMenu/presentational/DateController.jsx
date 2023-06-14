@@ -1,11 +1,11 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { Icon } from '@iconify/react';
 import PropTypes from 'prop-types';
 
 import * as timeHelpers from '../../../../utils/timeHelpers';
 import Picker from '../../../BottomBar/Picker';
 import Button from '../../../common/Input/Button/Button';
-import Icon from '../../../common/MaterialIcon/MaterialIcon';
 import Popover from '../../../common/Popover/Popover';
 import SmallLabel from '../../../common/SmallLabel/SmallLabel';
 
@@ -71,7 +71,7 @@ function DateController({ dateList, onChangeSight }) {
         className={`${styles.dateController}
         ${showPopover && styles.active} ${showPopover && Picker.Active}`}
       >
-        <Icon icon="date_range" className={buttonStyle.Icon} />
+        <Icon icon="material-symbols:date-range" className={buttonStyle.Icon} />
         <SmallLabel>Select event</SmallLabel>
       </Picker>
       { showPopover && popover() }

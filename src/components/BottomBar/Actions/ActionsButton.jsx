@@ -1,10 +1,10 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { Icon } from '@iconify/react';
 import PropTypes from 'prop-types';
 
 import InfoBox from '../../common/InfoBox/InfoBox';
 import Button from '../../common/Input/Button/Button';
-import MaterialIcon from '../../common/MaterialIcon/MaterialIcon';
 
 import styles from './ActionsButton.scss';
 
@@ -31,7 +31,7 @@ export default function ActionsButton({ action, className }) {
       actionid={action.identifier}
     >
       <p className={styles.iconRow}>
-        <MaterialIcon className={styles.buttonIcon} icon="launch" />
+        <Icon className={styles.buttonIcon} icon="mdi:launch" />
         {isLocal && <span className={styles.localText}> (Local)</span>}
       </p>
       {action.name}

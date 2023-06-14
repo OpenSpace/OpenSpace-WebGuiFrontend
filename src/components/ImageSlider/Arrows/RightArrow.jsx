@@ -1,14 +1,13 @@
 import React from 'react';
+import { Icon } from '@iconify/react';
 import PropTypes from 'prop-types';
-
-import Icon from '../../common/MaterialIcon/MaterialIcon';
 
 import styles from './Arrows.scss';
 
 function RightArrow({ nextSlide }) {
   return (
     <div className={styles.RightArrow} onClick={nextSlide} role="button" tabIndex="0">
-      <Icon icon="keyboard_arrow_right" className={styles.Icon} />
+      <Icon icon="material-symbols:keyboard-arrow-right" className={styles.Icon} />
     </div>
   );
 }

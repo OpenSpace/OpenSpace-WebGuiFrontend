@@ -1,11 +1,11 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Icon } from '@iconify/react';
 
 import { reloadPropertyTree, setPopoverVisibility } from '../../api/Actions';
 import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
 import Button from '../common/Input/Button/Button';
 import Input from '../common/Input/Input/Input';
-import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import Popover from '../common/Popover/Popover';
 import Row from '../common/Row/Row';
 import ScrollOverlay from '../common/ScrollOverlay/ScrollOverlay';
@@ -119,7 +119,7 @@ function ScreenSpaceRenderablePanel() {
                 style={{ width: 90 }}
                 disabled={!slideName || !slideURL}
               >
-                <MaterialIcon icon="insert_photo" />
+                <Icon icon="material-symbols:insert-photo" alt="insert_photo" />
                 <span style={{ marginLeft: 5 }}>Add Slide</span>
               </Button>
             </div>
@@ -144,7 +144,7 @@ function ScreenSpaceRenderablePanel() {
         refKey="ScreenSpaceRenderable"
       >
         <div>
-          <MaterialIcon className={styles.photoIcon} icon="insert_photo" />
+          <Icon className={Picker.Icon} icon="ic:round-insert-photo" alt="screenspacerenderable" />
         </div>
       </Picker>
       { popoverVisible && popover() }

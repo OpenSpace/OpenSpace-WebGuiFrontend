@@ -1,8 +1,8 @@
 import React from 'react';
+import { Icon } from '@iconify/react';
 import PropTypes from 'prop-types';
 
 import { useContextRefs } from '../../../GettingStartedTour/GettingStartedContext';
-import MaterialIcon from '../../MaterialIcon/MaterialIcon';
 import Button from '../Button/Button';
 import InlineInput from '../InlineInput/InlineInput';
 
@@ -113,7 +113,7 @@ function Time({ elements, onChange, time }) {
       return (
         <div key={what} className={styles.element}>
           <Button nopadding transparent onClick={(e) => onClick(e, what, 1)}>
-            <MaterialIcon icon="expand_less" />
+            <Icon icon="material-symbols:expand-less" />
           </Button>
           <span key={`span${what}`} ref={(el) => { ref.current[what] = el; }}>
             <InlineInput
@@ -126,7 +126,7 @@ function Time({ elements, onChange, time }) {
             />
           </span>
           <Button nopadding transparent onClick={(e) => onClick(e, what, -1)}>
-            <MaterialIcon icon="expand_more" />
+            <Icon icon="material-symbols:expand-more" />
           </Button>
         </div>
       );

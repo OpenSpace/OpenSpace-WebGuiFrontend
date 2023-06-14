@@ -1,5 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Icon } from '@iconify/react';
 
 import {
   loadExoplanetsData,
@@ -12,7 +13,6 @@ import propertyDispatcher from '../../api/propertyDispatcher';
 import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
 import { FilterList, FilterListData } from '../common/FilterList/FilterList';
 import Button from '../common/Input/Button/Button';
-import MaterialIcon from '../common/MaterialIcon/MaterialIcon';
 import Popover from '../common/Popover/Popover';
 import Row from '../common/Row/Row';
 import ScrollOverlay from '../common/ScrollOverlay/ScrollOverlay';
@@ -132,7 +132,7 @@ function ExoplanetsPanel() {
                 style={{ width: 90 }}
                 disabled={!starName}
               >
-                <MaterialIcon icon="public" />
+                <Icon icon="material-symbols:public" alt="add_system" />
                 <span style={{ marginLeft: 5 }}>Add System</span>
               </Button>
             </div>
@@ -157,7 +157,7 @@ function ExoplanetsPanel() {
         refKey="Exoplanets"
       >
         <div>
-          <MaterialIcon className={styles.photoIcon} icon="hdr_strong" />
+          <Icon className={Picker.Icon} icon="material-symbols:hdr-strong" alt="exoplanets" />
         </div>
       </Picker>
       { popoverVisible && popover() }
