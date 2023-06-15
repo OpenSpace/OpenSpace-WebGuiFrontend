@@ -68,7 +68,13 @@ class NumericInput extends Component {
    * @param event InputEvent
    */
   onSliderChange(event) {
-    const { max, min } = this.props;
+    const { inputOnly, max, min } = this.props;
+
+    // If we are in inputOnly mode, ignore any slide input
+    if (inputOnly) {
+      return;
+    }
+
     const sliderValue = Number.parseFloat(event.currentTarget.value);
     let newValue = this.valueFromSliderPos(sliderValue);
     // Clamp to min max range (should no be needed, but do anyways just ot be sure)
@@ -120,7 +126,7 @@ class NumericInput extends Component {
   }
 
   get showTextInput() {
-    return this.props.inputOnly || this.state.showTextInput;
+    return this.state.showTextInput;
   }
 
   setRef(what) {
@@ -256,7 +262,7 @@ class NumericInput extends Component {
     }
 
     const {
-      placeholder, className, label, reverse, noValue
+      placeholder, className, inputOnly, noHoverHint, noTooltip, label, reverse, noValue
     } = this.props;
     const doNotInclude = 'wide reverse onValueChanged value className type min max step exponent ' +
                          'inputOnly label noHoverHint noTooltip noValue showOutsideRangeHint';
@@ -268,17 +274,33 @@ class NumericInput extends Component {
     const scaledHoverHintOffset = this.sliderResolution * hoverHintOffset;
     const tooltipValue = this.valueFromSliderPos(scaledHoverHintOffset);
     const displayValue = decimals ? value.toFixed(decimals) : value;
+
+    const sliderStyle = (inputOnly) ? {} :
+      {
+        '--min': 0,
+        '--max': this.sliderResolution,
+        '--value': sliderValue,
+        direction: reverse ? 'rtl' : 'ltr'
+      };
+
     return (
+      // eslint-disable-next-line jsx-a11y/no-static-element-interactions
       <div
         className={`${styles.inputGroup} ${wide ? styles.wide : ''} ${reverse ? styles.reverse : ''}`}
         ref={this.setRef('wrapperRef')}
         onDoubleClick={this.enableTextInput}
+        onClick={(event) => {
+          if (inputOnly) {
+            this.enableTextInput(event);
+            event.stopPropagation();
+          }
+        }}
         onContextMenu={this.enableTextInput}
       >
-        { !this.props.noHoverHint && hoverHint !== null && (
+        { !noHoverHint && hoverHint !== null && !inputOnly && (
           <div className={styles.hoverHint} style={{ width: `${100 * hoverHintOffset}%` }} />
         )}
-        { !this.props.noTooltip && hoverHint !== null && (
+        { !noTooltip && hoverHint !== null && (
           <Tooltip style={{ left: `${100 * hoverHint}%` }} placement="top">
             { tooltipValue }
           </Tooltip>
@@ -292,10 +314,12 @@ class NumericInput extends Component {
           max={this.sliderResolution}
           step={1}
           className={`${className} ${styles.range}`}
-          style={{
-            '--min': 0, '--max': this.sliderResolution, '--value': sliderValue, direction: reverse ? 'rtl' : 'ltr'
+          style={sliderStyle}
+          onClickCapture={(event) => {
+            if (!inputOnly) {
+              event.stopPropagation();
+            }
           }}
-          onClickCapture={(event) => event.stopPropagation()}
           onChange={this.onSliderChange}
           onMouseMove={this.onHover}
           onMouseLeave={this.onLeave}
