@@ -1,7 +1,7 @@
 import React from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-
+import InfographicSkyBrowser from 'svg-react-loader?name=Aim!../../../icons/infographicSkyBrowser.svg';
 import { lowPrecisionEqual } from '../../../utils/customHooks';
 import CenteredLabel from '../../common/CenteredLabel/CenteredLabel';
 import { FilterList, FilterListData } from '../../common/FilterList/FilterList';
@@ -96,6 +96,7 @@ function SkyBrowserNearestImagesList({
     <CenteredLabel>
       No images within the current view.
       Zoom out or move the target to look at another portion of the sky
+      <InfographicSkyBrowser />
     </CenteredLabel>
   ) : (
     <FilterList
