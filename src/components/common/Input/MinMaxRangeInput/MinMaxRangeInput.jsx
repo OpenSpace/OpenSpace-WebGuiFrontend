@@ -396,7 +396,7 @@ class MinMaxRangeInput extends Component {
       placeholder, className, label, wide, max, step
     } = this.props;
     const doNotInclude = 'wide onMinValueChanged onMaxValueChanged valueMax valueMin ' +
-                         'className type min max step exponent ' +
+                         'className type min max step exponent inputOnly ' +
                          'label noHoverHint noTooltip';
     const inheritedProps = excludeKeys(this.props, doNotInclude);
 
