@@ -15,6 +15,7 @@ import { FilterList, FilterListData } from '../common/FilterList/FilterList';
 import InfoBox from '../common/InfoBox/InfoBox';
 import Button from '../common/Input/Button/Button';
 import Input from '../common/Input/Input/Input';
+import NumericInput from '../common/Input/NumericInput/NumericInput';
 import Popover from '../common/Popover/Popover';
 
 import Picker from './Picker';
@@ -199,7 +200,7 @@ function GeoPositionPanel() {
         break;
       }
       case Interaction.jumpTo: {
-        luaApi?.globebrowsing?.goToGeo(currentAnchor, lat, long, altitude);
+        luaApi.globebrowsing.goToGeo(currentAnchor, Number(lat), Number(long), altitude);
         break;
       }
       case Interaction.addFocus: {
@@ -243,43 +244,17 @@ function GeoPositionPanel() {
       case 'Earth':
         return (
           <>
-            <MultiStateToggle
-              title="Mode"
-              labels={Object.values(Interaction)}
-              checked={interaction}
-              setChecked={setInteraction}
-              infoText={"'Fly to' will fly the camera to the position, " +
-                "'Jump to' will place the camera at the position instantaneously and " +
-                "'Add Focus' will add a scene graph node at the position."}
-            />
             <div className={styles.latLongInput}>
-              <Input
-                placeholder="Latitude..."
-                onChange={(e) => {
-                  setLatitude(e.target.value);
-                }}
-                value={latitude}
-              />
-              <Input
-                placeholder="Longitude..."
-                onChange={(e) => {
-                  setLongitude(e.target.value);
-                }}
-                value={longitude}
-              />
-              <Input
-                placeholder="Altitude..."
-                onChange={(e) => {
-                  setAltitude(e.target.value);
+              <NumericInput
+                placeholder="Altitude"
+                onValueChanged={(value) => {
+                  setAltitude(value);
                 }}
                 value={altitude}
+                min={0}
+                max={1000000}
               />
-              <Button
-                onClick={() => enterLatLongAlt()}
-                className={styles.latLongButton}
-              >
-                {interaction}
-              </Button>
+
             </div>
             <hr className={Popover.styles.delimiter} />
             <div className={styles.searchField}>
@@ -329,7 +304,43 @@ function GeoPositionPanel() {
                   </FilterList>
                 )
             )}
-
+            <div
+              className={styles.content}
+              style={{
+                position: 'absolute', bottom: 0, left: 0, width: '100%'
+              }}
+            >
+              <hr className={Popover.styles.delimiter} />
+              <p className={styles.resultsTitle} style={{ padding: '5px 0px' }}>
+                Custom Coordinate
+              </p>
+              <div className={styles.latLongInput}>
+                <NumericInput
+                  placeholder="Latitude"
+                  onValueChanged={(value) => {
+                    setLatitude(value);
+                  }}
+                  value={latitude}
+                  min={-90}
+                  max={90}
+                />
+                <NumericInput
+                  placeholder="Longitude"
+                  onValueChanged={(value) => {
+                    setLongitude(value);
+                  }}
+                  value={longitude}
+                  min={-180}
+                  max={180}
+                />
+                <Button
+                  onClick={() => enterLatLongAlt()}
+                  className={styles.latLongButton}
+                >
+                  {interaction}
+                </Button>
+              </div>
+            </div>
           </>
         );
       default:
@@ -351,6 +362,15 @@ function GeoPositionPanel() {
         attached
       >
         <div className={styles.content}>
+          <MultiStateToggle
+            title="Mode"
+            labels={Object.values(Interaction)}
+            checked={interaction}
+            setChecked={setInteraction}
+            infoText={"'Fly to' will fly the camera to the position, " +
+                "'Jump to' will place the camera at the position instantaneously and " +
+                "'Add Focus' will add a scene graph node at the position."}
+          />
           <Dropdown
             options={options}
             onChange={(anchor) => setCurrentAnchor(anchor.value)}
