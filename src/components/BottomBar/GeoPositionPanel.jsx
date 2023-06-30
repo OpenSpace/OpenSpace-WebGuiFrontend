@@ -2,6 +2,7 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Icon } from '@iconify/react';
 import PropTypes from 'prop-types';
+import * as geometry from 'spherical-geometry-js';
 
 import {
   reloadPropertyTree,
@@ -158,6 +159,22 @@ function GeoPositionPanel() {
     }));
   }
 
+  function calculateAltitude(extent) {
+    // Get lat long corners of polygon
+    const nw = new geometry.LatLng(extent.ymax, extent.xmin);
+    const ne = new geometry.LatLng(extent.ymax, extent.xmax);
+    const sw = new geometry.LatLng(extent.ymin, extent.xmin);
+    const se = new geometry.LatLng(extent.ymin, extent.xmax);
+    // Distances are in meters
+    const height = geometry.computeDistanceBetween(nw, sw);
+    const lengthBottom = geometry.computeDistanceBetween(sw, se);
+    const lengthTop = geometry.computeDistanceBetween(nw, ne);
+    const maxLength = Math.max(lengthBottom, lengthTop);
+    const largestDist = Math.max(height, maxLength);
+    // 0.61 is the radian of 35 degrees - half of the standard horizontal field of view in OpenSpace
+    return (0.5 * largestDist) / Math.tan(0.610865238);
+  }
+
   function getPlaces() {
     if (inputValue === '') {
       setPlaces([]);
@@ -191,10 +208,10 @@ function GeoPositionPanel() {
     setAddedSceneGraphNodes(nodes);
   }
 
-  function selectCoordinate(location, address) {
+  function selectCoordinate(location, address, extent) {
     const lat = location.y;
     const long = location.x;
-    const alt = altitude * 1000;
+    const alt = extent ? calculateAltitude(extent) : altitude * 1000;
     switch (interaction) {
       case Interaction.flyTo: {
         luaApi?.globebrowsing?.flyToGeo(currentAnchor, lat, long, alt);
@@ -245,18 +262,6 @@ function GeoPositionPanel() {
       case 'Earth':
         return (
           <>
-            <div className={styles.latLongInput}>
-              <NumericInput
-                placeholder="Altitude (km)"
-                onValueChanged={(value) => {
-                  setAltitude(value);
-                }}
-                value={altitude}
-                min={0}
-                max={1000}
-              />
-
-            </div>
             <hr className={Popover.styles.delimiter} />
             <div className={styles.searchField}>
               <Input
@@ -277,7 +282,7 @@ function GeoPositionPanel() {
                 return (
                   <Place
                     key={place.attributes.LongLabel}
-                    onClick={() => selectCoordinate(place.location, address)}
+                    onClick={() => selectCoordinate(place.location, address, place.extent)}
                     address={address}
                     found={found}
                   />
@@ -286,7 +291,7 @@ function GeoPositionPanel() {
                 (
                   <FilterList
                     searchText="Filter results..."
-                    height="170px"
+                    height="210px"
                   >
                     <FilterListData>
                       {places?.map?.((place) => {
@@ -295,7 +300,7 @@ function GeoPositionPanel() {
                         return (
                           <Place
                             key={place.attributes.LongLabel}
-                            onClick={() => selectCoordinate(place.location, address)}
+                            onClick={() => selectCoordinate(place.location, address, place.extent)}
                             address={address}
                             found={found}
                           />
@@ -333,6 +338,15 @@ function GeoPositionPanel() {
                   value={longitude}
                   min={-180}
                   max={180}
+                />
+                <NumericInput
+                  placeholder="Altitude (km)"
+                  onValueChanged={(value) => {
+                    setAltitude(value);
+                  }}
+                  value={altitude}
+                  min={0}
+                  max={1000}
                 />
                 <Button
                   onClick={() => enterLatLongAlt()}
