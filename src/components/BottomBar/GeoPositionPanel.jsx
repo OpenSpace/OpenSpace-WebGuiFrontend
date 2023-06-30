@@ -134,9 +134,9 @@ function GeoPositionPanel() {
   const [inputValue, setInputValue] = useLocalStorageState('inputValue', '');
   const [places, setPlaces] = useLocalStorageState('places', undefined);
   const [addedSceneGraphNodes, setAddedSceneGraphNodes] = useLocalStorageState('addedSceneGraphNodes', undefined);
-  const [latitude, setLatitude] = useLocalStorageState('latitude', undefined);
-  const [longitude, setLongitude] = useLocalStorageState('longitude', undefined);
-  const [altitude, setAltitude] = useLocalStorageState('altitude', '300000');
+  const [latitude, setLatitude] = useLocalStorageState('latitude', 0);
+  const [longitude, setLongitude] = useLocalStorageState('longitude', 0);
+  const [altitude, setAltitude] = useLocalStorageState('altitude', '300');
   const [interaction, setInteraction] = useLocalStorageState('interaction', Interaction.flyTo);
   const [currentAnchor, setCurrentAnchor] = useLocalStorageState('anchor', 'Earth');
   const [customNodeCounter, setCustomNodeCounter] = useLocalStorageState('counter', 0);
@@ -194,13 +194,14 @@ function GeoPositionPanel() {
   function selectCoordinate(location, address) {
     const lat = location.y;
     const long = location.x;
+    const alt = altitude * 1000;
     switch (interaction) {
       case Interaction.flyTo: {
-        luaApi?.globebrowsing?.flyToGeo(currentAnchor, lat, long, altitude);
+        luaApi?.globebrowsing?.flyToGeo(currentAnchor, lat, long, alt);
         break;
       }
       case Interaction.jumpTo: {
-        luaApi.globebrowsing.goToGeo(currentAnchor, Number(lat), Number(long), altitude);
+        luaApi.globebrowsing.goToGeo(currentAnchor, Number(lat), Number(long), alt);
         break;
       }
       case Interaction.addFocus: {
@@ -218,7 +219,7 @@ function GeoPositionPanel() {
         addressUtf8 = addressUtf8.replaceAll(' ', '_');
         addressUtf8 = addressUtf8.replaceAll(',', '');
         luaApi?.addSceneGraphNode(
-          createSceneGraphNodeTable(currentAnchor, addressUtf8, lat, long, altitude)
+          createSceneGraphNodeTable(currentAnchor, addressUtf8, lat, long, alt)
         );
         // TODO: Once we have a proper way to subscribe to additions and removals
         // of property owners, this 'hard' refresh should be removed.
@@ -226,7 +227,7 @@ function GeoPositionPanel() {
         break;
       }
       default: {
-        luaApi?.globebrowsing?.flyToGeo(currentAnchor, lat, long, altitude);
+        luaApi?.globebrowsing?.flyToGeo(currentAnchor, lat, long, alt);
         break;
       }
     }
@@ -246,13 +247,13 @@ function GeoPositionPanel() {
           <>
             <div className={styles.latLongInput}>
               <NumericInput
-                placeholder="Altitude"
+                placeholder="Altitude (km)"
                 onValueChanged={(value) => {
                   setAltitude(value);
                 }}
                 value={altitude}
                 min={0}
-                max={1000000}
+                max={1000}
               />
 
             </div>
