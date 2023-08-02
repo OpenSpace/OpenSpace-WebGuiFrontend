@@ -43,6 +43,8 @@ $height: $font-size + $base-padding * 1.5;
   margin-top: 1px;
   width: $font-size;
   height: $font-size;
+  flex-grow: 0;
+  flex-shrink: 0;
 }
 
 @media only screen and (min-width: 1600px) {
