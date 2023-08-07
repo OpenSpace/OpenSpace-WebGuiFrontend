@@ -17,6 +17,7 @@ function NodeMetaPanel({ uri }) {
   const showPopover = myPopover ? myPopover.visible : false;
   const attached = myPopover ? myPopover.attached : false;
   const activeTab = myPopover && myPopover.activeTab ? myPopover.activeTab : 0;
+  const isShowingFirstTab = activeTab === 0;
 
   // Find name, gui description and documentation
   const nodeName = useSelector((state) => state.propertyTree.propertyOwners[uri]?.name);
@@ -33,12 +34,9 @@ function NodeMetaPanel({ uri }) {
 
   const documentation = useSelector((state) => {
     const identifier = uri.split('.').pop(); // Get last word in uri
-    const foundDoc = state.documentation.data.find((doc) => {
-      if (doc?.identifiers && doc.identifiers.includes(identifier)) {
-        return true;
-      }
-      return false;
-    });
+    const foundDoc = state.documentation.data.find(
+      (doc) => doc?.identifiers && doc.identifiers.includes(identifier)
+    );
     return foundDoc;
   });
 
@@ -60,7 +58,7 @@ function NodeMetaPanel({ uri }) {
 
   function contentForTab() {
     // GUI Description tag
-    if (activeTab === 0) {
+    if (isShowingFirstTab) {
       return (
         <Row>
           <div className={styles.description_container}>
@@ -121,7 +119,8 @@ function NodeMetaPanel({ uri }) {
   }
 
   function popover() {
-    const windowTitle = `${nodeName} - Object Details`;
+    const titleAddition = isShowingFirstTab ? 'Description' : 'Asset Information';
+    const windowTitle = `${nodeName} - ${titleAddition}`;
     return (
       <Popover
         className={`${Picker.Popover} && ${styles.nodePopover}`}
@@ -138,19 +137,17 @@ function NodeMetaPanel({ uri }) {
         <div className={`${Popover.styles.row} ${Popover.styles.content}`}>
           <Button
             block
-            largetext={activeTab === 0}
-            smalltext={activeTab !== 0}
             key={0}
             onClick={() => setActiveTab(0)}
+            style={!isShowingFirstTab ? { opacity: 0.5 } : {}}
           >
             Description
           </Button>
           <Button
             block
-            largetext={activeTab === 1}
-            smalltext={activeTab !== 0}
             key={1}
             onClick={() => setActiveTab(1)}
+            style={isShowingFirstTab ? { opacity: 0.5 } : {}}
           >
             Asset Info
           </Button>
