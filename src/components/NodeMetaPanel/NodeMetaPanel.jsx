@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { removeNodeMetaPopover, setPopoverActiveTab } from '../../api/Actions';
 import { openUrl } from '../../utils/helpers';
 import Picker from '../BottomBar/Picker';
+import InfoBox from '../common/InfoBox/InfoBox';
 import Button from '../common/Input/Button/Button';
 import Popover from '../common/Popover/Popover';
 import Row from '../common/Row/Row';
@@ -58,7 +59,7 @@ function NodeMetaPanel({ uri }) {
   }
 
   function contentForTab() {
-    // Description tag
+    // GUI Description tag
     if (activeTab === 0) {
       return (
         <Row>
@@ -68,6 +69,7 @@ function NodeMetaPanel({ uri }) {
         </Row>
       );
     }
+
     // Asset meta info tab
     if (!documentation) {
       return (
@@ -78,7 +80,7 @@ function NodeMetaPanel({ uri }) {
     }
 
     return (
-      <div>
+      <div className={styles.description_container}>
         <Row>
           {`Author: ${documentation.author}`}
         </Row>
@@ -88,18 +90,38 @@ function NodeMetaPanel({ uri }) {
         <Row>
           {`License: ${documentation.license.replace(/\\n/g, '')}`}
         </Row>
-        <Button
-          onClick={() => openUrl(documentation.url)}
-          style={{ width: '100%' }}
-        >
-          Open URL
-        </Button>
+        <Row>
+          {`Description: ${documentation.description}`}
+        </Row>
+        <Row className={styles.assetInfoLastRow}>
+
+          <Button
+            onClick={() => openUrl(documentation.url)}
+            style={{ width: '30%' }}
+          >
+            Open URL
+            {' '}
+            <InfoBox text={`${documentation.url}`} />
+          </Button>
+
+          <Button
+            onClick={() => {
+              navigator.clipboard.writeText(documentation.path);
+            }}
+            style={{ width: '30%', marginLeft: '0.5em' }}
+          >
+            Copy Asset File Path
+            {' '}
+            <InfoBox text={`${documentation.path}`} />
+          </Button>
+
+        </Row>
       </div>
     );
   }
 
   function popover() {
-    const windowTitle = `${nodeName}- Asset Infomation`;
+    const windowTitle = `${nodeName} - Object Details`;
     return (
       <Popover
         className={`${Picker.Popover} && ${styles.nodePopover}`}
@@ -109,7 +131,7 @@ function NodeMetaPanel({ uri }) {
         detachable
       >
         <div className={`${Popover.styles.content} ${styles.contentContainer}`}>
-          { contentForTab() }
+          {contentForTab()}
         </div>
         <hr className={Popover.styles.delimiter} />
 
@@ -130,7 +152,7 @@ function NodeMetaPanel({ uri }) {
             key={1}
             onClick={() => setActiveTab(1)}
           >
-            Info
+            Asset Info
           </Button>
         </div>
       </Popover>
@@ -139,7 +161,7 @@ function NodeMetaPanel({ uri }) {
 
   return (
     <div className={Picker.Wrapper}>
-      { showPopover && popover() }
+      {showPopover && popover()}
     </div>
   );
 }
