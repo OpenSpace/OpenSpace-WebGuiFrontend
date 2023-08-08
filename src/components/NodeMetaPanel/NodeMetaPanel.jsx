@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import { removeNodeMetaPopover, setPopoverActiveTab } from '../../api/Actions';
-import { openUrl } from '../../utils/helpers';
+import { copyTextToClipboard, openUrl } from '../../utils/helpers';
 import Picker from '../BottomBar/Picker';
 import InfoBox from '../common/InfoBox/InfoBox';
 import Button from '../common/Input/Button/Button';
@@ -103,9 +103,7 @@ function NodeMetaPanel({ uri }) {
           </Button>
 
           <Button
-            onClick={() => {
-              navigator.clipboard.writeText(documentation.path);
-            }}
+            onClick={() => copyTextToClipboard(documentation.path)}
             style={{ width: '30%', marginLeft: '0.5em' }}
           >
             Copy Asset File Path
