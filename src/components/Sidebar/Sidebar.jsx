@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon } from '@iconify/react';
+import { MdLayers, MdSettings } from 'react-icons/md';
 import PropTypes from 'prop-types';
 import { Resizable } from 're-resizable';
 
@@ -65,11 +65,11 @@ function Sidebar({ showTutorial }) {
         <TabMenu>
           <SystemMenu showTutorial={showTutorial} />
           <TabMenuItem active={isActive('scene')} onClick={selectView('scene')}>
-            <Icon className={styles.icon} icon="material-symbols:layers" />
+            <MdLayers className={styles.icon} />
             <SmallLabel refKey="Scene">Scene</SmallLabel>
           </TabMenuItem>
           <TabMenuItem active={isActive('settings')} onClick={selectView('settings')}>
-            <Icon className={styles.icon} icon="material-symbols:settings" />
+            <MdSettings className={styles.icon} />
             <SmallLabel>Settings</SmallLabel>
           </TabMenuItem>
         </TabMenu>

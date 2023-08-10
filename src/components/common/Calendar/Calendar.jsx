@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import { Icon } from '@iconify/react';
+import { MdChevronLeft, MdChevronRight, MdToday } from 'react-icons/md';
 import PropTypes from 'prop-types';
 
 import { rotate } from '../../../utils/helpers';
@@ -196,12 +196,12 @@ class Calendar extends Component {
       <section>
         <header className={styles.header}>
           <Button transparent small onClick={this.changeMonth(-1)}>
-            <Icon icon="material-symbols:chevron-left" />
+            <MdChevronLeft />
           </Button>
           <div>
             { this.props.todayButton && (
               <Button onClick={this.setCurrentMonth} title="Today" small transparent>
-                <Icon icon="material-symbols:today" />
+                <MdToday />
               </Button>
             )}
             {' '}
@@ -217,7 +217,7 @@ class Calendar extends Component {
             />
           </div>
           <Button regular transparent small onClick={this.changeMonth(1)}>
-            <Icon icon="material-symbols:chevron-right" />
+            <MdChevronRight />
           </Button>
         </header>
 

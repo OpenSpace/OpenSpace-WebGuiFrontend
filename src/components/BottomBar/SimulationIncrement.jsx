@@ -1,6 +1,8 @@
 import React from 'react';
+import {
+  MdFastForward, MdFastRewind, MdPause, MdPlayArrow
+} from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
-import { Icon } from '@iconify/react';
 import { throttle } from 'lodash/function';
 
 import { subscribeToTime, unsubscribeToTime } from '../../api/Actions';
@@ -168,7 +170,7 @@ function SimulationIncrement() {
             onClick={setPrevDeltaTimeStep}
             ref={(el) => { refs.current.SpeedBackward = el; }}
           >
-            <Icon icon="mdi:fast-rewind" />
+            <MdFastRewind />
           </Button>
           <p className={styles.deltaTimeStepLabel}>
             {prevLabel}
@@ -176,7 +178,7 @@ function SimulationIncrement() {
         </div>
         <div style={{ flex: 2 }} ref={(el) => { refs.current.Pause = el; }}>
           <Button block onClick={togglePause}>
-            {isPaused ? <Icon icon="mdi:play-arrow" /> : <Icon icon="mdi:pause" />}
+            {isPaused ? <MdPlayArrow /> : <MdPause />}
           </Button>
         </div>
         <div style={{ flex: 3 }}>
@@ -186,7 +188,7 @@ function SimulationIncrement() {
             onClick={setNextDeltaTimeStep}
             ref={(el) => { refs.current.SpeedForward = el; }}
           >
-            <Icon icon="mdi:fast-forward" />
+            <MdFastForward />
           </Button>
           <p className={styles.deltaTimeStepLabel}>
             {nextLabel}

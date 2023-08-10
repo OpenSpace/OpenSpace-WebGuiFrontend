@@ -1,6 +1,8 @@
 import React from 'react';
+import {
+  MdAdd, MdClose, MdDelete, MdFilterCenterFocus, MdSettings, MdVisibility, MdZoomIn, MdZoomOut
+} from 'react-icons/md';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { Icon } from '@iconify/react';
 import PropTypes from 'prop-types';
 import { Resizable } from 're-resizable';
 
@@ -146,7 +148,7 @@ function SkyBrowserTabs({
     const lookButton = {
       id: ButtonIds.LookAtTarget,
       selected: false,
-      icon: 'material-symbols:visibility',
+      Icon: MdVisibility,
       text: 'Look at browser',
       function(id) {
         luaApi.skybrowser.adjustCamera(id);
@@ -155,7 +157,7 @@ function SkyBrowserTabs({
     const moveButton = {
       id: ButtonIds.MoveTarget,
       selected: false,
-      icon: 'material-symbols:filter-center-focus',
+      Icon: MdFilterCenterFocus,
       text: 'Move target to center of view',
       function(id) {
         luaApi.skybrowser.stopAnimations(id);
@@ -165,7 +167,7 @@ function SkyBrowserTabs({
     const trashButton = {
       id: ButtonIds.RemoveImages,
       selected: false,
-      icon: 'material-symbols:delete',
+      Icon: MdDelete,
       text: 'Remove all images',
       function(id) {
         removeAllSelectedImages(id);
@@ -174,7 +176,7 @@ function SkyBrowserTabs({
     const scrollInButton = {
       id: ButtonIds.ZoomIn,
       selected: false,
-      icon: 'material-symbols:zoom-in',
+      Icon: MdZoomIn,
       text: 'Zoom in',
       function(id) {
         luaApi.skybrowser.stopAnimations(id);
@@ -185,7 +187,7 @@ function SkyBrowserTabs({
     const scrollOutButton = {
       id: ButtonIds.ZoomOut,
       selected: false,
-      icon: 'material-symbols:zoom-out',
+      Icon: MdZoomOut,
       text: 'Zoom out',
       function(id) {
         luaApi.skybrowser.stopAnimations(id);
@@ -196,7 +198,7 @@ function SkyBrowserTabs({
     const showSettingsButton = {
       id: ButtonIds.Settings,
       selected: showSettings,
-      icon: 'material-symbols:settings',
+      Icon: MdSettings,
       text: 'Settings',
       function() {
         toggleSettings();
@@ -223,8 +225,7 @@ function SkyBrowserTabs({
         transparent
         small
       >
-        <Icon
-          icon={button.icon}
+        <button.Icon
           onMouseOver={() => showTooltip(button.id, true)}
           className="medium"
         />
@@ -311,7 +312,7 @@ function SkyBrowserTabs({
                 transparent
                 small
               >
-                <Icon icon="material-symbols:close" className="small" />
+                <MdClose className="small" />
               </Button>
             </span>
             {selectedBrowserId === browser && buttons}
@@ -328,7 +329,7 @@ function SkyBrowserTabs({
           className={styles.addTabButton}
           transparent
         >
-          <Icon icon="material-symbols:add" className="small" />
+          <MdAdd className="small" />
         </Button>
       </div>
     );

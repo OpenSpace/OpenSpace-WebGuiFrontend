@@ -1,6 +1,6 @@
 import React from 'react';
+import { MdDateRange } from 'react-icons/md';
 import { useSelector } from 'react-redux';
-import { Icon } from '@iconify/react';
 import PropTypes from 'prop-types';
 
 import * as timeHelpers from '../../../../utils/timeHelpers';
@@ -71,7 +71,7 @@ function DateController({ dateList, onChangeSight }) {
         className={`${styles.dateController}
         ${showPopover && styles.active} ${showPopover && Picker.Active}`}
       >
-        <Icon icon="material-symbols:date-range" className={buttonStyle.Icon} />
+        <MdDateRange className={buttonStyle.Icon} />
         <SmallLabel>Select event</SmallLabel>
       </Picker>
       { showPopover && popover() }

@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { Icon } from '@iconify/react';
+import {
+  MdClose, MdExitToApp, MdOpenInBrowser, MdOutlineFilterNone
+} from 'react-icons/md';
 import PropTypes from 'prop-types';
 
 import Button from '../../../common/Input/Button/Button';
@@ -115,24 +117,24 @@ class WindowThreeStates extends Component {
     const hasDetached = acceptedStyles.find((item) => item === WindowStyle.DETACHED);
     const detachedButton = hasDetached && windowStyle !== WindowStyle.DETACHED && (
       <Button onClick={this.setAsDetached} transparent small>
-        <Icon icon="material-symbols:filter-none-outline" />
+        <MdOutlineFilterNone />
       </Button>
     );
     const hasPane = acceptedStyles.find((item) => item === WindowStyle.PANE);
     const paneButton = hasPane && windowStyle !== WindowStyle.PANE && (
       <Button onClick={this.setAsPane} transparent small>
-        <Icon icon="material-symbols:exit-to-app" />
+        <MdExitToApp />
       </Button>
     );
     const hasAttached = acceptedStyles.find((item) => item === WindowStyle.ATTACHED);
     const attachedButton = hasAttached && windowStyle !== WindowStyle.ATTACHED && (
       <Button onClick={this.setAsAttached} transparent small>
-        <Icon icon="material-symbols:open-in-browser" />
+        <MdOpenInBrowser />
       </Button>
     );
     const closeCallbackButton = (
       <Button onClick={this.props.closeCallback} transparent small>
-        <Icon icon="material-symbols:close" />
+        <MdClose />
       </Button>
     );
 

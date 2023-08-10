@@ -1,6 +1,6 @@
 import React from 'react';
+import { MdClose } from 'react-icons/md';
 import { Rnd as ResizeableDraggable } from 'react-rnd';
-import { Icon } from '@iconify/react';
 import PropTypes from 'prop-types';
 
 import { useLocalStorageState } from '../../utils/customHooks';
@@ -44,7 +44,7 @@ function TourPopup({ setVisibility, isVisible }) {
           <div className={styles.spaceBetweenContent}>
             <h1 className={styles.title}>{content.title}</h1>
             <Button onClick={() => setVisibility(false)} transparent small>
-              <Icon icon="material-symbols:close" />
+              <MdClose />
             </Button>
           </div>
           {isFirstSlide && (

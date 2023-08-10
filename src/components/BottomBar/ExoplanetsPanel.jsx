@@ -1,6 +1,6 @@
 import React from 'react';
+import { MdHdrStrong, MdPublic } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
-import { Icon } from '@iconify/react';
 
 import {
   loadExoplanetsData,
@@ -132,7 +132,7 @@ function ExoplanetsPanel() {
                 style={{ width: 90 }}
                 disabled={!starName}
               >
-                <Icon icon="material-symbols:public" alt="add_system" />
+                <MdPublic alt="add_system" />
                 <span style={{ marginLeft: 5 }}>Add System</span>
               </Button>
             </div>
@@ -157,7 +157,7 @@ function ExoplanetsPanel() {
         refKey="Exoplanets"
       >
         <div>
-          <Icon className={Picker.Icon} icon="material-symbols:hdr-strong" alt="exoplanets" />
+          <MdHdrStrong className={Picker.Icon} alt="exoplanets" />
         </div>
       </Picker>
       { popoverVisible && popover() }

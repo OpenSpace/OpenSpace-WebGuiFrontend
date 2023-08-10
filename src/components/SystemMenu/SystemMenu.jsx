@@ -1,6 +1,6 @@
 import React from 'react';
+import { MdExitToApp, MdKeyboard, MdMoreVert } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
-import { Icon } from '@iconify/react';
 import PropTypes from 'prop-types';
 
 import { setPopoverVisibility, setShowAbout } from '../../api/Actions';
@@ -106,7 +106,7 @@ function SystemMenu({ showTutorial }) {
             </button>
             <hr className={Popover.styles.delimiter} />
             <button type="button" onClick={() => { onClick(setShowKeybinds, !keybindsIsVisible); }}>
-              <Icon className={styles.linkIcon} icon="material-symbols:keyboard" />
+              <MdKeyboard className={styles.linkIcon} />
               {keybindsIsVisible ? 'Hide' : 'Show'}
               {' '}
               keybindings
@@ -136,7 +136,7 @@ function SystemMenu({ showTutorial }) {
             </button> */}
             <hr className={Popover.styles.delimiter} />
             <button type="button" onClick={() => { onClick(quit); }}>
-              <Icon icon="material-symbols:exit-to-app" className={styles.linkIcon} />
+              <MdExitToApp className={styles.linkIcon} />
               Quit OpenSpace
               {' '}
               <span className={styles.shortcut}>ESC</span>
@@ -150,7 +150,7 @@ function SystemMenu({ showTutorial }) {
         transparent
         onClick={() => setShowMenu(!showMenu)}
       >
-        <Icon icon="material-symbols:more-vert" className={styles.icon} />
+        <MdMoreVert className={styles.icon} />
       </Button>
     </div>
   );

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon } from '@iconify/react';
+import { MdChevronRight, MdExpandMore } from 'react-icons/md';
 import PropTypes from 'prop-types';
 
 import { useContextRefs } from '../../GettingStartedTour/GettingStartedContext';
@@ -8,7 +8,7 @@ import Button from '../Input/Button/Button';
 import styles from './ToggleHeader.scss';
 
 function ToggleHeader({
-  title, expanded, onClick, onIcon, offIcon
+  title, expanded, onClick
 }) {
   const refs = useContextRefs();
 
@@ -18,10 +18,9 @@ function ToggleHeader({
       className={styles.toggle}
       onClick={onClick}
     >
-      <Icon
-        icon={expanded ? onIcon : offIcon}
-        className={styles.icon}
-      />
+      {expanded ?
+        <MdExpandMore className={styles.icon} /> :
+        <MdChevronRight className={styles.icon} />}
       <span className={`${styles.title}`}>
         { title }
       </span>
@@ -30,9 +29,7 @@ function ToggleHeader({
 }
 
 ToggleHeader.propTypes = {
-  offIcon: PropTypes.string,
   onClick: PropTypes.func.isRequired,
-  onIcon: PropTypes.string,
   title: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.object
@@ -41,8 +38,7 @@ ToggleHeader.propTypes = {
 };
 
 ToggleHeader.defaultProps = {
-  offIcon: 'material-symbols:chevron-right',
-  onIcon: 'material-symbols:expand-more'
+
 };
 
 export default ToggleHeader;

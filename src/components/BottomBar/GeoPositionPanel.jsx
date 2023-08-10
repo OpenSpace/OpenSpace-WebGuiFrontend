@@ -1,6 +1,6 @@
 import React from 'react';
+import { MdLocationOn } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
-import { Icon } from '@iconify/react';
 import PropTypes from 'prop-types';
 import * as geometry from 'spherical-geometry-js';
 
@@ -408,7 +408,7 @@ function GeoPositionPanel() {
         onClick={() => togglePopover()}
         refKey="GeoLocationPanel"
       >
-        <Icon className={Picker.Icon} icon="entypo:location-pin" />
+        <MdLocationOn className={Picker.Icon} alt="geo-location" />
       </Picker>
       { popoverVisible && popover() }
     </div>

@@ -1,6 +1,6 @@
 import React from 'react';
+import { MdLock, MdLockOpen, MdViewDay } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
-import { Icon } from '@iconify/react';
 
 import {
   setPopoverVisibility, subscribeToEngineMode, subscribeToSessionRecording,
@@ -226,13 +226,13 @@ function TimePicker() {
         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
           <div style={{ marginTop: 20 }}>
             <Button onClick={toggleLock} title="Toggle lock" small transparent={!useLock}>
-              <Icon icon={useLock ? 'mdi:lock' : 'mdi:lock-open'} />
+              { useLock ? <MdLock /> : <MdLockOpen /> }
             </Button>
           </div>
           {displayedTime && <Time time={displayedTime} onChange={changeDate} />}
           <div style={{ marginTop: 20 }}>
             <Button onClick={toggleCalendar} title="Toggle calendar" small transparent={!showCalendar}>
-              <Icon icon="mdi:view-day" />
+              <MdViewDay />
             </Button>
           </div>
         </div>

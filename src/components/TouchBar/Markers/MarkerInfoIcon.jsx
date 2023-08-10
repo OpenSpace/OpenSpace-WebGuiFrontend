@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon } from '@iconify/react';
+import { MdInfoOutline } from 'react-icons/md';
 import PropTypes from 'prop-types';
 
 import Popover from '../../common/Popover/Popover';
@@ -15,10 +15,9 @@ function MarkerInfoIcon({ positionStyles, identifier, infoText }) {
 
   return (
     <div>
-      <Icon
+      <MdInfoOutline
         onClick={() => toggleInfoWindow()}
         className={styles.Icon}
-        icon="material-symbols:info-outline"
         style={positionStyles.Icon}
       />
       {showInfoWindow && (

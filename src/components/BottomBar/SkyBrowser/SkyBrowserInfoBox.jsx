@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon } from '@iconify/react';
+import { MdHelp } from 'react-icons/md';
 import PropTypes from 'prop-types';
 
 import { openUrl, stopEventPropagation } from '../../../utils/helpers';
@@ -44,7 +44,7 @@ function SkyBrowserInfoBox({
         small
         onClick={togglePopup}
       >
-        <Icon icon="material-symbols:help" style={{ fontSize: '15px' }} />
+        <MdHelp style={{ fontSize: '15px' }} />
       </Button>
       {isPopupShowing && (
         <SkyBrowserTooltip

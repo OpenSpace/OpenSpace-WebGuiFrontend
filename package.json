@@ -5,7 +5,7 @@
   "main": "src/index.jsx",
   "private": true,
   "scripts": {
-    "lint-fix": "eslint --fix --ext .js,.jsx .",
+    "lint-fix": "eslint --fix --ext .jsx --ext .js src",
     "lint": "eslint --ext .jsx --ext .js src",
     "lint-nice": "eslint --ext .jsx --ext .js src || exit 0;",
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -27,7 +27,6 @@
   "homepage": "https://github.com/OpenSpace/OpenSpace#readme",
   "dependencies": {
     "@hello-pangea/dnd": "^16.0.1",
-    "@iconify/react": "^4.1.0",
     "core-js": "^3.11.2",
     "d3": "^7.8.2",
     "d3-scale": "^4.0.2",
@@ -40,6 +39,7 @@
     "react-color": "^2.19.3",
     "react-dom": "^18.2.0",
     "react-draggable": "^4.4.3",
+    "react-icons": "^4.10.1",
     "react-input-autosize": "^3.0.0",
     "react-lazy-load-image-component": "^1.5.5",
     "react-redux": "^7.2.8",
