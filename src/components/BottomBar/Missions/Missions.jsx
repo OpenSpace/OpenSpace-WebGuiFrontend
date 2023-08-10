@@ -1,6 +1,6 @@
 import React from 'react';
+import { MdRocketLaunch } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
-import { Icon } from '@iconify/react';
 import PropTypes from 'prop-types';
 
 import { subscribeToTime, unsubscribeToTime } from '../../../api/Actions';
@@ -375,7 +375,7 @@ export default function Missions() {
           className={`${popoverVisible && Picker.Active}`}
           onClick={togglePopover}
         >
-          <Icon className={Picker.Icon} icon="ic:baseline-rocket-launch" alt="Missions" />
+          <MdRocketLaunch className={Picker.Icon} alt="Missions" />
         </Picker>
       </div>
       { popoverVisible && popover() }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon } from '@iconify/react';
+import { MdSettings } from 'react-icons/md';
 import PropTypes from 'prop-types';
 
 import Tooltip from '../Tooltip/Tooltip';
@@ -19,7 +19,7 @@ function SettingsPopup({ children }) {
       role="button"
       tabIndex={0}
     >
-      <Icon icon="material-symbols:settings" className="small" />
+      <MdSettings className="small" />
       {showSearchSettings && (
         <Tooltip placement="right" className={styles.toolTip}>
           { children }

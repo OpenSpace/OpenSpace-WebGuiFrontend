@@ -1,6 +1,6 @@
 import React from 'react';
+import { MdOpenWith } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
-import { Icon } from '@iconify/react';
 
 import {
   connectFlightController,
@@ -285,7 +285,7 @@ export default function FlightControlPanel() {
     <div className={Picker.Wrapper}>
       <Picker onClick={togglePopover}>
         <div>
-          <Icon className={Picker.Icon} icon="material-symbols:open-with" alt="flightcontrol" />
+          <MdOpenWith className={Picker.Icon} alt="flightcontrol" />
         </div>
       </Picker>
       { popoverVisible && popover() }

@@ -1,6 +1,6 @@
 import React from 'react';
+import { MdLaunch } from 'react-icons/md';
 import { useSelector } from 'react-redux';
-import { Icon } from '@iconify/react';
 import PropTypes from 'prop-types';
 
 import InfoBox from '../../common/InfoBox/InfoBox';
@@ -31,7 +31,7 @@ export default function ActionsButton({ action, className }) {
       actionid={action.identifier}
     >
       <p className={styles.iconRow}>
-        <Icon className={styles.buttonIcon} icon="mdi:launch" />
+        <MdLaunch className={styles.buttonIcon} />
         {isLocal && <span className={styles.localText}> (Local)</span>}
       </p>
       {action.name}

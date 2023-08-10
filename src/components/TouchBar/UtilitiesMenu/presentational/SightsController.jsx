@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon } from '@iconify/react';
+import { MdPlace } from 'react-icons/md';
 import PropTypes from 'prop-types';
 
 import Picker from '../../../BottomBar/Picker';
@@ -61,7 +61,7 @@ function SightsController({ onChangeSight, sightsList }) {
         className={`${styles.sightsController} ${showPopover && styles.active}
         ${showPopover && Picker.Active}`}
       >
-        <Icon icon="material-symbols:place" className={buttonStyle.Icon} />
+        <MdPlace className={buttonStyle.Icon} />
         <SmallLabel>Select sight</SmallLabel>
       </Picker>
       { showPopover && popover() }
