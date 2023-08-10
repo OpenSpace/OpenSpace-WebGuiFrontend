@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon } from '@iconify/react';
+import { MdExpandLess, MdExpandMore } from 'react-icons/md';
 import PropTypes from 'prop-types';
 
 import { useContextRefs } from '../../../GettingStartedTour/GettingStartedContext';
@@ -113,7 +113,7 @@ function Time({ elements, onChange, time }) {
       return (
         <div key={what} className={styles.element}>
           <Button nopadding transparent onClick={(e) => onClick(e, what, 1)}>
-            <Icon icon="material-symbols:expand-less" />
+            <MdExpandLess />
           </Button>
           <span key={`span${what}`} ref={(el) => { ref.current[what] = el; }}>
             <InlineInput
@@ -126,7 +126,7 @@ function Time({ elements, onChange, time }) {
             />
           </span>
           <Button nopadding transparent onClick={(e) => onClick(e, what, -1)}>
-            <Icon icon="material-symbols:expand-more" />
+            <MdExpandMore />
           </Button>
         </div>
       );

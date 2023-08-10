@@ -1,4 +1,5 @@
 import React from 'react';
+import { MdAdd, MdClose } from 'react-icons/md';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { Icon } from '@iconify/react';
 import PropTypes from 'prop-types';
@@ -311,7 +312,7 @@ function SkyBrowserTabs({
                 transparent
                 small
               >
-                <Icon icon="material-symbols:close" className="small" />
+                <MdClose className="small" />
               </Button>
             </span>
             {selectedBrowserId === browser && buttons}
@@ -328,7 +329,7 @@ function SkyBrowserTabs({
           className={styles.addTabButton}
           transparent
         >
-          <Icon icon="material-symbols:add" className="small" />
+          <MdAdd className="small" />
         </Button>
       </div>
     );

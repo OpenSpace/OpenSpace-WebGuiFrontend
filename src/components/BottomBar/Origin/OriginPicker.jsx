@@ -1,6 +1,6 @@
 import React from 'react';
+import { MdAirplanemodeInactive } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
-import { Icon } from '@iconify/react';
 /* eslint-disable import/no-webpack-loader-syntax */
 import Aim from 'svg-react-loader?name=Aim!../../../icons/aim.svg';
 import Anchor from 'svg-react-loader?name=Anchor!../../../icons/anchor.svg';
@@ -274,7 +274,7 @@ function OriginPicker() {
         role="button"
         tabIndex={0}
       >
-        <Icon className={styles.Icon} icon="material-symbols:airplanemode-inactive" />
+        <MdAirplanemodeInactive className={styles.Icon} />
         <div className={Picker.Title}>
           <span className={Picker.Name}>
             <LoadingString loading={anchor === undefined}>

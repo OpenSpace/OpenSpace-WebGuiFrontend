@@ -1,6 +1,6 @@
 import React from 'react';
+import { MdArrowBack, MdDashboard, MdFolder } from 'react-icons/md';
 import { connect, useDispatch, useSelector } from 'react-redux';
-import { Icon } from '@iconify/react';
 import PropTypes from 'prop-types';
 
 import { setActionsPath, setPopoverVisibility, triggerAction } from '../../api/Actions';
@@ -67,7 +67,7 @@ function ActionsPanel({
         className={`${buttonStyles.actionButton} ${styles.button} ${styles.folderButton}`}
       >
         <p>
-          <Icon className={buttonStyles.buttonIcon} icon="material-symbols:folder" alt="folder" />
+          <MdFolder className={buttonStyles.buttonIcon} alt="folder" />
         </p>
         {key}
       </Button>
@@ -109,7 +109,7 @@ function ActionsPanel({
     if (navigationPath !== '/') {
       return (
         <Button block className={styles.backButton} onClick={goBack} key="backbtn">
-          <Icon className={styles.buttonIcon} icon="material-symbols:arrow-back" alt="arrow_back" />
+          <MdArrowBack className={styles.buttonIcon} alt="arrow_back" />
         </Button>
       );
     }
@@ -189,7 +189,7 @@ function ActionsPanel({
         onClick={togglePopover}
       >
         <div>
-          <Icon className={Picker.Icon} icon="material-symbols:dashboard" alt="dashboard" />
+          <MdDashboard className={Picker.Icon} alt="dashboard" />
         </div>
       </Picker>
       { popoverVisible && popover() }

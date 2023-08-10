@@ -1,6 +1,8 @@
 import React from 'react';
+import {
+  MdFiberManualRecord, MdPause, MdPlayArrow, MdStop, MdVideocam
+} from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
-import { Icon } from '@iconify/react';
 
 import {
   refreshSessionRecording,
@@ -158,7 +160,7 @@ function SessionRec() {
       case SessionStateRecording:
         return (
           <div>
-            <Icon icon="mdi:videocam" alt="videocam" />
+            <MdVideocam alt="videocam" />
             {' Stop recording'}
           </div>
         );
@@ -170,11 +172,11 @@ function SessionRec() {
               onClick={togglePlaybackPaused}
               regular
             >
-              <Icon icon="mdi:pause" alt="pause" />
+              <MdPause alt="pause" />
               {' Pause'}
             </Button>
             <Button onClick={stopPlayback} regular>
-              <Icon icon="mdi:stop" alt="stop" />
+              <MdStop alt="stop" />
               {' Stop playback'}
             </Button>
           </>
@@ -187,14 +189,14 @@ function SessionRec() {
               onClick={togglePlaybackPaused}
               regular
             >
-              <Icon icon="mdi:play-arrow" alt="resume" />
+              <MdPlayArrow alt="resume" />
               {' Resume'}
             </Button>
             <Button
               onClick={stopPlayback}
               regular
             >
-              <Icon icon="mdi:stop" alt="stop" />
+              <MdStop alt="stop" />
               {' Stop playback'}
             </Button>
           </>
@@ -202,7 +204,7 @@ function SessionRec() {
       default:
         return (
           <div>
-            <Icon className={Picker.Icon} icon="mdi:videocam" alt="videocam" />
+            <MdVideocam className={Picker.Icon} alt="videocam" />
           </div>
         );
     }
@@ -279,7 +281,7 @@ function SessionRec() {
                 style={{ width: 90 }}
                 disabled={!filenameRecording}
               >
-                <Icon icon="mdi:fiber-manual-record" alt="record" />
+                <MdFiberManualRecord alt="record" />
                 <span style={{ marginLeft: 5 }}>Record</span>
               </Button>
             </div>
@@ -348,7 +350,7 @@ function SessionRec() {
                 style={{ width: 90 }}
                 disabled={!filenamePlayback}
               >
-                <Icon icon="mdi:play-arrow" alt="resume" />
+                <MdPlayArrow alt="resume" />
                 <span style={{ marginLeft: 5 }}>Play</span>
               </Button>
             </div>

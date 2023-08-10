@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon } from '@iconify/react';
+import { MdZoomIn, MdZoomOut, MdZoomOutMap } from 'react-icons/md';
 import * as d3 from 'd3';
 
 import Button from '../../common/Input/Button/Button';
@@ -396,13 +396,13 @@ export default function Timeline({
         }}
       >
         <Button onClick={() => zoomByButton(0.5)} style={{ margin: 0, padding: 0 }}>
-          <Icon icon="mi:zoom-out" color="white" alt="zoom-in" style={{ fontSize: '1.5em' }} />
+          <MdZoomOut color="white" alt="zoom-out" style={{ fontSize: '1.5em' }} />
         </Button>
         <Button onClick={() => zoomByButton(2)} style={{ margin: 0, padding: 0 }}>
-          <Icon icon="mi:zoom-in" color="white" alt="zoom-out" style={{ fontSize: '1.5em' }} />
+          <MdZoomIn color="white" alt="zoom-in" style={{ fontSize: '1.5em' }} />
         </Button>
         <Button onClick={() => reset()} style={{ margin: 0, padding: 0 }}>
-          <Icon icon="fluent:full-screen-zoom-24-filled" color="white" alt="full-view" style={{ fontSize: '1.5em' }} />
+          <MdZoomOutMap color="white" alt="full-view" style={{ fontSize: '1.5em' }} />
         </Button>
       </div>
       <Tooltip

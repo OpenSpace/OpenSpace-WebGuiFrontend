@@ -1,6 +1,6 @@
 import React from 'react';
+import { IoTelescopeSharp } from 'react-icons/io5';
 import { useDispatch, useSelector } from 'react-redux';
-import { Icon } from '@iconify/react';
 
 import {
   loadSkyBrowserData,
@@ -312,7 +312,7 @@ function SkyBrowserPanel() {
   return (
     <div className={Picker.Wrapper}>
       <Picker onClick={togglePopover} refKey="SkyBrowser">
-        <Icon icon="mdi:telescope" color="white" alt="WWT" className={Picker.Icon} />
+        <IoTelescopeSharp color="white" alt="WWT" className={Picker.Icon} />
       </Picker>
       {popoverVisible && popover()}
       {popoverVisible && createWwtBrowser()}
