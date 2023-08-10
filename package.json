@@ -5,7 +5,7 @@
   "main": "src/index.jsx",
   "private": true,
   "scripts": {
-    "lint-fix": "eslint --fix --ext .js,.jsx .",
+    "lint-fix": "eslint --fix --ext .jsx --ext .js src",
     "lint": "eslint --ext .jsx --ext .js src",
     "lint-nice": "eslint --ext .jsx --ext .js src || exit 0;",
     "test": "echo \"Error: no test specified\" && exit 1",
