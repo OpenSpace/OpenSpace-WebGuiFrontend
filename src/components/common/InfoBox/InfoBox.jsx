@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import Tooltip from '../Tooltip/Tooltip';
 
-function InfoBox({ text, ...props }) {
+function InfoBox({ text, Icon, ...props }) {
   const [showPopup, setShowPopup] = React.useState(false);
   const wrapper = React.useRef(null);
 
@@ -20,7 +20,7 @@ function InfoBox({ text, ...props }) {
       ref={wrapper}
       {...props}
     >
-      <MdInfo
+      <Icon
         onMouseEnter={() => setShowPopup(true)}
         onMouseLeave={() => setShowPopup(false)}
       />
@@ -38,6 +38,7 @@ InfoBox.propTypes = {
 };
 
 InfoBox.defaultProps = {
+  Icon : MdInfo
 };
 
 export default InfoBox;
