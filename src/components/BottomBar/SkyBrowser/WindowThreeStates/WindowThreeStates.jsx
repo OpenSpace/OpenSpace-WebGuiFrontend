@@ -20,12 +20,22 @@ const WindowStyle = {
 };
 
 function WindowThreeStates({
-  defaultStyle, defaultHeight, defaultWidth, children, minHeight, closeCallback, title, acceptedStyles, sizeCallback
+  defaultStyle, defaultHeight, defaultWidth, children, minHeight,
+  closeCallback, title, acceptedStyles, sizeCallback
 }) {
   const [windowStyle, setWindowStyle] = React.useState(defaultStyle);
-  const [sizePopover, setSizePopover] = useLocalStorageState(`${title} sizePopover`, { width: defaultWidth, height: defaultHeight });
-  const [sizeAttached, setSizeAttached] = useLocalStorageState(`${title} sizeAttached`, { width: defaultWidth, height: defaultHeight });
-  const [sizePane, setSizePane] = useLocalStorageState(`${title} sizePane`, { width: defaultWidth });
+  const [sizePopover, setSizePopover] = useLocalStorageState(
+    `${title} sizePopover`,
+    { width: defaultWidth, height: defaultHeight }
+  );
+  const [sizeAttached, setSizeAttached] = useLocalStorageState(
+    `${title} sizeAttached`,
+    { width: defaultWidth, height: defaultHeight }
+  );
+  const [sizePane, setSizePane] = useLocalStorageState(
+    `${title} sizePane`,
+    { width: defaultWidth }
+  );
   const [positionPopover, setPositionPopover] = useLocalStorageState(`${title} position`, () => {
     const centerX = -window.innerWidth * 0.5 + sizePopover.width;
     const centerY = -window.innerHeight * 0.5 - (sizePopover.height * 0.5);
@@ -33,7 +43,7 @@ function WindowThreeStates({
   });
   const topMenuHeight = 30;
 
-  // This callback is for the missions timeline. 
+  // This callback is for the missions timeline.
   // It has to know how large the pane is in order to render its content
   React.useEffect(() => {
     sizeCallback({ width: sizePane.width, height: sizePane.height - topMenuHeight });
@@ -79,7 +89,7 @@ function WindowThreeStates({
 
   switch (windowStyle) {
     case WindowStyle.DETACHED:
-      
+
       return (
         <FloatingWindow
           sizeCallback={setSizePopover}
@@ -88,7 +98,7 @@ function WindowThreeStates({
           defaultPosition={positionPopover}
           handleDragStop={(e, data) => {
             const { x, y } = data;
-            setPositionPopover({ x: x, y: y });
+            setPositionPopover({ x, y });
           }}
         >
           {createTopBar()}
@@ -125,6 +135,7 @@ WindowThreeStates.propTypes = {
   title: PropTypes.string,
   closeCallback: PropTypes.func,
   defaultHeight: PropTypes.number,
+  defaultWidth: PropTypes.number,
   defaultStyle: PropTypes.string,
   minHeight: PropTypes.number,
   acceptedStyles: PropTypes.array,
@@ -138,7 +149,8 @@ WindowThreeStates.defaultProps = {
   defaultWidth: 350,
   minHeight: 100,
   defaultStyle: WindowStyle.ATTACHED,
-  acceptedStyles: [WindowStyle.ATTACHED, WindowStyle.DETACHED, WindowStyle.PANE]
+  acceptedStyles: [WindowStyle.ATTACHED, WindowStyle.DETACHED, WindowStyle.PANE],
+  sizeCallback: () => {}
 };
 
 WindowThreeStates.styles = styles;

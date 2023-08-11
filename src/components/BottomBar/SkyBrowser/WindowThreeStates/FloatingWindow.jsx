@@ -10,7 +10,7 @@ function FloatingWindow({
 }) {
   const windowDiv = React.useRef(null);
   return (
-    <Draggable defaultPosition={defaultPosition} handle=".header" onStop={handleDragStop}> 
+    <Draggable defaultPosition={defaultPosition} handle=".header" onStop={handleDragStop}>
       <section
         className={`${styles.floatingWindow}`}
         ref={windowDiv}

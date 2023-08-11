@@ -34,7 +34,8 @@ function InfoBox({ text, Icon, ...props }) {
 }
 
 InfoBox.propTypes = {
-  text: PropTypes.node.isRequired // should be text or html object
+  text: PropTypes.node.isRequired, // should be text or html object,
+  Icon: PropTypes.node
 };
 
 InfoBox.defaultProps = {
