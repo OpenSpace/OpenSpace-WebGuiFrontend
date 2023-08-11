@@ -9,7 +9,6 @@ function FloatingWindow({
   children, defaultSize, handleDragStop, minHeight, position, size, sizeCallback
 }) {
   const windowDiv = React.useRef(null);
-
   return (
     <Draggable defaultPosition={position} handle=".header" onStop={handleDragStop}>
       <section
@@ -26,7 +25,7 @@ function FloatingWindow({
           onResizeStop={() => {
             if (sizeCallback) {
               const { clientHeight, clientWidth } = windowDiv.current;
-              sizeCallback(clientWidth, clientHeight);
+              sizeCallback({ width: clientWidth, height: clientHeight });
             }
           }}
         >

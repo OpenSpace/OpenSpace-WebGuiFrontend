@@ -55,7 +55,6 @@ export default function Missions() {
     makeUtcDate(overview.timerange.end)
   ];
   const allPhasesNested = React.useRef(null);
-  const topBarHeight = 30;
   const browserHasLoaded = window.innerHeight > 1;
 
   const dispatch = useDispatch();
@@ -163,10 +162,6 @@ export default function Missions() {
 
   function togglePopover() {
     setPopoverVisibility((lastValue) => !lastValue);
-  }
-
-  function sizeCallback(width, height) {
-    setSize({ width, height });
   }
 
   // Fadetime is in seconds
@@ -293,12 +288,12 @@ export default function Missions() {
           null}
         <WindowThreeStates
           title={overview.name}
-          sizeCallback={sizeCallback}
           acceptedStyles={['PANE']}
           defaultStyle="PANE"
           closeCallback={() => setPopoverVisibility(false)}
+          sizeCallback={setSize}
         >
-          <div style={{ height: size.height - topBarHeight, overflow: 'auto' }}>
+          <div style={{ height: size.height, overflow: 'auto' }}>
             <div style={{ display: 'flex', justifyContent: 'space-around' }}>
               <Button
                 onClick={() => setPhaseManually({ type: DisplayType.phase, data: overview })}

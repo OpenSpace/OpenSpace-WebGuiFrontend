@@ -2,7 +2,6 @@
 @import '../../../common/Popover/Popover';
 
 $font-size: 0.8rem;
-$title-bar-height: 30px;
 
 .popover,
 .floatingWindow,
@@ -41,7 +40,6 @@ $title-bar-height: 30px;
 }
 
 .topMenu {
-  height: $title-bar-height;
   display: flex;
   justify-content: space-between;
 }
