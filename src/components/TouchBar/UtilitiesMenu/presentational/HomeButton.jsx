@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon } from '@iconify/react';
+import { MdHome } from 'react-icons/md';
 import PropTypes from 'prop-types';
 
 import SmallLabel from '../../../common/SmallLabel/SmallLabel';
@@ -14,7 +14,7 @@ function HomeButton(props) {
       role="button"
       tabIndex="0"
     >
-      <Icon icon="material-symbols:home" className={styles.Icon} />
+      <MdHome className={styles.Icon} />
       <SmallLabel>Home</SmallLabel>
     </div>
   );
