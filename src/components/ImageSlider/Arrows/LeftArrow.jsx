@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon } from '@iconify/react';
+import { MdKeyboardArrowLeft } from 'react-icons/md';
 import PropTypes from 'prop-types';
 
 import styles from './Arrows.scss';
@@ -7,7 +7,7 @@ import styles from './Arrows.scss';
 function LeftArrow({ prevSlide }) {
   return (
     <div className={styles.LeftArrow} onClick={prevSlide} role="button" tabIndex="0">
-      <Icon icon="material-symbols:keyboard-arrow-left" className={styles.Icon} />
+      <MdKeyboardArrowLeft className={styles.Icon} />
     </div>
   );
 }

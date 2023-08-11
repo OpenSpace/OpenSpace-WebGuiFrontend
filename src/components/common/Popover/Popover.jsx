@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Icon } from '@iconify/react';
+import { MdClose, MdOutlineFilterNone } from 'react-icons/md';
 import PropTypes from 'prop-types';
 
 import { excludeKeys } from '../../../utils/helpers';
@@ -58,12 +58,12 @@ class Popover extends Component {
               { headerButton && headerButton }
               { detachable && (
                 <Button onClick={this.toggleDetach} transparent small>
-                  <Icon icon="material-symbols:filter-none-outline" />
+                  <MdOutlineFilterNone />
                 </Button>
               )}
               { closeCallback && (
                 <Button onClick={closeCallback} transparent small>
-                  <Icon icon="material-symbols:close" className="small" />
+                  <MdClose className="small" />
                 </Button>
               )}
             </div>
