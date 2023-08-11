@@ -19,8 +19,8 @@ function ToggleHeader({
       onClick={onClick}
     >
       {expanded ?
-        <MdChevronRight className={styles.icon} /> :
-        <MdExpandMore className={styles.icon} />}
+        <MdExpandMore className={styles.icon} /> :
+        <MdChevronRight className={styles.icon} />}
       <span className={`${styles.title}`}>
         { title }
       </span>
