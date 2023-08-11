@@ -38,7 +38,7 @@ InfoBox.propTypes = {
 };
 
 InfoBox.defaultProps = {
-  Icon : MdInfo
+  Icon: MdInfo
 };
 
 export default InfoBox;
