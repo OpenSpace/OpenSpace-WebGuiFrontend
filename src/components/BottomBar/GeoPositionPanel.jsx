@@ -251,7 +251,10 @@ function GeoPositionPanel() {
   }
 
   function enterLatLongAlt() {
-    if (!(latitude && longitude && altitude)) return;
+    if (isNaN(latitude) || isNaN(longitude) || isNaN(altitude)) {
+      console.warn("Coordinate is not a number");
+      return;
+    }
     const place = { y: latitude, x: longitude };
     selectCoordinate(place, `Custom Coordinate ${customNodeCounter}`);
     setCustomNodeCounter(customNodeCounter + 1);
