@@ -26,6 +26,11 @@ function WindowThreeStates({
   const [sizePopover, setSizePopover] = useLocalStorageState(`${title} sizePopover`, { width: defaultWidth, height: defaultHeight });
   const [sizeAttached, setSizeAttached] = useLocalStorageState(`${title} sizeAttached`, { width: defaultWidth, height: defaultHeight });
   const [sizePane, setSizePane] = useLocalStorageState(`${title} sizePane`, { width: defaultWidth });
+  const [positionPopover, setPositionPopover] = useLocalStorageState(`${title} position`, () => {
+    const centerX = -window.innerWidth * 0.5 + sizePopover.width;
+    const centerY = -window.innerHeight * 0.5 - (sizePopover.height * 0.5);
+    return { x: centerX, y: centerY };
+  });
   const topMenuHeight = 30;
 
   // This callback is for the missions timeline. 
@@ -74,14 +79,17 @@ function WindowThreeStates({
 
   switch (windowStyle) {
     case WindowStyle.DETACHED:
-      const centerX = -window.innerWidth * 0.5 + sizePopover.width;
-      const centerY = -window.innerHeight * 0.5 - (sizePopover.height * 0.5);
+      
       return (
         <FloatingWindow
           sizeCallback={setSizePopover}
           defaultSize={sizePopover}
           minHeight={minHeight}
-          position={{ x: centerX, y: centerY }}
+          defaultPosition={positionPopover}
+          handleDragStop={(e, data) => {
+            const { x, y } = data;
+            setPositionPopover({ x: x, y: y });
+          }}
         >
           {createTopBar()}
           {children}
