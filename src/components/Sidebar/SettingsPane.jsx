@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import { SceneKey } from '../../api/keys';
@@ -7,16 +7,84 @@ import {
   getLastWordOfUri, isDeadEnd, isPropertyOwnerHidden, isPropertyVisible
 } from '../../utils/propertyTreeHelpers';
 import { CaseInsensitiveSubstring, ListCaseInsensitiveSubstring } from '../../utils/StringMatchers';
-import subStateToProps from '../../utils/subStateToProps';
 import { FilterList, FilterListData, FilterListFavorites } from '../common/FilterList/FilterList';
 import LoadingBlocks from '../common/LoadingBlock/LoadingBlocks';
 
 import Pane from './Pane';
 import SettingsPaneListItem from './SettingsPaneListItem';
 
+function collectOwnersRecursively(propertyOwners, owners, allOwners) {
+  owners.forEach((uri) => {
+    const subowners = propertyOwners[uri]?.subowners || [];
+    // Parameter assignment necessary for recursion
+    // eslint-disable-next-line no-param-reassign
+    allOwners = allOwners.concat(subowners);
+    // eslint-disable-next-line no-param-reassign
+    allOwners = collectOwnersRecursively(propertyOwners, subowners, allOwners);
+  });
+
+  // Stops when owners are empty
+  return allOwners;
+}
+
+function collectPropertiesRecursively(propertyOwners, owners, allProperties) {
+  owners.forEach((uri) => {
+    const subowners = propertyOwners[uri]?.subowners || [];
+    const propertiesUri = propertyOwners[uri]?.properties || [];
+    // Parameter assignment necessary for recursion
+    // eslint-disable-next-line no-param-reassign
+    allProperties = allProperties.concat(propertiesUri);
+    // eslint-disable-next-line no-param-reassign
+    allProperties = collectPropertiesRecursively(propertyOwners, subowners, allProperties);
+  });
+
+  // Stops when owners are empty
+  return allProperties;
+}
+
 function SettingsPane({
-  topPropertyOwners, subPropertyOwners, properties, closeCallback
+  closeCallback
 }) {
+  const topPropertyOwners = useSelector((state) => {
+    if (!state?.propertyTree?.propertyOwners) {
+      return [];
+    }
+    const allOwnerUris = Object.keys(state.propertyTree.propertyOwners || []);
+    // Remove owners that are in the Scene
+    const nonSceneTopPropertyOwners = allOwnerUris.filter((uri) => uri !== SceneKey && uri.indexOf('.') === -1);
+    return nonSceneTopPropertyOwners.map((uri) => ({
+      uri, name: getLastWordOfUri(uri)
+    }));
+  });
+  const subPropertyOwners = useSelector((state) => {
+    if (!state?.propertyTree?.propertyOwners || !state?.propertyTree?.properties) {
+      return [];
+    }
+    const allOwners = state.propertyTree.propertyOwners;
+    const allProps = state.propertyTree.properties;
+    const found = collectOwnersRecursively(allOwners, topPropertyOwners, []);
+    const visibleSubPropertyOwners = found.filter((uri) => (
+      !isPropertyOwnerHidden(allProps, uri) && !isDeadEnd(allOwners, allProps, uri)
+    ));
+    return visibleSubPropertyOwners.map((uri) => ({
+      uri, name: getLastWordOfUri(uri)
+    }));
+  });
+
+  const properties = useSelector((state) => {
+    if (!state?.propertyTree?.propertyOwners || !state?.propertyTree?.properties) {
+      return [];
+    }
+    const allOwners = state.propertyTree.propertyOwners;
+    const allProps = state.propertyTree.properties;
+    const found = collectPropertiesRecursively(allOwners, topPropertyOwners, []);
+    const visible = found.filter((uri) => isPropertyVisible(allOwners, uri));
+
+    return visible.map((uri) => ({
+      uri, names: [getLastWordOfUri(uri), allProps[uri].description.Name]
+    }));
+  });
+
   const defaultEntries = topPropertyOwners.map((p) => ({
     key: p.uri,
     uri: p.uri,
@@ -89,77 +157,4 @@ SettingsPane.defaultProps = {
   closeCallback: null
 };
 
-const mapStateToSubState = (state) => ({
-  properties: state.propertyTree.properties,
-  propertyOwners: state.propertyTree.propertyOwners,
-  propertyTree: state.propertyTree
-});
-
-const mapSubStateToProps = ({ properties, propertyOwners, propertyTree }) => {
-  if (!propertyTree || !propertyOwners || !properties) {
-    return { };
-  }
-
-  const allOwnerUris = Object.keys(propertyOwners || {});
-  const nonSceneTopPropertyOwners = allOwnerUris.filter((uri) => uri !== SceneKey && uri.indexOf('.') === -1);
-
-  function collectUrisRecursively(owners, allOwners, allProperties) {
-    owners.forEach((uri) => {
-      const subowners = propertyOwners[uri].subowners || {};
-      const propertiesUri = propertyOwners[uri].properties || {};
-      // Parameter assignment necessary for recursion
-      // eslint-disable-next-line no-param-reassign
-      allOwners = allOwners.concat(subowners);
-      // eslint-disable-next-line no-param-reassign
-      allProperties = allProperties.concat(propertiesUri);
-      // eslint-disable-next-line no-param-reassign
-      [allOwners, allProperties] = collectUrisRecursively(subowners, allOwners, allProperties);
-    });
-
-    // Stops when owners are empty
-    return [allOwners, allProperties];
-  }
-
-  // Collect uris of all sub property owners and properties
-  let subPropertyOwners = [];
-  let searchableProperties = [];
-  [subPropertyOwners, searchableProperties] = collectUrisRecursively(
-    nonSceneTopPropertyOwners,
-    subPropertyOwners,
-    searchableProperties
-  );
-
-  // Remove any hidden owners/properties
-  subPropertyOwners = subPropertyOwners.filter((uri) => (!isPropertyOwnerHidden(properties, uri) &&
-      !isDeadEnd(propertyOwners, properties, uri)));
-  searchableProperties = searchableProperties.filter((uri) => isPropertyVisible(properties, uri));
-
-  // Compose the information we need for the search
-  const topOwnersInfo = nonSceneTopPropertyOwners.map((uri) => ({
-    uri, name: getLastWordOfUri(uri)
-  }));
-
-  const subPropertyOwnersInfo = subPropertyOwners.map((uri) => ({
-    uri, name: getLastWordOfUri(uri)
-  }));
-
-  const propertiesInfo = searchableProperties.map((uri) => ({
-    uri, names: [getLastWordOfUri(uri), properties[uri].description.Name]
-  }));
-
-  return {
-    topPropertyOwners: topOwnersInfo,
-    subPropertyOwners: subPropertyOwnersInfo,
-    properties: propertiesInfo
-  };
-};
-
-SettingsPane.propTypes = {
-  topPropertyOwners: PropTypes.array.isRequired,
-  subPropertyOwners: PropTypes.array.isRequired,
-  properties: PropTypes.array.isRequired
-};
-
-export default connect(
-  subStateToProps(mapSubStateToProps, mapStateToSubState)
-)(SettingsPane);
+export default SettingsPane;
