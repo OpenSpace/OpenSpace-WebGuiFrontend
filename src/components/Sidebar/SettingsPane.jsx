@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
@@ -14,71 +14,71 @@ import LoadingBlocks from '../common/LoadingBlock/LoadingBlocks';
 import Pane from './Pane';
 import SettingsPaneListItem from './SettingsPaneListItem';
 
-class SettingsPane extends Component {
-  render() {
-    const defaultEntries = this.props.topPropertyOwners.map((p) => ({
+function SettingsPane({
+  topPropertyOwners, subPropertyOwners, properties, closeCallback
+}) {
+  const defaultEntries = topPropertyOwners.map((p) => ({
+    key: p.uri,
+    uri: p.uri,
+    name: p.name,
+    type: 'propertyOwner',
+    expansionIdentifier: p.uri
+  }));
+
+  const searchEntries = defaultEntries
+    .concat(subPropertyOwners.map((p) => ({
       key: p.uri,
       uri: p.uri,
       name: p.name,
-      type: 'propertyOwner',
+      type: 'subPropertyOwner',
       expansionIdentifier: p.uri
-    }));
-
-    const searchEntries = defaultEntries
-      .concat(this.props.subPropertyOwners.map((p) => ({
+    }))
+      .concat(properties.map((p) => ({
         key: p.uri,
         uri: p.uri,
-        name: p.name,
-        type: 'subPropertyOwner',
-        expansionIdentifier: p.uri
-      }))
-        .concat(this.props.properties.map((p) => ({
-          key: p.uri,
-          uri: p.uri,
-          names: p.names,
-          type: 'property'
-        }))));
+        names: p.names,
+        type: 'property'
+      }))));
 
-    const matcher = (entry, searchString) => {
-      const trimmedSearchString = searchString.trim();
+  const matcher = (entry, searchString) => {
+    const trimmedSearchString = searchString.trim();
 
-      if (!trimmedSearchString) {
-        return false; // guard against empty strings
-      }
+    if (!trimmedSearchString) {
+      return false; // guard against empty strings
+    }
 
-      if (entry.type === 'propertyOwner') {
-        return CaseInsensitiveSubstring(entry.uri, trimmedSearchString);
-      }
-      if (entry.type === 'subPropertyOwner') {
-        return CaseInsensitiveSubstring(entry.name, trimmedSearchString);
-      }
-      if (entry.type === 'property') {
-        return ListCaseInsensitiveSubstring(entry.names, trimmedSearchString);
-      }
-      return null;
-    };
+    if (entry.type === 'propertyOwner') {
+      return CaseInsensitiveSubstring(entry.uri, trimmedSearchString);
+    }
+    if (entry.type === 'subPropertyOwner') {
+      return CaseInsensitiveSubstring(entry.name, trimmedSearchString);
+    }
+    if (entry.type === 'property') {
+      return ListCaseInsensitiveSubstring(entry.names, trimmedSearchString);
+    }
+    return null;
+  };
 
-    return (
-      <Pane title="Settings" closeCallback={this.props.closeCallback}>
-        { (defaultEntries.length === 0) && (
-          <LoadingBlocks className={Pane.styles.loading} />
-        )}
+  return (
+    <Pane title="Settings" closeCallback={closeCallback}>
+      { (defaultEntries.length === 0) && (
+        <LoadingBlocks className={Pane.styles.loading} />
+      )}
 
-        {(defaultEntries.length > 0) && (
-          <FilterList
-            matcher={matcher}
-          >
-            <FilterListFavorites>
-              {defaultEntries.map((entry) => <SettingsPaneListItem {...entry} />)}
-            </FilterListFavorites>
-            <FilterListData>
-              {searchEntries.map((entry) => <SettingsPaneListItem {...entry} />)}
-            </FilterListData>
-          </FilterList>
-        )}
-      </Pane>
-    );
-  }
+      {(defaultEntries.length > 0) && (
+        <FilterList
+          matcher={matcher}
+        >
+          <FilterListFavorites>
+            {defaultEntries.map((entry) => <SettingsPaneListItem {...entry} />)}
+          </FilterListFavorites>
+          <FilterListData>
+            {searchEntries.map((entry) => <SettingsPaneListItem {...entry} />)}
+          </FilterListData>
+        </FilterList>
+      )}
+    </Pane>
+  );
 }
 
 SettingsPane.propTypes = {
