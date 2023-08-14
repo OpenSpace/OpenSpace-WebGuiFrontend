@@ -2,6 +2,7 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Icon } from '@iconify/react';
 import PropTypes from 'prop-types';
+import * as geometry from 'spherical-geometry-js';
 
 import {
   reloadPropertyTree,
@@ -15,6 +16,7 @@ import { FilterList, FilterListData } from '../common/FilterList/FilterList';
 import InfoBox from '../common/InfoBox/InfoBox';
 import Button from '../common/Input/Button/Button';
 import Input from '../common/Input/Input/Input';
+import NumericInput from '../common/Input/NumericInput/NumericInput';
 import Popover from '../common/Popover/Popover';
 
 import Picker from './Picker';
@@ -133,9 +135,9 @@ function GeoPositionPanel() {
   const [inputValue, setInputValue] = useLocalStorageState('inputValue', '');
   const [places, setPlaces] = useLocalStorageState('places', undefined);
   const [addedSceneGraphNodes, setAddedSceneGraphNodes] = useLocalStorageState('addedSceneGraphNodes', undefined);
-  const [latitude, setLatitude] = useLocalStorageState('latitude', undefined);
-  const [longitude, setLongitude] = useLocalStorageState('longitude', undefined);
-  const [altitude, setAltitude] = useLocalStorageState('altitude', '300000');
+  const [latitude, setLatitude] = useLocalStorageState('latitude', 0);
+  const [longitude, setLongitude] = useLocalStorageState('longitude', 0);
+  const [altitude, setAltitude] = useLocalStorageState('altitude', '300');
   const [interaction, setInteraction] = useLocalStorageState('interaction', Interaction.flyTo);
   const [currentAnchor, setCurrentAnchor] = useLocalStorageState('anchor', 'Earth');
   const [customNodeCounter, setCustomNodeCounter] = useLocalStorageState('counter', 0);
@@ -155,6 +157,22 @@ function GeoPositionPanel() {
       popover: 'geoposition',
       visible: !popoverVisible
     }));
+  }
+
+  function calculateAltitude(extent) {
+    // Get lat long corners of polygon
+    const nw = new geometry.LatLng(extent.ymax, extent.xmin);
+    const ne = new geometry.LatLng(extent.ymax, extent.xmax);
+    const sw = new geometry.LatLng(extent.ymin, extent.xmin);
+    const se = new geometry.LatLng(extent.ymin, extent.xmax);
+    // Distances are in meters
+    const height = geometry.computeDistanceBetween(nw, sw);
+    const lengthBottom = geometry.computeDistanceBetween(sw, se);
+    const lengthTop = geometry.computeDistanceBetween(nw, ne);
+    const maxLength = Math.max(lengthBottom, lengthTop);
+    const largestDist = Math.max(height, maxLength);
+    // 0.61 is the radian of 35 degrees - half of the standard horizontal field of view in OpenSpace
+    return (0.5 * largestDist) / Math.tan(0.610865238);
   }
 
   function getPlaces() {
@@ -190,16 +208,17 @@ function GeoPositionPanel() {
     setAddedSceneGraphNodes(nodes);
   }
 
-  function selectCoordinate(location, address) {
+  function selectCoordinate(location, address, extent) {
     const lat = location.y;
     const long = location.x;
+    const alt = extent ? calculateAltitude(extent) : altitude * 1000;
     switch (interaction) {
       case Interaction.flyTo: {
-        luaApi?.globebrowsing?.flyToGeo(currentAnchor, lat, long, altitude);
+        luaApi?.globebrowsing?.flyToGeo(currentAnchor, lat, long, alt);
         break;
       }
       case Interaction.jumpTo: {
-        luaApi?.globebrowsing?.goToGeo(currentAnchor, lat, long, altitude);
+        luaApi?.globebrowsing?.goToGeo(currentAnchor, lat, long, alt);
         break;
       }
       case Interaction.addFocus: {
@@ -217,7 +236,7 @@ function GeoPositionPanel() {
         addressUtf8 = addressUtf8.replaceAll(' ', '_');
         addressUtf8 = addressUtf8.replaceAll(',', '');
         luaApi?.addSceneGraphNode(
-          createSceneGraphNodeTable(currentAnchor, addressUtf8, lat, long, altitude)
+          createSceneGraphNodeTable(currentAnchor, addressUtf8, lat, long, alt)
         );
         // TODO: Once we have a proper way to subscribe to additions and removals
         // of property owners, this 'hard' refresh should be removed.
@@ -225,14 +244,17 @@ function GeoPositionPanel() {
         break;
       }
       default: {
-        luaApi?.globebrowsing?.flyToGeo(currentAnchor, lat, long, altitude);
+        luaApi?.globebrowsing?.flyToGeo(currentAnchor, lat, long, alt);
         break;
       }
     }
   }
 
   function enterLatLongAlt() {
-    if (!(latitude && longitude && altitude)) return;
+    if (isNaN(latitude) || isNaN(longitude) || isNaN(altitude)) {
+      console.warn("Coordinate is not a number");
+      return;
+    }
     const place = { y: latitude, x: longitude };
     selectCoordinate(place, `Custom Coordinate ${customNodeCounter}`);
     setCustomNodeCounter(customNodeCounter + 1);
@@ -243,44 +265,6 @@ function GeoPositionPanel() {
       case 'Earth':
         return (
           <>
-            <MultiStateToggle
-              title="Mode"
-              labels={Object.values(Interaction)}
-              checked={interaction}
-              setChecked={setInteraction}
-              infoText={"'Fly to' will fly the camera to the position, " +
-                "'Jump to' will place the camera at the position instantaneously and " +
-                "'Add Focus' will add a scene graph node at the position."}
-            />
-            <div className={styles.latLongInput}>
-              <Input
-                placeholder="Latitude..."
-                onChange={(e) => {
-                  setLatitude(e.target.value);
-                }}
-                value={latitude}
-              />
-              <Input
-                placeholder="Longitude..."
-                onChange={(e) => {
-                  setLongitude(e.target.value);
-                }}
-                value={longitude}
-              />
-              <Input
-                placeholder="Altitude..."
-                onChange={(e) => {
-                  setAltitude(e.target.value);
-                }}
-                value={altitude}
-              />
-              <Button
-                onClick={() => enterLatLongAlt()}
-                className={styles.latLongButton}
-              >
-                {interaction}
-              </Button>
-            </div>
             <hr className={Popover.styles.delimiter} />
             <div className={styles.searchField}>
               <Input
@@ -301,7 +285,7 @@ function GeoPositionPanel() {
                 return (
                   <Place
                     key={place.attributes.LongLabel}
-                    onClick={() => selectCoordinate(place.location, address)}
+                    onClick={() => selectCoordinate(place.location, address, place.extent)}
                     address={address}
                     found={found}
                   />
@@ -310,7 +294,7 @@ function GeoPositionPanel() {
                 (
                   <FilterList
                     searchText="Filter results..."
-                    height="170px"
+                    height="210px"
                   >
                     <FilterListData>
                       {places?.map?.((place) => {
@@ -319,7 +303,7 @@ function GeoPositionPanel() {
                         return (
                           <Place
                             key={place.attributes.LongLabel}
-                            onClick={() => selectCoordinate(place.location, address)}
+                            onClick={() => selectCoordinate(place.location, address, place.extent)}
                             address={address}
                             found={found}
                           />
@@ -329,7 +313,52 @@ function GeoPositionPanel() {
                   </FilterList>
                 )
             )}
-
+            <div
+              className={styles.content}
+              style={{
+                position: 'absolute', bottom: 0, left: 0, width: '100%'
+              }}
+            >
+              <hr className={Popover.styles.delimiter} />
+              <p className={styles.resultsTitle} style={{ padding: '5px 0px' }}>
+                Custom Coordinate
+              </p>
+              <div className={styles.latLongInput}>
+                <NumericInput
+                  placeholder="Latitude"
+                  onValueChanged={(value) => {
+                    setLatitude(value);
+                  }}
+                  value={latitude}
+                  min={-90}
+                  max={90}
+                />
+                <NumericInput
+                  placeholder="Longitude"
+                  onValueChanged={(value) => {
+                    setLongitude(value);
+                  }}
+                  value={longitude}
+                  min={-180}
+                  max={180}
+                />
+                <NumericInput
+                  placeholder="Altitude (km)"
+                  onValueChanged={(value) => {
+                    setAltitude(value);
+                  }}
+                  value={altitude}
+                  min={0}
+                  max={1000}
+                />
+                <Button
+                  onClick={() => enterLatLongAlt()}
+                  className={styles.latLongButton}
+                >
+                  {interaction}
+                </Button>
+              </div>
+            </div>
           </>
         );
       default:
@@ -351,6 +380,15 @@ function GeoPositionPanel() {
         attached
       >
         <div className={styles.content}>
+          <MultiStateToggle
+            title="Mode"
+            labels={Object.values(Interaction)}
+            checked={interaction}
+            setChecked={setInteraction}
+            infoText={"'Fly to' will fly the camera to the position, " +
+                "'Jump to' will place the camera at the position instantaneously and " +
+                "'Add Focus' will add a scene graph node at the position."}
+          />
           <Dropdown
             options={options}
             onChange={(anchor) => setCurrentAnchor(anchor.value)}
