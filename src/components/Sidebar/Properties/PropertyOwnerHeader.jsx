@@ -233,7 +233,7 @@ function PropertyOwnerHeader({
     <Button className={styles.menuButton} onClick={metaClick}>
       <Icon icon="material-symbols:help-outline" />
       {' '}
-      Show asset information
+      Show object details
     </Button>
   );
 
