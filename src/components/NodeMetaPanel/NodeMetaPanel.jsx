@@ -92,7 +92,6 @@ function NodeMetaPanel({ uri }) {
           {`Description: ${documentation.description}`}
         </Row>
         <Row className={styles.assetInfoLastRow}>
-
           <Button
             onClick={() => openUrl(documentation.url)}
             style={{ width: '30%' }}
@@ -101,7 +100,6 @@ function NodeMetaPanel({ uri }) {
             {' '}
             <InfoBox text={`${documentation.url}`} />
           </Button>
-
           <Button
             onClick={() => copyTextToClipboard(documentation.path)}
             style={{ width: '30%', marginLeft: '0.5em' }}
@@ -110,7 +108,6 @@ function NodeMetaPanel({ uri }) {
             {' '}
             <InfoBox text={`${documentation.path}`} />
           </Button>
-
         </Row>
       </div>
     );
