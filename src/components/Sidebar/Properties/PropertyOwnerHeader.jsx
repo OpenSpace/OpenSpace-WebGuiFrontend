@@ -146,7 +146,6 @@ function PropertyOwnerHeader({
 
     // Disable after finished fading out
     const isFadingOut = fadeDirection < 0;
-    if (fadeValue < 0.0001 && isFadingOut) {
     if (enabledUri && fadeValue < 0.0001 && isFadingOut) {
       property(enabledUri).set(false);
     }
