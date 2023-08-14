@@ -24,8 +24,8 @@ const getWwtData = async (luaApi, callback) => {
     if (!luaApi.skybrowser) {
       throw new Error('The Sky Browser Module is not loaded!');
     }
-    let imgData = await luaApi.skybrowser.getListOfImages();
-    let collectionUrl = await luaApi.skybrowser.getWwtImageCollectionUrl();
+    let imgData = await luaApi.skybrowser.listOfImages();
+    let collectionUrl = await luaApi.skybrowser.wwtImageCollectionUrl();
     if (collectionUrl) {
       const { url } = collectionUrl[1];
       collectionUrl = url;
