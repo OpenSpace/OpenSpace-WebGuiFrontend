@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import AutosizeInput from 'react-input-autosize';
 import PropTypes from 'prop-types';
 
@@ -6,7 +6,9 @@ import Input from '../Input/Input';
 
 import styles from './InlineInput.scss';
 
-function InlineInput({className, type, value, onEnter, onChange, noExtraWidth, id, ...props}) {
+function InlineInput({
+  className, type, value, onEnter, onChange, noExtraWidth, id, ...props
+}) {
   const [focus, setFocus] = React.useState(false);
   const [storedValue, setStoredValue] = React.useState(value);
 
@@ -25,8 +27,8 @@ function InlineInput({className, type, value, onEnter, onChange, noExtraWidth, i
     }
   }
 
-  function onChange(event) {
-    const { value : newValue } = event.currentTarget;
+  function onInputChange(event) {
+    const { value: newValue } = event.currentTarget;
     setStoredValue(newValue);
     onChange(event);
   }
@@ -36,7 +38,7 @@ function InlineInput({className, type, value, onEnter, onChange, noExtraWidth, i
       {...props}
       id={id || `inlineinput-${Input.nextId}`}
       value={storedValue}
-      onChange={onChange}
+      onChange={onInputChange}
       onKeyUp={onKeyUp}
       onBlur={onBlur}
       onFocus={() => setFocus(true)}
