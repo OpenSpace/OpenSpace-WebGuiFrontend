@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import styles from './Input.scss';
 
 function Input({
-  children, className, clearable, label, loading,
+  autoFocus, children, className, clearable, label, loading,
   onChange, onEnter, placeholder, value, wide, ...props
 }) {
   const [storedValue, setStoredValue] = React.useState(value);
@@ -64,6 +64,7 @@ function Input({
         ref={inputNode}
         placeholder={placeholder}
         label={label}
+        autoFocus={autoFocus}
         {...props}
       />
       <label htmlFor={id.current} className={`${styles.label} ${hasInput && styles.hasinput}`}>
