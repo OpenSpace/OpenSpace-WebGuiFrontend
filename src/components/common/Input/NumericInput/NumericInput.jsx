@@ -13,7 +13,7 @@ const Scale = require('d3-scale');
 function NumericInput({
   placeholder, className, inputOnly, noHoverHint, noTooltip, label, reverse, noValue,
   decimals, min, max, showOutsideRangeHint, wide, value, step, exponent, disabled,
-  onValueChanged, type, ...props
+  onValueChanged, ...props
 }) {
   const [storedValue, setStoredValue] = React.useState(value);
   const [showTextInput, setShowTextInput] = React.useState(false);
