@@ -98,6 +98,7 @@ Input.propTypes = {
   label: PropTypes.node,
   loading: PropTypes.bool,
   placeholder: PropTypes.string.isRequired,
+  step: PropTypes.number.isRequired,
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   wide: PropTypes.bool
 };
