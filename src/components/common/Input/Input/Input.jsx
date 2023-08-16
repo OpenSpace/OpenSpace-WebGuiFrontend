@@ -98,7 +98,7 @@ Input.propTypes = {
   label: PropTypes.node,
   loading: PropTypes.bool,
   placeholder: PropTypes.string.isRequired,
-  step: PropTypes.number.isRequired,
+  step: PropTypes.number,
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   wide: PropTypes.bool
 };
@@ -111,6 +111,7 @@ Input.defaultProps = {
   clearable: false,
   label: null,
   loading: false,
+  step: 1,
   value: '',
   wide: true
 };
