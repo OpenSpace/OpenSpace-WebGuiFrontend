@@ -177,6 +177,7 @@ function NumericInput({
           label={label}
           min={currentMin}
           max={currentMax}
+          step={step}
         />
         {showOutsideRangeHint && valueIsBad && (
           <Tooltip className={tooltipStyles} fixed style={{ ...textTooltipPosition() }} placement="right">
