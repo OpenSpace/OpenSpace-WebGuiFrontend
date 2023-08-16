@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import styles from './Input.scss';
 
 function Input({
-  autoFocus, children, className, clearable, label, loading,
+  children, className, clearable, label, loading,
   onChange, onEnter, placeholder, value, wide, step, ...props
 }) {
   const [storedValue, setStoredValue] = React.useState(value);
@@ -64,7 +64,6 @@ function Input({
         ref={inputNode}
         placeholder={placeholder}
         label={label}
-        autoFocus={autoFocus}
         step={step}
         {...props}
       />

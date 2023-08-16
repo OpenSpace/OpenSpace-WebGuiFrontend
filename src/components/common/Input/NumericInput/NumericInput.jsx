@@ -171,7 +171,6 @@ function NumericInput({
           onBlur={onTextBlurOrEnter}
           onChange={onTextInputChange}
           onEnter={onTextBlurOrEnter}
-          autoFocus
           placeholder={placeholder}
           wide={wide}
           label={label}
