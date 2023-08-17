@@ -42,7 +42,7 @@ function InlineInput({
       onKeyUp={onKeyUp}
       onBlur={onBlur}
       onFocus={() => setFocus(true)}
-      className={`${styles.input} ${props.className}`}
+      className={`${styles.input} ${className}`}
       extraWidth={noExtraWidth ? 0 : undefined}
     />
   );
