@@ -1,11 +1,10 @@
 // @flow
-import React, { Component } from 'react';
+import React from 'react';
 import { MdChevronLeft, MdChevronRight, MdToday } from 'react-icons/md';
 import PropTypes from 'prop-types';
 
 import { rotate } from '../../../utils/helpers';
 import Button from '../Input/Button/Button';
-import InlineInput from '../Input/InlineInput/InlineInput';
 
 import styles from './Calendar.scss';
 
@@ -26,161 +25,103 @@ Object.freeze(Months);
 // how many days of previous month to get depending on weekday
 const DaysInWeekBefore = [7, 1, 2, 3, 4, 5, 6];
 // always display 6 weeks
-const expectedDaysInCalendar = 6 * 7;
+const ExpectedDaysInCalendar = 6 * 7;
 
-class Calendar extends Component {
-  static daysOfMonth(month: Date) {
-    const iterator = new Date(month.getTime());
-    const days = [];
+const WeekStartsOn = Days.Monday;
+const DayHeaders = 'M T W T F S S'.split(' ');
 
-    while (iterator.getMonth() === month.getMonth()) {
-      days.push(Calendar.copy(iterator));
-      iterator.setDate(iterator.getDate() + 1);
-    }
+function Calendar({
+  currentTime, onChange, todayButton
+}) {
+  const [viewedMonth, setViewedMonth] = React.useState(currentTime);
+  const [viewFreeCoupled, setViewFreeCoupled] = React.useState(false);
 
-    return days;
-  }
-
-  static isSameDay(a: Date, b: Date): boolean {
-    return a.getFullYear() === b.getFullYear() &&
-      a.getMonth() === b.getMonth() &&
-      a.getDate() === b.getDate();
-  }
-
-  /**
-   * Expose the days object, so that it may be used as Calendar.Days.Sunday, for instance
-   */
-  static get Days(): Days {
-    return Days;
-  }
-
-  /**
-   * set the date component to 1
-   * @param day - remains unchanged
-   * @returns {Date}
-   */
-  static toStartOfMonth(day: Date): Date {
-    const newDay = Calendar.copy(day);
-    newDay.setDate(1);
-    return newDay;
-  }
-
-  /**
-   * copy date
-   * @param date
-   */
-  static copy(date: Date): Date {
-    return new Date(date.getTime());
-  }
-
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      activeMonth: Calendar.toStartOfMonth(props.activeMonth)
-    };
-
-    this.setCurrentMonth = this.setCurrentMonth.bind(this);
-    this.setYear = this.setYear.bind(this);
-  }
-
-  UNSAFE_componentWillReceiveProps({ activeMonth }) {
+  React.useEffect(() => {
     // update calendar focus (unless user has moved away from previously given active month)
-    if (Calendar.isSameDay(
-      Calendar.toStartOfMonth(this.props.activeMonth),
-      Calendar.toStartOfMonth(this.state.activeMonth)
-    )) {
-      this.setState({ activeMonth: Calendar.toStartOfMonth(activeMonth) });
+    const currentTimeIsShowing = Calendar.isSameDay(
+      Calendar.toStartOfMonth(currentTime),
+      Calendar.toStartOfMonth(viewedMonth)
+    );
+    if (!currentTimeIsShowing && !viewFreeCoupled) {
+      setViewedMonth(Calendar.toStartOfMonth(currentTime));
     }
+  }, [currentTime]);
+
+  function onSelect(e, day) {
+    const shift = e.getModifierState('Shift');
+    onChange({
+      time: day,
+      interpolate: !shift,
+      relative: false
+    });
   }
 
-  onSelect(day: Date): Function {
-    return (e) => {
-      const shift = e.getModifierState('Shift');
-      this.props.onChange({
-        time: day,
-        interpolate: !shift,
-        relative: false
-      });
-    };
+  function dayHeader() {
+    return DayHeaders.map((day, index) => ({ day, index }));
   }
 
-  get dayHeader(): Array<{ day: Date, index: number }> {
-    return this.props.dayHeaders.map((day, index) => ({ day, index }));
-  }
-
-  get days(): Array<Date> {
-    const prevMonth: Date = this.month(-1);
-    const thisMonth: Date = this.month();
-    const nextMonth: Date = this.month(1);
+  function days() {
+    const prevMonth = month(-1);
+    const thisMonth = month();
+    const nextMonth = month(1);
 
     const days = Calendar.daysOfMonth(thisMonth);
     const prev = Calendar.daysOfMonth(prevMonth);
     const next = Calendar.daysOfMonth(nextMonth);
 
-    const daysFromPrevMonth: number = this.daysToGet(thisMonth.getDay());
+    const daysFromPrevMonth = daysToGet(thisMonth.getDay());
     days.unshift(...prev.slice(-1 * daysFromPrevMonth));
-    const daysFromNextMonth: number = expectedDaysInCalendar - days.length;
+    const daysFromNextMonth = ExpectedDaysInCalendar - days.length;
     days.push(...next.slice(0, daysFromNextMonth));
 
     return days;
   }
 
-  setCurrentMonth() {
-    this.setState({ activeMonth: Calendar.toStartOfMonth(new Date()) });
+  function setCurrentMonth() {
+    setViewedMonth(Calendar.toStartOfMonth(currentTime));
+    setViewFreeCoupled(false);
   }
 
-  setYear(event) {
-    const { value } = event.currentTarget;
-    const { activeMonth } = this.state;
-    activeMonth.setFullYear(Number.parseInt(value, 10));
-    this.setState({ activeMonth });
-  }
-
-  daysToGet(day: number): number {
-    const rotatedDays = rotate(DaysInWeekBefore, 7 - this.props.weekStartsOn);
+  function daysToGet(day) {
+    const rotatedDays = rotate(DaysInWeekBefore, 7 - WeekStartsOn);
     return rotatedDays[day];
   }
 
-  month(add: number = 0): Date {
-    const { activeMonth } = this.state;
+  function month(add = 0) {
     if (add === 0) {
-      return activeMonth;
+      return viewedMonth;
     }
 
-    const newDate = new Date(activeMonth.getTime());
+    const newDate = new Date(viewedMonth.getTime());
     newDate.setMonth(newDate.getMonth() + add);
     return newDate;
   }
 
-  monthString(add: number = 0) {
-    return this.props.months[this.month(add).getMonth()];
+  function isThisMonth(day) {
+    return day.getMonth() === month().getMonth();
   }
 
-  isThisMonth(day: Date): boolean {
-    return day.getMonth() === this.month().getMonth();
-  }
-
-  isSelected(day: Date): boolean {
-    if (!this.props.selected) {
+  function isSelected(day) {
+    if (!currentTime) {
       return false;
     }
 
-    return Calendar.isSameDay(day, this.props.selected);
+    return Calendar.isSameDay(day, currentTime);
   }
 
-  changeMonth(dir: number): Function {
-    return () => this.setState({ activeMonth: this.month(dir) });
+  function stepViewMonth(direction) {
+    setViewFreeCoupled(true);
+    setViewedMonth(month(direction));
   }
 
-  extraClasses(day: Date): string {
+  function extraClasses(day) {
     let classes = '';
 
-    if (!this.isThisMonth(day)) {
+    if (!isThisMonth(day)) {
       classes += `${styles.faint} `;
     }
 
-    if (this.isSelected(day)) {
+    if (isSelected(day)) {
       classes += `${styles.selected} `;
     }
 
@@ -191,81 +132,99 @@ class Calendar extends Component {
     return classes;
   }
 
-  render() {
-    return (
-      <section>
-        <header className={styles.header}>
-          <Button transparent small onClick={this.changeMonth(-1)}>
-            <MdChevronLeft />
-          </Button>
-          <div>
-            { this.props.todayButton && (
-              <Button onClick={this.setCurrentMonth} title="Today" small transparent>
-                <MdToday />
-              </Button>
-            )}
-            {' '}
-            {
-              this.monthString()
-            }
-            {' '}
-            <InlineInput
-              type="number"
-              value={this.month().getFullYear()}
-              onChange={this.setYear}
-              className={styles.year}
-            />
-          </div>
-          <Button regular transparent small onClick={this.changeMonth(1)}>
-            <MdChevronRight />
-          </Button>
+  return (
+    <section>
+      <header className={styles.header}>
+        <Button transparent small onClick={() => stepViewMonth(-1)}>
+          <MdChevronLeft />
+        </Button>
+        <span>
+          { todayButton && (
+            <Button onClick={setCurrentMonth} title="Today" small transparent>
+              <MdToday />
+            </Button>
+          )}
+          {`${Months[viewedMonth.getMonth()]} ${currentTime.getFullYear()}`}
+        </span>
+        <Button regular transparent small onClick={() => stepViewMonth(1)}>
+          <MdChevronRight />
+        </Button>
+      </header>
+
+      <section className={styles.calendar}>
+        <header className={styles.weekdays}>
+          { dayHeader().map((d, i) => (
+            <div key={`${d.day} ${i}`} className={styles.weekday}>
+              { d.day }
+            </div>
+          ))}
         </header>
 
-        <section className={styles.calendar}>
-          <header className={styles.weekdays}>
-            { this.dayHeader.map((d) => (
-              <div key={d.index} className={styles.weekday}>
-                { d.day }
-              </div>
-            ))}
-          </header>
-
-          <section className={styles.month}>
-            { this.days.map((day) => (
-              <Button
-                key={`${day.getMonth()}-${day.getDate()}`}
-                className={`${styles.day} ${this.extraClasses(day)}`}
-                onClick={this.onSelect(day)}
-                regular
-              >
-                { day.getDate() }
-              </Button>
-            ))}
-          </section>
+        <section className={styles.month}>
+          { days().map((day) => (
+            <Button
+              key={`${day.getMonth()}-${day.getDate()}-${day.getFullYear()}`}
+              className={`${styles.day} ${extraClasses(day)}`}
+              onClick={(e) => onSelect(e, day)}
+              regular
+            >
+              { day.getDate() }
+            </Button>
+          ))}
         </section>
       </section>
-    );
+    </section>
+  );
+}
+
+// Static functions
+Calendar.daysOfMonth = (month) => {
+  const iterator = new Date(month.getTime());
+  const days = [];
+
+  while (iterator.getMonth() === month.getMonth()) {
+    days.push(Calendar.copy(iterator));
+    iterator.setDate(iterator.getDate() + 1);
   }
+
+  return days;
+}
+
+Calendar.isSameDay = (a, b) => {
+  return a.getFullYear() === b.getFullYear() &&
+    a.getMonth() === b.getMonth() &&
+    a.getDate() === b.getDate();
+}
+
+/**
+ * set the date component to 1
+ * @param day - remains unchanged
+ * @returns {Date}
+ */
+Calendar.toStartOfMonth = (day) => {
+  const newDay = Calendar.copy(day);
+  newDay.setDate(1);
+  return newDay;
+}
+
+/**
+ * copy date
+ * @param date
+ */
+Calendar.copy = (date) => {
+  return new Date(date.getTime());
 }
 
 Calendar.propTypes = {
-  activeMonth: PropTypes.instanceOf(Date),
-  dayHeaders: PropTypes.arrayOf(PropTypes.string),
-  months: PropTypes.arrayOf(PropTypes.string),
+  currentTime: PropTypes.instanceOf(Date),
   onChange: PropTypes.func,
-  selected: PropTypes.instanceOf(Date),
   todayButton: PropTypes.bool,
-  weekStartsOn: PropTypes.number
 };
 
 Calendar.defaultProps = {
-  activeMonth: new Date(),
-  dayHeaders: 'M T W T F S S'.split(' '),
-  months: Months,
+  currentTime: new Date(),
   onChange: () => {},
-  selected: null,
   todayButton: false,
-  weekStartsOn: Calendar.Days.Monday
 };
 
 export default Calendar;
