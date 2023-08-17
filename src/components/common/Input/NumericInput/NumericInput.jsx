@@ -154,9 +154,10 @@ function NumericInput({
     // If we are already outside the range, exclude the min max properties to the HTML
     // input. But while inside the range we want them to affect what value is possible
     // to set using e.g. the arrow keys
-    const currentMin = isValueOutsideRange ? min : null;
-    const currentMax = isValueOutsideRange ? max : null;
+    const currentMin = isValueOutsideRange ? null : min;
+    const currentMax = isValueOutsideRange ? null : max;
 
+    // Styling
     const outsideRangeStyles = `${isValueOutsideRange && styles.outsideMinMaxRange}`;
     const invalidStyles = `${enteredInvalidValue && styles.invalidValue}`;
     const tooltipStyles = `${outsideRangeStyles} ${invalidStyles}`;
