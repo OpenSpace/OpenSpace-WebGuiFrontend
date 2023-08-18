@@ -159,7 +159,7 @@ function Calendar({
         <section className={styles.month}>
           { daysToDisplay().map((day) => (
             <Button
-              key={`${day.getMonth()}-${day.getDate()}-${day.getFullYear()}`}
+              key={`${day.getMonth()}-${day.getDate()}-${day.getFullYear()}-${viewedMonth}`}
               className={`${styles.day} ${extraClasses(day)}`}
               onClick={(e) => onSelect(e, day)}
               regular
