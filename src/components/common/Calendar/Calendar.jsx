@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { MdChevronLeft, MdChevronRight, MdToday } from 'react-icons/md';
 import PropTypes from 'prop-types';
@@ -38,11 +37,11 @@ function Calendar({
 
   React.useEffect(() => {
     // update calendar focus (unless user has moved away from previously given active month)
-    const currentTimeIsShowing = Calendar.isSameDay(
+    const isCurrentTimeViewed = Calendar.isSameDay(
       Calendar.toStartOfMonth(currentTime),
       Calendar.toStartOfMonth(viewedMonth)
     );
-    if (!currentTimeIsShowing && !viewFreeCoupled) {
+    if (!isCurrentTimeViewed && !viewFreeCoupled) {
       setViewedMonth(Calendar.toStartOfMonth(currentTime));
     }
   }, [currentTime]);
