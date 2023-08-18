@@ -10,8 +10,20 @@ function InlineInput({
   className, type, value, onEnter, onChange, noExtraWidth, id, ...props
 }) {
   const [storedValue, setStoredValue] = React.useState(value);
+  const [isFocused, setIsFocused] = React.useState(false);
+
+  React.useEffect(() => {
+    if (storedValue !== value && !isFocused) {
+      setStoredValue(value);
+    }
+  }, [value]);
+
+  function onFocus() {
+    setIsFocused(true);
+  }
 
   function onBlur(event) {
+    setIsFocused(false);
     onEnter(event);
   }
 
@@ -34,6 +46,7 @@ function InlineInput({
       onChange={onInputChange}
       onKeyUp={onKeyUp}
       onBlur={onBlur}
+      onFocus={onFocus}
       className={`${styles.input} ${className}`}
       extraWidth={noExtraWidth ? 0 : undefined}
       tabIndex={0}
