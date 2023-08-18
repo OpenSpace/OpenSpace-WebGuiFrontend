@@ -9,15 +9,9 @@ import styles from './InlineInput.scss';
 function InlineInput({
   className, type, value, onEnter, onChange, noExtraWidth, id, ...props
 }) {
-  const [focus, setFocus] = React.useState(false);
   const [storedValue, setStoredValue] = React.useState(value);
 
-  if (value !== storedValue && !focus) {
-    setStoredValue(value);
-  }
-
   function onBlur(event) {
-    setFocus(false);
     onEnter(event);
   }
 
@@ -28,8 +22,7 @@ function InlineInput({
   }
 
   function onInputChange(event) {
-    const { value: newValue } = event.currentTarget;
-    setStoredValue(newValue);
+    setStoredValue(event.target.value);
     onChange(event);
   }
 
@@ -41,9 +34,9 @@ function InlineInput({
       onChange={onInputChange}
       onKeyUp={onKeyUp}
       onBlur={onBlur}
-      onFocus={() => setFocus(true)}
       className={`${styles.input} ${className}`}
       extraWidth={noExtraWidth ? 0 : undefined}
+      tabIndex={0}
     />
   );
 }
