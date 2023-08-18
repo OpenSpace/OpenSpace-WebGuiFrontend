@@ -251,8 +251,8 @@ function GeoPositionPanel() {
   }
 
   function enterLatLongAlt() {
-    if (isNaN(latitude) || isNaN(longitude) || isNaN(altitude)) {
-      console.warn("Coordinate is not a number");
+    if (Number.isNaN(latitude) || Number.isNaN(longitude) || Number.isNaN(altitude)) {
+      console.warn('Coordinate is not a number');
       return;
     }
     const place = { y: latitude, x: longitude };

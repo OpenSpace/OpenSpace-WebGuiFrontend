@@ -74,6 +74,7 @@ function MinMaxRangeInput({
 
   function updateMinValue(newValue) {
     if (newValue > maxValue) {
+      // eslint-disable-next-line no-use-before-define
       updateMaxValue(newValue);
     }
 
@@ -256,7 +257,7 @@ function MinMaxRangeInput({
     const valueIsInvalid = enteredInvalidMinValue || enteredInvalidMaxValue;
     const valueIsOutsideRange = isMinValueOutsideRange || isMaxValueOutsideRange;
     const valueIsBad = valueIsInvalid || valueIsOutsideRange;
-    
+
     // If we are already outside the range, sclude the min max properties to the HTML
     // input. But while inside the range we want them to affect what value is possible
     // to set using .e.g the arrow keys
@@ -315,7 +316,7 @@ function MinMaxRangeInput({
                 </p>
               )}
               {valueIsInvalid && (
-               <p>Value is not a number</p>
+                <p>Value is not a number</p>
               )}
             </Tooltip>
           )}
