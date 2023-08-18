@@ -53,6 +53,7 @@
     "sass": "^1.49.9",
     "shallow-equal": "^1.2.1",
     "simple-keyboard-layouts": "^3.0.176",
+    "spherical-geometry-js": "^3.0.0",
     "svg-react-loader": "^0.4.6"
   },
   "devDependencies": {

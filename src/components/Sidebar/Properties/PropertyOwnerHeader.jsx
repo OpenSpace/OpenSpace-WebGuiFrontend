@@ -235,7 +235,7 @@ function PropertyOwnerHeader({
     <Button className={styles.menuButton} onClick={metaClick}>
       <MdHelpOutline />
       {' '}
-      Show asset information
+      Show object details
     </Button>
   );
 

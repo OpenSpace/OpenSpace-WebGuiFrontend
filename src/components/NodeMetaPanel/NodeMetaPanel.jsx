@@ -3,8 +3,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import { removeNodeMetaPopover, setPopoverActiveTab } from '../../api/Actions';
-import { openUrl } from '../../utils/helpers';
+import { copyTextToClipboard, openUrl } from '../../utils/helpers';
 import Picker from '../BottomBar/Picker';
+import InfoBox from '../common/InfoBox/InfoBox';
 import Button from '../common/Input/Button/Button';
 import Popover from '../common/Popover/Popover';
 import Row from '../common/Row/Row';
@@ -16,6 +17,7 @@ function NodeMetaPanel({ uri }) {
   const showPopover = myPopover ? myPopover.visible : false;
   const attached = myPopover ? myPopover.attached : false;
   const activeTab = myPopover && myPopover.activeTab ? myPopover.activeTab : 0;
+  const isShowingFirstTab = activeTab === 0;
 
   // Find name, gui description and documentation
   const nodeName = useSelector((state) => state.propertyTree.propertyOwners[uri]?.name);
@@ -32,12 +34,9 @@ function NodeMetaPanel({ uri }) {
 
   const documentation = useSelector((state) => {
     const identifier = uri.split('.').pop(); // Get last word in uri
-    const foundDoc = state.documentation.data.find((doc) => {
-      if (doc?.identifiers && doc.identifiers.includes(identifier)) {
-        return true;
-      }
-      return false;
-    });
+    const foundDoc = state.documentation.data.find(
+      (doc) => doc?.identifiers && doc.identifiers.includes(identifier)
+    );
     return foundDoc;
   });
 
@@ -58,8 +57,8 @@ function NodeMetaPanel({ uri }) {
   }
 
   function contentForTab() {
-    // Description tag
-    if (activeTab === 0) {
+    // GUI Description tag
+    if (isShowingFirstTab) {
       return (
         <Row>
           <div className={styles.description_container}>
@@ -68,6 +67,7 @@ function NodeMetaPanel({ uri }) {
         </Row>
       );
     }
+
     // Asset meta info tab
     if (!documentation) {
       return (
@@ -78,7 +78,7 @@ function NodeMetaPanel({ uri }) {
     }
 
     return (
-      <div>
+      <div className={styles.description_container}>
         <Row>
           {`Author: ${documentation.author}`}
         </Row>
@@ -88,18 +88,34 @@ function NodeMetaPanel({ uri }) {
         <Row>
           {`License: ${documentation.license.replace(/\\n/g, '')}`}
         </Row>
-        <Button
-          onClick={() => openUrl(documentation.url)}
-          style={{ width: '100%' }}
-        >
-          Open URL
-        </Button>
+        <Row>
+          {`Description: ${documentation.description}`}
+        </Row>
+        <Row className={styles.assetInfoLastRow}>
+          <Button
+            onClick={() => openUrl(documentation.url)}
+            style={{ width: '30%' }}
+          >
+            Open URL
+            {' '}
+            <InfoBox text={`${documentation.url}`} />
+          </Button>
+          <Button
+            onClick={() => copyTextToClipboard(documentation.path)}
+            style={{ width: '30%', marginLeft: '0.5em' }}
+          >
+            Copy Asset File Path
+            {' '}
+            <InfoBox text={`${documentation.path}`} />
+          </Button>
+        </Row>
       </div>
     );
   }
 
   function popover() {
-    const windowTitle = `${nodeName}- Asset Infomation`;
+    const titleAddition = isShowingFirstTab ? 'Description' : 'Asset Information';
+    const windowTitle = `${nodeName} - ${titleAddition}`;
     return (
       <Popover
         className={`${Picker.Popover} && ${styles.nodePopover}`}
@@ -109,28 +125,26 @@ function NodeMetaPanel({ uri }) {
         detachable
       >
         <div className={`${Popover.styles.content} ${styles.contentContainer}`}>
-          { contentForTab() }
+          {contentForTab()}
         </div>
         <hr className={Popover.styles.delimiter} />
 
         <div className={`${Popover.styles.row} ${Popover.styles.content}`}>
           <Button
             block
-            largetext={activeTab === 0}
-            smalltext={activeTab !== 0}
             key={0}
             onClick={() => setActiveTab(0)}
+            style={!isShowingFirstTab ? { opacity: 0.5 } : {}}
           >
             Description
           </Button>
           <Button
             block
-            largetext={activeTab === 1}
-            smalltext={activeTab !== 0}
             key={1}
             onClick={() => setActiveTab(1)}
+            style={isShowingFirstTab ? { opacity: 0.5 } : {}}
           >
-            Info
+            Asset Info
           </Button>
         </div>
       </Popover>
@@ -139,7 +153,7 @@ function NodeMetaPanel({ uri }) {
 
   return (
     <div className={Picker.Wrapper}>
-      { showPopover && popover() }
+      {showPopover && popover()}
     </div>
   );
 }
