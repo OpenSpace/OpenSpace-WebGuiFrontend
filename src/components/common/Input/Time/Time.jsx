@@ -79,7 +79,7 @@ function Time({ elements, onChange, time }) {
 
     return (event) => {
       const newTime = new Date(time);
-      const { value } = event.currentTarget;
+      const { value } = event.target;
       const param = interpretFunc(value);
       if (Number.isNaN(param)) {
         return;
