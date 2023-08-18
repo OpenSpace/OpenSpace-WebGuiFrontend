@@ -26,13 +26,14 @@ Object.freeze(Elements);
 const Months = 'January February March April May June July August September October November December'.split(' ');
 
 function findIndexForMonth(input) {
+  const isNumber = !Number.isNaN(Number(input));
   // If input is number
-  if (!Number.isNaN(input)) {
+  if (isNumber) {
     // Assume that people use 1-indexed months
     return Number.parseFloat(input - 1);
   }
+  // Else input is string
   const lowerInput = input.toLowerCase();
-
   const index = Months.findIndex((mm) => {
     const lowerMonth = mm.toLowerCase();
     // Finds the first occurence of the input substring
