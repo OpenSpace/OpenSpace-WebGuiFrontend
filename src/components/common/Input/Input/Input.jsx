@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Icon } from '@iconify/react';
+import { MdCancel } from 'react-icons/md';
 import PropTypes from 'prop-types';
 
 import { excludeKeys } from '../../../../utils/helpers';
@@ -112,8 +112,7 @@ class Input extends Component {
         <div className={styles.buttonsContainer}>
           { children }
           { clearable && (
-            <Icon
-              icon="material-symbols:cancel"
+            <MdCancel
               className={`${styles.clearbutton} ${this.hasInput && styles.hasinput}`}
               onClick={this.clear}
               tabIndex="0"

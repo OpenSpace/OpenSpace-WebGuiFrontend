@@ -1,7 +1,7 @@
 import React from 'react';
+import { MdDelete } from 'react-icons/md';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { useSelector } from 'react-redux';
-import { Icon } from '@iconify/react';
 import PropTypes from 'prop-types';
 
 import { stopEventPropagation } from '../../../utils/helpers';
@@ -121,7 +121,7 @@ function SkyBrowserTabEntry({
           small
           transparent
         >
-          <Icon icon="material-symbols:delete" className="small" />
+          <MdDelete className="small" />
         </Button>
       </div>
     </div>

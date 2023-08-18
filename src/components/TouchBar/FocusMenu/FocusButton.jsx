@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon } from '@iconify/react';
+import { MdLanguage } from 'react-icons/md';
 import PropTypes from 'prop-types';
 
 import { icons } from '../../../api/resources';
@@ -15,7 +15,7 @@ function FocusButton({ active, identifier, onChangeFocus }) {
     if (icon) {
       return <img src={icon} className={styles.iconImage} alt={identifier} />;
     }
-    return <Icon icon="material-symbols:language" className={styles.Icon} />;
+    return <MdLanguage className={styles.Icon} />;
   }
 
   function select() {

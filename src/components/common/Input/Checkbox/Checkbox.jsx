@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon } from '@iconify/react';
+import { MdCheckBox, MdCheckBoxOutlineBlank } from 'react-icons/md';
 import PropTypes from 'prop-types';
 
 import Button from '../Button/Button';
@@ -24,10 +24,9 @@ function Checkbox({
       {...rest}
       regular
     >
-      <Icon
-        className={styles.checkbox}
-        icon={checked ? 'material-symbols:check-box' : 'material-symbols:check-box-outline-blank'}
-      />
+      {checked ?
+        <MdCheckBox className={styles.checkbox} /> :
+        <MdCheckBoxOutlineBlank className={styles.checkbox} />}
       { children }
     </Button>
   );

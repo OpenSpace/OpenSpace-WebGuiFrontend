@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
+import {
+  MdBuild, MdChevronRight, MdDelete, MdExpandMore, MdHelpOutline, MdLandscape, MdMoreVert
+} from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
-import { Icon } from '@iconify/react';
 import PropTypes from 'prop-types';
 /* eslint-disable import/no-webpack-loader-syntax */
 import DraggableIcon from 'svg-react-loader?name=Aim!../../../icons/draggable_list.svg';
@@ -25,7 +27,7 @@ import toggleHeaderStyles from '../../common/ToggleContent/ToggleHeader.scss';
 import styles from './PropertyOwnerHeader.scss';
 
 function PropertyOwnerHeader({
-  expanded, metaAction, offIcon, onIcon, popOutAction, setExpanded, title, trashAction, uri
+  expanded, metaAction, popOutAction, setExpanded, title, trashAction, uri
 }) {
   const splitUri = uri.split('.');
   const identifier = splitUri.length > 1 && splitUri[1];
@@ -223,7 +225,7 @@ function PropertyOwnerHeader({
 
   const popoutButton = (
     <Button className={styles.menuButton} onClick={popoutClick}>
-      <Icon icon="material-symbols:build" />
+      <MdBuild />
       {' '}
       Quick access settings
     </Button>
@@ -231,7 +233,7 @@ function PropertyOwnerHeader({
 
   const metaButton = (
     <Button className={styles.menuButton} onClick={metaClick}>
-      <Icon icon="material-symbols:help-outline" />
+      <MdHelpOutline />
       {' '}
       Show object details
     </Button>
@@ -239,7 +241,7 @@ function PropertyOwnerHeader({
 
   const trashButton = (
     <Button className={styles.menuButton} onClick={trashClick}>
-      <Icon icon="material-symbols:delete" />
+      <MdDelete />
       {' '}
       Delete
     </Button>
@@ -272,10 +274,9 @@ function PropertyOwnerHeader({
       ref={(el) => { refs.current[refName] = el; }}
     >
       <Row>
-        <Icon
-          icon={expanded ? onIcon : offIcon}
-          className={toggleHeaderStyles.icon}
-        />
+        {expanded ?
+          <MdExpandMore className={toggleHeaderStyles.icon} /> :
+          <MdChevronRight className={toggleHeaderStyles.icon} />}
         { enabledUri && (
           <span className={styles.leftButtonContainer}>
             <Checkbox
@@ -289,14 +290,14 @@ function PropertyOwnerHeader({
         )}
         <span className={`${toggleHeaderStyles.title} ${styles.title} ${titleClass}`}>
           { renderedTitle }
-          { isHeightLayer && <Icon className={styles.heightLayerIcon} icon="material-symbols:landscape" /> }
+          { isHeightLayer && <MdLandscape className={styles.heightLayerIcon} /> }
           { isLayer && <SvgIcon className={styles.layerDraggableIcon}><DraggableIcon /></SvgIcon> }
         </span>
         <span className={styles.rightButtonContainer}>
           { isSceneObject && focusButton }
           { hasMoreButtons && (
             <TooltipMenu
-              sourceObject={<Icon icon="material-symbols:more-vert" />}
+              sourceObject={<MdMoreVert />}
             >
               { popOutAction && popoutButton }
               { metaAction && metaButton }
@@ -313,8 +314,6 @@ PropertyOwnerHeader.propTypes = {
   expanded: PropTypes.bool.isRequired,
   setExpanded: PropTypes.func.isRequired,
   metaAction: PropTypes.func,
-  offIcon: PropTypes.string,
-  onIcon: PropTypes.string,
   popOutAction: PropTypes.func,
   title: PropTypes.string,
   trashAction: PropTypes.func,
@@ -323,8 +322,6 @@ PropertyOwnerHeader.propTypes = {
 
 PropertyOwnerHeader.defaultProps = {
   metaAction: undefined,
-  offIcon: 'material-symbols:chevron-right',
-  onIcon: 'material-symbols:expand-more',
   popOutAction: undefined,
   title: undefined,
   trashAction: undefined

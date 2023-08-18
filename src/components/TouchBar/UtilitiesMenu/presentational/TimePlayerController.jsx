@@ -1,6 +1,8 @@
 import React from 'react';
+import {
+  MdFastForward, MdFastRewind, MdPause, MdPlayArrow, MdReplay
+} from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
-import { Icon } from '@iconify/react';
 
 import { subscribeToTime, unsubscribeToTime } from '../../../../api/Actions';
 import {
@@ -76,7 +78,7 @@ function TimePlayerController() {
           role="button"
           tabIndex="0"
         >
-          <Icon icon="material-symbols:replay" className={styles.Icon} />
+          <MdReplay className={styles.Icon} />
           <SmallLabel>Time</SmallLabel>
         </div>
       </div>
@@ -87,32 +89,37 @@ function TimePlayerController() {
           </LoadingString>
         </div>
         <div className={styles.PlayerContainer}>
-          <Icon
-            icon="material-symbols:fast-rewind"
+          <MdFastRewind
             id={FastRewind}
             className={`${styles.Icon} ${(deltaTime === -FastSpeed) && styles.active}`}
             onClick={clickPlayer}
           />
-          <Icon
-            icon="material-symbols:fast-rewind"
+          <MdFastRewind
             id={Rewind}
             className={`${styles.Icon} ${(deltaTime === -Speed) && styles.active}`}
             onClick={clickPlayer}
           />
-          <Icon
-            icon={isPaused ? 'material-symbols:pause' : 'material-symbols:play-arrow'}
-            id={Play}
-            className={`${styles.Icon} ${(deltaTime === 0 || deltaTime === 1) && styles.active}`}
-            onClick={clickPlayer}
-          />
-          <Icon
-            icon="material-symbols:fast-forward"
+          {
+            isPaused ? (
+              <MdPause
+                id={Play}
+                className={`${styles.Icon} ${deltaTime === 1 && styles.active}`}
+                onClick={clickPlayer}
+              />
+            ) : (
+              <MdPlayArrow
+                id={Play}
+                className={`${styles.Icon} ${deltaTime === 0 && styles.active}`}
+                onClick={clickPlayer}
+              />
+            )
+          }
+          <MdFastForward
             id={Forward}
             className={`${styles.Icon} ${(deltaTime === Speed) && styles.active}`}
             onClick={clickPlayer}
           />
-          <Icon
-            icon="material-symbols:fast-forward"
+          <MdFastForward
             id={FastForward}
             className={`${styles.Icon} ${(deltaTime === FastSpeed) && styles.active}`}
             onClick={clickPlayer}

@@ -1,6 +1,6 @@
 import React from 'react';
+import { MdCenterFocusStrong, MdFlight } from 'react-icons/md';
 import { useSelector } from 'react-redux';
-import { Icon } from '@iconify/react';
 import PropTypes from 'prop-types';
 
 import Button from '../../common/Input/Button/Button';
@@ -61,11 +61,11 @@ function FocusEntry({
         <div className={styles.buttonContainer}>
           { isActive() && (
             <Button className={styles.flyToButton} onClick={zoomToFocus} title="Zoom to">
-              <Icon className={styles.buttonIcon} icon="material-symbols:center-focus-strong" />
+              <MdCenterFocusStrong className={styles.buttonIcon} />
             </Button>
           )}
           <Button className={styles.flyToButton} onClick={flyTo} title="Fly to">
-            <Icon className={styles.buttonIcon} icon="material-symbols:flight" />
+            <MdFlight className={styles.buttonIcon} />
           </Button>
         </div>
       )}

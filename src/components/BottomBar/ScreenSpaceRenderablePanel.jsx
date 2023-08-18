@@ -1,6 +1,6 @@
 import React from 'react';
+import { MdInsertPhoto } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
-import { Icon } from '@iconify/react';
 
 import { reloadPropertyTree, setPopoverVisibility } from '../../api/Actions';
 import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
@@ -119,7 +119,7 @@ function ScreenSpaceRenderablePanel() {
                 style={{ width: 90 }}
                 disabled={!slideName || !slideURL}
               >
-                <Icon icon="material-symbols:insert-photo" alt="insert_photo" />
+                <MdInsertPhoto alt="insert_photo" />
                 <span style={{ marginLeft: 5 }}>Add Slide</span>
               </Button>
             </div>
@@ -144,7 +144,7 @@ function ScreenSpaceRenderablePanel() {
         refKey="ScreenSpaceRenderable"
       >
         <div>
-          <Icon className={Picker.Icon} icon="ic:round-insert-photo" alt="screenspacerenderable" />
+          <MdInsertPhoto className={Picker.Icon} alt="screenspacerenderable" />
         </div>
       </Picker>
       { popoverVisible && popover() }

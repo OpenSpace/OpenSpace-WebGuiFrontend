@@ -1,6 +1,6 @@
 import React from 'react';
 import Draggable from 'react-draggable';
-import { Icon } from '@iconify/react';
+import { MdClose } from 'react-icons/md';
 import PropTypes from 'prop-types';
 
 import { excludeKeys } from '../../../utils/helpers';
@@ -29,7 +29,7 @@ function Window(props) {
           { headerButton && headerButton }
           { closeCallback && (
             <Button onClick={closeCallback} transparent small>
-              <Icon icon="material-symbols:close" className="small" />
+              <MdClose className="small" />
             </Button>
           )}
         </header>
