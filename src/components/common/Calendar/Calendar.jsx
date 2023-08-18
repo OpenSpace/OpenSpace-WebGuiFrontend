@@ -60,16 +60,27 @@ function Calendar({
     return DayHeaders.map((day, index) => ({ day, index }));
   }
 
-  function days() {
+  function month(add = 0) {
+    if (add === 0) {
+      return viewedMonth;
+    }
+
+    const newDate = new Date(viewedMonth.getTime());
+    newDate.setMonth(newDate.getMonth() + add);
+    return newDate;
+  }
+
+  function daysToDisplay() {
     const prevMonth = month(-1);
     const thisMonth = month();
     const nextMonth = month(1);
+    const days = Calendar.daysOfMonth(Calendar.toStartOfMonth(thisMonth));
+    const prev = Calendar.daysOfMonth(Calendar.toStartOfMonth(prevMonth));
+    const next = Calendar.daysOfMonth(Calendar.toStartOfMonth(nextMonth));
 
-    const days = Calendar.daysOfMonth(thisMonth);
-    const prev = Calendar.daysOfMonth(prevMonth);
-    const next = Calendar.daysOfMonth(nextMonth);
+    const rotatedDays = rotate(DaysInWeekBefore, 7 - WeekStartsOn);
+    const daysFromPrevMonth = rotatedDays[thisMonth.getDay()];
 
-    const daysFromPrevMonth = daysToGet(thisMonth.getDay());
     days.unshift(...prev.slice(-1 * daysFromPrevMonth));
     const daysFromNextMonth = ExpectedDaysInCalendar - days.length;
     days.push(...next.slice(0, daysFromNextMonth));
@@ -80,21 +91,6 @@ function Calendar({
   function setCurrentMonth() {
     setViewedMonth(Calendar.toStartOfMonth(currentTime));
     setViewFreeCoupled(false);
-  }
-
-  function daysToGet(day) {
-    const rotatedDays = rotate(DaysInWeekBefore, 7 - WeekStartsOn);
-    return rotatedDays[day];
-  }
-
-  function month(add = 0) {
-    if (add === 0) {
-      return viewedMonth;
-    }
-
-    const newDate = new Date(viewedMonth.getTime());
-    newDate.setMonth(newDate.getMonth() + add);
-    return newDate;
   }
 
   function isThisMonth(day) {
@@ -153,15 +149,15 @@ function Calendar({
 
       <section className={styles.calendar}>
         <header className={styles.weekdays}>
-          { dayHeader().map((d, i) => (
-            <div key={`${d.day} ${i}`} className={styles.weekday}>
+          { dayHeader().map((d) => (
+            <div key={`${d.day} ${d.index}`} className={styles.weekday}>
               { d.day }
             </div>
           ))}
         </header>
 
         <section className={styles.month}>
-          { days().map((day) => (
+          { daysToDisplay().map((day) => (
             <Button
               key={`${day.getMonth()}-${day.getDate()}-${day.getFullYear()}`}
               className={`${styles.day} ${extraClasses(day)}`}
@@ -188,13 +184,11 @@ Calendar.daysOfMonth = (month) => {
   }
 
   return days;
-}
+};
 
-Calendar.isSameDay = (a, b) => {
-  return a.getFullYear() === b.getFullYear() &&
+Calendar.isSameDay = (a, b) => a.getFullYear() === b.getFullYear() &&
     a.getMonth() === b.getMonth() &&
     a.getDate() === b.getDate();
-}
 
 /**
  * set the date component to 1
@@ -205,26 +199,24 @@ Calendar.toStartOfMonth = (day) => {
   const newDay = Calendar.copy(day);
   newDay.setDate(1);
   return newDay;
-}
+};
 
 /**
  * copy date
  * @param date
  */
-Calendar.copy = (date) => {
-  return new Date(date.getTime());
-}
+Calendar.copy = (date) => new Date(date.getTime());
 
 Calendar.propTypes = {
   currentTime: PropTypes.instanceOf(Date),
   onChange: PropTypes.func,
-  todayButton: PropTypes.bool,
+  todayButton: PropTypes.bool
 };
 
 Calendar.defaultProps = {
   currentTime: new Date(),
   onChange: () => {},
-  todayButton: false,
+  todayButton: false
 };
 
 export default Calendar;
