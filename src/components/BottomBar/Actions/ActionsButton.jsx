@@ -18,8 +18,6 @@ export default function ActionsButton({ action, className }) {
   function sendAction(e) {
     const actionId = e.currentTarget.getAttribute('actionid');
 
-    // Note that we never want to sync the script that triggers an action.
-    // The syncing should be handled by the core code, based on the action details
     const script = `openspace.action.triggerAction('${actionId}')`;
     const shouldSyncScript = !isLocal;
     api.executeLuaScript(script, false, shouldSyncScript);
