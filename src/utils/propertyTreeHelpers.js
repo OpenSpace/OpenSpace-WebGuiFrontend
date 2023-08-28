@@ -265,9 +265,11 @@ export function checkIfVisible(properties, ownerUri) {
   }
 
   const isEnabled = properties[enabledUri]?.value;
+
   // Make fade == 0 correspond to disabled, according to the checkbox
-  if (fadeUri && properties[fadeUri]?.value) {
-    return isEnabled && properties[fadeUri].value > 0;
+  if (fadeUri) {
+    return isEnabled && (properties[fadeUri]?.value > 0);
   }
+
   return isEnabled;
 }
