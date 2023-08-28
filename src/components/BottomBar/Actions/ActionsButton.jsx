@@ -1,8 +1,8 @@
 import React from 'react';
 import { MdLaunch } from 'react-icons/md';
-import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
+import api from '../../../api/api';
 import InfoBox from '../../common/InfoBox/InfoBox';
 import Button from '../../common/Input/Button/Button';
 
@@ -13,14 +13,17 @@ export default function ActionsButton({ action, className }) {
     return null;
   }
 
-  const luaApi = useSelector((state) => state.luaApi);
+  const isLocal = (action.synchronization === false);
 
   function sendAction(e) {
     const actionId = e.currentTarget.getAttribute('actionid');
-    luaApi.action.triggerAction(actionId);
-  }
 
-  const isLocal = (action.synchronization === false);
+    // Note that we never want to sync the script that triggers an action.
+    // The syncing should be handled by the core code, based on the action details
+    const script = `openspace.action.triggerAction('${actionId}')`;
+    const shouldSyncScript = false;
+    api.executeLuaScript(script, false, shouldSyncScript);
+  }
 
   return (
     <Button
