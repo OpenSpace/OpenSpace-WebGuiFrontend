@@ -232,11 +232,13 @@ export function isRenderable(uri) {
 }
 
 export function findFadePropertyUri(properties, ownerUri) {
-// Check if this property owner has a fade property, or a renderable with the property
-  if (properties[`${ownerUri}.Fade`] && !isRenderable(ownerUri)) {
+  // Check if this property owner has a fade property, or a renderable with the property.
+  // Note that a fadeable must have both the Fade and Enabled property, on the same level
+  const notRenderable = !isRenderable(ownerUri);
+  if (notRenderable && properties[`${ownerUri}.Fade`] && properties[`${ownerUri}.Enabled`]) {
     return `${ownerUri}.Fade`;
   }
-  if (properties[`${ownerUri}.Renderable.Fade`]) {
+  if (properties[`${ownerUri}.Renderable.Fade`] && properties[`${ownerUri}.Renderable.Enabled`]) {
     return `${ownerUri}.Renderable.Fade`;
   }
   return undefined;
@@ -244,7 +246,7 @@ export function findFadePropertyUri(properties, ownerUri) {
 
 export function findEnabledPropertyUri(properties, ownerUri) {
   // Check if this property owner has an enabled property, or a renderable with the property
-  if (properties[`${ownerUri}.Enabled`] && !isRenderable) {
+  if (!isRenderable(ownerUri) && properties[`${ownerUri}.Enabled`]) {
     return `${ownerUri}.Enabled`;
   }
   if (properties[`${ownerUri}.Renderable.Enabled`]) {
