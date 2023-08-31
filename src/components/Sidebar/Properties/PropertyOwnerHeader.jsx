@@ -52,7 +52,7 @@ function PropertyOwnerHeader({
   ));
 
   // Check if this property owner has a fade property, or a renderable with the property
-  // Note that a feadeable must have both the Fade and Enabled property, on the same level
+  // Note that a fadeable must have both the Fade and Enabled property, on the same level
   const fadeUri = useSelector((state) => {
     if (!isRenderable && state.propertyTree.properties[`${uri}.Fade`] &&
         state.propertyTree.properties[`${uri}.Enabled`]) {
