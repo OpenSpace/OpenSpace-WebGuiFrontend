@@ -40,6 +40,9 @@ function PropertyOwnerHeader({
 
   // 1 is positive => fading in, -1 negative => fading out. Undefined or 0 means no fading
   const [fadeDirection, setFadeDirection] = useState(0);
+  // After checkbox click, check this value to keep track of whether the property owner
+  // should be disabled once the fading
+  const [shouldDisableAtFadeZero, setShouldDisableAtFadeZero] = useState(false);
 
   const luaApi = useSelector((state) => state.luaApi);
 
@@ -148,8 +151,9 @@ function PropertyOwnerHeader({
 
     // Disable after finished fading out
     const isFadingOut = fadeDirection < 0;
-    if (enabledUri && fadeValue < 0.0001 && isFadingOut) {
+    if (shouldDisableAtFadeZero && isFadingOut && enabledUri && fadeValue < 0.0001) {
       property(enabledUri).set(false);
+      setShouldDisableAtFadeZero(false);
     }
   }, [fadeValue]);
 
@@ -199,6 +203,7 @@ function PropertyOwnerHeader({
       luaApi.setPropertyValueSingle(fadeUri, 1.0, fadeDuration);
     } else { // fade out
       luaApi.setPropertyValueSingle(fadeUri, 0.0, fadeDuration);
+      setShouldDisableAtFadeZero(true);
     }
   }
 
