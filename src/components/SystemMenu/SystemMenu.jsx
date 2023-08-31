@@ -42,14 +42,14 @@ function SystemMenu({ showTutorial }) {
 
   async function console() {
     if (!luaApi) { return; }
-    const data = await luaApi.getPropertyValue('LuaConsole.IsVisible');
+    const data = await luaApi.propertyValue('LuaConsole.IsVisible');
     const visible = data[1] || false;
     luaApi.setPropertyValue('LuaConsole.IsVisible', !visible);
   }
 
   async function nativeGui() {
     if (!luaApi) { return; }
-    const data = await luaApi.getPropertyValue('Modules.ImGUI.Enabled');
+    const data = await luaApi.propertyValue('Modules.ImGUI.Enabled');
     const visible = data[1] || false;
     luaApi.setPropertyValue('Modules.ImGUI.Enabled', !visible);
   }
