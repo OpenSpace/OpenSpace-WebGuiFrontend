@@ -3,7 +3,7 @@ import { shallowEqual, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import { useLocalStorageState } from '../../utils/customHooks';
-import { isPropertyOwnerHidden } from '../../utils/propertyTreeHelpers';
+import { checkIfVisible, isPropertyOwnerHidden } from '../../utils/propertyTreeHelpers';
 import { ObjectWordBeginningSubstring } from '../../utils/StringMatchers';
 import { FilterList, FilterListData, FilterListFavorites } from '../common/FilterList/FilterList';
 import Checkbox from '../common/Input/Checkbox/Checkbox';
@@ -60,9 +60,8 @@ function ScenePane({ closeCallback }) {
   }
 
   function onlyEnabledMatcher(test, search) {
-    const property = properties[`${test.uri}.Renderable.Enabled`];
-    const isEnabled = property?.value;
-    return isEnabled && matcher(test, search);
+    const isVisible = checkIfVisible(properties, test.uri);
+    return isVisible && matcher(test, search);
   }
 
   const entries = propertyOwnersScene.map((uri) => ({
@@ -87,7 +86,7 @@ function ScenePane({ closeCallback }) {
         wide
         style={{ padding: '2px' }}
       >
-        <p>Show Only Enabled</p>
+        <p>Show only enabled</p>
       </Checkbox>
     </SettingsPopup>
   );

@@ -15,7 +15,15 @@ import {
   RetargetAnchorKey
 } from '../../../api/keys';
 import propertyDispatcher from '../../../api/propertyDispatcher';
-import { displayName, isGlobeBrowsingLayer } from '../../../utils/propertyTreeHelpers';
+import {
+  checkIfVisible,
+  displayName,
+  findEnabledPropertyUri,
+  findFadePropertyUri,
+  identifierFromUri,
+  isGlobeBrowsingLayer,
+  isSceneGraphNode
+} from '../../../utils/propertyTreeHelpers';
 import Button from '../../common/Input/Button/Button';
 import Checkbox from '../../common/Input/Checkbox/Checkbox';
 import Row from '../../common/Row/Row';
@@ -29,10 +37,8 @@ import styles from './PropertyOwnerHeader.scss';
 function PropertyOwnerHeader({
   expanded, metaAction, popOutAction, setExpanded, title, trashAction, uri
 }) {
-  const splitUri = uri.split('.');
-  const identifier = splitUri.length > 1 && splitUri[1];
-  const isRenderable = (splitUri.length > 1 && splitUri[splitUri.length - 1] === 'Renderable');
-  const isSceneObject = (splitUri.length === 2 && splitUri[0] === 'Scene');
+  const identifier = identifierFromUri(uri);
+  const isSceneObject = isSceneGraphNode(uri);
 
   // Check for layers so we can change their visuals (e.g makes the titles of enabled
   // layers green and have different behavior on hover)
@@ -55,40 +61,18 @@ function PropertyOwnerHeader({
   ));
 
   // Check if this property owner has a fade property, or a renderable with the property
-  const fadeUri = useSelector((state) => {
-    if (state.propertyTree.properties[`${uri}.Fade`] && !isRenderable) {
-      return `${uri}.Fade`;
-    }
-    if (state.propertyTree.properties[`${uri}.Renderable.Fade`]) {
-      return `${uri}.Renderable.Fade`;
-    }
-    return undefined;
-  });
-
+  const fadeUri = useSelector((state) => findFadePropertyUri(state.propertyTree.properties, uri));
   const fadeValue = useSelector((state) => state.propertyTree.properties[fadeUri]?.value);
   const prevFadeValueRef = useRef(fadeValue);
 
   // Check if this property owner has an enabled property, or a renderable with the property
-  const enabledUri = useSelector((state) => {
-    if (state.propertyTree.properties[`${uri}.Enabled`] && !isRenderable) {
-      return `${uri}.Enabled`;
-    }
-    if (state.propertyTree.properties[`${uri}.Renderable.Enabled`]) {
-      return `${uri}.Renderable.Enabled`;
-    }
-    return undefined;
-  });
+  const enabledUri = useSelector(
+    (state) => findEnabledPropertyUri(state.propertyTree.properties, uri)
+  );
 
   // Get the state for the rendered checkbox. Note that this does not exactly correspond to
-  // the enabled property value
-  const isVisible = useSelector((state) => {
-    let enabled = state.propertyTree.properties[enabledUri]?.value;
-    // Make fade == 0 correspond to disabled, according to the checkbox
-    if (fadeUri && state.propertyTree.properties[fadeUri].value === 0) {
-      enabled = false;
-    }
-    return enabled;
-  });
+  // the enabled property value, but may also include the fade
+  const isVisible = useSelector((state) => checkIfVisible(state.propertyTree.properties, uri));
 
   const dispatch = useDispatch();
 
