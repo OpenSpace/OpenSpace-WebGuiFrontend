@@ -1,7 +1,6 @@
 import React from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import InfographicSkyBrowser from 'svg-react-loader?name=Aim!../../../icons/infographicSkyBrowser.svg';
 
 
 import { lowPrecisionEqual } from '../../../utils/customHooks';
