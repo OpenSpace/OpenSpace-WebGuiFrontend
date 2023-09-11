@@ -220,3 +220,58 @@ export function displayName(propertyOwners, properties, uri) {
   // If the gui name is found and not empty, use it. Otherwise, show identifier of node
   return guiName || propertyOwners[uri].identifier;
 }
+
+export function identifierFromUri(uri) {
+  const splitUri = uri.split('.');
+  return splitUri.length > 1 ? splitUri[1] : undefined;
+}
+
+export function isRenderable(uri) {
+  const splitUri = uri.split('.');
+  return (splitUri.length > 1 && splitUri[splitUri.length - 1] === 'Renderable');
+}
+
+export function findFadePropertyUri(properties, ownerUri) {
+  // Check if this property owner has a fade property, or a renderable with the property.
+  // Note that a fadeable must have both the Fade and Enabled property, on the same level
+  const notRenderable = !isRenderable(ownerUri);
+  if (notRenderable && properties[`${ownerUri}.Fade`] && properties[`${ownerUri}.Enabled`]) {
+    return `${ownerUri}.Fade`;
+  }
+  if (properties[`${ownerUri}.Renderable.Fade`] && properties[`${ownerUri}.Renderable.Enabled`]) {
+    return `${ownerUri}.Renderable.Fade`;
+  }
+  return undefined;
+}
+
+export function findEnabledPropertyUri(properties, ownerUri) {
+  // Check if this property owner has an enabled property, or a renderable with the property
+  if (!isRenderable(ownerUri) && properties[`${ownerUri}.Enabled`]) {
+    return `${ownerUri}.Enabled`;
+  }
+  if (properties[`${ownerUri}.Renderable.Enabled`]) {
+    return `${ownerUri}.Renderable.Enabled`;
+  }
+  return undefined;
+}
+
+// Visible means that the object is enabled and has a fade value that's not zero
+// ownerUri is the uri of the property owner that we want to check is visible or not
+export function checkIfVisible(properties, ownerUri) {
+  const enabledUri = findEnabledPropertyUri(properties, ownerUri);
+  const fadeUri = findFadePropertyUri(properties, ownerUri);
+
+  // Enabled is required. But fade can be optional
+  if (!enabledUri) {
+    return false;
+  }
+
+  const isEnabled = properties[enabledUri]?.value;
+
+  // Make fade == 0 correspond to disabled, according to the checkbox
+  if (fadeUri) {
+    return isEnabled && (properties[fadeUri]?.value > 0);
+  }
+
+  return isEnabled;
+}
