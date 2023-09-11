@@ -89,7 +89,6 @@ function WindowThreeStates({
 
   switch (windowStyle) {
     case WindowStyle.DETACHED:
-
       return (
         <FloatingWindow
           sizeCallback={setSizePopover}

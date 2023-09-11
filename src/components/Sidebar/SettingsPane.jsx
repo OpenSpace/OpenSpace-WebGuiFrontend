@@ -129,7 +129,7 @@ function SettingsPane({
 
   return (
     <Pane title="Settings" closeCallback={closeCallback}>
-      { (defaultEntries.length === 0) && (
+      {(defaultEntries.length === 0) && (
         <LoadingBlocks className={Pane.styles.loading} />
       )}
 

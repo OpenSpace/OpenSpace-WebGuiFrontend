@@ -341,7 +341,7 @@ function MinMaxRangeInput({
         onContextMenu={enableTextInput}
         ref={wrapperRef}
       >
-        {!noHoverHint && hoverHint !== null && (
+        { !noHoverHint && hoverHint !== null && (
           <div className={styles.hoverHint} style={hoverHintStyle} />
         )}
         { !noTooltip && hoverHint !== null && (

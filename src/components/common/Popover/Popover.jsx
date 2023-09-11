@@ -35,7 +35,6 @@ function Popover({
           <div className={styles.title}>
             { title }
           </div>
-
           <div style={{ display: 'flex' }}>
             { headerButton && headerButton }
             { detachable && (
