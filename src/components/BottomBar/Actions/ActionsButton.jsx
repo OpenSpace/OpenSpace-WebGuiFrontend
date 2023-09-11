@@ -1,8 +1,8 @@
 import React from 'react';
 import { MdLaunch } from 'react-icons/md';
-import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
+import api from '../../../api/api';
 import InfoBox from '../../common/InfoBox/InfoBox';
 import Button from '../../common/Input/Button/Button';
 
@@ -13,14 +13,15 @@ export default function ActionsButton({ action, className }) {
     return null;
   }
 
-  const luaApi = useSelector((state) => state.luaApi);
+  const isLocal = (action.synchronization === false);
 
   function sendAction(e) {
     const actionId = e.currentTarget.getAttribute('actionid');
-    luaApi.action.triggerAction(actionId);
-  }
 
-  const isLocal = (action.synchronization === false);
+    const script = `openspace.action.triggerAction('${actionId}')`;
+    const shouldSyncScript = !isLocal;
+    api.executeLuaScript(script, false, shouldSyncScript);
+  }
 
   return (
     <Button
