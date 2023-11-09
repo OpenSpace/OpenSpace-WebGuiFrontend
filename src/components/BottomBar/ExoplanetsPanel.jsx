@@ -12,6 +12,7 @@ import { NavigationAimKey, NavigationAnchorKey } from '../../api/keys';
 import propertyDispatcher from '../../api/propertyDispatcher';
 import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
 import { FilterList, FilterListData } from '../common/FilterList/FilterList';
+import InfoBox from '../common/InfoBox/InfoBox';
 import Button from '../common/Input/Button/Button';
 import Checkbox from '../common/Input/Checkbox/Checkbox';
 import Popover from '../common/Popover/Popover';
@@ -189,20 +190,35 @@ function ExoplanetsPanel() {
           expanded={isSettingsExpanded}
           setExpanded={setSettingsExpanded}
         >
-          <Checkbox
-            checked={showHabitableZone}
-            name="showHabitableZone"
-            setChecked={toggleShowHabitableZone}
-          >
-            <p>Show Habitable Zones</p>
-          </Checkbox>
-          <Checkbox
-            checked={showOrbitUncertainty}
-            name="showOrbitUncertainty"
-            setChecked={toggleShowOrbitUncertainty}
-          >
-            <p>Show Orbit Uncertainty</p>
-          </Checkbox>
+          <Row>
+            <Checkbox
+              checked={showHabitableZone}
+              name="showHabitableZone"
+              setChecked={toggleShowHabitableZone}
+            >
+              <p>Show Habitable Zones</p>
+            </Checkbox>
+            <InfoBox
+              className={styles.infoBox}
+              text={`Show/Hide the habitable zone visualizations. Setting the value
+              automatically updates the visibility for all added exoplanet systems`}
+            />
+          </Row>
+          <Row>
+            <Checkbox
+              checked={showOrbitUncertainty}
+              name="showOrbitUncertainty"
+              setChecked={toggleShowOrbitUncertainty}
+            >
+              <p>Show Orbit Uncertainty</p>
+            </Checkbox>
+            <InfoBox
+              className={styles.infoBox}
+              text={`Show/Hide disc visualization of the uncertainty of the planetary
+              orbits. Setting the value automatically updates the visibility for all
+              added exoplanet systems`}
+            />
+          </Row>
         </ToggleContent>
         <hr className={Popover.styles.delimiter} />
         <div className={Popover.styles.title}>Added Systems </div>
