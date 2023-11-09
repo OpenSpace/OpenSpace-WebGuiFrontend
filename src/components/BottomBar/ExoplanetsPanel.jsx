@@ -93,14 +93,18 @@ function ExoplanetsPanel() {
     const shouldShow = !showHabitableZone;
     showHabitableZoneDispatcher.set(shouldShow);
     // Also disable all previously enabled exoplanet habitable zones
-    luaApi.setPropertyValue(`{${HABITABLE_ZONE_TAG}}.Renderable.Enabled`, shouldShow);
+    if (exoplanetSystems?.length > 0) {
+      luaApi.setPropertyValue(`{${HABITABLE_ZONE_TAG}}.Renderable.Enabled`, shouldShow);
+    }
   }
 
   function toggleShowOrbitUncertainty() {
     const shouldShow = !showOrbitUncertainty;
     showOrbitUncertaintyDispatcher.set(shouldShow);
     // Also disable all previously enabled exoplanet orbit uncertainty discs
-    luaApi.setPropertyValue(`{${UNCERTAINTY_DISC_TAG}}.Renderable.Enabled`, shouldShow);
+    if (exoplanetSystems?.length > 0) {
+      luaApi.setPropertyValue(`{${UNCERTAINTY_DISC_TAG}}.Renderable.Enabled`, shouldShow);
+    }
   }
 
   function removeExoplanetSystem(systemName) {
