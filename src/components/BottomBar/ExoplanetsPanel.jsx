@@ -27,9 +27,11 @@ import Picker from './Picker';
 import styles from './ExoplanetsPanel.scss';
 
 const UNCERTAINTY_DISC_TAG = 'exoplanet_uncertainty_disc';
-const UNCERTAINTY_DISC_MODULEPROPERTY = 'Modules.Exoplanets.ShowOrbitUncertainty';
+const UNCERTAINTY_DISC_PROPERTY = 'Modules.Exoplanets.ShowOrbitUncertainty';
 const HABITABLE_ZONE_TAG = 'exoplanet_habitable_zone';
-const HABITABLE_ZONE_MODULEPROPERTY = 'Modules.Exoplanets.ShowHabitableZone';
+const HABITABLE_ZONE_PROPERTY = 'Modules.Exoplanets.ShowHabitableZone';
+const SIZE_1AU_RING_TAG = 'exoplanet_1au_ring';
+const SIZE_1AU_RING_PROPERTY = 'Modules.Exoplanets.ShowComparisonCircle';
 
 function ExoplanetsPanel() {
   const [starName, setStarName] = React.useState(undefined);
@@ -52,20 +54,22 @@ function ExoplanetsPanel() {
   const hasSystems = systemList && systemList.length > 0;
 
   const showHabitableZone = useSelector(
-    (state) => state.propertyTree.properties[HABITABLE_ZONE_MODULEPROPERTY].value
+    (state) => state.propertyTree.properties[HABITABLE_ZONE_PROPERTY].value
   );
 
   const showOrbitUncertainty = useSelector(
-    (state) => state.propertyTree.properties[UNCERTAINTY_DISC_MODULEPROPERTY].value
+    (state) => state.propertyTree.properties[UNCERTAINTY_DISC_PROPERTY].value
+  );
+
+  const show1AuRing = useSelector(
+    (state) => state.propertyTree.properties[SIZE_1AU_RING_PROPERTY].value
   );
 
   const dispatch = useDispatch();
 
-  const showHabitableZoneDispatcher =
-    propertyDispatcher(dispatch, HABITABLE_ZONE_MODULEPROPERTY);
-
-  const showOrbitUncertaintyDispatcher =
-    propertyDispatcher(dispatch, UNCERTAINTY_DISC_MODULEPROPERTY);
+  const showHabitableZoneDispatcher = propertyDispatcher(dispatch, HABITABLE_ZONE_PROPERTY);
+  const showOrbitUncertaintyDispatcher = propertyDispatcher(dispatch, UNCERTAINTY_DISC_PROPERTY);
+  const show1AuRingDispatcher = propertyDispatcher(dispatch, SIZE_1AU_RING_PROPERTY);
 
   React.useEffect(() => {
     if (!isDataInitialized) {
@@ -76,9 +80,11 @@ function ExoplanetsPanel() {
   React.useEffect(() => {
     showHabitableZoneDispatcher.subscribe();
     showOrbitUncertaintyDispatcher.subscribe();
+    show1AuRingDispatcher.subscribe();
     return () => {
       showHabitableZoneDispatcher.unsubscribe();
-      showOrbitUncertaintyDispatcher.subscribe();
+      showOrbitUncertaintyDispatcher.unsubscribe();
+      show1AuRingDispatcher.unsubscribe();
     };
   }, []);
 
@@ -104,6 +110,15 @@ function ExoplanetsPanel() {
     // Also disable all previously enabled exoplanet orbit uncertainty discs
     if (exoplanetSystems?.length > 0) {
       luaApi.setPropertyValue(`{${UNCERTAINTY_DISC_TAG}}.Renderable.Enabled`, shouldShow);
+    }
+  }
+
+  function toggleShow1AuRing() {
+    const shouldShow = !show1AuRing;
+    show1AuRingDispatcher.set(shouldShow);
+    // Also disable all previously enabled exoplanet orbit uncertainty discs
+    if (exoplanetSystems?.length > 0) {
+      luaApi.setPropertyValue(`{${SIZE_1AU_RING_TAG}}.Renderable.Enabled`, shouldShow);
     }
   }
 
@@ -194,35 +209,44 @@ function ExoplanetsPanel() {
           expanded={isSettingsExpanded}
           setExpanded={setSettingsExpanded}
         >
-          <Row>
-            <Checkbox
-              checked={showHabitableZone}
-              name="showHabitableZone"
-              setChecked={toggleShowHabitableZone}
-            >
-              <p>Show Habitable Zones</p>
-            </Checkbox>
+          <Checkbox
+            checked={showHabitableZone}
+            name="showHabitableZone"
+            setChecked={toggleShowHabitableZone}
+          >
+            <p>Show Habitable Zones</p>
             <InfoBox
               className={styles.infoBox}
               text={`Show/Hide the habitable zone visualizations. Setting the value
               automatically updates the visibility for all added exoplanet systems`}
             />
-          </Row>
-          <Row>
-            <Checkbox
-              checked={showOrbitUncertainty}
-              name="showOrbitUncertainty"
-              setChecked={toggleShowOrbitUncertainty}
-            >
-              <p>Show Orbit Uncertainty</p>
-            </Checkbox>
+          </Checkbox>
+          <Checkbox
+            checked={showOrbitUncertainty}
+            name="showOrbitUncertainty"
+            setChecked={toggleShowOrbitUncertainty}
+          >
+            <p>Show Orbit Uncertainty</p>
             <InfoBox
               className={styles.infoBox}
               text={`Show/Hide disc visualization of the uncertainty of the planetary
               orbits. Setting the value automatically updates the visibility for all
               added exoplanet systems`}
             />
-          </Row>
+          </Checkbox>
+          <Checkbox
+            checked={show1AuRing}
+            name="show1AuRing"
+            setChecked={toggleShow1AuRing}
+          >
+            <p>Show 1 AU Size Ring</p>
+            <InfoBox
+              className={styles.infoBox}
+              text={`If true, show a ring with the radius 1 AU around the host star of
+              each system, to use for size comparison. Setting the value automatically
+              updates the visibility for all added exoplanet systems`}
+            />
+          </Checkbox>
         </ToggleContent>
         <hr className={Popover.styles.delimiter} />
         <div className={Popover.styles.title}>Added Systems </div>
