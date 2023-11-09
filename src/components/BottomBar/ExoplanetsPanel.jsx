@@ -13,9 +13,11 @@ import propertyDispatcher from '../../api/propertyDispatcher';
 import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
 import { FilterList, FilterListData } from '../common/FilterList/FilterList';
 import Button from '../common/Input/Button/Button';
+import Checkbox from '../common/Input/Checkbox/Checkbox';
 import Popover from '../common/Popover/Popover';
 import Row from '../common/Row/Row';
 import ScrollOverlay from '../common/ScrollOverlay/ScrollOverlay';
+import ToggleContent from '../common/ToggleContent/ToggleContent';
 import PropertyOwner from '../Sidebar/Properties/PropertyOwner';
 
 import FocusEntry from './Origin/FocusEntry';
@@ -23,8 +25,14 @@ import Picker from './Picker';
 
 import styles from './ExoplanetsPanel.scss';
 
+const UNCERTAINTY_DISC_TAG = 'exoplanet_uncertainty_disc';
+const UNCERTAINTY_DISC_MODULEPROPERTY = 'Modules.Exoplanets.ShowOrbitUncertainty';
+const HABITABLE_ZONE_TAG = 'exoplanet_habitable_zone';
+const HABITABLE_ZONE_MODULEPROPERTY = 'Modules.Exoplanets.ShowHabitableZone';
+
 function ExoplanetsPanel() {
   const [starName, setStarName] = React.useState(undefined);
+  const [isSettingsExpanded, setSettingsExpanded] = React.useState(false);
 
   const popoverVisible = useSelector((state) => state.local.popovers.exoplanets.visible);
   const luaApi = useSelector((state) => state.luaApi);
@@ -42,7 +50,21 @@ function ExoplanetsPanel() {
 
   const hasSystems = systemList && systemList.length > 0;
 
+  const showHabitableZone = useSelector(
+    (state) => state.propertyTree.properties[HABITABLE_ZONE_MODULEPROPERTY].value
+  );
+
+  const showOrbitUncertainty = useSelector(
+    (state) => state.propertyTree.properties[UNCERTAINTY_DISC_MODULEPROPERTY].value
+  );
+
   const dispatch = useDispatch();
+
+  const showHabitableZoneDispatcher =
+    propertyDispatcher(dispatch, HABITABLE_ZONE_MODULEPROPERTY);
+
+  const showOrbitUncertaintyDispatcher =
+    propertyDispatcher(dispatch, UNCERTAINTY_DISC_MODULEPROPERTY);
 
   React.useEffect(() => {
     if (!isDataInitialized) {
@@ -50,11 +72,34 @@ function ExoplanetsPanel() {
     }
   }, []);
 
+  React.useEffect(() => {
+    showHabitableZoneDispatcher.subscribe();
+    showOrbitUncertaintyDispatcher.subscribe();
+    return () => {
+      showHabitableZoneDispatcher.unsubscribe();
+      showOrbitUncertaintyDispatcher.subscribe();
+    };
+  }, []);
+
   function togglePopover() {
     dispatch(setPopoverVisibility({
       popover: 'exoplanets',
       visible: !popoverVisible
     }));
+  }
+
+  function toggleShowHabitableZone() {
+    const shouldShow = !showHabitableZone;
+    showHabitableZoneDispatcher.set(shouldShow);
+    // Also disable all previously enabled exoplanet habitable zones
+    luaApi.setPropertyValue(`{${HABITABLE_ZONE_TAG}}.Renderable.Enabled`, shouldShow);
+  }
+
+  function toggleShowOrbitUncertainty() {
+    const shouldShow = !showOrbitUncertainty;
+    showOrbitUncertaintyDispatcher.set(shouldShow);
+    // Also disable all previously enabled exoplanet orbit uncertainty discs
+    luaApi.setPropertyValue(`{${UNCERTAINTY_DISC_TAG}}.Renderable.Enabled`, shouldShow);
   }
 
   function removeExoplanetSystem(systemName) {
@@ -139,7 +184,28 @@ function ExoplanetsPanel() {
           </Row>
         </div>
         <hr className={Popover.styles.delimiter} />
-        <div className={Popover.styles.title}>Exoplanet Systems </div>
+        <ToggleContent
+          title="Settings"
+          expanded={isSettingsExpanded}
+          setExpanded={setSettingsExpanded}
+        >
+          <Checkbox
+            checked={showHabitableZone}
+            name="showHabitableZone"
+            setChecked={toggleShowHabitableZone}
+          >
+            <p>Show Habitable Zones</p>
+          </Checkbox>
+          <Checkbox
+            checked={showOrbitUncertainty}
+            name="showOrbitUncertainty"
+            setChecked={toggleShowOrbitUncertainty}
+          >
+            <p>Show Orbit Uncertainty</p>
+          </Checkbox>
+        </ToggleContent>
+        <hr className={Popover.styles.delimiter} />
+        <div className={Popover.styles.title}>Added Systems </div>
         <div className={styles.slideList}>
           <ScrollOverlay>
             {panelContent}
