@@ -13,31 +13,26 @@ import LoadingBlocks from '../common/LoadingBlock/LoadingBlocks';
 import Pane from './Pane';
 import SettingsPaneListItem from './SettingsPaneListItem';
 
-function collectOwnersRecursively(propertyOwners, owners, allOwners) {
+function collectUrisRecursively(owners, allPropertyOwners, collectedOwners, collectedProperties) {
   owners.forEach((uri) => {
-    const subowners = propertyOwners[uri]?.subowners || [];
+    const subowners = allPropertyOwners[uri].subowners || [];
+    const propertiesUri = allPropertyOwners[uri].properties || [];
     // Parameter assignment necessary for recursion
     // eslint-disable-next-line no-param-reassign
-    allOwners = allOwners.concat(subowners);
+    collectedOwners = collectedOwners.concat(subowners);
     // eslint-disable-next-line no-param-reassign
-    allOwners = collectOwnersRecursively(propertyOwners, subowners, allOwners);
+    collectedProperties = collectedProperties.concat(propertiesUri);
+    // eslint-disable-next-line no-param-reassign
+    [collectedOwners, collectedProperties] = collectUrisRecursively(
+      subowners,
+      allPropertyOwners,
+      collectedOwners,
+      collectedProperties
+    );
   });
 
-  return allOwners;
-}
-
-function collectPropertiesRecursively(propertyOwners, owners, allProperties) {
-  owners.forEach((uri) => {
-    const subowners = propertyOwners[uri]?.subowners || [];
-    const propertiesUri = propertyOwners[uri]?.properties || [];
-    // Parameter assignment necessary for recursion
-    // eslint-disable-next-line no-param-reassign
-    allProperties = allProperties.concat(propertiesUri);
-    // eslint-disable-next-line no-param-reassign
-    allProperties = collectPropertiesRecursively(propertyOwners, subowners, allProperties);
-  });
-
-  return allProperties;
+  // Stops when owners are empty
+  return [collectedOwners, collectedProperties];
 }
 
 function SettingsPane({ closeCallback }) {
@@ -47,41 +42,53 @@ function SettingsPane({ closeCallback }) {
     }
     const allOwnerUris = Object.keys(state.propertyTree.propertyOwners || []);
     // Remove owners that are in the Scene
-    const nonSceneTopPropertyOwners = allOwnerUris.filter((uri) => uri !== SceneKey && uri.indexOf('.') === -1);
-    return nonSceneTopPropertyOwners.map((uri) => ({
+    return allOwnerUris.filter((uri) => uri !== SceneKey && uri.indexOf('.') === -1);
+  });
+
+  const topPropertyOwnersInfo = topPropertyOwners.map((uri) => ({
+    uri, name: getLastWordOfUri(uri)
+  }));
+
+  // Find all subpropertyowners and propeties that we want to search among
+  const [subPropertyOwners, properties] = useSelector((state) => {
+    if (!state?.propertyTree?.propertyOwners || !state?.propertyTree?.properties) {
+      return [[], []];
+    }
+    let searchableSubOwners = [];
+    let searchableProperties = [];
+    [searchableSubOwners, searchableProperties] = collectUrisRecursively(
+      topPropertyOwners,
+      state.propertyTree.propertyOwners,
+      searchableSubOwners,
+      searchableProperties
+    );
+
+
+    // Remove any hidden owners/properties
+    searchableSubOwners = searchableSubOwners.filter(
+      (uri) => (
+        !isPropertyOwnerHidden(state.propertyTree.properties, uri) &&
+        !isDeadEnd(state.propertyTree.propertyOwners, state.propertyTree.properties, uri)
+      )
+    );
+
+    searchableProperties = searchableProperties.filter(
+      (uri) => isPropertyVisible(state.propertyTree.properties, uri)
+    );
+
+    // Compose the information we need for the search
+    const subPropertyOwnersInfo = searchableSubOwners.map((uri) => ({
       uri, name: getLastWordOfUri(uri)
     }));
-  });
-  const subPropertyOwners = useSelector((state) => {
-    if (!state?.propertyTree?.propertyOwners || !state?.propertyTree?.properties) {
-      return [];
-    }
-    const allOwners = state.propertyTree.propertyOwners;
-    const allProps = state.propertyTree.properties;
-    const found = collectOwnersRecursively(allOwners, topPropertyOwners, []);
-    const visibleSubPropertyOwners = found.filter((uri) => (
-      !isPropertyOwnerHidden(allProps, uri) && !isDeadEnd(allOwners, allProps, uri)
-    ));
-    return visibleSubPropertyOwners.map((uri) => ({
-      uri, name: getLastWordOfUri(uri)
+
+    const propertiesInfo = searchableProperties.map((uri) => ({
+      uri, names: [getLastWordOfUri(uri), state.propertyTree.properties[uri].description.Name]
     }));
+
+    return [subPropertyOwnersInfo, propertiesInfo];
   });
 
-  const properties = useSelector((state) => {
-    if (!state?.propertyTree?.propertyOwners || !state?.propertyTree?.properties) {
-      return [];
-    }
-    const allOwners = state.propertyTree.propertyOwners;
-    const allProps = state.propertyTree.properties;
-    const found = collectPropertiesRecursively(allOwners, topPropertyOwners, []);
-    const visible = found.filter((uri) => isPropertyVisible(allOwners, uri));
-
-    return visible.map((uri) => ({
-      uri, names: [getLastWordOfUri(uri), allProps[uri].description.Name]
-    }));
-  });
-
-  const defaultEntries = topPropertyOwners.map((p) => ({
+  const defaultEntries = topPropertyOwnersInfo.map((p) => ({
     key: p.uri,
     uri: p.uri,
     name: p.name,
