@@ -130,26 +130,26 @@ function WindowThreeStates({
 }
 
 WindowThreeStates.propTypes = {
+  acceptedStyles: PropTypes.array,
   children: PropTypes.node.isRequired,
-  title: PropTypes.string,
   closeCallback: PropTypes.func,
   defaultHeight: PropTypes.number,
-  defaultWidth: PropTypes.number,
   defaultStyle: PropTypes.string,
+  defaultWidth: PropTypes.number,
   minHeight: PropTypes.number,
-  acceptedStyles: PropTypes.array,
-  sizeCallback: PropTypes.func
+  sizeCallback: PropTypes.func,
+  title: PropTypes.string
 };
 
 WindowThreeStates.defaultProps = {
-  title: '',
+  acceptedStyles: [WindowStyle.ATTACHED, WindowStyle.DETACHED, WindowStyle.PANE],
   closeCallback: null,
   defaultHeight: 440,
+  defaultStyle: WindowStyle.ATTACHED,
   defaultWidth: 350,
   minHeight: 100,
-  defaultStyle: WindowStyle.ATTACHED,
-  acceptedStyles: [WindowStyle.ATTACHED, WindowStyle.DETACHED, WindowStyle.PANE],
-  sizeCallback: () => {}
+  sizeCallback: () => {},
+  title: ''
 };
 
 WindowThreeStates.styles = styles;

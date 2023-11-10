@@ -23,7 +23,6 @@ function collectOwnersRecursively(propertyOwners, owners, allOwners) {
     allOwners = collectOwnersRecursively(propertyOwners, subowners, allOwners);
   });
 
-  // Stops when owners are empty
   return allOwners;
 }
 
@@ -38,13 +37,10 @@ function collectPropertiesRecursively(propertyOwners, owners, allProperties) {
     allProperties = collectPropertiesRecursively(propertyOwners, subowners, allProperties);
   });
 
-  // Stops when owners are empty
   return allProperties;
 }
 
-function SettingsPane({
-  closeCallback
-}) {
+function SettingsPane({ closeCallback }) {
   const topPropertyOwners = useSelector((state) => {
     if (!state?.propertyTree?.propertyOwners) {
       return [];
@@ -134,9 +130,7 @@ function SettingsPane({
       )}
 
       {(defaultEntries.length > 0) && (
-        <FilterList
-          matcher={matcher}
-        >
+        <FilterList matcher={matcher}>
           <FilterListFavorites>
             {defaultEntries.map((entry) => <SettingsPaneListItem {...entry} />)}
           </FilterListFavorites>
