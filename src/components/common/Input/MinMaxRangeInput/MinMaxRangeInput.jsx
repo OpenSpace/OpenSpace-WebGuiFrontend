@@ -1,8 +1,7 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { clamp } from 'lodash/number';
 import PropTypes from 'prop-types';
 
-import { excludeKeys } from '../../../../utils/helpers';
 import { roundValueToStepSize } from '../../../../utils/rounding';
 import Row from '../../Row/Row';
 import Tooltip from '../../Tooltip/Tooltip';
@@ -12,124 +11,144 @@ import styles from './MinMaxRangeInput.scss';
 
 const Scale = require('d3-scale');
 
-class MinMaxRangeInput extends Component {
-  constructor(props) {
-    super(props);
+function MinMaxRangeInput({
+  valueMin, valueMax, min, max, disabled, inputOnly, exponent, step,
+  onMinValueChanged, onMaxValueChanged, placeholder, label, className,
+  wide, noHoverHint, noTooltip, noValue, type, ...props
+}) {
+  const [minValue, setMinValue] = React.useState(valueMin);
+  const [maxValue, setMaxValue] = React.useState(valueMax);
+  const [hoverHint, setHoverHint] = React.useState(null);
+  const [hoverHintStyle, setHoverHintStyle] = React.useState({});
+  const [showTextInput, setShowTextInput] = React.useState(false);
+  const [focusLeftTextInput, setFocusLeftTextInput] = React.useState(null);
+  const [isMinValueOutsideRange, setIsMinValueOutsideRange] = React.useState(
+    valueMin < min || valueMin > max
+  );
+  const [isMaxValueOutsideRange, setIsMaxValueOutsideRange] = React.useState(
+    valueMax < min || valueMax > max
+  );
+  const [enteredInvalidMinValue, setEnteredInvalidMinValue] = React.useState(false);
+  const [enteredInvalidMaxValue, setEnteredInvalidMaxValue] = React.useState(false);
 
-    this.state = {
-      minValue: props.valueMin,
-      maxValue: props.valueMax,
-      id: `minmaxrangeinput-${Input.nextId}`,
-      hoverHint: null,
-      hoverHintStyle: {},
-      showTextInput: false,
-      focusLeftTextInput: null,
-      isMinValueOutsideRange: props.valueMin < props.min || props.valueMin > props.max,
-      isMaxValueOutsideRange: props.valueMax < props.min || props.valueMax > props.max,
-      enteredInvalidMinValue: false,
-      enteredInvalidMaxValue: false
-    };
+  const id = React.useRef(`minmaxrangeinput-${Input.nextId}`);
+  const wrapperRef = React.useRef(null);
+  const minSliderRef = React.useRef(null);
+  const maxSliderRef = React.useRef(null);
+  const scale = React.useRef(null);
+  const sliderResolution = React.useRef(10000);
 
-    this.onMinTextInputChanged = this.onMinTextInputChanged.bind(this);
-    this.onMaxTextInputChanged = this.onMaxTextInputChanged.bind(this);
-    this.onMouseMove = this.onMouseMove.bind(this);
-    this.onLeave = this.onLeave.bind(this);
-    this.onMinTextBlur = this.onMinTextBlur.bind(this);
-    this.onMaxTextBlur = this.onMaxTextBlur.bind(this);
+  React.useState(() => {
+    setMinValue(valueMin);
+  }, [valueMin]);
 
-    this.setRef = this.setRef.bind(this);
+  React.useState(() => {
+    setMaxValue(valueMax);
+  }, [valueMax]);
 
-    this.updateSliderScale = this.updateSliderScale.bind(this);
-    this.valueToSliderPos = this.valueToSliderPos.bind(this);
-    this.valueFromSliderPos = this.valueFromSliderPos.bind(this);
-    this.roundValueToStepSize = this.roundValueToStepSize.bind(this);
+  // The useMemo hook is called before first render.
+  // Used to initialize
+  React.useMemo(() => {
+    // Prevent setting exponent to zero, as it breaks the scale
+    const exp = (exponent === 0) ? 1.0 : exponent;
 
-    this.updateMinValue = this.updateMinValue.bind(this);
-    this.updateMaxValue = this.updateMaxValue.bind(this);
+    // If linear scale, we want the resolution to match the step size
+    if (exp === 1.0) {
+      let nSteps = Math.ceil((max - min) / step);
+      if (!Number.isFinite(nSteps)) {
+        nSteps = 1000;
+      }
+      sliderResolution.current = nSteps;
+    }
 
-    this.enableTextInput = this.enableTextInput.bind(this);
-    this.disableTextInput = this.disableTextInput.bind(this);
-    this.textTooltipPosition = this.textTooltipPosition.bind(this);
-    this.renderTextInput = this.renderTextInput.bind(this);
+    // The slider is logarithmic, but the scaling of the value increases exponentially
+    scale.current = Scale.scalePow()
+      .exponent(exp)
+      .domain([0, sliderResolution.current]) // slider pos
+      .range([min, max]); // allowed values
+  }, [min, max, step, exponent]);
 
-    this.sliderResolution = 10000;
-    this.scale = this.updateSliderScale();
+  function valueToSliderPos(value) {
+    return scale.current.invert(value);
   }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.valueMin !== this.props.valueMin) {
-      this.setState({ minValue: this.props.valueMin });
+  function updateMinValue(newValue) {
+    if (newValue > maxValue) {
+      // eslint-disable-next-line no-use-before-define
+      updateMaxValue(newValue);
     }
 
-    if (prevProps.valueMax !== this.props.valueMax) {
-      this.setState({ maxValue: this.props.valueMax });
-    }
-
-    const scaleNeedsUpdate = (prevProps.min !== this.props.min) ||
-                             (prevProps.max !== this.props.max) ||
-                             (prevProps.step !== this.props.step) ||
-                             (prevProps.exponent !== this.props.exponent);
-
-    if (scaleNeedsUpdate) {
-      this.scale = this.updateSliderScale();
-    }
+    const isMinValueOutsideRangeNow = newValue < min || newValue > max;
+    setIsMinValueOutsideRange(isMinValueOutsideRangeNow);
+    setMinValue(newValue);
+    onMinValueChanged(newValue);
   }
 
-  onMinTextInputChanged(event) {
-    const { max, min } = this.props;
+  function updateMaxValue(newValue) {
+    if (newValue < minValue) {
+      updateMinValue(newValue);
+    }
+    const isMaxValueOutsideRangeNow = newValue < min || newValue > max;
+    setIsMaxValueOutsideRange(isMaxValueOutsideRangeNow);
+    setMaxValue(newValue);
+    onMaxValueChanged(newValue);
+  }
 
+  function onMinTextInputChanged(event) {
     // Validate the test input
     const value = Number.parseFloat(event.currentTarget.value);
-    const isMinValueOutsideRange = value < min || value > max;
-    const enteredNanValue = Number.isNaN(value) || !Number.isFinite(value);
+    const isMinValueOutsideRangeNow = value < min || value > max;
+    const enteredNanValueNow = Number.isNaN(value) || !Number.isFinite(value);
 
-    if (this.state.isMinValueOutsideRange !== isMinValueOutsideRange) {
-      this.setState({ isMinValueOutsideRange });
+    if (isMinValueOutsideRange !== isMinValueOutsideRangeNow) {
+      setIsMinValueOutsideRange(isMinValueOutsideRangeNow);
     }
 
-    if (this.state.enteredInvalidMinValue !== enteredNanValue) {
-      this.setState({ enteredInvalidMinValue: enteredNanValue });
+    if (enteredInvalidMinValue !== enteredNanValueNow) {
+      setEnteredInvalidMinValue(enteredNanValueNow);
     }
   }
 
-  onMaxTextInputChanged(event) {
-    const { max, min } = this.props;
-
+  function onMaxTextInputChanged(event) {
     // Validate the test input
     const value = Number.parseFloat(event.currentTarget.value);
-    const isMaxValueOutsideRange = value < min || value > max;
-    const enteredNanValue = Number.isNaN(value) || !Number.isFinite(value);
+    const isMaxValueOutsideRangeNow = value < min || value > max;
+    const enteredNanValueNow = Number.isNaN(value) || !Number.isFinite(value);
 
-    if (this.state.isMaxValueOutsideRange !== isMaxValueOutsideRange) {
-      this.setState({ isMaxValueOutsideRange });
+    if (isMaxValueOutsideRange !== isMaxValueOutsideRangeNow) {
+      setIsMaxValueOutsideRange(isMaxValueOutsideRangeNow);
     }
 
-    if (this.state.enteredInvalidMaxValue !== enteredNanValue) {
-      this.setState({ enteredInvalidMaxValue: enteredNanValue });
+    if (enteredInvalidMaxValue !== enteredNanValueNow) {
+      setEnteredInvalidMaxValue(enteredNanValueNow);
     }
   }
 
-  onMouseMove(event) {
-    if (this.props.disabled) {
+  function disableTextInput() {
+    setShowTextInput(false);
+    setHoverHint(null);
+    setFocusLeftTextInput(null);
+  }
+
+  function onMouseMove(event) {
+    if (disabled) {
       return;
     }
 
     // Get bounds for input to compute hover percentage
     const { left, right } = event.currentTarget.getBoundingClientRect();
     const { clientX } = event;
-    const hoverHint = clamp((clientX - left) / (right - left), 0, 1);
-    this.setState({ hoverHint });
+    const hoverHintNow = clamp((clientX - left) / (right - left), 0, 1);
+    setHoverHint(hoverHintNow);
 
     // Handle other things that depend on mouse position, such as which slider
     // should be on top and the styling of the hint bar
 
-    const { minValue, maxValue } = this.state;
-
     // We have to map the value to the slider scale, to get the correct position
-    const scaledMinValue = this.valueToSliderPos(minValue);
-    const scaledMaxValue = this.valueToSliderPos(maxValue);
-    const normalizedMinValue = scaledMinValue / this.sliderResolution;
-    const normalizedMaxValue = scaledMaxValue / this.sliderResolution;
+    const scaledMinValue = valueToSliderPos(minValue);
+    const scaledMaxValue = valueToSliderPos(maxValue);
+    const normalizedMinValue = scaledMinValue / sliderResolution.current;
+    const normalizedMaxValue = scaledMaxValue / sliderResolution.current;
 
     // Style for hint bar
     let styleLeft = 0;
@@ -142,16 +161,16 @@ class MinMaxRangeInput extends Component {
     const onBottom = '3';
 
     const putRightSliderOnTop = () => {
-      this.maxSlider.style.zIndex = onTop;
-      this.minSlider.style.zIndex = onBottom;
+      maxSliderRef.current.style.zIndex = onTop;
+      minSliderRef.current.style.zIndex = onBottom;
 
       styleLeft = normalizedMinValue;
       styleWidth = hoverHint - normalizedMinValue;
     };
 
     const putLeftSliderOnTop = () => {
-      this.minSlider.style.zIndex = onTop;
-      this.maxSlider.style.zIndex = onBottom;
+      minSliderRef.current.style.zIndex = onTop;
+      maxSliderRef.current.style.zIndex = onBottom;
 
       styleLeft = hoverHint;
       styleWidth = normalizedMaxValue - hoverHint;
@@ -173,110 +192,46 @@ class MinMaxRangeInput extends Component {
       putRightSliderOnTop();
     }
 
-    const hoverHintStyle = {
+    const newHoverHintStyle = {
       width: `${100 * styleWidth}%`,
       left: `${100 * styleLeft}%`
     };
 
-    this.setState({ hoverHintStyle });
+    setHoverHintStyle(newHoverHintStyle);
   }
 
-  onLeave() {
-    this.setState({ hoverHint: null });
+  function onLeave() {
+    setHoverHint(null);
   }
 
-  onMinTextBlur(event) {
+  function onMinTextBlur(event) {
     const value = Number.parseFloat(event.currentTarget.value);
     if (!Number.isNaN(value)) {
-      this.updateMinValue(value);
+      updateMinValue(value);
     }
-    this.disableTextInput();
+    disableTextInput();
   }
 
-  onMaxTextBlur(event) {
+  function onMaxTextBlur(event) {
     const value = Number.parseFloat(event.currentTarget.value);
     if (!Number.isNaN(value)) {
-      this.updateMaxValue(value);
+      updateMaxValue(value);
     }
-    this.disableTextInput();
+    disableTextInput();
   }
 
-  setRef(what) {
-    return (element) => { this[what] = element; };
-  }
-
-  get showTextInput() {
-    return this.props.inputOnly || this.state.showTextInput;
-  }
-
-  updateSliderScale() {
-    const {
-      exponent, min, max, step
-    } = this.props;
-
-    // Prevent setting exponent to zero, as it breaks the scale
-    const exp = (exponent === 0) ? 1.0 : exponent;
-
-    // If linear scale, we want the resolution to match the step size
-    if (exp === 1.0) {
-      let nSteps = Math.ceil((max - min) / step);
-      if (!Number.isFinite(nSteps)) {
-        nSteps = 1000;
-      }
-      this.sliderResolution = nSteps;
-    }
-
-    // The slider is logarithmic, but the scaling of the value increases exponentially
-    return Scale.scalePow()
-      .exponent(exp)
-      .domain([0, this.sliderResolution]) // slider pos
-      .range([min, max]); // allowed values
-  }
-
-  valueToSliderPos(value) {
-    return this.scale.invert(value);
-  }
-
-  valueFromSliderPos(sliderValue) {
-    const scaledValue = this.scale(sliderValue);
+  function valueFromSliderPos(sliderValue) {
+    const scaledValue = scale.current(sliderValue);
     // If almost max, return max, as rounding will prevent this if the step size
     // is not well chosen
-    if (scaledValue > 0.999 * this.props.max) {
-      return this.props.max;
+    if (scaledValue > 0.999 * max) {
+      return max;
     }
-    return this.roundValueToStepSize(scaledValue);
+    return roundValueToStepSize(scaledValue, step);
   }
 
-  roundValueToStepSize(value) {
-    return roundValueToStepSize(value, this.props.step);
-  }
-
-  updateMinValue(newValue) {
-    const { max, min } = this.props;
-    const isMinValueOutsideRange = newValue < min || newValue > max;
-
-    if (newValue > this.state.maxValue) {
-      this.updateMaxValue(newValue);
-    }
-
-    this.setState({ minValue: newValue, isMinValueOutsideRange });
-    this.props.onMinValueChanged(newValue);
-  }
-
-  updateMaxValue(newValue) {
-    const { max, min } = this.props;
-    const isMaxValueOutsideRange = newValue < min || newValue > max;
-
-    if (newValue < this.state.minValue) {
-      this.updateMinValue(newValue);
-    }
-
-    this.setState({ maxValue: newValue, isMaxValueOutsideRange });
-    this.props.onMaxValueChanged(newValue);
-  }
-
-  enableTextInput(event) {
-    if (this.props.disabled) {
+  function enableTextInput(event) {
+    if (disabled) {
       return;
     }
 
@@ -285,101 +240,84 @@ class MinMaxRangeInput extends Component {
     const { clientX } = event;
     const didClickToLeft = (clientX - left) / (right - left) < 0.5;
 
-    this.setState({
-      showTextInput: true,
-      hoverHint: null,
-      focusLeftTextInput: didClickToLeft,
-      enteredInvalidMinValue: false,
-      enteredInvalidMaxValue: false
-    });
+    setShowTextInput(true);
+    setHoverHint(null);
+    setFocusLeftTextInput(didClickToLeft);
+    setEnteredInvalidMaxValue(false);
+    setEnteredInvalidMinValue(false);
   }
 
-  disableTextInput() {
-    this.setState({ showTextInput: false, hoverHint: null, focusLeftTextInput: null });
-  }
-
-  textTooltipPosition() {
-    if (!this.wrapperRef) return { top: '0px', left: '0px' };
-    const { top, right } = this.wrapperRef.getBoundingClientRect();
+  function textTooltipPosition() {
+    if (!wrapperRef.current) return { top: '0px', left: '0px' };
+    const { top, right } = wrapperRef.current.getBoundingClientRect();
     return { top: `${top}px`, left: `${right}px` };
   }
 
-  renderTextInput() {
-    const {
-      minValue, maxValue, focusLeftTextInput, isMinValueOutsideRange,
-      isMaxValueOutsideRange, enteredInvalidMinValue, enteredInvalidMaxValue
-    } = this.state;
-    const {
-      placeholder, label, min, max
-    } = this.props;
-
-    let doNotInclude = 'onMinValueChanged onMaxValueChanged inputOnly noHoverHint ' +
-                       'noTooltip noValue exponent valueMax valueMin label';
-
-    let inputMinClassName = '';
-    let inputMaxClassName = '';
-    let tootipContent = '';
-    let showTooltip = false;
+  function renderTextInput() {
+    const valueIsInvalid = enteredInvalidMinValue || enteredInvalidMaxValue;
+    const valueIsOutsideRange = isMinValueOutsideRange || isMaxValueOutsideRange;
+    const valueIsBad = valueIsInvalid || valueIsOutsideRange;
 
     // If we are already outside the range, sclude the min max properties to the HTML
     // input. But while inside the range we want them to affect what value is possible
     // to set using .e.g the arrow keys
-    if (isMinValueOutsideRange || isMaxValueOutsideRange) {
-      doNotInclude += ' min max';
-      inputMinClassName = isMinValueOutsideRange ? styles.outsideMinMaxRange : '';
-      inputMaxClassName = isMaxValueOutsideRange ? styles.outsideMinMaxRange : '';
-      showTooltip = true;
-      tootipContent = (
-        <p>
-          {`Value is outside the valid range: `}
-          <b>{`[${min}, ${max}].`}</b>
-        </p>
-      );
-    }
+    const currentMin = valueIsOutsideRange ? null : min;
+    const currentMax = valueIsOutsideRange ? null : max;
 
-    if (enteredInvalidMinValue || enteredInvalidMaxValue) {
-      inputMinClassName = enteredInvalidMinValue ? styles.invalidValue : '';
-      inputMaxClassName = enteredInvalidMaxValue ? styles.invalidValue : '';
-      // TODO: update tooltip content
-      showTooltip = true;
-      tootipContent = <p>Value is not a number</p>;
-    }
-
-    const inheritedProps = excludeKeys(this.props, doNotInclude);
+    // Styling
+    const isMinBad = isMinValueOutsideRange || enteredInvalidMinValue;
+    const isMaxBad = isMaxValueOutsideRange || enteredInvalidMaxValue;
+    const stylesInvalid = valueIsInvalid ? styles.invalidValue : '';
+    const stylesOutsideRange = valueIsOutsideRange ? styles.outsideMinMaxRange : '';
+    const styling = `${stylesInvalid} ${stylesOutsideRange}`;
 
     return (
-      <div ref={this.setRef('wrapperRef')}>
+      <div ref={wrapperRef}>
         <Row>
           <Input
-            {...inheritedProps}
-            className={inputMinClassName}
+            {...props}
+            className={`${isMinBad && styling}`}
             type="number"
             value={minValue}
             label={label || placeholder}
-            onBlur={this.onMinTextBlur}
-            onEnter={this.onMinTextBlur}
-            onChange={this.onMinTextInputChanged}
+            onBlur={onMinTextBlur}
+            onEnter={onMinTextBlur}
+            onChange={onMinTextInputChanged}
             autoFocus={focusLeftTextInput}
+            min={currentMin}
+            max={currentMax}
+            placeholder={placeholder}
           />
           <Input
-            {...inheritedProps}
-            className={inputMaxClassName}
+            {...props}
+            className={`${isMaxBad && styling}`}
             type="number"
             value={maxValue}
             label={' '}
-            onBlur={this.onMaxTextBlur}
-            onEnter={this.onMaxTextBlur}
-            onChange={this.onMaxTextInputChanged}
+            onBlur={onMaxTextBlur}
+            onEnter={onMaxTextBlur}
+            onChange={onMaxTextInputChanged}
             autoFocus={!focusLeftTextInput}
+            min={currentMin}
+            max={currentMax}
+            placeholder={placeholder}
           />
-          {showTooltip && (
+          {valueIsBad && (
             <Tooltip
-              className={`${inputMinClassName} ${inputMaxClassName}`}
+              className={styling}
               fixed
-              style={{ ...this.textTooltipPosition() }}
+              style={{ ...textTooltipPosition() }}
               placement="right"
             >
-              {tootipContent}
+              {valueIsOutsideRange && (
+                <p>
+                  {`Value is outside the valid range: `}
+                  <b>{`[${min}, ${max}].`}</b>
+                </p>
+              )}
+              {valueIsInvalid && (
+                <p>Value is not a number</p>
+              )}
             </Tooltip>
           )}
         </Row>
@@ -387,106 +325,97 @@ class MinMaxRangeInput extends Component {
     );
   }
 
-  render() {
-    const {
-      minValue, maxValue, id, hoverHint, hoverHintStyle
-    } = this.state;
-
-    const {
-      placeholder, className, label, wide, max, step
-    } = this.props;
-    const doNotInclude = 'wide onMinValueChanged onMaxValueChanged valueMax valueMin ' +
-                         'className type min max step exponent inputOnly ' +
-                         'label noHoverHint noTooltip';
-    const inheritedProps = excludeKeys(this.props, doNotInclude);
-
-    if (this.showTextInput) {
-      return this.renderTextInput();
-    }
-
+  function sliderInput() {
     // Scale values for exponential slider
-    const scaledMinValue = this.valueToSliderPos(minValue);
-    const scaledMaxValue = this.valueToSliderPos(maxValue);
+    const scaledMinValue = valueToSliderPos(minValue);
+    const scaledMaxValue = valueToSliderPos(maxValue);
 
     // HoverHint is in [0, 1]. Scale to full slider range
-    const scaledHoverHintOffset = this.sliderResolution * hoverHint;
-    const tooltipValue = this.valueFromSliderPos(scaledHoverHintOffset);
+    const scaledHoverHintOffset = sliderResolution.current * hoverHint;
+    const tooltipValue = valueFromSliderPos(scaledHoverHintOffset);
 
     return (
       <div
         className={`${styles.inputGroup} ${wide ? styles.wide : ''}`}
-        onDoubleClick={this.enableTextInput}
-        onContextMenu={this.enableTextInput}
-        ref={this.setRef('wrapperRef')}
+        onDoubleClick={enableTextInput}
+        onContextMenu={enableTextInput}
+        ref={wrapperRef}
       >
-        {!this.props.noHoverHint && hoverHint !== null && (
+        { !noHoverHint && hoverHint !== null && (
           <div className={styles.hoverHint} style={hoverHintStyle} />
         )}
-        { !this.props.noTooltip && hoverHint !== null && (
+        { !noTooltip && hoverHint !== null && (
           <Tooltip style={{ left: `${100 * hoverHint}%` }} placement="top">
             { tooltipValue }
           </Tooltip>
         )}
         <div
           className={`${className} ${styles.sliderProgress}`}
-          ref={this.setRef('slider')}
           style={{
-            '--min': 0, '--max': this.sliderResolution, '--minValue': scaledMinValue, '--maxValue': scaledMaxValue
+            '--min': 0, '--max': sliderResolution.current, '--minValue': scaledMinValue, '--maxValue': scaledMaxValue
           }}
         />
         <input
-          {...inheritedProps}
+          {...props}
           className={`${className} ${styles.range} ${styles.left}`}
-          id={id.concat(' left')}
-          ref={this.setRef('minSlider')}
+          id={id.current.concat(' left')}
+          ref={minSliderRef}
           type="range"
           value={scaledMinValue}
           min={0}
-          max={this.sliderResolution}
+          max={sliderResolution.current}
           step={1}
           onChange={(event) => {
             // make sure we don't pass the max slider
             const sliderValue = Math.min(event.currentTarget.value, scaledMaxValue - step);
-            const value = this.valueFromSliderPos(sliderValue);
-            this.updateMinValue(value);
+            const value = valueFromSliderPos(sliderValue);
+            updateMinValue(value);
           }}
           // Put left handle on top on the far right, so it does not get stuck
           // if both handles are at the rightmost edge
           style={{ zIndex: minValue > (max - max / 10) && '5' }}
-          onMouseMove={this.onMouseMove}
-          onMouseLeave={this.onLeave}
+          onMouseMove={onMouseMove}
+          onMouseLeave={onLeave}
+          disabled={disabled}
+          placeholder={placeholder}
         />
         <input
-          {...inheritedProps}
+          {...props}
           className={`${className} ${styles.range} ${styles.right} ${styles.mainSlider}`}
-          id={id.concat(' right')}
-          ref={this.setRef('maxSlider')}
+          id={id.current.concat(' right')}
+          ref={maxSliderRef}
           type="range"
           value={scaledMaxValue}
           min={0}
-          max={this.sliderResolution}
+          max={sliderResolution.current}
           step={1}
           onChange={(event) => {
             // make sure we don't pass the min slider
             const sliderValue = Math.max(event.currentTarget.value, scaledMinValue + step);
-            const value = this.valueFromSliderPos(sliderValue);
-            this.updateMaxValue(value);
+            const value = valueFromSliderPos(sliderValue);
+            updateMaxValue(value);
           }}
-          onMouseMove={this.onMouseMove}
-          onMouseLeave={this.onLeave}
+          onMouseMove={onMouseMove}
+          onMouseLeave={onLeave}
         />
-        <label htmlFor={id} className={`${styles.rangeLabel}`}>
+        <label htmlFor={id.current} className={`${styles.rangeLabel}`}>
           { label || placeholder }
         </label>
         <span className={styles.leftValue}>
-          { this.roundValueToStepSize(minValue) }
+          { roundValueToStepSize(minValue, step) }
         </span>
         <span className={styles.rightValue}>
-          { this.roundValueToStepSize(maxValue) }
+          { roundValueToStepSize(maxValue, step) }
         </span>
       </div>
     );
   }
+
+  if (inputOnly || showTextInput) {
+    return renderTextInput();
+  }
+
+  return sliderInput();
 }
 
 MinMaxRangeInput.propTypes = {

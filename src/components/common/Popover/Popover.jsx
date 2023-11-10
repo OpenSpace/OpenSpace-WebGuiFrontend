@@ -1,8 +1,7 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { MdClose, MdOutlineFilterNone } from 'react-icons/md';
 import PropTypes from 'prop-types';
 
-import { excludeKeys } from '../../../utils/helpers';
 import Button from '../Input/Button/Button';
 import Window from '../Window/Window';
 
@@ -12,93 +11,78 @@ const findStyles = (arr) => arr.split(' ')
   .map((style) => styles[style] || style)
   .join(' ');
 
-class Popover extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { isDetached: !props.attached };
-    this.toggleDetach = this.toggleDetach.bind(this);
+function Popover({
+  attached, className, title, headerButton, detachable, closeCallback, children, ...props
+}) {
+  const [isDetached, setIsDetached] = React.useState(!attached);
+
+  function arrowStyle() {
+    return findStyles('arrow bottom center');
   }
 
-  get arrowStyle() {
-    const { arrow } = this.props;
-    return findStyles(arrow);
-  }
-
-  get styles() {
-    const { className } = this.props;
+  function getStyles() {
     return findStyles(className);
   }
 
-  get inheritedProps() {
-    const doNotInclude = 'title arrow closeCallback detachable attached headerButton';
-    return excludeKeys(this.props, doNotInclude);
+  function toggleDetach() {
+    setIsDetached((oldState) => !oldState);
   }
 
-  get windowInheritedProps() {
-    const doNotInclude = 'detachable attached';
-    return excludeKeys(this.props, doNotInclude);
+  function topBar() {
+    return (
+      title && (
+        <header className={styles.header}>
+          <div className={styles.title}>
+            { title }
+          </div>
+          <div style={{ display: 'flex' }}>
+            { headerButton && headerButton }
+            { detachable && (
+              <Button onClick={toggleDetach} transparent small>
+                <MdOutlineFilterNone />
+              </Button>
+            )}
+            { closeCallback && (
+              <Button onClick={closeCallback} transparent small>
+                <MdClose className="small" />
+              </Button>
+            )}
+          </div>
+        </header>
+      )
+    );
   }
 
-  get asPopup() {
-    const {
-      title, headerButton, detachable, closeCallback, children
-    } = this.props;
+  function asPopup() {
     return (
       <section
-        {...this.inheritedProps}
-        className={`${styles.popover} ${this.arrowStyle} ${this.styles}`}
+        {...props}
+        className={`${styles.popover} ${arrowStyle()} ${getStyles()}`}
       >
-        { title && (
-          <header className={styles.header}>
-            <div className={styles.title}>
-              { title }
-            </div>
-
-            <div style={{ display: 'flex' }}>
-              { headerButton && headerButton }
-              { detachable && (
-                <Button onClick={this.toggleDetach} transparent small>
-                  <MdOutlineFilterNone />
-                </Button>
-              )}
-              { closeCallback && (
-                <Button onClick={closeCallback} transparent small>
-                  <MdClose className="small" />
-                </Button>
-              )}
-            </div>
-          </header>
-        )}
+        { topBar() }
         { children }
       </section>
     );
   }
 
-  get asWindow() {
-    const { children } = this.props;
+  function asWindow() {
     return (
       <Window
-        {...this.windowInheritedProps}
-        className={`${this.styles}`}
+        {...props}
+        className={`${getStyles()}`}
+        title={title}
+        closeCallback={closeCallback}
+        headerButton={headerButton}
       >
         {children}
       </Window>
     );
   }
 
-  toggleDetach() {
-    const { isDetached } = this.state;
-    this.setState({ isDetached: !isDetached });
-  }
-
-  render() {
-    const { isDetached } = this.state;
-    return isDetached ? this.asWindow : this.asPopup;
-  }
+  return isDetached ? asWindow() : asPopup();
 }
 
 Popover.propTypes = {
-  arrow: PropTypes.string,
   attached: PropTypes.bool,
   children: PropTypes.node.isRequired,
   className: PropTypes.string,
@@ -109,7 +93,6 @@ Popover.propTypes = {
 };
 
 Popover.defaultProps = {
-  arrow: 'arrow bottom center',
   attached: true,
   className: '',
   closeCallback: null,

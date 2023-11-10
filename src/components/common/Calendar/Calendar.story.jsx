@@ -20,7 +20,7 @@ storiesOf('Calendar', module)
     </div>
   ))
   .add('default', () => (<Calendar />))
-  .add('with selected day', () => (<Calendar selected={yesterday} />))
-  .add('with activeMonth', () => (<Calendar activeMonth={fourMonthsFromNow} />))
+  .add('with selected day', () => (<Calendar currentTime={yesterday} />))
+  .add('with activeMonth', () => (<Calendar currentTime={fourMonthsFromNow} />))
   .add('with today button', () => (<Calendar todayButton />))
-  .add('with callback', () => (<Calendar selected={yesterday} onChange={action('changed')} />));
+  .add('with callback', () => (<Calendar currentTime={yesterday} onChange={action('changed')} />));

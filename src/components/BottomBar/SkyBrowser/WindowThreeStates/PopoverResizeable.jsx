@@ -5,7 +5,7 @@ import { Resizable } from 're-resizable';
 import styles from './WindowThreeStates.scss';
 
 function PopoverResizeable({
-  children, minHeight, size, sizeCallback
+  children, minHeight, defaultSize, sizeCallback
 }) {
   const windowDiv = React.useRef(null);
   return (
@@ -24,10 +24,7 @@ function PopoverResizeable({
           bottomLeft: false,
           topLeft: false
         }}
-        defaultSize={{
-          width: size.width,
-          height: size.height
-        }}
+        defaultSize={defaultSize}
         minHeight={minHeight}
         maxHeight={900}
         handleClasses={{
@@ -37,7 +34,7 @@ function PopoverResizeable({
         }}
         onResizeStop={() => {
           const { clientWidth, clientHeight } = windowDiv.current;
-          sizeCallback(clientWidth, clientHeight);
+          sizeCallback({ width: clientWidth, height: clientHeight });
         }}
       >
         {children}
@@ -49,7 +46,7 @@ function PopoverResizeable({
 PopoverResizeable.propTypes = {
   children: PropTypes.node,
   minHeight: PropTypes.number,
-  size: PropTypes.shape({
+  defaultSize: PropTypes.shape({
     height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     width: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
   }),
@@ -59,7 +56,7 @@ PopoverResizeable.propTypes = {
 PopoverResizeable.defaultProps = {
   children: [],
   minHeight: 50,
-  size: { height: 'auto', width: 'auto' },
+  defaultSize: { height: 'auto', width: 'auto' },
   sizeCallback: () => {}
 };
 

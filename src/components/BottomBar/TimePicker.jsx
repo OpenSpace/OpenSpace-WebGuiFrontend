@@ -197,7 +197,7 @@ function TimePicker() {
     return showCalendar && (
       <div>
         <hr className={Popover.styles.delimiter} />
-        <Calendar selected={time} activeMonth={time} onChange={changeDate} todayButton />
+        <Calendar currentTime={time} onChange={changeDate} todayButton />
         <hr className={Popover.styles.delimiter} />
       </div>
     );

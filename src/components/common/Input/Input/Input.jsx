@@ -1,132 +1,93 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { MdCancel } from 'react-icons/md';
 import PropTypes from 'prop-types';
 
-import { excludeKeys } from '../../../../utils/helpers';
-
 import styles from './Input.scss';
 
-class Input extends Component {
-  static get nextId() {
-    return Input.idCounter++;
-  }
+function Input({
+  children, className, clearable, label, loading,
+  onChange, onEnter, placeholder, value, wide, step, ...props
+}) {
+  const [storedValue, setStoredValue] = React.useState(value);
+  const hasInput = storedValue !== '';
 
-  constructor(props) {
-    super(props);
+  const inputNode = React.useRef(null);
+  const id = React.useRef(`input-${Input.nextId}`);
 
-    this.state = {
-      value: props.value,
-      id: `input-${Input.nextId}`
-    };
-
-    this.onChange = this.onChange.bind(this);
-    this.onKeyUp = this.onKeyUp.bind(this);
-    this.setInputRef = this.setInputRef.bind(this);
-    this.clear = this.clear.bind(this);
-  }
-
-  componentDidUpdate(prevProps) {
-    // Update state value variable when we get new props
-    if (prevProps.value !== this.props.value) {
-      this.setState({ value: this.props.value });
-    }
-  }
+  React.useEffect(() => {
+    setStoredValue(value);
+  }, [value]);
 
   /**
    * callback for input
    * @param event InputEvent
    */
-  onChange(event) {
-    const { value } = event.target;
-
+  function onInputChange(event) {
     // update state so that input is re-rendered with new content
-    this.setState({ value });
+    setStoredValue(event.target.value);
 
     // send to the onChange (if any)!
-    this.props.onChange(event);
+    onChange(event);
   }
 
-  onKeyUp(event) {
+  function onKeyUp(event) {
     if (event.key === 'Enter') {
-      this.props.onEnter(event);
+      onEnter(event);
     }
-  }
-
-  get hasInput() {
-    return this.state.value !== '';
-  }
-
-  /**
-   * filter out props that shouldn't be inherited by the input element
-   * @returns {*}
-   */
-  get inheritProps() {
-    const doNotInclude = 'children onEnter wide onChange loading value clearable';
-    return excludeKeys(this.props, doNotInclude);
-  }
-
-  /**
-   * callback to keep save a reference of the input field
-   * @param node
-   */
-  setInputRef(node) {
-    this.inputNode = node;
   }
 
   /**
    * clear the input field
    */
-  clear() {
-    this.setState({ value: '' });
+  function clear() {
+    setStoredValue('');
 
     // trigger onchange event on input
-    this.inputNode.value = '';
+    inputNode.current.value = '';
     const event = new CustomEvent('clear');
-    this.inputNode.dispatchEvent(event);
-    this.onChange(event);
-    this.inputNode.focus();
+    inputNode.current.dispatchEvent(event);
+    onInputChange(event);
+    inputNode.current.focus();
   }
 
-  render() {
-    const {
-      placeholder, className, wide, loading, clearable, label, children
-    } = this.props;
-    const { value, id } = this.state;
-    return (
-      <div className={`${styles.group} ${wide ? styles.wide : ''}`}>
-        <input
-          {...this.inheritProps}
-          className={`${className} ${styles.input}
-                      ${this.hasInput ? styles.hasinput : ''}
+  return (
+    <div className={`${styles.group} ${wide ? styles.wide : ''}`}>
+      <input
+        className={`${className} ${styles.input}
+                      ${hasInput ? styles.hasinput : ''}
                       ${loading ? styles.loading : ''}
                       ${wide ? styles.wide : ''}`}
-          id={id}
-          onChange={this.onChange}
-          onKeyUp={this.onKeyUp}
-          value={value}
-          ref={this.setInputRef}
-        />
-        <label htmlFor={id} className={`${styles.label} ${this.hasInput && styles.hasinput}`}>
-          { label || placeholder }
-        </label>
-        <div className={styles.buttonsContainer}>
-          { children }
-          { clearable && (
-            <MdCancel
-              className={`${styles.clearbutton} ${this.hasInput && styles.hasinput}`}
-              onClick={this.clear}
-              tabIndex="0"
-              role="button"
-              title="Clear input field"
-            />
-          )}
-        </div>
+        id={id.current}
+        onChange={onInputChange}
+        onKeyUp={onKeyUp}
+        value={storedValue}
+        ref={inputNode}
+        placeholder={placeholder}
+        label={label}
+        step={step}
+        {...props}
+      />
+      <label htmlFor={id.current} className={`${styles.label} ${hasInput && styles.hasinput}`}>
+        { label || placeholder }
+      </label>
+      <div className={styles.buttonsContainer}>
+        { children }
+        { clearable && (
+          <MdCancel
+            className={`${styles.clearbutton} ${hasInput && styles.hasinput}`}
+            onClick={clear}
+            tabIndex="0"
+            role="button"
+            title="Clear input field"
+          />
+        )}
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 Input.idCounter = Input.idCounter || 1;
+Input.nextId = () => Input.idCounter++;
 
 Input.propTypes = {
   onChange: PropTypes.func,
@@ -137,6 +98,7 @@ Input.propTypes = {
   label: PropTypes.node,
   loading: PropTypes.bool,
   placeholder: PropTypes.string.isRequired,
+  step: PropTypes.number,
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   wide: PropTypes.bool
 };
@@ -149,6 +111,7 @@ Input.defaultProps = {
   clearable: false,
   label: null,
   loading: false,
+  step: 1,
   value: '',
   wide: true
 };

@@ -7,7 +7,7 @@ import { Resizable } from 're-resizable';
 
 import styles from './WindowThreeStates.scss';
 
-function PaneRightHandSide({ children, sizeCallback, width }) {
+function PaneRightHandSide({ children, sizeCallback, defaultWidth }) {
   const windowDiv = React.useRef(null);
 
   React.useEffect(() => {
@@ -19,7 +19,7 @@ function PaneRightHandSide({ children, sizeCallback, width }) {
   function onResizeStop() {
     if (sizeCallback) {
       const { clientHeight, clientWidth } = windowDiv.current;
-      sizeCallback(clientWidth, clientHeight);
+      sizeCallback({ width: clientWidth, height: clientHeight });
     }
   }
 
@@ -42,7 +42,7 @@ function PaneRightHandSide({ children, sizeCallback, width }) {
       <Resizable
         enable={resizablePlacement}
         defaultSize={{
-          width,
+          width: defaultWidth,
           height: '100%'
         }}
         minWidth={250}
@@ -59,7 +59,7 @@ function PaneRightHandSide({ children, sizeCallback, width }) {
 PaneRightHandSide.propTypes = {
   children: PropTypes.node,
   sizeCallback: PropTypes.func,
-  width: PropTypes.string.isRequired // css style for width
+  defaultWidth: PropTypes.number.isRequired // css style for width
 };
 
 PaneRightHandSide.defaultProps = {
