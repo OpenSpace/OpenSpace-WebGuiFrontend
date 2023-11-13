@@ -43,11 +43,24 @@ function WindowThreeStates({
   });
   const topMenuHeight = 30;
 
-  // This callback is for the missions timeline.
-  // It has to know how large the pane is in order to render its content
+  // This callback is for the missions timeline and skybrowser panel
+  // They need to know how large the pane is in order to render its content
   React.useEffect(() => {
-    sizeCallback({ width: sizePane.width, height: sizePane.height - topMenuHeight });
-  }, [sizePane]);
+    let size = { width: 0, height: 0 };
+    switch (windowStyle) {
+      case WindowStyle.ATTACHED:
+        size = sizeAttached;
+        break;
+      case WindowStyle.DETACHED:
+        size = sizePopover;
+        break;
+      case WindowStyle.PANE:
+        size = sizePane;
+        break;
+      default:
+    }
+    sizeCallback({ width: size.width, height: size.height - topMenuHeight });
+  }, [sizePane, sizeAttached, sizePopover]);
 
   function createTopBar() {
     const hasDetached = acceptedStyles.find((item) => item === WindowStyle.DETACHED);

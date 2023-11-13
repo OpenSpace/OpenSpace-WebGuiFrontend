@@ -106,8 +106,8 @@ function SkyBrowserPanel() {
     });
   }
 
-  function setCurrentPopoverHeight(width, height) {
-    setCurrentPopoverHeightState(height);
+  function setCurrentPopoverHeight(object) {
+    setCurrentPopoverHeightState(object.height);
   }
 
   function setWwtPosition(e, data) {

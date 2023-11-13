@@ -114,7 +114,7 @@ function SkyBrowserImageList({
     <>
       <Dropdown
         options={Object.values(ImageViewingOptions)}
-        onChange={(anchor) => setImageViewingMode(anchor.value)}
+        onChange={(option) => setImageViewingMode(option.value)}
         value={imageViewingMode}
         placeholder="Select a viewing mode"
         style={{ marginRight: '2px' }}
