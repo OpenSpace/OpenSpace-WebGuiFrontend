@@ -429,10 +429,13 @@ export default function Timeline({
           position: 'absolute',
           top: zoomButtonHeight - paddingGraph,
           right: panelWidth,
-          clipPath: `polygon(0% ${clippathTop}px, 100% ${clippathTop}px, 
+          clipPath: `polygon(0% ${clippathTop}px, 100% ${clippathTop}px,
             100% ${clippathBottom}px, 0% ${clippathBottom}px`
         }}
       >
+        {/* This rect is here to swallow all mouse event, so dragging over the timeline
+          does not move the OS camera.- Note that it can't be completely transparent */ }
+        <rect width={width} height={height} style={{ fill: 'rgba(0, 0, 0, 0.01)' }} />
         <g transform={`translate(0, ${paddingGraph})`}>
           <g ref={xAxisRef} transform={`translate(0, ${height - margin.bottom})`} />
           <g ref={yAxisRef} transform={`translate(${margin.left}, ${0})`} />
