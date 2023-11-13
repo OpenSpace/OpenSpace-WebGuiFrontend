@@ -33,4 +33,7 @@
   color: $text-color-blur;
   cursor: default;  /* visually distinguish from dragging (OBS! Kind of ugly.
                        And does not actually prevent dragging from happening)*/
+
+  // Do not rescale when parent flexbox (row) gets smaller
+  flex-shrink: 0;
 }
