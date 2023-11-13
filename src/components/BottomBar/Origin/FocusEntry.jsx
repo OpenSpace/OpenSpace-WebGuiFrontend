@@ -22,6 +22,12 @@ function FocusEntry({
     }
   }
 
+  function keyboardSelect(evt) {
+    if (evt.key === 'Enter' && onSelect) {
+      onSelect(identifier, evt);
+    }
+  }
+
   const flyTo = (event) => {
     if (event.shiftKey) {
       luaApi.pathnavigation.flyTo(identifier, 0.0);
@@ -48,7 +54,7 @@ function FocusEntry({
     <div
       className={`${styles.entry} ${isActive() && styles.active}`}
       onClick={select}
-      onKeyPress={select}
+      onKeyPress={keyboardSelect}
       key={name}
       role="button"
       ref={(el) => { refs.current[name] = el; }}
