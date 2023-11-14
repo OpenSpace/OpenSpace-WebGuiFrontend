@@ -7,9 +7,12 @@ import {
 } from 'react-icons/md';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
+// eslint-disable-next-line import/no-webpack-loader-syntax
+import Focus from 'svg-react-loader?name=Focus!../../../icons/focus.svg';
 
 import Button from '../../common/Input/Button/Button';
 import Row from '../../common/Row/Row';
+import SvgIcon from '../../common/SvgIcon/SvgIcon';
 import TooltipMenu from '../../common/Tooltip/TooltipMenu';
 import { useContextRefs } from '../../GettingStartedTour/GettingStartedContext';
 
@@ -55,7 +58,7 @@ function FocusEntry({
     closePopoverIfSet();
   };
 
-  const fadeToFocus = async (event) => {
+  const fadeTo = async (event) => {
     event.stopPropagation();
     const fadeTime = 1;
     const promise = new Promise((resolve) => {
@@ -92,13 +95,19 @@ function FocusEntry({
           <TooltipMenu
             sourceObject={<MdMoreVert className={styles.buttonIcon} />}
           >
+            <Button className={styles.flyToButton} onClick={select} title="Focus">
+              <Row>
+                <SvgIcon className={styles.buttonIcon}><Focus /></SvgIcon>
+                <span className={styles.verticallyCentered}> Focus </span>
+              </Row>
+            </Button>
             <Button className={styles.flyToButton} onClick={flyTo} title="Fly to">
               <Row>
                 <MdFlight className={styles.buttonIcon} />
                 <span className={styles.verticallyCentered}> Fly to </span>
               </Row>
             </Button>
-            <Button className={styles.flyToButton} onClick={fadeToFocus} title="Fade to">
+            <Button className={styles.flyToButton} onClick={fadeTo} title="Fade to">
               <Row>
                 <MdFlashOn className={styles.buttonIcon} />
                 <span className={styles.verticallyCentered}> Jump to </span>
