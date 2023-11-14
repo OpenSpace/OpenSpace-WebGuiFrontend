@@ -214,7 +214,9 @@ function ExoplanetsPanel() {
             name="showHabitableZone"
             setChecked={toggleShowHabitableZone}
           >
-            <p>Show Habitable Zones</p>
+            <span className={styles.checkboxLabel}>
+              Show Habitable Zones
+            </span>
             <InfoBox
               className={styles.infoBox}
               text={`Show/Hide the habitable zone visualizations. Setting the value
@@ -226,7 +228,9 @@ function ExoplanetsPanel() {
             name="showOrbitUncertainty"
             setChecked={toggleShowOrbitUncertainty}
           >
-            <p>Show Orbit Uncertainty</p>
+            <span className={styles.checkboxLabel}>
+              Show Orbit Uncertainty
+            </span>
             <InfoBox
               className={styles.infoBox}
               text={`Show/Hide disc visualization of the uncertainty of the planetary
@@ -239,7 +243,9 @@ function ExoplanetsPanel() {
             name="show1AuRing"
             setChecked={toggleShow1AuRing}
           >
-            <p>Show 1 AU Size Ring</p>
+            <span className={styles.checkboxLabel}>
+              Show 1 AU Size Ring
+            </span>
             <InfoBox
               className={styles.infoBox}
               text={`If true, show a ring with the radius 1 AU around the host star of
