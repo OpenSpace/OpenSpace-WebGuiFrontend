@@ -1,9 +1,16 @@
 import React from 'react';
-import { MdCenterFocusStrong, MdFlight } from 'react-icons/md';
+import {
+  MdCenterFocusStrong,
+  MdFlashOn,
+  MdFlight,
+  MdMoreVert
+} from 'react-icons/md';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import Button from '../../common/Input/Button/Button';
+import Row from '../../common/Row/Row';
+import TooltipMenu from '../../common/Tooltip/TooltipMenu';
 import { useContextRefs } from '../../GettingStartedTour/GettingStartedContext';
 
 import styles from './FocusEntry.scss';
@@ -48,6 +55,20 @@ function FocusEntry({
     closePopoverIfSet();
   };
 
+  const fadeToFocus = async (event) => {
+    event.stopPropagation();
+    const fadeTime = 1;
+    const promise = new Promise((resolve) => {
+      luaApi.setPropertyValueSingle('RenderEngine.BlackoutFactor', 0, fadeTime, 'QuadraticEaseOut');
+      setTimeout(() => resolve('done!'), fadeTime * 1000);
+    });
+    await promise;
+    luaApi.pathnavigation.flyTo(identifier, 0.0);
+    luaApi.setPropertyValueSingle('RenderEngine.BlackoutFactor', 1, fadeTime, 'QuadraticEaseIn');
+    event.stopPropagation();
+    closePopoverIfSet();
+  };
+
   const refs = useContextRefs();
 
   return (
@@ -65,14 +86,31 @@ function FocusEntry({
       </span>
       {showNavigationButtons && (
         <div className={styles.buttonContainer}>
-          { isActive() && (
-            <Button className={styles.flyToButton} onClick={zoomToFocus} title="Zoom to">
-              <MdCenterFocusStrong className={styles.buttonIcon} />
-            </Button>
-          )}
-          <Button className={styles.flyToButton} onClick={flyTo} title="Fly to">
+          <Button onClick={flyTo} title="Fly to">
             <MdFlight className={styles.buttonIcon} />
           </Button>
+          <TooltipMenu
+            sourceObject={<MdMoreVert className={styles.buttonIcon} />}
+          >
+            <Button className={styles.flyToButton} onClick={flyTo} title="Fly to">
+              <Row>
+                <MdFlight className={styles.buttonIcon} />
+                <span className={styles.verticallyCentered}> Fly to </span>
+              </Row>
+            </Button>
+            <Button className={styles.flyToButton} onClick={fadeToFocus} title="Fade to">
+              <Row>
+                <MdFlashOn className={styles.buttonIcon} />
+                <span className={styles.verticallyCentered}> Jump to </span>
+              </Row>
+            </Button>
+            <Button className={styles.flyToButton} onClick={zoomToFocus} title="Zoom to">
+              <Row>
+                <MdCenterFocusStrong className={styles.buttonIcon} />
+                <span className={styles.verticallyCentered}> Zoom to / Frame </span>
+              </Row>
+            </Button>
+          </TooltipMenu>
         </div>
       )}
     </div>

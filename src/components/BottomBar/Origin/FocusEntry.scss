@@ -1,6 +1,6 @@
 @import "../../../styles/all";
 
-$icon-size: 22px;
+$icon-size: 21px;
 
 .entry {
   padding: $popover-horizontal-padding;
@@ -17,7 +17,13 @@ $icon-size: 22px;
   position: relative;
 }
 
+.verticallyCentered {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
 .buttonIcon {
+  @extend .verticallyCentered;
   font-size: $icon-size;
 }
 
@@ -26,16 +32,16 @@ $icon-size: 22px;
   right: 0;
   top: 50%;
   transform: translateY(-50%);
+
+  height: 100%;
+
+  > * {
+    padding: 0.2em 0.3em 0.1em;
+    display: inline-block;
+  }
 }
 
 .flyToButton {
-  margin-left: 0.3em;
-  padding: 0.2em 0.5em 0.1em;
-  display: none;
-}
-
-/* Show button on hover */
-.entry:hover .flyToButton,
-.entry:active .flyToButton {
-  display: inline-block;
+  padding: 0.5em 0.7em 0.5em;
+  margin: 2px;
 }
