@@ -10,18 +10,27 @@ import PropTypes from 'prop-types';
 // eslint-disable-next-line import/no-webpack-loader-syntax
 import Focus from 'svg-react-loader?name=Focus!../../../icons/focus.svg';
 
+import {
+  ApplyIdleBehaviorOnPathFinishKey,
+  CameraPathArrivalDistanceFactorKey,
+  CameraPathSpeedFactorKey
+} from '../../../api/keys';
 import Button from '../../common/Input/Button/Button';
 import Popover from '../../common/Popover/Popover';
 import Row from '../../common/Row/Row';
 import SvgIcon from '../../common/SvgIcon/SvgIcon';
+import ToggleContent from '../../common/ToggleContent/ToggleContent';
 import TooltipMenu from '../../common/Tooltip/TooltipMenu';
 import { useContextRefs } from '../../GettingStartedTour/GettingStartedContext';
+import Property from '../../Sidebar/Properties/Property';
 
 import styles from './FocusEntry.scss';
 
 function FocusEntry({
   name, identifier, onSelect, active, showNavigationButtons, closePopoverIfSet
 }) {
+  const [isSettingsExpanded, setSettingsExpanded] = React.useState(false);
+
   const luaApi = useSelector((state) => state.luaApi);
   function isActive() {
     return identifier === active;
@@ -122,6 +131,15 @@ function FocusEntry({
                 <span className={styles.verticallyCentered}> Zoom to / Frame </span>
               </Row>
             </Button>
+            <ToggleContent
+              title="Camera Path Settings"
+              expanded={isSettingsExpanded}
+              setExpanded={setSettingsExpanded}
+            >
+              <Property uri={CameraPathSpeedFactorKey} />
+              <Property uri={CameraPathArrivalDistanceFactorKey} />
+              <Property uri={ApplyIdleBehaviorOnPathFinishKey} />
+            </ToggleContent>
           </TooltipMenu>
         </div>
       )}
