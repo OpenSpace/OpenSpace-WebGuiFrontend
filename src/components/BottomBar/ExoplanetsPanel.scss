@@ -5,24 +5,24 @@
 }
 
 input[type="file"] {
-    display: none;
+  display: none;
 }
 
 .slideList {
-    float: left;
-    height: 100%;
-    width: 100%;
+  float: left;
+  height: 100%;
+  width: 100%;
 
-    :global(.scroll-content) {
-        height: 100%;
-        margin-top: 1px;
-        max-height: 200px;
-        padding-bottom: 14px;
-    }
+  :global(.scroll-content) {
+    height: 100%;
+    margin-top: 1px;
+    max-height: 200px;
+    padding-bottom: 14px;
+  }
 }
 
 .slideList header {
-    justify-content: left;
+  justify-content: left;
 }
 
 .list :global(.scroll-content) {
@@ -33,4 +33,13 @@ input[type="file"] {
 
 .redText {
   color: $red;
+}
+
+.infoBox {
+  align-self: center;
+  margin-left: 5px;
+}
+
+.checkboxLabel {
+  margin-left: 3px;
 }
