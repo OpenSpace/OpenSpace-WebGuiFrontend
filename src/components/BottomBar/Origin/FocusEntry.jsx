@@ -11,6 +11,7 @@ import PropTypes from 'prop-types';
 import Focus from 'svg-react-loader?name=Focus!../../../icons/focus.svg';
 
 import Button from '../../common/Input/Button/Button';
+import Popover from '../../common/Popover/Popover';
 import Row from '../../common/Row/Row';
 import SvgIcon from '../../common/SvgIcon/SvgIcon';
 import TooltipMenu from '../../common/Tooltip/TooltipMenu';
@@ -101,6 +102,7 @@ function FocusEntry({
                 <span className={styles.verticallyCentered}> Focus </span>
               </Row>
             </Button>
+            <hr className={Popover.styles.delimiter} />
             <Button className={styles.flyToButton} onClick={flyTo} title="Fly to">
               <Row>
                 <MdFlight className={styles.buttonIcon} />
@@ -113,6 +115,7 @@ function FocusEntry({
                 <span className={styles.verticallyCentered}> Jump to </span>
               </Row>
             </Button>
+            {/* TODO: Make it zoom to any node */}
             <Button className={styles.flyToButton} onClick={zoomToFocus} title="Zoom to">
               <Row>
                 <MdCenterFocusStrong className={styles.buttonIcon} />
