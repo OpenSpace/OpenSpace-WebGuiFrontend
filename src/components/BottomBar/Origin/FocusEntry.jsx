@@ -15,6 +15,7 @@ import {
   CameraPathArrivalDistanceFactorKey,
   CameraPathSpeedFactorKey
 } from '../../../api/keys';
+import InfoBox from '../../common/InfoBox/InfoBox';
 import Button from '../../common/Input/Button/Button';
 import Popover from '../../common/Popover/Popover';
 import Row from '../../common/Row/Row';
@@ -60,10 +61,20 @@ function FocusEntry({
 
   const zoomToFocus = (event) => {
     if (event.shiftKey) {
-      luaApi.pathnavigation.zoomToFocus(0.0);
+      luaApi.pathnavigation.createPath({
+        TargetType: 'Node',
+        Target: identifier,
+        Duration: 0,
+        PathType: 'Linear'
+      });
     } else {
-      luaApi.pathnavigation.zoomToFocus();
+      luaApi.pathnavigation.createPath({
+        TargetType: 'Node',
+        Target: identifier,
+        PathType: 'Linear'
+      });
     }
+
     event.stopPropagation();
     closePopoverIfSet();
   };
@@ -123,11 +134,14 @@ function FocusEntry({
                 <span className={styles.verticallyCentered}> Jump to </span>
               </Row>
             </Button>
-            {/* TODO: Make it zoom to any node */}
             <Button className={styles.flyToButton} onClick={zoomToFocus} title="Zoom to">
               <Row>
                 <MdCenterFocusStrong className={styles.buttonIcon} />
                 <span className={styles.verticallyCentered}> Zoom to / Frame </span>
+                <InfoBox
+                  text={`Focus on the target object by moving the camera in a straigt line
+                  and rotate towards the object`}
+                />
               </Row>
             </Button>
             <ToggleContent
