@@ -70,6 +70,7 @@ function FocusEntry({
 
   const fadeTo = async (event) => {
     event.stopPropagation();
+    closePopoverIfSet();
     const fadeTime = 1;
     const promise = new Promise((resolve) => {
       luaApi.setPropertyValueSingle('RenderEngine.BlackoutFactor', 0, fadeTime, 'QuadraticEaseOut');
@@ -78,8 +79,6 @@ function FocusEntry({
     await promise;
     luaApi.pathnavigation.flyTo(identifier, 0.0);
     luaApi.setPropertyValueSingle('RenderEngine.BlackoutFactor', 1, fadeTime, 'QuadraticEaseIn');
-    event.stopPropagation();
-    closePopoverIfSet();
   };
 
   const refs = useContextRefs();
