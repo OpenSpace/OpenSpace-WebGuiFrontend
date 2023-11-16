@@ -148,7 +148,7 @@ function FocusEntry({
               </Row>
             </Button>
             <ToggleContent
-              title="Camera Path Settings"
+              title="Settings"
               expanded={isSettingsExpanded}
               setExpanded={setSettingsExpanded}
             >
