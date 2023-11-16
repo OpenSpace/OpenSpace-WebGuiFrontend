@@ -45,6 +45,10 @@ const selectStyles = {
     color: 'inherited',
     paddingTop: 10,
     marginLeft: 0
+  }),
+  input: (provided) => ({
+    ...provided,
+    color: 'transparent'
   })
 };
 
