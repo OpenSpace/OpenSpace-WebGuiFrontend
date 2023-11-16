@@ -19,6 +19,7 @@ import InfoBox from '../../common/InfoBox/InfoBox';
 import Button from '../../common/Input/Button/Button';
 import Popover from '../../common/Popover/Popover';
 import Row from '../../common/Row/Row';
+import SmallLabel from '../../common/SmallLabel/SmallLabel';
 import SvgIcon from '../../common/SvgIcon/SvgIcon';
 import ToggleContent from '../../common/ToggleContent/ToggleContent';
 import TooltipMenu from '../../common/Tooltip/TooltipMenu';
@@ -115,6 +116,8 @@ function FocusEntry({
           <TooltipMenu
             sourceObject={<MdMoreVert className={styles.buttonIcon} />}
           >
+            <SmallLabel className={styles.menuTopLabel}>{identifier}</SmallLabel>
+            <hr className={Popover.styles.delimiter} />
             <Button className={styles.flyToButton} onClick={select} title="Focus">
               <Row>
                 <SvgIcon className={styles.buttonIcon}><Focus /></SvgIcon>
