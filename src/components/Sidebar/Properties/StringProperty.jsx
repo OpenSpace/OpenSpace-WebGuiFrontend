@@ -7,9 +7,12 @@ import PropertyLabel from './PropertyLabel';
 
 import styles from './Property.scss';
 
-function StringProperty({ description, dispatcher, value }) {
-  const disabled = description.MetaData.isReadOnly;
-
+function StringProperty({
+  description,
+  disabled,
+  dispatcher,
+  value
+}) {
   function onChange(evt) {
     const newValue = evt.target.value;
     dispatcher.set(newValue);
@@ -22,7 +25,7 @@ function StringProperty({ description, dispatcher, value }) {
         label={<PropertyLabel description={description} />}
         placeholder={description.Name}
         onEnter={onChange}
-        disabled={description.MetaData.isReadOnly}
+        disabled={disabled}
       />
     </div>
   );
@@ -37,6 +40,7 @@ StringProperty.propTypes = {
     }),
     description: PropTypes.string
   }).isRequired,
+  disabled: PropTypes.bool.isRequired,
   dispatcher: PropTypes.object.isRequired,
   value: PropTypes.any.isRequired
 };

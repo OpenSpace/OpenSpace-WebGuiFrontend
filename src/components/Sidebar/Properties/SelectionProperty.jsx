@@ -7,7 +7,7 @@ import ToggleContent from '../../common/ToggleContent/ToggleContent';
 
 import PropertyLabel from './PropertyLabel';
 
-function SelectionProperty({ description, dispatcher, value }) {
+function SelectionProperty({ description, disabled, dispatcher, value }) {
   const [expanded, setExpanded] = React.useState(false);
 
   function onCheckboxChange(checked, option) {
@@ -39,7 +39,6 @@ function SelectionProperty({ description, dispatcher, value }) {
   }
 
   const options = description.AdditionalData.Options;
-  const isDisabled = description.MetaData.isReadOnly;
 
   const label = <PropertyLabel description={description} />;
 
@@ -57,7 +56,6 @@ function SelectionProperty({ description, dispatcher, value }) {
       setExpanded={setExpanded}
     >
       {/* @TODO (emmbr, 2021-05-27): this property type cannot be disabled */}
-      {/* <div className={`${this.disabled ? styles.disabled : ''}`}> */}
       { (options.length > 10) && helperButtons }
       {
         options.map((opt) => (
@@ -65,13 +63,12 @@ function SelectionProperty({ description, dispatcher, value }) {
             key={opt}
             checked={isSelected(opt)}
             setChecked={(checked) => { onCheckboxChange(checked, opt); }}
-            disabled={isDisabled}
+            disabled={disabled}
           >
             <p>{opt}</p>
           </Checkbox>
         ))
       }
-      {/* </div> */}
     </ToggleContent>
   );
 }
@@ -88,6 +85,7 @@ SelectionProperty.propTypes = {
     }),
     description: PropTypes.string
   }).isRequired,
+  disabled: PropTypes.bool.isRequired,
   dispatcher: PropTypes.object.isRequired,
   value: PropTypes.any.isRequired
 };

@@ -17,6 +17,11 @@
   }
 }
 
+.propertyContainer {
+  width: 100%;
+  margin-right: 3px;
+}
+
 .disabled > span:not(.icon) {
   pointer-events: none;
 }

@@ -8,9 +8,7 @@ import PropertyLabel from './PropertyLabel';
 
 import styles from './Property.scss';
 
-function MatrixProperty({ description, dispatcher, value }) {
-  const disabled = description.MetaData.isReadOnly;
-
+function MatrixProperty({ description, disabled, dispatcher, value }) {
   function onChange(index) {
     return (newValue) => {
       const stateValue = value;
@@ -36,7 +34,7 @@ function MatrixProperty({ description, dispatcher, value }) {
 
   // eslint-disable react/no-array-index-key
   return (
-    <div className={`${styles.matrixProperty} ${disabled ? styles.disabled : ''}`}>
+    <div className={`${styles.matrixProperty}`}>
       { groups.map((group) => (
         <Row key={`row-${group[0].key}`}>
           { group.map((comp) => (
@@ -76,6 +74,7 @@ MatrixProperty.propTypes = {
     }),
     description: PropTypes.string
   }).isRequired,
+  disabled: PropTypes.bool.isRequired,
   dispatcher: PropTypes.object.isRequired,
   value: PropTypes.any.isRequired
 };

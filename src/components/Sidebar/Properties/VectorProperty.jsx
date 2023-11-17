@@ -11,12 +11,11 @@ import PropertyLabel from './PropertyLabel';
 
 import styles from './Property.scss';
 
-function VectorProperty({ dispatcher, description, value }) {
+function VectorProperty({ dispatcher, disabled, description, value }) {
   const {
     SteppingValue, MaximumValue, MinimumValue, Exponent
   } = description.AdditionalData;
   const { MetaData } = description;
-  const isDisabled = MetaData.isReadOnly;
   const couldBeColor = value.length <= 4 && value.length > 2;
   const isColor = couldBeColor && MetaData.ViewOptions.Color;
   const hasAlpha = isColor && value.length === 4;
@@ -67,7 +66,7 @@ function VectorProperty({ dispatcher, description, value }) {
     const stepSize = Math.min(...SteppingValue);
 
     return (
-      <Row className={`${styles.vectorProperty} ${isDisabled ? styles.disabled : ''}`}>
+      <Row className={`${styles.vectorProperty}`}>
         <MinMaxRangeInput
           valueMin={value[0]}
           valueMax={value[1]}
@@ -78,7 +77,7 @@ function VectorProperty({ dispatcher, description, value }) {
           exponent={Exponent}
           max={Math.max(...MaximumValue)}
           min={Math.min(...MinimumValue)}
-          disabled={isDisabled}
+          disabled={disabled}
         />
       </Row>
     );
@@ -91,7 +90,7 @@ function VectorProperty({ dispatcher, description, value }) {
   return (
     <Row
       ref={(el) => { refs.current[description.Identifier] = el; }}
-      className={`${styles.vectorProperty} ${isDisabled ? styles.disabled : ''}`}
+      className={`${styles.vectorProperty}`}
     >
       { values.map((component, index) => (
         <NumericInput
@@ -104,7 +103,7 @@ function VectorProperty({ dispatcher, description, value }) {
           exponent={Exponent}
           max={MaximumValue[index]}
           min={MinimumValue[index]}
-          disabled={isDisabled}
+          disabled={disabled}
         />
       ))}
       { isColor && (
@@ -113,7 +112,7 @@ function VectorProperty({ dispatcher, description, value }) {
           color={valueToColor()}
           onChange={onColorPickerChange}
           placement="right"
-          disabled={isDisabled}
+          disabled={disabled}
         />
       )}
     </Row>
@@ -136,6 +135,7 @@ VectorProperty.propTypes = {
     }),
     description: PropTypes.string
   }).isRequired,
+  disabled: PropTypes.bool.isRequired,
   dispatcher: PropTypes.object.isRequired,
   value: PropTypes.array.isRequired
 };

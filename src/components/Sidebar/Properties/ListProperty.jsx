@@ -5,11 +5,12 @@ import Input from '../../common/Input/Input/Input';
 
 import PropertyLabel from './PropertyLabel';
 
-import styles from './Property.scss';
-
-function ListProperty({ description, dispatcher, value }) {
-  const disabled = description.MetaData.isReadOnly;
-
+function ListProperty({
+  description,
+  disabled,
+  dispatcher,
+  value
+}) {
   function onChange(evt) {
     const newValue = evt.target.value.trim();
 
@@ -24,15 +25,13 @@ function ListProperty({ description, dispatcher, value }) {
   const label = <PropertyLabel description={description} />;
 
   return (
-    <div className={`${disabled ? styles.disabled : ''}`}>
-      <Input
-        value={value.join(',')}
-        label={label}
-        placeholder={description.Name}
-        onEnter={onChange}
-        disabled={disabled}
-      />
-    </div>
+    <Input
+      value={value.join(',')}
+      label={label}
+      placeholder={description.Name}
+      onEnter={onChange}
+      disabled={disabled}
+    />
   );
 }
 
@@ -46,6 +45,7 @@ ListProperty.propTypes = {
     description: PropTypes.string
   }).isRequired,
   dispatcher: PropTypes.object.isRequired,
+  disabled: PropTypes.bool.isRequired,
   value: PropTypes.any.isRequired
 };
 

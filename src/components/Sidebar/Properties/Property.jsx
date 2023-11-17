@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import propertyDispatcher from '../../../api/propertyDispatcher';
+import Checkbox from '../../common/Input/Checkbox/Checkbox';
+import Row from '../../common/Row/Row';
 
 import BoolProperty from './BoolProperty';
 import ListProperty from './ListProperty';
@@ -13,6 +15,8 @@ import SelectionProperty from './SelectionProperty';
 import StringProperty from './StringProperty';
 import TriggerProperty from './TriggerProperty';
 import VecProperty from './VectorProperty';
+
+import styles from './Property.scss';
 
 const concreteProperties = {
   BoolProperty,
@@ -81,15 +85,36 @@ function Property({ uri, ...props }) {
     return null;
   }
 
+  function setPropertyEnabled(v) {
+    console.log(v);
+    // TODO
+  }
+
+  const { MetaData } = description;
+  const isEnabled = MetaData?.isEnabled;
+  const isDisableable = (isEnabled !== undefined) && (MetaData?.isDisableable || false);
+
+  const disabled = MetaData?.isReadOnly;
+
   return (
-    <ConcreteProperty
-      dispatcher={dispatcher}
-      key={description.Identifier}
-      description={description}
-      value={value}
-      subscribe
-      {...props}
-    />
+    <div
+      style={{
+        display: 'flex'
+      }}
+    >
+      { isDisableable && <Checkbox checked={isEnabled} setChecked={setPropertyEnabled} /> }
+      <div className={`${styles.propertyContainer} ${disabled ? styles.disabled : ''}`}>
+        <ConcreteProperty
+          dispatcher={dispatcher}
+          key={description.Identifier}
+          description={description}
+          disabled={disabled}
+          value={value}
+          subscribe
+          {...props}
+        />
+      </div>
+    </div>
   );
 }
 

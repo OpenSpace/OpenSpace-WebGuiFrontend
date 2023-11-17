@@ -5,11 +5,7 @@ import NumericInput from '../../common/Input/NumericInput/NumericInput';
 
 import PropertyLabel from './PropertyLabel';
 
-import styles from './Property.scss';
-
-function NumericProperty({ description, dispatcher, value }) {
-  const disabled = description.MetaData.isReadOnly;
-
+function NumericProperty({ description, disabled, dispatcher, value }) {
   function onChange(newValue) {
     dispatcher.set(newValue);
   }
@@ -22,19 +18,17 @@ function NumericProperty({ description, dispatcher, value }) {
   const minMaxString = `${description.description}\nMin: ${MinimumValue}, max: ${MaximumValue}`;
   enhancedDescription.description = minMaxString;
   return (
-    <div className={`${disabled ? styles.disabled : ''}`}>
-      <NumericInput
-        value={value}
-        label={<PropertyLabel description={enhancedDescription} />}
-        placeholder={description.Name}
-        onValueChanged={onChange}
-        step={SteppingValue}
-        exponent={Exponent}
-        max={MaximumValue}
-        min={MinimumValue}
-        disabled={disabled}
-      />
-    </div>
+    <NumericInput
+      value={value}
+      label={<PropertyLabel description={enhancedDescription} />}
+      placeholder={description.Name}
+      onValueChanged={onChange}
+      step={SteppingValue}
+      exponent={Exponent}
+      max={MaximumValue}
+      min={MinimumValue}
+      disabled={disabled}
+    />
   );
 }
 
@@ -53,6 +47,7 @@ NumericProperty.propTypes = {
     }),
     description: PropTypes.string
   }).isRequired,
+  disabled: PropTypes.bool.isRequired,
   dispatcher: PropTypes.object.isRequired,
   value: PropTypes.any.isRequired
 };

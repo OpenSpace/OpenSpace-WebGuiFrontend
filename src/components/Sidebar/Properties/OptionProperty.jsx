@@ -5,11 +5,12 @@ import Select from '../../common/Input/Select/Select';
 
 import PropertyLabel from './PropertyLabel';
 
-import styles from './Property.scss';
-
-function OptionProperty({ description, dispatcher, value }) {
-  const disabled = description.MetaData.isReadOnly;
-
+function OptionProperty({
+  description,
+  disabled,
+  dispatcher,
+  value
+}) {
   function onChange(newSelection) {
     // 10 is the base, radix, for parsing the int
     dispatcher.set(parseInt(newSelection.value, 10));
@@ -25,15 +26,13 @@ function OptionProperty({ description, dispatcher, value }) {
     }));
 
   return (
-    <div className={`${disabled ? styles.disabled : ''}`}>
-      <Select
-        label={label}
-        options={options}
-        onChange={onChange}
-        disabled={disabled}
-        value={value}
-      />
-    </div>
+    <Select
+      label={label}
+      options={options}
+      onChange={onChange}
+      disabled={disabled}
+      value={value}
+    />
   );
 }
 
@@ -49,6 +48,7 @@ OptionProperty.propTypes = {
     }),
     description: PropTypes.string
   }).isRequired,
+  disabled: PropTypes.bool.isRequired,
   dispatcher: PropTypes.object.isRequired,
   value: PropTypes.any.isRequired
 };
