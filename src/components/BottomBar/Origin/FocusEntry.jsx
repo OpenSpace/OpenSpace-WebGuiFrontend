@@ -110,7 +110,11 @@ function FocusEntry({
       </span>
       {showNavigationButtons && (
         <div className={styles.buttonContainer}>
-          <Button onClick={flyTo} title="Fly to">
+          {isActive() && (
+            <Button className={styles.quickAccessFlyTo} onClick={zoomToFocus} title="Zoom to">
+              <MdCenterFocusStrong className={styles.buttonIcon} />
+            </Button>
+          )}
           <Button className={styles.quickAccessFlyTo} onClick={flyTo} title="Fly to">
             <MdFlight className={styles.buttonIcon} />
           </Button>
