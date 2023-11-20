@@ -286,6 +286,7 @@ function PropertyOwnerHeader({
           { isSceneObject && focusButton }
           { hasMoreButtons && (
             <TooltipMenu
+              className={styles.moreButton}
               sourceObject={<MdMoreVert />}
             >
               { popOutAction && popoutButton }
