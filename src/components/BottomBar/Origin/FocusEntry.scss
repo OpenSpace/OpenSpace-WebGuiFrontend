@@ -1,6 +1,6 @@
 @import "../../../styles/all";
 
-$icon-size: 21px;
+$icon-size: 18px;
 
 .entry {
   padding: $popover-horizontal-padding;
@@ -27,18 +27,34 @@ $icon-size: 21px;
   font-size: $icon-size;
 }
 
+.menuButtonLabel {
+  margin-top: auto;
+  margin-left: 0.3em;
+}
+
 .buttonContainer {
   position: absolute;
   right: 0;
   top: 50%;
   transform: translateY(-50%);
-
+  padding-top: 3px;
+  padding-bottom: 3px;
   height: 100%;
 
   > * {
-    padding: 0.2em 0.3em 0.1em;
+    height: 100%;
     display: inline-block;
+    vertical-align: top;
+    margin-right: 0.1em;
+    > button {
+      height: 100%;
+    }
   }
+}
+
+.quickAccessFlyTo {
+  padding: 0.1em 0.4em 0.1em;
+  margin-right: 0.3em;
 }
 
 .flyToButton {

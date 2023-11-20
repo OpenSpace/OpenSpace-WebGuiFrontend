@@ -111,6 +111,7 @@ function FocusEntry({
       {showNavigationButtons && (
         <div className={styles.buttonContainer}>
           <Button onClick={flyTo} title="Fly to">
+          <Button className={styles.quickAccessFlyTo} onClick={flyTo} title="Fly to">
             <MdFlight className={styles.buttonIcon} />
           </Button>
           <TooltipMenu
@@ -121,26 +122,26 @@ function FocusEntry({
             <Button className={styles.flyToButton} onClick={select} title="Focus">
               <Row>
                 <SvgIcon className={styles.buttonIcon}><Focus /></SvgIcon>
-                <span className={styles.verticallyCentered}> Focus </span>
+                <span className={styles.menuButtonLabel}> Focus </span>
               </Row>
             </Button>
             <hr className={Popover.styles.delimiter} />
             <Button className={styles.flyToButton} onClick={flyTo} title="Fly to">
               <Row>
                 <MdFlight className={styles.buttonIcon} />
-                <span className={styles.verticallyCentered}> Fly to </span>
+                <span className={styles.menuButtonLabel}> Fly to </span>
               </Row>
             </Button>
             <Button className={styles.flyToButton} onClick={fadeTo} title="Fade to">
               <Row>
                 <MdFlashOn className={styles.buttonIcon} />
-                <span className={styles.verticallyCentered}> Jump to </span>
+                <span className={styles.menuButtonLabel}> Jump to </span>
               </Row>
             </Button>
             <Button className={styles.flyToButton} onClick={zoomToFocus} title="Zoom to">
               <Row>
                 <MdCenterFocusStrong className={styles.buttonIcon} />
-                <span className={styles.verticallyCentered}> Zoom to / Frame </span>
+                <span className={styles.menuButtonLabel}> Zoom to / Frame </span>
                 <InfoBox
                   text={`Focus on the target object by moving the camera in a straigt line
                   and rotate towards the object`}
