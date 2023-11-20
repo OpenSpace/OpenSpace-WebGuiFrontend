@@ -36,57 +36,45 @@ function collectUrisRecursively(owners, allPropertyOwners, collectedOwners, coll
 }
 
 function SettingsPane({ closeCallback }) {
-  const topPropertyOwners = useSelector((state) => {
-    if (!state?.propertyTree?.propertyOwners) {
-      return [];
-    }
-    const allOwnerUris = Object.keys(state.propertyTree.propertyOwners || []);
-    // Remove owners that are in the Scene
-    return allOwnerUris.filter((uri) => uri !== SceneKey && uri.indexOf('.') === -1);
-  });
+  const propertyOwners = useSelector((state) => state.propertyTree.propertyOwners);
+  const properties = useSelector((state) => state.propertyTree.properties);
+
+  const allOwnerUris = Object.keys(propertyOwners || []);
+  // Remove owners that are in the Scene
+  const topPropertyOwners = allOwnerUris.filter((uri) => uri !== SceneKey && uri.indexOf('.') === -1);
 
   const topPropertyOwnersInfo = topPropertyOwners.map((uri) => ({
     uri, name: getLastWordOfUri(uri)
   }));
 
-  // Find all subpropertyowners and propeties that we want to search among
-  const [subPropertyOwners, properties] = useSelector((state) => {
-    if (!state?.propertyTree?.propertyOwners || !state?.propertyTree?.properties) {
-      return [[], []];
-    }
-    let searchableSubOwners = [];
-    let searchableProperties = [];
-    [searchableSubOwners, searchableProperties] = collectUrisRecursively(
-      topPropertyOwners,
-      state.propertyTree.propertyOwners,
-      searchableSubOwners,
-      searchableProperties
-    );
+  let searchableSubOwners = [];
+  let searchableProperties = [];
+  [searchableSubOwners, searchableProperties] = collectUrisRecursively(
+    topPropertyOwners,
+    propertyOwners,
+    searchableSubOwners,
+    searchableProperties
+  );
 
+  // Remove any hidden owners/properties
+  searchableSubOwners = searchableSubOwners.filter(
+    (uri) => (
+      !isPropertyOwnerHidden(properties, uri) &&
+      !isDeadEnd(propertyOwners, properties, uri)
+    )
+  );
+  searchableProperties = searchableProperties.filter(
+    (uri) => isPropertyVisible(properties, uri)
+  );
 
-    // Remove any hidden owners/properties
-    searchableSubOwners = searchableSubOwners.filter(
-      (uri) => (
-        !isPropertyOwnerHidden(state.propertyTree.properties, uri) &&
-        !isDeadEnd(state.propertyTree.propertyOwners, state.propertyTree.properties, uri)
-      )
-    );
+  // Compose the information we need for the search
+  const subPropertyOwnersInfo = searchableSubOwners.map((uri) => ({
+    uri, name: getLastWordOfUri(uri)
+  }));
 
-    searchableProperties = searchableProperties.filter(
-      (uri) => isPropertyVisible(state.propertyTree.properties, uri)
-    );
-
-    // Compose the information we need for the search
-    const subPropertyOwnersInfo = searchableSubOwners.map((uri) => ({
-      uri, name: getLastWordOfUri(uri)
-    }));
-
-    const propertiesInfo = searchableProperties.map((uri) => ({
-      uri, names: [getLastWordOfUri(uri), state.propertyTree.properties[uri].description.Name]
-    }));
-
-    return [subPropertyOwnersInfo, propertiesInfo];
-  });
+  const propertiesInfo = searchableProperties.map((uri) => ({
+    uri, names: [getLastWordOfUri(uri), properties[uri].description.Name]
+  }));
 
   const defaultEntries = topPropertyOwnersInfo.map((p) => ({
     key: p.uri,
@@ -97,14 +85,14 @@ function SettingsPane({ closeCallback }) {
   }));
 
   const searchEntries = defaultEntries
-    .concat(subPropertyOwners.map((p) => ({
+    .concat(subPropertyOwnersInfo.map((p) => ({
       key: p.uri,
       uri: p.uri,
       name: p.name,
       type: 'subPropertyOwner',
       expansionIdentifier: p.uri
     }))
-      .concat(properties.map((p) => ({
+      .concat(propertiesInfo.map((p) => ({
         key: p.uri,
         uri: p.uri,
         names: p.names,

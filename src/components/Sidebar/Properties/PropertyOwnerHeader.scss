@@ -19,9 +19,13 @@
 }
 
 .rightButton {
-  height: fit-content;
+  height: 100%;
   background: rgba(0, 0, 0, 0); // Completely transparent
   vertical-align: top;
+}
+
+.moreButton > button {
+  @extend .rightButton;
 }
 
 .menuButton {
