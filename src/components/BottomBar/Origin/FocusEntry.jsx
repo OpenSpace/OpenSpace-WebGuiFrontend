@@ -1,16 +1,38 @@
 import React from 'react';
-import { MdCenterFocusStrong, MdFlight } from 'react-icons/md';
+import {
+  MdCenterFocusStrong,
+  MdFlashOn,
+  MdFlight,
+  MdMoreVert
+} from 'react-icons/md';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
+// eslint-disable-next-line import/no-webpack-loader-syntax
+import Focus from 'svg-react-loader?name=Focus!../../../icons/focus.svg';
 
+import {
+  ApplyIdleBehaviorOnPathFinishKey,
+  CameraPathArrivalDistanceFactorKey,
+  CameraPathSpeedFactorKey
+} from '../../../api/keys';
+import InfoBox from '../../common/InfoBox/InfoBox';
 import Button from '../../common/Input/Button/Button';
+import Popover from '../../common/Popover/Popover';
+import Row from '../../common/Row/Row';
+import SmallLabel from '../../common/SmallLabel/SmallLabel';
+import SvgIcon from '../../common/SvgIcon/SvgIcon';
+import ToggleContent from '../../common/ToggleContent/ToggleContent';
+import TooltipMenu from '../../common/Tooltip/TooltipMenu';
 import { useContextRefs } from '../../GettingStartedTour/GettingStartedContext';
+import Property from '../../Sidebar/Properties/Property';
 
 import styles from './FocusEntry.scss';
 
 function FocusEntry({
   name, identifier, onSelect, active, showNavigationButtons, closePopoverIfSet
 }) {
+  const [isSettingsExpanded, setSettingsExpanded] = React.useState(false);
+
   const luaApi = useSelector((state) => state.luaApi);
   function isActive() {
     return identifier === active;
@@ -40,12 +62,35 @@ function FocusEntry({
 
   const zoomToFocus = (event) => {
     if (event.shiftKey) {
-      luaApi.pathnavigation.zoomToFocus(0.0);
+      luaApi.pathnavigation.createPath({
+        TargetType: 'Node',
+        Target: identifier,
+        Duration: 0,
+        PathType: 'Linear'
+      });
     } else {
-      luaApi.pathnavigation.zoomToFocus();
+      luaApi.pathnavigation.createPath({
+        TargetType: 'Node',
+        Target: identifier,
+        PathType: 'Linear'
+      });
     }
+
     event.stopPropagation();
     closePopoverIfSet();
+  };
+
+  const fadeTo = async (event) => {
+    event.stopPropagation();
+    closePopoverIfSet();
+    const fadeTime = 1;
+    const promise = new Promise((resolve) => {
+      luaApi.setPropertyValueSingle('RenderEngine.BlackoutFactor', 0, fadeTime, 'QuadraticEaseOut');
+      setTimeout(() => resolve('done!'), fadeTime * 1000);
+    });
+    await promise;
+    luaApi.pathnavigation.flyTo(identifier, 0.0);
+    luaApi.setPropertyValueSingle('RenderEngine.BlackoutFactor', 1, fadeTime, 'QuadraticEaseIn');
   };
 
   const refs = useContextRefs();
@@ -65,14 +110,58 @@ function FocusEntry({
       </span>
       {showNavigationButtons && (
         <div className={styles.buttonContainer}>
-          { isActive() && (
-            <Button className={styles.flyToButton} onClick={zoomToFocus} title="Zoom to">
+          {isActive() && (
+            <Button className={styles.quickAccessFlyTo} onClick={zoomToFocus} title="Zoom to">
               <MdCenterFocusStrong className={styles.buttonIcon} />
             </Button>
           )}
-          <Button className={styles.flyToButton} onClick={flyTo} title="Fly to">
+          <Button className={styles.quickAccessFlyTo} onClick={flyTo} title="Fly to">
             <MdFlight className={styles.buttonIcon} />
           </Button>
+          <TooltipMenu
+            sourceObject={<MdMoreVert className={styles.buttonIcon} />}
+          >
+            <SmallLabel className={styles.menuTopLabel}>{identifier}</SmallLabel>
+            <hr className={Popover.styles.delimiter} />
+            <Button className={styles.flyToButton} onClick={select} title="Focus">
+              <Row>
+                <SvgIcon className={styles.buttonIcon}><Focus /></SvgIcon>
+                <span className={styles.menuButtonLabel}> Focus </span>
+              </Row>
+            </Button>
+            <hr className={Popover.styles.delimiter} />
+            <Button className={styles.flyToButton} onClick={flyTo} title="Fly to">
+              <Row>
+                <MdFlight className={styles.buttonIcon} />
+                <span className={styles.menuButtonLabel}> Fly to </span>
+              </Row>
+            </Button>
+            <Button className={styles.flyToButton} onClick={fadeTo} title="Fade to">
+              <Row>
+                <MdFlashOn className={styles.buttonIcon} />
+                <span className={styles.menuButtonLabel}> Jump to </span>
+              </Row>
+            </Button>
+            <Button className={styles.flyToButton} onClick={zoomToFocus} title="Zoom to">
+              <Row>
+                <MdCenterFocusStrong className={styles.buttonIcon} />
+                <span className={styles.menuButtonLabel}> Zoom to / Frame </span>
+                <InfoBox
+                  text={`Focus on the target object by moving the camera in a straigt line
+                  and rotate towards the object`}
+                />
+              </Row>
+            </Button>
+            <ToggleContent
+              title="Settings"
+              expanded={isSettingsExpanded}
+              setExpanded={setSettingsExpanded}
+            >
+              <Property uri={CameraPathSpeedFactorKey} />
+              <Property uri={CameraPathArrivalDistanceFactorKey} />
+              <Property uri={ApplyIdleBehaviorOnPathFinishKey} />
+            </ToggleContent>
+          </TooltipMenu>
         </div>
       )}
     </div>

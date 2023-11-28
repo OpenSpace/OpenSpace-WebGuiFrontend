@@ -1,6 +1,6 @@
 @import "../../../styles/all";
 
-$icon-size: 22px;
+$icon-size: 18px;
 
 .entry {
   padding: $popover-horizontal-padding;
@@ -17,8 +17,20 @@ $icon-size: 22px;
   position: relative;
 }
 
+.verticallyCentered {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
 .buttonIcon {
+  @extend .verticallyCentered;
   font-size: $icon-size;
+  vertical-align: middle;
+}
+
+.menuButtonLabel {
+  margin-top: auto;
+  margin-left: 0.3em;
 }
 
 .buttonContainer {
@@ -26,16 +38,32 @@ $icon-size: 22px;
   right: 0;
   top: 50%;
   transform: translateY(-50%);
+  padding-top: 3px;
+  padding-bottom: 3px;
+  height: 100%;
+
+  > * {
+    height: 100%;
+    display: inline-block;
+    vertical-align: top;
+    margin-right: 0.1em;
+    > button {
+      height: 100%;
+    }
+  }
+}
+
+.quickAccessFlyTo {
+  padding: 0.1em 0.4em 0.1em;
+  margin-right: 0.3em;
 }
 
 .flyToButton {
-  margin-left: 0.3em;
-  padding: 0.2em 0.5em 0.1em;
-  display: none;
+  padding: 0.5em 0.7em 0.5em;
+  margin: 2px;
 }
 
-/* Show button on hover */
-.entry:hover .flyToButton,
-.entry:active .flyToButton {
-  display: inline-block;
+.menuTopLabel {
+  margin-left: 3px;
+  color: $text-color-blur;
 }
