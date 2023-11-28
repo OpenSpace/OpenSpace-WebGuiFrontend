@@ -23,12 +23,14 @@ $icon-size: 12px;
 .toolTip {
   max-width: 200px;
   width: 200px;
-  height: 50px;
   font-size: 12pt;
   margin-top: 7px;
   background: $ui-background;
 
+  transform: translate(0, -30px);
+
   &::after {
-    top: 10%;
+    top: 10px;
+    border-right-color: $ui-background;
   }
 }
