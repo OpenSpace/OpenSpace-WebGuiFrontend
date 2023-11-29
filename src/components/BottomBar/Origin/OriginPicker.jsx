@@ -17,6 +17,9 @@ import {
   unsubscribeToSessionRecording
 } from '../../../api/Actions';
 import {
+  ApplyIdleBehaviorOnPathFinishKey,
+  CameraPathArrivalDistanceFactorKey,
+  CameraPathSpeedFactorKey,
   EngineModeCameraPath,
   EngineModeSessionRecordingPlayback,
   EngineModeUserControl,
@@ -40,6 +43,8 @@ import Popover from '../../common/Popover/Popover';
 import SettingsPopup from '../../common/SettingsPopup/SettingsPopup';
 import SmallLabel from '../../common/SmallLabel/SmallLabel';
 import SvgIcon from '../../common/SvgIcon/SvgIcon';
+import ToggleContent from '../../common/ToggleContent/ToggleContent';
+import Property from '../../Sidebar/Properties/Property';
 import Picker from '../Picker';
 
 import FocusEntry from './FocusEntry';
@@ -57,6 +62,7 @@ const NavigationActions = {
 
 function OriginPicker() {
   const [closeAfterSelection, setCloseAfterSelection] = useLocalStorageState('closeAfterSelection', false);
+  const [isPathSettingsExpanded, setPathSettingsExpanded] = React.useState(false);
 
   const engineMode = useSelector((state) => state.engineMode.mode || EngineModeUserControl);
   const luaApi = useSelector((state) => state.luaApi);
@@ -337,6 +343,15 @@ function OriginPicker() {
         >
           Close window after selecting
         </Checkbox>
+        <ToggleContent
+          title="Camera Path Settings"
+          expanded={isPathSettingsExpanded}
+          setExpanded={setPathSettingsExpanded}
+        >
+          <Property uri={CameraPathSpeedFactorKey} />
+          <Property uri={CameraPathArrivalDistanceFactorKey} />
+          <Property uri={ApplyIdleBehaviorOnPathFinishKey} />
+        </ToggleContent>
       </SettingsPopup>
     );
   }
