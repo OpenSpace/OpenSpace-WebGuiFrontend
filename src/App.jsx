@@ -6,14 +6,13 @@ import BrowserGui from './views/BrowserGui';
 import NotFound from './views/NotFound';
 import OnScreenGui from './views/OnScreenGui';
 import WrappedOnTouchGui from './views/OnTouchGui';
-import RemoteGui from './views/RemoteGui';
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/onscreen" element={<OnScreenGui />} />
-        <Route path="/remote" element={<RemoteGui />} />
+        <Route path="/remote" element={<BrowserGui />} />
         <Route path="/ontouch" element={<WrappedOnTouchGui />} />
         <Route path="/actions" element={<ActionsGui />} />
         {/* Here, more GUI variations can be added. */}
