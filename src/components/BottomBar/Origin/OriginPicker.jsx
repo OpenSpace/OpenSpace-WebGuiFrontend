@@ -118,9 +118,14 @@ function OriginPicker() {
   const navigationAction = useSelector((state) => state.local.originPicker.action);
 
   // Camera path information
-  const pathTarget = useSelector((state) => state.cameraPath.target);
+  const pathTargetNode = useSelector((state) => state.cameraPath.target);
+  const pathTargetNodeName = useSelector((state) => {
+    const node = state.propertyTree.propertyOwners[ScenePrefixKey + pathTargetNode];
+    return node ? node.name : pathTargetNode;
+  });
   const remainingTimeForPath = useSelector((state) => state.cameraPath.remainingTime);
-  const isPathPaused = useSelector((state) => state.cameraPath.isPaused);
+  // @ TODO: Use this, sometime, to communicate when a path is paused
+  // const isPathPaused = useSelector((state) => state.cameraPath.isPaused);
 
   const dispatch = useDispatch();
   // Use refs so these aren't recalculated each render and trigger useEffect
@@ -277,6 +282,8 @@ function OriginPicker() {
       luaApi.pathnavigation.stopPath();
     };
 
+    const pathTargetNodeNameCapped = pathTargetNodeName?.substring(0, 20);
+
     return (
       <>
         <div
@@ -296,7 +303,7 @@ function OriginPicker() {
               <MdAirplanemodeInactive className={styles.SmallPickerIcon} />
               {'  Cancel'}
             </Row>
-            <SmallLabel className={styles.cancelButtonAnchorLabel}>
+            <SmallLabel className={styles.cancelButtonLabel}>
               {' ('}
               <SvgIcon className={styles.SmallPickerIcon}><Anchor /></SvgIcon>
               <span className={styles.cancelButtonAnchorLabelText}>
@@ -308,11 +315,10 @@ function OriginPicker() {
         </div>
 
         <div className={`${styles.Grid} ${styles.blink}`}>
-          <MdFlight className={`${styles.Icon}`} />
+          <MdFlight className={styles.Icon} />
           <div className={Picker.Title}>
-            <span className={`${Picker.Name}`}>
-              {pathTarget}
-              {/* TODO: should be the name and not identifier */}
+            <span className={`${Picker.Name} ${styles.cancelButtonLabel}`}>
+              {pathTargetNodeNameCapped}
             </span>
             <SmallLabel>
               {remainingTimeForPath}

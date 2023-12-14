@@ -41,20 +41,19 @@ $small-icon-size: 16px;
   text-align: center;
   padding-left: calc($base-padding / 2);
   padding-right: calc($base-padding / 2);
-
-  > * {
-    margin-left: auto;
-    margin-right: auto;
-  }
 }
 
 .cancelButtonTitle {
   margin-bottom: 2px;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
-.cancelButtonAnchorLabel {
+.cancelButtonLabel {
   white-space: nowrap;
+  > * {
+    vertical-align: middle;
+  }
 }
 
 .cancelButtonAnchorLabelText {
@@ -63,6 +62,7 @@ $small-icon-size: 16px;
   overflow: hidden;
   text-overflow: ellipsis;
   display: inline-block;
+  white-space: nowrap;
 }
 
 .blink {
