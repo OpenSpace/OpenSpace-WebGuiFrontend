@@ -59,6 +59,11 @@ const actionTypes = {
   unsubscribeToCamera: 'CAMERA_UNSUBSCRIBE',
   updateCamera: 'CAMERA_UPDATE',
 
+  // action types for camera path topic
+  subscribeToCameraPath: 'CAMERA_PATH_SUBSCRIBE',
+  unsubscribeToCameraPath: 'CAMERA_PATH_UNSUBSCRIBE',
+  updateCameraPath: 'CAMERA_PATH_UPDATE',
+
   // action types for shortcuts
   subscribeToShortcuts: 'SHORTCUTS_SUBSCRIBE',
   unsubscribeToShortcuts: 'SHORTCUTS_UNSUBSCRIBE',
