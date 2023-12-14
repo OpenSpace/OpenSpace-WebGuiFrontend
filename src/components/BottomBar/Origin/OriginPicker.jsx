@@ -66,31 +66,34 @@ function OriginPicker() {
 
   const engineMode = useSelector((state) => state.engineMode.mode || EngineModeUserControl);
   const luaApi = useSelector((state) => state.luaApi);
-  const allNodes = useSelector((state) => {
-    const scene = state.propertyTree.propertyOwners.Scene;
-    const uris = scene ? scene.subowners : [];
+  const propertyOwners = useSelector((state) => state.propertyTree.propertyOwners);
+  const properties = useSelector((state) => state.propertyTree.properties);
 
-    // Get all the nodes in the scene
-    return uris.map((uri) => ({
-      ...state.propertyTree.propertyOwners[uri],
-      key: uri
-    }));
-  });
-  const favorites = useSelector((state) => {
-    const { propertyOwners } = state.propertyTree;
-    const scene = propertyOwners.Scene;
-    const uris = scene ? scene.subowners : [];
+  const scene = propertyOwners.Scene;
+  const uris = scene ? scene.subowners : [];
 
-    function hasInterestingTag(uri) {
-      return propertyOwners[uri].tags.some((tag) => tag.includes(InterestingTag));
-    }
-    // Find interesting nodes
-    const urisWithTags = uris.filter((uri) => hasInterestingTag(uri));
-    return urisWithTags.map((uri) => ({
-      ...propertyOwners[uri],
-      key: uri
-    }));
+  const allNodes = uris.map((uri) => ({
+    ...propertyOwners[uri],
+    key: uri
+  }));
+
+  function hasInterestingTag(uri) {
+    return propertyOwners[uri].tags.some((tag) => tag.includes(InterestingTag));
+  }
+  // Find interesting nodes
+  const urisWithTags = uris.filter((uri) => hasInterestingTag(uri));
+  const favorites = urisWithTags.map((uri) => ({
+    ...propertyOwners[uri],
+    key: uri
+  }));
+
+  // Searchable nodes => nodes that are not hidden in the GUI
+  const searchableNodes = allNodes.filter((node) => {
+    const isHiddenProp = properties[`${node.key}.GuiHidden`];
+    const isHidden = isHiddenProp && isHiddenProp.value;
+    return !isHidden;
   });
+
   const anchor = useSelector((state) => {
     const anchorProp = state.propertyTree.properties[NavigationAnchorKey];
     return anchorProp && anchorProp.value;
@@ -110,14 +113,6 @@ function OriginPicker() {
   const popoverVisible = useSelector((state) => state.local.popovers.originPicker.visible);
   const sessionRecordingState = useSelector((state) => state.sessionRecording.recordingState);
   const navigationAction = useSelector((state) => state.local.originPicker.action);
-  // Searchable nodes => nodes that are not hidden in the GUI
-  const searchableNodes = useSelector(
-    (state) => allNodes.filter((node) => {
-      const isHiddenProp = state.propertyTree.properties[`${node.key}.GuiHidden`];
-      const isHidden = isHiddenProp && isHiddenProp.value;
-      return !isHidden;
-    })
-  );
 
   const dispatch = useDispatch();
   // Use refs so these aren't recalculated each render and trigger useEffect
