@@ -165,23 +165,23 @@ function MinMaxRangeInput({
       minSliderRef.current.style.zIndex = onBottom;
 
       styleLeft = normalizedMinValue;
-      styleWidth = hoverHint - normalizedMinValue;
+      styleWidth = hoverHintNow - normalizedMinValue;
     };
 
     const putLeftSliderOnTop = () => {
       minSliderRef.current.style.zIndex = onTop;
       maxSliderRef.current.style.zIndex = onBottom;
 
-      styleLeft = hoverHint;
-      styleWidth = normalizedMaxValue - hoverHint;
+      styleLeft = hoverHintNow;
+      styleWidth = normalizedMaxValue - hoverHintNow;
     };
 
-    if (hoverHint < normalizedMinValue) { // mouse < minValue
+    if (hoverHintNow < normalizedMinValue) { // mouse < minValue
       putLeftSliderOnTop();
-    } else if (hoverHint < normalizedMaxValue) { // minValue < mouse < maxValue
+    } else if (hoverHintNow < normalizedMaxValue) { // minValue < mouse < maxValue
       // Pick the closest handle
-      const leftDistance = hoverHint - normalizedMinValue;
-      const rightDistance = normalizedMaxValue - hoverHint;
+      const leftDistance = hoverHintNow - normalizedMinValue;
+      const rightDistance = normalizedMaxValue - hoverHintNow;
 
       if (leftDistance < rightDistance) { // closer to the left
         putLeftSliderOnTop();

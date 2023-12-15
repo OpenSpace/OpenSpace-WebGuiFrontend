@@ -8,19 +8,18 @@ import buttonStyles from '../Input/Button/Button.scss';
 import styles from './SettingsPopup.scss';
 
 function SettingsPopup({ children }) {
-  const [showSearchSettings, setShowSearchSettings] = React.useState(false);
+  const [showPopup, setShowPopup] = React.useState(false);
 
   return (
     <div
-      onClick={() => setShowSearchSettings((current) => !current)}
-      onKeyDown={() => setShowSearchSettings((current) => !current)}
+      onClick={() => setShowPopup((current) => !current)}
       className={`${styles.settings} ${buttonStyles.button}
-        ${showSearchSettings && styles.settingsFocus}`}
+        ${showPopup && styles.settingsFocus}`}
       role="button"
       tabIndex={0}
     >
       <MdSettings className="small" />
-      {showSearchSettings && (
+      {showPopup && (
         <Tooltip placement="right" className={styles.toolTip}>
           { children }
         </Tooltip>

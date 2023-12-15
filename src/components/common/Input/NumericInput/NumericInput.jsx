@@ -178,6 +178,7 @@ function NumericInput({
           min={currentMin}
           max={currentMax}
           step={step}
+          autoFocus
         />
         {showOutsideRangeHint && valueIsBad && (
           <Tooltip className={tooltipStyles} fixed style={{ ...textTooltipPosition() }} placement="right">
@@ -238,7 +239,6 @@ function NumericInput({
         <input
           {...props}
           placeholder={placeholder}
-          decimals={decimals}
           disabled={disabled}
           id={id.current}
           type="range"

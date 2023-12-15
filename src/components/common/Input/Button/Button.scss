@@ -23,10 +23,6 @@ $small-padding: calc($vertical-padding / 2) calc($base-padding / 2);
   background: transparent;
 }
 
-.nopadding {
-  padding: 0;
-}
-
 .small {
   padding: $small-padding;
 }
@@ -55,6 +51,10 @@ $small-padding: calc($vertical-padding / 2) calc($base-padding / 2);
 
 .wide {
   width: 100%;
+}
+
+.nopadding {
+  padding: 0;
 }
 
 // Why redeclaring some styles here?!

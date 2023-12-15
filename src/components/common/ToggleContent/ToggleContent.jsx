@@ -13,8 +13,9 @@ function ToggleContent({
     return null;
   }
 
-  function toggleExpanded() {
+  function toggleExpanded(evt) {
     setExpanded(!expanded);
+    evt.stopPropagation();
   }
 
   return (
