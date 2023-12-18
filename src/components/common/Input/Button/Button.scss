@@ -3,7 +3,7 @@
 $small-padding: calc($vertical-padding / 2) calc($base-padding / 2);
 
 .button {
-  background: $ui-background-selected;
+  background: $ui-background-buttons;
   color: $text-color-focus;
   letter-spacing: 0.08em;
   padding: $button-padding;
@@ -66,7 +66,7 @@ $small-padding: calc($vertical-padding / 2) calc($base-padding / 2);
 
   &:not(:disabled) {
     &:hover {
-      background: $ui-background-hover;
+      background: $ui-background-buttons-hover;
     }
 
     &:focus {
@@ -75,7 +75,7 @@ $small-padding: calc($vertical-padding / 2) calc($base-padding / 2);
   }
 
   &:active {
-    background: $ui-background-active;
+    background: $ui-background-buttons;
     color: $text-color-blur;
   }
 
