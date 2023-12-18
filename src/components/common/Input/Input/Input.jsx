@@ -65,6 +65,7 @@ function Input({
         placeholder={placeholder}
         label={label}
         step={step}
+        autoComplete="off"
         {...props}
       />
       <label htmlFor={id.current} className={`${styles.label} ${hasInput && styles.hasinput}`}>
