@@ -170,12 +170,11 @@ function SessionRec() {
             <Button
               className={styles.playbackButton}
               onClick={togglePlaybackPaused}
-              regular
             >
               <MdPause alt="pause" />
               {' Pause'}
             </Button>
-            <Button onClick={stopPlayback} regular>
+            <Button onClick={stopPlayback}>
               <MdStop alt="stop" />
               {' Stop playback'}
             </Button>
@@ -314,8 +313,8 @@ function SessionRec() {
               <p>Output frames</p>
               <InfoBox
                 className={styles.infoBox}
-                text={`If checked, the specified number of frames will be recorded as 
-                screenshots and saved to disk. Per default, they are saved in the  
+                text={`If checked, the specified number of frames will be recorded as
+                screenshots and saved to disk. Per default, they are saved in the
                 user/screenshots folder. This feature can not be used together with
                 'loop playback'`}
               />

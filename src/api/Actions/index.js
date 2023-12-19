@@ -254,6 +254,21 @@ export const unsubscribeToCamera = (data) => ({
   payload: data
 });
 
+export const subscribeToCameraPath = (data) => ({
+  type: actionTypes.subscribeToCameraPath,
+  payload: data
+});
+
+export const updateCameraPath = (data) => ({
+  type: actionTypes.updateCameraPath,
+  payload: data
+});
+
+export const unsubscribeToCameraPath = (data) => ({
+  type: actionTypes.unsubscribeToCameraPath,
+  payload: data
+});
+
 export const subscribeToShortcuts = () => ({
   type: actionTypes.subscribeToShortcuts,
   payload: {}

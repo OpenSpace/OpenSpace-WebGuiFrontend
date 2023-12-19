@@ -1,5 +1,5 @@
 import React from 'react';
-import { MdAirplanemodeInactive } from 'react-icons/md';
+import { MdAirplanemodeInactive, MdFlight } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
 /* eslint-disable import/no-webpack-loader-syntax */
 import Aim from 'svg-react-loader?name=Aim!../../../icons/aim.svg';
@@ -11,8 +11,10 @@ import {
   sendFlightControl,
   setNavigationAction,
   setPopoverVisibility,
+  subscribeToCameraPath,
   subscribeToEngineMode,
   subscribeToSessionRecording,
+  unsubscribeToCameraPath,
   unsubscribeToEngineMode,
   unsubscribeToSessionRecording
 } from '../../../api/Actions';
@@ -40,6 +42,7 @@ import Button from '../../common/Input/Button/Button';
 import Checkbox from '../../common/Input/Checkbox/Checkbox';
 import LoadingString from '../../common/LoadingString/LoadingString';
 import Popover from '../../common/Popover/Popover';
+import Row from '../../common/Row/Row';
 import SettingsPopup from '../../common/SettingsPopup/SettingsPopup';
 import SmallLabel from '../../common/SmallLabel/SmallLabel';
 import SvgIcon from '../../common/SvgIcon/SvgIcon';
@@ -114,6 +117,16 @@ function OriginPicker() {
   const sessionRecordingState = useSelector((state) => state.sessionRecording.recordingState);
   const navigationAction = useSelector((state) => state.local.originPicker.action);
 
+  // Camera path information
+  const pathTargetNode = useSelector((state) => state.cameraPath.target);
+  const pathTargetNodeName = useSelector((state) => {
+    const node = state.propertyTree.propertyOwners[ScenePrefixKey + pathTargetNode];
+    return node ? node.name : pathTargetNode;
+  });
+  const remainingTimeForPath = useSelector((state) => state.cameraPath.remainingTime);
+  // @ TODO: Use this, sometime, to communicate when a path is paused
+  // const isPathPaused = useSelector((state) => state.cameraPath.isPaused);
+
   const dispatch = useDispatch();
   // Use refs so these aren't recalculated each render and trigger useEffect
   const anchorDispatcher = React.useRef(propertyDispatcher(dispatch, NavigationAnchorKey));
@@ -126,9 +139,11 @@ function OriginPicker() {
   React.useEffect(() => {
     dispatch(subscribeToSessionRecording());
     dispatch(subscribeToEngineMode());
+    dispatch(subscribeToCameraPath());
     return () => {
       dispatch(unsubscribeToSessionRecording());
       dispatch(unsubscribeToEngineMode());
+      dispatch(unsubscribeToCameraPath());
     };
   }, []);
 
@@ -267,32 +282,51 @@ function OriginPicker() {
       luaApi.pathnavigation.stopPath();
     };
 
+    const pathTargetNodeNameCapped = pathTargetNodeName?.substring(0, 20);
+
     return (
-      <div
-        className={`${styles.Grid} ${styles.cancelButton}`}
-        onClick={cancelFlight}
-        onKeyPress={cancelFlight}
-        role="button"
-        tabIndex={0}
-      >
-        <MdAirplanemodeInactive className={styles.Icon} />
-        <div className={Picker.Title}>
-          <span className={Picker.Name}>
-            <LoadingString loading={anchor === undefined}>
-              Cancel
-            </LoadingString>
-          </span>
-          <div>
-            <SmallLabel>
-              <SvgIcon><Anchor /></SvgIcon>
-              {' '}
-              <LoadingString loading={anchor === undefined}>
+      <>
+        <div
+          className={`${styles.Grid}`}
+          onClick={cancelFlight}
+          onKeyPress={cancelFlight}
+          role="button"
+          tabIndex={0}
+        >
+          <Button
+            className={styles.cancelButton}
+            onClick={cancelFlight}
+            onKeyPress={cancelFlight}
+            wide
+          >
+            <Row className={styles.cancelButtonTitle}>
+              <MdAirplanemodeInactive className={styles.SmallPickerIcon} />
+              {'  Cancel'}
+            </Row>
+            <SmallLabel className={styles.cancelButtonLabel}>
+              {' ('}
+              <SvgIcon className={styles.SmallPickerIcon}><Anchor /></SvgIcon>
+              <span className={styles.cancelButtonAnchorLabelText}>
                 {cappedAnchorName}
-              </LoadingString>
+              </span>
+              {') '}
+            </SmallLabel>
+          </Button>
+        </div>
+
+        <div className={`${styles.Grid} ${styles.blink}`}>
+          <MdFlight className={styles.Icon} />
+          <div className={Picker.Title}>
+            <span className={`${Picker.Name} ${styles.cancelButtonLabel}`}>
+              {pathTargetNodeNameCapped}
+            </span>
+            <SmallLabel>
+              {remainingTimeForPath}
+              {' s'}
             </SmallLabel>
           </div>
         </div>
-      </div>
+      </>
     );
   }
 
@@ -398,7 +432,7 @@ function OriginPicker() {
             title="Select focus"
             transparent={navigationAction !== NavigationActions.Focus}
           >
-            <SvgIcon className={styles.ButtonIcon}><Focus /></SvgIcon>
+            <SvgIcon className={styles.TabIcon}><Focus /></SvgIcon>
           </Button>
           <Button
             className={styles.NavigationButton}
@@ -406,7 +440,7 @@ function OriginPicker() {
             title="Select anchor"
             transparent={navigationAction !== NavigationActions.Anchor}
           >
-            <SvgIcon className={styles.ButtonIcon}><Anchor /></SvgIcon>
+            <SvgIcon className={styles.TabIcon}><Anchor /></SvgIcon>
           </Button>
           <Button
             className={styles.NavigationButton}
@@ -414,7 +448,7 @@ function OriginPicker() {
             title="Select aim"
             transparent={navigationAction !== NavigationActions.Aim}
           >
-            <SvgIcon className={styles.ButtonIcon}><Aim /></SvgIcon>
+            <SvgIcon className={styles.TabIcon}><Aim /></SvgIcon>
           </Button>
         </div>
         <FilterList

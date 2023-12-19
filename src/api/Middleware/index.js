@@ -1,6 +1,7 @@
 import { applyMiddleware } from 'redux';
 
 import camera from './camera';
+import cameraPath from './cameraPath';
 import connection from './connection';
 import documentation from './documentation';
 import engineMode from './engineMode';
@@ -30,7 +31,8 @@ const middleware = applyMiddleware(
   documentation,
   exoplanets,
   skybrowser,
-  camera
+  camera,
+  cameraPath
 );
 
 export default middleware;

@@ -1,4 +1,5 @@
 import camera from './camera';
+import cameraPath from './cameraPath';
 import connection from './connection';
 import documentation from './documentation';
 import engineMode from './engineMode';
@@ -27,6 +28,7 @@ const openspaceApp = (state = {}, action = {}) => {
     time: time(state.time, action),
     connection: connection(state.connection, action),
     camera: camera(state.camera, action),
+    cameraPath: cameraPath(state.cameraPath, action),
     documentation: documentation(state.documentation, action),
     exoplanets: exoplanets(state.exoplanets, action),
     skybrowser: skybrowser(state.skybrowser, action),
