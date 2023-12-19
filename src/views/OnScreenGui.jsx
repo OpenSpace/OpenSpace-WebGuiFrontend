@@ -26,7 +26,8 @@ import '../styles/base.scss';
 import styles from './OnScreenGui.scss';
 
 function OnScreenGui({
-  isInBrowser
+  isInBrowser,
+  showFlightController
 }) {
   let hasCheckedVersion = false;
   const [showTutorial, setShowTutorial] = React.useState(false);
@@ -97,13 +98,13 @@ function OnScreenGui({
         )}
         <ErrorMessage />
         <section className={styles.Grid__Left}>
-          <Sidebar showTutorial={setShowTutorial} />
+          <Sidebar showTutorial={isInBrowser ? null : setShowTutorial} />
         </section>
         <section className={styles.Grid__Right}>
           {isInBrowser && luaConsoleVisible && <LuaConsole />}
           <NodePopOverContainer />
           <NodeMetaContainer />
-          <BottomBar />
+          <BottomBar showFlightController={showFlightController} />
           <KeybindingPanel />
           <TourPopup isVisible={showTutorial} setVisibility={(show) => setShowTutorial(show)} />
         </section>
@@ -113,11 +114,13 @@ function OnScreenGui({
 }
 
 OnScreenGui.propTypes = {
-  isInBrowser: PropTypes.bool
+  isInBrowser: PropTypes.bool,
+  showFlightController: PropTypes.bool
 };
 
 OnScreenGui.defaultProps = {
-  isInBrowser: false
+  isInBrowser: false,
+  showFlightController: false
 };
 
 export default OnScreenGui;
