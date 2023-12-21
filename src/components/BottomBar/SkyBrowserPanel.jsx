@@ -311,7 +311,11 @@ function SkyBrowserPanel() {
 
   return (
     <div className={Picker.Wrapper}>
-      <Picker onClick={togglePopover} refKey="SkyBrowser">
+      <Picker
+        onClick={togglePopover}
+        refKey="SkyBrowser"
+        className={`${popoverVisible && Picker.Active}`}
+      >
         <IoTelescopeSharp color="white" alt="WWT" className={Picker.Icon} />
       </Picker>
       {popoverVisible && popover()}
