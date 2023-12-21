@@ -255,11 +255,9 @@ function PropertyOwnerHeader({
   const shouldFadeCheckbox = (fadeUri && fadeValue > 0.0);
 
   return (
-    <header
+    <Button
       className={`${toggleHeaderStyles.toggle} ${isLayer && styles.layerHeader}`}
       onClick={onClick}
-      role="button"
-      tabIndex={0}
       ref={(el) => { refs.current[refName] = el; }}
     >
       <Row>
@@ -296,7 +294,7 @@ function PropertyOwnerHeader({
           )}
         </span>
       </Row>
-    </header>
+    </Button>
   );
 }
 

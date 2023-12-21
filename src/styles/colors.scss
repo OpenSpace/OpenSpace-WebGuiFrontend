@@ -14,7 +14,7 @@ $ui-background-hover: rgba(white, 0.08);
 $ui-background-selected: rgba(white, 0.05);
 $ui-background-active: rgba(white, 0.05);
 $ui-background-slider-input: rgba(white, 0.1);
-$ui-background-buttons: rgba(white, 0.12);
+$ui-background-buttons: rgba(white, 0.1);
 $ui-background-buttons-hover: rgba(white, 0.2);
 
 $ui-danger: $red;
@@ -24,7 +24,7 @@ $ui-highlight-secondary: $blue;
 $ui-divider: darken($ui-background, 1%);
 
 $text-color-focus: white;
-$text-color-blur: darken($text-color-focus, 40%);
+$text-color-blur: darken($text-color-focus, 50%);
 
 $input-text-color-focus: $text-color-focus;
 $input-text-color-blur: $text-color-blur;

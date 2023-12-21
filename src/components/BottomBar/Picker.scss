@@ -9,16 +9,16 @@
 
   &:hover,
   &:focus {
-    background: $ui-background-hover;
+    background: $ui-background-buttons-hover;
     outline: none;
     text-shadow: none;
   }
 
   &.Active {
-    background: $ui-background;
+    background: $ui-background-active;
 
     &:hover {
-      background: $ui-background-hover;
+      background: $ui-background-buttons-hover;
     }
   }
 }
