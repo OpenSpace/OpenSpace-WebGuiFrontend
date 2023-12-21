@@ -74,7 +74,7 @@ $small-padding: calc($vertical-padding / 2) calc($base-padding / 2);
     }
   }
 
-  &:active {
+  &:active:not(.noChangeOnActive) {
     background: $ui-background-buttons;
     color: $text-color-blur;
   }

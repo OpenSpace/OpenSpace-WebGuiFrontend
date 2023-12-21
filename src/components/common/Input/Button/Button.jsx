@@ -6,7 +6,7 @@ import { excludeKeys } from '../../../../utils/helpers';
 import styles from './Button.scss';
 
 const Button = React.forwardRef((props, ref) => {
-  const specialClasses = 'onClick block small transparent uppercase smalltext nopadding largetext regular wide';
+  const specialClasses = 'onClick block small transparent uppercase smalltext nopadding largetext regular wide noChangeOnActive';
   const inheritProps = excludeKeys(props, specialClasses);
 
   const extraClass = specialClasses.split(' ')
@@ -17,6 +17,7 @@ const Button = React.forwardRef((props, ref) => {
   function onClick(evt) {
     props.onClick(evt);
     evt.currentTarget.blur();
+    evt.stopPropagation();
   }
 
   return (
@@ -36,6 +37,7 @@ Button.propTypes = {
   block: PropTypes.bool,
   className: PropTypes.string,
   children: PropTypes.node.isRequired,
+  noChangeOnActive: PropTypes.bool,
   nopadding: PropTypes.bool,
   onClick: PropTypes.func,
   small: PropTypes.bool,
@@ -49,6 +51,7 @@ Button.propTypes = {
 Button.defaultProps = {
   block: false,
   className: '',
+  noChangeOnActive: false,
   nopadding: false,
   onClick: () => {},
   small: false,

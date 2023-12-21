@@ -155,6 +155,7 @@ function PropertyOwnerHeader({
     } else {
       focusAction();
     }
+    evt.stopPropagation();
   }
 
   function onToggleCheckboxClick(shouldBeEnabled, event) {
@@ -259,6 +260,7 @@ function PropertyOwnerHeader({
       className={`${toggleHeaderStyles.toggle} ${isLayer && styles.layerHeader}`}
       onClick={onClick}
       ref={(el) => { refs.current[refName] = el; }}
+      noChangeOnActive
     >
       <Row>
         {expanded ?
