@@ -4,29 +4,26 @@
   overflow-y: auto;
   overflow-x: hidden;
   position: relative;
-
-  &::before,
-  &::after {
-    content: ' ';
-    pointer-events: none;
-    z-index: 22;
-  }
 }
 
-.notAtTop::before {
+.topShadow, .bottomShadow {
+  content: ' ';
+  position: sticky;
+  pointer-events: none;
   animation: $fade-in-animation;
+  height: 2 * $base-padding;
+  width: 100%;
+  z-index: 22;
+}
+
+.topShadow {
+  top: 0;
   background: linear-gradient(to top, transparent, $ui-background-solid);
-  height: 2 * $base-padding;
-  position: fixed;
-  width: unquote('calc(100% - #{$scrollbar-width})');
 }
 
-.notAtBottom::after {
-  animation: $fade-in-animation;
+.bottomShadow {
+  bottom: 0;
   background: linear-gradient(to top, $ui-background-solid, transparent);
-  height: 2 * $base-padding;
-  position: fixed;
-  left: calc(((100% - (100% - #{$scrollbar-width}))) * 0.5);
-  top: calc(100% - (2 * $base-padding));
-  width: unquote('calc(100% - #{$scrollbar-width})');
+  // If this is not here, there is a gap at the bottom for some reason. Not sure why
+  margin-bottom: -2px;
 }

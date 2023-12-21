@@ -42,34 +42,15 @@ function ScrollOverlay({ className, children }) {
     }
   }
 
-  function hasScrollBar() {
-    if (!nodeRef.current || !nodeRef.current.scrollHeight) {
-      return false;
-    }
-
-    return nodeRef.current.clientHeight < nodeRef.current.scrollHeight;
-  }
-
-  function stateClasses() {
-    if (!hasScrollBar()) return false;
-
-    let classes = '';
-    if (!atBottom) {
-      classes += `${styles.notAtBottom} `;
-    }
-    if (!atTop) {
-      classes += styles.notAtTop;
-    }
-    return classes;
-  }
-
   return (
     <div
-      className={`scroll-content ${className} ${styles.ScrollOverlay} ${stateClasses()}`}
+      className={`scroll-content ${className} ${styles.ScrollOverlay}`}
       id={id.current}
       ref={setDomNode}
     >
+      {!atTop && <div className={styles.topShadow} />}
       { children }
+      {!atBottom && <div className={styles.bottomShadow} />}
     </div>
   );
 }
