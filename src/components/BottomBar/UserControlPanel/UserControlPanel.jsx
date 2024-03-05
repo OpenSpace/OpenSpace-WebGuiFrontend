@@ -1,0 +1,116 @@
+import React from 'react';
+import { MdWeb } from 'react-icons/md';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { loadUserPanelData, reloadPropertyTree, setPopoverVisibility, addUserPanel } from '../../../api/Actions';
+import Button from '../../common/Input/Button/Button';
+import Select from '../../common/Input/Select/Select';
+import Popover from '../../common/Popover/Popover';
+import Row from '../../common/Row/Row';
+
+import Picker from '../Picker';
+
+import styles from './UserControlPanel.scss';
+
+function UserControlPanel() {
+  const [fileList, setFileList] = React.useState(undefined);
+  const [selectedPanel, setSelectedPanel] = React.useState(undefined)
+  const popoverVisible = useSelector(
+    (state) => state.local.popovers.userControlPanel.visible
+  );
+  const luaApi = useSelector((state) => state.luaApi);
+  const isDataInitialized = useSelector((state) => state.userPanels.isInitialized);
+
+  const panelList = useSelector((state) => state.userPanels.panels || []);
+
+  const dispatch = useDispatch();
+    if (luaApi && !isDataInitialized) {
+        dispatch(loadUserPanelData(luaApi));
+    }
+
+  
+  function togglePopover() {
+    //Todo MICAH this was to avoid creating a topic
+    //Didnt feel right making a topic just for this
+    //Thinking to adda a generic folder watching topic 
+    if (!popoverVisible) {
+      dispatch(loadUserPanelData(luaApi));
+    }
+    dispatch(setPopoverVisibility({
+      popover: 'userControlPanel',
+      visible: !popoverVisible
+    }));
+  }
+
+  function updatePanelSelection(selection) {
+    setSelectedPanel(selection.value);
+  }
+
+  function addPanel() {
+    dispatch(addUserPanel(selectedPanel))
+  }
+
+  function popover() {
+
+    var fileList = ["suncontroler", "buttonpage"];
+    var placeholderText = "Loading pages"
+
+    
+    const options = Object.values(panelList)
+      .map((panel) => ({ value: panel.path, label: panel.name }));
+
+      return (
+      <Popover
+        className={Picker.Popover}
+        title="User Control Panels"
+        closeCallback={() => togglePopover()}
+        detachable
+        attached
+      >
+        <div className={Popover.styles.content}>
+          <Row>
+          <Select
+              menuPlacement="top"
+              placeholder={placeholderText}
+              options={options}
+              label="Select Panel"
+              onChange={updatePanelSelection}
+              value={selectedPanel}
+            />
+            
+            <div className={Popover.styles.row}>
+              <Button
+                onClick={addPanel}
+                title="Add panel"
+                style={{ width: 90 }}
+                disabled={!selectedPanel}
+              >
+                <MdWeb alt="add panel" />
+                <span style={{ marginLeft: 5 }}>Add Panel</span>
+              </Button>
+            </div>
+          </Row>
+        </div>
+        {/* <hr className={Popover.styles.delimiter} />
+        <div className={Popover.styles.title}>Active Panels </div> */}
+      </Popover>
+    );
+  }
+
+  return (
+    <div className={Picker.Wrapper}>
+      <Picker
+        className={`${popoverVisible && Picker.Active}`}
+        onClick={togglePopover}
+        refKey="UserControl"
+      >
+        <div>
+          <MdWeb className={Picker.Icon} alt="user control" />
+        </div>
+      </Picker>
+      { popoverVisible && popover() }
+    </div>
+  );
+}
+
+export default UserControlPanel;

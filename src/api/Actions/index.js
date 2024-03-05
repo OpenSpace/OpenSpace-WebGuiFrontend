@@ -214,6 +214,27 @@ export const removeExoplanets = (data) => ({
   payload: data
 });
 
+
+export const loadUserPanelData = (luaApi) => ({
+  type: actionTypes.loadUserPanelData,
+  payload: luaApi
+});
+
+export const initializeUserPanels = (data) => ({
+  type: actionTypes.initializeUserPanels,
+  payload: data
+});
+
+export const addUserPanel = (data) => ({
+  type: actionTypes.addUserPanel,
+  payload: data
+});
+
+export const removeUserPanel = (data) => ({
+  type: actionTypes.removeUserPanel,
+  payload: data
+});
+
 export const loadSkyBrowserData = (luaApi) => ({
   type: actionTypes.loadSkyBrowserData,
   payload: luaApi
