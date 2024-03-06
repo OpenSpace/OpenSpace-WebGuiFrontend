@@ -10,8 +10,9 @@ import styles from "./UserControlPanel.scss"
 function IndividualUserControlPanel({ uri }) {
   const myPopover = useSelector((state) => state.local.popovers.activeUserControlPanels[uri]);
   const showPopover = myPopover ? myPopover.visible : false;
+  var slash = (navigator.platform.indexOf('Win') > -1) ? "\\" : "/";
 
-    const panelName = uri.substr(uri.lastIndexOf('/') + 1)
+  const panelName = uri.substr(uri.lastIndexOf(slash) + 1)
 
   const dispatch = useDispatch();
 
@@ -29,7 +30,7 @@ function IndividualUserControlPanel({ uri }) {
       >
         <div className={styles.content}>
             <hr className={Popover.styles.delimiter} />
-            <iframe className={`${styles.panelIframe}`} src={`http://${window.location.host}/user/${panelName}`}></iframe>
+            <iframe className={`${styles.panelIframe}`} src={`http://${window.location.host}/user/${panelName}/index.html`}></iframe>
         </div>
       </Popover>
     );
