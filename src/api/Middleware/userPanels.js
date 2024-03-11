@@ -12,7 +12,7 @@ const getUserPanels = async (luaApi, callback) => {
     const userFolder = await luaApi.absPath("${USER}")
     const userwww = userFolder[1] + '/www';
     const served = await luaApi.getPropertyValue("Modules.WebGui.Directories");
-  
+
     var values = Object.values(served[1])
     if (values.indexOf('user') < 0 ) {
       values.push('user');
@@ -23,10 +23,12 @@ const getUserPanels = async (luaApi, callback) => {
     var slash = (navigator.platform.indexOf('Win') > -1) ? "\\" : "/";
     const panelPath = await luaApi.absPath("${USER}/www")
     const panelList = await luaApi.walkDirectoryFolders(panelPath[1]);
-
-    const newList = Object.values(panelList[1]).map((panel) => ({
-      name: panel.substr(panel.lastIndexOf(slash) + 1), path: panel
-    }));
+    var newList = {}
+    if (panelList[1]) {
+      newList = Object.values(panelList[1]).map((panel) => ({
+        name: panel.substr(panel.lastIndexOf(slash) + 1), path: panel
+      }));
+    }
     
     callback(newList);
 };
