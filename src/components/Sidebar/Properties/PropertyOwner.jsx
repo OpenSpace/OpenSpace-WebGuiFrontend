@@ -98,7 +98,7 @@ function PropertyOwner({
 
   const isHidden = useSelector((state) => {
     const showHidden = state.propertyTree.properties['OpenSpaceEngine.ShowHiddenSceneGraphNodes'];
-    return isPropertyOwnerHidden(state.propertyTree.properties, uri) && !showHidden.value;
+    return isPropertyOwnerHidden(state.propertyTree.properties, uri) && !showHidden?.value;
   });
   // @TODO (emmbr 2023-02-21) Make this work for other propety owners that have
   // descriptions too, such as geojson layers
