@@ -98,12 +98,12 @@ function SessionRec() {
   }
 
   function startRecording() {
-    if (useTextFormat) {
+    // if (useTextFormat) {
       luaApi.sessionRecording.startRecordingAscii(filenameRecording);
-    } else {
-      // Binary
-      luaApi.sessionRecording.startRecording(filenameRecording);
-    }
+    // } else {
+    //   // Binary
+    //   luaApi.sessionRecording.startRecording(filenameRecording);
+    // }
   }
 
   function toggleRecording() {
