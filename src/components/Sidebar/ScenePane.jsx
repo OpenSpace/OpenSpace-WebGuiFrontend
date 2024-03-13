@@ -25,31 +25,10 @@ function ScenePane({ closeCallback }) {
     const topLevelGroupsPaths = Object.keys(state.groups).filter((path) => {
       // Get the number of slashes in the path
       const depth = (path.match(/\//g) || []).length;
-      return depth <= 1;
-    }).map((path) => path.slice(1)); // Remove first slash
-
-    // Convert back to object
-    const topLevelGroups = topLevelGroupsPaths.reduce((obj, key) => ({ ...obj, [key]: true }), {});
-
-    // Reorder properties based on SceneProperties ordering property
-    let sortedGroups = [];
-    const ordering = state.propertyTree.properties['Modules.ImGUI.Main.SceneProperties.Ordering'];
-    if (ordering && ordering.value) {
-      ordering.value.forEach((item) => {
-        if (topLevelGroups[item]) {
-          sortedGroups.push(item);
-          delete topLevelGroups[item];
-        }
-      });
-    }
-    // Add the remaining items to the end.
-    Object.keys(topLevelGroups).forEach((item) => {
-      sortedGroups.push(item);
+      return depth === 1;
     });
-
-    // Add back the leading slash
-    sortedGroups = sortedGroups.map((path) => `/${path}`);
-    return sortedGroups;
+    // @TODO: Handle things that are outside of any group (depth === 0)?
+    return topLevelGroupsPaths;
   }, shallowEqual);
 
   const propertyOwners = useSelector((state) => state.propertyTree.propertyOwners, shallowEqual);
