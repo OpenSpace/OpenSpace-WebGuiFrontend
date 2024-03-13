@@ -90,6 +90,29 @@ function UserControlPanel() {
               </Button>
             </div>
           </Row>
+          <hr className={Popover.styles.delimiter} />
+          <Row>
+            <div className={Popover.styles.title}>Add via URI</div>
+            <div className="urlbox">
+              <Input
+                value={panelURL}
+                label={panelURLLabel}
+                placeholder="URL"
+                onChange={(evt) => updatePanelURL(evt)}
+              />
+            </div>
+            <div className={Popover.styles.row}>
+              <Button
+                onClick={addWebPanel}
+                title="Add panel"
+                style={{ width: 90 }}
+                disabled={!panelURL}
+              >
+                <MdWeb alt="add panel" />
+                <span style={{ marginLeft: 5 }}>Add Panel</span>
+              </Button>
+            </div>
+          </Row>
         </div>
         {/* <hr className={Popover.styles.delimiter} />
         <div className={Popover.styles.title}>Active Panels </div> */}
