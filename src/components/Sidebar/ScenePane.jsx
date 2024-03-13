@@ -1,6 +1,7 @@
 import React from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
+import shallowEqualArrays from 'shallow-equal/arrays';
 
 import { useLocalStorageState } from '../../utils/customHooks';
 import { checkIfVisible, isPropertyOwnerHidden } from '../../utils/propertyTreeHelpers';
@@ -17,6 +18,7 @@ import Pane from './Pane';
 
 function ScenePane({ closeCallback }) {
   const [showOnlyEnabled, setShowOnlyEnabled] = useLocalStorageState('showOnlyEnabled', false);
+  const [showHiddenNodes, setShowHiddenNodes] = useLocalStorageState('showHiddenNodes', false);
 
   const groups = useSelector((state) => {
     const topLevelGroupsPaths = Object.keys(state.groups).filter((path) => {
@@ -50,21 +52,27 @@ function ScenePane({ closeCallback }) {
   }, shallowEqual);
 
   const propertyOwners = useSelector((state) => state.propertyTree.propertyOwners, shallowEqual);
-  const properties = useSelector((state) => state.propertyTree.properties, shallowEqual);
   const propertyOwnersScene = propertyOwners.Scene?.subowners ?? [];
+
+  const filteredPropertyOwnersScene = useSelector((state) => {
+    const props = state.propertyTree.properties;
+    let owners = propertyOwnersScene;
+    // Filter based on show enabled/hidden
+    if (showOnlyEnabled) {
+      owners = owners.filter((uri) => checkIfVisible(props, uri));
+    }
+    if (!showHiddenNodes) {
+      owners = owners.filter((uri) => !isPropertyOwnerHidden(props, uri));
+    }
+    return owners;
+  }, shallowEqualArrays);
 
   function matcher(test, search) {
     const node = propertyOwners[test.uri] || {};
-    const guiHidden = isPropertyOwnerHidden(properties, test.uri);
-    return ObjectWordBeginningSubstring(node, search) && !guiHidden;
+    return ObjectWordBeginningSubstring(node, search);
   }
 
-  function onlyEnabledMatcher(test, search) {
-    const isVisible = checkIfVisible(properties, test.uri);
-    return isVisible && matcher(test, search);
-  }
-
-  const entries = propertyOwnersScene.map((uri) => ({
+  const entries = filteredPropertyOwnersScene.map((uri) => ({
     key: uri,
     uri,
     expansionIdentifier: `scene-search/${uri}`
@@ -88,6 +96,16 @@ function ScenePane({ closeCallback }) {
       >
         <p>Show only enabled</p>
       </Checkbox>
+      <Checkbox
+        checked={showHiddenNodes}
+        left={false}
+        disabled={false}
+        setChecked={() => setShowHiddenNodes((current) => !current)}
+        wide
+        style={{ padding: '2px' }}
+      >
+        <p>Show hidden scene graph nodes</p>
+      </Checkbox>
     </SettingsPopup>
   );
 
@@ -96,10 +114,12 @@ function ScenePane({ closeCallback }) {
       {(entries.length === 0) &&
         <LoadingBlocks className={Pane.styles.loading} />}
       {entries.length > 0 && (
-        <FilterList matcher={showOnlyEnabled ? onlyEnabledMatcher : matcher}>
+        <FilterList matcher={matcher}>
           <FilterListFavorites>
             <ContextSection expansionIdentifier="context" />
-            {favorites.map((favorite) => <Group {...favorite} showOnlyEnabled={showOnlyEnabled} />)}
+            {favorites.map((favorite) => (
+              <Group {...favorite} showOnlyEnabled={showOnlyEnabled} showHidden={showHiddenNodes} />
+            ))}
           </FilterListFavorites>
           <FilterListData>
             {entries.map((entry) => <PropertyOwner {...entry} />)}

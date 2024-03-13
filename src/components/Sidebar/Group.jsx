@@ -5,6 +5,7 @@ import shallowEqualArrays from 'shallow-equal/arrays';
 
 import { setPropertyTreeExpansion } from '../../api/Actions';
 import { sortGroups } from '../../api/keys';
+import { checkIfVisible, isPropertyOwnerHidden } from '../../utils/propertyTreeHelpers';
 import ToggleContent from '../common/ToggleContent/ToggleContent';
 
 import PropertyOwner, {
@@ -12,26 +13,33 @@ import PropertyOwner, {
   nodeExpansionIdentifier as propertyOwnerNodeExpansionIdentifier
 } from './Properties/PropertyOwner';
 
-function isEnabled(properties, uri) {
-  return properties[`${uri}.Renderable.Enabled`]?.value;
+function filterPropertyOwners(ownerUris, props, showOnlyEnabled, showHidden) {
+  let result = ownerUris;
+  if (showOnlyEnabled) {
+    result = result.filter((uri) => checkIfVisible(props, uri));
+  }
+  if (!showHidden) {
+    result = result.filter((uri) => !isPropertyOwnerHidden(props, uri));
+  }
+  return result;
 }
 
-function shouldShowGroup(state, path) {
+function shouldShowGroup(state, path, showOnlyEnabled, showHidden) {
   const data = state.groups[path] || {};
   const subGroups = data.subgroups || [];
-  // If there are any enabled property owners in the result,
-  // show the groups
+  // If there are any enabled property owners in the result, show the groups
   if (subGroups.length === 0) {
     const propertyOwners = data.propertyOwners || [];
     const props = state.propertyTree.properties;
-
-    // Filter PropertyOwners
-    const visible = propertyOwners.filter((propertyOwner) => isEnabled(props, propertyOwner));
+    const visible = filterPropertyOwners(propertyOwners, props, showOnlyEnabled, showHidden);
     return visible.length !== 0;
   }
+  // Recursively check the subgroups
   const initialValue = false;
   const result = subGroups.reduce(
-    (accumulator, currentValue) => accumulator || shouldShowGroup(state, currentValue),
+    (accumulator, currentValue) => (
+      accumulator || shouldShowGroup(state, currentValue, showOnlyEnabled, showHidden)
+    ),
     initialValue
   );
   return result;
@@ -54,46 +62,49 @@ function nodeExpansionIdentifier(path) {
 }
 
 function Group({
-  path, expansionIdentifier, showOnlyEnabled
+  path, expansionIdentifier, showOnlyEnabled, showHidden
 }) {
   const isExpanded = useSelector((state) => {
     const expanded = state.local.propertyTreeExpansion[expansionIdentifier];
     return Boolean(expanded);
   });
-  const groupPaths = useSelector((state) => {
+
+  const shouldFilter = showOnlyEnabled || !showHidden;
+
+  // Sub-groups
+  const subGroupPaths = useSelector((state) => {
     const data = state.groups[path] || {};
-    const result = data.subgroups || [];
-    // See if the groups contain any PropertyOwners
-    if (showOnlyEnabled) {
-      return result.filter((group) => shouldShowGroup(state, group));
+    let result = data.subgroups || [];
+    if (shouldFilter) {
+      result = result.filter((group) => shouldShowGroup(state, group, showOnlyEnabled, showHidden));
     }
     return result;
   }, shallowEqualArrays);
 
-  const ownerUris = useSelector((state) => {
-    const data = state.groups[path] || {};
-    const groupPropOwners = data.propertyOwners || [];
-    if (!showOnlyEnabled) {
-      return groupPropOwners;
-    }
-    // Filter PropertyOwners
+  // Property-owners
+  const propertyOwnerUris = useSelector((state) => {
     const props = state.propertyTree.properties;
-    return groupPropOwners.filter((propertyOwner) => isEnabled(props, propertyOwner));
+    const data = state.groups[path] || {};
+    let result = data.propertyOwners || [];
+    if (shouldFilter) {
+      result = filterPropertyOwners(result, props, showOnlyEnabled, showHidden);
+    }
+    return result;
   }, shallowEqualArrays);
 
   const ownerNames = useSelector((state) => {
     const props = state.propertyTree.properties;
     const propOwners = state.propertyTree.propertyOwners;
-    return ownerUris.map((uri) => propertyOwnerName(propOwners, props, uri));
+    return propertyOwnerUris.map((uri) => propertyOwnerName(propOwners, props, uri));
   }, shallowEqualArrays);
 
-  const propertyOwners = ownerUris.map((uri, index) => ({
+  const propertyOwners = propertyOwnerUris.map((uri, index) => ({
     type: 'propertyOwner',
     payload: uri,
     name: ownerNames[index]
   }));
 
-  const groups = groupPaths.map((groupPath) => ({
+  const groups = subGroupPaths.map((groupPath) => ({
     type: 'group',
     payload: groupPath,
     name: displayName(groupPath)
@@ -143,6 +154,7 @@ function Group({
                   path={entry.payload}
                   expansionIdentifier={childNodeIdentifier}
                   showOnlyEnabled={showOnlyEnabled}
+                  showHidden={showHidden}
                 />
               );
             }
@@ -170,11 +182,13 @@ function Group({
 Group.propTypes = {
   path: PropTypes.string.isRequired,
   expansionIdentifier: PropTypes.string.isRequired,
-  showOnlyEnabled: PropTypes.bool
+  showOnlyEnabled: PropTypes.bool,
+  showHidden: PropTypes.bool
 };
 
 Group.defaultProps = {
-  showOnlyEnabled: false
+  showOnlyEnabled: false,
+  showHidden: false
 };
 
 export default Group;
