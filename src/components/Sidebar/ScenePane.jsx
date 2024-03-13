@@ -7,6 +7,7 @@ import { useLocalStorageState } from '../../utils/customHooks';
 import { checkIfVisible, isPropertyOwnerHidden } from '../../utils/propertyTreeHelpers';
 import { ObjectWordBeginningSubstring } from '../../utils/StringMatchers';
 import { FilterList, FilterListData, FilterListFavorites } from '../common/FilterList/FilterList';
+import InfoBox from '../common/InfoBox/InfoBox';
 import Checkbox from '../common/Input/Checkbox/Checkbox';
 import LoadingBlocks from '../common/LoadingBlock/LoadingBlocks';
 import SettingsPopup from '../common/SettingsPopup/SettingsPopup';
@@ -94,7 +95,13 @@ function ScenePane({ closeCallback }) {
         wide
         style={{ padding: '2px' }}
       >
-        <p>Show only enabled</p>
+        <p>
+          Show only visible
+          <InfoBox
+            style={{ paddingLeft: '4px' }}
+            text="Visible = Enabled and not faded out"
+          />
+        </p>
       </Checkbox>
       <Checkbox
         checked={showHiddenNodes}
@@ -104,7 +111,13 @@ function ScenePane({ closeCallback }) {
         wide
         style={{ padding: '2px' }}
       >
-        <p>Show hidden scene graph nodes</p>
+        <p>
+          Show hidden scene graph nodes
+          <InfoBox
+            style={{ paddingLeft: '4px' }}
+            text="Scene graph nodes that are not marked as hidden in the asset"
+          />
+        </p>
       </Checkbox>
     </SettingsPopup>
   );
