@@ -9,15 +9,13 @@
     },
     "requireConfigFile": false,
     "babelOptions": {
-    "presets": [
-        "@babel/preset-react"
-      ]
+      "presets": ["@babel/preset-react"]
     }
   },
   "env": {
     "browser": true
   },
-  "plugins": ["react", "simple-import-sort"],
+  "plugins": ["react", "simple-import-sort", "@typescript-eslint"],
   "rules": {
     "linebreak-style": "off", // We should not bother with this since git converts line endings anyways
     "no-plusplus": "off", // overly strict - maybe only allow in for loops though?
@@ -43,21 +41,31 @@
     "simple-import-sort/exports": "error",
     "indent": ["error", 2, { "SwitchCase": 1 }], // Indentation
     "eol-last": ["error", "always"], // End of file
-    "key-spacing": [1, {
-      "mode": "strict",
-      "beforeColon": false, // Make it pretty :)
-      "afterColon": true // Make it pretty :)
-    }],
+    "key-spacing": [
+      1,
+      {
+        "mode": "strict",
+        "beforeColon": false, // Make it pretty :)
+        "afterColon": true // Make it pretty :)
+      }
+    ],
     "react/destructuring-assignment": "off",
-    "prefer-destructuring": ["error", {"object": true, "array": false}],
+    "prefer-destructuring": ["error", { "object": true, "array": false }],
     "no-continue": "off",
     "jsx-a11y/click-events-have-key-events": "warn" // This should be considered when rewriting for disabilities
   },
-  "ignorePatterns": ["*.story.jsx", "src/components/BottomBar/TfEditor/*", "src/components/common/Graph/*"],
+  "ignorePatterns": [
+    "*.story.jsx",
+    "src/components/BottomBar/TfEditor/*",
+    "src/components/common/Graph/*"
+  ],
   "overrides": [
     // override "simple-import-sort" config
     {
       "files": ["*.js", "*.jsx", "*.ts", "*.tsx"],
+      "parser": "@typescript-eslint/parser",
+      "extends": ["plugin:@typescript-eslint/recommended"],
+      "plugins": ["@typescript-eslint"],
       "rules": {
         "simple-import-sort/imports": [
           "error",
