@@ -1,0 +1,26 @@
+.Frame {
+  position: fixed;
+  background-color: #333;
+}
+
+.RightFrame {
+  right: 0;
+  bottom: 0;
+  height: calc(100% - 100px); /* Adjust the height of the right frame to account for corner */
+  width: 100px;
+}
+.TopFrame {
+  left: 0;
+  top: 0;
+  width: calc(100% - 100px); /* Adjust the width of the top frame to account for corner */
+  height: 100px;
+}
+
+.Corner {
+  background-color: red;
+  width: 100px;
+  height: 100px;
+  position: fixed;
+  top: 0;
+  right: 0;
+}

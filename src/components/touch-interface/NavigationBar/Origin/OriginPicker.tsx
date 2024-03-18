@@ -2,9 +2,9 @@ import React from 'react';
 import { MdAirplanemodeInactive, MdFlight } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
 /* eslint-disable import/no-webpack-loader-syntax */
-import Aim from 'svg-react-loader?name=Aim!../../../icons/aim.svg';
-import Anchor from 'svg-react-loader?name=Anchor!../../../icons/anchor.svg';
-import Focus from 'svg-react-loader?name=Focus!../../../icons/focus.svg';
+// import Aim from 'svg-react-loader?name=Aim!../../../icons/aim.svg';
+// import Anchor from 'svg-react-loader?name=Anchor!../../../icons/anchor.svg';
+// import Focus from 'svg-react-loader?name=Focus!../../../icons/focus.svg';
 
 import {
   connectFlightController,
@@ -17,7 +17,8 @@ import {
   unsubscribeToCameraPath,
   unsubscribeToEngineMode,
   unsubscribeToSessionRecording
-} from '../../../api/Actions';
+} from '@api/Actions';
+
 import {
   ApplyIdleBehaviorOnPathFinishKey,
   CameraPathArrivalDistanceFactorKey,
@@ -32,30 +33,30 @@ import {
   ScenePrefixKey,
   SessionStatePaused,
   SessionStatePlaying
-} from '../../../api/keys';
-import propertyDispatcher from '../../../api/propertyDispatcher';
-import { useLocalStorageState } from '../../../utils/customHooks';
+} from '@api/keys';
+import propertyDispatcher from '@api/propertyDispatcher';
+import { useLocalStorageState } from '@utils/customHooks';
 import {
   FilterList,
   FilterListData,
   FilterListFavorites,
   FilterListShowMoreButton
-} from '../../common/FilterList/FilterList';
-import Button from '../../common/Input/Button/Button';
-import Checkbox from '../../common/Input/Checkbox/Checkbox';
-import LoadingString from '../../common/LoadingString/LoadingString';
-import Popover from '../../common/Popover/Popover';
-import Row from '../../common/Row/Row';
-import SettingsPopup from '../../common/SettingsPopup/SettingsPopup';
-import SmallLabel from '../../common/SmallLabel/SmallLabel';
-import SvgIcon from '../../common/SvgIcon/SvgIcon';
-import ToggleContent from '../../common/ToggleContent/ToggleContent';
-import Property from '../../Sidebar/Properties/Property';
-import Picker from '../Picker';
+} from '@components/common/FilterList/FilterList';
+import Button from '@components/common/Input/Button/Button';
+import Checkbox from '@components/common/Input/Checkbox/Checkbox';
+import LoadingString from '@components/common/LoadingString/LoadingString';
+import Popover from '@components/common/Popover/Popover';
+import Row from '@components/common/Row/Row';
+import SettingsPopup from '@components/common/SettingsPopup/SettingsPopup';
+import SmallLabel from '@components/common/SmallLabel/SmallLabel';
+import SvgIcon from '@components/common/SvgIcon/SvgIcon';
+import ToggleContent from '@components/common/ToggleContent/ToggleContent';
+import Property from '@components/Sidebar/Properties/Property';
+import Picker from '@components/BottomBar/Picker';
 
-import FocusEntry from './FocusEntry';
+import FocusEntry from '@components/BottomBar/Origin/FocusEntry';
 
-import styles from './OriginPicker.scss';
+import styles from '@components/BottomBar/Origin/OriginPicker.scss';
 
 // Tag that each focusable node must have
 const InterestingTag = 'GUI.Interesting';

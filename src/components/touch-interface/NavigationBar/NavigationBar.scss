@@ -1,0 +1,12 @@
+.NavigationBar {
+  position: fixed;
+  bottom: 16px;
+  left: 16px;
+  padding: 8px 16px;
+  background-color: black;
+  display: flex;
+  flex-direction: flex-row;
+  gap: 1rem;
+  border-radius: 0.25rem;
+  width: fit-content;
+}

@@ -20,13 +20,14 @@ import LuaConsole from '../components/LuaConsole/LuaConsole';
 import NodeMetaContainer from '../components/NodeMetaPanel/NodeMetaContainer';
 import NodePopOverContainer from '../components/NodePropertiesPanel/NodePopOverContainer';
 import Sidebar from '../components/Sidebar/Sidebar';
-import TouchWrapper from '../components/TouchWrapper/TouchWrapper';
+import TouchWrapper from '../components/touch-interface/TouchWrapper/TouchWrapper';
 
 import About from './About/About';
 import ErrorMessage from './ErrorMessage';
 
 import '../styles/base.scss';
 import styles from './CloudGui.scss';
+import NavigationBar from '../components/touch-interface/NavigationBar/NavigationBar';
 
 interface CloudGuiProps {
   isInBrowser: boolean;
@@ -102,7 +103,7 @@ function CloudGui({ isInBrowser = false, showFlightController = true }: CloudGui
         <TouchWrapper>
           {showAbout && (
             <Overlay>
-              <Stack style={{ maxWidth: '500px' }}>
+              <Stack style={{ maxWidth: '500px' }} className={''}>
                 <Button style={{ alignSelf: 'flex-end', color: 'white' }} onClick={hideAbout}>
                   Close
                 </Button>
@@ -110,18 +111,10 @@ function CloudGui({ isInBrowser = false, showFlightController = true }: CloudGui
               </Stack>
             </Overlay>
           )}
-          <ErrorMessage />
-          <section className={styles.Grid__Left}>
-            <Sidebar showTutorial={isInBrowser ? null : setShowTutorial} />
-          </section>
-          <section className={styles.Grid__Right}>
-            {isInBrowser && luaConsoleVisible && <LuaConsole />}
-            <NodePopOverContainer />
-            <NodeMetaContainer />
-            <BottomBar showFlightController={showFlightController} />
-            <KeybindingPanel />
-            <TourPopup isVisible={showTutorial} setVisibility={(show) => setShowTutorial(show)} />
-          </section>
+          {/* <ErrorMessage /> */}
+          <main>
+            <NavigationBar showTutorial={false} />
+          </main>
         </TouchWrapper>
       </RefsProvider>
     </div>
