@@ -7,6 +7,7 @@ import Button from '../../common/Input/Button/Button';
 import Select from '../../common/Input/Select/Select';
 import Popover from '../../common/Popover/Popover';
 import Row from '../../common/Row/Row';
+import Input from '../../common/Input/Input/Input';
 
 import Picker from '../Picker';
 
@@ -15,6 +16,7 @@ import styles from './UserControlPanel.scss';
 function UserControlPanel() {
   const [fileList, setFileList] = React.useState(undefined);
   const [selectedPanel, setSelectedPanel] = React.useState(undefined)
+  const [panelURL, setPanelURL] = React.useState(undefined)
   const popoverVisible = useSelector(
     (state) => state.local.popovers.userControlPanel.visible
   );
@@ -50,12 +52,19 @@ function UserControlPanel() {
     dispatch(addUserPanel(selectedPanel))
   }
 
+  function addWebPanel() {
+    dispatch(addUserPanel(panelURL))
+  }
+
+  function updatePanelURL(evt) {
+    setPanelURL(evt.target.value)
+  }
+
   function popover() {
 
     var fileList = ["suncontroler", "buttonpage"];
     var placeholderText = "Loading pages"
 
-    
     const options = Object.values(panelList)
       .map((panel) => ({ value: panel.path, label: panel.name }));
 
@@ -96,7 +105,7 @@ function UserControlPanel() {
             <div className="urlbox">
               <Input
                 value={panelURL}
-                label={panelURLLabel}
+                label="URL"
                 placeholder="URL"
                 onChange={(evt) => updatePanelURL(evt)}
               />

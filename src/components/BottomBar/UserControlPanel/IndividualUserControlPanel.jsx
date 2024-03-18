@@ -21,6 +21,10 @@ function IndividualUserControlPanel({ uri }) {
   }
 
   function popover() {
+    var iframesrc = `http://${window.location.host}/user/${panelName}/index.html`;
+    if ( (panelName.indexOf('http://') == 0) || (panelName.indexOf('https://') == 0)) {
+      iframesrc = panelName;
+    }
     return (
       <Popover
         className={`${Picker.Popover} ${styles.userPanel}`}
@@ -30,7 +34,7 @@ function IndividualUserControlPanel({ uri }) {
       >
         <div className={styles.content}>
             <hr className={Popover.styles.delimiter} />
-            <iframe className={`${styles.panelIframe}`} src={`http://${window.location.host}/user/${panelName}/index.html`}></iframe>
+            <iframe className={`${styles.panelIframe}`} src={iframesrc}></iframe>
         </div>
       </Popover>
     );

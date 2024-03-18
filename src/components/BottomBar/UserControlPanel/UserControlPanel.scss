@@ -1,5 +1,5 @@
 .container {
-    position: relative;
+    position: absolute;
     top: 0px;
     left: 0px;
   }
@@ -16,6 +16,7 @@
   min-width: 400px;
   min-height: 400px;
   position: inherit;
+  float: left;
 }
 
 .content {
