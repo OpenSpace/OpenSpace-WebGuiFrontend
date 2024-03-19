@@ -91,10 +91,10 @@ function ScenePane({ closeCallback }) {
         style={{ padding: '2px' }}
       >
         <p>
-          Show hidden scene graph nodes
+          Show objects with GUI hidden flag
           <InfoBox
             style={{ paddingLeft: '4px' }}
-            text="Scene graph nodes that are not marked as hidden in the asset"
+            text="Show scene graph nodes that are marked as hidden in the GUI part of the asset. These are otherwise hidden in the interface"
           />
         </p>
       </Checkbox>
