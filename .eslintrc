@@ -59,14 +59,26 @@
     "src/components/BottomBar/TfEditor/*",
     "src/components/common/Graph/*"
   ],
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
+    }
+  },
   "overrides": [
     // override "simple-import-sort" config
     {
       "files": ["*.js", "*.jsx", "*.ts", "*.tsx"],
       "parser": "@typescript-eslint/parser",
-      "extends": ["plugin:@typescript-eslint/recommended"],
+      "parserOptions": {
+        "project": "./tsconfig.json"
+      },
+      "extends": ["airbnb-typescript/base", "plugin:@typescript-eslint/recommended", "prettier"],
       "plugins": ["@typescript-eslint"],
       "rules": {
+        "react/jsx-filename-extension": [1, { "extensions": [".tsx", ".jsx"] }],
+        "@typescript-eslint/no-explicit-any": "off",
         "simple-import-sort/imports": [
           "error",
           {

@@ -1,0 +1,38 @@
+@import '../styles/all';
+
+.app {
+  color: white;
+  display: flex;
+  font-family: $font-family;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+}
+
+.Grid__Left,
+.Grid__Right {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: 100%;
+}
+
+.devModeTextBox {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background-color: orange;
+  border-radius: 5px;
+  padding: 0px 5px;
+  color: black;
+  text-transform: capitalize;
+  font-size: small;
+  opacity: 1;
+}
+
+/* Make it disappear on hover when onscreen, to prevent conflict with mouse
+   interaction when navigating */
+.devModeTextBox:hover {
+  opacity: 0;
+}

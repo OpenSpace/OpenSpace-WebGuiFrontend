@@ -28,7 +28,7 @@ const decimalAdjust = (type: string, value: number, exponent: ?number = 0): numb
   returnValue = Math[type](+`${returnValue[0]}e${returnValue[1] ? +returnValue[1] - exp : -exp}`);
   // Shift back
   returnValue = returnValue.toString().split('e');
-  return +(`${returnValue[0]}e${returnValue[1] ? (+returnValue[1] + exp) : exp}`);
+  return +`${returnValue[0]}e${returnValue[1] ? +returnValue[1] + exp : exp}`;
 };
 export const round10 = (value, exponent) => decimalAdjust('round', value, exponent);
 export const floor10 = (value, exponent) => decimalAdjust('floor', value, exponent);
@@ -44,8 +44,9 @@ export function precision(value: number) {
 
   let e = 1;
   let precisionNumber = 0;
-  while ((Math.round(value * e) / e) !== value) {
-    e *= 10; precisionNumber++;
+  while (Math.round(value * e) / e !== value) {
+    e *= 10;
+    precisionNumber++;
   }
   return precisionNumber;
 }

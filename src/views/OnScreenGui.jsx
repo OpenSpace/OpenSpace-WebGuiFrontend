@@ -5,7 +5,10 @@ import PropTypes from 'prop-types';
 import { setShowAbout, startConnection } from '../api/Actions';
 import environment from '../api/Environment';
 import {
-  formatVersion, isCompatible, RequiredOpenSpaceVersion, RequiredSocketApiVersion
+  formatVersion,
+  isCompatible,
+  RequiredOpenSpaceVersion,
+  RequiredSocketApiVersion
 } from '../api/Version';
 import BottomBar from '../components/BottomBar/BottomBar';
 import KeybindingPanel from '../components/BottomBar/KeybindingPanel';
@@ -25,10 +28,7 @@ import ErrorMessage from './ErrorMessage';
 import '../styles/base.scss';
 import styles from './OnScreenGui.scss';
 
-function OnScreenGui({
-  isInBrowser,
-  showFlightController
-}) {
+function OnScreenGui({ isInBrowser, showFlightController }) {
   let hasCheckedVersion = false;
   const [showTutorial, setShowTutorial] = React.useState(false);
   const [luaConsoleVisible, setLuaConsoleVisible] = React.useState(false);
@@ -60,33 +60,37 @@ function OnScreenGui({
     const versionData = version.data;
     if (!isCompatible(versionData.openSpaceVersion, RequiredOpenSpaceVersion)) {
       console.warn(
-        `Possible incompatibility: \nRequired OpenSpace version: ${
-          formatVersion(RequiredOpenSpaceVersion)
-        }. Currently controlling OpenSpace version ${
-          formatVersion(versionData.openSpaceVersion)}.`,
+        `Possible incompatibility: \nRequired OpenSpace version: ${formatVersion(
+          RequiredOpenSpaceVersion
+        )}. Currently controlling OpenSpace version ${formatVersion(versionData.openSpaceVersion)}.`
       );
     }
     if (!isCompatible(versionData.socketApiVersion, RequiredSocketApiVersion)) {
       console.warn(
-        `Possible incompatibility: \nRequired Socket API version: ${
-          formatVersion(RequiredSocketApiVersion)
-        }. Currently operating over API version ${
-          formatVersion(versionData.socketApiVersion)}.`,
+        `Possible incompatibility: \nRequired Socket API version: ${formatVersion(
+          RequiredSocketApiVersion
+        )}. Currently operating over API version ${formatVersion(versionData.socketApiVersion)}.`
       );
     }
     hasCheckedVersion = true;
   }
 
   return (
-    <div className={styles.app} style={environment.developmentMode ? { borderStyle: 'solid', borderWidth: '3px', borderColor: 'orange' } : null}>
+    <div
+      className={styles.app}
+      style={
+        environment.developmentMode ?
+          { borderStyle: 'solid', borderWidth: '3px', borderColor: 'orange' } :
+          null
+      }
+    >
       {environment.developmentMode && (
         <div className={styles.devModeTextBox}>
           <p>Dev Gui</p>
         </div>
       )}
       <RefsProvider>
-        { showAbout && (
-
+        {showAbout && (
           <Overlay>
             <Stack style={{ maxWidth: '500px' }}>
               <Button style={{ alignSelf: 'flex-end', color: 'white' }} onClick={hideAbout}>

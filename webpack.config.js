@@ -28,11 +28,13 @@ module.exports = {
     proxy: {
       '/': {
         target: 'http://localhost:4680',
-        bypass(req) {
-          if (req.originalUrl) {
+        bypass(req, res, proxyOptions) {
+          if (
+            req.originalUrl.indexOf('/frontend') === 0 ||
+            req.originalUrl.indexOf('/environment.js') === 0
+          ) {
             return req.originalUrl;
           }
-          return false;
         }
       }
     }
@@ -41,7 +43,7 @@ module.exports = {
     rules: [
       // Load JS!
       {
-        test: /\.(js|jsx|ts|tsx)$/, // Adjust the test regex to include both JS and TS files
+        test: /\.(js|jsx|ts|tsx)$/,
         use: ['babel-loader'],
         exclude: /node_modules/
       },
@@ -86,10 +88,7 @@ module.exports = {
     ]
   },
   resolve: {
-    extensions: ['.js', '.jsx', '.ts', '.tsx'],
-    alias: {
-      '@views': resolve(__dirname, 'src/views')
-    }
+    extensions: ['.js', '.jsx', '.ts', '.tsx']
   },
   plugins: [
     // enable HMR globally
