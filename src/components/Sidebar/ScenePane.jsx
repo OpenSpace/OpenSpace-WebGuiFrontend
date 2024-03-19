@@ -134,7 +134,7 @@ function ScenePane({ closeCallback }) {
             <ToggleContent
               expanded={isFeaturedExpanded}
               setExpanded={setFeaturedExpanded}
-              title="Featured"
+              title="Quick Access"
             >
               {sortedInterestingNodes.map((entry) => <PropertyOwner {...entry} />)}
             </ToggleContent>
