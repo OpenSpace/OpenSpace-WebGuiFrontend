@@ -1,11 +1,13 @@
 import React from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
+import shallowEqualArrays from 'shallow-equal/arrays';
 
 import { useLocalStorageState } from '../../utils/customHooks';
 import { checkIfVisible, isPropertyOwnerHidden } from '../../utils/propertyTreeHelpers';
 import { ObjectWordBeginningSubstring } from '../../utils/StringMatchers';
 import { FilterList, FilterListData, FilterListFavorites } from '../common/FilterList/FilterList';
+import InfoBox from '../common/InfoBox/InfoBox';
 import Checkbox from '../common/Input/Checkbox/Checkbox';
 import LoadingBlocks from '../common/LoadingBlock/LoadingBlocks';
 import SettingsPopup from '../common/SettingsPopup/SettingsPopup';
@@ -17,54 +19,40 @@ import Pane from './Pane';
 
 function ScenePane({ closeCallback }) {
   const [showOnlyEnabled, setShowOnlyEnabled] = useLocalStorageState('showOnlyEnabled', false);
+  const [showHiddenNodes, setShowHiddenNodes] = useLocalStorageState('showHiddenNodes', false);
 
   const groups = useSelector((state) => {
     const topLevelGroupsPaths = Object.keys(state.groups).filter((path) => {
       // Get the number of slashes in the path
       const depth = (path.match(/\//g) || []).length;
-      return depth <= 1;
-    }).map((path) => path.slice(1)); // Remove first slash
-
-    // Convert back to object
-    const topLevelGroups = topLevelGroupsPaths.reduce((obj, key) => ({ ...obj, [key]: true }), {});
-
-    // Reorder properties based on SceneProperties ordering property
-    let sortedGroups = [];
-    const ordering = state.propertyTree.properties['Modules.ImGUI.Main.SceneProperties.Ordering'];
-    if (ordering && ordering.value) {
-      ordering.value.forEach((item) => {
-        if (topLevelGroups[item]) {
-          sortedGroups.push(item);
-          delete topLevelGroups[item];
-        }
-      });
-    }
-    // Add the remaining items to the end.
-    Object.keys(topLevelGroups).forEach((item) => {
-      sortedGroups.push(item);
+      return depth === 1;
     });
-
-    // Add back the leading slash
-    sortedGroups = sortedGroups.map((path) => `/${path}`);
-    return sortedGroups;
+    // @TODO: Handle things that are outside of any group (depth === 0)?
+    return topLevelGroupsPaths;
   }, shallowEqual);
 
   const propertyOwners = useSelector((state) => state.propertyTree.propertyOwners, shallowEqual);
-  const properties = useSelector((state) => state.propertyTree.properties, shallowEqual);
   const propertyOwnersScene = propertyOwners.Scene?.subowners ?? [];
+
+  const filteredPropertyOwnersScene = useSelector((state) => {
+    const props = state.propertyTree.properties;
+    let owners = propertyOwnersScene;
+    // Filter based on show enabled/hidden
+    if (showOnlyEnabled) {
+      owners = owners.filter((uri) => checkIfVisible(props, uri));
+    }
+    if (!showHiddenNodes) {
+      owners = owners.filter((uri) => !isPropertyOwnerHidden(props, uri));
+    }
+    return owners;
+  }, shallowEqualArrays);
 
   function matcher(test, search) {
     const node = propertyOwners[test.uri] || {};
-    const guiHidden = isPropertyOwnerHidden(properties, test.uri);
-    return ObjectWordBeginningSubstring(node, search) && !guiHidden;
+    return ObjectWordBeginningSubstring(node, search);
   }
 
-  function onlyEnabledMatcher(test, search) {
-    const isVisible = checkIfVisible(properties, test.uri);
-    return isVisible && matcher(test, search);
-  }
-
-  const entries = propertyOwnersScene.map((uri) => ({
+  const entries = filteredPropertyOwnersScene.map((uri) => ({
     key: uri,
     uri,
     expansionIdentifier: `scene-search/${uri}`
@@ -86,7 +74,29 @@ function ScenePane({ closeCallback }) {
         wide
         style={{ padding: '2px' }}
       >
-        <p>Show only enabled</p>
+        <p>
+          Show only visible
+          <InfoBox
+            style={{ paddingLeft: '4px' }}
+            text="Visible = Enabled and not faded out"
+          />
+        </p>
+      </Checkbox>
+      <Checkbox
+        checked={showHiddenNodes}
+        left={false}
+        disabled={false}
+        setChecked={() => setShowHiddenNodes((current) => !current)}
+        wide
+        style={{ padding: '2px' }}
+      >
+        <p>
+          Show objects with GUI hidden flag
+          <InfoBox
+            style={{ paddingLeft: '4px' }}
+            text="Show scene graph nodes that are marked as hidden in the GUI part of the asset. These are otherwise hidden in the interface"
+          />
+        </p>
       </Checkbox>
     </SettingsPopup>
   );
@@ -96,10 +106,12 @@ function ScenePane({ closeCallback }) {
       {(entries.length === 0) &&
         <LoadingBlocks className={Pane.styles.loading} />}
       {entries.length > 0 && (
-        <FilterList matcher={showOnlyEnabled ? onlyEnabledMatcher : matcher}>
+        <FilterList matcher={matcher}>
           <FilterListFavorites>
             <ContextSection expansionIdentifier="context" />
-            {favorites.map((favorite) => <Group {...favorite} showOnlyEnabled={showOnlyEnabled} />)}
+            {favorites.map((favorite) => (
+              <Group {...favorite} showOnlyEnabled={showOnlyEnabled} showHidden={showHiddenNodes} />
+            ))}
           </FilterListFavorites>
           <FilterListData>
             {entries.map((entry) => <PropertyOwner {...entry} />)}

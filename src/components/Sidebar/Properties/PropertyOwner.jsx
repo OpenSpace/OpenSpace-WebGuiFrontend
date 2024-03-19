@@ -15,7 +15,6 @@ import {
   getSceneGraphNodeFromUri,
   isDeadEnd,
   isGlobeBrowsingLayer,
-  isPropertyOwnerHidden,
   isPropertyVisible,
   isSceneGraphNode,
   nodeExpansionIdentifier
@@ -56,10 +55,9 @@ function PropertyOwner({
     const data = state.propertyTree.propertyOwners[uri];
     const subownersRaw = data ? data.subowners : [];
     const shownSubowners = subownersRaw.filter((subowner) => {
-      const isOwnerVisible = !isPropertyOwnerHidden(properties, subowner);
       const isOwnerDeadEnd = isDeadEnd(propertyOwners, properties, subowner);
 
-      return isOwnerVisible && !isOwnerDeadEnd && !isGlobeBrowsingLayer(subowner);
+      return !isOwnerDeadEnd && !isGlobeBrowsingLayer(subowner);
     });
 
     if (shouldSortAlphabetically(uri)) {
@@ -96,10 +94,6 @@ function PropertyOwner({
     return (renderableTypeProp !== undefined);
   });
 
-  const isHidden = useSelector((state) => {
-    const showHidden = state.propertyTree.properties['OpenSpaceEngine.ShowHiddenSceneGraphNodes'];
-    return isPropertyOwnerHidden(state.propertyTree.properties, uri) && !showHidden?.value;
-  });
   // @TODO (emmbr 2023-02-21) Make this work for other propety owners that have
   // descriptions too, such as geojson layers
   const isSceneGraphNodeOrLayer = isSceneGraphNode(uri) || isGlobeBrowsingLayer(uri);
@@ -237,7 +231,7 @@ function PropertyOwner({
     );
   }
 
-  return !isHidden && (
+  return (
     <ToggleContent
       header={header()}
       expanded={isExpanded}
