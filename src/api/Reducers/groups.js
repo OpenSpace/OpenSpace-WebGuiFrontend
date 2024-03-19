@@ -1,7 +1,4 @@
 import actionTypes from '../Actions/actionTypes';
-import { InterestingTag } from '../keys';
-
-const FeaturedGroupKey = '/Featured';
 
 const emptyGroup = () => ({
   subgroups: [],
@@ -11,13 +8,6 @@ const emptyGroup = () => ({
 const computeGroups = (propertyTree) => {
   const { propertyOwners, properties } = propertyTree;
   const groups = {};
-
-  function hasInterestingTag(uri) {
-    return propertyOwners[uri].tags.some((tag) => tag.includes(InterestingTag));
-  }
-
-  // Add featured/interesting nodes as a separate group
-  groups[FeaturedGroupKey] = emptyGroup();
 
   // Create links to property owners
   Object.keys(propertyOwners).forEach((uri) => {
@@ -32,11 +22,6 @@ const computeGroups = (propertyTree) => {
     groups[guiPath] = groups[guiPath] || emptyGroup();
     const group = groups[guiPath];
     group.propertyOwners.push(uri);
-
-    // Also keep track of "Interesting" property owners
-    if (hasInterestingTag(uri)) {
-      groups[FeaturedGroupKey].propertyOwners.push(uri);
-    }
   });
 
   // Create links from parent groups to subgroups

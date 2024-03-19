@@ -1,7 +1,7 @@
 // TODO: Revisit these functions and determine if any should be
 // kept since most of this functionality is now more easily handled
 // by the lua API
-import { EnginePropertyVisibilityKey, LayerGroupKeys } from '../api/keys';
+import { EnginePropertyVisibilityKey, InterestingTag, LayerGroupKeys } from '../api/keys';
 
 // Function to return a deep copy of an object
 export const keepCloning = (objectpassed) => {
@@ -274,4 +274,8 @@ export function checkIfVisible(properties, ownerUri) {
   }
 
   return isEnabled;
+}
+
+export function hasInterestingTag(uri, propertyOwners) {
+  return propertyOwners[uri]?.tags?.some((tag) => tag.includes(InterestingTag));
 }
