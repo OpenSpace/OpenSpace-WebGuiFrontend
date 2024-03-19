@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { reloadPropertyTree, setPopoverVisibility } from '../../api/Actions';
 import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
+import HorizontalDelimiter from '../common/HorizontalDelimiter/HorizontalDelimiter';
 import Button from '../common/Input/Button/Button';
 import Input from '../common/Input/Input/Input';
 import Popover from '../common/Popover/Popover';
@@ -125,7 +126,7 @@ function ScreenSpaceRenderablePanel() {
             </div>
           </Row>
         </div>
-        <hr className={Popover.styles.delimiter} />
+        <HorizontalDelimiter />
         <div className={Popover.styles.title}>Slides </div>
         <div className={styles.slideList}>
           <ScrollOverlay>

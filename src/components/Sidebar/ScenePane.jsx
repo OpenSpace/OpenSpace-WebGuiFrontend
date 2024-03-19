@@ -7,6 +7,7 @@ import { useLocalStorageState } from '../../utils/customHooks';
 import { checkIfVisible, hasInterestingTag, isPropertyOwnerHidden } from '../../utils/propertyTreeHelpers';
 import { ObjectWordBeginningSubstring } from '../../utils/StringMatchers';
 import { FilterList, FilterListData, FilterListFavorites } from '../common/FilterList/FilterList';
+import HorizontalDelimiter from '../common/HorizontalDelimiter/HorizontalDelimiter';
 import InfoBox from '../common/InfoBox/InfoBox';
 import Checkbox from '../common/Input/Checkbox/Checkbox';
 import LoadingBlocks from '../common/LoadingBlock/LoadingBlocks';
@@ -137,6 +138,7 @@ function ScenePane({ closeCallback }) {
             >
               {sortedInterestingNodes.map((entry) => <PropertyOwner {...entry} />)}
             </ToggleContent>
+            <HorizontalDelimiter />
             {favorites.map((favorite) => (
               <Group {...favorite} showOnlyEnabled={showOnlyEnabled} showHidden={showHiddenNodes} />
             ))}

@@ -13,6 +13,7 @@ import AnimatedCheckmark from '../common/AnimatedCheckmark/AnimatedCheckmark';
 import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
 import Dropdown from '../common/DropDown/Dropdown';
 import { FilterList, FilterListData } from '../common/FilterList/FilterList';
+import HorizontalDelimiter from '../common/HorizontalDelimiter/HorizontalDelimiter';
 import InfoBox from '../common/InfoBox/InfoBox';
 import Button from '../common/Input/Button/Button';
 import Input from '../common/Input/Input/Input';
@@ -265,7 +266,7 @@ function GeoPositionPanel() {
       case 'Earth':
         return (
           <>
-            <hr className={Popover.styles.delimiter} />
+            <HorizontalDelimiter />
             <div className={styles.searchField}>
               <Input
                 placeholder="Search places..."
@@ -319,7 +320,7 @@ function GeoPositionPanel() {
                 position: 'absolute', bottom: 0, left: 0, width: '100%'
               }}
             >
-              <hr className={Popover.styles.delimiter} />
+              <HorizontalDelimiter />
               <p className={styles.resultsTitle} style={{ padding: '5px 0px' }}>
                 Custom Coordinate
               </p>

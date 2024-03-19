@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { removeNodeMetaPopover, setPopoverActiveTab } from '../../api/Actions';
 import { copyTextToClipboard, openUrl } from '../../utils/helpers';
 import Picker from '../BottomBar/Picker';
+import HorizontalDelimiter from '../common/HorizontalDelimiter/HorizontalDelimiter';
 import InfoBox from '../common/InfoBox/InfoBox';
 import Button from '../common/Input/Button/Button';
 import Popover from '../common/Popover/Popover';
@@ -127,7 +128,7 @@ function NodeMetaPanel({ uri }) {
         <div className={`${Popover.styles.content} ${styles.contentContainer}`}>
           {contentForTab()}
         </div>
-        <hr className={Popover.styles.delimiter} />
+        <HorizontalDelimiter />
 
         <div className={`${Popover.styles.row} ${Popover.styles.content}`}>
           <Button
