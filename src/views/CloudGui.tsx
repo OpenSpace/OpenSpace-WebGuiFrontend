@@ -48,7 +48,7 @@ function CloudGui({ isInBrowser = false, showFlightController = true }: CloudGui
   React.useEffect(() => {
     dispatch(startConnection());
 
-    function toggleConsole(e) {
+    function toggleConsole(e: KeyboardEvent) {
       // Change typing from any to correct type
       if (e.code === 'Backquote') {
         setLuaConsoleVisible((current) => !current);

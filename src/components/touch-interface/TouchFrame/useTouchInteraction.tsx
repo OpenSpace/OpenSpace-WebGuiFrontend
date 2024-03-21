@@ -1,29 +1,24 @@
-import React, { useEffect, useCallback } from 'react';
-import { connectFlightController, sendFlightControl } from '../../../api/Actions';
-import { useDispatch } from 'react-redux';
-import { InputState } from '../TouchWrapper/TouchWrapper';
+import React, { useEffect } from 'react';
+
+import { InputState, Payload } from '../TouchWrapper/TouchWrapper';
 
 // * Custom hook to handle touch input on components. Touch logic is moved here to better abstract the logic from the rendering.
 // * The benefit of this hooks is that it is also reusable and thus minimzing duplicate code (DRY Principle).
 
-export default function useTouchInteraction() {
-  const dispatch = useDispatch();
+export interface TouchInteractionProps {
+  targetRef: React.RefObject<HTMLDivElement>;
+  sendFlightControllerInput: (payload: Payload) => void;
+  operation: 'Rotation' | 'Pan' | 'Zoom';
+}
 
+export default function useTouchInteraction(config: TouchInteractionProps) {
+  const { targetRef, sendFlightControllerInput, operation } = config;
   let touchStartX = 0;
   let touchStartY = 0;
 
   useEffect(() => {
-    dispatch(connectFlightController());
-  }, []);
+    if (!targetRef.current || targetRef.current === null) return;
 
-  const sendFlightControllerInput = useCallback(
-    (payload: any) => {
-      dispatch(sendFlightControl(payload));
-    },
-    [dispatch]
-  );
-
-  useEffect(() => {
     function handleTouchStart(event: TouchEvent) {
       touchStartX = event.touches[0].clientX;
       touchStartY = event.touches[0].clientY;
@@ -36,22 +31,30 @@ export default function useTouchInteraction() {
       if (touchStartX !== 0) {
         let deltaX = touchX - touchStartX;
         let deltaY = touchY - touchStartY;
-        const scaleFactor = 300;
+        const scaleFactor = 1000;
         deltaX /= scaleFactor;
         deltaY /= scaleFactor;
 
         const inputState: InputState = { values: {} };
 
-        if (event.touches.length === 1) {
-          inputState.values.orbitX = -deltaX;
-          inputState.values.orbitY = -deltaY;
-        } else if (event.touches.length === 2) {
-          inputState.values.panX = -deltaX;
-          inputState.values.panY = -deltaY;
-        } else if (event.touches.length === 3) {
-          inputState.values.zoomIn = -deltaY;
-          inputState.values.localRollX = -deltaX;
+        switch (operation) {
+          case 'Rotation':
+            inputState.values.orbitX = -deltaX;
+            inputState.values.orbitY = -deltaY;
+            break;
+          case 'Pan':
+            inputState.values.panX = -deltaX;
+            inputState.values.panY = -deltaY;
+            break;
+          case 'Zoom':
+            inputState.values.zoomIn = -deltaY;
+            // ?: Ask Emma why we want to do a x roll on zoom?
+            // inputState.values.localRollX = -deltaX;
+            break;
+          default:
+            break;
         }
+
         sendFlightControllerInput({
           type: 'inputState',
           inputState
@@ -78,18 +81,17 @@ export default function useTouchInteraction() {
       });
     }
 
-    window.addEventListener('touchstart', handleTouchStart);
-    window.addEventListener('touchmove', handleTouchMove);
-    window.addEventListener('touchend', handleTouchEnd);
-    window.addEventListener('touchcancel', handleTouchEnd);
+    targetRef.current.addEventListener('touchstart', handleTouchStart);
+    targetRef.current.addEventListener('touchmove', handleTouchMove);
+    targetRef.current.addEventListener('touchend', handleTouchEnd);
+    targetRef.current.addEventListener('touchcancel', handleTouchEnd);
 
     return () => {
-      window.removeEventListener('touchstart', handleTouchStart);
-      window.removeEventListener('touchmove', handleTouchMove);
-      window.removeEventListener('touchend', handleTouchEnd);
-      window.removeEventListener('touchcancel', handleTouchEnd);
+      if (targetRef.current === null) return;
+      targetRef.current.removeEventListener('touchstart', handleTouchStart);
+      targetRef.current.removeEventListener('touchmove', handleTouchMove);
+      targetRef.current.removeEventListener('touchend', handleTouchEnd);
+      targetRef.current.removeEventListener('touchcancel', handleTouchEnd);
     };
-  }, []);
-
-  return { touchStartX, touchStartY };
+  }, [targetRef, operation]);
 }
