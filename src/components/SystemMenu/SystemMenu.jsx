@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import { setPopoverVisibility, setShowAbout } from '../../api/Actions';
 import api from '../../api/api';
 import environment from '../../api/Environment';
+import HorizontalDelimiter from '../common/HorizontalDelimiter/HorizontalDelimiter';
 import Button from '../common/Input/Button/Button';
 import Popover from '../common/Popover/Popover';
 import { useContextRefs } from '../GettingStartedTour/GettingStartedContext';
@@ -104,7 +105,7 @@ function SystemMenu({ showTutorial }) {
             <button type="button" onClick={() => onClick(openFeedback)}>
               Send Feedback
             </button>
-            <hr className={Popover.styles.delimiter} />
+            <HorizontalDelimiter />
             <button type="button" onClick={() => { onClick(setShowKeybinds, !keybindsIsVisible); }}>
               <MdKeyboard className={styles.linkIcon} />
               {keybindsIsVisible ? 'Hide' : 'Show'}
@@ -114,12 +115,12 @@ function SystemMenu({ showTutorial }) {
             {
               environment.developmentMode && (
                 <div>
-                  <hr className={Popover.styles.delimiter} />
+                  <HorizontalDelimiter />
                   <div className={styles.devModeNotifier}>GUI running in dev mode</div>
                 </div>
               )
             }
-            <hr className={Popover.styles.delimiter} />
+            <HorizontalDelimiter />
 
             <button type="button" onClick={() => onClick(console)}>
               Toggle console
@@ -134,7 +135,7 @@ function SystemMenu({ showTutorial }) {
             {/*              <button onClick={saveChange}>
               Save settings to profile
             </button> */}
-            <hr className={Popover.styles.delimiter} />
+            <HorizontalDelimiter />
             <button type="button" onClick={() => { onClick(quit); }}>
               <MdExitToApp className={styles.linkIcon} />
               Quit OpenSpace

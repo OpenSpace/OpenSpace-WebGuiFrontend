@@ -1,0 +1,6 @@
+@import '../../../styles/all';
+
+.delimiter {
+  margin: calc($base-padding / 3) 0;
+  border: 1px solid $ui-background-hover;
+}

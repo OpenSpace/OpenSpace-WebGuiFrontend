@@ -12,6 +12,7 @@ import { NavigationAimKey, NavigationAnchorKey } from '../../api/keys';
 import propertyDispatcher from '../../api/propertyDispatcher';
 import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
 import { FilterList, FilterListData } from '../common/FilterList/FilterList';
+import HorizontalDelimiter from '../common/HorizontalDelimiter/HorizontalDelimiter';
 import InfoBox from '../common/InfoBox/InfoBox';
 import Button from '../common/Input/Button/Button';
 import Checkbox from '../common/Input/Checkbox/Checkbox';
@@ -203,7 +204,7 @@ function ExoplanetsPanel() {
             </div>
           </Row>
         </div>
-        <hr className={Popover.styles.delimiter} />
+        <HorizontalDelimiter />
         <ToggleContent
           title="Settings"
           expanded={isSettingsExpanded}
@@ -254,7 +255,7 @@ function ExoplanetsPanel() {
             />
           </Checkbox>
         </ToggleContent>
-        <hr className={Popover.styles.delimiter} />
+        <HorizontalDelimiter />
         <div className={Popover.styles.title}>Added Systems </div>
         <div className={styles.slideList}>
           <ScrollOverlay>

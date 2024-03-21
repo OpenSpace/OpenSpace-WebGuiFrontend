@@ -15,6 +15,7 @@ import {
   SessionStatePlaying
 } from '../../api/keys';
 import Calendar from '../common/Calendar/Calendar';
+import HorizontalDelimiter from '../common/HorizontalDelimiter/HorizontalDelimiter';
 import Button from '../common/Input/Button/Button';
 import Time from '../common/Input/Time/Time';
 import LoadingString from '../common/LoadingString/LoadingString';
@@ -196,9 +197,9 @@ function TimePicker() {
   function calendar() {
     return showCalendar && (
       <div>
-        <hr className={Popover.styles.delimiter} />
+        <HorizontalDelimiter />
         <Calendar currentTime={time} onChange={changeDate} todayButton />
-        <hr className={Popover.styles.delimiter} />
+        <HorizontalDelimiter />
       </div>
     );
   }
@@ -244,7 +245,7 @@ function TimePicker() {
         <div className={Popover.styles.content}>
           <SimulationIncrement />
         </div>
-        <hr className={Popover.styles.delimiter} />
+        <HorizontalDelimiter />
 
         <div className={`${Popover.styles.row} ${Popover.styles.content}`}>
           <Button block smalltext onClick={realtime}>

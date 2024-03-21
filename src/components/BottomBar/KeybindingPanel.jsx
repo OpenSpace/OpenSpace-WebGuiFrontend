@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Keyboard from 'react-simple-keyboard';
 
 import { setPopoverVisibility } from '../../api/Actions';
+import HorizontalDelimiter from '../common/HorizontalDelimiter/HorizontalDelimiter';
 import Popover from '../common/Popover/Popover';
 import Row from '../common/Row/Row';
 
@@ -336,7 +337,7 @@ function KeybindingPanel() {
         position={{ x: -450, y: -150 }}
         attached={false}
       >
-        <hr className={Popover.styles.delimiter} />
+        <HorizontalDelimiter />
         <div className={Popover.styles.content}>
           <div className="keyboardContainer">
             <Keyboard
@@ -371,7 +372,7 @@ function KeybindingPanel() {
               />
             </div>
           </div>
-          <hr className={Popover.styles.delimiter} />
+          <HorizontalDelimiter />
           <Row>
             <div className={styles.textContainer}>
               <section>
