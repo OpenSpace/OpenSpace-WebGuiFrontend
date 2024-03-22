@@ -29,11 +29,14 @@ function ScenePane({ closeCallback }) {
     const topLevelGroupsPaths = Object.keys(state.groups).filter((path) => {
       // Get the number of slashes in the path
       const depth = (path.match(/\//g) || []).length;
-      return depth === 1;
+      return (depth === 1) && (path !== '/');
     });
-    // @TODO: Handle things that are outside of any group (depth === 0)?
     return topLevelGroupsPaths;
   }, shallowEqual);
+
+  const nodesWithoutGroup = useSelector((state) => (
+    state.groups['/']?.propertyOwners || []
+  ), shallowEqual);
 
   const propertyOwners = useSelector((state) => state.propertyTree.propertyOwners, shallowEqual);
   const propertyOwnersScene = propertyOwners.Scene?.subowners ?? [];
@@ -74,16 +77,22 @@ function ScenePane({ closeCallback }) {
     return ObjectWordBeginningSubstring(node, search);
   }
 
-  const entries = filteredPropertyOwnersScene.map((uri) => ({
+  const allEntries = filteredPropertyOwnersScene.map((uri) => ({
     key: uri,
     uri,
     expansionIdentifier: `scene-search/${uri}`
   }));
 
-  const favorites = groups.map((item) => ({
+  const topLevelGroups = groups.map((item) => ({
     key: item,
     path: item,
     expansionIdentifier: `scene/${item}`
+  }));
+
+  const topLevelNodes = nodesWithoutGroup.map((uri) => ({
+    key: uri,
+    uri,
+    expansionIdentifier: `scene/${uri}`
   }));
 
   const settingsButton = (
@@ -125,9 +134,7 @@ function ScenePane({ closeCallback }) {
 
   return (
     <Pane title="Scene" closeCallback={closeCallback} headerButton={settingsButton}>
-      {(entries.length === 0) &&
-        <LoadingBlocks className={Pane.styles.loading} />}
-      {entries.length > 0 && (
+      {allEntries.length > 0 ? (
         <FilterList matcher={matcher}>
           <FilterListFavorites>
             <ContextSection expansionIdentifier="context" />
@@ -139,14 +146,17 @@ function ScenePane({ closeCallback }) {
               {sortedInterestingNodes.map((entry) => <PropertyOwner {...entry} />)}
             </ToggleContent>
             <HorizontalDelimiter />
-            {favorites.map((favorite) => (
+            {topLevelGroups.map((favorite) => (
               <Group {...favorite} showOnlyEnabled={showOnlyEnabled} showHidden={showHiddenNodes} />
             ))}
+            {topLevelNodes.map((entry) => <PropertyOwner {...entry} />)}
           </FilterListFavorites>
           <FilterListData>
-            {entries.map((entry) => <PropertyOwner {...entry} />)}
+            {allEntries.map((entry) => <PropertyOwner {...entry} />)}
           </FilterListData>
         </FilterList>
+      ) : (
+        <LoadingBlocks className={Pane.styles.loading} />
       )}
     </Pane>
   );

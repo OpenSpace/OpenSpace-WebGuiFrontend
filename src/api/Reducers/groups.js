@@ -12,7 +12,7 @@ const computeGroups = (propertyTree) => {
   // Create links to property owners
   Object.keys(propertyOwners).forEach((uri) => {
     const guiPathProp = properties[`${uri}.GuiPath`];
-    const guiPath = guiPathProp ? guiPathProp.value : '';
+    const guiPath = guiPathProp ? guiPathProp.value : '/';
 
     // Only scene graph nodes can use the group feature.
     // Match children (but not grandchildren) of Scene:
@@ -32,10 +32,15 @@ const computeGroups = (propertyTree) => {
       const childPath = path.slice(0, i + 1).join('/');
       groups[parentPath] = groups[parentPath] || emptyGroup();
       const parentGroup = groups[parentPath];
-      if (parentGroup.subgroups.indexOf(childPath) === -1) {
+      if (!parentGroup.subgroups.includes(childPath)) {
         parentGroup.subgroups.push(childPath);
       }
     }
+
+    // After collecting all the subgroups, there is one extra group at the top with
+    // an empty key keep that has the top levels as subgroups (this is due to all our
+    // paths starting with an inital slash). We don't need to keep this around
+    delete groups[''];
   });
 
   return groups;
