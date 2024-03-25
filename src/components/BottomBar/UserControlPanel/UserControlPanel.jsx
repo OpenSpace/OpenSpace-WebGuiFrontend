@@ -8,13 +8,13 @@ import Select from '../../common/Input/Select/Select';
 import Popover from '../../common/Popover/Popover';
 import Row from '../../common/Row/Row';
 import Input from '../../common/Input/Input/Input';
+import HorizontalDelimiter from '../../common/HorizontalDelimiter/HorizontalDelimiter';
 
 import Picker from '../Picker';
 
 import styles from './UserControlPanel.scss';
 
 function UserControlPanel() {
-  const [fileList, setFileList] = React.useState(undefined);
   const [selectedPanel, setSelectedPanel] = React.useState(undefined)
   const [panelURL, setPanelURL] = React.useState(undefined)
   const popoverVisible = useSelector(
@@ -99,7 +99,7 @@ function UserControlPanel() {
               </Button>
             </div>
           </Row>
-          <hr className={Popover.styles.delimiter} />
+          <HorizontalDelimiter />
           <Row>
             <div className={Popover.styles.title}>Add via HTTP</div>
             <div className="urlbox">
