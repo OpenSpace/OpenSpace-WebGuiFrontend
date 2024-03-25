@@ -53,7 +53,6 @@ const actionTypes = {
   addUserPanel: 'USER_PANELS_ADD',
   removeUserPanel: 'USER_PANELS_REMOVE',
 
-
   // action types for skybrowser
   loadSkyBrowserData: 'SKYBROWSER_LOAD_DATA',
   initializeSkyBrowser: 'SKYBROWSER_INITIALIZE',

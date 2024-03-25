@@ -214,7 +214,6 @@ export const removeExoplanets = (data) => ({
   payload: data
 });
 
-
 export const loadUserPanelData = (luaApi) => ({
   type: actionTypes.loadUserPanelData,
   payload: luaApi

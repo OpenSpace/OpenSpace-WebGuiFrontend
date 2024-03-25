@@ -61,14 +61,11 @@ function UserControlPanel() {
   }
 
   function popover() {
-
-    var fileList = ["suncontroler", "buttonpage"];
-    var placeholderText = "Loading pages"
-
+    let placeholderText = "Loading pages"
     const options = Object.values(panelList)
       .map((panel) => ({ value: panel.path, label: panel.name }));
 
-      return (
+    return (
       <Popover
         className={Picker.Popover}
         title="User Control Panels"
@@ -101,7 +98,7 @@ function UserControlPanel() {
           </Row>
           <hr className={Popover.styles.delimiter} />
           <Row>
-            <div className={Popover.styles.title}>Add via URI</div>
+            <div className={Popover.styles.title}>Add via HTTP</div>
             <div className="urlbox">
               <Input
                 value={panelURL}
@@ -123,8 +120,6 @@ function UserControlPanel() {
             </div>
           </Row>
         </div>
-        {/* <hr className={Popover.styles.delimiter} />
-        <div className={Popover.styles.title}>Active Panels </div> */}
       </Popover>
     );
   }
