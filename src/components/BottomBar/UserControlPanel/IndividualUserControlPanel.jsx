@@ -22,7 +22,7 @@ function IndividualUserControlPanel({ uri }) {
 
   function popover() {
     let iframesrc = `http://${window.location.host}/webpanels/${panelName}/index.html`;
-    if ( (panelName.indexOf('http://') == 0) || (panelName.indexOf('https://') == 0)) {
+    if ((panelName.indexOf('http://') == 0) || (panelName.indexOf('https://') == 0)) {
       iframesrc = panelName;
     }
     return (
