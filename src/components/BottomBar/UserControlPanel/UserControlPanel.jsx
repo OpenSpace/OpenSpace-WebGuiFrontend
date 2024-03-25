@@ -24,11 +24,10 @@ function UserControlPanel() {
   const isDataInitialized = useSelector((state) => state.userPanels.isInitialized);
 
   const panelList = useSelector((state) => state.userPanels.panels || []);
-
   const dispatch = useDispatch();
-    if (luaApi && !isDataInitialized) {
-        dispatch(loadUserPanelData(luaApi));
-    }
+  if (luaApi && !isDataInitialized) {
+      dispatch(loadUserPanelData(luaApi));
+  }
 
   
   function togglePopover() {
@@ -53,7 +52,11 @@ function UserControlPanel() {
   }
 
   function addWebPanel() {
-    dispatch(addUserPanel(panelURL))
+    if (panelURL.indexOf("http") != 0) {
+      dispatch(addUserPanel("http://" + panelURL))
+    } else {
+      dispatch(addUserPanel(panelURL))
+    }
   }
 
   function updatePanelURL(evt) {
