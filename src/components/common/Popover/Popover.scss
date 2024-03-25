@@ -49,11 +49,6 @@ $padding: $padding-horizontal $padding-vertical;
   padding: 0 $padding-horizontal;
 }
 
-.delimiter {
-  margin: calc($base-padding / 3) 0;
-  border: 1px solid $ui-background-hover;
-}
-
 .row {
   display: flex;
 

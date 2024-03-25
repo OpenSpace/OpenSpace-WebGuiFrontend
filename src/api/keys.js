@@ -27,6 +27,8 @@ export const SCMInfoKey = 'SCMInfo';
 // key for getting current time subscription
 export const TimeKey = 'special:currentTime';
 
+export const InterestingTag = 'GUI.Interesting';
+
 // TODO: Some of the following constants are removed in master and
 // should be considered deprecated
 

@@ -8,6 +8,7 @@ import { ObjectWordBeginningSubstring } from '../../utils/StringMatchers';
 import subStateToProps from '../../utils/subStateToProps';
 import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
 import { FilterList, FilterListData, FilterListFavorites } from '../common/FilterList/FilterList';
+import HorizontalDelimiter from '../common/HorizontalDelimiter/HorizontalDelimiter';
 import Button from '../common/Input/Button/Button';
 import Popover from '../common/Popover/Popover';
 import Row from '../common/Row/Row';
@@ -131,14 +132,14 @@ function ActionsPanel({
 
     return (
       <>
-        <hr className={Popover.styles.delimiter} />
+        <HorizontalDelimiter />
         <Row className={styles.navPathRow}>
           {backButton}
           <div className={styles.navPathTitle}>
             {`${displayedNavigationPath}`}
           </div>
         </Row>
-        <hr className={Popover.styles.delimiter} />
+        <HorizontalDelimiter />
         <FilterList matcher={matcher} height={filterListHeight}>
           <FilterListFavorites className={styles.Grid}>
             {folders}
