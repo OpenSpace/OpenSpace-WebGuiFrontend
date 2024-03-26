@@ -59,18 +59,26 @@ function TimePicker() {
     // Spice, that is handling the time parsing in OpenSpace does not support
     // ISO 8601-style time zones (the Z). It does, however, always assume that UTC
     // is given.
-    const fixedTimeString = newTime.toJSON().replace('Z', '');
-    luaApi.time.setTime(fixedTimeString);
+    try {
+      const fixedTimeString = newTime.toJSON().replace('Z', '');
+      luaApi.time.setTime(fixedTimeString);  
+    } catch {
+      luaApi.time.setTime(time);  
+    }
   }
 
   function setDateRelative(delta) {
-    const newTime = new Date(time);
-    newTime.setSeconds(newTime.getSeconds() + delta);
-    // Spice, that is handling the time parsing in OpenSpace does not support
-    // ISO 8601-style time zones (the Z). It does, however, always assume that UTC
-    // is given.
-    const fixedTimeString = newTime.toJSON().replace('Z', '');
-    luaApi.time.setTime(fixedTimeString);
+    try {
+      const newTime = new Date(time);
+      newTime.setSeconds(newTime.getSeconds() + delta);
+      // Spice, that is handling the time parsing in OpenSpace does not support
+      // ISO 8601-style time zones (the Z). It does, however, always assume that UTC
+      // is given.
+      const fixedTimeString = newTime.toJSON().replace('Z', '');
+      luaApi.time.setTime(fixedTimeString);  
+    } catch {
+      luaApi.time.setTime(time);  
+    }
   }
 
   function interpolateDate(newTime) {
