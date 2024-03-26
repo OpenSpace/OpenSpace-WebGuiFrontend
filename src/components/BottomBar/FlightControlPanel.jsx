@@ -10,6 +10,7 @@ import {
   unsubscribeToProperty
 } from '../../api/Actions';
 import { RollFrictionKey, RotationalFrictionKey, ZoomFrictionKey } from '../../api/keys';
+import HorizontalDelimiter from '../common/HorizontalDelimiter/HorizontalDelimiter';
 import InfoBox from '../common/InfoBox/InfoBox';
 import Button from '../common/Input/Button/Button';
 import Popover from '../common/Popover/Popover';
@@ -258,7 +259,7 @@ export default function FlightControlPanel() {
             <InfoBox className={styles.infoButton} text="Controls to disable friction for different camera movements" />
           </Row>
         </div>
-        <hr className={Popover.styles.delimiter} />
+        <HorizontalDelimiter />
         <Row>
           <div className={Popover.styles.title}>Control Area</div>
           <InfoBox className={styles.infoButton} text={infoBoxContent} />

@@ -31,9 +31,9 @@ const computeGroups = (propertyTree) => {
       const parentPath = path.slice(0, i).join('/');
       const childPath = path.slice(0, i + 1).join('/');
       groups[parentPath] = groups[parentPath] || emptyGroup();
-      const parnetGroup = groups[parentPath];
-      if (parnetGroup.subgroups.indexOf(childPath) === -1) {
-        parnetGroup.subgroups.push(childPath);
+      const parentGroup = groups[parentPath];
+      if (parentGroup.subgroups.indexOf(childPath) === -1) {
+        parentGroup.subgroups.push(childPath);
       }
     }
   });

@@ -19,6 +19,7 @@ import {
   SessionStatePlaying,
   SessionStateRecording
 } from '../../api/keys';
+import HorizontalDelimiter from '../common/HorizontalDelimiter/HorizontalDelimiter';
 import InfoBox from '../common/InfoBox/InfoBox';
 import Button from '../common/Input/Button/Button';
 import Checkbox from '../common/Input/Checkbox/Checkbox';
@@ -286,7 +287,7 @@ function SessionRec() {
             </div>
           </Row>
         </div>
-        <hr className={Popover.styles.delimiter} />
+        <HorizontalDelimiter />
         <div className={Popover.styles.title}>Play session</div>
         <div className={Popover.styles.content}>
           <Checkbox

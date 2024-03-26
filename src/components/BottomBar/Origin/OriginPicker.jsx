@@ -25,6 +25,7 @@ import {
   EngineModeCameraPath,
   EngineModeSessionRecordingPlayback,
   EngineModeUserControl,
+  InterestingTag,
   JumpToFadeDurationKey,
   NavigationAimKey,
   NavigationAnchorKey,
@@ -54,9 +55,6 @@ import Picker from '../Picker';
 import FocusEntry from './FocusEntry';
 
 import styles from './OriginPicker.scss';
-
-// Tag that each focusable node must have
-const InterestingTag = 'GUI.Interesting';
 
 const NavigationActions = {
   Focus: 'Focus',
