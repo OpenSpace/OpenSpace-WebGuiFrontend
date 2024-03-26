@@ -15,6 +15,7 @@ import shortcuts from './shortcuts';
 import skybrowser from './skybrowser';
 import time from './time';
 import version from './version';
+import userPanels from './userPanels';
 
 const middleware = applyMiddleware(
   // logger, // middleWare for logging state change
@@ -30,6 +31,7 @@ const middleware = applyMiddleware(
   flightController,
   documentation,
   exoplanets,
+  userPanels,
   skybrowser,
   camera,
   cameraPath
