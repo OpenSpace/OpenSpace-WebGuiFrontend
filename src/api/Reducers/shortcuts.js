@@ -22,7 +22,6 @@ const shortcuts = (state = defaultState, action = {}) => { // state refers to sh
         navigationPath: action.payload
       };
     case actionTypes.toggleKeybindViewer:
-      console.log('was showing?', state.showKeybinds);
       return {
         ...state,
         showKeybinds: !state.showKeybinds
