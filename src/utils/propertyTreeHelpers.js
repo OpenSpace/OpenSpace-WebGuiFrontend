@@ -279,3 +279,15 @@ export function checkIfVisible(properties, ownerUri) {
 export function hasInterestingTag(uri, propertyOwners) {
   return propertyOwners[uri]?.tags?.some((tag) => tag.includes(InterestingTag));
 }
+
+// Filter based on show enabled/hidden
+export function filterPropertyOwners(ownerUris, props, showOnlyEnabled, showHidden) {
+  let result = ownerUris;
+  if (showOnlyEnabled) {
+    result = result.filter((uri) => checkIfVisible(props, uri));
+  }
+  if (!showHidden) {
+    result = result.filter((uri) => !isPropertyOwnerHidden(props, uri));
+  }
+  return result;
+}
