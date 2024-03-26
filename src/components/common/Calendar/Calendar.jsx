@@ -35,6 +35,19 @@ function Calendar({
   const [viewedMonth, setViewedMonth] = React.useState(currentTime);
   const [viewFreeCoupled, setViewFreeCoupled] = React.useState(false);
 
+  let monthNumber = 0;
+  try {
+    monthNumber = viewedMonth.getMonth();
+  } catch {
+
+  }
+  let fy = 0;
+  try {
+    fy = currentTime.getFullYear();
+  } catch {
+
+  }
+
   React.useEffect(() => {
     // update calendar focus (unless user has moved away from previously given active month)
     const isCurrentTimeViewed = Calendar.isSameDay(
@@ -63,28 +76,37 @@ function Calendar({
     if (add === 0) {
       return viewedMonth;
     }
-
-    const newDate = new Date(viewedMonth.getTime());
-    newDate.setMonth(newDate.getMonth() + add);
-    return newDate;
+    try {
+      const newDate = new Date(viewedMonth.getTime());
+      newDate.setMonth(newDate.getMonth() + add);
+      return newDate;
+    } catch {
+      const newDate = new Date();
+      newDate.setMonth(newDate.getMonth() + add);
+      return newDate;
+    }
   }
 
   function daysToDisplay() {
-    const prevMonth = month(-1);
-    const thisMonth = month();
-    const nextMonth = month(1);
-    const days = Calendar.daysOfMonth(Calendar.toStartOfMonth(thisMonth));
-    const prev = Calendar.daysOfMonth(Calendar.toStartOfMonth(prevMonth));
-    const next = Calendar.daysOfMonth(Calendar.toStartOfMonth(nextMonth));
+    try {
+      const prevMonth = month(-1);
+      const thisMonth = month();
+      const nextMonth = month(1);
+      const days = Calendar.daysOfMonth(Calendar.toStartOfMonth(thisMonth));
+      const prev = Calendar.daysOfMonth(Calendar.toStartOfMonth(prevMonth));
+      const next = Calendar.daysOfMonth(Calendar.toStartOfMonth(nextMonth));
 
-    const rotatedDays = rotate(DaysInWeekBefore, 7 - WeekStartsOn);
-    const daysFromPrevMonth = rotatedDays[thisMonth.getDay()];
+      const rotatedDays = rotate(DaysInWeekBefore, 7 - WeekStartsOn);
+      const daysFromPrevMonth = rotatedDays[thisMonth.getDay()];
 
-    days.unshift(...prev.slice(-1 * daysFromPrevMonth));
-    const daysFromNextMonth = ExpectedDaysInCalendar - days.length;
-    days.push(...next.slice(0, daysFromNextMonth));
+      days.unshift(...prev.slice(-1 * daysFromPrevMonth));
+      const daysFromNextMonth = ExpectedDaysInCalendar - days.length;
+      days.push(...next.slice(0, daysFromNextMonth));
 
-    return days;
+      return days;
+    } catch {
+      return [];
+    }
   }
 
   function setCurrentMonth() {
@@ -127,6 +149,7 @@ function Calendar({
     return classes;
   }
 
+
   return (
     <section>
       <header className={styles.header}>
@@ -139,7 +162,7 @@ function Calendar({
               <MdToday />
             </Button>
           )}
-          {`${Months[viewedMonth.getMonth()]} ${currentTime.getFullYear()}`}
+          {`${Months[monthNumber]} ${fy}`}
         </span>
         <Button regular transparent small onClick={() => stepViewMonth(1)}>
           <MdChevronRight />
@@ -174,37 +197,54 @@ function Calendar({
 
 // Static functions
 Calendar.daysOfMonth = (month) => {
-  const iterator = new Date(month.getTime());
-  const days = [];
-
-  while (iterator.getMonth() === month.getMonth()) {
-    days.push(Calendar.copy(iterator));
-    iterator.setDate(iterator.getDate() + 1);
+  try {
+    const iterator = new Date(month.getTime());
+    const days = [];
+    while (iterator.getMonth() === month.getMonth()) {
+      days.push(Calendar.copy(iterator));
+      iterator.setDate(iterator.getDate() + 1);
+    }
+    return days;
+  } catch {
+    return [];
   }
-
-  return days;
 };
 
-Calendar.isSameDay = (a, b) => a.getFullYear() === b.getFullYear() &&
+Calendar.isSameDay = (a, b) => {
+  try {
+    a.getFullYear() === b.getFullYear() &&
     a.getMonth() === b.getMonth() &&
     a.getDate() === b.getDate();
-
+  } catch {
+    return false;
+  }
+};
 /**
  * set the date component to 1
  * @param day - remains unchanged
  * @returns {Date}
  */
 Calendar.toStartOfMonth = (day) => {
-  const newDay = Calendar.copy(day);
-  newDay.setDate(1);
+  try {
+    const newDay = Calendar.copy(day);
+    newDay.setDate(1);
   return newDay;
+  } catch {
+    return "1"
+  }
 };
 
 /**
  * copy date
  * @param date
  */
-Calendar.copy = (date) => new Date(date.getTime());
+Calendar.copy = (date) => {
+  try {
+    new Date(date.getTime())
+  } catch {
+    return date
+  }
+};
 
 Calendar.propTypes = {
   currentTime: PropTypes.instanceOf(Date),

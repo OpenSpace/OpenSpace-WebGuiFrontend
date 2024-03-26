@@ -112,8 +112,15 @@ function TimePicker() {
   }
 
   function timeLabel() {
-    return time && time.toUTCString();
-  }
+    if (time) {
+      try {
+        return time.toUTCString();
+      } catch {
+        return time;
+      }
+    }
+    return time;
+}
 
   function setToPendingTime() {
     setDate(pendingTime);

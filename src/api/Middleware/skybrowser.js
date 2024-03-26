@@ -52,7 +52,6 @@ const getWwtData = async (luaApi, callback) => {
 };
 
 async function setupSubscription(store) {
-  console.log('Set up skybrowser subscription');
   skybrowserTopic = api.startTopic('skybrowser', {
     event: 'start_subscription'
   });
