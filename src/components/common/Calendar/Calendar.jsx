@@ -149,7 +149,6 @@ function Calendar({
     return classes;
   }
 
-
   return (
     <section>
       <header className={styles.header}>
