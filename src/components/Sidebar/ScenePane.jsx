@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import shallowEqualArrays from 'shallow-equal/arrays';
 
 import { useLocalStorageState } from '../../utils/customHooks';
-import { checkIfVisible, hasInterestingTag, isPropertyOwnerHidden } from '../../utils/propertyTreeHelpers';
+import { checkIfVisible, filterPropertyOwners, hasInterestingTag, isPropertyOwnerHidden } from '../../utils/propertyTreeHelpers';
 import { ObjectWordBeginningSubstring } from '../../utils/StringMatchers';
 import { FilterList, FilterListData, FilterListFavorites } from '../common/FilterList/FilterList';
 import HorizontalDelimiter from '../common/HorizontalDelimiter/HorizontalDelimiter';
@@ -61,15 +61,22 @@ function ScenePane({ closeCallback }) {
 
   const filteredPropertyOwnersScene = useSelector((state) => {
     const props = state.propertyTree.properties;
-    let owners = propertyOwnersScene;
-    // Filter based on show enabled/hidden
-    if (showOnlyEnabled) {
-      owners = owners.filter((uri) => checkIfVisible(props, uri));
-    }
-    if (!showHiddenNodes) {
-      owners = owners.filter((uri) => !isPropertyOwnerHidden(props, uri));
-    }
-    return owners;
+    return filterPropertyOwners(
+      propertyOwnersScene,
+      props,
+      showOnlyEnabled,
+      showHiddenNodes
+    );
+  }, shallowEqualArrays);
+
+  const filteredNodesWithoutGroup = useSelector((state) => {
+    const props = state.propertyTree.properties;
+    return filterPropertyOwners(
+      nodesWithoutGroup,
+      props,
+      showOnlyEnabled,
+      showHiddenNodes
+    );
   }, shallowEqualArrays);
 
   function matcher(test, search) {
@@ -89,7 +96,7 @@ function ScenePane({ closeCallback }) {
     expansionIdentifier: `scene/${item}`
   }));
 
-  const topLevelNodes = nodesWithoutGroup.map((uri) => ({
+  const topLevelNodes = filteredNodesWithoutGroup.map((uri) => ({
     key: uri,
     uri,
     expansionIdentifier: `scene/${uri}`

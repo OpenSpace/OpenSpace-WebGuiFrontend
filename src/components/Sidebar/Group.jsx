@@ -5,24 +5,13 @@ import shallowEqualArrays from 'shallow-equal/arrays';
 
 import { setPropertyTreeExpansion } from '../../api/Actions';
 import { sortGroups } from '../../api/keys';
-import { checkIfVisible, isPropertyOwnerHidden } from '../../utils/propertyTreeHelpers';
+import { filterPropertyOwners } from '../../utils/propertyTreeHelpers';
 import ToggleContent from '../common/ToggleContent/ToggleContent';
 
 import PropertyOwner, {
   displayName as propertyOwnerName,
   nodeExpansionIdentifier as propertyOwnerNodeExpansionIdentifier
 } from './Properties/PropertyOwner';
-
-function filterPropertyOwners(ownerUris, props, showOnlyEnabled, showHidden) {
-  let result = ownerUris;
-  if (showOnlyEnabled) {
-    result = result.filter((uri) => checkIfVisible(props, uri));
-  }
-  if (!showHidden) {
-    result = result.filter((uri) => !isPropertyOwnerHidden(props, uri));
-  }
-  return result;
-}
 
 function shouldShowGroup(state, path, showOnlyEnabled, showHidden) {
   const data = state.groups[path] || {};
