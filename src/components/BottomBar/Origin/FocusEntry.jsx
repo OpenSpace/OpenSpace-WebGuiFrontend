@@ -74,14 +74,7 @@ function FocusEntry({
   const fadeTo = async (event) => {
     event.stopPropagation();
     closePopoverIfSet();
-    const fadeTime = 1;
-    const promise = new Promise((resolve) => {
-      luaApi.setPropertyValueSingle('RenderEngine.BlackoutFactor', 0, fadeTime, 'QuadraticEaseOut');
-      setTimeout(() => resolve('done!'), fadeTime * 1000);
-    });
-    await promise;
-    luaApi.pathnavigation.flyTo(identifier, 0.0);
-    luaApi.setPropertyValueSingle('RenderEngine.BlackoutFactor', 1, fadeTime, 'QuadraticEaseIn');
+    luaApi.pathnavigation.jumpTo(identifier);
   };
 
   const refs = useContextRefs();
@@ -127,7 +120,7 @@ function FocusEntry({
                 <span className={styles.menuButtonLabel}> Fly to </span>
               </Row>
             </Button>
-            <Button className={styles.flyToButton} onClick={fadeTo} title="Fade to">
+            <Button className={styles.flyToButton} onClick={fadeTo} title="Jump to">
               <Row>
                 <MdFlashOn className={styles.buttonIcon} />
                 <span className={styles.menuButtonLabel}> Jump to </span>
