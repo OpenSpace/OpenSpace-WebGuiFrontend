@@ -2,30 +2,14 @@ import React, { useEffect, useCallback, useRef } from 'react';
 
 import styles from './TouchWrapper.scss';
 import TouchFrame from '../TouchFrame/TouchFrame';
-import useTouchInteraction, { TouchInteractionProps } from '../TouchFrame/useTouchInteraction';
-import { TouchState } from '../TouchFrame/touchTypes';
+import useTouchInteraction, { TouchInteractionProps } from '../hooks/useTouchInteraction';
 import { useDispatch } from 'react-redux';
 import { connectFlightController, sendFlightControl } from '../../../api/Actions';
+import { Payload } from '../TouchFrame/touchTypes';
 
 interface TouchWrapperProps {
   children: React.ReactNode;
 }
-
-export type InputState = {
-  values: {
-    zoomIn?: number;
-    orbitX?: number;
-    orbitY?: number;
-    panX?: number;
-    panY?: number;
-    localRollX?: number;
-  };
-};
-
-export type Payload = {
-  type: string;
-  inputState: InputState;
-};
 
 export default function TouchWrapper({ children }: TouchWrapperProps) {
   const dispatch = useDispatch();

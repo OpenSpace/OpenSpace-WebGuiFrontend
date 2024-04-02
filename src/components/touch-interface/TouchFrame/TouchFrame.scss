@@ -6,20 +6,22 @@
 .RightFrame {
   right: 0;
   bottom: 0;
-  height: calc(100% - 100px); /* Adjust the height of the right frame to account for corner */
-  width: 100px;
+  height: calc(100% - 80px); /* Adjust the height of the right frame to account for corner */
+  width: 80px;
+  border-radius: 0 0 0 5rem;
 }
 .TopFrame {
   left: 0;
   top: 0;
-  width: calc(100% - 100px); /* Adjust the width of the top frame to account for corner */
-  height: 100px;
+  width: calc(100% - 80px); /* Adjust the width of the top frame to account for corner */
+  height: 80px;
+  border-radius: 0 0 0 5rem;
 }
 
 .Corner {
   background-color: red;
-  width: 100px;
-  height: 100px;
+  width: 80px;
+  height: 80px;
   position: fixed;
   top: 0;
   right: 0;

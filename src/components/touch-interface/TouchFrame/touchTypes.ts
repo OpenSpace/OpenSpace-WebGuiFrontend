@@ -1,7 +1,17 @@
 // TouchTypes.ts
 
-export type TouchState = {
-  touchStartX: number;
-  touchStartY: number;
-  mouseIsDown: boolean;
+export type InputState = {
+  values: {
+    zoomIn?: number;
+    orbitX?: number;
+    orbitY?: number;
+    panX?: number;
+    panY?: number;
+    localRollX?: number;
+  };
+};
+
+export type Payload = {
+  type: string;
+  inputState: InputState;
 };
