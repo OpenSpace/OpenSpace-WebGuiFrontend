@@ -77,15 +77,15 @@ const time = (state = defaultState, action = {}) => {
         // Make optimized time that only updates every second
         const date = new Date(dateStringWithTimeZone(newTime));
         date.setMilliseconds(0);
-        let iso = ""
-        let newiso = ""
+        let iso = "";
+        let newiso = "";
         try {
-          let iso = date.toISOString()
+          let iso = date.toISOString();
         } catch {
           let iso = newTime;
         }
         try {
-          let newiso = newState.timeCapped.toISOString()
+          let newiso = newState.timeCapped.toISOString();
         } catch {
           let newiso = newTime;
         }
