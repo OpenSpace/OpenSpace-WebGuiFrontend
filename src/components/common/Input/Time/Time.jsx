@@ -186,7 +186,7 @@ function Time({ elements, onChange, time }) {
       try {
         hh = time.split(' ')[3].split(':')[0];
       } catch {
-        hh = 0
+        hh = 0;
       }
     }
     const zph = zeroPad(hh);
