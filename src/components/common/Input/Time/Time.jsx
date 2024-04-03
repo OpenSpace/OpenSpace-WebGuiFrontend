@@ -151,7 +151,7 @@ function Time({ elements, onChange, time }) {
 
   function month() {
     const dd = shouldInclude(Elements.Date);
-    let mm = ''
+    let mm = '';
     try {
       mm = Months[time.getUTCMonth()];
     } catch {
@@ -184,7 +184,7 @@ function Time({ elements, onChange, time }) {
       hh = time.getUTCHours();
     } catch {
       try {
-        hh = time.split(' ')[3].split(":")[0];
+        hh = time.split(' ')[3].split(':')[0];
       } catch {
         hh = 0
       }
@@ -199,7 +199,7 @@ function Time({ elements, onChange, time }) {
     try {
       mm = time.getUTCMinutes();
     } catch {
-      mm = time.split(' ')[3].split(":")[1];
+      mm = time.split(' ')[3].split(':')[1];
     }
     const zpm = zeroPad(mm);
     return wrap(`${zpm}`, 'Minutes', ss && ':');
@@ -211,7 +211,7 @@ function Time({ elements, onChange, time }) {
     try {
       ss = time.getUTCSeconds();
     } catch {
-      ss = time.split(' ')[3].split(":")[2].split('.')[0];
+      ss = time.split(' ')[3].split(':')[2].split('.')[0];
     }
     const zps = zeroPad(ss);
     return wrap(`${zps}`, 'Seconds', ms && '.');
@@ -222,7 +222,7 @@ function Time({ elements, onChange, time }) {
     try {
       ms = time.getUTCMilliseconds();
     } catch {
-      ms = time.split(' ')[3].split(":")[2].split('.')[1];
+      ms = time.split(' ')[3].split(':')[2].split('.')[1];
     }
 
     return wrap(ms, 'Milliseconds');

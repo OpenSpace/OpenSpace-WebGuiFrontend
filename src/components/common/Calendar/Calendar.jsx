@@ -38,15 +38,12 @@ function Calendar({
   let monthNumber = 0;
   try {
     monthNumber = viewedMonth.getMonth();
-  } catch {
+  } catch { /* empty */ }
 
-  }
-  let fy = 0;
+  let fullYear = 0;
   try {
-    fy = currentTime.getFullYear();
-  } catch {
-
-  }
+    fullYear = currentTime.getFullYear();
+  } catch { /* empty */ }
 
   React.useEffect(() => {
     // update calendar focus (unless user has moved away from previously given active month)
@@ -76,15 +73,11 @@ function Calendar({
     if (add === 0) {
       return viewedMonth;
     }
+    let newDate = new Date();
     try {
-      const newDate = new Date(viewedMonth.getTime());
-      newDate.setMonth(newDate.getMonth() + add);
-      return newDate;
-    } catch {
-      const newDate = new Date();
-      newDate.setMonth(newDate.getMonth() + add);
-      return newDate;
-    }
+      newDate = new Date(viewedMonth.getTime());
+    } catch { /* empty */ }
+    return newDate;
   }
 
   function daysToDisplay() {
@@ -161,7 +154,7 @@ function Calendar({
               <MdToday />
             </Button>
           )}
-          {`${Months[monthNumber]} ${fy}`}
+          {`${Months[monthNumber]} ${fullYear}`}
         </span>
         <Button regular transparent small onClick={() => stepViewMonth(1)}>
           <MdChevronRight />
@@ -211,9 +204,9 @@ Calendar.daysOfMonth = (month) => {
 
 Calendar.isSameDay = (a, b) => {
   try {
-    a.getFullYear() === b.getFullYear() &&
+    return (a.getFullYear() === b.getFullYear() &&
     a.getMonth() === b.getMonth() &&
-    a.getDate() === b.getDate();
+    a.getDate() === b.getDate());
   } catch {
     return false;
   }
@@ -227,9 +220,9 @@ Calendar.toStartOfMonth = (day) => {
   try {
     const newDay = Calendar.copy(day);
     newDay.setDate(1);
-  return newDay;
+    return newDay;
   } catch {
-    return "1"
+    return '1';
   }
 };
 
@@ -239,9 +232,9 @@ Calendar.toStartOfMonth = (day) => {
  */
 Calendar.copy = (date) => {
   try {
-    new Date(date.getTime())
+    return new Date(date.getTime());
   } catch {
-    return date
+    return date;
   }
 };
 
