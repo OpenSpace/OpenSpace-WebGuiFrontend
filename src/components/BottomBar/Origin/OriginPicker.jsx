@@ -26,6 +26,7 @@ import {
   EngineModeSessionRecordingPlayback,
   EngineModeUserControl,
   InterestingTag,
+  JumpToFadeDurationKey,
   NavigationAimKey,
   NavigationAnchorKey,
   RetargetAimKey,
@@ -378,6 +379,7 @@ function OriginPicker() {
           <Property uri={CameraPathSpeedFactorKey} />
           <Property uri={CameraPathArrivalDistanceFactorKey} />
           <Property uri={ApplyIdleBehaviorOnPathFinishKey} />
+          <Property uri={JumpToFadeDurationKey} />
         </ToggleContent>
       </SettingsPopup>
     );
