@@ -4,23 +4,18 @@ import styles from './SystemDrawer.scss';
 import { closeDrawer } from '../../../../api/Actions';
 import { useDispatch, useSelector } from 'react-redux';
 import SystemItem, { SystemItemProps } from './SystemItem';
-import {
-  showAbout,
-  openTutorials,
-  openFeedback,
-  setShowKeybinds,
-  nativeGui,
-  quit
-} from './system-utils';
+import { showAbout, openTutorials, openFeedback, nativeGui, quit } from './system-utils';
 import environment from '../../../../api/Environment';
 import { MdExitToApp } from 'react-icons/md';
 
 export const SystemDrawer = () => {
-  const [isLoading, setIsLoading] = React.useState(false);
-  const isOpen = useSelector((state: any) => state.local.drawersReducer.SystemDrawer.isOpen);
   const dispatch = useDispatch();
+
+  const isOpen = useSelector((state: any) => state.local.drawersReducer.SystemDrawer.isOpen);
   const connectionLost = useSelector((state: any) => state.connection.connectionLost);
   const luaApi = useSelector((state: any) => state.luaApi);
+
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const items: SystemItemProps[] = [
     {

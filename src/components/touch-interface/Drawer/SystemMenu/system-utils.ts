@@ -48,7 +48,6 @@ export async function console(luaApi: any) {
     return;
   }
 
-  // console.log('hej');
   const data = await luaApi.propertyValue('LuaConsole.IsVisible');
   const visible = data[1] || false;
   luaApi.setPropertyValue('LuaConsole.IsVisible', !visible);
