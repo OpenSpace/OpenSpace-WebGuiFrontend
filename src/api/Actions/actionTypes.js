@@ -119,7 +119,11 @@ const actionTypes = {
   addStoryTree: 'STORY_TREE_ADD',
   addStoryInfo: 'STORY_TREE_ADD_INFO',
   resetStoryInfo: 'STORY_TREE_RESET_INFO',
-  resetStoryTree: 'STORY_TREE_RESET'
+  resetStoryTree: 'STORY_TREE_RESET',
+
+  // actions types for drawers
+  openDrawer: 'OPEN_DRAWER',
+  closeDrawer: 'CLOSE_DRAWER'
 };
 
 export default actionTypes;

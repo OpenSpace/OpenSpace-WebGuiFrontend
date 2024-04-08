@@ -81,26 +81,22 @@ export const sendFlightControl = (flightControl) => ({
 
 export const startConnection = () => ({
   type: actionTypes.startConnection,
-  payload: {
-  }
+  payload: {}
 });
 
 export const onOpenConnection = () => ({
   type: actionTypes.onOpenConnection,
-  payload: {
-  }
+  payload: {}
 });
 
 export const reloadPropertyTree = () => ({
   type: actionTypes.reloadPropertyTree,
-  payload: {
-  }
+  payload: {}
 });
 
 export const onCloseConnection = () => ({
   type: actionTypes.onCloseConnection,
-  payload: {
-  }
+  payload: {}
 });
 
 export const changeConnectionWait = (value) => ({
@@ -155,8 +151,7 @@ export const addStoryInfo = (info) => ({
 
 export const resetStoryInfo = () => ({
   type: actionTypes.resetStoryInfo,
-  payload: {
-  }
+  payload: {}
 });
 
 export const getVersion = () => ({
@@ -392,4 +387,20 @@ export const refreshSessionRecording = () => ({
 export const updateSessionRecording = (data) => ({
   type: actionTypes.updateSessionRecording,
   payload: data
+});
+
+// Thesis 2024 cloud-interface actions
+
+export const openDrawer = (drawerId) => ({
+  type: actionTypes.openDrawer,
+  payload: {
+    drawerId
+  }
+});
+
+export const closeDrawer = (drawerId) => ({
+  type: actionTypes.closeDrawer,
+  payload: {
+    drawerId
+  }
 });

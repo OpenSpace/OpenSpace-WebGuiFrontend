@@ -143,7 +143,8 @@ const popovers = (state = defaultPopovers, action = {}) => {
             activeTab: action.payload.activeTab
           }
         };
-      } if (action.payload.isMeta) {
+      }
+      if (action.payload.isMeta) {
         return {
           ...state,
           activeNodeMetaPanels: {
@@ -196,12 +197,55 @@ const showAbout = (state = false, action = {}) => {
   }
 };
 
+// Drawers reducers
+const defaultDrawerState = {
+  isOpen: false
+};
+
+const drawerReducer = (state = defaultDrawerState, action = {}) => {
+  switch (action.type) {
+    case actionTypes.openDrawer:
+      return {
+        ...state,
+        isOpen: true
+      };
+    case actionTypes.closeDrawer: {
+      return {
+        ...state,
+        isOpen: false
+      };
+    }
+    default:
+      return state;
+  }
+};
+
+const defaultDrawersState = {
+  SystemDrawer: defaultDrawerState
+  // add more drawers...
+};
+
+const drawersReducer = (state = defaultDrawersState, action = {}) => {
+  switch (action.type) {
+    case actionTypes.openDrawer:
+    case actionTypes.closeDrawer:
+      return {
+        ...state,
+        [action.payload.drawerId]: drawerReducer(state[action.payload.drawerId], action)
+      };
+
+    default:
+      return state;
+  }
+};
+
 const local = combineReducers({
   originPicker,
   timePicker,
   popovers,
   propertyTreeExpansion,
-  showAbout
+  showAbout,
+  drawersReducer
 });
 
 export default local;

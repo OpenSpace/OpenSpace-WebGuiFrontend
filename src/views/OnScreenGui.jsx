@@ -79,9 +79,9 @@ function OnScreenGui({ isInBrowser, showFlightController }) {
     <div
       className={styles.app}
       style={
-        environment.developmentMode ?
-          { borderStyle: 'solid', borderWidth: '3px', borderColor: 'orange' } :
-          null
+        environment.developmentMode
+          ? { borderStyle: 'solid', borderWidth: '3px', borderColor: 'orange' }
+          : null
       }
     >
       {environment.developmentMode && (

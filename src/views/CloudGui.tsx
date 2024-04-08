@@ -28,13 +28,14 @@ import ErrorMessage from './ErrorMessage';
 import '../styles/base.scss';
 import styles from './CloudGui.scss';
 import NavigationBar from '../components/touch-interface/NavigationBar/NavigationBar';
+import { SystemDrawer } from '../components/touch-interface/Drawer/SystemMenu/SystemDrawer';
 
 interface CloudGuiProps {
   isInBrowser: boolean;
   showFlightController: boolean;
 }
 
-function CloudGui({ isInBrowser = false, showFlightController = true }: CloudGuiProps) {
+function CloudGui({ isInBrowser = false }: CloudGuiProps) {
   let hasCheckedVersion = false;
   const [showTutorial, setShowTutorial] = React.useState(false);
   const [luaConsoleVisible, setLuaConsoleVisible] = React.useState(false);
@@ -113,9 +114,15 @@ function CloudGui({ isInBrowser = false, showFlightController = true }: CloudGui
           )}
           {/* <ErrorMessage /> */}
           <main>
-            <NavigationBar showTutorial={false} />
+            {isInBrowser && luaConsoleVisible && <LuaConsole />}
+            <NodePopOverContainer />
+            <NodeMetaContainer />
+            <NavigationBar showTutorial={showTutorial} />
+            <KeybindingPanel />
+            <TourPopup isVisible={showTutorial} setVisibility={(show) => setShowTutorial(show)} />
           </main>
         </TouchWrapper>
+        <SystemDrawer />
       </RefsProvider>
     </div>
   );
