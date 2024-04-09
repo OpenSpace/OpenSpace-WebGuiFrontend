@@ -5,13 +5,14 @@ import TimePicker from '../../BottomBar/TimePicker';
 import GeoPositionPanel from '../../BottomBar/GeoPositionPanel';
 import SmallLabel from '../../common/SmallLabel/SmallLabel';
 import SystemMenu from './SystemMenu/SystemMenu';
-import { Md10K, MdLayers, MdOutlineAddBox, MdSettings } from 'react-icons/md';
+import { Md10K, MdLayers, MdOutlineAddBox, MdSettings, MdGridView } from 'react-icons/md';
 
 import TabMenu from '../../Sidebar/TabMenu/TabMenu';
 import TabMenuItem from '../../Sidebar/TabMenu/TabMenuItem';
 
 import { connect, useDispatch, useSelector } from 'react-redux';
 import { openDrawer } from '../../../api/Actions';
+import FrictionBar from '../FrictionBar/FrictionBar';
 
 interface NavigationBarProps {
   showTutorial: boolean;
@@ -28,25 +29,27 @@ const NavigationBar: React.FC<NavigationBarProps> = ({ showTutorial }) => {
   return (
     <div className={styles.NavigationBar}>
       <div className={styles.row}>
-        <div className={styles.item}></div>
-        <div className={styles.item} onClick={handleOpenSystemDrawer}>
+        <div className={styles.itemContainer} onClick={handleOpenSystemDrawer}>
           <MdSettings className={styles.icon} />
-          <span>Settings</span>
+          <span>SETTINGS</span>
           <SystemMenu showMenu={showMenu} showTutorial={showTutorial} setShowMenu={setShowMenu} />
         </div>
-        <div className={styles.item}>
+        <div className={styles.itemContainer}>
           <MdLayers className={styles.icon} />
-          <span>Scene</span>
+          <span>SCENE</span>
         </div>
-        <div className={styles.item}>
-          <MdLayers className={styles.icon} />
-          <span>Action</span>
+        <div className={styles.itemContainer}>
+          <MdGridView className={styles.icon} />
+          <span>ACTION</span>
         </div>
-        <div className={styles.item}>
+        <div className={styles.itemContainer}>
           <OriginPicker />
         </div>
-        <TimePicker />
+        <div className={styles.itemContainer}>
+          <TimePicker />
+        </div>
       </div>
+      <FrictionBar />
     </div>
   );
 };

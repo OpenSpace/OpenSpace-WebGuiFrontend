@@ -1,20 +1,15 @@
-.NavigationBar {
-  position: absolute;
-  bottom: 16px;
+.FrictionBar {
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap;
-  width: 100%;
-  justify-content: space-between;
+  margin-right: 112px;
 }
 
 .row {
   display: flex;
   height: 80px;
-  gap: 1rem;
-  padding: 8px 16px;
+  padding: 8px 8px;
   background-color: #30303a70; // Last two digits are the alpha value
-  border-radius: 0 0 0.5rem 0.5rem;
+  border-radius: 0.5rem;
 }
 
 .icon {
@@ -28,5 +23,5 @@
   justify-content: center;
   align-items: center;
   font-size: 14px;
-  padding: 0px 8px;
+  width: 100px;
 }

@@ -1,6 +1,8 @@
 .Frame {
   position: fixed;
-  background-color: #333;
+  background-color: #43434340; // Last two digits are the alpha value
+  border-color: #a2a2a240;
+  border-style: solid;
 }
 
 .RightFrame {
@@ -8,21 +10,24 @@
   bottom: 0;
   height: calc(100% - 80px); /* Adjust the height of the right frame to account for corner */
   width: 80px;
-  border-radius: 0 0 0 5rem;
+  border-radius: 5rem 0 0 5rem;
 }
 .TopFrame {
   left: 0;
   top: 0;
   width: calc(100% - 80px); /* Adjust the width of the top frame to account for corner */
   height: 80px;
-  border-radius: 0 0 0 5rem;
+  border-radius: 0 0 5rem 5rem;
 }
 
 .Corner {
-  background-color: red;
+  background-color: #43434340;
+  border-color: #a2a2a240;
+  border-style: solid;
   width: 80px;
   height: 80px;
   position: fixed;
   top: 0;
   right: 0;
+  border-radius: 0 0 0 3rem;
 }

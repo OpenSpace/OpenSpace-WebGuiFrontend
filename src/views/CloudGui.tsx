@@ -118,6 +118,7 @@ function CloudGui({ isInBrowser = false }: CloudGuiProps) {
             <NodePopOverContainer />
             <NodeMetaContainer />
             <NavigationBar showTutorial={showTutorial} />
+
             <KeybindingPanel />
             <TourPopup isVisible={showTutorial} setVisibility={(show) => setShowTutorial(show)} />
           </main>
