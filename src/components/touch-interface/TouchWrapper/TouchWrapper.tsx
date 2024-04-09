@@ -6,6 +6,7 @@ import useTouchInteraction, { TouchInteractionProps } from '../hooks/useTouchInt
 import { useDispatch } from 'react-redux';
 import { connectFlightController, sendFlightControl } from '../../../api/Actions';
 import { Payload } from '../TouchFrame/touchTypes';
+import useGesture from '../hooks/useGesture';
 
 interface TouchWrapperProps {
   children: React.ReactNode;
@@ -33,6 +34,7 @@ export default function TouchWrapper({ children }: TouchWrapperProps) {
   };
 
   useTouchInteraction(touchConfig);
+  // const gestureType = useGesture();
 
   return (
     <div className={styles.wrapper}>
