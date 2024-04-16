@@ -62,16 +62,38 @@ const time = (state = defaultState, action = {}) => {
       const newState = { ...state };
 
       if (newTime !== undefined) {
-        newState.time = new Date(dateStringWithTimeZone(newTime));
+        try {
+          let ztime = new Date(dateStringWithTimeZone(newTime));
+          if (!isNaN(ztime)) {
+            newState.time = ztime
+          } else {
+            newState.time = newTime
+          }
+        }
+        catch (e) {
+          newState.time = newTime;
+        }
 
         // Make optimized time that only updates every second
         const date = new Date(dateStringWithTimeZone(newTime));
         date.setMilliseconds(0);
+        let iso = "";
+        let newiso = "";
+        try {
+          iso = date.toISOString();
+        } catch {
+          iso = newTime;
+        }
+        try {
+          newiso = newState.timeCapped.toISOString();
+        } catch {
+          newiso = newTime;
+        }
         // If it is the first time the time is sent, just set the state
         // Else cap the update of the state to every second for performance
         if (!state.timeCapped) {
-          newState.timeCapped = date;
-        } else if (date.toISOString() !== newState.timeCapped.toISOString()) {
+          newState.timeCapped = newTime;
+        } else if (iso !== newiso) {
           newState.timeCapped = date;
         }
       }

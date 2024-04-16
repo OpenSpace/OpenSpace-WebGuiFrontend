@@ -53,7 +53,6 @@ function zeroPad(number) {
 
 function Time({ elements, onChange, time }) {
   const hasCallback = onChange !== null;
-
   function shouldInclude(what) {
     return elements.includes(what);
   }
@@ -143,13 +142,21 @@ function Time({ elements, onChange, time }) {
 
   function fullYear() {
     const mm = shouldInclude(Elements.Month);
-    return wrap(`${zeroPad(time.getUTCFullYear())}`, 'FullYear', mm && ':');
+    try {
+      return wrap(`${zeroPad(time.getUTCFullYear())}`, 'FullYear', mm && ':');
+    } catch {
+      return wrap(time.split(' ')[0], 'FullYear', mm && ':');
+    }
   }
 
   function month() {
     const dd = shouldInclude(Elements.Date);
-
-    let mm = Months[time.getUTCMonth()];
+    let mm = '';
+    try {
+      mm = Months[time.getUTCMonth()];
+    } catch {
+      mm = time.split(' ')[1];
+    }
     if (!mm) {
       mm = Months[0];
     }
@@ -160,34 +167,64 @@ function Time({ elements, onChange, time }) {
 
   function date() {
     const hh = shouldInclude(Elements.Hours);
-    const dd = time.getUTCDate();
+    let dd = 0;
+    try {
+      dd = time.getUTCDate();
+    } catch {
+      dd = time.split(' ')[2];
+    }
     const zpd = zeroPad(dd);
     return wrap(`${zpd}`, 'Date', hh && ':');
   }
 
   function hours() {
     const mm = shouldInclude(Elements.Minutes);
-    const hh = time.getUTCHours();
+    let hh = 0;
+    try {
+      hh = time.getUTCHours();
+    } catch {
+      try {
+        hh = time.split(' ')[3].split(':')[0];
+      } catch {
+        hh = 0;
+      }
+    }
     const zph = zeroPad(hh);
     return wrap(`${zph}`, 'Hours', mm && ':');
   }
 
   function minutes() {
     const ss = shouldInclude(Elements.Seconds);
-    const mm = time.getUTCMinutes();
+    let mm = 0;
+    try {
+      mm = time.getUTCMinutes();
+    } catch {
+      mm = time.split(' ')[3].split(':')[1];
+    }
     const zpm = zeroPad(mm);
     return wrap(`${zpm}`, 'Minutes', ss && ':');
   }
 
   function seconds() {
     const ms = shouldInclude(Elements.Milliseconds);
-    const ss = time.getUTCSeconds();
+    let ss = 0;
+    try {
+      ss = time.getUTCSeconds();
+    } catch {
+      ss = time.split(' ')[3].split(':')[2].split('.')[0];
+    }
     const zps = zeroPad(ss);
     return wrap(`${zps}`, 'Seconds', ms && '.');
   }
 
   function milliseconds() {
-    const ms = time.getUTCMilliseconds();
+    let ms = 0;
+    try {
+      ms = time.getUTCMilliseconds();
+    } catch {
+      ms = time.split(' ')[3].split(':')[2].split('.')[1];
+    }
+
     return wrap(ms, 'Milliseconds');
   }
 
