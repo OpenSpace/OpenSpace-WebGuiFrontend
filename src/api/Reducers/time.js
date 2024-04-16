@@ -80,14 +80,14 @@ const time = (state = defaultState, action = {}) => {
         let iso = "";
         let newiso = "";
         try {
-          let iso = date.toISOString();
+          iso = date.toISOString();
         } catch {
-          let iso = newTime;
+          iso = newTime;
         }
         try {
-          let newiso = newState.timeCapped.toISOString();
+          newiso = newState.timeCapped.toISOString();
         } catch {
-          let newiso = newTime;
+          newiso = newTime;
         }
         // If it is the first time the time is sent, just set the state
         // Else cap the update of the state to every second for performance

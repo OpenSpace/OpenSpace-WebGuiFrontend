@@ -128,7 +128,7 @@ function TimePicker() {
       }
     }
     return time;
-}
+  }
 
   function setToPendingTime() {
     setDate(pendingTime);
