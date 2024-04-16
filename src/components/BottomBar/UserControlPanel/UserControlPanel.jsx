@@ -25,9 +25,13 @@ function UserControlPanel() {
 
   const panelList = useSelector((state) => state.userPanels.panels || []);
   const dispatch = useDispatch();
-  if (luaApi && !isDataInitialized) {
+
+  React.useEffect(() => {
+    if (luaApi && !isDataInitialized) {
       dispatch(loadUserPanelData(luaApi));
-  }
+    }
+  }, []);
+
 
   
   function togglePopover() {

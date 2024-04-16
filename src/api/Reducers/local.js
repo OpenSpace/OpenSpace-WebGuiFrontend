@@ -102,13 +102,13 @@ const popovers = (state = defaultPopovers, action = {}) => {
         }
       }
 
-      case actionTypes.removeUserPanel:
-        return {
-          ...state,
-          activeUserControlPanels: {
-            ...state.activeUserControlPanels,
-            [action.payload]: undefined
-          }
+    case actionTypes.removeUserPanel:
+      return {
+        ...state,
+        activeUserControlPanels: {
+          ...state.activeUserControlPanels,
+          [action.payload]: undefined
+        }
       };
 
     case actionTypes.addNodePropertyPopover:
