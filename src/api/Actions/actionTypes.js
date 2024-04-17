@@ -47,6 +47,12 @@ const actionTypes = {
   addExoplanets: 'EXOPLANETS_ADD',
   removeExoplanets: 'EXOPLANETS_REMOVE',
 
+  // action types for user panels
+  loadUserPanelData: 'USER_PANELS_LOAD_DATA',
+  initializeUserPanels: 'USER_PANELS_INITIALIZE',
+  addUserPanel: 'USER_PANELS_ADD',
+  removeUserPanel: 'USER_PANELS_REMOVE',
+
   // action types for skybrowser
   loadSkyBrowserData: 'SKYBROWSER_LOAD_DATA',
   initializeSkyBrowser: 'SKYBROWSER_INITIALIZE',

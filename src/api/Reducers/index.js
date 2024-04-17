@@ -15,6 +15,7 @@ import shortcuts from './shortcuts';
 import skybrowser from './skybrowser';
 import storyTree from './storyTree';
 import time from './time';
+import userPanels from './userPanels';
 import version from './version';
 
 // Add more reducers here
@@ -39,6 +40,7 @@ const openspaceApp = (state = {}, action = {}) => {
     fetchData: fetchData(state.fetchData, action),
     storyTree: storyTree(state.storyTree, action),
     version: version(state.version, action),
+    userPanels: userPanels(state.userPanels, action),
     missions: missions(state.missions, action)
   };
 };

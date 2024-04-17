@@ -17,6 +17,7 @@ import TourPopup from '../components/GettingStartedTour/TourPopup';
 import LuaConsole from '../components/LuaConsole/LuaConsole';
 import NodeMetaContainer from '../components/NodeMetaPanel/NodeMetaContainer';
 import NodePopOverContainer from '../components/NodePropertiesPanel/NodePopOverContainer';
+import UserControlPanelContainer from '../components/BottomBar/UserControlPanel/UserControlPanelContainer';
 import Sidebar from '../components/Sidebar/Sidebar';
 
 import About from './About/About';
@@ -104,6 +105,7 @@ function OnScreenGui({
           {isInBrowser && luaConsoleVisible && <LuaConsole />}
           <NodePopOverContainer />
           <NodeMetaContainer />
+          <UserControlPanelContainer />
           <BottomBar showFlightController={showFlightController} />
           <KeybindingPanel />
           <TourPopup isVisible={showTutorial} setVisibility={(show) => setShowTutorial(show)} />

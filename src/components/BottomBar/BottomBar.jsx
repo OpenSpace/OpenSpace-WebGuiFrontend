@@ -19,6 +19,7 @@ import ScreenSpaceRenderablePanel from './ScreenSpaceRenderablePanel';
 import SessionRec from './SessionRec';
 import SkyBrowserPanel from './SkyBrowserPanel';
 import TimePicker from './TimePicker';
+import UserControlPanel from './UserControlPanel/UserControlPanel';
 
 import styles from './BottomBar.scss';
 
@@ -61,6 +62,7 @@ export default function BottomBar({
       <GeoPositionPanel />
       <ScreenSpaceRenderablePanel />
       {showExoplanets && <ExoplanetsPanel />}
+      <UserControlPanel />
       <ActionsPanel />
       {showFlightController && <FlightControlPanel />}
       {showSkyBrowser && <SkyBrowserPanel />}
