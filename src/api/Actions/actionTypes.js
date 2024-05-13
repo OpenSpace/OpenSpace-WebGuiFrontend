@@ -123,7 +123,11 @@ const actionTypes = {
 
   // actions types for drawers
   openDrawer: 'OPEN_DRAWER',
-  closeDrawer: 'CLOSE_DRAWER'
+  closeDrawer: 'CLOSE_DRAWER',
+
+  // actions types for touch modes
+  orbit: 'ORBIT',
+  translate: 'TRANSLATE'
 };
 
 export default actionTypes;

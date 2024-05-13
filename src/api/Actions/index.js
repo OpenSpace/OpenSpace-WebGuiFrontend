@@ -404,3 +404,10 @@ export const closeDrawer = (drawerId) => ({
     drawerId
   }
 });
+
+export const toggleTouchMode = (mode) => ({
+  type: mode === 'drag' ? actionTypes.orbit : actionTypes.translate,
+  payload: {
+    mode
+  }
+});

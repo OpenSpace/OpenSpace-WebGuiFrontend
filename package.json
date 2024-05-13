@@ -10,7 +10,7 @@
     "lint-nice": "eslint --ext .jsx --ext .js src || exit 0;",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "copyfiles index.html environment.js dist && webpack-dev-server --progress --host 0.0.0.0 --port 4690",
-    "prebuild": "npm install && rimraf dist",
+    "prebuild": "npm install --legacy-peer-deps && rimraf dist",
     "build": "cross-env NODE_ENV=production webpack --mode production --config webpack.config.production.js",
     "postbuild": "copyfiles index.html dist",
     "flow": "flow"
@@ -54,7 +54,8 @@
     "shallow-equal": "^1.2.1",
     "simple-keyboard-layouts": "^3.0.176",
     "spherical-geometry-js": "^3.0.0",
-    "svg-react-loader": "^0.4.6"
+    "svg-react-loader": "^0.4.6",
+    "ts-matrix": "^1.3.2"
   },
   "devDependencies": {
     "@babel/core": "^7.14.0",
