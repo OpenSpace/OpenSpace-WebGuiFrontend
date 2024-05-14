@@ -1,0 +1,14 @@
+@import '../../../styles/all.scss';
+
+.container {
+  display: flex;
+  gap: 0.5rem;
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: black;
+  padding-top: 2rem;
+  padding-left: 1rem;
+  align-items: center;
+  color: white;
+}

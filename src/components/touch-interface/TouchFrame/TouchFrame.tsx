@@ -9,9 +9,9 @@ import { Payload } from './touchTypes';
 
 export default function TouchFrame() {
   const dispatch: Dispatch = useDispatch();
-  const topFrameRef = useRef(null);
+  // const topFrameRef = useRef(null);
   const rightFrameRef = useRef(null);
-  const cornerRef = useRef(null);
+  // const cornerRef = useRef(null);
 
   useEffect(() => {
     dispatch(connectFlightController());
@@ -24,26 +24,26 @@ export default function TouchFrame() {
     [dispatch]
   );
 
-  useTouchInteraction({
-    targetRef: topFrameRef,
-    sendFlightControllerInput,
-    operation: 'Pan',
-    direction: 'X'
-  });
+  // useTouchInteraction({
+  //   targetRef: topFrameRef,
+  //   sendFlightControllerInput,
+  //   operation: 'Pan',
+  //   direction: 'X'
+  // });
 
   useTouchInteraction({
     targetRef: rightFrameRef,
     sendFlightControllerInput,
-    operation: 'Pan',
+    operation: 'Zoom',
     direction: 'Y'
   });
 
-  useTouchInteraction({ targetRef: cornerRef, sendFlightControllerInput, operation: 'Zoom' });
+  // useTouchInteraction({ targetRef: cornerRef, sendFlightControllerInput, operation: 'Zoom' });
 
   return (
     <>
-      <div ref={topFrameRef} className={`${styles.Frame} ${styles.TopFrame}`} />
-      <div ref={cornerRef} className={styles.Corner} />
+      {/* <div ref={topFrameRef} className={`${styles.Frame} ${styles.TopFrame}`} />
+      <div ref={cornerRef} className={styles.Corner} /> */}
       <div ref={rightFrameRef} className={`${styles.Frame} ${styles.RightFrame}`} />
     </>
   );

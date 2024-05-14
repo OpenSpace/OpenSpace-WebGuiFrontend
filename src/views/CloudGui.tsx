@@ -29,6 +29,8 @@ import '../styles/base.scss';
 import styles from './CloudGui.scss';
 import NavigationBar from '../components/touch-interface/NavigationBar/NavigationBar';
 import { SystemDrawer } from '../components/touch-interface/Drawer/SystemMenu/SystemDrawer';
+import StatusBar from '../components/touch-interface/TouchWrapper/StatusBar';
+import FrictionBar from '../components/touch-interface/FrictionBar/FrictionBar';
 
 interface CloudGuiProps {
   isInBrowser: boolean;
@@ -114,6 +116,8 @@ function CloudGui({ isInBrowser = false }: CloudGuiProps) {
           )}
           {/* <ErrorMessage /> */}
           <main>
+            <StatusBar />
+            <FrictionBar />
             {isInBrowser && luaConsoleVisible && <LuaConsole />}
             <NodePopOverContainer />
             <NodeMetaContainer />

@@ -6,6 +6,7 @@ import { compose, createStore } from 'redux';
 import middleware from './api/Middleware';
 import openspaceApp from './api/Reducers';
 import App from './App';
+import { Toaster } from 'react-hot-toast';
 
 // global document
 
@@ -18,6 +19,7 @@ const root = createRoot(container);
 root.render(
   <Provider store={store}>
     <App />
+    <Toaster />
   </Provider>
 );
 

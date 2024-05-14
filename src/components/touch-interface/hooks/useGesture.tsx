@@ -208,16 +208,16 @@ export const useGestures = (
 
         let rotate = get360angleVector2D(curDelta, prevDelta) * 25;
 
-        if (Math.abs(rotate) > 0.3) {
+        console.log(pinch);
+
+        if (Math.abs(rotate) > 1.2) {
           if (onRotateGesture) {
             onRotateGesture(rotate);
           }
-        } else if (Math.abs(pinch) > 0.3) {
+        } else if (Math.abs(pinch) > 7) {
           if (onPinchGesture) onPinchGesture(pinch);
         }
-        // else {
-        //   doubleDragGesture();
-        // }
+
         tap.reset();
       }
       //  else if (onGoingTouches.current.length === 3) {

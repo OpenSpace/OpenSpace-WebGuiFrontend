@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { subscribeToProperty, unsubscribeToProperty } from '../../../api/Actions';
 import { RollFrictionKey, RotationalFrictionKey, ZoomFrictionKey } from '../../../api/keys';
@@ -24,14 +24,18 @@ interface State {
 
 const FrictionBar = () => {
   const dispatch = useDispatch();
+
   const { luaApi, propertyTree } = useSelector((state: State) => ({
     luaApi: state.luaApi,
     propertyTree: state.propertyTree.properties
   }));
 
-  const rotationFriction = propertyTree[RotationalFrictionKey]?.value || false;
-  const zoomFriction = propertyTree[ZoomFrictionKey]?.value || false;
-  const rollFriction = propertyTree[RollFrictionKey]?.value || false;
+  const handleToggleFriction = useCallback(
+    (key: string, curVal: boolean) => {
+      luaApi.setPropertyValue(key, !curVal);
+    },
+    [luaApi]
+  );
 
   React.useEffect(() => {
     const keys = [RotationalFrictionKey, ZoomFrictionKey, RollFrictionKey];
@@ -40,45 +44,39 @@ const FrictionBar = () => {
     return () => keys.forEach((key) => dispatch(unsubscribeToProperty(key)));
   }, [dispatch]);
 
-  const toggleFriction = (key: string, currentValue: boolean) => {
-    luaApi.setPropertyValue(key, !currentValue);
-  };
-
   const buttonColor = (isActive: boolean) => (isActive ? '#FFFFFF' : '#FFFFFF40');
 
+  const frictions = [
+    {
+      key: RotationalFrictionKey,
+      icon: MdRotateRight,
+      title: 'Rotation'
+    },
+    {
+      key: ZoomFrictionKey,
+      icon: MdZoomIn,
+      title: 'Zoom'
+    },
+    {
+      key: RollFrictionKey,
+      icon: MdAutorenew,
+      title: 'Roll'
+    }
+  ];
+
   return (
-    <div className={styles.FrictionBar}>
-      <div className={styles.row}>
+    <div className={styles.container}>
+      {frictions.map((friction) => (
         <div
-          className={styles.itemContainer}
-          onClick={() => toggleFriction(RotationalFrictionKey, rotationFriction)}
-          title='Rotation friction'
-          style={{ color: buttonColor(rotationFriction) }}
+          className={styles.btn}
+          onClick={() => handleToggleFriction(friction.key, propertyTree[friction.key]?.value)}
+          title={friction.title}
+          style={{ color: buttonColor(propertyTree[friction.key]?.value) }}
         >
-          <MdRotateRight className={styles.icon} />
-          <span>ROTATION</span>
+          <friction.icon className={styles.icon} />
+          <span>{friction.title}</span>
         </div>
-
-        <div
-          className={styles.itemContainer}
-          onClick={() => toggleFriction(ZoomFrictionKey, zoomFriction)}
-          title='Zoom friction'
-          style={{ color: buttonColor(zoomFriction) }}
-        >
-          <MdZoomIn className={styles.icon} />
-          <span>ZOOM</span>
-        </div>
-
-        <div
-          className={styles.itemContainer}
-          onClick={() => toggleFriction(RollFrictionKey, rollFriction)}
-          title='Roll friction'
-          style={{ color: buttonColor(rollFriction) }}
-        >
-          <MdAutorenew className={styles.icon} />
-          <span>ROLL</span>
-        </div>
-      </div>
+      ))}
     </div>
   );
 };

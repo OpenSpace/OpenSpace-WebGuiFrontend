@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { connectFlightController, sendFlightControl, toggleTouchMode } from '../../../api/Actions';
 import { InputState, Payload } from '../TouchFrame/touchTypes';
 import useGestures, { IPointer } from '../hooks/useGesture';
+import toast from 'react-hot-toast';
 
 interface TouchWrapperProps {
   children: React.ReactNode;
@@ -29,16 +30,6 @@ export default function TouchWrapper({ children }: TouchWrapperProps) {
     },
     [dispatch]
   );
-
-  // * Code needed to use the frame touch interaction
-  // const touchConfig: TouchInteractionProps = {
-  //   targetRef: targetRef,
-  //   sendFlightControllerInput: sendFlightControllerInput,
-  //   operation: 'Rotation'
-  // };
-
-  // useTouchInteraction(touchConfig);
-  // const gestureType = useGesture();
 
   const handleTouchEnd = () => {
     sendFlightControllerInput({
@@ -77,14 +68,24 @@ export default function TouchWrapper({ children }: TouchWrapperProps) {
   const onPinch = (pinch: number) => {
     if (!targetRef.current) return;
 
-    console.log('pinch');
-
     const inputState: InputState = { values: {} };
 
+    const sensitivity = 1; // Controls the sensitivity of the scaling
+    const minScale = 0.1; // Minimum scale factor for the pinch value
+
+    // Apply logarithmic scaling
+    const positivePinch = Math.abs(pinch);
+    const scaledValue = Math.log10(positivePinch + 1) * sensitivity + 1;
+
+    const val = Math.max(scaledValue, minScale);
+    // Clamp the scaled value to the minimum scale
+
+    console.log(val);
+
     if (pinch > 0) {
-      inputState.values.zoomIn = pinch * 0.05;
+      inputState.values.zoomIn = val;
     } else {
-      inputState.values.zoomOut = -pinch * 0.05;
+      inputState.values.zoomOut = val;
     }
 
     sendFlightControllerInput({ type: 'inputState', inputState });
@@ -92,8 +93,6 @@ export default function TouchWrapper({ children }: TouchWrapperProps) {
 
   const onRotate = (rotation: number) => {
     if (!targetRef.current) return;
-
-    console.log('rotate');
 
     const inputState: InputState = { values: {} };
     inputState.values.localRollX = -rotation;
@@ -116,11 +115,21 @@ export default function TouchWrapper({ children }: TouchWrapperProps) {
   const onTap = (pointer: IPointer) => {
     // ? What do we wanna do on tap?
     console.log('tap:', pointer.position);
+    const mode = touchMode === 'orbit' ? 'translate' : 'orbit';
+    dispatch(toggleTouchMode(mode));
+    toast(`Mode switched to ${mode}`, {
+      icon: mode === 'orbit' ? '🌍' : '📷',
+      position: 'top-left',
+      duration: 1000,
+      style: {
+        borderRadius: '2px',
+        background: '#333',
+        color: '#fff'
+      }
+    });
   };
 
-  const onHold = (pointer: IPointer) => {
-    dispatch(toggleTouchMode(touchMode));
-  };
+  const onHold = (pointer: IPointer) => {};
 
   useGestures(
     targetRef,
