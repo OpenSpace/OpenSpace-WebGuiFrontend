@@ -41,7 +41,7 @@ function SystemMenu({ showTutorial }) {
     luaApi.toggleShutdown();
   }
 
-  async function console() {
+  async function showLuaConsole() {
     if (!luaApi) { return; }
     const data = await luaApi.propertyValue('LuaConsole.IsVisible');
     const visible = data[1] || false;
@@ -62,6 +62,18 @@ function SystemMenu({ showTutorial }) {
 
   function openFeedback() {
     const script = openlinkScript('http://data.openspaceproject.com/feedback');
+    api.executeLuaScript(script);
+  }
+
+  async function openGuiInBrowser() {
+    if (!luaApi) { return; }
+    const portProperty = await luaApi.propertyValue('Modules.WebGui.Port');
+    const port = portProperty[1] || 4680;
+    const addressProperty = await luaApi.propertyValue('Modules.WebGui.Address');
+    const address = addressProperty[1] || 'localhost';
+
+    // Use the default endpoint
+    const script = openlinkScript(`http://${address}:${port}`);
     api.executeLuaScript(script);
   }
 
@@ -105,13 +117,16 @@ function SystemMenu({ showTutorial }) {
             <button type="button" onClick={() => onClick(openFeedback)}>
               Send Feedback
             </button>
+
             <HorizontalDelimiter />
+
             <button type="button" onClick={() => { onClick(setShowKeybinds, !keybindsIsVisible); }}>
               <MdKeyboard className={styles.linkIcon} />
               {keybindsIsVisible ? 'Hide' : 'Show'}
               {' '}
               keybindings
             </button>
+
             {
               environment.developmentMode && (
                 <div>
@@ -122,20 +137,30 @@ function SystemMenu({ showTutorial }) {
             }
             <HorizontalDelimiter />
 
-            <button type="button" onClick={() => onClick(console)}>
+            <button type="button" onClick={() => onClick(openGuiInBrowser)}>
+              Open GUI in Browser
+            </button>
+
+            <HorizontalDelimiter />
+
+            <button type="button" onClick={() => onClick(showLuaConsole)}>
               Toggle console
               {' '}
               <span className={styles.shortcut}>~</span>
             </button>
+
             <button type="button" onClick={() => { onClick(nativeGui); }}>
               Toggle native GUI
               {' '}
               <span className={styles.shortcut}>F1</span>
             </button>
-            {/*              <button onClick={saveChange}>
+
+            {/* <button onClick={saveChange}>
               Save settings to profile
             </button> */}
+
             <HorizontalDelimiter />
+
             <button type="button" onClick={() => { onClick(quit); }}>
               <MdExitToApp className={styles.linkIcon} />
               Quit OpenSpace
