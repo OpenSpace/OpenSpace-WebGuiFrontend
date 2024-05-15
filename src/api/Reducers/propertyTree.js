@@ -75,7 +75,7 @@ const propertyOwners = (state = {}, action = {}) => {
         var parentUri = owner.uri.substring(0, periodPos);
 
         // If that parent exists and the link doesn't exist, add the link to the parent
-        if (parentUri !== "" && newState[parentUri] && !newState[parentUri].subowners.includes(owner.uri)) {
+        if (parentUri && newState[parentUri] && !newState[parentUri].subowners.includes(owner.uri)) {
           newState[parentUri].subowners.push(owner.uri);
         }
       });

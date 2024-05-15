@@ -126,25 +126,27 @@ const markAllSubscriptionsAsPending = () => {
   });
 };
 
-const flattenPropertyTree = (propertyOwner, baseUri) => {
+const flattenPropertyTree = (propertyOwner, baseUri = undefined) => {
   let propertyOwners = [];
   let properties = [];
 
-  propertyOwner.subowners.forEach((subowner) => {
-    const uri = baseUri ?
-    `${baseUri}.${subowner.identifier}` :
-    subowner.identifier;
-
+  const uri = baseUri ?
+  `${baseUri}.${propertyOwner.identifier}` :
+  propertyOwner.identifier;
+  
+  if (uri) {
     propertyOwners.push({
       uri,
-      identifier: subowner.identifier,
-      name: subowner.guiName ?? subowner.identifier,
-      properties: subowner.properties.map((p) => p.Description.Identifier),
-      subowners: subowner.subowners.map((p) => `${uri}.${p.identifier}`),
-      tags: subowner.tag,
-      description: subowner.description
+      identifier: propertyOwner.identifier,
+      name: propertyOwner.guiName ?? propertyOwner.identifier,
+      properties: propertyOwner.properties.map((p) => p.Description.Identifier),
+      subowners: propertyOwner.subowners.map((p) => `${uri}.${p.identifier}`),
+      tags: propertyOwner.tag,
+      description: propertyOwner.description
     });
+  }
 
+  propertyOwner.subowners.forEach((subowner) => {
     const childData = flattenPropertyTree(subowner, uri);
 
     propertyOwners = propertyOwners.concat(childData.propertyOwners);
@@ -166,23 +168,11 @@ const flattenPropertyTree = (propertyOwner, baseUri) => {
   };
 };
 
-const getPropertyTree = async (dispatch) => {
-  const value = await api.getProperty(rootOwnerKey);
-  
-  const { propertyOwners, properties } = flattenPropertyTree(value);
-  dispatch(addPropertyOwners(propertyOwners));
-  dispatch(addProperties(properties));
-  dispatch(refreshGroups());
-};
-
-const addSceneGraphNode = async (dispatch, uri, parentUri) => {
-  console.log(uri)
+const addPropertyOwner = async (dispatch, uri, parentUri) => {
   const value = await api.getProperty(uri);
-  // Prep the data so it fits in the flattenPropertyTree format
-  const node = { subowners : [value], properties : [] };
 
-  // Extract the data from the property
-  const { propertyOwners, properties } = flattenPropertyTree(node, parentUri);
+  // Extract the data from the property owner
+  const { propertyOwners, properties } = flattenPropertyTree(value, parentUri);
   
   dispatch(addPropertyOwners(propertyOwners));
   dispatch(addProperties(properties));
@@ -210,11 +200,11 @@ const propertyTree = (store) => (next) => (action) => {
       break;
     }
     case actionTypes.addSceneGraphNode: {
-      addSceneGraphNode(store.dispatch, action.payload.uri, action.payload.parentUri)
+      addPropertyOwner(store.dispatch, action.payload.uri, action.payload.parentUri)
       break;
     }
     case actionTypes.reloadPropertyTree: {
-      getPropertyTree(store.dispatch);
+      addPropertyOwner(store.dispatch, rootOwnerKey);
       break;
     }
     case actionTypes.onCloseConnection: {
