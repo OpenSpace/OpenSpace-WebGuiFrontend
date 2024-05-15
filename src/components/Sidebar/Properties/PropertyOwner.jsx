@@ -123,7 +123,7 @@ function PropertyOwner({
     }));
   };
   const refresh = () => {
-    dispatch(reloadPropertyTree());
+    //dispatch(reloadPropertyTree());
   };
 
   function header() {

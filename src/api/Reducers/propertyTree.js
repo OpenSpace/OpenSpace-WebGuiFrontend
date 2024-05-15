@@ -68,6 +68,16 @@ const propertyOwners = (state = {}, action = {}) => {
           subowners: owner.subowners,
           tags: owner.tags || []
         };
+        
+        // Ensure the parents of the uri have the links to the new entry
+        // Get parent uri
+        var periodPos = owner.uri.lastIndexOf('.');
+        var parentUri = owner.uri.substring(0, periodPos);
+
+        // If that parent exists and the link doesn't exist, add the link to the parent
+        if (parentUri !== "" && newState[parentUri] && !newState[parentUri].subowners.includes(owner.uri)) {
+          newState[parentUri].subowners.push(owner.uri);
+        }
       });
       return newState;
     }

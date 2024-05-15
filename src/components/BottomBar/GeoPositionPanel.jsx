@@ -150,7 +150,7 @@ function GeoPositionPanel() {
   const dispatch = useDispatch();
 
   function refresh() {
-    dispatch(reloadPropertyTree());
+    //dispatch(reloadPropertyTree());
   }
 
   function togglePopover() {

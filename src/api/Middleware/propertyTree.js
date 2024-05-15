@@ -129,23 +129,24 @@ const markAllSubscriptionsAsPending = () => {
 const flattenPropertyTree = (propertyOwner, baseUri) => {
   let propertyOwners = [];
   let properties = [];
-  const groups = {};
 
   propertyOwner.subowners.forEach((subowner) => {
     const uri = baseUri ?
-      `${baseUri}.${subowner.identifier}` :
-      subowner.identifier;
+    `${baseUri}.${subowner.identifier}` :
+    subowner.identifier;
 
     propertyOwners.push({
       uri,
       identifier: subowner.identifier,
-      name: subowner.guiName,
+      name: subowner.guiName ?? subowner.identifier,
       properties: subowner.properties.map((p) => p.Description.Identifier),
       subowners: subowner.subowners.map((p) => `${uri}.${p.identifier}`),
       tags: subowner.tag,
       description: subowner.description
     });
+
     const childData = flattenPropertyTree(subowner, uri);
+
     propertyOwners = propertyOwners.concat(childData.propertyOwners);
     properties = properties.concat(childData.properties);
   });
@@ -161,15 +162,28 @@ const flattenPropertyTree = (propertyOwner, baseUri) => {
 
   return {
     propertyOwners,
-    properties,
-    groups
+    properties
   };
 };
 
 const getPropertyTree = async (dispatch) => {
   const value = await api.getProperty(rootOwnerKey);
-
+  
   const { propertyOwners, properties } = flattenPropertyTree(value);
+  dispatch(addPropertyOwners(propertyOwners));
+  dispatch(addProperties(properties));
+  dispatch(refreshGroups());
+};
+
+const addSceneGraphNode = async (dispatch, uri, parentUri) => {
+  console.log(uri)
+  const value = await api.getProperty(uri);
+  // Prep the data so it fits in the flattenPropertyTree format
+  const node = { subowners : [value], properties : [] };
+
+  // Extract the data from the property
+  const { propertyOwners, properties } = flattenPropertyTree(node, parentUri);
+  
   dispatch(addPropertyOwners(propertyOwners));
   dispatch(addProperties(properties));
   dispatch(refreshGroups());
@@ -193,6 +207,10 @@ const propertyTree = (store) => (next) => (action) => {
   switch (action.type) {
     case actionTypes.onOpenConnection: {
       store.dispatch(reloadPropertyTree());
+      break;
+    }
+    case actionTypes.addSceneGraphNode: {
+      addSceneGraphNode(store.dispatch, action.payload.uri, action.payload.parentUri)
       break;
     }
     case actionTypes.reloadPropertyTree: {

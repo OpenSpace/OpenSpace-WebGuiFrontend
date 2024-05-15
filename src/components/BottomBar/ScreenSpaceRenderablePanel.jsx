@@ -66,7 +66,7 @@ function ScreenSpaceRenderablePanel() {
     // TODO: Once we have a proper way to subscribe to additions and removals
     // of property owners, this 'hard' refresh should be removed.
     setTimeout(() => {
-      dispatch(reloadPropertyTree());
+      //dispatch(reloadPropertyTree());
     }, 500);
   }
 

@@ -413,3 +413,9 @@ export const updateSessionRecording = (data) => ({
   type: actionTypes.updateSessionRecording,
   payload: data
 });
+
+export const addSceneGraphNode = (data) => ({
+  type: actionTypes.addSceneGraphNode,
+  payload: data
+});
+

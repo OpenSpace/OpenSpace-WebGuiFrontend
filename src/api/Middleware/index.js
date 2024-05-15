@@ -16,12 +16,14 @@ import skybrowser from './skybrowser';
 import time from './time';
 import version from './version';
 import userPanels from './userPanels';
+import events from './events';
 
 const middleware = applyMiddleware(
   // logger, // middleWare for logging state change
   propertyTree,
   time,
   engineMode,
+  events,
   sessionRecording,
   connection,
   shortcuts,

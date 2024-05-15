@@ -2,7 +2,7 @@ import React from 'react';
 import { MdWeb } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { loadUserPanelData, reloadPropertyTree, setPopoverVisibility, addUserPanel } from '../../../api/Actions';
+import { loadUserPanelData, setPopoverVisibility, addUserPanel } from '../../../api/Actions';
 import Button from '../../common/Input/Button/Button';
 import Select from '../../common/Input/Select/Select';
 import Popover from '../../common/Popover/Popover';
