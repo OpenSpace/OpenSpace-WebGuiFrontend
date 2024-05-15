@@ -12,10 +12,7 @@ async function handleData(store, data) {
         break;
     }
     case "ScreenSpaceRenderableAdded": {
-        console.log(data)
-        const node = await api.getProperty(data.Renderable);
-        console.log(node)
-        //xstore.dispatch(addPropertyOwners([node]));
+        store.dispatch(addSceneGraphNode({ uri: data.Renderable, parentUri: "ScreenSpace" }));
         break;
     }
     case "LayerAdded": {
