@@ -169,8 +169,8 @@ const flattenPropertyTree = (propertyOwner, baseUri = undefined) => {
 };
 
 const addPropertyOwner = async (dispatch, uri, parentUri) => {
-  const value = await api.getProperty(uri);
-
+  const fullUri = parentUri ? `${parentUri}.${uri}` : uri;
+  const value = await api.getProperty(fullUri);
   // Extract the data from the property owner
   const { propertyOwners, properties } = flattenPropertyTree(value, parentUri);
   
