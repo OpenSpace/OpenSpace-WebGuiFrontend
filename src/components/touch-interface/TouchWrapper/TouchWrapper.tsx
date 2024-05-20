@@ -58,9 +58,8 @@ export default function TouchWrapper({ children }: TouchWrapperProps) {
 
     const inputState: InputState = { values: {} };
 
-    // TODO: Scale the rotation depending on the distance of the drag from start position
-    inputState.values.orbitX = -dx * 0.0005;
-    inputState.values.orbitY = -dy * 0.0005;
+    inputState.values.orbitX = -dx;
+    inputState.values.orbitY = -dy;
 
     sendFlightControllerInput({ type: 'inputState', inputState });
   };
@@ -70,22 +69,10 @@ export default function TouchWrapper({ children }: TouchWrapperProps) {
 
     const inputState: InputState = { values: {} };
 
-    const sensitivity = 1; // Controls the sensitivity of the scaling
-    const minScale = 0.1; // Minimum scale factor for the pinch value
-
-    // Apply logarithmic scaling
-    const positivePinch = Math.abs(pinch);
-    const scaledValue = Math.log10(positivePinch + 1) * sensitivity + 1;
-
-    const val = Math.max(scaledValue, minScale);
-    // Clamp the scaled value to the minimum scale
-
-    console.log(val);
-
     if (pinch > 0) {
-      inputState.values.zoomIn = val;
+      inputState.values.zoomIn = pinch;
     } else {
-      inputState.values.zoomOut = val;
+      inputState.values.zoomOut = -pinch;
     }
 
     sendFlightControllerInput({ type: 'inputState', inputState });
@@ -112,9 +99,8 @@ export default function TouchWrapper({ children }: TouchWrapperProps) {
     sendFlightControllerInput({ type: 'inputState', inputState });
   };
 
-  const onTap = (pointer: IPointer) => {
-    // ? What do we wanna do on tap?
-    console.log('tap:', pointer.position);
+  const onTap = () => {
+    console.log('tap');
     const mode = touchMode === 'orbit' ? 'translate' : 'orbit';
     dispatch(toggleTouchMode(mode));
     toast(`Mode switched to ${mode}`, {
@@ -129,8 +115,9 @@ export default function TouchWrapper({ children }: TouchWrapperProps) {
     });
   };
 
-  const onHold = (pointer: IPointer) => {};
-
+  const onHold = () => {
+    console.log('hold');
+  };
   useGestures(
     targetRef,
     {

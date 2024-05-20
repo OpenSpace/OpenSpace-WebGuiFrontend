@@ -88,43 +88,53 @@ export const useGestures = (
     return -1; // not found
   };
 
-  // const pinchGesture = useCallback(() => {
-  //   const curDistance = distance(
-  //     onGoingTouches.current[0].position,
-  //     onGoingTouches.current[1].position
-  //   );
+  const pinchGesture = useCallback(() => {
+    const curDistance = distance(
+      onGoingTouches.current[0].position,
+      onGoingTouches.current[1].position
+    );
 
-  //   const delta0 = onGoingTouches.current[0].delta;
-  //   const delta1 = onGoingTouches.current[1].delta;
+    const delta0 = onGoingTouches.current[0].delta;
+    const delta1 = onGoingTouches.current[1].delta;
 
-  //   const vector0delta0 = onGoingTouches.current[0].position.subtract(delta0);
+    const vector0delta0 = onGoingTouches.current[0].position.subtract(delta0);
 
-  //   const vector1delta1 = onGoingTouches.current[1].position.subtract(delta1);
+    const vector1delta1 = onGoingTouches.current[1].position.subtract(delta1);
 
-  //   const pinch = curDistance - distance(vector0delta0, vector1delta1);
+    const pinch = curDistance - distance(vector0delta0, vector1delta1);
 
-  //   if (onPinchGesture) onPinchGesture(pinch);
-  // }, [onPinchGesture]);
+    if (onPinchGesture) {
+      const scalingFactor = Math.min(1, Math.log2(curDistance) / 5) * 0.05;
 
-  // const rotateGesture = useCallback(() => {
-  //   const curTouches = onGoingTouches.current;
+      const scaledPinch = pinch * scalingFactor;
 
-  //   const delta0 = onGoingTouches.current[0].delta;
-  //   const delta1 = onGoingTouches.current[1].delta;
-  //   const vector0delta0 = onGoingTouches.current[0].position.subtract(delta0);
+      onPinchGesture(scaledPinch);
+    }
+  }, [onPinchGesture]);
 
-  //   const vector1delta1 = onGoingTouches.current[1].position.subtract(delta1);
+  const rotateGesture = useCallback(() => {
+    const curTouches = onGoingTouches.current;
 
-  //   const curDelta = curTouches[0].position.subtract(curTouches[1].position);
+    const delta0 = onGoingTouches.current[0].delta;
+    const delta1 = onGoingTouches.current[1].delta;
+    const vector0delta0 = onGoingTouches.current[0].position.subtract(delta0);
 
-  //   const prevDelta = vector0delta0.subtract(vector1delta1);
+    const vector1delta1 = onGoingTouches.current[1].position.subtract(delta1);
 
-  //   let rotate = get360angleVector2D(curDelta, prevDelta) * 25;
+    const curDelta = curTouches[0].position.subtract(curTouches[1].position);
 
-  //   if (onRotateGesture) {
-  //     onRotateGesture(rotate);
-  //   }
-  // }, [onRotateGesture]);
+    const prevDelta = vector0delta0.subtract(vector1delta1);
+
+    let rotate = get360angleVector2D(curDelta, prevDelta) * 25;
+
+    const scalingFactor = Math.min(1, Math.log2(curDelta.length()) / 50);
+
+    const scaledRotate = rotate * scalingFactor;
+
+    if (onRotateGesture) {
+      onRotateGesture(scaledRotate);
+    }
+  }, [onRotateGesture]);
 
   const doubleDragGesture = useCallback(
     (touchIndex: number) => {
@@ -169,12 +179,19 @@ export const useGestures = (
     (touchIndex: number) => {
       const curTouch = onGoingTouches.current[touchIndex];
 
-      const dx = curTouch.clientX - touchStartX;
-      const dy = curTouch.clientY - touchStartY;
+      let dx = curTouch.clientX - touchStartX;
+      let dy = curTouch.clientY - touchStartY;
+
+      const distanceFromStart = Math.sqrt(dx * dx + dy * dy);
+      const scalingFactor = Math.min(1, Math.log2(distanceFromStart) / 5000);
+
+      dx *= scalingFactor;
+      dy *= scalingFactor;
 
       if (onDragGesture && touchMode === 'orbit') {
         onDragGesture({ dx, dy });
       } else if (onDoubleDragGesture && touchMode === 'translate') {
+        // ? Do we want to scale the camera translation with drag sensitivity?
         onDoubleDragGesture({ dx, dy });
       }
     },
@@ -187,45 +204,15 @@ export const useGestures = (
         tap.updateDistance(onGoingTouches.current[currentTouchIndex].delta.length());
         if (tap.canDrag()) dragGesture(currentTouchIndex);
       } else if (onGoingTouches.current.length === 2) {
-        const curDistance = distance(
-          onGoingTouches.current[0].position,
-          onGoingTouches.current[1].position
-        );
-
-        const delta0 = onGoingTouches.current[0].delta;
-        const delta1 = onGoingTouches.current[1].delta;
-
-        const vector0delta0 = onGoingTouches.current[0].position.subtract(delta0);
-        const vector1delta1 = onGoingTouches.current[1].position.subtract(delta1);
-
-        const pinch = curDistance - distance(vector0delta0, vector1delta1);
-
-        const curTouches = onGoingTouches.current;
-
-        const curDelta = curTouches[0].position.subtract(curTouches[1].position);
-
-        const prevDelta = vector0delta0.subtract(vector1delta1);
-
-        let rotate = get360angleVector2D(curDelta, prevDelta) * 25;
-
-        console.log(pinch);
-
-        if (Math.abs(rotate) > 1.2) {
-          if (onRotateGesture) {
-            onRotateGesture(rotate);
-          }
-        } else if (Math.abs(pinch) > 7) {
-          if (onPinchGesture) onPinchGesture(pinch);
-        }
+        pinchGesture();
 
         tap.reset();
+      } else if (onGoingTouches.current.length === 3) {
+        rotateGesture();
+        tap.reset();
       }
-      //  else if (onGoingTouches.current.length === 3) {
-      //   tripleDragGesture();
-      //   tap.reset();
-      // }
     },
-    [doubleDragGesture, dragGesture, tap] // Add tripledraggesture here if needed
+    [doubleDragGesture, dragGesture, pinchGesture, rotateGesture, tap] // Add tripledraggesture here if needed
   );
 
   useEffect(() => {
@@ -272,7 +259,9 @@ export const useGestures = (
 
       onGoingTouches.current.splice(index, 1);
 
-      endCallback();
+      if (onGoingTouches.current.length === 0) {
+        endCallback();
+      }
     };
 
     const handleMove = (event: PointerEvent) => {
