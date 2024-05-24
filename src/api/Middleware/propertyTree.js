@@ -168,11 +168,14 @@ const flattenPropertyTree = (propertyOwner, baseUri = undefined) => {
   };
 };
 
-const addPropertyOwner = async (dispatch, uri, parentUri) => {
-  const fullUri = parentUri ? `${parentUri}.${uri}` : uri;
-  const value = await api.getProperty(fullUri);
+const addPropertyOwner = async (dispatch, uri) => {
+  const value = await api.getProperty(uri);
+
+  if (uri !== rootOwnerKey) {
+    value["uri"] = uri;
+  }
   // Extract the data from the property owner
-  const { propertyOwners, properties } = flattenPropertyTree(value, parentUri);
+  const { propertyOwners, properties } = flattenPropertyTree(value);
   
   dispatch(addPropertyOwners(propertyOwners));
   dispatch(addProperties(properties));
@@ -199,8 +202,8 @@ const propertyTree = (store) => (next) => (action) => {
       store.dispatch(reloadPropertyTree());
       break;
     }
-    case actionTypes.addSceneGraphNode: {
-      addPropertyOwner(store.dispatch, action.payload.uri, action.payload.parentUri)
+    case actionTypes.addPropertyOwner: {
+      addPropertyOwner(store.dispatch, action.payload.uri)
       break;
     }
     case actionTypes.reloadPropertyTree: {

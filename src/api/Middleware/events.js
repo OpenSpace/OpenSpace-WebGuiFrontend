@@ -1,4 +1,4 @@
-import { addSceneGraphNode, addPropertyOwners, refreshGroups } from '../Actions';
+import { addPropertyOwner } from '../Actions';
 import actionTypes from '../Actions/actionTypes';
 import api from '../api';
 
@@ -7,18 +7,9 @@ let nSubscribers = 0;
 
 async function handleData(store, data) {
   switch (data.Event) {
-    case "SceneGraphNodeAdded": {
-        store.dispatch(addSceneGraphNode({ uri: data.Node, parentUri: "Scene" }));
-        break;
-    }
-    case "ScreenSpaceRenderableAdded": {
-        store.dispatch(addSceneGraphNode({ uri: data.Renderable, parentUri: "ScreenSpace" }));
-        break;
-    }
-    case "LayerAdded": {
-        //const node = api.getProperty(data.Node);
-        //store.dispatch(addPropertyOwners([node]));
-        break;
+    case "PropertyOwnerAdded": {
+      store.dispatch(addPropertyOwner({ uri: data.Uri }));
+      break;
     }
     default: {
 

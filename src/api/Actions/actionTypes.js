@@ -128,7 +128,7 @@ const actionTypes = {
   resetStoryTree: 'STORY_TREE_RESET',
 
   // Updating the property tree
-  addSceneGraphNode: 'ADD_SCENE_GRAPH_NODE'
+  addPropertyOwner: 'ADD_PROPERTY_OWNER'
 };
 
 export default actionTypes;
