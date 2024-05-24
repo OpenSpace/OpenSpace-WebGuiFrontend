@@ -414,8 +414,8 @@ export const updateSessionRecording = (data) => ({
   payload: data
 });
 
-export const addSceneGraphNode = (data) => ({
-  type: actionTypes.addSceneGraphNode,
+export const addPropertyOwner = (data) => ({
+  type: actionTypes.addPropertyOwner,
   payload: data
 });
 
