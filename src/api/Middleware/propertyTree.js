@@ -126,37 +126,32 @@ const markAllSubscriptionsAsPending = () => {
   });
 };
 
-const flattenPropertyTree = (propertyOwner, baseUri = undefined) => {
+const flattenPropertyTree = (propertyOwner) => {
   let propertyOwners = [];
   let properties = [];
-
-  const uri = baseUri ?
-  `${baseUri}.${propertyOwner.identifier}` :
-  propertyOwner.identifier;
   
-  if (uri) {
+  if (propertyOwner.uri) {
     propertyOwners.push({
-      uri,
+      uri: propertyOwner.uri,
       identifier: propertyOwner.identifier,
       name: propertyOwner.guiName ?? propertyOwner.identifier,
       properties: propertyOwner.properties.map((p) => p.Description.Identifier),
-      subowners: propertyOwner.subowners.map((p) => `${uri}.${p.identifier}`),
+      subowners: propertyOwner.subowners.map((p) => p.uri),
       tags: propertyOwner.tag,
       description: propertyOwner.description
     });
   }
 
   propertyOwner.subowners.forEach((subowner) => {
-    const childData = flattenPropertyTree(subowner, uri);
+    const childData = flattenPropertyTree(subowner);
 
     propertyOwners = propertyOwners.concat(childData.propertyOwners);
     properties = properties.concat(childData.properties);
   });
 
   propertyOwner.properties.forEach((property) => {
-    const uri = property.Description.Identifier;
     properties.push({
-      uri,
+      uri: property.Description.Identifier,
       description: property.Description,
       value: property.Value
     });
@@ -171,9 +166,6 @@ const flattenPropertyTree = (propertyOwner, baseUri = undefined) => {
 const addPropertyOwner = async (dispatch, uri) => {
   const value = await api.getProperty(uri);
 
-  if (uri !== rootOwnerKey) {
-    value["uri"] = uri;
-  }
   // Extract the data from the property owner
   const { propertyOwners, properties } = flattenPropertyTree(value);
   
