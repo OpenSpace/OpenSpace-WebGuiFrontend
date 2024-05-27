@@ -2,11 +2,10 @@ import React, { useEffect, useCallback, useRef } from 'react';
 
 import styles from './TouchWrapper.scss';
 import TouchFrame from '../TouchFrame/TouchFrame';
-import useTouchInteraction, { TouchInteractionProps } from '../hooks/useTouchInteraction';
 import { useDispatch, useSelector } from 'react-redux';
 import { connectFlightController, sendFlightControl, toggleTouchMode } from '../../../api/Actions';
 import { InputState, Payload } from '../TouchFrame/touchTypes';
-import useGestures, { IPointer } from '../hooks/useGesture';
+import useGestures from '../hooks/useGesture';
 import toast from 'react-hot-toast';
 
 interface TouchWrapperProps {
