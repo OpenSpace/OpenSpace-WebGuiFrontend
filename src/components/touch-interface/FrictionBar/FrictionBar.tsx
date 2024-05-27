@@ -68,6 +68,7 @@ const FrictionBar = () => {
     <div className={styles.container}>
       {frictions.map((friction) => (
         <div
+          key={friction.key}
           className={styles.btn}
           onClick={() => handleToggleFriction(friction.key, propertyTree[friction.key]?.value)}
           title={friction.title}

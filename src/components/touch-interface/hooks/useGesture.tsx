@@ -1,14 +1,7 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { Vector } from 'ts-matrix';
 import useTap from './useTap';
-import {
-  calculateDelata,
-  distance,
-  get360angleVector2D,
-  normalize,
-  twoFingerDirection,
-  twoFingerDotProduct
-} from './vectorMath';
+import { calculateDelata, distance, get360angleVector2D } from './vectorMath';
 import { useSelector } from 'react-redux';
 
 export interface IPointer {
@@ -25,16 +18,27 @@ export interface IGestures {
   onDragGesture?: (positions: { dx: number; dy: number }) => void;
   onRotateGesture?: (rotate: number) => void;
   onPinchGesture?: (scale: number) => void;
-  onDoubleDragGesture?: (deltas: { dx: number; dy: number }) => void;
+  onCameraPanGesture?: (deltas: { dx: number; dy: number }) => void;
   onTripleDragGesture?: (direction: Vector, pointers: IPointer[]) => void;
+  onDoubleTapGesture?: (pointer: IPointer) => void;
 }
+
+// * This hook is used to handle all the touch gestures that are used in the application
+// * It uses the useTap hook to handle the tap gestures
+// * It uses the useGesture hook to handle the gestures
+// * At the moment it supports one-finger tap, hold, drag, two-finger pinch, rotate, and camera pan gestures
+// * See uncommented functions for double and triple drag gestures implementations
+// * This component assumes that the touch input is in the form of pointer events (touch, mouse, pen, etc.)
+// * It also assumes that the gestures are used on a single component such as a canvas or a div
+// * See vectorMath.ts for the vector math functions used in this hook
 
 export const useGestures = (
   gestureComponentRef: any,
   gestures: IGestures,
   distanceTreshold: number = 8,
   holdTime: number = 1000,
-  endCallback: () => void
+  endCallback: () => void,
+  doubleTapThreshold: number = 300
 ) => {
   const touchMode = useSelector((state: any) => state.local.touchMode);
 
@@ -46,9 +50,11 @@ export const useGestures = (
     onDragGesture,
     onRotateGesture,
     onPinchGesture,
-    onDoubleDragGesture,
-    onTripleDragGesture,
-    onHoldGesture
+    onCameraPanGesture,
+    // onDoubleDragGesture, // If double drag is needed uncomment this line and add it to dependency array of useEffect
+    // onTripleDragGesture, // If triple drag is needed uncomment this line and add it to dependency array of useEffect
+    onHoldGesture,
+    onDoubleTapGesture
   } = gestures;
 
   const getCurrentTouch = () => {
@@ -58,7 +64,14 @@ export const useGestures = (
   };
 
   const onGoingTouches = useRef<IPointer[]>([]);
-  const tap = useTap(distanceTreshold, holdTime, getCurrentTouch, onHoldGesture);
+  const tap = useTap(
+    distanceTreshold,
+    holdTime,
+    getCurrentTouch,
+    onHoldGesture,
+    doubleTapThreshold,
+    onDoubleTapGesture
+  );
 
   const copyTouch = useCallback((event: PointerEvent): IPointer => {
     let delta = new Vector([0, 0]);
@@ -136,20 +149,23 @@ export const useGestures = (
     }
   }, [onRotateGesture]);
 
-  const doubleDragGesture = useCallback(
+  const cameraPanGesture = useCallback(
     (touchIndex: number) => {
-      // const maxDotProduct = twoFingerDotProduct(onGoingTouches.current);
-      // const doubleDrag = twoFingerDirection(onGoingTouches.current);
-      // const doubleDragFinal = doubleDrag.multiply(new Vector([maxDotProduct, maxDotProduct]));
-
       const curTouch = onGoingTouches.current[touchIndex];
 
       const dx = curTouch.clientX - touchStartX;
       const dy = curTouch.clientY - touchStartY;
-      if (onDoubleDragGesture) onDoubleDragGesture({ dx, dy });
+      if (onCameraPanGesture) onCameraPanGesture({ dx, dy });
     },
-    [onDoubleDragGesture]
+    [onCameraPanGesture]
   );
+
+  // const doubleDragGesture = useCallback(() => {
+  //   // const maxDotProduct = twoFingerDotProduct(onGoingTouches.current);
+  //   // const doubleDrag = twoFingerDirection(onGoingTouches.current);
+  //   // const doubleDragFinal = doubleDrag.multiply(new Vector([maxDotProduct, maxDotProduct]));
+  //   // if (onDoubleDragGesture) onDoubleDragGesture(doubleDragFinal)
+  // }, [onDoubleDragGesture]);
 
   // const tripleDragGesture = useCallback(() => {
   //   const curTouches = onGoingTouches.current;
@@ -183,19 +199,18 @@ export const useGestures = (
       let dy = curTouch.clientY - touchStartY;
 
       const distanceFromStart = Math.sqrt(dx * dx + dy * dy);
-      const scalingFactor = Math.min(1, Math.log2(distanceFromStart) / 5000);
+      const scalingFactor = Math.min(1, Math.log2(distanceFromStart) / 50000);
 
       dx *= scalingFactor;
       dy *= scalingFactor;
 
       if (onDragGesture && touchMode === 'orbit') {
         onDragGesture({ dx, dy });
-      } else if (onDoubleDragGesture && touchMode === 'translate') {
-        // ? Do we want to scale the camera translation with drag sensitivity?
-        onDoubleDragGesture({ dx, dy });
+      } else if (onCameraPanGesture && touchMode === 'translate') {
+        onCameraPanGesture({ dx, dy });
       }
     },
-    [onDragGesture, onDoubleDragGesture, touchMode]
+    [onDragGesture, onCameraPanGesture, touchMode]
   );
 
   const handleGestures = useCallback(
@@ -212,7 +227,7 @@ export const useGestures = (
         tap.reset();
       }
     },
-    [doubleDragGesture, dragGesture, pinchGesture, rotateGesture, tap] // Add tripledraggesture here if needed
+    [cameraPanGesture, dragGesture, pinchGesture, rotateGesture, tap] // Add doubledraggesture and tripledraggesture here if needed
   );
 
   useEffect(() => {
@@ -249,6 +264,7 @@ export const useGestures = (
           () => {
             if (onTapGesture) onTapGesture(onGoingTouches.current[index]);
           },
+
           () => {
             if (onHoldGesture) onHoldGesture(onGoingTouches.current[index]);
           }
@@ -291,7 +307,15 @@ export const useGestures = (
       component?.removeEventListener('pointermove', handleMove);
       component?.removeEventListener('pointerleave', handleCancel);
     };
-  }, [gestureComponentRef, tap, copyTouch, handleGestures, onHoldGesture, onTapGesture]);
+  }, [
+    gestureComponentRef,
+    tap,
+    copyTouch,
+    handleGestures,
+    onHoldGesture,
+    onTapGesture,
+    endCallback
+  ]);
 };
 
 export default useGestures;

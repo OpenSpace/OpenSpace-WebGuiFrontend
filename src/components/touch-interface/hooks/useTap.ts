@@ -5,18 +5,24 @@ export interface ITap {
   distance: number;
   timer: NodeJS.Timeout | null;
   timerTime: number;
+  lastTapTime?: number | null;
+  doubleTapTimeout?: NodeJS.Timeout | null;
 }
 
 const useTap = (
   distanceTreshold: number,
   holdTime: number,
   getCurrentTouch: () => IPointer | null,
-  onHoldGesture: ((pointer: IPointer) => void) | undefined
+  onHoldGesture: ((pointer: IPointer) => void) | undefined,
+  doubleTapThreshold: number,
+  onDoubleTap?: (pointer: IPointer) => void | undefined
 ) => {
   const tapInfo = useRef<ITap>({
     distance: 10,
     timer: null,
-    timerTime: 0
+    timerTime: 0,
+    lastTapTime: null,
+    doubleTapTimeout: null
   });
 
   const startTimer = () => {
@@ -51,6 +57,11 @@ const useTap = (
     tapInfo.current.timerTime = 0;
     stopTimer();
     tapInfo.current.timer = null;
+
+    if (tapInfo.current.doubleTapTimeout) {
+      clearTimeout(tapInfo.current.doubleTapTimeout);
+      tapInfo.current.doubleTapTimeout = null;
+    }
   };
 
   const updateDistance = (traveled: number) => {
@@ -67,8 +78,24 @@ const useTap = (
       tapInfo.current.distance > 0 &&
       tapInfo.current.distance <= distanceTreshold
     ) {
-      onTap();
-      reset();
+      const currentTime = Date.now();
+      if (
+        tapInfo.current.lastTapTime &&
+        currentTime - tapInfo.current.lastTapTime < doubleTapThreshold
+      ) {
+        const pointer = getCurrentTouch();
+        if (pointer && onDoubleTap) onDoubleTap(pointer);
+
+        reset();
+      } else {
+        // ! Should trigger a single tap but not working correctly at the moment
+
+        tapInfo.current.lastTapTime = currentTime;
+        tapInfo.current.doubleTapTimeout = setTimeout(() => {
+          onTap();
+          reset();
+        }, doubleTapThreshold);
+      }
     } else if (
       tapInfo.current.timerTime >= holdTime &&
       tapInfo.current.distance > 0 &&

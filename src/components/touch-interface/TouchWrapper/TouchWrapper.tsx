@@ -88,7 +88,7 @@ export default function TouchWrapper({ children }: TouchWrapperProps) {
     sendFlightControllerInput({ type: 'inputState', inputState });
   };
 
-  const onDoubleDrag = (deltas: { dx: number; dy: number }) => {
+  const onCameraPan = (deltas: { dx: number; dy: number }) => {
     if (!targetRef.current) return;
 
     const inputState: InputState = { values: {} };
@@ -99,8 +99,8 @@ export default function TouchWrapper({ children }: TouchWrapperProps) {
     sendFlightControllerInput({ type: 'inputState', inputState });
   };
 
-  const onTap = () => {
-    console.log('tap');
+  const onDoubleTap = () => {
+    console.log('double tap');
     const mode = touchMode === 'orbit' ? 'translate' : 'orbit';
     dispatch(toggleTouchMode(mode));
     toast(`Mode switched to ${mode}`, {
@@ -115,18 +115,14 @@ export default function TouchWrapper({ children }: TouchWrapperProps) {
     });
   };
 
-  const onHold = () => {
-    console.log('hold');
-  };
   useGestures(
     targetRef,
     {
       onDragGesture: onDrag,
       onPinchGesture: onPinch,
       onRotateGesture: onRotate,
-      onDoubleDragGesture: onDoubleDrag,
-      onTapGesture: onTap,
-      onHoldGesture: onHold
+      onCameraPanGesture: onCameraPan,
+      onDoubleTapGesture: onDoubleTap
     },
     8,
     1000,
