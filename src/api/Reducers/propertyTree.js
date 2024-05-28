@@ -59,7 +59,7 @@ const propertyOwners = (state = {}, action = {}) => {
   switch (action.type) {
     case actionTypes.addPropertyOwners: {
       const inputOwners = action.payload.propertyOwners;
-      const newState = { ...state };
+      let newState = { ...state };
       inputOwners.forEach((owner) => {
         newState[owner.uri] = {
           identifier: owner.identifier,
@@ -82,9 +82,27 @@ const propertyOwners = (state = {}, action = {}) => {
       return newState;
     }
     case actionTypes.removePropertyOwners: {
-      const newState = { ...state };
+      let newState = { ...state };
+      
       action.payload.uris.forEach((uri) => {
+        // Delete this particular property owner
         delete newState[uri];
+
+        // Delete the parent's link to the property owner 
+        var periodPos = uri.lastIndexOf('.');
+        var parentUri = uri.substring(0, periodPos);
+        const index = newState[parentUri].subowners.indexOf(uri);
+        // If found, remove
+        if (index > -1) { 
+          // 2nd parameter means remove one item only
+          newState[parentUri].subowners.splice(index, 1); 
+        }
+
+        // Delete subowners that have been flattened
+        const related = Object.keys(newState).filter(value => value.includes(`${uri}.`));
+        related.forEach((subOwnerUri) => 
+          delete newState[subOwnerUri]
+        );
       });
       return newState;
     }

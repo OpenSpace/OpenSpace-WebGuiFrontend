@@ -1,4 +1,4 @@
-import { addPropertyOwner } from '../Actions';
+import { addPropertyOwner, removePropertyOwners  } from '../Actions';
 import actionTypes from '../Actions/actionTypes';
 import api from '../api';
 
@@ -9,6 +9,10 @@ async function handleData(store, data) {
   switch (data.Event) {
     case "PropertyOwnerAdded": {
       store.dispatch(addPropertyOwner({ uri: data.Uri }));
+      break;
+    }
+    case "PropertyOwnerRemoved": {
+      store.dispatch(removePropertyOwners({ uris: [ data.Uri ] }));
       break;
     }
     default: {

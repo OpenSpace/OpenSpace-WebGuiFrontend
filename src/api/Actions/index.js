@@ -419,3 +419,7 @@ export const addPropertyOwner = (data) => ({
   payload: data
 });
 
+export const removePropertyOwners = (data) => ({
+  type: actionTypes.removePropertyOwners,
+  payload: data
+});

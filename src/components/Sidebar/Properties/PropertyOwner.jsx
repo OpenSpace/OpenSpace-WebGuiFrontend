@@ -37,14 +37,19 @@ function DragDropLayerList({ expansionIdentifier, uri }) {
   // Use refs so they don't trigger re-renders when dragging
   const shownLayers = React.useRef(layers);
   const isDragging = React.useRef(false);
-
-  // But when our redux store updates, we want to update our ref too
+  
+  // Hack to make the component re-render when the layers have been updated
+  // Since the layers are stored in a ref, they would not re-render otherwise
   React.useEffect(() => {
-    shownLayers.current = [...layers];
-    // Hack to make the component re-render when the layers have been updated
     setTrigger((oldValue) => !oldValue);
   }, [layers]);
-
+  
+  // When a layer is added or deleted to redux, we have to update the layer order
+  // We still want the layers to be a ref so this is a workaround
+  const isUpdated = shownLayers.current.length === layers.length;
+  if (!isUpdated) {
+    shownLayers.current = [...layers];
+  }
   if (!shownLayers.current || shownLayers.current.length === 0) {
     return null;
   }
