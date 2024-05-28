@@ -6,9 +6,6 @@ import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Resizable } from 're-resizable';
 
-import {
-  reloadPropertyTree
-} from '../../../api/Actions';
 import { stopEventPropagation } from '../../../utils/helpers';
 import CenteredLabel from '../../common/CenteredLabel/CenteredLabel';
 import Button from '../../common/Input/Button/Button';
@@ -250,11 +247,6 @@ function SkyBrowserTabs({
   function createTargetBrowserPair() {
     luaApi.skybrowser.createTargetBrowserPair();
     setWwtRatio(1);
-    // TODO: Once we have a proper way to subscribe to additions and removals
-    // of property owners, this 'hard' refresh should be removed.
-    setTimeout(() => {
-      //dispatch(reloadPropertyTree());
-    }, 500);
   }
 
   function removeTargetBrowserPair(browserId) {
@@ -267,11 +259,6 @@ function SkyBrowserTabs({
       setSelectedBrowser(ids[0]);
     }
     luaApi.skybrowser.removeTargetBrowserPair(browserId);
-    // TODO: Once we have a proper way to subscribe to additions and removals
-    // of property owners, this 'hard' refresh should be removed.
-    setTimeout(() => {
-      //dispatch(reloadPropertyTree());
-    }, 2000);
   }
 
   function createTabs() {

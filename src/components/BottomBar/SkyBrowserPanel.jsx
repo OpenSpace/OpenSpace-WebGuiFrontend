@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import {
   loadSkyBrowserData,
-  reloadPropertyTree,
   setPopoverVisibility,
   subscribeToProperty,
   subscribeToSkyBrowser,
@@ -192,11 +191,6 @@ function SkyBrowserPanel() {
 
   function addTargetBrowserPair() {
     luaApi.skybrowser.createTargetBrowserPair();
-    // TODO: Once we have a proper way to subscribe to additions and removals
-    // of property owners, this 'hard' refresh should be removed.
-    setTimeout(() => {
-      //dispatch(reloadPropertyTree());
-    }, 500);
   }
 
   function createAddBrowserInterface() {
