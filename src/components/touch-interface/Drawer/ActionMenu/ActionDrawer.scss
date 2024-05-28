@@ -1,0 +1,30 @@
+@import '../../../../styles/all.scss';
+
+.item {
+  position: relative;
+  outline: none;
+  padding: 10px 8px;
+}
+
+.itemLabel {
+  font-weight: 400;
+  font-size: small;
+  text-align: left;
+  display: flex;
+  justify-content: space-between;
+}
+
+.itemLabel > span {
+  color: white;
+  opacity: 1;
+  font-size: small;
+  font-weight: 500;
+}
+
+.disabled {
+  opacity: 60%;
+}
+
+.devModeNotifier {
+  color: $ui-warning;
+}

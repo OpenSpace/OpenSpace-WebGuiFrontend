@@ -3,21 +3,28 @@ import { MdFastForward, MdFastRewind, MdPause, MdPlayArrow } from 'react-icons/m
 import { useDispatch, useSelector } from 'react-redux';
 import { throttle } from 'lodash/function';
 
-import { subscribeToTime, unsubscribeToTime } from '../../api/Actions';
-import { round10 } from '../../utils/rounding';
-import Button from '../common/Input/Button/Button';
-import NumericInput from '../common/Input/NumericInput/NumericInput';
-import ScaleInput from '../common/Input/ScaleInput/ScaleInput';
-import Select from '../common/Input/Select/Select';
-import Row from '../common/Row/Row';
-import { useContextRefs } from '../GettingStartedTour/GettingStartedContext';
+import { subscribeToTime, unsubscribeToTime } from '../../../../api/Actions';
+import { round10 } from '../../../../utils/rounding';
+import Button from '../../../common/Input/Button/Button';
+import NumericInput from '../../../common/Input/NumericInput/NumericInput';
+import ScaleInput from '../../../common/Input/ScaleInput/ScaleInput';
+// import Select from '../../../common/Input/Select/Select';
+import Select from './Select';
+import Row from '../../../common/Row/Row';
+import { useContextRefs } from '../../../GettingStartedTour/GettingStartedContext';
 
 import styles from './SimulationIncrement.scss';
+
+interface StepSizeLimits {
+  min: number;
+  max: number;
+  step: number;
+}
 
 const updateDelayMs = 1000;
 // Throttle the delta time updating, so that we don't accidentally flood
 // the simulation with updates.
-const updateDeltaTimeNow = (openspace, value, interpolationTime) => {
+const updateDeltaTimeNow = (openspace: any, value: number, interpolationTime?: number) => {
   // Calling interpolateDeltaTime with one or two arguments actually make a difference,
   // even if the second argument is undefined. This is because undefined is translated to
   // nil in the mapping to the underlying lua api.
@@ -69,17 +76,17 @@ Object.freeze(Limits);
 
 function SimulationIncrement() {
   const [stepSize, setStepSize] = React.useState(Steps.seconds);
-  const [beforeAdjust, setBeforeAdjust] = React.useState(0);
+  const [beforeAdjust, setBeforeAdjust] = React.useState<number | null>(0);
   const refs = useContextRefs();
 
   // const deltaTime = useSelector((state) => state.time.deltaTime);
-  const targetDeltaTime = useSelector((state) => state.time.targetDeltaTime);
-  const isPaused = useSelector((state) => state.time.isPaused);
-  const hasNextDeltaTimeStep = useSelector((state) => state.time.hasNextDeltaTimeStep);
-  const hasPrevDeltaTimeStep = useSelector((state) => state.time.hasPrevDeltaTimeStep);
-  const nextDeltaTimeStep = useSelector((state) => state.time.nextDeltaTimeStep);
-  const prevDeltaTimeStep = useSelector((state) => state.time.prevDeltaTimeStep);
-  const luaApi = useSelector((state) => state.luaApi);
+  const targetDeltaTime = useSelector((state: any) => state.time.targetDeltaTime);
+  const isPaused = useSelector((state: any) => state.time.isPaused);
+  const hasNextDeltaTimeStep = useSelector((state: any) => state.time.hasNextDeltaTimeStep);
+  const hasPrevDeltaTimeStep = useSelector((state: any) => state.time.hasPrevDeltaTimeStep);
+  const nextDeltaTimeStep = useSelector((state: any) => state.time.nextDeltaTimeStep);
+  const prevDeltaTimeStep = useSelector((state: any) => state.time.prevDeltaTimeStep);
+  const luaApi = useSelector((state: any) => state.luaApi);
 
   const dispatch = useDispatch();
 
@@ -91,17 +98,12 @@ function SimulationIncrement() {
     dispatch(unsubscribeToTime());
   }
 
-  //Remove before push
-  function handleTimeChange(newValue) {
-    setQuickAdjust(newValue);
-  }
-
   React.useEffect(() => {
     startSubscriptions();
     return stopSubscriptions();
   }, []);
 
-  function togglePause(e) {
+  function togglePause(e: React.MouseEvent) {
     const shift = e.getModifierState('Shift');
     if (shift) {
       luaApi.time.togglePause();
@@ -110,37 +112,33 @@ function SimulationIncrement() {
     }
   }
 
-  function setDeltaTime(value) {
-    const deltaTime = parseFloat(value) * StepSizes[stepSize];
-    if (Number.isNaN(deltaTime)) {
-      return;
-    }
-    if (luaApi) {
+  function setDeltaTime(value: number) {
+    const deltaTime = value * StepSizes[stepSize];
+    if (!Number.isNaN(deltaTime) && luaApi) {
       updateDeltaTimeNow(luaApi, deltaTime);
     }
   }
 
-  function setPositiveDeltaTime(value) {
+  function setPositiveDeltaTime(value: number) {
     const dt = value;
     setDeltaTime(dt);
   }
 
-  function setNegativeDeltaTime(value) {
+  function setNegativeDeltaTime(value: number) {
     const dt = -value;
     setDeltaTime(dt);
   }
 
-  function setQuickAdjust(value) {
-    if (!luaApi) {
-      return;
-    }
+  function setQuickAdjust(value: number) {
+    if (!luaApi) return;
+
     if (value !== 0) {
-      setBeforeAdjust(beforeAdjust || targetDeltaTime);
-      const quickAdjust = beforeAdjust + StepSizes[stepSize] * value ** 5;
+      const currentAdjust = beforeAdjust === null ? targetDeltaTime : beforeAdjust;
+      const quickAdjust = currentAdjust + StepSizes[stepSize] * value ** 5;
       updateDeltaTimeNow(luaApi, quickAdjust);
     } else {
       updateDeltaTime.cancel();
-      if (beforeAdjust) {
+      if (beforeAdjust !== null) {
         updateDeltaTimeNow(luaApi, beforeAdjust);
       }
       setBeforeAdjust(null);
@@ -169,19 +167,18 @@ function SimulationIncrement() {
     const prevLabel = hasPrevDeltaTimeStep ? `${adjustedPrevDelta} ${stepSize} / second` : 'None';
 
     return (
-      <Row>
+      <div className={styles.row}>
         <div style={{ flex: 3 }}>
-          <Button
-            block
-            disabled={!hasPrevDeltaTimeStep}
+          <div
+            className={styles.button}
             onClick={setPrevDeltaTimeStep}
             ref={(el) => {
               refs.current.SpeedBackward = el;
             }}
           >
             <MdFastRewind />
-          </Button>
-          <p className={styles.deltaTimeStepLabel}>{prevLabel}</p>
+            <p className={styles.deltaTimeStepLabel}>{prevLabel}</p>
+          </div>
         </div>
         <div
           style={{ flex: 2 }}
@@ -189,24 +186,24 @@ function SimulationIncrement() {
             refs.current.Pause = el;
           }}
         >
-          <Button block onClick={togglePause}>
+          <div className={styles.button} onClick={togglePause}>
             {isPaused ? <MdPlayArrow /> : <MdPause />}
-          </Button>
+            <p className={styles.deltaTimeStepLabel}>{isPaused ? 'Play' : 'Pause'}</p>
+          </div>
         </div>
         <div style={{ flex: 3 }}>
-          <Button
-            block
-            disabled={!hasNextDeltaTimeStep}
+          <div
+            className={styles.button}
             onClick={setNextDeltaTimeStep}
             ref={(el) => {
               refs.current.SpeedForward = el;
             }}
           >
             <MdFastForward />
-          </Button>
-          <p className={styles.deltaTimeStepLabel}>{nextLabel}</p>
+            <p className={styles.deltaTimeStepLabel}>{nextLabel}</p>
+          </div>
         </div>
-      </Row>
+      </div>
     );
   }
 
@@ -220,19 +217,17 @@ function SimulationIncrement() {
 
   return (
     <div>
-      <Row>
-        <Select
-          label='Display unit'
-          menuPlacement='top'
-          onChange={({ value }) =>
-            Object.values(Steps).includes(value) ? setStepSize(value) : null
-          }
-          options={options}
-          value={stepSize}
-        />
-      </Row>
+      <div className={styles.title}>Display Unit</div>
+      <Select
+        // label='Display unit'
+        menuPlacement='top'
+        onChange={({ value }) => (Object.values(Steps).includes(value) ? setStepSize(value) : null)}
+        options={options}
+        value={stepSize}
+      />
+
       <div style={{ height: '10px' }} />
-      <Row>
+      {/* <Row>
         <NumericInput
           {...Limits[stepSize]}
           disabled={!luaApi}
@@ -252,7 +247,7 @@ function SimulationIncrement() {
           noValue={adjustedDelta < 0}
           showOutsideRangeHint={false}
         />
-      </Row>
+      </Row> */}
       <div style={{ height: '10px' }} />
       <ScaleInput
         defaultValue={0}

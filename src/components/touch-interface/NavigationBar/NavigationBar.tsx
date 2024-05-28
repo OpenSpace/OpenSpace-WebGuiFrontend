@@ -1,11 +1,18 @@
 import React from 'react';
 import styles from './NavigationBar.scss';
-import OriginPicker from '../../BottomBar/Origin/OriginPicker';
-import TimePicker from '../../BottomBar/TimePicker';
+// import OriginPicker from '../../BottomBar/Origin/OriginPicker';
+import OriginPicker from './Origin/OriginPicker';
+import TimePicker from './Time/TimePicker';
 import GeoPositionPanel from '../../BottomBar/GeoPositionPanel';
 import SmallLabel from '../../common/SmallLabel/SmallLabel';
-import SystemMenu from './SystemMenu/SystemMenu';
-import { Md10K, MdLayers, MdOutlineAddBox, MdSettings, MdGridView } from 'react-icons/md';
+import {
+  Md10K,
+  MdLayers,
+  MdOutlineAddBox,
+  MdSettings,
+  MdGridView,
+  MdDashboard
+} from 'react-icons/md';
 
 import TabMenu from '../../Sidebar/TabMenu/TabMenu';
 import TabMenuItem from '../../Sidebar/TabMenu/TabMenuItem';
@@ -26,26 +33,41 @@ const NavigationBar: React.FC<NavigationBarProps> = ({ showTutorial }) => {
     dispatch(openDrawer('SystemDrawer'));
   };
 
+  const handleOpenSceneDrawer = () => {
+    dispatch(openDrawer('SceneDrawer'));
+  };
+
+  const handleOpenNavigationDrawer = () => {
+    dispatch(openDrawer('NavigationDrawer'));
+  };
+
+  const handleOpenActionDrawer = () => {
+    dispatch(openDrawer('ActionDrawer'));
+  };
+
+  const handleOpenTimeDrawer = () => {
+    dispatch(openDrawer('TimeDrawer'));
+  };
+
   return (
     <div className={styles.NavigationBar}>
       <div className={styles.row}>
         <div className={styles.itemContainer} onClick={handleOpenSystemDrawer}>
           <MdSettings className={styles.icon} />
           <span>SETTINGS</span>
-          <SystemMenu showMenu={showMenu} showTutorial={showTutorial} setShowMenu={setShowMenu} />
         </div>
-        <div className={styles.itemContainer}>
+        <div className={styles.itemContainer} onClick={handleOpenSceneDrawer}>
           <MdLayers className={styles.icon} />
           <span>SCENE</span>
         </div>
-        <div className={styles.itemContainer}>
-          <MdGridView className={styles.icon} />
+        <div className={styles.itemContainer} onClick={handleOpenActionDrawer}>
+          <MdDashboard className={styles.icon} />
           <span>ACTION</span>
         </div>
-        <div className={styles.itemContainer}>
+        <div className={styles.itemContainer} onClick={handleOpenNavigationDrawer}>
           <OriginPicker />
         </div>
-        <div className={styles.itemContainer}>
+        <div className={styles.itemContainer} onClick={handleOpenTimeDrawer}>
           <TimePicker />
         </div>
       </div>

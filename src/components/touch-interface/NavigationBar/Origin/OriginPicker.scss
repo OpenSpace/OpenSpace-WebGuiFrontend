@@ -1,0 +1,136 @@
+@import '../../../../styles/all';
+
+$icon-size: 32px;
+$small-icon-size: 16px;
+
+.Icon {
+  font-size: $icon-size;
+  margin-right: calc($base-padding / 2);
+}
+
+.NavigationButton {
+  display: flex;
+  padding: 10px;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  // border: green;
+  // border-style: solid;
+  width: 100px;
+  height: 100px;
+}
+
+.TabIcon {
+  display: flex;
+  font-size: 2em;
+  align-items: center;
+  justify-content: center;
+  // border: orange;
+  // border-style: solid;
+}
+
+.TabText {
+  font-size: 24px;
+  padding-top: 0.2em;
+}
+
+// .iconImage {
+//   animation: $appear-animation;
+//   height: $icon-size - 8px;
+//   margin-right: calc($base-padding / 2);
+// }
+
+.list :global(.scroll-content) {
+  height: 100%;
+  margin-top: 1px;
+  max-height: 200px;
+}
+
+.Grid {
+  display: flex;
+}
+
+.cancelButton {
+  margin-right: calc($base-padding / 2);
+  text-align: center;
+  padding-left: calc($base-padding / 2);
+  padding-right: calc($base-padding / 2);
+}
+
+.cancelButtonTitle {
+  margin-bottom: 2px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.cancelButtonLabel {
+  white-space: nowrap;
+  > * {
+    vertical-align: middle;
+  }
+}
+
+.cancelButtonAnchorLabelText {
+  vertical-align: middle;
+  max-width: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.blink {
+  animation: blink 2s infinite;
+  -webkit-animation: blink 2s infinite;
+  animation-fill-mode: both;
+}
+
+@keyframes blink {
+  0% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.3;
+  }
+}
+
+.row {
+  display: flex;
+  justify-content: space-around;
+  background-color: #30303a40;
+  margin: 10px 10px;
+  padding: 10px 10px 0px 10px;
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+}
+
+//Component styles
+.label {
+  text-transform: uppercase;
+}
+
+.smallPickerIcon {
+  margin-right: 0.2em;
+  display: inline-grid;
+  width: 1em;
+}
+
+.smallLabel {
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  line-height: 1;
+  padding-top: 0.3em;
+  text-transform: uppercase;
+  margin-left: 0.5rem;
+}
+
+.title {
+  display: flex;
+}

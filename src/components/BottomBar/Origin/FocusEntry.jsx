@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  MdCenterFocusStrong,
-  MdFlashOn,
-  MdFlight,
-  MdMoreVert
-} from 'react-icons/md';
+import { MdCenterFocusStrong, MdFlashOn, MdFlight, MdMoreVert } from 'react-icons/md';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 // eslint-disable-next-line import/no-webpack-loader-syntax
@@ -22,7 +17,12 @@ import { useContextRefs } from '../../GettingStartedTour/GettingStartedContext';
 import styles from './FocusEntry.scss';
 
 function FocusEntry({
-  name, identifier, onSelect, active, showNavigationButtons, closePopoverIfSet
+  name,
+  identifier,
+  onSelect,
+  active,
+  showNavigationButtons,
+  closePopoverIfSet
 }) {
   const luaApi = useSelector((state) => state.luaApi);
   function isActive() {
@@ -92,48 +92,48 @@ function FocusEntry({
       onClick={select}
       onKeyPress={keyboardSelect}
       key={name}
-      role="button"
-      ref={(el) => { refs.current[name] = el; }}
+      role='button'
+      ref={(el) => {
+        refs.current[name] = el;
+      }}
       tabIndex={0}
     >
-      <span className={styles.title}>
-        { name || identifier }
-      </span>
+      <span className={styles.title}>{name || identifier}</span>
       {showNavigationButtons && (
         <div className={styles.buttonContainer}>
           {isActive() && (
-            <Button className={styles.quickAccessFlyTo} onClick={zoomToFocus} title="Zoom to">
+            <Button className={styles.quickAccessFlyTo} onClick={zoomToFocus} title='Zoom to'>
               <MdCenterFocusStrong className={styles.buttonIcon} />
             </Button>
           )}
-          <Button className={styles.quickAccessFlyTo} onClick={flyTo} title="Fly to">
+          <Button className={styles.quickAccessFlyTo} onClick={flyTo} title='Fly to'>
             <MdFlight className={styles.buttonIcon} />
           </Button>
-          <TooltipMenu
-            sourceObject={<MdMoreVert className={styles.buttonIcon} />}
-          >
+          <TooltipMenu sourceObject={<MdMoreVert className={styles.buttonIcon} />}>
             <SmallLabel className={styles.menuTopLabel}>{identifier}</SmallLabel>
             <hr className={Popover.styles.delimiter} />
-            <Button className={styles.flyToButton} onClick={select} title="Focus">
+            <Button className={styles.flyToButton} onClick={select} title='Focus'>
               <Row>
-                <SvgIcon className={styles.buttonIcon}><Focus /></SvgIcon>
+                <SvgIcon className={styles.buttonIcon}>
+                  <Focus />
+                </SvgIcon>
                 <span className={styles.menuButtonLabel}> Focus </span>
               </Row>
             </Button>
             <hr className={Popover.styles.delimiter} />
-            <Button className={styles.flyToButton} onClick={flyTo} title="Fly to">
+            <Button className={styles.flyToButton} onClick={flyTo} title='Fly to'>
               <Row>
                 <MdFlight className={styles.buttonIcon} />
                 <span className={styles.menuButtonLabel}> Fly to </span>
               </Row>
             </Button>
-            <Button className={styles.flyToButton} onClick={fadeTo} title="Fade to">
+            <Button className={styles.flyToButton} onClick={fadeTo} title='Fade to'>
               <Row>
                 <MdFlashOn className={styles.buttonIcon} />
                 <span className={styles.menuButtonLabel}> Jump to </span>
               </Row>
             </Button>
-            <Button className={styles.flyToButton} onClick={zoomToFocus} title="Zoom to">
+            <Button className={styles.flyToButton} onClick={zoomToFocus} title='Zoom to'>
               <Row>
                 <MdCenterFocusStrong className={styles.buttonIcon} />
                 <span className={styles.menuButtonLabel}> Zoom to / Frame </span>

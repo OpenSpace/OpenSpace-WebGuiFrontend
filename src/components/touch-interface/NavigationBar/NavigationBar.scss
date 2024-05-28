@@ -8,6 +8,12 @@
   justify-content: space-between;
 }
 
+@media (max-width: 768px) {
+  .NavigationBar .itemContainer {
+    flex-basis: 100%;
+  }
+}
+
 .row {
   display: flex;
   height: 80px;

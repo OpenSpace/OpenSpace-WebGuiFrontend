@@ -33,17 +33,23 @@ function ScaleInput({
     const showMarkers = centerMarker || (leftTicks > 0 && rightTicks > 0);
 
     // eslint-disable-next-line no-mixed-operators
-    const width = 100 * (defaultValue - min) / (max - min);
-    return showMarkers && (
-      <div className={styles.markers}>
-        <div className={styles.ticks} style={{ width: `calc(${width}% - 2px)` }}>
-          { Array.from(new Array(leftTicks), (_, i) => (<div key={i} className={styles.tick} />))}
+    const width = (100 * (defaultValue - min)) / (max - min);
+    return (
+      showMarkers && (
+        <div className={styles.markers}>
+          <div className={styles.ticks} style={{ width: `calc(${width}% - 2px)` }}>
+            {Array.from(new Array(leftTicks), (_, i) => (
+              <div key={i} className={styles.tick} />
+            ))}
+          </div>
+          {centerMarker && <div className={styles.centerMarker} />}
+          <div className={styles.ticks} style={{ width: `calc(${100 - width}% - 2px)` }}>
+            {Array.from(new Array(rightTicks), (_, i) => (
+              <div key={i} className={styles.tick} />
+            ))}
+          </div>
         </div>
-        { centerMarker && (<div className={styles.centerMarker} />) }
-        <div className={styles.ticks} style={{ width: `calc(${100 - width}% - 2px)` }}>
-          { Array.from(new Array(rightTicks), (_, i) => (<div key={i} className={styles.tick} />))}
-        </div>
-      </div>
+      )
     );
   }
 
@@ -54,7 +60,7 @@ function ScaleInput({
 
   return (
     <div className={`${styles.group} ${wide ? styles.wide : ''}`}>
-      { markers() }
+      {markers()}
       <input
         {...rest}
         id={id}
@@ -64,13 +70,13 @@ function ScaleInput({
         onBlur={reset}
         min={min}
         max={max}
-        type="range"
+        type='range'
         className={`${styles.input} ${wide ? styles.wide : ''}`}
       />
       <div className={styles.labels}>
-        <span className={styles.leftLabel}>{ leftLabel }</span>
-        <label htmlFor={id}>{ label }</label>
-        <span className={styles.rightLabel}>{ rightLabel }</span>
+        <span className={styles.leftLabel}>{leftLabel}</span>
+        <label htmlFor={id}>{label}</label>
+        <span className={styles.rightLabel}>{rightLabel}</span>
       </div>
     </div>
   );

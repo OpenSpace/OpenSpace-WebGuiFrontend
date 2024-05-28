@@ -1,0 +1,75 @@
+@use '../../../common/Input/Button/Button.scss';
+@import '../../../../styles/all';
+
+@import '../../../common/Popover/Popover.scss';
+
+.Grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-content: flex-start;
+
+  &:before,
+  &:after {
+    display: none;
+  }
+
+  > * {
+    flex: 1 0 25%;
+  }
+}
+
+.scroller {
+  overflow: scroll;
+  height: 92%;
+  overflow-x: hidden;
+}
+
+.backButton {
+  background-color: #30303a40;
+  width: fit-content;
+  padding-left: 10px !important;
+  padding-right: 12px !important;
+  padding-bottom: 4px;
+  font-size: 1em;
+}
+
+.windowContainer {
+  .button {
+    min-width: 310px !important;
+    min-height: 100px !important;
+  }
+
+  .navPathTitle {
+    font-size: 1em;
+  }
+
+  font-size: 3.4em;
+  overflow: scroll;
+  overflow-y: auto;
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.folderButton {
+  background-color: #30303a40;
+}
+
+.navPathTitle {
+  @extend .title;
+  display: inline-block;
+  word-break: break-word;
+}
+
+.navPathRow {
+  line-height: 1.5em;
+}
+
+.actionsPanel {
+  min-width: 394px;
+  max-width: 394px;
+  height: 400px;
+  max-height: 400px;
+  min-height: 400px;
+}

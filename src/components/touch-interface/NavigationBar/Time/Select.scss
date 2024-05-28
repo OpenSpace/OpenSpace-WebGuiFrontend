@@ -1,0 +1,16 @@
+@import '../../../../styles/all';
+@import '../../common/Input/Input';
+
+.selectgroup {
+  height: $input-total-height;
+  position: relative;
+  width: 100%;
+}
+
+.selectlabel {
+  font-size: $input-label-size;
+  left: $input-padding-horizontal;
+  position: absolute;
+  top: $input-label-margin;
+  color: $text-color-blur;
+}

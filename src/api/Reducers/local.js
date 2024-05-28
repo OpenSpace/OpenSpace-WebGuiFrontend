@@ -221,8 +221,11 @@ const drawerReducer = (state = defaultDrawerState, action = {}) => {
 };
 
 const defaultDrawersState = {
-  SystemDrawer: defaultDrawerState
-  // add more drawers...
+  SystemDrawer: defaultDrawerState,
+  SceneDrawer: defaultDrawerState,
+  NavigationDrawer: defaultDrawerState,
+  ActionDrawer: defaultDrawerState,
+  TimeDrawer: defaultDrawerState
 };
 
 const drawersReducer = (state = defaultDrawersState, action = {}) => {

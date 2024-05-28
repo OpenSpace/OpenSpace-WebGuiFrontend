@@ -25,8 +25,7 @@ const selectStyles = {
     ...provided,
     color: '#D9DA6D'
   }),
-  indicatorSeparator: () => ({
-  }),
+  indicatorSeparator: () => ({}),
   dropdownIndicator: (provided) => ({
     ...provided,
     ':hover': {
@@ -52,9 +51,7 @@ const selectStyles = {
   })
 };
 
-function Select({
-  value, label, id, disabled, options, onChange, ...props
-}) {
+function Select({ value, label, id, disabled, options, onChange, ...props }) {
   const identifier = id || `select-${Input.nextId}`;
 
   return (

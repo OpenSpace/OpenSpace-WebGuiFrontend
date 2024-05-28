@@ -1,6 +1,7 @@
 import React, { ReactElement, useCallback } from 'react';
 import styles from './Drawer.scss';
 import Button from '../common/Button/Button';
+import { GrClose } from 'react-icons/gr';
 
 export interface DrawerProps {
   isOpen?: boolean;

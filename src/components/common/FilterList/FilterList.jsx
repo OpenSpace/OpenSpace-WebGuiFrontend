@@ -11,9 +11,7 @@ import ScrollOverlay from '../ScrollOverlay/ScrollOverlay';
 
 import styles from './FilterList.scss';
 
-function filterChildren({
-  matcher, searchString, ignorePropsFilter, children
-}) {
+function filterChildren({ matcher, searchString, ignorePropsFilter, children }) {
   // Filter the children on their props
   // Most matcher functions are case sensitive, hence toLowerCase
   const childArray = React.Children.toArray(children);
@@ -43,11 +41,7 @@ function filterChildren({
  * FilterListFavorites
  */
 function FilterListFavorites({ className, children }) {
-  return (
-    <ScrollOverlay className={`${className}`}>
-      {children}
-    </ScrollOverlay>
-  );
+  return <ScrollOverlay className={`${className}`}>{children}</ScrollOverlay>;
 }
 
 FilterListFavorites.propTypes = {
@@ -65,17 +59,14 @@ FilterListFavorites.displayName = 'FilterListFavorites';
 /**
  * FilterListData
  */
-function FilterListData({
-  matcher, searchString, ignorePropsFilter, className, children
-}) {
+function FilterListData({ matcher, searchString, ignorePropsFilter, className, children }) {
   const content = filterChildren({
-    matcher, searchString, ignorePropsFilter, children
+    matcher,
+    searchString,
+    ignorePropsFilter,
+    children
   });
-  return (
-    <ScrollOverlay className={`${className}`}>
-      {content}
-    </ScrollOverlay>
-  );
+  return <ScrollOverlay className={`${className}`}>{content}</ScrollOverlay>;
 }
 
 FilterListData.propTypes = {
@@ -100,9 +91,7 @@ FilterListData.displayName = 'FilterListData';
 /**
  * FilterListInputButton
  */
-function FilterListInputButton({
-  key, children, className, ...props
-}) {
+function FilterListInputButton({ key, children, className, ...props }) {
   return (
     <div key={key} className={`${styles.favoritesButton} ${className}`} {...props}>
       {children}
@@ -154,7 +143,13 @@ FilterListShowMoreButton.displayName = 'FilterListShowMoreButton';
  * FilterList
  */
 function FilterList({
-  matcher, ignorePropsFilter, searchText, height, className, searchAutoFocus, children
+  matcher,
+  ignorePropsFilter,
+  searchText,
+  height,
+  className,
+  searchAutoFocus,
+  children
 }) {
   const [searchString, setSearchString] = React.useState('');
   const [showDataInstead, setShowDataInstead] = React.useState(false);
@@ -170,7 +165,11 @@ function FilterList({
   }
 
   // See if children has favorites
-  const hasFavorites = Boolean(React.Children.toArray(children).find((child) => child.type.displayName === 'FilterListFavorites'));
+  const hasFavorites = Boolean(
+    React.Children.toArray(children).find(
+      (child) => child.type.displayName === 'FilterListFavorites'
+    )
+  );
 
   const showFavorites = !isSearching && hasFavorites && !showDataInstead;
   const buttons = [];
@@ -222,10 +221,7 @@ FilterList.propTypes = {
   /**
    * An optional css height specification
    */
-  height: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number
-  ]),
+  height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   /**
    * the function used to filter the list
    */
@@ -255,5 +251,9 @@ FilterList.defaultProps = {
 };
 
 export {
-  FilterList, FilterListData, FilterListFavorites, FilterListInputButton, FilterListShowMoreButton
+  FilterList,
+  FilterListData,
+  FilterListFavorites,
+  FilterListInputButton,
+  FilterListShowMoreButton
 };

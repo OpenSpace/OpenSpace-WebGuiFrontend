@@ -1,0 +1,75 @@
+@import '../../../../styles/all';
+
+$icon-size: 18px;
+
+.entry {
+  flex-direction: column;
+  color: #ffffff40;
+  margin-top: 0.5em;
+  // border: purple;
+  // border-style: solid;
+  border-radius: 0 5px 5px 0;
+
+  &.active {
+    // background: $ui-background-hover;
+    border-left: 6px solid $blue;
+    color: #ffffff;
+  }
+}
+
+.fullButtonContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.buttonTitleContainer {
+  display: flex;
+  align-items: center;
+  // border: red;
+  // border-style: solid;
+  background-color: #43434360;
+  margin: 0.5em;
+  border-radius: 3px;
+  min-width: 350px; //change to responsive after drawer has changed
+  max-width: 350px;
+}
+
+.buttonIcon {
+  width: 2em;
+  height: 2em;
+  transition: fill 0.3s;
+  fill: currentColor;
+  // border: orange;
+  // border-style: solid;
+}
+
+.titleContainer {
+  font-size: 1.5em;
+}
+
+.buttonContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  // border: blue;
+  // border-style: solid;
+}
+
+.flyToButton {
+  padding: 0.5em;
+  margin: 0.5em 0.5em 0.5em 0.5em;
+  background-color: #43434360;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+}
+
+.focusButton {
+  padding: 0.5em;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
