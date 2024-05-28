@@ -1,4 +1,4 @@
-import { addPropertyOwner, removePropertyOwners  } from '../Actions';
+import { addPropertyOwner, removePropertyOwners, refreshGroups  } from '../Actions';
 import actionTypes from '../Actions/actionTypes';
 import api from '../api';
 
@@ -13,6 +13,7 @@ async function handleData(store, data) {
     }
     case "PropertyOwnerRemoved": {
       store.dispatch(removePropertyOwners({ uris: [ data.Uri ] }));
+      store.dispatch(refreshGroups());
       break;
     }
     default: {
