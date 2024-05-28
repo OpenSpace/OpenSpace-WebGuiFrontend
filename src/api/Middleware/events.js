@@ -53,21 +53,11 @@ const events = (store) => (next) => (action) => {
         setupSubscription(store);
       }
       break;
-     /* 
-    case actionTypes.subscribeToCamera:
-      ++nSubscribers;
+    case actionTypes.onCloseConnection:
       if (nSubscribers === 1 && state.connection.isConnected) {
-        setupSubscription(store);
+        tearDownSubscription(store);
       }
       break;
-    case actionTypes.unsubscribeToCamera:
-      if (nSubscribers > 0) {
-        --nSubscribers;
-      }
-      if (eventTopic && nSubscribers === 0) {
-        tearDownSubscription();
-      }
-      break;*/
     default:
       break;
   }
