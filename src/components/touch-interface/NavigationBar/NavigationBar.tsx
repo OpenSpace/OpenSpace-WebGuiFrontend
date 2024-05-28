@@ -19,7 +19,6 @@ import TabMenuItem from '../../Sidebar/TabMenu/TabMenuItem';
 
 import { connect, useDispatch, useSelector } from 'react-redux';
 import { openDrawer } from '../../../api/Actions';
-import FrictionBar from '../FrictionBar/FrictionBar';
 
 interface NavigationBarProps {
   showTutorial: boolean;
@@ -71,7 +70,6 @@ const NavigationBar: React.FC<NavigationBarProps> = ({ showTutorial }) => {
           <TimePicker />
         </div>
       </div>
-      <FrictionBar />
     </div>
   );
 };

@@ -35,6 +35,8 @@ import { ActionDrawer } from '../components/touch-interface/Drawer/ActionMenu/Ac
 import { TimeDrawer } from '../components/touch-interface/Drawer/TimeMenu/TimeDrawer';
 import Time from 'src/components/common/Input/Time/Time';
 // import{ NavigationDrawer} from '../components/touch-interface/Drawer/NavigationMenu/NavigationDrawer';
+import StatusBar from '../components/touch-interface/TouchWrapper/StatusBar';
+import FrictionBar from '../components/touch-interface/FrictionBar/FrictionBar';
 
 interface CloudGuiProps {
   isInBrowser: boolean;
@@ -120,6 +122,8 @@ function CloudGui({ isInBrowser = false }: CloudGuiProps) {
           )}
           {/* <ErrorMessage /> */}
           <main>
+            <StatusBar />
+            <FrictionBar />
             {isInBrowser && luaConsoleVisible && <LuaConsole />}
             <NodePopOverContainer />
             <NodeMetaContainer />

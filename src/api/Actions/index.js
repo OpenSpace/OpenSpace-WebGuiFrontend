@@ -404,3 +404,30 @@ export const closeDrawer = (drawerId) => ({
     drawerId
   }
 });
+
+// Mapping of mode names to their corresponding action types
+const modeActionTypes = {
+  orbit: actionTypes.orbit,
+  translate: actionTypes.translate
+
+  // Add more modes and their corresponding action types here
+};
+c;
+
+export const toggleTouchMode = (mode) => {
+  // Determine the action type based on the mode
+  const actionType = modeActionTypes[mode];
+
+  // ? Should throw an error if the mode is not recognized
+  // * Up to OpenSpace Team if they want to add error handling to the web gui
+  // if (!actionType) {
+  //   throw new Error(`Unsupported touch mode: ${mode}`);
+  // }
+
+  return {
+    type: actionType,
+    payload: {
+      mode
+    }
+  };
+};

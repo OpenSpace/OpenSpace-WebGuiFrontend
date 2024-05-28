@@ -20,7 +20,7 @@ module.exports = {
     rules: [
       // Load JS!
       {
-        test: /\.jsx?$/,
+        test: /\.(js|jsx|ts|tsx)$/,
         use: ['babel-loader'],
         exclude: /node_modules/
       },
@@ -63,6 +63,6 @@ module.exports = {
     ]
   },
   resolve: {
-    extensions: ['.js', '.jsx']
+    extensions: ['.js', '.jsx', '.ts', '.tsx']
   }
 };

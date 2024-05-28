@@ -242,13 +242,28 @@ const drawersReducer = (state = defaultDrawersState, action = {}) => {
   }
 };
 
+// Touch-Node
+const defaultTouchMode = 'orbit';
+const touchMode = (state = defaultTouchMode, action = {}) => {
+  switch (action.type) {
+    case actionTypes.orbit:
+      return 'orbit';
+    case actionTypes.translate: {
+      return 'translate';
+    }
+    default:
+      return state;
+  }
+};
+
 const local = combineReducers({
   originPicker,
   timePicker,
   popovers,
   propertyTreeExpansion,
   showAbout,
-  drawersReducer
+  drawersReducer,
+  touchMode
 });
 
 export default local;

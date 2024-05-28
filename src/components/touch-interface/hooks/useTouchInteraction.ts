@@ -2,8 +2,9 @@ import React, { useEffect } from 'react';
 import { Payload } from '../TouchFrame/touchTypes';
 import { calculateInputState, isTouchOutsideBounds } from './touch-interaction-utils';
 
-// * Custom hook to handle touch input on components. Touch logic is moved here to better abstract the logic from the rendering.
-// * The benefit of this hooks is that it is also reusable and thus minimzing duplicate code (DRY Principle).
+// * Custom hook to handle touch input on components such as touchframe.
+// * This component implementation of touch interaction differs greatly from the touch gestures.
+// * May want to in the future refactor to have a similar implementation to the  useGestures hook.
 
 export interface TouchInteractionProps {
   targetRef: React.RefObject<HTMLDivElement>;
@@ -12,7 +13,7 @@ export interface TouchInteractionProps {
   direction?: 'X' | 'Y';
 }
 
-// * Need to cache events to support 2-finger gestures such as pinch to zoom
+// Need to cache events to support 2-finger gestures such as pinch to zoom
 const eventCache: PointerEvent[] = [];
 
 function getCache() {

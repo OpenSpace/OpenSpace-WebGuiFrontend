@@ -19,7 +19,7 @@ export function calculateInputState(
   eventCache: PointerEvent[],
   direction?: string
 ) {
-  if (touchStartX !== 0) {
+  if (touchStartX !== 0 || touchStartY !== 0) {
     const inputState: InputState = { values: {} };
 
     if (eventCache.length === 2) {
@@ -30,6 +30,7 @@ export function calculateInputState(
 
       deltaX /= scaleFactor;
       deltaY /= scaleFactor;
+
       switch (operation) {
         case 'Rotation':
           handleRotation(inputState, deltaX, deltaY);
@@ -38,7 +39,7 @@ export function calculateInputState(
           handlePan(inputState, deltaX, deltaY, direction);
           break;
         case 'Zoom':
-          handleZoom(inputState, deltaX, deltaY);
+          handleZoom(inputState, deltaY);
           break;
         default:
           break;
@@ -64,11 +65,16 @@ function handlePan(inputState: InputState, deltaX: number, deltaY: number, direc
   }
 }
 
-function handleZoom(inputState: InputState, deltaX: number, deltaY: number) {
-  if (deltaX < 0.0) inputState.values.zoomIn = -deltaX;
-  if (deltaY > 0.0) inputState.values.zoomIn = -deltaY;
+function handleZoom(inputState: InputState, deltaY: number) {
+  const zoomSpeed = 1.01; // Change this to adjust the speed of exponential zoom
 
-  inputState.values.localRollX = -deltaX;
+  if (deltaY < 0) {
+    // Exponential zoom in for deltaY
+    inputState.values.zoomIn = Math.pow(zoomSpeed, deltaY);
+  } else if (deltaY > 0) {
+    // Exponential zoom out for deltaY
+    inputState.values.zoomOut = Math.pow(zoomSpeed, -deltaY);
+  }
 }
 
 let prevDiff = -1;
