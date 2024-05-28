@@ -4,7 +4,7 @@
   display: block;
   pointer-events: none;
   color: $text-color-blur;
-  font-size: $input-label-size;
+  font-size: $input-label-size * 1.5;
   text-align: center;
 }
 
@@ -28,7 +28,7 @@
 
 .title {
   font-weight: 600;
-  font-size: 0.5rem;
+  font-size: $input-label-size * 1.2;
   letter-spacing: 0.1em;
   padding: 0.5rem 0.3rem;
   text-transform: uppercase;

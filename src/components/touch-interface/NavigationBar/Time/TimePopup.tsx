@@ -181,11 +181,11 @@ const TimePopup: React.FC = () => {
       {calendar()}
       {lockOptions()}
 
-      <div className={Popover.styles.title}>Simulation speed</div>
+      <div className={styles.title}>Simulation speed</div>
       <div className={Popover.styles.content}>
         <SimulationIncrement />
       </div>
-      <hr className={Popover.styles.delimiter} />
+      {/* <hr className={Popover.styles.delimiter} /> */}
       <div className={`${Popover.styles.row} ${Popover.styles.content}`}>
         <div className={styles.button} onClick={realtime} style={{ cursor: 'pointer' }}>
           Realtime

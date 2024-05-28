@@ -390,19 +390,14 @@ export const updateSessionRecording = (data) => ({
 });
 
 // Thesis 2024 cloud-interface actions
-
 export const openDrawer = (drawerId) => ({
   type: actionTypes.openDrawer,
-  payload: {
-    drawerId
-  }
+  payload: { drawerId }
 });
 
 export const closeDrawer = (drawerId) => ({
   type: actionTypes.closeDrawer,
-  payload: {
-    drawerId
-  }
+  payload: { drawerId }
 });
 
 // Mapping of mode names to their corresponding action types
@@ -412,7 +407,6 @@ const modeActionTypes = {
 
   // Add more modes and their corresponding action types here
 };
-c;
 
 export const toggleTouchMode = (mode) => {
   // Determine the action type based on the mode

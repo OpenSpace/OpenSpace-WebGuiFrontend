@@ -15,12 +15,6 @@ import { useContextRefs } from '../../../GettingStartedTour/GettingStartedContex
 
 import styles from './SimulationIncrement.scss';
 
-interface StepSizeLimits {
-  min: number;
-  max: number;
-  step: number;
-}
-
 const updateDelayMs = 1000;
 // Throttle the delta time updating, so that we don't accidentally flood
 // the simulation with updates.
@@ -167,7 +161,7 @@ function SimulationIncrement() {
     const prevLabel = hasPrevDeltaTimeStep ? `${adjustedPrevDelta} ${stepSize} / second` : 'None';
 
     return (
-      <div className={styles.row}>
+      <div className={styles.row} style={{ marginTop: 20 }}>
         <div style={{ flex: 3 }}>
           <div
             className={styles.button}

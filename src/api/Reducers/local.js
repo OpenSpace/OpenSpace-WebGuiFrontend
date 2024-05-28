@@ -225,21 +225,29 @@ const defaultDrawersState = {
   SceneDrawer: defaultDrawerState,
   NavigationDrawer: defaultDrawerState,
   ActionDrawer: defaultDrawerState,
-  TimeDrawer: defaultDrawerState
+  TimeDrawer: defaultDrawerState,
+  currentlyOpenDrawer: null
 };
 
-const drawersReducer = (state = defaultDrawersState, action = {}) => {
-  switch (action.type) {
-    case actionTypes.openDrawer:
-    case actionTypes.closeDrawer:
-      return {
-        ...state,
-        [action.payload.drawerId]: drawerReducer(state[action.payload.drawerId], action)
-      };
+const drawersReducer = (state = defaultDrawersState, action) => {
+  if (action.type === actionTypes.openDrawer || action.type === actionTypes.closeDrawer) {
+    const newStates = Object.keys(state).reduce((acc, key) => {
+      // Apply closeDrawer action to all drawers except the one being toggled
+      if (key !== action.payload.drawerId && key !== 'currentlyOpenDrawer') {
+        acc[key] = drawerReducer(state[key], { type: actionTypes.closeDrawer });
+      } else {
+        acc[key] = drawerReducer(state[key], action);
+      }
+      return acc;
+    }, {});
 
-    default:
-      return state;
+    // Update the state for the drawer being opened/closed and the 'currentlyOpenDrawer'
+    return {
+      ...newStates,
+      currentlyOpenDrawer: action.type === actionTypes.openDrawer ? action.payload.drawerId : null
+    };
   }
+  return state;
 };
 
 // Touch-Node

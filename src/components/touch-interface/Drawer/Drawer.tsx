@@ -1,4 +1,4 @@
-import React, { ReactElement, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styles from './Drawer.scss';
 import Button from '../common/Button/Button';
 import { GrClose } from 'react-icons/gr';
@@ -8,8 +8,8 @@ export interface DrawerProps {
   onClose: () => void;
   onSubmit: () => void;
   title?: string;
-  body?: ReactElement;
-  footer?: ReactElement;
+  body: React.ReactNode;
+  footer?: React.ReactNode;
   actionLabel: string;
   disabled?: boolean;
   secondaryAction?: () => void;
@@ -53,10 +53,10 @@ export const Drawer: React.FC<DrawerProps> = ({
           style={showDrawer ? { transform: 'translateY(16px)', opacity: 1 } : { opacity: 0 }}
         >
           <div className={styles.temp}>
+            <div className={styles.handle} />
             <div className={styles.header}>
               <h1 className={styles.title}>{title}</h1>
               <button type='button' className={styles.btn} onClick={handleCloseDrawer}>
-                {/* <GrClose size={20} /> */}
                 Close
               </button>
             </div>

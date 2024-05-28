@@ -18,8 +18,8 @@
 // TODO: Make width responsive and not static
 .window {
   position: fixed;
-  min-width: max-content;
-  max-width: 50vw;
+  min-width: 58vw;
+
   bottom: 115px;
   left: 19px;
   transition: max-width 300ms ease-in-out;
@@ -74,8 +74,17 @@
   display: flex;
   justify-content: space-between;
   padding: 1rem 0.5rem;
-  border-bottom-width: 1px;
-  border-bottom-style: solid;
+  // border-bottom-width: 1px;
+  // border-bottom-style: solid;
+}
+
+.handle {
+  background-color: #43434390;
+  width: 80px;
+  height: 8px;
+  border-radius: 2rem;
+  margin: auto;
+  margin-top: 1rem;
 }
 
 .btn {

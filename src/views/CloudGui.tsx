@@ -113,9 +113,9 @@ function CloudGui({ isInBrowser = false }: CloudGuiProps) {
           {showAbout && (
             <Overlay>
               <Stack style={{ maxWidth: '500px' }} className={''}>
-                <Button style={{ alignSelf: 'flex-end', color: 'white' }} onClick={hideAbout}>
+                <div style={{ alignSelf: 'flex-end', color: 'white' }} onClick={hideAbout}>
                   Close
-                </Button>
+                </div>
                 <About />
               </Stack>
             </Overlay>
