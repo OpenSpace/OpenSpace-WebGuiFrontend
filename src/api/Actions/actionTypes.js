@@ -6,6 +6,7 @@ const actionTypes = {
   subscribeToProperty: 'PROPERTY_TREE_SUBSCRIBE',
   unsubscribeToProperty: 'PROPERTY_TREE_UNSUBSCRIBE',
   addPropertyOwners: 'PROPERTY_TREE_ADD_OWNERS',
+  clearPropertyTree: 'CLEAR_PROPERTY_TREE',
   addProperties: 'PROPERTY_TREE_ADD_PROPERTIES',
   removePropertyOwners: 'PROPERTY_TREE_REMOVE_OWNERS',
   removeProperties: 'PROPERTY_TREE_REMOVE_PROPERTIES',

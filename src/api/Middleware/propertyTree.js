@@ -5,7 +5,8 @@ import {
   addPropertyOwners,
   refreshGroups,
   reloadPropertyTree,
-  updatePropertyValue
+  updatePropertyValue,
+  clearPropertyTree
 } from '../Actions';
 import actionTypes from '../Actions/actionTypes';
 import api from '../api';
@@ -196,6 +197,7 @@ const propertyTree = (store) => (next) => (action) => {
       break;
     }
     case actionTypes.reloadPropertyTree: {
+      store.dispatch(clearPropertyTree());
       getPropertyTree(store.dispatch);
       break;
     }
