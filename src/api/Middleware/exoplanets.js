@@ -18,7 +18,6 @@ const getExoplanets = async (luaApi, callback) => {
 const removeSystem = async (data, callback) => {
   const script = `openspace.exoplanets.removeExoplanetSystem('${data}')`;
   api.executeLuaScript(script, false);
-  api.executeLuaScript("openspace.setPropertyValueSingle('Modules.CefWebGui.Reload', nil)");
   callback();
 };
 
