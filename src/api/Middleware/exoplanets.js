@@ -15,10 +15,9 @@ const getExoplanets = async (luaApi, callback) => {
   callback(listArray);
 };
 
-const removeSystem = async (data, callback) => {
+const removeSystem = async (data) => {
   const script = `openspace.exoplanets.removeExoplanetSystem('${data}')`;
   api.executeLuaScript(script, false);
-  callback();
 };
 
 const exoplanets = (store) => (next) => (action) => {
@@ -30,7 +29,7 @@ const exoplanets = (store) => (next) => (action) => {
       });
       break;
     case actionTypes.removeExoplanets:
-      removeSystem(action.payload.system, () => {});
+      removeSystem(action.payload.system);
       break;
     default:
       break;
