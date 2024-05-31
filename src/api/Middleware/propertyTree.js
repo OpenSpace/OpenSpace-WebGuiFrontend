@@ -165,6 +165,10 @@ const flattenPropertyTree = (propertyOwner) => {
 
 const addPropertyOwner = async (dispatch, uri) => {
   const value = await api.getProperty(uri);
+  if (!value) {
+    console.error("Error retrieving property with uri ", uri);
+    return;
+  }
 
   // Extract the data from the property owner
   const { propertyOwners, properties } = flattenPropertyTree(value);
