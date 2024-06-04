@@ -3,10 +3,10 @@ import { throttle } from 'lodash/function';
 import {
   addProperties,
   addPropertyOwners,
+  clearPropertyTree,
   refreshGroups,
   reloadPropertyTree,
-  updatePropertyValue,
-  clearPropertyTree
+  updatePropertyValue
 } from '../Actions';
 import actionTypes from '../Actions/actionTypes';
 import api from '../api';
