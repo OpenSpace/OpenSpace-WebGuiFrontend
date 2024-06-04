@@ -23,7 +23,7 @@
     },
     {
         "goalType" : ["geoPosition"],
-        "position" : {"latitude" : { "operator" : "between" , "value" : [69, 76] }, "longitude" : { "operator" : "between" , "value" : [-40, -48] }},
+        "position" : {"latitude" : { "operator" : "between" , "value" : [50, 94] }, "longitude" : { "operator" : "between" , "value" : [-10, -78] }},
         "title" : "Navigation",
         "firstText" : ["Let's go to Greenland!"],
         "infoText" : "The position is { latitude, longitude }",

@@ -38,11 +38,11 @@ function MinMaxRangeInput({
   const scale = React.useRef(null);
   const sliderResolution = React.useRef(10000);
 
-  React.useState(() => {
+  React.useEffect(() => {
     setMinValue(valueMin);
   }, [valueMin]);
 
-  React.useState(() => {
+  React.useEffect(() => {
     setMaxValue(valueMax);
   }, [valueMax]);
 

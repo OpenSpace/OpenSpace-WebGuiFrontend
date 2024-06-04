@@ -14,8 +14,8 @@ import sessionRecording from './sessionRecording';
 import shortcuts from './shortcuts';
 import skybrowser from './skybrowser';
 import time from './time';
-import version from './version';
 import userPanels from './userPanels';
+import version from './version';
 
 const middleware = applyMiddleware(
   // logger, // middleWare for logging state change

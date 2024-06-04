@@ -1,7 +1,5 @@
 import { setDate } from './timeHelpers';
 
-// TODO evaluate flyTo vs toggleZoomOut
-
 // Activates flying linearly to a set distance from the anchor
 export const flyTo = (luaApi, distance, duration = undefined) => {
   if (typeof duration === 'number') {
@@ -15,10 +13,12 @@ export const flyTo = (luaApi, distance, duration = undefined) => {
 export const setStoryStart = (luaApi, startPosition, startTime) => {
   luaApi.pathnavigation.stopPath();
 
-  luaApi.globebrowsing.goToGeo(
+  luaApi?.globebrowsing?.jumpToGeo(
+    '',
     startPosition.latitude,
     startPosition.longitude,
     startPosition.altitude,
+    0
   );
 
   setDate(luaApi, startTime);
