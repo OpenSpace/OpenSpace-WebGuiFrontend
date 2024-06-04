@@ -61,9 +61,9 @@ function TimePicker() {
     // is given.
     try {
       const fixedTimeString = newTime.toJSON().replace('Z', '');
-      luaApi.time.setTime(fixedTimeString);  
+      luaApi.time.setTime(fixedTimeString);
     } catch {
-      luaApi.time.setTime(time);  
+      luaApi.time.setTime(time);
     }
   }
 
@@ -75,9 +75,9 @@ function TimePicker() {
       // ISO 8601-style time zones (the Z). It does, however, always assume that UTC
       // is given.
       const fixedTimeString = newTime.toJSON().replace('Z', '');
-      luaApi.time.setTime(fixedTimeString);  
+      luaApi.time.setTime(fixedTimeString);
     } catch {
-      luaApi.time.setTime(time);  
+      luaApi.time.setTime(time);
     }
   }
 

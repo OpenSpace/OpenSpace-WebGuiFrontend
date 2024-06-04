@@ -115,7 +115,7 @@ export default function Missions() {
 
   // Locate the next instrument activity capture
   function nextCapture() {
-    if (!now || typeof(now) == "string") {
+    if (!now || typeof (now) === 'string') {
       return null;
     }
     // Assume the captures are sorted w regards to time
@@ -129,7 +129,7 @@ export default function Missions() {
 
   // Locate the previous instrument activity capture
   function lastCapture() {
-    if (!now || typeof(now) == "string") {
+    if (!now || typeof (now) === 'string') {
       return null;
     }
     // Assume the captures are sorted w regards to time

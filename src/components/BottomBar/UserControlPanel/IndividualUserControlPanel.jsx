@@ -2,17 +2,18 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import Picker from '../../BottomBar/Picker';
-import Popover from '../../common/Popover/Popover';
 import { removeUserPanel } from '../../../api/Actions';
-import styles from "./UserControlPanel.scss"
+import Popover from '../../common/Popover/Popover';
+import Picker from '../Picker';
+
+import styles from './UserControlPanel.scss';
 
 function IndividualUserControlPanel({ uri }) {
   const myPopover = useSelector((state) => state.local.popovers.activeUserControlPanels[uri]);
   const showPopover = myPopover ? myPopover.visible : false;
-  var slash = (navigator.platform.indexOf('Win') > -1) ? "\\" : "/";
+  const slash = (navigator.platform.indexOf('Win') > -1) ? '\\' : '/';
 
-  const panelName = uri.substr(uri.lastIndexOf(slash) + 1)
+  const panelName = uri.substr(uri.lastIndexOf(slash) + 1);
 
   const dispatch = useDispatch();
 
@@ -33,8 +34,8 @@ function IndividualUserControlPanel({ uri }) {
         attached={false}
       >
         <div className={styles.content}>
-            <hr className={Popover.styles.delimiter} />
-            <iframe className={`${styles.panelIframe}`} src={iframesrc}></iframe>
+          <hr className={Popover.styles.delimiter} />
+          <iframe className={`${styles.panelIframe}`} src={iframesrc} />
         </div>
       </Popover>
     );
