@@ -33,17 +33,17 @@ function DragDropLayerList({ expansionIdentifier, uri }) {
     const subownersRaw = data ? data.subowners : [];
     return subownersRaw.filter((subowner) => (isGlobeBrowsingLayer(subowner)));
   }, shallowEqualArrays);
-  
+
   // Use refs so they don't trigger re-renders when dragging
   const shownLayers = React.useRef(layers);
   const isDragging = React.useRef(false);
-  
+
   // Hack to make the component re-render when the layers have been updated
   // Since the layers are stored in a ref, they would not re-render otherwise
   React.useEffect(() => {
     setTrigger((oldValue) => !oldValue);
   }, [layers]);
-  
+
   // When a layer is added or deleted to redux, we have to update the layer order
   // We still want the layers to be a ref so this is a workaround
   const isUpdated = shownLayers.current.length === layers.length;
@@ -62,45 +62,44 @@ function DragDropLayerList({ expansionIdentifier, uri }) {
     }}
     />
   );
-  
+
   function onDragStart() {
     isDragging.current = true;
-  };
-  
+  }
+
   async function onDragEnd(result) {
     // No change - do nothing
     if (!result.destination || result.source.index === result.destination.index) {
       isDragging.current = false;
       return;
     }
-    
+
     // First update the order manually, so we keep it while the properties
     // are being refreshed below
     const tempLayers = shownLayers.current;
     const [reorderedItem] = tempLayers.splice(result.source.index, 1);
     tempLayers.splice(result.destination.index, 0, reorderedItem);
-    
+
     isDragging.current = false;
     shownLayers.current = tempLayers;
-    
+
     const resultUri = result.draggableId;
     const globe = getSceneGraphNodeFromUri(resultUri);
     const layerGroup = getLayerGroupFromUri(resultUri);
-    
+
     await luaApi.globebrowsing.moveLayer(
       globe,
       layerGroup,
       result.source.index,
       result.destination.index,
     );
-  };
-  
+  }
+
   function id(uriValue) {
     return `${expansionIdentifier}/${nodeExpansionIdentifier(uriValue)}`;
   }
-  
+
   return (
-    <>
     <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
       {isDragging.current && overlay}
       <Droppable droppableId="layers">
@@ -114,7 +113,7 @@ function DragDropLayerList({ expansionIdentifier, uri }) {
                       dragHandleTitleProps={item.dragHandleProps}
                       uri={layerUri}
                       expansionIdentifier={id(layerUri)}
-                      />
+                    />
                   </div>
                 )}
               </Draggable>
@@ -124,7 +123,6 @@ function DragDropLayerList({ expansionIdentifier, uri }) {
         )}
       </Droppable>
     </DragDropContext>
-    </>
   );
 }
 
@@ -248,7 +246,7 @@ function PropertyOwner({
       expanded={isExpanded}
       setExpanded={setExpanded}
     >
-      <DragDropLayerList 
+      <DragDropLayerList
         expansionIdentifier={expansionIdentifier}
         uri={uri}
       />

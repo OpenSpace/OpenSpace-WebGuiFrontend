@@ -129,7 +129,7 @@ const markAllSubscriptionsAsPending = () => {
 const flattenPropertyTree = (propertyOwner) => {
   let propertyOwners = [];
   let properties = [];
-  
+
   if (propertyOwner.uri) {
     propertyOwners.push({
       uri: propertyOwner.uri,
@@ -166,13 +166,13 @@ const flattenPropertyTree = (propertyOwner) => {
 const addPropertyOwner = async (dispatch, uri) => {
   const value = await api.getProperty(uri);
   if (!value) {
-    console.error("Error retrieving property with uri ", uri);
+    console.error('Error retrieving property with uri ', uri);
     return;
   }
 
   // Extract the data from the property owner
   const { propertyOwners, properties } = flattenPropertyTree(value);
-  
+
   dispatch(addPropertyOwners(propertyOwners));
   dispatch(addProperties(properties));
   dispatch(refreshGroups());
@@ -199,7 +199,7 @@ const propertyTree = (store) => (next) => (action) => {
       break;
     }
     case actionTypes.addPropertyOwner: {
-      addPropertyOwner(store.dispatch, action.payload.uri)
+      addPropertyOwner(store.dispatch, action.payload.uri);
       break;
     }
     case actionTypes.reloadPropertyTree: {

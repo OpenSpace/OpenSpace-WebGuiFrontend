@@ -30,11 +30,11 @@ function ScreenSpaceRenderablePanel() {
       if (state.propertyTree.propertyOwners) {
         return state.propertyTree.propertyOwners;
       }
-        return [];
+      return [];
     }
   );
   const renderables = propertyOwners?.ScreenSpace?.subowners ?? [];
-  
+
   const dispatch = useDispatch();
 
   function togglePopover() {

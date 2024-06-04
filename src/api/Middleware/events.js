@@ -1,22 +1,22 @@
-import { addPropertyOwner, removePropertyOwners, refreshGroups  } from '../Actions';
+import { addPropertyOwner, refreshGroups, removePropertyOwners } from '../Actions';
 import actionTypes from '../Actions/actionTypes';
 import api from '../api';
 
 let eventTopic;
-let nSubscribers = 0;
+const nSubscribers = 0;
 
 async function handleData(store, data) {
   switch (data.Event) {
-    case "LayerAdded":
-    case "SceneGraphNodeAdded":
-    case "ScreenSpaceRenderableAdded": {
+    case 'LayerAdded':
+    case 'SceneGraphNodeAdded':
+    case 'ScreenSpaceRenderableAdded': {
       store.dispatch(addPropertyOwner({ uri: data.Uri }));
       break;
     }
-    case "LayerRemoved":
-    case "SceneGraphNodeRemoved":
-    case "ScreenSpaceRenderableRemoved": {
-      store.dispatch(removePropertyOwners({ uris: [ data.Uri ] }));
+    case 'LayerRemoved':
+    case 'SceneGraphNodeRemoved':
+    case 'ScreenSpaceRenderableRemoved': {
+      store.dispatch(removePropertyOwners({ uris: [data.Uri] }));
       store.dispatch(refreshGroups());
       break;
     }
@@ -37,16 +37,16 @@ function tearDownSubscription() {
 }
 
 async function setupSubscription(store) {
-    // Start subscribing to all events  
-    eventTopic = api.startTopic('event', {
-        event: '*',
-        status: 'start_subscription'
-    });
+  // Start subscribing to all events
+  eventTopic = api.startTopic('event', {
+    event: '*',
+    status: 'start_subscription'
+  });
 
-    // eslint-disable-next-line no-restricted-syntax
-    for await (const data of eventTopic.iterator()) {
-        handleData(store, data);
-    }
+  // eslint-disable-next-line no-restricted-syntax
+  for await (const data of eventTopic.iterator()) {
+    handleData(store, data);
+  }
 }
 
 const events = (store) => (next) => (action) => {
@@ -54,7 +54,7 @@ const events = (store) => (next) => (action) => {
   const state = store.getState();
   switch (action.type) {
     case actionTypes.onOpenConnection:
-        if (nSubscribers === 0) {
+      if (nSubscribers === 0) {
         setupSubscription(store);
       }
       break;
