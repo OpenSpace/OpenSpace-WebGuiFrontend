@@ -11,6 +11,7 @@ import { getBoolPropertyValue } from '../../utils/propertyTreeHelpers';
 
 import Missions from './Missions/Missions';
 import OriginPicker from './Origin/OriginPicker';
+import UserControlPanel from './UserControlPanel/UserControlPanel';
 import ActionsPanel from './ActionsPanel';
 import ExoplanetsPanel from './ExoplanetsPanel';
 import FlightControlPanel from './FlightControlPanel';
@@ -19,7 +20,6 @@ import ScreenSpaceRenderablePanel from './ScreenSpaceRenderablePanel';
 import SessionRec from './SessionRec';
 import SkyBrowserPanel from './SkyBrowserPanel';
 import TimePicker from './TimePicker';
-import UserControlPanel from './UserControlPanel/UserControlPanel';
 
 import styles from './BottomBar.scss';
 

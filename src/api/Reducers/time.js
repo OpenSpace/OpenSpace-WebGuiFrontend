@@ -63,22 +63,21 @@ const time = (state = defaultState, action = {}) => {
 
       if (newTime !== undefined) {
         try {
-          let ztime = new Date(dateStringWithTimeZone(newTime));
-          if (!isNaN(ztime)) {
-            newState.time = ztime
+          const ztime = new Date(dateStringWithTimeZone(newTime));
+          if (!Number.isNaN(ztime)) {
+            newState.time = ztime;
           } else {
-            newState.time = newTime
+            newState.time = newTime;
           }
-        }
-        catch (e) {
+        } catch (e) {
           newState.time = newTime;
         }
 
         // Make optimized time that only updates every second
         const date = new Date(dateStringWithTimeZone(newTime));
         date.setMilliseconds(0);
-        let iso = "";
-        let newiso = "";
+        let iso = '';
+        let newiso = '';
         try {
           iso = date.toISOString();
         } catch {

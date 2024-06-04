@@ -5,7 +5,7 @@ import shallowEqualArrays from 'shallow-equal/arrays';
 
 import { useLocalStorageState } from '../../utils/customHooks';
 import {
-  checkIfVisible, filterPropertyOwners, hasInterestingTag, isPropertyOwnerHidden
+  filterPropertyOwners, hasInterestingTag
 } from '../../utils/propertyTreeHelpers';
 import { ObjectWordBeginningSubstring } from '../../utils/StringMatchers';
 import { FilterList, FilterListData, FilterListFavorites } from '../common/FilterList/FilterList';

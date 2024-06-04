@@ -9,7 +9,7 @@ const fetchingInfo = (dispatch, id) => {
       dispatch(fetchDataDone(data, id));
     })
     .catch((error) => {
-      console.log(error);
+      console.error(error);
       dispatch(fetchDataFailed(id));
     });
 };

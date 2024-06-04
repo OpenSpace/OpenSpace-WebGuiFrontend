@@ -1,6 +1,7 @@
 import React from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
+// eslint-disable-next-line import/no-webpack-loader-syntax
 import InfographicSkyBrowser from 'svg-react-loader?name=Aim!../../../icons/infographicSkyBrowser.svg';
 
 import { lowPrecisionEqual } from '../../../utils/customHooks';

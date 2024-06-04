@@ -214,7 +214,7 @@ function GeoPositionPanel() {
         break;
       }
       case Interaction.jumpTo: {
-        luaApi?.globebrowsing?.goToGeo(currentAnchor, lat, long, alt);
+        luaApi?.globebrowsing?.jumpToGeo(currentAnchor, lat, long, alt);
         break;
       }
       case Interaction.addFocus: {
