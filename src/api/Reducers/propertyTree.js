@@ -9,6 +9,7 @@ import actionTypes from '../Actions/actionTypes';
 // removeProperties
 // updatePropertyValue
 // setPropertyValue
+// clearPropertyTree
 
 const property = (state = {}, action = {}) => {
   switch (action.type) {
@@ -44,6 +45,9 @@ const properties = (state = {}, action = {}) => {
         delete newState[uri];
       });
       return newState;
+    }
+    case actionTypes.clearPropertyTree: {
+      return {};
     }
     case actionTypes.updatePropertyValue:
       return {
@@ -81,6 +85,9 @@ const propertyOwners = (state = {}, action = {}) => {
         }
       });
       return newState;
+    }
+    case actionTypes.clearPropertyTree: {
+      return {};
     }
     case actionTypes.removePropertyOwners: {
       const newState = { ...state };

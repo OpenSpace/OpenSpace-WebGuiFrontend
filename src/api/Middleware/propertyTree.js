@@ -3,6 +3,7 @@ import { throttle } from 'lodash/function';
 import {
   addProperties,
   addPropertyOwners,
+  clearPropertyTree,
   refreshGroups,
   reloadPropertyTree,
   updatePropertyValue
@@ -203,6 +204,7 @@ const propertyTree = (store) => (next) => (action) => {
       break;
     }
     case actionTypes.reloadPropertyTree: {
+      store.dispatch(clearPropertyTree());
       addPropertyOwner(store.dispatch, rootOwnerKey);
       break;
     }
