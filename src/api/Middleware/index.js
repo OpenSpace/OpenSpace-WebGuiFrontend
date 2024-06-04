@@ -5,6 +5,7 @@ import cameraPath from './cameraPath';
 import connection from './connection';
 import documentation from './documentation';
 import engineMode from './engineMode';
+import events from './events';
 import exoplanets from './exoplanets';
 import fetchData from './fetchData';
 import flightController from './flightController';
@@ -22,6 +23,7 @@ const middleware = applyMiddleware(
   propertyTree,
   time,
   engineMode,
+  events,
   sessionRecording,
   connection,
   shortcuts,
