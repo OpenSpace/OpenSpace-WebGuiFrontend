@@ -26,12 +26,7 @@ function ScreenSpaceRenderablePanel() {
   );
   // Access the propertyOwners state so that useSelector is triggered by updates
   const propertyOwners = useSelector(
-    (state) => {
-      if (state.propertyTree.propertyOwners) {
-        return state.propertyTree.propertyOwners;
-      }
-      return [];
-    }
+    (state) => (state.propertyTree.propertyOwners ? state.propertyTree.propertyOwners : [])
   );
   const renderables = propertyOwners?.ScreenSpace?.subowners ?? [];
 

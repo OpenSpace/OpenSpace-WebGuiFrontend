@@ -9,20 +9,17 @@ async function handleData(store, data) {
   switch (data.Event) {
     case 'LayerAdded':
     case 'SceneGraphNodeAdded':
-    case 'ScreenSpaceRenderableAdded': {
+    case 'ScreenSpaceRenderableAdded':
       store.dispatch(addPropertyOwner({ uri: data.Uri }));
       break;
-    }
     case 'LayerRemoved':
     case 'SceneGraphNodeRemoved':
-    case 'ScreenSpaceRenderableRemoved': {
+    case 'ScreenSpaceRenderableRemoved':
       store.dispatch(removePropertyOwners({ uris: [data.Uri] }));
       store.dispatch(refreshGroups());
       break;
-    }
-    default: {
-
-    }
+    default:
+      break;
   }
 }
 
