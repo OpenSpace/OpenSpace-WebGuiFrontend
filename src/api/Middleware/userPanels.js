@@ -2,10 +2,10 @@ import {
   initializeUserPanels
 } from '../Actions';
 import actionTypes from '../Actions/actionTypes';
-import api from '../api';
 
 const getUserPanels = async (luaApi, callback) => {
   const slash = (navigator.platform.indexOf('Win') > -1) ? '\\' : '/';
+  // eslint-disable-next-line no-template-curly-in-string
   const panelPath = await luaApi.absPath('${USER}/webpanels');
   const panelList = await luaApi.walkDirectoryFolders(panelPath[1]);
   let newList = {};

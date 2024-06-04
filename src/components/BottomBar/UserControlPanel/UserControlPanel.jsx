@@ -3,7 +3,7 @@ import { MdWeb } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
-  addUserPanel, loadUserPanelData, reloadPropertyTree, setPopoverVisibility
+  addUserPanel, loadUserPanelData, setPopoverVisibility
 } from '../../../api/Actions';
 import HorizontalDelimiter from '../../common/HorizontalDelimiter/HorizontalDelimiter';
 import Button from '../../common/Input/Button/Button';
@@ -12,8 +12,6 @@ import Select from '../../common/Input/Select/Select';
 import Popover from '../../common/Popover/Popover';
 import Row from '../../common/Row/Row';
 import Picker from '../Picker';
-
-import styles from './UserControlPanel.scss';
 
 function UserControlPanel() {
   const [selectedPanel, setSelectedPanel] = React.useState(undefined);
@@ -55,7 +53,7 @@ function UserControlPanel() {
   }
 
   function addWebPanel() {
-    if (panelURL.indexOf('http') != 0) {
+    if (panelURL.indexOf('http') !== 0) {
       dispatch(addUserPanel(`http://${panelURL}`));
     } else {
       dispatch(addUserPanel(panelURL));

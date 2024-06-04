@@ -64,7 +64,7 @@ const time = (state = defaultState, action = {}) => {
       if (newTime !== undefined) {
         try {
           const ztime = new Date(dateStringWithTimeZone(newTime));
-          if (!isNaN(ztime)) {
+          if (!Number.isNaN(ztime)) {
             newState.time = ztime;
           } else {
             newState.time = newTime;

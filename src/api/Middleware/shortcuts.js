@@ -39,7 +39,6 @@ const shortcuts = (store) => (next) => (action) => {
       break;
     case actionTypes.triggerAction: {
       const actionName = action.payload;
-      console.log(api);
       store.getState().luaApi.action.triggerAction(actionName);
       break;
     }
