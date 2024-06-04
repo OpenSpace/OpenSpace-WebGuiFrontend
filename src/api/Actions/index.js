@@ -418,3 +418,13 @@ export const updateSessionRecording = (data) => ({
   type: actionTypes.updateSessionRecording,
   payload: data
 });
+
+export const addPropertyOwner = (data) => ({
+  type: actionTypes.addPropertyOwner,
+  payload: data
+});
+
+export const removePropertyOwners = (data) => ({
+  type: actionTypes.removePropertyOwners,
+  payload: data
+});

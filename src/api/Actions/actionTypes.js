@@ -126,7 +126,10 @@ const actionTypes = {
   addStoryTree: 'STORY_TREE_ADD',
   addStoryInfo: 'STORY_TREE_ADD_INFO',
   resetStoryInfo: 'STORY_TREE_RESET_INFO',
-  resetStoryTree: 'STORY_TREE_RESET'
+  resetStoryTree: 'STORY_TREE_RESET',
+
+  // Updating the property tree
+  addPropertyOwner: 'ADD_PROPERTY_OWNER'
 };
 
 export default actionTypes;
