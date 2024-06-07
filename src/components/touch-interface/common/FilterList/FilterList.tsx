@@ -6,7 +6,7 @@ import {
 import CenteredLabel from '../../../common/CenteredLabel/CenteredLabel';
 // import Input from '../../../common/Input/Input/Input'; //old jsx file path
 import Input from '../Input/Input';
-import ScrollOverlay from '../../../common/ScrollOverlay/ScrollOverlay';
+import ScrollOverlay from '../../common/ScrollOverlay/ScrollOverlay';
 import { MdMoreHoriz } from 'react-icons/md';
 import { IoMdClose } from 'react-icons/io';
 
@@ -63,7 +63,7 @@ function filterChildren({
     return filteredChildren;
   }
 
-  return <CenteredLabel>Nothing found. Try another search!</CenteredLabel>;
+  return <div className={styles.center}>Nothing found. Try another search!</div>;
 }
 
 interface FilterListFavoritesProps {
@@ -74,9 +74,7 @@ interface FilterListFavoritesProps {
 function FilterListFavorites({ className = '', children }: FilterListFavoritesProps) {
   const nonNullChildren = React.Children.toArray(children).filter(Boolean);
 
-  return (
-    <ScrollOverlay className={`${styles.columns} ${className}`}>{nonNullChildren}</ScrollOverlay>
-  );
+  return <ScrollOverlay className={`${className}`}>{nonNullChildren}</ScrollOverlay>;
 }
 
 FilterListFavorites.displayName = 'FilterListFavorites';
@@ -104,7 +102,7 @@ function FilterListData({
     ignorePropsFilter,
     children
   });
-  return <ScrollOverlay className={`${styles.columns}${className}`}>{content}</ScrollOverlay>;
+  return <ScrollOverlay className={`${className}`}>{content}</ScrollOverlay>;
 }
 
 FilterListData.displayName = 'FilterListData';
@@ -245,6 +243,7 @@ function FilterList({
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchString(e.target.value)}
           clearable
           autoFocus={searchAutoFocus}
+          wide
         >
           {buttons}
         </Input>

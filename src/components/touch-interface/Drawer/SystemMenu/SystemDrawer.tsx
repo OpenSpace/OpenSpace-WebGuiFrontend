@@ -34,30 +34,30 @@ export const SystemDrawer = () => {
       },
       disabled: connectionLost
     },
-    {
-      label: 'Toggle Console',
-      onClick: () => {
-        openFeedback(luaApi);
-      },
-      disabled: !luaApi,
-      shortcut: '~'
-    },
-    {
-      label: 'Toggle Native GUI',
-      onClick: () => {
-        nativeGui(luaApi);
-      },
-      disabled: !luaApi,
-      shortcut: 'F1'
-    },
+    // {
+    //   label: 'Toggle Console',
+    //   onClick: () => {
+    //     openFeedback(luaApi);
+    //   },
+    //   disabled: !luaApi,
+    //   shortcut: '~'
+    // },
+    // {
+    //   label: 'Toggle Native GUI',
+    //   onClick: () => {
+    //     nativeGui(luaApi);
+    //   },
+    //   disabled: !luaApi,
+    //   shortcut: 'F1'
+    // },
     {
       label: 'Quit OpenSpace',
       onClick: () => {
         quit(luaApi);
       },
       icon: <MdExitToApp className={styles.linkIcon} />,
-      disabled: !luaApi,
-      shortcut: 'ESC'
+      disabled: !luaApi
+      // shortcut: 'ESC'
     }
   ];
 

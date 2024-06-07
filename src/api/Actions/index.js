@@ -425,3 +425,8 @@ export const toggleTouchMode = (mode) => {
     }
   };
 };
+
+export const setYear = (year) => ({
+  type: actionTypes.setYear,
+  payload: year
+});

@@ -3,12 +3,11 @@
 $icon-size: 18px;
 
 .entry {
-  flex-direction: column;
   color: #ffffff40;
   margin-top: 0.5em;
-  // border: purple;
-  // border-style: solid;
   border-radius: 0 5px 5px 0;
+  border: red;
+  border-style: solid;
 
   &.active {
     // background: $ui-background-hover;
@@ -17,21 +16,14 @@ $icon-size: 18px;
   }
 }
 
-.fullButtonContainer {
-  display: flex;
-  flex-direction: column;
-}
-
 .buttonTitleContainer {
   display: flex;
   align-items: center;
-  // border: red;
-  // border-style: solid;
-  background-color: #43434360;
-  margin: 0.5em;
+  background-color: #30303a70;
   border-radius: 3px;
-  min-width: 350px; //change to responsive after drawer has changed
-  max-width: 350px;
+
+  // border: green;
+  // border-style: solid;
 }
 
 .buttonIcon {
@@ -39,8 +31,6 @@ $icon-size: 18px;
   height: 2em;
   transition: fill 0.3s;
   fill: currentColor;
-  // border: orange;
-  // border-style: solid;
 }
 
 .titleContainer {
@@ -52,14 +42,12 @@ $icon-size: 18px;
   flex-direction: row;
   align-items: center;
   width: 100%;
-  // border: blue;
-  // border-style: solid;
 }
 
 .flyToButton {
   padding: 0.5em;
-  margin: 0.5em 0.5em 0.5em 0.5em;
-  background-color: #43434360;
+  margin: 1em 1em 0.5em 0em;
+  background-color: #30303a70;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -68,7 +56,6 @@ $icon-size: 18px;
 
 .focusButton {
   padding: 0.5em;
-
   display: flex;
   align-items: center;
   justify-content: center;

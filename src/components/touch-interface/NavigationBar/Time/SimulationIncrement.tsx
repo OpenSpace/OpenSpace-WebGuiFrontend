@@ -1,17 +1,19 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { MdFastForward, MdFastRewind, MdPause, MdPlayArrow } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
-import { throttle } from 'lodash/function';
+import { throttle } from 'lodash';
 
-import { subscribeToTime, unsubscribeToTime } from '../../../../api/Actions';
+import { subscribeToTime, unsubscribeToTime, setYear } from '../../../../api/Actions';
 import { round10 } from '../../../../utils/rounding';
 import Button from '../../../common/Input/Button/Button';
 import NumericInput from '../../../common/Input/NumericInput/NumericInput';
-import ScaleInput from '../../../common/Input/ScaleInput/ScaleInput';
+// import ScaleInput from '../../../common/Input/ScaleInput/ScaleInput';
+import ScaleInput from './ScaleInput';
 // import Select from '../../../common/Input/Select/Select';
 import Select from './Select';
 import Row from '../../../common/Row/Row';
 import { useContextRefs } from '../../../GettingStartedTour/GettingStartedContext';
+import Timeline from './Timeline';
 
 import styles from './SimulationIncrement.scss';
 
@@ -68,12 +70,18 @@ Object.freeze(StepSizes);
 Object.freeze(StepPrecisions);
 Object.freeze(Limits);
 
+type Option = {
+  value: string;
+  label: string;
+  isSelected?: boolean;
+};
+
 function SimulationIncrement() {
-  const [stepSize, setStepSize] = React.useState(Steps.seconds);
-  const [beforeAdjust, setBeforeAdjust] = React.useState<number | null>(0);
+  const [stepSize, setStepSize] = useState(Steps.seconds);
+  const [beforeAdjust, setBeforeAdjust] = useState<number | null>(0);
+  // const [year, setYear] = useState<number>(new Date().getFullYear());
   const refs = useContextRefs();
 
-  // const deltaTime = useSelector((state) => state.time.deltaTime);
   const targetDeltaTime = useSelector((state: any) => state.time.targetDeltaTime);
   const isPaused = useSelector((state: any) => state.time.isPaused);
   const hasNextDeltaTimeStep = useSelector((state: any) => state.time.hasNextDeltaTimeStep);
@@ -81,6 +89,7 @@ function SimulationIncrement() {
   const nextDeltaTimeStep = useSelector((state: any) => state.time.nextDeltaTimeStep);
   const prevDeltaTimeStep = useSelector((state: any) => state.time.prevDeltaTimeStep);
   const luaApi = useSelector((state: any) => state.luaApi);
+  const currentYear = useSelector((state: any) => state.time.currentYear);
 
   const dispatch = useDispatch();
 
@@ -92,9 +101,9 @@ function SimulationIncrement() {
     dispatch(unsubscribeToTime());
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     startSubscriptions();
-    return stopSubscriptions();
+    return stopSubscriptions;
   }, []);
 
   function togglePause(e: React.MouseEvent) {
@@ -203,7 +212,7 @@ function SimulationIncrement() {
 
   const adjustedDelta = round10(targetDeltaTime / StepSizes[stepSize], StepPrecisions[stepSize]);
 
-  const options = Object.values(Steps).map((step) => ({
+  const options: Option[] = Object.values(Steps).map((step) => ({
     value: step,
     label: step,
     isSelected: step === stepSize
@@ -213,7 +222,6 @@ function SimulationIncrement() {
     <div>
       <div className={styles.title}>Display Unit</div>
       <Select
-        // label='Display unit'
         menuPlacement='top'
         onChange={({ value }) => (Object.values(Steps).includes(value) ? setStepSize(value) : null)}
         options={options}
@@ -250,6 +258,17 @@ function SimulationIncrement() {
         max={10}
         onChange={setQuickAdjust}
       />
+
+      {/* <div style={{ height: '10px' }} />
+      <Timeline
+        defaultValue={currentYear}
+        min={new Date().getFullYear() - 50}
+        max={new Date().getFullYear() + 50}
+        onChange={(value) => {
+          dispatch(setYear(value));
+          console.log('Year changed to:', value);
+        }}
+      /> */}
 
       <div style={{ height: '10px' }} />
       {deltaTimeStepsContol()}

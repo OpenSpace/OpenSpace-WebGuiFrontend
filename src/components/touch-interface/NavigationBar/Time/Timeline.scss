@@ -1,0 +1,27 @@
+.timelineContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.timelineInput {
+  width: 100%;
+  margin: 10px 0;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.labels {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.yearLabel {
+  font-weight: bold;
+}
+
+.currentYear {
+  margin-top: 10px;
+  font-size: 1.5em;
+}

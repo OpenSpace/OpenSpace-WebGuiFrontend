@@ -146,11 +146,13 @@ function ActionsPanel({
         </div>
         <hr className={Popover.styles.delimiter} />
         <FilterList matcher={matcher} height={filterListHeight} searchText='Search...'>
-          <FilterListFavorites className={styles.Grid}>
-            {folders}
-            {actions}
+          <FilterListFavorites>
+            <div className={styles.gridContainer}>
+              {folders}
+              {actions}
+            </div>
           </FilterListFavorites>
-          <FilterListData className={styles.Grid}>{getAllActions()}</FilterListData>
+          <FilterListData>{getAllActions()}</FilterListData>
         </FilterList>
       </>
     );

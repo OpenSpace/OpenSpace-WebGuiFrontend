@@ -10,14 +10,21 @@ $small-icon-size: 16px;
 
 .NavigationButton {
   display: flex;
-  padding: 10px;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   cursor: pointer;
-  // border: green;
-  // border-style: solid;
-  width: 100px;
   height: 100px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+}
+
+.navbarGrid {
+  display: flex;
 }
 
 .TabIcon {
@@ -30,8 +37,10 @@ $small-icon-size: 16px;
 }
 
 .TabText {
-  font-size: 24px;
-  padding-top: 0.2em;
+  font-size: large;
+  padding-top: 0.3em;
+  // border: orange;
+  // border-style: solid;
 }
 
 // .iconImage {
@@ -100,15 +109,10 @@ $small-icon-size: 16px;
 .row {
   display: flex;
   justify-content: space-around;
-  background-color: #30303a40;
-  margin: 10px 10px;
-  padding: 10px 10px 0px 10px;
-}
-
-.columns {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 5px;
+  background-color: #30303a70;
+  margin: 10px 0px;
+  padding: 10px;
+  border-radius: 3px;
 }
 
 //Component styles
@@ -131,6 +135,8 @@ $small-icon-size: 16px;
   margin-left: 0.5rem;
 }
 
-.title {
+.Title {
   display: flex;
+  flex-direction: column;
+  justify-content: left;
 }

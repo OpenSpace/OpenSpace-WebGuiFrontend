@@ -38,7 +38,7 @@ $padding-loading: $padding-top $padding-horizontal $padding-bottom-loading;
 }
 
 .input:hover {
-  background: $ui-background-active;
+  // background: $ui-background-active;
 
   ~ .label {
     color: $text-color-focus;
@@ -46,7 +46,7 @@ $padding-loading: $padding-top $padding-horizontal $padding-bottom-loading;
 }
 
 .input:focus {
-  background: #30303a40;
+  // background: #30303a40;
   color: $text-color-focus;
   outline: 0;
 
@@ -101,7 +101,7 @@ $padding-loading: $padding-top $padding-horizontal $padding-bottom-loading;
   color: $text-color-blur;
   cursor: pointer;
   display: none;
-  font-size: 14px;
+  font-size: 30px;
   opacity: 0;
   margin: auto 0px;
   pointer-events: initial;

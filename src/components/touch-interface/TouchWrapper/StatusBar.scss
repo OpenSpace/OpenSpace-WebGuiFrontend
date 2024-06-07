@@ -6,9 +6,23 @@
   position: absolute;
   top: 0;
   left: 0;
-  color: black;
-  padding-top: 2rem;
+  padding-top: 1rem;
   padding-left: 1rem;
   align-items: center;
   color: white;
+}
+
+.modeIcon {
+  display: flex;
+  font-size: 24px;
+}
+
+.row {
+  display: flex;
+  background-color: #30303a70;
+  justify-items: center;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem;
+  border-radius: 3px;
 }

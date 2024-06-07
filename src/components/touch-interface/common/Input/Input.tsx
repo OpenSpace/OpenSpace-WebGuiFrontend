@@ -104,9 +104,9 @@ const Input: React.FC<InputProps> = ({
         autoComplete='off'
         {...props}
       />
-      <label htmlFor={id.current} className={`${styles.label} ${hasInput && styles.hasinput}`}>
+      {/* <label htmlFor={id.current} className={`${styles.label} ${hasInput && styles.hasinput}`}>
         {label || placeholder}
-      </label>
+      </label> */}
       <div className={styles.buttonsContainer}>
         {children}
         {clearable && (

@@ -238,7 +238,7 @@ function OriginPopup() {
   const active = navigationAction === NavigationActions.Aim ? aim : anchor;
 
   return (
-    <div className={styles.container}>
+    <div>
       <div className={styles.row}>
         <div
           className={styles.NavigationButton}
@@ -276,7 +276,7 @@ function OriginPopup() {
       <FilterList className={styles.list} searchText={searchPlaceholder}>
         <FilterListShowMoreButton id='' toggleShowDataInstead={() => {}} showDataInstead={true} />
 
-        <FilterListFavorites>
+        <FilterListFavorites className={styles.grid}>
           {sortedDefaultList.map((entry) => (
             <FocusEntry
               onSelect={onSelect}
@@ -286,7 +286,7 @@ function OriginPopup() {
             />
           ))}
         </FilterListFavorites>
-        <FilterListData searchString='' ignorePropsFilter={[]}>
+        <FilterListData searchString='' ignorePropsFilter={[]} className={styles.grid}>
           {sortedNodes.map((entry) => (
             <FocusEntry
               onSelect={onSelect}

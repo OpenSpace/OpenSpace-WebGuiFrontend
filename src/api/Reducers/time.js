@@ -23,7 +23,8 @@ const dateStringWithTimeZone = (date, zone = 'Z') => {
     const rest = unsignedDate.substring(unsignedDate.indexOf('-'));
     // Add new filled year together with the rest
     result = `${filledYear}${rest}`;
-  } else { // After year 0
+  } else {
+    // After year 0
     // Ensure year always has 4 digits - fill with 0 in front
     const year = whitespaceRemoved.substring(0, whitespaceRemoved.indexOf('-'));
     const rest = whitespaceRemoved.substring(whitespaceRemoved.indexOf('-'));
@@ -44,7 +45,8 @@ const defaultState = {
   hasPrevStep: undefined,
   nextStep: undefined,
   prevStep: undefined,
-  deltaTimeSteps: undefined
+  deltaTimeSteps: undefined,
+  currentYear: new Date().getFullYear()
 };
 
 const time = (state = defaultState, action = {}) => {
@@ -100,6 +102,12 @@ const time = (state = defaultState, action = {}) => {
         newState.deltaTimeSteps = deltaTimeSteps;
       }
       return newState;
+    }
+    case actionTypes.setYear: {
+      return {
+        ...state,
+        currentYear: action.payload
+      };
     }
     default:
       return state;

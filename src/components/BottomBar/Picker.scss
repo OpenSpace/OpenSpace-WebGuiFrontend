@@ -1,4 +1,4 @@
-@import "../../styles/all";
+@import '../../styles/all';
 
 .Picker {
   align-items: center;
@@ -46,7 +46,7 @@
 }
 
 .Popover {
-  bottom: unquote("calc(100% + #{$popover-arrow-size})");
+  bottom: unquote('calc(100% + #{$popover-arrow-size})');
   left: 50%;
   position: absolute;
   transform: translateX(-50%);
@@ -55,16 +55,16 @@
 }
 
 .DisabledBlue {
-  background-color: darken(rgba($blue, .7), 20%);
+  background-color: darken(rgba($blue, 0.7), 20%);
   &:hover {
-    background-color: darken(rgba($blue, .7), 20%);
+    background-color: darken(rgba($blue, 0.7), 20%);
   }
 }
 
 .DisabledOrange {
-  background-color: rgba($orange, .7);
+  background-color: rgba($orange, 0.7);
   &:hover {
-    background-color: rgba($orange, .7);
+    background-color: rgba($orange, 0.7);
   }
 }
 

@@ -64,6 +64,7 @@
   background-color: #1c1b1e90;
   opacity: 85%;
   outline: none;
+  z-index: 20;
 }
 
 .temp div:focus {
@@ -73,9 +74,10 @@
 .header {
   display: flex;
   justify-content: space-between;
-  padding: 1rem 0.5rem;
-  // border-bottom-width: 1px;
-  // border-bottom-style: solid;
+  padding: 1rem;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: #43434390;
 }
 
 .handle {

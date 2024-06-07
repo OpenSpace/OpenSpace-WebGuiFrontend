@@ -1,0 +1,65 @@
+@import '../../../../styles/all';
+
+.clock {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+.textInput input {
+  width: 100%;
+  text-align: center;
+  line-height: 40px;
+  padding: 0.5em;
+}
+
+.element {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  margin: 0.5rem;
+}
+
+.element button,
+.element input {
+  min-width: 50px;
+  min-height: 40px;
+  font-size: 20px;
+}
+
+.padding {
+  width: $base-padding;
+}
+
+.element button {
+  width: 100%;
+}
+
+.arrows {
+  font-size: 1.5em;
+  padding: 0.5em;
+}
+
+// .element {
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+//   position: relative;
+// }
+
+// .value {
+//   color: #fff;
+//   font-size: 20px;
+//   line-height: 40px;
+//   height: 40px;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+// }
+
+// .value:not(:nth-child(2)) {
+//   font-size: 16px;
+//   opacity: 0.5;
+// }

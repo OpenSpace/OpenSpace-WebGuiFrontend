@@ -68,7 +68,7 @@ function CameraPathPicker({
   return (
     <>
       <div
-        className={styles.grid}
+        className={styles.navbarGrid}
         onClick={onCancelFlight}
         onKeyPress={onCancelFlight}
         role='button'
@@ -89,8 +89,8 @@ function CameraPathPicker({
           </div>
         </div>
       </div>
-      <div className={`${styles.grid} ${styles.blink}`}>
-        <MdFlight className={styles.icon} />
+      <div className={`${styles.navbarGrid} ${styles.blink}`}>
+        <MdFlight className={styles.Icon} />
         <div className={styles.title}>
           <span className={`${styles.name} ${styles.cancelButtonLabel}`}>
             {pathTargetNodeNameCapped}

@@ -9,29 +9,33 @@
 }
 
 .searchBar {
-  margin: 1em;
-  background-color: #30303a40;
-
+  // margin: 1em;
+  background-color: #30303a70;
   font-size: 16px;
-  padding: 8px 16px;
+  padding: 8px;
+  margin-top: 24px;
+  margin-bottom: 16px;
+  border-radius: 3px;
 }
 
 .favoritesButton {
   // background-color: $text-color-blur;
-  background-color: #30303a40;
+  // background-color: #30303a70;
   color: white;
   cursor: pointer;
   font-size: 2em;
 
-  padding: 3px 6px;
   border-radius: 3px;
   display: flex;
   align-items: center;
   pointer-events: initial;
 }
 
-.columns {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 5px;
-}
+// .center {
+// }
+
+// .columns {
+//   display: grid;
+//   grid-template-columns: 1fr 1fr;
+//   gap: 5px;
+// }

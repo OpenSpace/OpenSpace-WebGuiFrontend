@@ -1,0 +1,31 @@
+@import '../../../../styles/all';
+
+.ScrollOverlay {
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+  min-height: 26vh;
+}
+
+.topShadow,
+.bottomShadow {
+  content: ' ';
+  position: absolute;
+  pointer-events: none;
+  animation: $fade-in-animation;
+  height: 2 * $base-padding;
+  width: 100%;
+  z-index: 22;
+}
+
+.topShadow {
+  top: 0;
+  background: linear-gradient(to top, transparent, $ui-background-solid);
+}
+
+.bottomShadow {
+  bottom: 0;
+  background: linear-gradient(to top, $ui-background-solid, transparent);
+  // If this is not here, there is a gap at the bottom for some reason. Not sure why
+  margin-bottom: -2px;
+}

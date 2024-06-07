@@ -11,7 +11,7 @@ import {
   unsubscribeToTime
 } from '../../../../api/Actions';
 
-import Time from '../../../common/Input/Time/Time';
+import Time from './Time';
 import Calendar from '../../../common/Calendar/Calendar';
 import Popover from '../../../common/Popover/Popover';
 import SimulationIncrement from './SimulationIncrement';
@@ -35,6 +35,7 @@ interface State {
 
 const TimePopup: React.FC = () => {
   const [useLock, setUseLock] = React.useState(false);
+  const [showTime, setShowTime] = React.useState(false);
   const [pendingTime, setPendingTime] = React.useState(new Date());
   const [showCalendar, setShowCalendar] = React.useState(false);
   const time = useSelector((state: State) => state.time.time);
@@ -54,12 +55,16 @@ const TimePopup: React.FC = () => {
   }, []);
 
   const toggleLock = () => {
+    setShowTime(!showTime);
     setPendingTime(new Date(time));
     setUseLock(!useLock);
+    setShowCalendar(false);
   };
 
   const toggleCalendar = () => {
     setShowCalendar(!showCalendar);
+    setUseLock(false);
+    setShowTime(false);
   };
 
   const realtime = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -78,21 +83,24 @@ const TimePopup: React.FC = () => {
 
   const interpolateToPendingTime = () => {
     interpolateDate(pendingTime, luaApi);
+    setShowTime(false);
     setUseLock(false);
   };
 
   const setToPendingTime = () => {
     setDate(pendingTime, luaApi);
+    setShowTime(false);
     setUseLock(false);
   };
 
   const resetPendingTime = () => {
     setPendingTime(new Date(time));
+    setShowTime(false);
     setUseLock(false);
   };
 
   const changeDate = (event: {
-    time: string;
+    time: Date;
     interpolate?: boolean;
     relative?: boolean;
     delta?: number;
@@ -131,10 +139,16 @@ const TimePopup: React.FC = () => {
   function lockOptions() {
     return (
       useLock && (
-        <div className={`${Popover.styles.row} ${Popover.styles.content}`}>
-          <div onClick={interpolateToPendingTime}>Interpolate</div>
-          <div onClick={setToPendingTime}>Set</div>
-          <div onClick={resetPendingTime}>Cancel</div>
+        <div className={`${Popover.styles.row} `}>
+          <div className={styles.button} onClick={interpolateToPendingTime}>
+            Interpolate
+          </div>
+          <div className={styles.button} onClick={setToPendingTime}>
+            Set
+          </div>
+          <div className={styles.button} onClick={resetPendingTime}>
+            Cancel
+          </div>
         </div>
       )
     );
@@ -148,13 +162,13 @@ const TimePopup: React.FC = () => {
         </div>
         <span>Timeline Control</span>
       </div>
-      <div
-        className={Popover.styles.row}
-        style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}
-      >
-        <div className={styles.button} style={{ marginTop: 20 }}>
+      {showTime && <Time time={displayedTime} onChange={changeDate} />}
+      {calendar()}
+      {lockOptions()}
+      <div className={Popover.styles.row}>
+        <div className={styles.button}>
           <div
-            className={`button-style ${useLock ? 'locked' : 'unlocked'}`} // Change class names as necessary
+            className={`button-style ${useLock ? 'locked' : 'unlocked'}`}
             onClick={(evt) => {
               toggleLock();
               evt.stopPropagation();
@@ -165,8 +179,8 @@ const TimePopup: React.FC = () => {
             <span>Time Lock</span>
           </div>
         </div>
-        {displayedTime && <Time time={displayedTime} onChange={changeDate} />}
-        <div className={styles.button} style={{ marginTop: 20 }}>
+
+        <div className={styles.button}>
           <div
             className={`button-style ${showCalendar ? 'transparent' : ''}`}
             onClick={() => toggleCalendar()}
@@ -178,14 +192,11 @@ const TimePopup: React.FC = () => {
           </div>
         </div>
       </div>
-      {calendar()}
-      {lockOptions()}
 
       <div className={styles.title}>Simulation speed</div>
       <div className={Popover.styles.content}>
         <SimulationIncrement />
       </div>
-      {/* <hr className={Popover.styles.delimiter} /> */}
       <div className={`${Popover.styles.row} ${Popover.styles.content}`}>
         <div className={styles.button} onClick={realtime} style={{ cursor: 'pointer' }}>
           Realtime

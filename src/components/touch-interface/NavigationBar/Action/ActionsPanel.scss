@@ -3,20 +3,10 @@
 
 @import '../../../common/Popover/Popover.scss';
 
-.Grid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  align-content: flex-start;
-
-  &:before,
-  &:after {
-    display: none;
-  }
-
-  > * {
-    flex: 1 0 25%;
-  }
+.gridContainer {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
 }
 
 .scroller {
@@ -30,8 +20,10 @@
   width: fit-content;
   padding-left: 10px !important;
   padding-right: 12px !important;
-  padding-bottom: 4px;
+
   font-size: 1em;
+  display: flex;
+  align-items: center;
 }
 
 .windowContainer {
@@ -53,7 +45,7 @@
 }
 
 .folderButton {
-  background-color: #30303a40;
+  background-color: #30303a70;
 }
 
 .navPathTitle {
@@ -64,6 +56,7 @@
 
 .navPathRow {
   line-height: 1.5em;
+  display: flex;
 }
 
 .actionsPanel {

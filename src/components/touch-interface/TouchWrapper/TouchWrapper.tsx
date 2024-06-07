@@ -7,6 +7,7 @@ import { connectFlightController, sendFlightControl, toggleTouchMode } from '../
 import { InputState, Payload } from '../TouchFrame/touchTypes';
 import useGestures from '../hooks/useGesture';
 import toast from 'react-hot-toast';
+import { IoCameraReverse, IoPlanet } from 'react-icons/io5';
 
 interface TouchWrapperProps {
   children: React.ReactNode;
@@ -103,8 +104,8 @@ export default function TouchWrapper({ children }: TouchWrapperProps) {
     const mode = touchMode === 'orbit' ? 'translate' : 'orbit';
     dispatch(toggleTouchMode(mode));
     toast(`Mode switched to ${mode}`, {
-      icon: mode === 'orbit' ? '🌍' : '📷',
-      position: 'top-left',
+      icon: mode === 'orbit' ? <IoPlanet /> : <IoCameraReverse />,
+      position: 'top-center',
       duration: 1000,
       style: {
         borderRadius: '2px',

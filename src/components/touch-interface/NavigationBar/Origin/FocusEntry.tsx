@@ -116,31 +116,29 @@ function FocusEntry({
       }}
       tabIndex={0}
     >
-      <div className={styles.fullButtonContainer}>
-        <div className={styles.buttonTitleContainer}>
-          <div className={styles.focusButton} onClick={select} title='Focus'>
-            <RiFocus3Line className={styles.buttonIcon} />
-          </div>
-          <span className={styles.titleContainer}>{name || identifier}</span>
+      <div className={styles.buttonTitleContainer}>
+        <div className={styles.focusButton} onClick={select} title='Focus'>
+          <RiFocus3Line className={styles.buttonIcon} />
         </div>
+        <span className={styles.titleContainer}>{name || identifier}</span>
+      </div>
 
-        <div>
-          {showNavigationButtons && (
-            <div className={styles.buttonContainer}>
-              <div className={styles.flyToButton} onClick={zoomToFocus} title='Zoom to'>
-                <MdCenterFocusStrong className={styles.buttonIcon} />
-              </div>
-
-              <div className={styles.flyToButton} onClick={flyTo} title='Fly to'>
-                <MdFlight className={styles.buttonIcon} />
-              </div>
-
-              <div className={styles.flyToButton} onClick={fadeTo} title='Fade to'>
-                <MdFlashOn className={styles.buttonIcon} />
-              </div>
+      <div>
+        {showNavigationButtons && (
+          <div className={styles.buttonContainer}>
+            <div className={styles.flyToButton} onClick={zoomToFocus} title='Zoom to'>
+              <MdCenterFocusStrong className={styles.buttonIcon} />
             </div>
-          )}
-        </div>
+
+            <div className={styles.flyToButton} onClick={flyTo} title='Fly to'>
+              <MdFlight className={styles.buttonIcon} />
+            </div>
+
+            <div className={styles.flyToButton} onClick={fadeTo} title='Fade to'>
+              <MdFlashOn className={styles.buttonIcon} />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

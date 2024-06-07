@@ -37,6 +37,30 @@ export function timeLabel(time?: Date) {
   return time && time.toUTCString();
 }
 
+// export function speedLabel(targetDeltaTime: number, isPaused: boolean) {
+//   let increment = Math.abs(targetDeltaTime);
+//   const isNegative = Math.sign(targetDeltaTime) === -1;
+//   const sign = isNegative ? '-' : '';
+//   const units = ['second', 'minute', 'hour', 'day', 'month', 'year'];
+//   const conversionFactors = [60, 60, 24, 30, 12];
+
+//   if (increment === 1 && !isNegative) {
+//     return `Realtime${isPaused ? ' (Paused)' : ''}`;
+//   }
+
+//   let unitIndex = 0;
+//   while (unitIndex < conversionFactors.length && increment >= conversionFactors[unitIndex]) {
+//     increment /= conversionFactors[unitIndex];
+//     unitIndex++;
+//   }
+
+//   increment = Math.round(increment);
+//   const unit = units[unitIndex];
+//   const pluralSuffix = increment !== 1 ? 's' : '';
+
+//   return `${sign + increment} ${unit}${pluralSuffix} / second${isPaused ? ' (Paused)' : ''}`;
+// }
+
 export function speedLabel(targetDeltaTime: number, isPaused: boolean) {
   let increment = Math.abs(targetDeltaTime);
   const isNegative = Math.sign(targetDeltaTime) === -1;

@@ -127,7 +127,9 @@ const actionTypes = {
 
   // actions types for touch modes
   orbit: 'ORBIT',
-  translate: 'TRANSLATE'
+  translate: 'TRANSLATE',
+
+  setYear: 'SET_YEAR'
 };
 
 export default actionTypes;

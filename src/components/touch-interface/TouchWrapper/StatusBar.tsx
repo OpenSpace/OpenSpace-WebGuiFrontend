@@ -1,6 +1,8 @@
 import React from 'react';
 import styles from './StatusBar.scss';
 import { useSelector } from 'react-redux';
+import { LuOrbit } from 'react-icons/lu';
+import { IoCameraReverse, IoPlanet } from 'react-icons/io5';
 
 export default function StatusBar() {
   const TouchModeStatus = () => {
@@ -8,18 +10,36 @@ export default function StatusBar() {
 
     switch (touchMode) {
       case 'orbit':
-        return <div>🌎</div>;
+        return (
+          <div className={styles.modeIcon}>
+            <IoPlanet />
+          </div>
+        );
       case 'translate':
-        return <div>📷</div>;
+        return (
+          <div className={styles.modeIcon}>
+            <IoCameraReverse />
+          </div>
+        );
       default:
-        return <div>🌍</div>;
+        return (
+          <div className={styles.modeIcon}>
+            {' '}
+            <IoPlanet />
+          </div>
+        );
     }
   };
 
   return (
     <div className={styles.container}>
-      {TouchModeStatus()}
-      <div>1000m</div>
+      <div className={styles.row}>
+        {TouchModeStatus()}
+
+        <div>1000m</div>
+        <div>Test</div>
+        <div>Test</div>
+      </div>
     </div>
   );
 }
