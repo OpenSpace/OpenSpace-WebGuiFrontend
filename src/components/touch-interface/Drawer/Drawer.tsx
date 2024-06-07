@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import styles from './Drawer.scss';
 import Button from '../common/Button/Button';
-import { GrClose } from 'react-icons/gr';
+import { IoClose } from 'react-icons/io5';
 
 export interface DrawerProps {
   isOpen?: boolean;
@@ -57,15 +57,16 @@ export const Drawer: React.FC<DrawerProps> = ({
             <div className={styles.header}>
               <h1 className={styles.title}>{title}</h1>
               <button type='button' className={styles.btn} onClick={handleCloseDrawer}>
-                {/* <GrClose size={20} /> */}
-                Close
+                <IoClose size={28} />
               </button>
             </div>
             <div className={styles.body}>{body}</div>
-            <div className={styles.footer}>
-              <div className={styles.innerFooter}></div>
-              {footer}
-            </div>
+            {footer && (
+              <div className={styles.footer}>
+                <div className={styles.innerFooter}></div>
+                {footer}
+              </div>
+            )}
           </div>
         </div>
       </div>

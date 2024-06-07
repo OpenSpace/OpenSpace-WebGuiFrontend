@@ -37,6 +37,7 @@ import Time from 'src/components/common/Input/Time/Time';
 // import{ NavigationDrawer} from '../components/touch-interface/Drawer/NavigationMenu/NavigationDrawer';
 import StatusBar from '../components/touch-interface/TouchWrapper/StatusBar';
 import FrictionBar from '../components/touch-interface/FrictionBar/FrictionBar';
+import { SceneDrawer } from '../components/touch-interface/Drawer/SceneDrawer/SceneDrawer';
 
 interface CloudGuiProps {
   isInBrowser: boolean;
@@ -133,6 +134,7 @@ function CloudGui({ isInBrowser = false }: CloudGuiProps) {
             <TourPopup isVisible={showTutorial} setVisibility={(show) => setShowTutorial(show)} />
           </main>
         </TouchWrapper>
+        <SceneDrawer />
         <SystemDrawer />
         <SceneDrawer />
         <ActionDrawer />

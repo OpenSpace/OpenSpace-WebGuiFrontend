@@ -11,7 +11,7 @@
 // webpack dev server, see webpack.config.js.
 
 const defaults = {
-  wsAddress: 'localhost',
+  wsAddress: '10.56.53.178',
   wsPort: 4682,
   developmentMode: true
 };

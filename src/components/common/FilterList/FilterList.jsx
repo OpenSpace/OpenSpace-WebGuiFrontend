@@ -151,7 +151,6 @@ function FilterList({
   searchAutoFocus,
   children
 }) {
-  const [searchString, setSearchString] = React.useState('');
   const [showDataInstead, setShowDataInstead] = React.useState(false);
   const isSearching = searchString !== '';
 

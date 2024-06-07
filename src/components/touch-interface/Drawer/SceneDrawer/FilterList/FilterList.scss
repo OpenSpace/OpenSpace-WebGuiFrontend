@@ -1,4 +1,4 @@
-@import '../../../styles/all.scss';
+@import '../../../../../styles/all.scss';
 
 .filterList {
   height: 100%;
@@ -24,4 +24,15 @@
   &:hover {
     background-color: $text-color-focus;
   }
+}
+
+.moreButton {
+  background: #fff;
+  padding: 0.5rem;
+  border: none;
+  cursor: pointer;
+  color: #000;
+  width: fit-content;
+  margin: 1.5rem;
+  font-size: medium;
 }

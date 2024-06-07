@@ -18,6 +18,7 @@
     "strictNullChecks": true,
     "allowSyntheticDefaultImports": true
   },
+
   "exclude": [
     "node_modules",
     "build",
@@ -26,6 +27,12 @@
     "webpack",
     "jest",
     "src/setupTests.ts",
-    "environment.js"
+    "environment.js",
+    "src/setupTests.ts",
+    "dist/environment.js",
+    "dist/static/bundle.js",
+    "prettier.config.js",
+    "webpack.config.js",
+    "webpack.config.production.js"
   ]
 }
