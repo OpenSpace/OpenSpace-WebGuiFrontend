@@ -90,10 +90,6 @@ export const FilterList: React.FC<FilterListProps> = ({
           ))}
         </div>
       )}
-
-      {/* <div className={styles.moreButton}>
-        <button onClick={handleToggleShowEntries}>{showEntries ? 'Minimize' : 'Show More'}</button>
-      </div> */}
     </>
   );
 };

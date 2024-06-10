@@ -29,15 +29,14 @@ import '../styles/base.scss';
 import styles from './CloudGui.scss';
 import NavigationBar from '../components/touch-interface/NavigationBar/NavigationBar';
 import { SystemDrawer } from '../components/touch-interface/Drawer/SystemMenu/SystemDrawer';
-import { SceneDrawer } from '../components/touch-interface/Drawer/SceneMenu/SceneDrawer';
 import { NavigationDrawer } from '../components/touch-interface/Drawer/NavigationMenu/NavigationDrawer';
 import { ActionDrawer } from '../components/touch-interface/Drawer/ActionMenu/ActionDrawer';
 import { TimeDrawer } from '../components/touch-interface/Drawer/TimeMenu/TimeDrawer';
+import { SceneDrawer } from '../components/touch-interface/Drawer/SceneDrawer/SceneDrawer';
 import Time from 'src/components/common/Input/Time/Time';
 // import{ NavigationDrawer} from '../components/touch-interface/Drawer/NavigationMenu/NavigationDrawer';
 import StatusBar from '../components/touch-interface/TouchWrapper/StatusBar';
 import FrictionBar from '../components/touch-interface/FrictionBar/FrictionBar';
-import { SceneDrawer } from '../components/touch-interface/Drawer/SceneDrawer/SceneDrawer';
 
 interface CloudGuiProps {
   isInBrowser: boolean;
