@@ -22,14 +22,6 @@ export const TimeDrawer = () => {
     </div>
   );
 
-  const footerContent = (
-    <div>
-      {/* {environment.developmentMode && (
-        <span className={styles.devModeNotifier}>GUI running in dev mode</span>
-      )} */}
-    </div>
-  );
-
   return (
     <Drawer
       disabled={isLoading}
@@ -39,7 +31,6 @@ export const TimeDrawer = () => {
       onClose={closeTimeDrawer}
       onSubmit={() => {}}
       body={bodyContent}
-      footer={footerContent}
     />
   );
 };

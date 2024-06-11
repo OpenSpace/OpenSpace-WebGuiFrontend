@@ -1,34 +1,23 @@
 @import '../../../styles/all.scss';
 
-// .container {
-//   display: flex;
-//   position: fixed;
-//   justify-content: center;
-//   align-items: center;
-//   // width: 100vw;
-//   // height: 100vh;
-//   // z-index: 60;
-//   // outline: none;
-//   // background-color: rgba(30, 30, 38, 0.7);
-// }
-
 .container div:focus {
   outline: none;
 }
 
-// TODO: Make width responsive and not static
 .window {
+  background: none;
   position: absolute;
   max-width: 100vw;
   max-height: 60vh;
-  width: 60vw;
+  height: auto;
+  width: $navigation-bar-width;
   bottom: 96px;
   left: 16px;
 }
 
 .content {
   height: 100%;
-  transform: translateY(96px);
+  transform: translateY(16px);
   transition-duration: 300ms;
 }
 
@@ -89,7 +78,7 @@
 
 .body {
   padding: 1.5rem 0.5rem;
-  max-height: 30vh;
+  max-height: 50vh;
   overflow-y: auto;
 }
 

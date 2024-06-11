@@ -33,13 +33,7 @@ export default function StatusBar() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.row}>
-        {TouchModeStatus()}
-
-        <div>1000m</div>
-        <div>Test</div>
-        <div>Test</div>
-      </div>
+      <div className={styles.row}>{TouchModeStatus()}</div>
     </div>
   );
 }

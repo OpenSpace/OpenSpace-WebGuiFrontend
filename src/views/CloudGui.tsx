@@ -135,7 +135,6 @@ function CloudGui({ isInBrowser = false }: CloudGuiProps) {
         </TouchWrapper>
         <SceneDrawer />
         <SystemDrawer />
-        <SceneDrawer />
         <ActionDrawer />
         <NavigationDrawer />
         <TimeDrawer />

@@ -53,7 +53,6 @@ export const Drawer: React.FC<DrawerProps> = ({
           style={showDrawer ? { transform: 'translateY(16px)', opacity: 1 } : { opacity: 0 }}
         >
           <div className={styles.temp}>
-            {/* <div className={styles.handle} /> */}
             <div className={styles.header}>
               <h1 className={styles.title}>{title}</h1>
               <button type='button' className={styles.btn} onClick={handleCloseDrawer}>

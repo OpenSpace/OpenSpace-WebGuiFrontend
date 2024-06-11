@@ -23,14 +23,6 @@ export const NavigationDrawer = () => {
     </div>
   );
 
-  const footerContent = (
-    <div>
-      {/* {environment.developmentMode && (
-        <span className={styles.devModeNotifier}>GUI running in dev mode</span>
-      )} */}
-    </div>
-  );
-
   return (
     <Drawer
       disabled={isLoading}
@@ -40,7 +32,6 @@ export const NavigationDrawer = () => {
       onClose={closeNavigationDrawer}
       onSubmit={() => {}}
       body={bodyContent}
-      footer={footerContent}
     />
   );
 };

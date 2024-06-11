@@ -1,4 +1,4 @@
-@import "../../../../styles/all";
+@import '../../../../styles/all';
 
 // rename some vars to make this less cluttered than it already is
 $label-size: $input-label-size;
@@ -40,9 +40,9 @@ $padding-loading: $padding-top $padding-horizontal $padding-bottom-loading;
 .input:hover {
   background: $ui-background-active;
 
-   ~ .label {
-     color: $text-color-focus;
-   }
+  ~ .label {
+    color: $text-color-focus;
+  }
 }
 
 .input:focus {
@@ -118,7 +118,6 @@ $padding-loading: $padding-top $padding-horizontal $padding-bottom-loading;
   display: inline-block;
 }
 
-
 @keyframes label-animation {
   0% {
     opacity: 0;
@@ -138,5 +137,28 @@ $padding-loading: $padding-top $padding-horizontal $padding-bottom-loading;
   }
   100% {
     border-bottom: $loading-border-width solid $blue;
+  }
+}
+
+// Media query for tablets and smaller devices
+@media (max-width: 1400px) {
+  .input {
+    font-size: $input-font-size-mobile;
+    height: $input-total-height-mobile;
+    padding: calc($padding-vertical / 2) $padding-horizontal;
+    margin: 0.5rem 0rem;
+  }
+
+  .label {
+    font-size: $input-label-size-mobile;
+    top: calc($label-margin / 2);
+  }
+
+  .buttonsContainer {
+    padding-right: 8px;
+  }
+
+  .clearbutton {
+    font-size: 18px;
   }
 }

@@ -1,13 +1,10 @@
-import React, { ChangeEvent } from 'react';
-import ScrollOverlay from '../../../../common/ScrollOverlay/ScrollOverlay';
+import React from 'react';
 import { Entry, Favorite } from '../SceneDrawer';
 import Group from '../../../../Sidebar/Group';
 import ContextSection from '../../../../Sidebar/ContextSection';
 import PropertyOwner from '../../../../Sidebar/Properties/PropertyOwner';
 import Input from '../../../../common/Input/Input/Input';
 import { FilterButtons } from '../FilterButtons';
-
-import styles from './FilterList.scss';
 
 interface FilterListProps {
   matcher: any;
@@ -35,7 +32,6 @@ export const FilterList: React.FC<FilterListProps> = ({
 }) => {
   const [filter, setFilter] = React.useState('');
   const [searchString, setSearchString] = React.useState('');
-  const [showEntries, setShowEntries] = React.useState(false);
 
   const filteredEntries = entries.filter((entry) => {
     let filteredProps = { ...entry };
@@ -47,19 +43,14 @@ export const FilterList: React.FC<FilterListProps> = ({
     return matchesSearchString && matchesFilter;
   });
 
-  const handleToggleShowEntries = () => {
-    setShowEntries(!showEntries);
-  };
-
   const filtersArray = ['Label', 'Trail', 'Glare'];
 
   // Determine whether to show favorites or entries
-  const showFavorites = searchString === '' && filter === '' && !showEntries;
+  const showFavorites = searchString === '' && filter === '';
 
   return (
     <>
       <FilterButtons filterStrings={filtersArray} setFilter={setFilter} filter={filter} />
-      {/* <ScrollOverlay> */}
       <Input
         value={searchString}
         placeholder={'Search nodes'}
@@ -74,7 +65,7 @@ export const FilterList: React.FC<FilterListProps> = ({
         wide={undefined}
         step={undefined}
       />
-      {showFavorites && !showEntries && (
+      {showFavorites && (
         <div>
           <ContextSection expansionIdentifier='context' />
           {favorites.map((favorite) => (
@@ -83,7 +74,7 @@ export const FilterList: React.FC<FilterListProps> = ({
         </div>
       )}
 
-      {(!showFavorites || showEntries) && (
+      {!showFavorites && (
         <div>
           {filteredEntries.map((entry) => (
             <PropertyOwner {...entry} key={entry.key} />

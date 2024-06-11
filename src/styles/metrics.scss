@@ -33,3 +33,10 @@ $input-padding-horizontal: 7px;
 $input-padding-vertical: $base-padding * 2;
 
 $input-total-height: $input-padding-vertical + $input-font-size;
+
+// Tablet and smaller devices
+$input-font-size-mobile: 16px;
+$input-total-height-mobile: 54px;
+$input-label-size-mobile: 12px;
+
+$navigation-bar-width: 70vw;
