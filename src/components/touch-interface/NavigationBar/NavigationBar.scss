@@ -18,6 +18,7 @@
 }
 
 .row {
+  overflow-x: hidden;
   background-color: #30303a70; // Last two digits are the alpha value
   display: flex;
   height: 80px;

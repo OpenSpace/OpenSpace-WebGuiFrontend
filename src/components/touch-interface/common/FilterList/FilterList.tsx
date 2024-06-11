@@ -160,7 +160,7 @@ function FilterList({
   searchText,
   height,
   className = '',
-  searchAutoFocus = true,
+  searchAutoFocus = false,
   children
 }: FilterListProps) {
   const [searchString, setSearchString] = React.useState('');
