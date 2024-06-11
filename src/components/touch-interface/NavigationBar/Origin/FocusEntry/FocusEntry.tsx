@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 
 // eslint-disable-next-line import/no-webpack-loader-syntax
 
-import { useContextRefs } from '../../../GettingStartedTour/GettingStartedContext';
+import { useContextRefs } from '../../../../GettingStartedTour/GettingStartedContext';
 
 import styles from './FocusEntry.scss';
 

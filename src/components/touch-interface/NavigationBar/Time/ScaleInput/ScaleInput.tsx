@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Input from '../../common/Input/Input';
+import Input from '../../../common/Input/Input';
 
 import styles from './ScaleInput.scss';
 

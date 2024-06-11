@@ -10,17 +10,33 @@ $small-icon-size: 16px;
 
 .NavigationButton {
   display: flex;
+  padding: 1em;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   height: 100px;
+  color: #ffffff40; // Set default text color
+  border-radius: 0 5px 5px 0;
+  flex: 1;
+
+  &.active {
+    color: #ffffff;
+  }
+}
+
+.row {
+  display: flex;
+  justify-content: space-around;
+  background-color: #30303a70;
+  margin: 10px 0px;
+  border-radius: 3px;
 }
 
 .grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 5px;
+  gap: 5px 15px;
 }
 
 .navbarGrid {
@@ -29,7 +45,7 @@ $small-icon-size: 16px;
 
 .TabIcon {
   display: flex;
-  font-size: 2em;
+  font-size: 1.8em;
   align-items: center;
   justify-content: center;
   // border: orange;
@@ -37,17 +53,11 @@ $small-icon-size: 16px;
 }
 
 .TabText {
-  font-size: large;
+  font-size: medium;
   padding-top: 0.3em;
   // border: orange;
   // border-style: solid;
 }
-
-// .iconImage {
-//   animation: $appear-animation;
-//   height: $icon-size - 8px;
-//   margin-right: calc($base-padding / 2);
-// }
 
 .list :global(.scroll-content) {
   height: 100%;
@@ -104,15 +114,6 @@ $small-icon-size: 16px;
   100% {
     opacity: 0.3;
   }
-}
-
-.row {
-  display: flex;
-  justify-content: space-around;
-  background-color: #30303a70;
-  margin: 10px 0px;
-  padding: 10px;
-  border-radius: 3px;
 }
 
 //Component styles

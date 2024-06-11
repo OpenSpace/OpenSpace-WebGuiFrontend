@@ -48,12 +48,15 @@ function ActionsPanel({
 }: ActionsPanelProps) {
   function addNavPath(e: React.MouseEvent<HTMLButtonElement>) {
     let navString = navigationPath;
-    if (navigationPath === '/') {
-      navString += e.currentTarget.getAttribute('foldername');
-    } else {
-      navString += `/${e.currentTarget.getAttribute('foldername')}`;
+    const foldername = e.currentTarget.getAttribute('foldername');
+    if (foldername) {
+      if (navigationPath === '/') {
+        navString += foldername;
+      } else {
+        navString += `/${foldername}`;
+      }
+      actionPath(navString);
     }
-    actionPath(navString);
   }
 
   function goBack() {
@@ -174,12 +177,13 @@ interface ActionsState {
 }
 
 const mapSubStateToProps = ({ actions }: { actions: ActionsState }) => {
-  const actionsMapped = { '/': { actions: [], children: {} } };
+  const actionsMapped: ActionLevel = { actions: [], children: {} };
   if (!actions.isInitialized) {
     return {
-      actions: actionsMapped,
+      actionLevel: actionsMapped,
       navigationPath: '/',
-      displayedNavigationPath: '/'
+      displayedNavigationPath: '/',
+      allActions: []
     };
   }
 
@@ -200,7 +204,7 @@ const mapSubStateToProps = ({ actions }: { actions: ActionsState }) => {
     // if the path is just a slash
     splits = splits.filter((s) => s !== '');
 
-    let parent = actionsMapped['/'];
+    let parent = actionsMapped;
 
     // Add to top level actions (no gui path)
     if (splits.length === 0) {
@@ -210,25 +214,29 @@ const mapSubStateToProps = ({ actions }: { actions: ActionsState }) => {
     // Add actions of other levels
     while (splits.length > 0) {
       const index = splits.shift();
-      if (parent.children[index] === undefined) {
-        parent.children[index] = { actions: [], children: {} };
-      }
-      if (splits.length === 0) {
-        parent.children[index].actions.push(action);
-      } else {
-        parent = parent.children[index];
+      if (index) {
+        if (!parent.children[index]) {
+          parent.children[index] = { actions: [], children: {} };
+        }
+        if (splits.length === 0) {
+          parent.children[index].actions.push(action);
+        } else {
+          parent = parent.children[index];
+        }
       }
     }
   }
 
   const navPath = actions.navigationPath;
-  let actionsForPath = actionsMapped['/'];
+  let actionsForPath = actionsMapped;
   if (navPath.length > 1) {
     const splits = navPath.split('/');
     splits.shift();
     while (splits.length > 0) {
       const index = splits.shift();
-      actionsForPath = actionsForPath.children[index];
+      if (index) {
+        actionsForPath = actionsForPath.children[index];
+      }
     }
   }
 

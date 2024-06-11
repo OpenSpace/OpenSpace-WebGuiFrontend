@@ -1,4 +1,4 @@
-@import '../../../../styles/all';
+@import '../../../../../styles/all';
 
 $icon-size: 18px;
 
@@ -6,8 +6,6 @@ $icon-size: 18px;
   color: #ffffff40;
   margin-top: 0.5em;
   border-radius: 0 5px 5px 0;
-  border: red;
-  border-style: solid;
 
   &.active {
     // background: $ui-background-hover;

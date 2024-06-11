@@ -9,14 +9,15 @@ import {
   unsubscribeToEngineMode,
   unsubscribeToSessionRecording,
   unsubscribeToTime
-} from '../../../../api/Actions';
+} from '../../../../../api/Actions';
 
-import Time from './Time';
-import Calendar from '../../../common/Calendar/Calendar';
-import Popover from '../../../common/Popover/Popover';
-import SimulationIncrement from './SimulationIncrement';
+import Time from '../Time/Time';
+import Calendar from '../../../../common/Calendar/Calendar';
+import Popover from '../../../../common/Popover/Popover';
+import SimulationIncrement from '../SimulationIncrement/SimulationIncrement';
 import styles from './TimePopup.scss';
-import { setDate, setDateRelative, interpolateDate, interpolateDateRelative } from './TimeUtils';
+import { setDate, setDateRelative, interpolateDate, interpolateDateRelative } from '../TimeUtils';
+import { GrClose } from 'react-icons/gr';
 
 interface State {
   engineMode: {
@@ -156,40 +157,36 @@ const TimePopup: React.FC = () => {
 
   return (
     <>
-      <div className={styles.button}>
+      {/* <div className={styles.button}>
         <div className={styles.iconContainer}>
           <PiHourglassBold />
         </div>
         <span>Timeline Control</span>
-      </div>
+      </div> */}
       {showTime && <Time time={displayedTime} onChange={changeDate} />}
       {calendar()}
       {lockOptions()}
       <div className={Popover.styles.row}>
-        <div className={styles.button}>
-          <div
-            className={`button-style ${useLock ? 'locked' : 'unlocked'}`}
-            onClick={(evt) => {
-              toggleLock();
-              evt.stopPropagation();
-            }}
-            style={{ cursor: 'pointer' }}
-          >
-            {useLock ? <MdLock /> : <MdLockOpen />}
-            <span>Time Lock</span>
-          </div>
+        <div
+          className={`${styles.button} button-style ${useLock ? 'locked' : 'unlocked'}`}
+          onClick={(evt) => {
+            toggleLock();
+            evt.stopPropagation();
+          }}
+          style={{ cursor: 'pointer' }}
+        >
+          {useLock ? <MdLock /> : <MdLockOpen />}
+          <span>Time Lock</span>
         </div>
 
-        <div className={styles.button}>
-          <div
-            className={`button-style ${showCalendar ? 'transparent' : ''}`}
-            onClick={() => toggleCalendar()}
-            title='Toggle calendar'
-            style={{ cursor: 'pointer' }}
-          >
-            <MdViewDay />
-            <span>Calendar</span>
-          </div>
+        <div
+          className={`${styles.button} button-style ${showCalendar ? 'transparent' : ''}`}
+          onClick={() => toggleCalendar()}
+          title='Toggle calendar'
+          style={{ cursor: 'pointer' }}
+        >
+          <MdViewDay />
+          <span>Calendar</span>
         </div>
       </div>
 

@@ -1,29 +1,13 @@
 import React from 'react';
 import { MdExpandLess, MdExpandMore } from 'react-icons/md';
-import PropTypes from 'prop-types';
 import { useSwipeable } from 'react-swipeable';
 
-import { useContextRefs } from '../../../GettingStartedTour/GettingStartedContext';
+import { useContextRefs } from '../../../../GettingStartedTour/GettingStartedContext';
 // import Button from '../../../common/Input/Button/Button';
 // import InlineInput from '../../../common/Input/InlineInput/InlineInput';
-import InlineInput from './InlineInput';
+import InlineInput from '../InlineInput/InlineInput';
 
 import styles from './Time.scss';
-
-const Elements = {
-  FullYear: 'fullYear',
-  Month: 'month',
-  Date: 'date',
-  Hours: 'hours',
-  Minutes: 'minutes',
-  Seconds: 'seconds',
-  Milliseconds: 'milliseconds'
-};
-Elements.Time = [Elements.Hours, Elements.Minutes, Elements.Seconds];
-Elements.PreciseTime = [Elements.Hours, Elements.Minutes, Elements.Seconds, Elements.Milliseconds];
-Elements.FullDate = [Elements.FullYear, Elements.Month, Elements.Date];
-Elements.DateAndTime = Elements.FullDate.concat(null).concat(Elements.Time);
-Object.freeze(Elements);
 
 const Months =
   'January February March April May June July August September October November December'.split(
@@ -56,23 +40,47 @@ function zeroPad(number: number): string {
   return number < 10 ? `0${number}` : number.toString();
 }
 
+type ElementTypes =
+  | 'FullYear'
+  | 'Month'
+  | 'Date'
+  | 'Hours'
+  | 'Minutes'
+  | 'Seconds'
+  | 'Milliseconds';
+
+const Elements: Record<ElementTypes, ElementTypes> = {
+  FullYear: 'FullYear',
+  Month: 'Month',
+  Date: 'Date',
+  Hours: 'Hours',
+  Minutes: 'Minutes',
+  Seconds: 'Seconds',
+  Milliseconds: 'Milliseconds'
+};
+
+const TimeElements = [Elements.Hours, Elements.Minutes, Elements.Seconds] as const;
+const FullDateElements = [Elements.FullYear, Elements.Month, Elements.Date] as const;
+const DateAndTimeElements = [...FullDateElements, null, ...TimeElements] as const;
+
 interface TimeProps {
-  elements: Array<keyof typeof Elements>;
+  elements?: readonly (ElementTypes | null)[];
   onChange?: (data: { time: Date; interpolate: boolean; delta: number; relative: boolean }) => void;
   time: Date;
 }
 
-function Time({ elements, onChange, time }: TimeProps) {
+function Time({ elements = DateAndTimeElements, onChange, time }: TimeProps) {
   const hasCallback = onChange !== undefined;
 
-  function shouldInclude(what: keyof typeof Elements): boolean {
+  function shouldInclude(what: ElementTypes): boolean {
     return elements.includes(what);
   }
 
-  function onClick(e: React.MouseEvent, what: keyof typeof Elements, change: number): void {
+  function onClick(e: React.MouseEvent, what: ElementTypes, change: number): void {
     const getterFunc = `getUTC${what}`;
     const setterFunc = `setUTC${what}`;
     const newTime = new Date(time);
+    // @ts-ignore
     newTime[setterFunc](newTime[getterFunc]() + change);
     const shift = e.getModifierState('Shift');
     if (onChange) {
@@ -85,7 +93,7 @@ function Time({ elements, onChange, time }: TimeProps) {
     }
   }
 
-  function onInput(what: keyof typeof Elements) {
+  function onInput(what: ElementTypes) {
     const setterFunc = `setUTC${what}`;
     const interpretFunc = what === 'Month' ? findIndexForMonth : parseFloat;
 
@@ -96,6 +104,7 @@ function Time({ elements, onChange, time }: TimeProps) {
       if (Number.isNaN(param)) {
         return;
       }
+      // @ts-ignore
       newTime[setterFunc](param);
 
       if (onChange) {
@@ -116,15 +125,26 @@ function Time({ elements, onChange, time }: TimeProps) {
    * @param after
    * @returns {XML}
    */
-  function wrap(inner: React.ReactNode, what: keyof typeof Elements, after = ''): React.ReactNode {
-    // const currentValue = typeof inner === 'string' ? parseInt(inner, 10) : inner;
-    // const prevValue = currentValue - 1; // Calculate previous value
-    // const nextValue = currentValue + 1; // Calculate next value
-
+  function wrap(inner: React.ReactNode, what: ElementTypes, after = ''): React.ReactNode {
     const swipeHandlers = useSwipeable({
-      onSwipedUp: () => onClick(new MouseEvent('click'), what, -1),
-      onSwipedDown: () => onClick(new MouseEvent('click'), what, 1),
-      preventDefaultTouchmoveEvent: true,
+      onSwipedUp: () =>
+        onClick(
+          new MouseEvent('click', {
+            bubbles: true,
+            cancelable: true
+          }) as unknown as React.MouseEvent,
+          what,
+          -1
+        ),
+      onSwipedDown: () =>
+        onClick(
+          new MouseEvent('click', {
+            bubbles: true,
+            cancelable: true
+          }) as unknown as React.MouseEvent,
+          what,
+          1
+        ),
       trackMouse: true // This enables swiping with a mouse for testing
     });
 
@@ -168,7 +188,7 @@ function Time({ elements, onChange, time }: TimeProps) {
 
   function fullYear() {
     const mm = shouldInclude(Elements.Month);
-    return wrap(`${zeroPad(time.getUTCFullYear())}`, 'FullYear', mm && ':');
+    return wrap(`${zeroPad(time.getUTCFullYear())}`, 'FullYear', mm ? ':' : '');
   }
 
   function month() {
@@ -180,35 +200,35 @@ function Time({ elements, onChange, time }: TimeProps) {
     }
     mm = mm.substring(0, 3);
 
-    return wrap(mm, 'Month', dd && ':');
+    return wrap(mm, 'Month', dd ? ':' : '');
   }
 
   function date() {
     const hh = shouldInclude(Elements.Hours);
     const dd = time.getUTCDate();
     const zpd = zeroPad(dd);
-    return wrap(`${zpd}`, 'Date', hh && ':');
+    return wrap(`${zpd}`, 'Date', hh ? ':' : '');
   }
 
   function hours() {
     const mm = shouldInclude(Elements.Minutes);
     const hh = time.getUTCHours();
     const zph = zeroPad(hh);
-    return wrap(`${zph}`, 'Hours', mm && ':');
+    return wrap(`${zph}`, 'Hours', mm ? ':' : '');
   }
 
   function minutes() {
     const ss = shouldInclude(Elements.Seconds);
     const mm = time.getUTCMinutes();
     const zpm = zeroPad(mm);
-    return wrap(`${zpm}`, 'Minutes', ss && ':');
+    return wrap(`${zpm}`, 'Minutes', ss ? ':' : '');
   }
 
   function seconds() {
     const ms = shouldInclude(Elements.Milliseconds);
     const ss = time.getUTCSeconds();
     const zps = zeroPad(ss);
-    return wrap(`${zps}`, 'Seconds', ms && '.');
+    return wrap(`${zps}`, 'Seconds', ms ? '.' : '');
   }
 
   function milliseconds() {
@@ -216,43 +236,29 @@ function Time({ elements, onChange, time }: TimeProps) {
     return wrap(ms, 'Milliseconds');
   }
 
-  const functionMapping = {
-    fullYear,
-    month,
-    date,
-    hours,
-    seconds,
-    minutes,
-    milliseconds
+  const functionMapping: Record<ElementTypes, () => React.ReactNode> = {
+    FullYear: fullYear,
+    Month: month,
+    Date: date,
+    Hours: hours,
+    Minutes: minutes,
+    Seconds: seconds,
+    Milliseconds: milliseconds
   };
 
   return (
     <div className={styles.clock}>
-      {elements.map((getterName) => {
-        const value = functionMapping?.[getterName]?.();
-        if (!value) {
-          return <div key={getterName} className={styles.padding} />;
+      {elements.map((getterName, index) => {
+        if (getterName === null) {
+          return <div key={`null-${index}`} className={styles.padding} />;
         }
-        return value;
+        const value = functionMapping[getterName]();
+        return <React.Fragment key={getterName}>{value}</React.Fragment>;
       })}
     </div>
   );
 }
 
 Time.Elements = Elements;
-
-Time.propTypes = {
-  /**
-   * decide which element should be shown - should be an array of the elements in Elements
-   */
-  elements: PropTypes.arrayOf(PropTypes.string),
-  onChange: PropTypes.func,
-  time: PropTypes.instanceOf(Date).isRequired
-};
-
-Time.defaultProps = {
-  elements: Elements.DateAndTime,
-  onChange: null
-};
 
 export default Time;

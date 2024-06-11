@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactSelect, { StylesConfig, Props } from 'react-select';
-import { excludeKeys } from '../../../../utils/helpers';
-import Input from '../../common/Input/Input';
+import { excludeKeys } from '../../../../../utils/helpers';
+import Input from '../../../common/Input/Input';
 import styles from './Select.scss';
 
 interface Option {

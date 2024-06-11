@@ -2,7 +2,7 @@ import React from 'react';
 import AutosizeInput from 'react-input-autosize';
 import PropTypes from 'prop-types';
 
-import Input from '../../common/Input/Input';
+import Input from '../../../common/Input/Input';
 
 import styles from './InlineInput.scss';
 

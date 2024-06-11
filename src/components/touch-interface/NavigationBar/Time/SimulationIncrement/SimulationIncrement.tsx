@@ -3,17 +3,13 @@ import { MdFastForward, MdFastRewind, MdPause, MdPlayArrow } from 'react-icons/m
 import { useDispatch, useSelector } from 'react-redux';
 import { throttle } from 'lodash';
 
-import { subscribeToTime, unsubscribeToTime, setYear } from '../../../../api/Actions';
-import { round10 } from '../../../../utils/rounding';
-import Button from '../../../common/Input/Button/Button';
-import NumericInput from '../../../common/Input/NumericInput/NumericInput';
+import { subscribeToTime, unsubscribeToTime } from '../../../../../api/Actions';
+import { round10 } from '../../../../../utils/rounding';
 // import ScaleInput from '../../../common/Input/ScaleInput/ScaleInput';
-import ScaleInput from './ScaleInput';
+import ScaleInput from '../ScaleInput/ScaleInput';
 // import Select from '../../../common/Input/Select/Select';
-import Select from './Select';
-import Row from '../../../common/Row/Row';
-import { useContextRefs } from '../../../GettingStartedTour/GettingStartedContext';
-import Timeline from './Timeline';
+import Select from '../Select/Select';
+import { useContextRefs } from '../../../../GettingStartedTour/GettingStartedContext';
 
 import styles from './SimulationIncrement.scss';
 
@@ -89,7 +85,6 @@ function SimulationIncrement() {
   const nextDeltaTimeStep = useSelector((state: any) => state.time.nextDeltaTimeStep);
   const prevDeltaTimeStep = useSelector((state: any) => state.time.prevDeltaTimeStep);
   const luaApi = useSelector((state: any) => state.luaApi);
-  const currentYear = useSelector((state: any) => state.time.currentYear);
 
   const dispatch = useDispatch();
 
@@ -120,16 +115,6 @@ function SimulationIncrement() {
     if (!Number.isNaN(deltaTime) && luaApi) {
       updateDeltaTimeNow(luaApi, deltaTime);
     }
-  }
-
-  function setPositiveDeltaTime(value: number) {
-    const dt = value;
-    setDeltaTime(dt);
-  }
-
-  function setNegativeDeltaTime(value: number) {
-    const dt = -value;
-    setDeltaTime(dt);
   }
 
   function setQuickAdjust(value: number) {
@@ -210,8 +195,6 @@ function SimulationIncrement() {
     );
   }
 
-  const adjustedDelta = round10(targetDeltaTime / StepSizes[stepSize], StepPrecisions[stepSize]);
-
   const options: Option[] = Object.values(Steps).map((step) => ({
     value: step,
     label: step,
@@ -223,33 +206,15 @@ function SimulationIncrement() {
       <div className={styles.title}>Display Unit</div>
       <Select
         menuPlacement='top'
-        onChange={({ value }) => (Object.values(Steps).includes(value) ? setStepSize(value) : null)}
+        onChange={({ value }: Option) =>
+          Object.values(Steps).includes(value) ? setStepSize(value) : null
+        }
         options={options}
         value={stepSize}
       />
 
       <div style={{ height: '10px' }} />
-      {/* <Row>
-        <NumericInput
-          {...Limits[stepSize]}
-          disabled={!luaApi}
-          onValueChanged={setNegativeDeltaTime}
-          placeholder={`Negative ${stepSize} / second`}
-          value={-adjustedDelta}
-          reverse
-          noValue={adjustedDelta >= 0}
-          showOutsideRangeHint={false}
-        />
-        <NumericInput
-          {...Limits[stepSize]}
-          disabled={!luaApi}
-          onValueChanged={setPositiveDeltaTime}
-          placeholder={`${stepSize} / second`}
-          value={adjustedDelta}
-          noValue={adjustedDelta < 0}
-          showOutsideRangeHint={false}
-        />
-      </Row> */}
+
       <div style={{ height: '10px' }} />
       <ScaleInput
         defaultValue={0}
@@ -258,17 +223,6 @@ function SimulationIncrement() {
         max={10}
         onChange={setQuickAdjust}
       />
-
-      {/* <div style={{ height: '10px' }} />
-      <Timeline
-        defaultValue={currentYear}
-        min={new Date().getFullYear() - 50}
-        max={new Date().getFullYear() + 50}
-        onChange={(value) => {
-          dispatch(setYear(value));
-          console.log('Year changed to:', value);
-        }}
-      /> */}
 
       <div style={{ height: '10px' }} />
       {deltaTimeStepsContol()}

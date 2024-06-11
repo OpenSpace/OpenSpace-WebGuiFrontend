@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './NavigationBar.scss';
 // import OriginPicker from '../../BottomBar/Origin/OriginPicker';
 import OriginPicker from './Origin/OriginPicker';
-import TimePicker from './Time/TimePicker';
+import TimePicker from './Time/TimePicker/TimePicker';
 import GeoPositionPanel from '../../BottomBar/GeoPositionPanel';
 import SmallLabel from '../../common/SmallLabel/SmallLabel';
 import {

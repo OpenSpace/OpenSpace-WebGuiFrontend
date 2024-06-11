@@ -74,7 +74,7 @@ interface FilterListFavoritesProps {
 function FilterListFavorites({ className = '', children }: FilterListFavoritesProps) {
   const nonNullChildren = React.Children.toArray(children).filter(Boolean);
 
-  return <ScrollOverlay className={`${className}`}>{nonNullChildren}</ScrollOverlay>;
+  return <div className={`${className}`}>{nonNullChildren}</div>;
 }
 
 FilterListFavorites.displayName = 'FilterListFavorites';
@@ -102,7 +102,7 @@ function FilterListData({
     ignorePropsFilter,
     children
   });
-  return <ScrollOverlay className={`${className}`}>{content}</ScrollOverlay>;
+  return <div className={`${className}`}>{content}</div>;
 }
 
 FilterListData.displayName = 'FilterListData';

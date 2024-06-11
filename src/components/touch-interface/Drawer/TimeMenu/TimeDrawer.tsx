@@ -3,7 +3,7 @@ import { Drawer } from '../Drawer';
 import styles from './TimeDrawer.scss';
 import { closeDrawer } from '../../../../api/Actions';
 import { useDispatch, useSelector } from 'react-redux';
-import TimePopup from '../../NavigationBar/Time/TimePopup';
+import TimePopup from '../../NavigationBar/Time/TimePopup/TimePopup';
 
 export const TimeDrawer = () => {
   const dispatch = useDispatch();

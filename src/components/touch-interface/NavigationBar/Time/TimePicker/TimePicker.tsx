@@ -8,21 +8,21 @@ import {
   unsubscribeToEngineMode,
   unsubscribeToSessionRecording,
   unsubscribeToTime
-} from '../../../../api/Actions';
+} from '../../../../../api/Actions';
 import {
   EngineModeCameraPath,
   EngineModeSessionRecordingPlayback,
   EngineModeUserControl,
   SessionStatePaused,
   SessionStatePlaying
-} from '../../../../api/keys';
-import LoadingString from '../../../common/LoadingString/LoadingString';
-import { useContextRefs } from '../../../GettingStartedTour/GettingStartedContext';
-import Picker from '../../../BottomBar/Picker';
+} from '../../../../../api/keys';
+import LoadingString from '../../../../common/LoadingString/LoadingString';
+import { useContextRefs } from '../../../../GettingStartedTour/GettingStartedContext';
+import Picker from '../../../../BottomBar/Picker';
 
 import styles from './TimePicker.scss';
 
-import { timeLabel, speedLabel } from './TimeUtils';
+import { timeLabel, speedLabel } from '../TimeUtils';
 // import TimePopup from './TimePopup';
 
 interface Property {

@@ -32,7 +32,7 @@ import {
   FilterListShowMoreButton
 } from '../../common/FilterList/FilterList';
 
-import FocusEntry from './FocusEntry';
+import FocusEntry from './FocusEntry/FocusEntry';
 import styles from './OriginPicker.scss';
 
 interface PropertyOwner {
@@ -114,10 +114,6 @@ function OriginPopup() {
     const aimProp = state.propertyTree.properties[NavigationAimKey];
     return aimProp && aimProp.value;
   });
-  // const aimName = useSelector((state) => {
-  //   const aimNode = state.propertyTree.propertyOwners[ScenePrefixKey + aim];
-  //   return aimNode ? aimNode.name : aim;
-  // });
 
   const navigationAction = useSelector((state: State) => state.local.originPicker.action);
 
@@ -241,18 +237,21 @@ function OriginPopup() {
     <div>
       <div className={styles.row}>
         <div
-          className={styles.NavigationButton}
+          className={`${styles.NavigationButton} ${
+            navigationAction === NavigationActions.Focus ? styles.active : ''
+          }`}
           onClick={() => dispatchSetNavigationAction(NavigationActions.Focus)}
           title='Select focus'
         >
           <div className={styles.TabIcon}>
             <RiFocus3Line />
           </div>
-
           <span className={styles.TabText}>Focus</span>
         </div>
         <div
-          className={styles.NavigationButton}
+          className={`${styles.NavigationButton} ${
+            navigationAction === NavigationActions.Anchor ? styles.active : ''
+          }`}
           onClick={() => dispatchSetNavigationAction(NavigationActions.Anchor)}
           title='Select anchor'
         >
@@ -262,7 +261,9 @@ function OriginPopup() {
           <span className={styles.TabText}>Anchor</span>
         </div>
         <div
-          className={styles.NavigationButton}
+          className={`${styles.NavigationButton} ${
+            navigationAction === NavigationActions.Aim ? styles.active : ''
+          }`}
           onClick={() => dispatchSetNavigationAction(NavigationActions.Aim)}
           title='Select aim'
         >
