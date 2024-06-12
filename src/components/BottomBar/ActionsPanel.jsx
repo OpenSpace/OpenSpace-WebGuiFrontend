@@ -1,11 +1,9 @@
 import React from 'react';
 import { MdArrowBack, MdDashboard, MdFolder } from 'react-icons/md';
-import { connect, useDispatch, useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { setActionsPath, setPopoverVisibility, triggerAction } from '../../api/Actions';
 import { ObjectWordBeginningSubstring } from '../../utils/StringMatchers';
-import subStateToProps from '../../utils/subStateToProps';
 import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
 import { FilterList, FilterListData, FilterListFavorites } from '../common/FilterList/FilterList';
 import HorizontalDelimiter from '../common/HorizontalDelimiter/HorizontalDelimiter';
@@ -19,15 +17,112 @@ import Picker from './Picker';
 import buttonStyles from './Actions/ActionsButton.scss';
 import styles from './ActionsPanel.scss';
 
+function selectActions(state) {
+  const actions = state.shortcuts;
+  const actionsMapped = { '/': { actions: [], children: {} } };
+  if (!actions.isInitialized) {
+    return {
+      actions: actionsMapped,
+      navigationPath: '/',
+      displayedNavigationPath: '/'
+    };
+  }
+
+  for (let i = 0; i < actions.data.shortcuts.length; i++) {
+    const action = actions.data.shortcuts[i];
+    if (action.key) {
+      continue;
+    }
+
+    // If there is no backslash at beginning of GUI path, add that manually
+    // (there should always be though)
+    if (action.guiPath.length > 0 && action.guiPath[0] !== '/') {
+      action.guiPath = `/${action.guiPath}`;
+    }
+
+    let splits = action.guiPath.split('/');
+    // Remove all empty strings: which is what we get before initial slash and
+    // if the path is just a slash
+    splits = splits.filter((s) => s !== '');
+
+    let parent = actionsMapped['/'];
+
+    // Add to top level actions (no gui path)
+    if (splits.length === 0) {
+      parent.actions.push(action);
+    }
+
+    // Add actions of other levels
+    while (splits.length > 0) {
+      const index = splits.shift();
+      if (parent.children[index] === undefined) {
+        parent.children[index] = { actions: [], children: {} };
+      }
+      if (splits.length === 0) {
+        parent.children[index].actions.push(action);
+      } else {
+        parent = parent.children[index];
+      }
+    }
+  }
+
+  const navPath = actions.navigationPath;
+  let actionsForPath = actionsMapped['/'];
+  if (navPath.length > 1) {
+    const splits = navPath.split('/');
+    splits.shift();
+    while (splits.length > 0) {
+      const index = splits.shift();
+      actionsForPath = actionsForPath.children[index];
+    }
+  }
+
+  const allActions = actions.data.shortcuts.filter((action) => {
+    if (navPath.length === 1) {
+      return true;
+    }
+    const navPathGui = navPath.split('/');
+    const actionPathGui = action.guiPath?.split('/');
+    for (let i = 0; i < navPathGui.length; i++) {
+      if (actionPathGui?.[i] !== navPathGui[i]) {
+        return false;
+      }
+    }
+    return true;
+  });
+
+  // Truncate navigation path if too long
+  const NAVPATH_LENGTH_LIMIT = 60;
+  const shouldTruncate = actions.navigationPath.length > NAVPATH_LENGTH_LIMIT;
+
+  let truncatedPath = actions.navigationPath;
+  if (shouldTruncate) {
+    let originalPath = navPath;
+    if (originalPath[0] === '/') {
+      originalPath = originalPath.substring(1);
+    }
+    const pieces = originalPath.split('/');
+    if (pieces.length > 1) {
+      // TODO: maybe keep more pieces of the path, if possible?
+      truncatedPath = `/${pieces[0]}/.../${pieces[pieces.length - 1]}`;
+    } else {
+      truncatedPath = navPath.substring(0, NAVPATH_LENGTH_LIMIT);
+    }
+  }
+
+  return {
+    actionLevel: actionsForPath,
+    navigationPath: actions.navigationPath,
+    displayedNavigationPath: truncatedPath,
+    allActions
+  };
+};
+
 function ActionsPanel({
-  actionLevel,
-  actionPath,
-  allActions,
-  displayedNavigationPath,
-  navigationPath,
   singlewindow
 }) {
   const popoverVisible = useSelector((state) => state.local.popovers.actions.visible);
+  const { actionLevel, navigationPath, displayedNavigationPath, allActions } = useSelector(selectActions);
 
   const dispatch = useDispatch();
 
@@ -36,6 +131,10 @@ function ActionsPanel({
       popover: 'actions',
       visible: !popoverVisible
     }));
+  }
+
+  function actionPath(action) {
+    dispatch(setActionsPath(action));
   }
 
   function addNavPath(e) {
@@ -198,137 +297,8 @@ function ActionsPanel({
   );
 }
 
-const mapSubStateToProps = ({ actions }) => {
-  const actionsMapped = { '/': { actions: [], children: {} } };
-  if (!actions.isInitialized) {
-    return {
-      actions: actionsMapped,
-      navigationPath: '/',
-      displayedNavigationPath: '/'
-    };
-  }
-
-  for (let i = 0; i < actions.data.shortcuts.length; i++) {
-    const action = actions.data.shortcuts[i];
-    if (action.key) {
-      continue;
-    }
-
-    // If there is no backslash at beginning of GUI path, add that manually
-    // (there should always be though)
-    if (action.guiPath.length > 0 && action.guiPath[0] !== '/') {
-      action.guiPath = `/${action.guiPath}`;
-    }
-
-    let splits = action.guiPath.split('/');
-    // Remove all empty strings: which is what we get before initial slash and
-    // if the path is just a slash
-    splits = splits.filter((s) => s !== '');
-
-    let parent = actionsMapped['/'];
-
-    // Add to top level actions (no gui path)
-    if (splits.length === 0) {
-      parent.actions.push(action);
-    }
-
-    // Add actions of other levels
-    while (splits.length > 0) {
-      const index = splits.shift();
-      if (parent.children[index] === undefined) {
-        parent.children[index] = { actions: [], children: {} };
-      }
-      if (splits.length === 0) {
-        parent.children[index].actions.push(action);
-      } else {
-        parent = parent.children[index];
-      }
-    }
-  }
-
-  const navPath = actions.navigationPath;
-  let actionsForPath = actionsMapped['/'];
-  if (navPath.length > 1) {
-    const splits = navPath.split('/');
-    splits.shift();
-    while (splits.length > 0) {
-      const index = splits.shift();
-      actionsForPath = actionsForPath.children[index];
-    }
-  }
-
-  const allActions = actions.data.shortcuts.filter((action) => {
-    if (navPath.length === 1) {
-      return true;
-    }
-    const navPathGui = navPath.split('/');
-    const actionPathGui = action.guiPath?.split('/');
-    for (let i = 0; i < navPathGui.length; i++) {
-      if (actionPathGui?.[i] !== navPathGui[i]) {
-        return false;
-      }
-    }
-    return true;
-  });
-
-  // Truncate navigation path if too long
-  const NAVPATH_LENGTH_LIMIT = 60;
-  const shouldTruncate = actions.navigationPath.length > NAVPATH_LENGTH_LIMIT;
-
-  let truncatedPath = actions.navigationPath;
-  if (shouldTruncate) {
-    let originalPath = navPath;
-    if (originalPath[0] === '/') {
-      originalPath = originalPath.substring(1);
-    }
-    const pieces = originalPath.split('/');
-    if (pieces.length > 1) {
-      // TODO: maybe keep more pieces of the path, if possible?
-      truncatedPath = `/${pieces[0]}/.../${pieces[pieces.length - 1]}`;
-    } else {
-      truncatedPath = navPath.substring(0, NAVPATH_LENGTH_LIMIT);
-    }
-  }
-
-  return {
-    actionLevel: actionsForPath,
-    navigationPath: actions.navigationPath,
-    displayedNavigationPath: truncatedPath,
-    allActions
-  };
-};
-
-const mapStateToSubState = (state) => ({
-  actions: state.shortcuts
-});
-
-const mapDispatchToProps = (dispatch) => ({
-  trigger: (action) => {
-    dispatch(triggerAction(action));
-  },
-  actionPath: (action) => {
-    dispatch(setActionsPath(action));
-  }
-});
-
-ActionsPanel.propTypes = {
-  actionLevel: PropTypes.object,
-  actionPath: PropTypes.func.isRequired,
-  allActions: PropTypes.arrayOf(PropTypes.object),
-  displayedNavigationPath: PropTypes.string.isRequired,
-  navigationPath: PropTypes.string.isRequired,
-  singlewindow: PropTypes.bool
-};
-
 ActionsPanel.defaultProps = {
-  actionLevel: undefined,
-  allActions: undefined,
   singlewindow: false
 };
-
-ActionsPanel = connect(
-  subStateToProps(mapSubStateToProps, mapStateToSubState),
-  mapDispatchToProps,
-)(ActionsPanel);
 
 export default ActionsPanel;
