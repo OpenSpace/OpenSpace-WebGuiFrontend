@@ -2,7 +2,7 @@ import React from 'react';
 import { MdArrowBack, MdDashboard, MdFolder } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { setActionsPath, setPopoverVisibility, triggerAction } from '../../api/Actions';
+import { setActionsPath, setPopoverVisibility } from '../../api/Actions';
 import { ObjectWordBeginningSubstring } from '../../utils/StringMatchers';
 import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
 import { FilterList, FilterListData, FilterListFavorites } from '../common/FilterList/FilterList';
