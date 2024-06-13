@@ -28,12 +28,11 @@ function selectActions(state) {
     };
   }
 
-  for (let i = 0; i < actions.data.shortcuts.length; i++) {
-    const action = actions.data.shortcuts[i];
+  for (let i = 0; i < actions.data.length; i++) {
+    const action = actions.data[i];
     if (action.key) {
       continue;
     }
-
     // If there is no backslash at beginning of GUI path, add that manually
     // (there should always be though)
     if (action.guiPath.length > 0 && action.guiPath[0] !== '/') {
@@ -77,7 +76,7 @@ function selectActions(state) {
     }
   }
 
-  const allActions = actions.data.shortcuts.filter((action) => {
+  const allActions = actions.data.filter((action) => {
     if (navPath.length === 1) {
       return true;
     }
@@ -122,8 +121,7 @@ function ActionsPanel({
   singlewindow
 }) {
   const popoverVisible = useSelector((state) => state.local.popovers.actions.visible);
-  const { actionLevel, navigationPath, displayedNavigationPath, allActions } = useSelector(selectActions);
-
+  const { actionLevel, navigationPath, displayedNavigationPath, allActions } = useSelector((state) => selectActions(state));
   const dispatch = useDispatch();
 
   function togglePopover() {

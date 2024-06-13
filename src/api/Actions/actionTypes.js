@@ -77,6 +77,9 @@ const actionTypes = {
   triggerAction: 'TRIGGER_ACTION',
   setActionsPath: 'SET_ACTIONS_PATH',
   toggleKeybindViewer: 'TOGGLE_KEYBIND_VIEWER',
+  addActions: 'ADD_ACTIONS',
+  getAction: 'GET_ACTION',
+  removeAction: 'REMOVE_ACTION',
 
   // action types for engine mode
   subscribeToEngineMode: 'ENGINE_MODE_SUBSCRIBE',

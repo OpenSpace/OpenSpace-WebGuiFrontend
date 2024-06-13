@@ -1,4 +1,4 @@
-import { addPropertyOwner, refreshGroups, removePropertyOwners } from '../Actions';
+import { getAction, addPropertyOwner, refreshGroups, removePropertyOwners } from '../Actions';
 import actionTypes from '../Actions/actionTypes';
 import api from '../api';
 
@@ -17,6 +17,9 @@ async function handleData(store, data) {
     case 'ScreenSpaceRenderableRemoved':
       store.dispatch(removePropertyOwners({ uris: [data.Uri] }));
       store.dispatch(refreshGroups());
+      break;
+    case 'ActionAdded':
+      store.dispatch(getAction({ uri: data.Uri }));
       break;
     default:
       break;

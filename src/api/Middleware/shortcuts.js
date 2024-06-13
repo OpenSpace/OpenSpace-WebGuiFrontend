@@ -1,22 +1,29 @@
-import { initializeShortcuts } from '../Actions';
+import { initializeShortcuts, addActions } from '../Actions';
 import actionTypes from '../Actions/actionTypes';
 import api from '../api';
 
 let topic;
 
-const subscribeToShortcuts = (callback) => {
+function subscribeToShortcuts(store) {
   topic = api.startTopic('shortcuts', {
     event: 'start_subscription'
   });
   (async () => {
     // eslint-disable-next-line no-restricted-syntax
     for await (const data of topic.iterator()) {
-      callback(data);
+      // When a new action has been added, the topic
+      // sends it as one action in an array
+      if (data.shortcuts.length === 1) {
+        store.dispatch(addActions(data.shortcuts));
+      }
+      else {
+        store.dispatch(initializeShortcuts(data.shortcuts));
+      }
     }
   })();
-};
+}
 
-const unsubscribeToShortcuts = () => {
+function unsubscribeToShortcuts() {
   if (!topic) {
     return;
   }
@@ -24,15 +31,23 @@ const unsubscribeToShortcuts = () => {
     event: 'stop_subscription'
   });
   topic.cancel();
-};
+}
+
+async function getAction(uri) {
+  if (!topic) {
+    return;
+  }
+  topic.talk({
+    event: 'get_action',
+    identifier: uri
+  });
+}
 
 const shortcuts = (store) => (next) => (action) => {
   const result = next(action);
   switch (action.type) {
     case actionTypes.onOpenConnection:
-      subscribeToShortcuts((data) => {
-        store.dispatch(initializeShortcuts(data));
-      });
+      subscribeToShortcuts(store);
       break;
     case actionTypes.onCloseConnection:
       unsubscribeToShortcuts();
@@ -42,6 +57,9 @@ const shortcuts = (store) => (next) => (action) => {
       store.getState().luaApi.action.triggerAction(actionName);
       break;
     }
+    case actionTypes.getAction:
+      getAction(action.payload.uri);
+      break;
     default:
       break;
   }

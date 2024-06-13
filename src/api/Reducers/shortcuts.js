@@ -13,8 +13,7 @@ const shortcuts = (state = defaultState, action = {}) => { // state refers to sh
       return {
         ...state,
         isInitialized: true,
-        data: { ...action.payload },
-        navigationPath: '/'
+        data: action.payload
       };
     case actionTypes.setActionsPath:
       return {
@@ -26,6 +25,11 @@ const shortcuts = (state = defaultState, action = {}) => { // state refers to sh
         ...state,
         showKeybinds: !state.showKeybinds
       };
+    case actionTypes.addActions:
+      return {
+        ...state,
+        data: [...state.data, ...action.payload]
+      } ;
     default:
       return state;
   }

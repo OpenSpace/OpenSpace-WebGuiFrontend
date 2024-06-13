@@ -314,6 +314,21 @@ export const setActionsPath = (data) => ({
   payload: data
 });
 
+export const addActions = (data) => ({
+  type: actionTypes.addActions,
+  payload: data
+});
+
+export const getAction = (data) => ({
+  type: actionTypes.getAction,
+  payload: data
+});
+
+export const removeAction = (data) => ({
+  type: actionTypes.removeAction,
+  payload: data
+});
+
 export const toggleKeybindViewer = (data) => ({
   type: actionTypes.toggleKeybindViewer,
   payload: data
