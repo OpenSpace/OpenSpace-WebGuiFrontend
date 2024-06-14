@@ -2,18 +2,18 @@ import React from 'react';
 import { MdWeb } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { loadUserPanelData, setPopoverVisibility, addUserPanel } from '../../../api/Actions';
+import { addUserPanel, loadUserPanelData, setPopoverVisibility } from '../../../api/Actions';
+import HorizontalDelimiter from '../../common/HorizontalDelimiter/HorizontalDelimiter';
 import Button from '../../common/Input/Button/Button';
 import Input from '../../common/Input/Input/Input';
 import Select from '../../common/Input/Select/Select';
 import Popover from '../../common/Popover/Popover';
 import Row from '../../common/Row/Row';
 import Picker from '../Picker';
-import HorizontalDelimiter from '../../common/HorizontalDelimiter/HorizontalDelimiter';
 
 function UserControlPanel() {
-  const [selectedPanel, setSelectedPanel] = React.useState("selectedPanel")
-  const [panelURL, setPanelURL] = React.useState(undefined)
+  const [selectedPanel, setSelectedPanel] = React.useState('selectedPanel');
+  const [panelURL, setPanelURL] = React.useState(undefined);
   const popoverVisible = useSelector(
     (state) => state.local.popovers.userControlPanel.visible
   );
@@ -28,7 +28,7 @@ function UserControlPanel() {
       dispatch(loadUserPanelData(luaApi));
     }
   }, []);
-  
+
   function togglePopover() {
     // Todo MICAH this was to avoid creating a topic
     // Didnt feel right making a topic just for this

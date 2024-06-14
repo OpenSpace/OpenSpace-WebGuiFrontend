@@ -111,7 +111,7 @@ function WindowThreeStates({
           defaultPosition={defaultPosition}
           handleDragStop={(e, data) => {
             const { x, y } = data;
-            positionCallback ? positionCallback({ x, y }) : setPositionPopover({x,y}) ;
+            positionCallback ? positionCallback({ x, y }) : setPositionPopover({ x, y });
           }}
         >
           {createTopBar()}
