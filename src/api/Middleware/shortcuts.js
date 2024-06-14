@@ -30,9 +30,10 @@ function unsubscribeToShortcuts() {
     event: 'stop_subscription'
   });
   topic.cancel();
+  topic = null;
 }
 
-async function getAction(uri) {
+function getAction(uri) {
   if (!topic) {
     return;
   }
