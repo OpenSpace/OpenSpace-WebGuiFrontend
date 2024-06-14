@@ -17,66 +17,88 @@ import Picker from './Picker';
 import buttonStyles from './Actions/ActionsButton.scss';
 import styles from './ActionsPanel.scss';
 
-function selectActions(state) {
-  const actions = state.shortcuts;
-  const actionsMapped = { '/': { actions: [], children: {} } };
-  if (!actions.isInitialized) {
-    return {
-      actions: actionsMapped,
-      navigationPath: '/',
-      displayedNavigationPath: '/'
-    };
+function actionsForLevel(actions, navigationPath, isInitialized) {
+  const actionsMapped = { '/': { actions: [], folders: {} } };
+  if (!isInitialized) {
+    return actionsMapped['/'];
   }
-
-  for (let i = 0; i < actions.data.length; i++) {
-    const action = actions.data[i];
+  for (const action of actions) {
     if (action.key) {
       continue;
     }
+
     // If there is no backslash at beginning of GUI path, add that manually
     // (there should always be though)
     if (action.guiPath.length > 0 && action.guiPath[0] !== '/') {
       action.guiPath = `/${action.guiPath}`;
     }
 
-    let splits = action.guiPath.split('/');
+    let guiFolders = action.guiPath.split('/');
     // Remove all empty strings: which is what we get before initial slash and
     // if the path is just a slash
-    splits = splits.filter((s) => s !== '');
-
-    let parent = actionsMapped['/'];
+    guiFolders = guiFolders.filter((s) => s !== '');
 
     // Add to top level actions (no gui path)
-    if (splits.length === 0) {
-      parent.actions.push(action);
+    if (guiFolders.length === 0) {
+      actionsMapped['/'].actions.push(action);
     }
 
     // Add actions of other levels
-    while (splits.length > 0) {
-      const index = splits.shift();
-      if (parent.children[index] === undefined) {
-        parent.children[index] = { actions: [], children: {} };
+    let parent = actionsMapped['/'];
+    while (guiFolders.length > 0) {
+      const folderName = guiFolders.shift();
+      if (parent.folders[folderName] === undefined) {
+        parent.folders[folderName] = { actions: [], folders: {} };
       }
-      if (splits.length === 0) {
-        parent.children[index].actions.push(action);
+      if (guiFolders.length === 0) {
+        parent.folders[folderName].actions.push(action);
       } else {
-        parent = parent.children[index];
+        parent = parent.folders[folderName];
       }
     }
   }
-
-  const navPath = actions.navigationPath;
+  const navPath = navigationPath;
   let actionsForPath = actionsMapped['/'];
   if (navPath.length > 1) {
-    const splits = navPath.split('/');
-    splits.shift();
-    while (splits.length > 0) {
-      const index = splits.shift();
-      actionsForPath = actionsForPath.children[index];
+    const folders = navPath.split('/');
+    folders.shift();
+    while (folders.length > 0) {
+      const folderName = folders.shift();
+      actionsForPath = actionsForPath.folders[folderName];
+    }
+  }
+  return actionsForPath;
+}
+
+// Truncate navigation path if too long
+function truncatePath(navigationPath) {
+  const NAVPATH_LENGTH_LIMIT = 60;
+  const shouldTruncate = navigationPath > NAVPATH_LENGTH_LIMIT;
+
+  let truncatedPath = navigationPath;
+  if (shouldTruncate) {
+    let originalPath = navigationPath;
+    if (originalPath[0] === '/') {
+      originalPath = originalPath.substring(1);
+    }
+    const pieces = originalPath.split('/');
+    if (pieces.length > 1) {
+      // TODO: maybe keep more pieces of the path, if possible?
+      truncatedPath = `/${pieces[0]}/.../${pieces[pieces.length - 1]}`;
+    } else {
+      truncatedPath = navigationPath.substring(0, NAVPATH_LENGTH_LIMIT);
     }
   }
 
-  const allActions = actions.data.filter((action) => {
+  return truncatedPath;
+};
+
+function getDisplayedActions(allActions, navPath) {
+  return allActions.filter((action) => {
+    // Don't display the shortcuts when searching
+    if (action.key) {
+      return false;
+    }
     if (navPath.length === 1) {
       return true;
     }
@@ -89,39 +111,20 @@ function selectActions(state) {
     }
     return true;
   });
-
-  // Truncate navigation path if too long
-  const NAVPATH_LENGTH_LIMIT = 60;
-  const shouldTruncate = actions.navigationPath.length > NAVPATH_LENGTH_LIMIT;
-
-  let truncatedPath = actions.navigationPath;
-  if (shouldTruncate) {
-    let originalPath = navPath;
-    if (originalPath[0] === '/') {
-      originalPath = originalPath.substring(1);
-    }
-    const pieces = originalPath.split('/');
-    if (pieces.length > 1) {
-      // TODO: maybe keep more pieces of the path, if possible?
-      truncatedPath = `/${pieces[0]}/.../${pieces[pieces.length - 1]}`;
-    } else {
-      truncatedPath = navPath.substring(0, NAVPATH_LENGTH_LIMIT);
-    }
-  }
-
-  return {
-    actionLevel: actionsForPath,
-    navigationPath: actions.navigationPath,
-    displayedNavigationPath: truncatedPath,
-    allActions
-  };
-};
+}
 
 function ActionsPanel({
   singlewindow
 }) {
   const popoverVisible = useSelector((state) => state.local.popovers.actions.visible);
-  const { actionLevel, navigationPath, displayedNavigationPath, allActions } = useSelector((state) => selectActions(state));
+  const navigationPath = useSelector((state) => state.shortcuts.navigationPath);
+  const isInitialized = useSelector((state) => state.shortcuts.isInitialized);
+  const allActions = useSelector(state => state.shortcuts.data);
+
+  const actionLevel = actionsForLevel(allActions, navigationPath, isInitialized);
+  const displayedNavigationPath = truncatePath(navigationPath);
+  const displayedActions = getDisplayedActions(allActions, navigationPath);
+
   const dispatch = useDispatch();
 
   function togglePopover() {
@@ -173,7 +176,7 @@ function ActionsPanel({
   }
 
   function getFoldersContent(level) {
-    return Object.keys(level.children).sort().map((key) => folderButton(key));
+    return Object.keys(level.folders).sort().map((key) => folderButton(key));
   }
 
   function getActionContent(level) {
@@ -192,7 +195,7 @@ function ActionsPanel({
   }
 
   function getAllActions() {
-    return allActions.map(
+    return displayedActions.map(
       (action) => (
         <ActionsButton
           className={`${styles.button}`}
@@ -224,7 +227,7 @@ function ActionsPanel({
     }
     const isEmpty = (actionLevel.length === 0);
     const actions = isEmpty ? <div>No Actions</div> : getActionContent(actionLevel);
-    const folders = isEmpty ? <div>No Children</div> : getFoldersContent(actionLevel);
+    const folders = isEmpty ? <div>No Folders</div> : getFoldersContent(actionLevel);
     const backButton = getBackButton();
 
     return (
