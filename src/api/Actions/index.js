@@ -23,6 +23,11 @@ export const addPropertyOwners = (propertyOwners) => ({
   }
 });
 
+export const clearPropertyTree = () => ({
+  type: actionTypes.clearPropertyTree,
+  payload: {}
+});
+
 export const addProperties = (properties) => ({
   type: actionTypes.addProperties,
   payload: {

@@ -3,19 +3,24 @@ import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import { removeUserPanel } from '../../../api/Actions';
-import Popover from '../../common/Popover/Popover';
-import Picker from '../Picker';
+import { useLocalStorageState } from '../../../utils/customHooks';
+import WindowThreeStates from '../SkyBrowser/WindowThreeStates/WindowThreeStates';
 
 import styles from './UserControlPanel.scss';
 
 function IndividualUserControlPanel({ uri }) {
+  const [positionPopover, setPositionPopover] = useLocalStorageState(`${panelName} position`, () => ({ x: 200, y: 200 }));
+  const [size, sizeCallback] = useLocalStorageState(`${panelName} size`, () => ({ width: 200, height: 440 }));
+
   const myPopover = useSelector((state) => state.local.popovers.activeUserControlPanels[uri]);
+  const dispatch = useDispatch();
+
   const showPopover = myPopover ? myPopover.visible : false;
   const slash = (navigator.platform.indexOf('Win') > -1) ? '\\' : '/';
-
-  const panelName = uri.substr(uri.lastIndexOf(slash) + 1);
-
-  const dispatch = useDispatch();
+  let panelName = uri;
+  if (panelName.indexOf('http') !== 0) {
+    panelName = uri.substr(uri.lastIndexOf(slash) + 1);
+  }
 
   function closePopover() {
     dispatch(removeUserPanel(uri));
@@ -23,28 +28,31 @@ function IndividualUserControlPanel({ uri }) {
 
   function popover() {
     let iframesrc = `http://${window.location.host}/webpanels/${panelName}/index.html`;
-    if ((panelName.indexOf('http://') === 0) || (panelName.indexOf('https://') === 0)) {
+    if (panelName.indexOf('http') === 0) {
       iframesrc = panelName;
     }
+
     return (
-      <Popover
-        className={`${Picker.Popover} ${styles.userPanel}`}
+      <WindowThreeStates
         title={panelName}
+        acceptedStyles={['DETACHED', 'PANE']}
+        defaultHeight={440}
+        minHeight={200}
         closeCallback={closePopover}
-        attached={false}
+        defaultPosition={positionPopover}
+        positionCallback={setPositionPopover}
+        defaultStyle="DETACHED"
+        sizeCallback={sizeCallback}
       >
-        <div className={styles.content}>
-          <hr className={Popover.styles.delimiter} />
-          <iframe className={`${styles.panelIframe}`} src={iframesrc} />
+        <div className={styles.content} style={{ height: size.height }}>
+          <iframe title={panelName} className={`${styles.panelIframe}`} src={iframesrc} />
         </div>
-      </Popover>
+      </WindowThreeStates>
     );
   }
 
   return (
-    <div className={Picker.Wrapper}>
-      {showPopover && popover()}
-    </div>
+    showPopover && popover()
   );
 }
 

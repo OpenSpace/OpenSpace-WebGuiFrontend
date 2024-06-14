@@ -14,7 +14,7 @@ import Row from '../../common/Row/Row';
 import Picker from '../Picker';
 
 function UserControlPanel() {
-  const [selectedPanel, setSelectedPanel] = React.useState(undefined);
+  const [selectedPanel, setSelectedPanel] = React.useState('selectedPanel');
   const [panelURL, setPanelURL] = React.useState(undefined);
   const popoverVisible = useSelector(
     (state) => state.local.popovers.userControlPanel.visible
