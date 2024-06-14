@@ -17,17 +17,13 @@ function IndividualUserControlPanel({ uri }) {
   if (panelName.indexOf('http') != 0) {
     panelName = uri.substr(uri.lastIndexOf(slash) + 1);
   }
-  const [currentPopoverHeight, setCurrentPopoverHeightState] = React.useState(440);
   const [positionPopover, setPositionPopover] = useLocalStorageState(`${panelName} position`, () => ({ x: 200, y: 200 }));
+  const [size, sizeCallback] = useLocalStorageState(`${panelName} size`, () => ({ width: 200, height: 440 }));
 
   const dispatch = useDispatch();
 
   function closePopover() {
     dispatch(removeUserPanel(uri));
-  }
-
-  function setCurrentPopoverHeight(object) {
-    setCurrentPopoverHeightState(object.height);
   }
 
   function popover() {
@@ -40,17 +36,15 @@ function IndividualUserControlPanel({ uri }) {
       <WindowThreeStates
         title={panelName}
         acceptedStyles={['DETACHED', 'PANE']}
-        sizeCallback={setCurrentPopoverHeight}
-        height={currentPopoverHeight}
         defaultHeight={440}
         minHeight={200}
         closeCallback={closePopover}
         defaultPosition={positionPopover}
         positionCallback={setPositionPopover}
         defaultStyle="DETACHED"
+        sizeCallback={sizeCallback}
       >
-        <div className={styles.content}>
-          <hr className={Popover.styles.delimiter} />
+        <div className={styles.content} style={{ height: size.height }}>
           <iframe className={`${styles.panelIframe}`} src={iframesrc} />
         </div>
       </WindowThreeStates>

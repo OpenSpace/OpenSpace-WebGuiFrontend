@@ -43,9 +43,7 @@ function WindowThreeStates({
   });
   const topMenuHeight = 30;
 
-  // This callback is for the missions timeline and skybrowser panel
-  // They need to know how large the pane is in order to render its content
-  React.useEffect(() => {
+  function getCurrentSize() {
     let size = { width: 0, height: 0 };
     switch (windowStyle) {
       case WindowStyle.ATTACHED:
@@ -59,7 +57,13 @@ function WindowThreeStates({
         break;
       default:
     }
-    sizeCallback({ width: size.width, height: size.height - topMenuHeight });
+    return { width: size.width, height: size.height - topMenuHeight };
+  }
+
+  // This callback is for the missions timeline and skybrowser panel
+  // They need to know how large the pane is in order to render its content
+  React.useEffect(() => {
+    sizeCallback(getCurrentSize());
   }, [sizePane, sizeAttached, sizePopover]);
 
   function createTopBar() {
@@ -86,11 +90,11 @@ function WindowThreeStates({
         <MdClose />
       </Button>
     );
-
+    const titleWidth = getCurrentSize().width - (acceptedStyles.length + 1) * 30;
     return (
       <header className={`header ${styles.topMenu}`} style={{ height: topMenuHeight }}>
-        <div className={styles.title}>{title}</div>
-        <div>
+        <div className={styles.title} style={{ width: titleWidth }}>{title}</div>
+        <div className={styles.buttons}>
           {detachedButton}
           {attachedButton}
           {paneButton}
