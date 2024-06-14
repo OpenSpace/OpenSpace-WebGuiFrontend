@@ -30,6 +30,16 @@ const shortcuts = (state = defaultState, action = {}) => { // state refers to sh
         ...state,
         data: [...state.data, ...action.payload]
       } ;
+    case actionTypes.removeAction:
+      let newData = state.data;
+      const index = newData.findIndex((element) => element.identifier === action.payload.uri);
+      if (index > -1) { // only splice array when item is found
+        newData.splice(index, 1); // 2nd parameter means remove one item only
+      }
+      return {
+        ...state,
+        data: [...newData]
+      };
     default:
       return state;
   }

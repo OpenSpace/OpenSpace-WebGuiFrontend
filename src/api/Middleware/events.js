@@ -1,4 +1,4 @@
-import { getAction, addPropertyOwner, refreshGroups, removePropertyOwners } from '../Actions';
+import { getAction, addPropertyOwner, refreshGroups, removePropertyOwners, removeAction } from '../Actions';
 import actionTypes from '../Actions/actionTypes';
 import api from '../api';
 
@@ -20,6 +20,9 @@ async function handleData(store, data) {
       break;
     case 'ActionAdded':
       store.dispatch(getAction({ uri: data.Uri }));
+      break;
+    case 'ActionRemoved':
+      store.dispatch(removeAction({ uri: data.Uri }));
       break;
     default:
       break;
