@@ -9,17 +9,18 @@ import WindowThreeStates from '../SkyBrowser/WindowThreeStates/WindowThreeStates
 import styles from './UserControlPanel.scss';
 
 function IndividualUserControlPanel({ uri }) {
+  const [positionPopover, setPositionPopover] = useLocalStorageState(`${panelName} position`, () => ({ x: 200, y: 200 }));
+  const [size, sizeCallback] = useLocalStorageState(`${panelName} size`, () => ({ width: 200, height: 440 }));
+
   const myPopover = useSelector((state) => state.local.popovers.activeUserControlPanels[uri]);
+  const dispatch = useDispatch();
+
   const showPopover = myPopover ? myPopover.visible : false;
   const slash = (navigator.platform.indexOf('Win') > -1) ? '\\' : '/';
   let panelName = uri;
   if (panelName.indexOf('http') !== 0) {
     panelName = uri.substr(uri.lastIndexOf(slash) + 1);
   }
-  const [positionPopover, setPositionPopover] = useLocalStorageState(`${panelName} position`, () => ({ x: 200, y: 200 }));
-  const [size, sizeCallback] = useLocalStorageState(`${panelName} size`, () => ({ width: 200, height: 440 }));
-
-  const dispatch = useDispatch();
 
   function closePopover() {
     dispatch(removeUserPanel(uri));
