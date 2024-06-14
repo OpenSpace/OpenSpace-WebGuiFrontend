@@ -2,7 +2,7 @@ import React from 'react';
 import { MdWeb } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { loadUserPanelData, reloadPropertyTree, setPopoverVisibility, addUserPanel } from '../../../api/Actions';
+import { loadUserPanelData, setPopoverVisibility, addUserPanel } from '../../../api/Actions';
 import Button from '../../common/Input/Button/Button';
 import Select from '../../common/Input/Select/Select';
 import Popover from '../../common/Popover/Popover';
@@ -12,10 +12,8 @@ import HorizontalDelimiter from '../../common/HorizontalDelimiter/HorizontalDeli
 
 import Picker from '../Picker';
 
-import styles from './UserControlPanel.scss';
-
 function UserControlPanel() {
-  const [selectedPanel, setSelectedPanel] = React.useState(undefined)
+  const [selectedPanel, setSelectedPanel] = React.useState("selectedPanel")
   const [panelURL, setPanelURL] = React.useState(undefined)
   const popoverVisible = useSelector(
     (state) => state.local.popovers.userControlPanel.visible
@@ -31,8 +29,6 @@ function UserControlPanel() {
       dispatch(loadUserPanelData(luaApi));
     }
   }, []);
-
-
   
   function togglePopover() {
     //Todo MICAH this was to avoid creating a topic
@@ -56,7 +52,7 @@ function UserControlPanel() {
   }
 
   function addWebPanel() {
-    if (panelURL.indexOf("http") != 0) {
+    if ((panelURL.indexOf("http") != 0) || (panelURL.indexOf("https") != 0) ) {
       dispatch(addUserPanel("http://" + panelURL))
     } else {
       dispatch(addUserPanel(panelURL))

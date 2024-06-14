@@ -21,7 +21,7 @@ const WindowStyle = {
 
 function WindowThreeStates({
   defaultStyle, defaultHeight, defaultWidth, children, minHeight,
-  closeCallback, title, acceptedStyles, sizeCallback
+  closeCallback, title, acceptedStyles, sizeCallback, positionCallback, defaultPosition
 }) {
   const [windowStyle, setWindowStyle] = React.useState(defaultStyle);
   const [sizePopover, setSizePopover] = useLocalStorageState(
@@ -81,6 +81,7 @@ function WindowThreeStates({
         <MdOpenInBrowser />
       </Button>
     );
+
     const closeCallbackButton = (
       <Button onClick={closeCallback} transparent small>
         <MdClose />
@@ -107,10 +108,10 @@ function WindowThreeStates({
           sizeCallback={setSizePopover}
           defaultSize={sizePopover}
           minHeight={minHeight}
-          defaultPosition={positionPopover}
+          defaultPosition={defaultPosition}
           handleDragStop={(e, data) => {
             const { x, y } = data;
-            setPositionPopover({ x, y });
+            positionCallback ? positionCallback({ x, y }) : setPositionPopover({x,y}) ;
           }}
         >
           {createTopBar()}
@@ -146,6 +147,8 @@ WindowThreeStates.propTypes = {
   acceptedStyles: PropTypes.array,
   children: PropTypes.node.isRequired,
   closeCallback: PropTypes.func,
+  positionCallback: PropTypes.func,
+  defaultPosition: PropTypes.object,
   defaultHeight: PropTypes.number,
   defaultStyle: PropTypes.string,
   defaultWidth: PropTypes.number,
@@ -157,6 +160,8 @@ WindowThreeStates.propTypes = {
 WindowThreeStates.defaultProps = {
   acceptedStyles: [WindowStyle.ATTACHED, WindowStyle.DETACHED, WindowStyle.PANE],
   closeCallback: null,
+  positionCallback: WindowThreeStates.setPositionPopover,
+  defaultPosition: WindowThreeStates.positionPopover,
   defaultHeight: 440,
   defaultStyle: WindowStyle.ATTACHED,
   defaultWidth: 350,
