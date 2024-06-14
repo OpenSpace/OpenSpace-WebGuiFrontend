@@ -4,13 +4,12 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { loadUserPanelData, setPopoverVisibility, addUserPanel } from '../../../api/Actions';
 import Button from '../../common/Input/Button/Button';
+import Input from '../../common/Input/Input/Input';
 import Select from '../../common/Input/Select/Select';
 import Popover from '../../common/Popover/Popover';
 import Row from '../../common/Row/Row';
-import Input from '../../common/Input/Input/Input';
-import HorizontalDelimiter from '../../common/HorizontalDelimiter/HorizontalDelimiter';
-
 import Picker from '../Picker';
+import HorizontalDelimiter from '../../common/HorizontalDelimiter/HorizontalDelimiter';
 
 function UserControlPanel() {
   const [selectedPanel, setSelectedPanel] = React.useState("selectedPanel")
@@ -31,9 +30,9 @@ function UserControlPanel() {
   }, []);
   
   function togglePopover() {
-    //Todo MICAH this was to avoid creating a topic
-    //Didnt feel right making a topic just for this
-    //Thinking to adda a generic folder watching topic 
+    // Todo MICAH this was to avoid creating a topic
+    // Didnt feel right making a topic just for this
+    // Thinking to adda a generic folder watching topic
     if (!popoverVisible) {
       dispatch(loadUserPanelData(luaApi));
     }
@@ -48,23 +47,23 @@ function UserControlPanel() {
   }
 
   function addPanel() {
-    dispatch(addUserPanel(selectedPanel))
+    dispatch(addUserPanel(selectedPanel));
   }
 
   function addWebPanel() {
-    if ((panelURL.indexOf("http") != 0) || (panelURL.indexOf("https") != 0) ) {
-      dispatch(addUserPanel("http://" + panelURL))
+    if (panelURL.indexOf('http') !== 0) {
+      dispatch(addUserPanel(`http://${panelURL}`));
     } else {
-      dispatch(addUserPanel(panelURL))
+      dispatch(addUserPanel(panelURL));
     }
   }
 
   function updatePanelURL(evt) {
-    setPanelURL(evt.target.value)
+    setPanelURL(evt.target.value);
   }
 
   function popover() {
-    let placeholderText = "Loading pages"
+    const placeholderText = 'Loading pages';
     const options = Object.values(panelList)
       .map((panel) => ({ value: panel.path, label: panel.name }));
 
@@ -78,7 +77,7 @@ function UserControlPanel() {
       >
         <div className={Popover.styles.content}>
           <Row>
-          <Select
+            <Select
               menuPlacement="top"
               placeholder={placeholderText}
               options={options}
@@ -86,7 +85,7 @@ function UserControlPanel() {
               onChange={updatePanelSelection}
               value={selectedPanel}
             />
-            
+
             <div className={Popover.styles.row}>
               <Button
                 onClick={addPanel}

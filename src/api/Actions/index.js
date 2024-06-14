@@ -23,6 +23,11 @@ export const addPropertyOwners = (propertyOwners) => ({
   }
 });
 
+export const clearPropertyTree = () => ({
+  type: actionTypes.clearPropertyTree,
+  payload: {}
+});
+
 export const addProperties = (properties) => ({
   type: actionTypes.addProperties,
   payload: {
@@ -411,5 +416,15 @@ export const refreshSessionRecording = () => ({
 
 export const updateSessionRecording = (data) => ({
   type: actionTypes.updateSessionRecording,
+  payload: data
+});
+
+export const addPropertyOwner = (data) => ({
+  type: actionTypes.addPropertyOwner,
+  payload: data
+});
+
+export const removePropertyOwners = (data) => ({
+  type: actionTypes.removePropertyOwners,
   payload: data
 });

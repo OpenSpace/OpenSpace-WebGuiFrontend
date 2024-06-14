@@ -4,7 +4,9 @@ import PropTypes from 'prop-types';
 import shallowEqualArrays from 'shallow-equal/arrays';
 
 import { useLocalStorageState } from '../../utils/customHooks';
-import { checkIfVisible, filterPropertyOwners, hasInterestingTag, isPropertyOwnerHidden } from '../../utils/propertyTreeHelpers';
+import {
+  filterPropertyOwners, hasInterestingTag
+} from '../../utils/propertyTreeHelpers';
 import { ObjectWordBeginningSubstring } from '../../utils/StringMatchers';
 import { FilterList, FilterListData, FilterListFavorites } from '../common/FilterList/FilterList';
 import HorizontalDelimiter from '../common/HorizontalDelimiter/HorizontalDelimiter';

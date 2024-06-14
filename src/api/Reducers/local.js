@@ -97,10 +97,10 @@ const popovers = (state = defaultPopovers, action = {}) => {
         activeUserControlPanels: {
           ...state.activeUserControlPanels,
           [action.payload]: popover(
-            {attached: false, visible: true}
+            { attached: false, visible: true }
           )
         }
-      }
+      };
 
     case actionTypes.removeUserPanel:
       return {

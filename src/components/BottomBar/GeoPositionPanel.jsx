@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import * as geometry from 'spherical-geometry-js';
 
 import {
-  reloadPropertyTree,
   setPopoverVisibility
 } from '../../api/Actions';
 import { useLocalStorageState } from '../../utils/customHooks';
@@ -149,10 +148,6 @@ function GeoPositionPanel() {
 
   const dispatch = useDispatch();
 
-  function refresh() {
-    dispatch(reloadPropertyTree());
-  }
-
   function togglePopover() {
     dispatch(setPopoverVisibility({
       popover: 'geoposition',
@@ -219,7 +214,7 @@ function GeoPositionPanel() {
         break;
       }
       case Interaction.jumpTo: {
-        luaApi?.globebrowsing?.goToGeo(currentAnchor, lat, long, alt);
+        luaApi?.globebrowsing?.jumpToGeo(currentAnchor, lat, long, alt);
         break;
       }
       case Interaction.addFocus: {
@@ -239,9 +234,6 @@ function GeoPositionPanel() {
         luaApi?.addSceneGraphNode(
           createSceneGraphNodeTable(currentAnchor, addressUtf8, lat, long, alt)
         );
-        // TODO: Once we have a proper way to subscribe to additions and removals
-        // of property owners, this 'hard' refresh should be removed.
-        setTimeout(() => refresh(), 300);
         break;
       }
       default: {

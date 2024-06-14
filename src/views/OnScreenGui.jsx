@@ -9,6 +9,7 @@ import {
 } from '../api/Version';
 import BottomBar from '../components/BottomBar/BottomBar';
 import KeybindingPanel from '../components/BottomBar/KeybindingPanel';
+import UserControlPanelContainer from '../components/BottomBar/UserControlPanel/UserControlPanelContainer';
 import Button from '../components/common/Input/Button/Button';
 import Overlay from '../components/common/Overlay/Overlay';
 import Stack from '../components/common/Stack/Stack';
@@ -17,7 +18,6 @@ import TourPopup from '../components/GettingStartedTour/TourPopup';
 import LuaConsole from '../components/LuaConsole/LuaConsole';
 import NodeMetaContainer from '../components/NodeMetaPanel/NodeMetaContainer';
 import NodePopOverContainer from '../components/NodePropertiesPanel/NodePopOverContainer';
-import UserControlPanelContainer from '../components/BottomBar/UserControlPanel/UserControlPanelContainer';
 import Sidebar from '../components/Sidebar/Sidebar';
 
 import About from './About/About';

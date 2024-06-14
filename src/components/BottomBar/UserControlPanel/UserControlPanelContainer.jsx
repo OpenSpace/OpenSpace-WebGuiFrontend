@@ -1,8 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-
-import styles from './UserControlPanel.scss';
 import IndividualUserControlPanel from './IndividualUserControlPanel';
+import styles from './UserControlPanel.scss';
 
 function UserControlPanelContainer() {
   const panels = useSelector((state) => state.local.popovers.activeUserControlPanels);

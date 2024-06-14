@@ -7,7 +7,6 @@ import styles from "./UserControlPanel.scss"
 import WindowThreeStates from '../SkyBrowser/WindowThreeStates/WindowThreeStates';
 import { useLocalStorageState } from '../../../utils/customHooks'
 
-
 function IndividualUserControlPanel({ uri }) {
   const myPopover = useSelector((state) => state.local.popovers.activeUserControlPanels[uri]);
   const showPopover = myPopover ? myPopover.visible : false;
@@ -51,8 +50,8 @@ function IndividualUserControlPanel({ uri }) {
       defaultStyle='DETACHED'
     >
         <div className={styles.content}>
-            <hr className={Popover.styles.delimiter} />
-            <iframe className={`${styles.panelIframe}`} src={iframesrc}></iframe>
+          <hr className={Popover.styles.delimiter} />
+          <iframe className={`${styles.panelIframe}`} src={iframesrc} />
         </div>
       </WindowThreeStates>
     );
