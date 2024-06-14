@@ -81,7 +81,6 @@ function WindowThreeStates({
         <MdOpenInBrowser />
       </Button>
     );
-
     const closeCallbackButton = (
       <Button onClick={closeCallback} transparent small>
         <MdClose />
