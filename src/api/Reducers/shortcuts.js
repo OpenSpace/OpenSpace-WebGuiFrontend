@@ -36,9 +36,14 @@ const shortcuts = (state = defaultState, action = {}) => { // state refers to sh
       if (index > -1) { // only splice array when item is found
         newData.splice(index, 1); // 2nd parameter means remove one item only
       }
+      // If the removed action was the last one with its gui path, we need to change the
+      // navigation path
+      const foundNavigationPath = newData.findIndex((element) => element.guiPath === state.navigationPath);
+      const newNavigationPath = foundNavigationPath < 0 ? '/' : state.navigationPath;
       return {
         ...state,
-        data: [...newData]
+        data: [...newData],
+        navigationPath: newNavigationPath
       };
     }
     default:
