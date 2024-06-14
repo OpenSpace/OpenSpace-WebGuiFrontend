@@ -1,4 +1,4 @@
-import { initializeShortcuts, addActions } from '../Actions';
+import { addActions, initializeShortcuts } from '../Actions';
 import actionTypes from '../Actions/actionTypes';
 import api from '../api';
 
@@ -15,8 +15,7 @@ function subscribeToShortcuts(store) {
       // sends it as one action in an array
       if (data.shortcuts.length === 1) {
         store.dispatch(addActions(data.shortcuts));
-      }
-      else {
+      } else {
         store.dispatch(initializeShortcuts(data.shortcuts));
       }
     }

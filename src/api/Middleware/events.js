@@ -1,4 +1,6 @@
-import { getAction, addPropertyOwner, refreshGroups, removePropertyOwners, removeAction } from '../Actions';
+import {
+  addPropertyOwner, getAction, refreshGroups, removeAction, removePropertyOwners
+} from '../Actions';
 import actionTypes from '../Actions/actionTypes';
 import api from '../api';
 

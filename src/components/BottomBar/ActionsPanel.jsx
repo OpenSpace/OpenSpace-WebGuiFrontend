@@ -1,6 +1,7 @@
 import React from 'react';
 import { MdArrowBack, MdDashboard, MdFolder } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import { setActionsPath, setPopoverVisibility } from '../../api/Actions';
 import { ObjectWordBeginningSubstring } from '../../utils/StringMatchers';
@@ -22,18 +23,20 @@ function actionsForLevel(actions, navigationPath, isInitialized) {
   if (!isInitialized) {
     return actionsMapped['/'];
   }
-  for (const action of actions) {
+  actions.forEach((action) => {
+    // Skip the keyboard shortcuts
     if (action.key) {
-      continue;
+      return;
     }
 
     // If there is no backslash at beginning of GUI path, add that manually
     // (there should always be though)
+    let actionGuiPath = action.guiPath;
     if (action.guiPath.length > 0 && action.guiPath[0] !== '/') {
-      action.guiPath = `/${action.guiPath}`;
+      actionGuiPath = `/${action.guiPath}`;
     }
 
-    let guiFolders = action.guiPath.split('/');
+    let guiFolders = actionGuiPath.split('/');
     // Remove all empty strings: which is what we get before initial slash and
     // if the path is just a slash
     guiFolders = guiFolders.filter((s) => s !== '');
@@ -56,7 +59,8 @@ function actionsForLevel(actions, navigationPath, isInitialized) {
         parent = parent.folders[folderName];
       }
     }
-  }
+  });
+
   const navPath = navigationPath;
   let actionsForPath = actionsMapped['/'];
   if (navPath.length > 1) {
@@ -91,7 +95,7 @@ function truncatePath(navigationPath) {
   }
 
   return truncatedPath;
-};
+}
 
 function getDisplayedActions(allActions, navPath) {
   return allActions.filter((action) => {
@@ -113,13 +117,11 @@ function getDisplayedActions(allActions, navPath) {
   });
 }
 
-function ActionsPanel({
-  singlewindow
-}) {
+function ActionsPanel({ singlewindow }) {
   const popoverVisible = useSelector((state) => state.local.popovers.actions.visible);
   const navigationPath = useSelector((state) => state.shortcuts.navigationPath);
   const isInitialized = useSelector((state) => state.shortcuts.isInitialized);
-  const allActions = useSelector(state => state.shortcuts.data);
+  const allActions = useSelector((state) => state.shortcuts.data);
 
   const actionLevel = actionsForLevel(allActions, navigationPath, isInitialized);
   const displayedNavigationPath = truncatePath(navigationPath);
@@ -300,6 +302,10 @@ function ActionsPanel({
 
 ActionsPanel.defaultProps = {
   singlewindow: false
+};
+
+ActionsPanel.propTypes = {
+  singlewindow: PropTypes.bool
 };
 
 export default ActionsPanel;
