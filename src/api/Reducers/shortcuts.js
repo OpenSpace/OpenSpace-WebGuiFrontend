@@ -38,8 +38,8 @@ const shortcuts = (state = defaultState, action = {}) => { // state refers to sh
       }
       // If the removed action was the last one with its gui path, we need to change the
       // navigation path
-      const foundNavigationPath = newData.findIndex((element) => element.guiPath === state.navigationPath);
-      const newNavigationPath = foundNavigationPath < 0 ? '/' : state.navigationPath;
+      const indexPath = newData.findIndex((element) => element.guiPath === state.navigationPath);
+      const newNavigationPath = indexPath < 0 ? '/' : state.navigationPath;
       return {
         ...state,
         data: [...newData],
