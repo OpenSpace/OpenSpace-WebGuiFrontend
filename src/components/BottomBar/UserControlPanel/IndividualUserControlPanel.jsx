@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 
 import { removeUserPanel } from '../../../api/Actions';
 import { useLocalStorageState } from '../../../utils/customHooks';
-import Popover from '../../common/Popover/Popover';
 import WindowThreeStates from '../SkyBrowser/WindowThreeStates/WindowThreeStates';
 
 import styles from './UserControlPanel.scss';
@@ -14,7 +13,7 @@ function IndividualUserControlPanel({ uri }) {
   const showPopover = myPopover ? myPopover.visible : false;
   const slash = (navigator.platform.indexOf('Win') > -1) ? '\\' : '/';
   let panelName = uri;
-  if (panelName.indexOf('http') != 0) {
+  if (panelName.indexOf('http') !== 0) {
     panelName = uri.substr(uri.lastIndexOf(slash) + 1);
   }
   const [positionPopover, setPositionPopover] = useLocalStorageState(`${panelName} position`, () => ({ x: 200, y: 200 }));
@@ -28,7 +27,7 @@ function IndividualUserControlPanel({ uri }) {
 
   function popover() {
     let iframesrc = `http://${window.location.host}/webpanels/${panelName}/index.html`;
-    if (panelName.indexOf('http') == 0) {
+    if (panelName.indexOf('http') === 0) {
       iframesrc = panelName;
     }
 
@@ -45,7 +44,7 @@ function IndividualUserControlPanel({ uri }) {
         sizeCallback={sizeCallback}
       >
         <div className={styles.content} style={{ height: size.height }}>
-          <iframe className={`${styles.panelIframe}`} src={iframesrc} />
+          <iframe title={panelName} className={`${styles.panelIframe}`} src={iframesrc} />
         </div>
       </WindowThreeStates>
     );
