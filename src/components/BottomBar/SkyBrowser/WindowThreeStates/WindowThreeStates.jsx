@@ -36,11 +36,6 @@ function WindowThreeStates({
     `${title} sizePane`,
     { width: defaultWidth }
   );
-  const [positionPopover, setPositionPopover] = useLocalStorageState(`${title} position`, () => {
-    const centerX = -window.innerWidth * 0.5 + sizePopover.width;
-    const centerY = -window.innerHeight * 0.5 - (sizePopover.height * 0.5);
-    return { x: centerX, y: centerY };
-  });
   const topMenuHeight = 30;
 
   function getCurrentSize() {
@@ -114,7 +109,7 @@ function WindowThreeStates({
           defaultPosition={defaultPosition}
           handleDragStop={(e, data) => {
             const { x, y } = data;
-            positionCallback ? positionCallback({ x, y }) : setPositionPopover({ x, y });
+            if (positionCallback) { positionCallback({ x, y }); }
           }}
         >
           {createTopBar()}
@@ -163,7 +158,7 @@ WindowThreeStates.propTypes = {
 WindowThreeStates.defaultProps = {
   acceptedStyles: [WindowStyle.ATTACHED, WindowStyle.DETACHED, WindowStyle.PANE],
   closeCallback: null,
-  positionCallback: WindowThreeStates.setPositionPopover,
+  positionCallback: () => {},
   defaultPosition: WindowThreeStates.positionPopover,
   defaultHeight: 440,
   defaultStyle: WindowStyle.ATTACHED,
