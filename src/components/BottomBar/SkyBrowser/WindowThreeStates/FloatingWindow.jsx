@@ -28,6 +28,12 @@ function FloatingWindow({
               sizeCallback({ width: clientWidth, height: clientHeight });
             }
           }}
+          onResize={() => {
+            if (sizeCallback) {
+              const { clientHeight, clientWidth } = windowDiv.current;
+              sizeCallback({ width: clientWidth, height: clientHeight });
+            }
+          }}
         >
           {children}
         </Resizable>

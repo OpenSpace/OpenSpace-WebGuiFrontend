@@ -1,9 +1,8 @@
 import React from 'react';
 import { MdWeb } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  addUserPanel, loadUserPanelData, setPopoverVisibility
-} from '../../../api/Actions';
+
+import { addUserPanel, loadUserPanelData, setPopoverVisibility } from '../../../api/Actions';
 import HorizontalDelimiter from '../../common/HorizontalDelimiter/HorizontalDelimiter';
 import Button from '../../common/Input/Button/Button';
 import Input from '../../common/Input/Input/Input';
@@ -13,7 +12,7 @@ import Row from '../../common/Row/Row';
 import Picker from '../Picker';
 
 function UserControlPanel() {
-  const [selectedPanel, setSelectedPanel] = React.useState(undefined);
+  const [selectedPanel, setSelectedPanel] = React.useState('selectedPanel');
   const [panelURL, setPanelURL] = React.useState(undefined);
   const popoverVisible = useSelector(
     (state) => state.local.popovers.userControlPanel.visible
