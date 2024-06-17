@@ -3,6 +3,7 @@ import { shallowEqual, useSelector } from 'react-redux';
 import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd';
 
 import SkyBrowserTabEntry from './SkyBrowserTabEntry';
+import shallowEqualArrays from 'shallow-equal/arrays';
 
 function SkyBrowserSelectedImagesList({
   luaApi,
@@ -31,14 +32,14 @@ function SkyBrowserSelectedImagesList({
       return [];
     }
     return Object.values(browser.selectedImages);
-  }, shallowEqual);
+  }, shallowEqualArrays);
   const imagesIndicesLengthRedux = useSelector(
     (state) => state.skybrowser.browsers[selectedBrowserId].selectedImages.length
   );
   const imageList = useSelector((state) => state.skybrowser.imageList);
   const imageOpacitiesRedux = useSelector(
     (state) => state.skybrowser.browsers[selectedBrowserId].opacities,
-    shallowEqual
+    shallowEqualArrays
   );
 
   if (!imageList || imageList.length === 0) {

@@ -1,13 +1,8 @@
 import actionTypes from '../Actions/actionTypes';
+import { applyPatch } from 'fast-json-patch';
 
 const defaultState = {
   isInitialized: false,
-  data: {},
-  imageList: [],
-  selectedBrowserId: '',
-  cameraIsInSolarSystem: true,
-  targets: {},
-  url: ''
 };
 
 const skybrowser = (state = defaultState, action = {}) => {
@@ -22,10 +17,11 @@ const skybrowser = (state = defaultState, action = {}) => {
       newState.data = action.payload;
       return newState;
     case actionTypes.updateSkyBrowser:
-      newState.selectedBrowserId = action.payload.selectedBrowserId;
-      newState.cameraInSolarSystem = action.payload.cameraInSolarSystem;
-      newState.browsers = action.payload.browsers;
-      return newState;
+      // Data changes are sent as an array with operations
+      // These operations are standard json patch types
+      // https://json.nlohmann.me/api/basic_json/patch/
+      // These can be these three types: "replace", "add", and "remove"
+      return applyPatch(newState, action.payload).newDocument;
     default:
       return state;
   }

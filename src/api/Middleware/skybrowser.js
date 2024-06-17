@@ -5,10 +5,6 @@ import api from '../api';
 let skybrowserTopic;
 let nSubscribers = 0;
 
-function handleData(store, data) {
-  store.dispatch(updateSkyBrowser(data));
-}
-
 function tearDownSubscription() {
   if (!skybrowserTopic) {
     return;
@@ -57,7 +53,15 @@ async function setupSubscription(store) {
   });
   // eslint-disable-next-line no-restricted-syntax
   for await (const data of skybrowserTopic.iterator()) {
-    handleData(store, data);
+    switch(data.type) {
+      case "browser_data": {
+        store.dispatch(updateSkyBrowser(data.data));
+        break;
+      }
+      default: {
+        break;
+      }
+    }
   }
 }
 
