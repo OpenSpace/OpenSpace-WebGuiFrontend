@@ -277,7 +277,7 @@ function SkyBrowserTabs({
         >
           <div
             className={selectedBrowserId === browser ? styles.tabActive : styles.tabInactive}
-            onKeyDown={(e) => {
+            onMouseDown={(e) => {
               const event = e ?? window.event;
               event.cancelBubble = true;
               e?.stopPropagation();
