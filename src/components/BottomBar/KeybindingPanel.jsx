@@ -21,7 +21,7 @@ function KeybindingPanel() {
   const [activeModifiers, setActiveModifiers] = React.useState([]);
   const [currentActionInfo, setCurrentActionInfo] = React.useState({
     input: '',
-    name: 'Select a key to see it\'s action.',
+    name: 'Select a key to see its action.',
     description: 'A description of the action will appear here',
     isLocal: 'Info about if the action is local will appear here',
     path: 'The actions path will appear here'
