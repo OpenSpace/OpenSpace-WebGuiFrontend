@@ -5,8 +5,6 @@ import PropTypes from 'prop-types';
 import shallowEqualArrays from 'shallow-equal/arrays';
 
 import {
-  addNodeMetaPopover,
-  addNodePropertyPopover,
   setPropertyTreeExpansion
 } from '../../../api/Actions';
 import {
@@ -201,30 +199,17 @@ function PropertyOwner({
       expanded
     }));
   };
-  const popOut = () => {
-    dispatch(addNodePropertyPopover({
-      identifier: uri
-    }));
-  };
-  const metaAction = () => {
-    dispatch(addNodeMetaPopover({
-      identifier: uri
-    }));
-  };
 
   function header() {
-    const popOutAction = isRenderable ? popOut : undefined;
-    const hasMetaAction = isSceneGraphNodeOrLayer ? metaAction : undefined;
-
     const headerComponent = (
       <PropertyOwnerHeader
         uri={uri}
         expanded={isExpanded}
         title={propertyOwnerName}
         setExpanded={setExpanded}
-        popOutAction={popOutAction}
+        showMeta={isSceneGraphNodeOrLayer}
+        showPopOutSettings={isRenderable}
         trashAction={trashAction}
-        metaAction={hasMetaAction}
       />
     );
     if (!dragHandleTitleProps) {

@@ -14,19 +14,17 @@ import PropertyOwner from '../Sidebar/Properties/PropertyOwner';
 import styles from './NodePropertiesPanel.scss';
 
 function NodePropertiesPanel({ uri }) {
-  const nodeURI = uri;
-
   const nodeName = useSelector((state) => (
-    state.propertyTree.propertyOwners[nodeURI]?.name
+    state.propertyTree.propertyOwners[uri]?.name
   ));
 
   // Renderable type and info
   const renderableType = useSelector((state) => (
-    state.propertyTree.properties[`${nodeURI}.Renderable.Type`]?.value
+    state.propertyTree.properties[`${uri}.Renderable.Type`]?.value
   ));
 
   const renderableProps = useSelector((state) => (
-    state.propertyTree.propertyOwners[`${nodeURI}.Renderable`]?.properties
+    state.propertyTree.propertyOwners[`${uri}.Renderable`]?.properties
   ));
 
   const isDefined = RenderableTypes[renderableType];
@@ -89,7 +87,7 @@ function NodePropertiesPanel({ uri }) {
       const featuredProperties = propertiesForRenderableType();
       if (featuredProperties) {
         return featuredProperties.map((prop) => {
-          const propUri = `${nodeURI}.Renderable.${prop}`;
+          const propUri = `${uri}.Renderable.${prop}`;
           if (renderableProps.includes(propUri)) {
             return <Property key={prop} uri={propUri} />;
           }
@@ -101,8 +99,8 @@ function NodePropertiesPanel({ uri }) {
         <PropertyOwner
           autoExpand
           key={0}
-          uri={`${nodeURI}.Renderable`}
-          expansionIdentifier={`P:${nodeURI}`}
+          uri={`${uri}.Renderable`}
+          expansionIdentifier={`P:${uri}`}
         />
       );
     }
@@ -110,11 +108,11 @@ function NodePropertiesPanel({ uri }) {
     if (isGlobe) {
       switch (activeTab) {
         case 1: {
-          const layerUri = `${nodeURI}.Renderable.Layers.ColorLayers`;
+          const layerUri = `${uri}.Renderable.Layers.ColorLayers`;
           return propertyOwnerForUri(layerUri);
         }
         case 2: {
-          const layerUri = `${nodeURI}.Renderable.Layers.HeightLayers`;
+          const layerUri = `${uri}.Renderable.Layers.HeightLayers`;
           return propertyOwnerForUri(layerUri);
         }
         default: {
