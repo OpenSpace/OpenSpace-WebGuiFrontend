@@ -192,7 +192,6 @@ function PropertyOwner({
   // @TODO (emmbr 2023-02-21) Make this work for other propety owners that have
   // descriptions too, such as geojson layers
   const isSceneGraphNodeOrLayer = isSceneGraphNode(uri) || isGlobeBrowsingLayer(uri);
-  const isFocus = propertyOwnerName && (propertyOwnerName.lastIndexOf('Current') > -1);
 
   const dispatch = useDispatch();
 
@@ -204,8 +203,7 @@ function PropertyOwner({
   };
   const popOut = () => {
     dispatch(addNodePropertyPopover({
-      identifier: uri,
-      focus: isFocus
+      identifier: uri
     }));
   };
   const metaAction = () => {

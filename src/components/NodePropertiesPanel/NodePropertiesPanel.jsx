@@ -2,8 +2,8 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { removeNodePropertyPopover, setPopoverActiveTab, setPopoverVisibility } from '../../api/Actions';
-import { NavigationAnchorKey, RenderableTypes, ScenePrefixKey } from '../../api/keys';
+import { removeNodePropertyPopover, setPopoverActiveTab } from '../../api/Actions';
+import { RenderableTypes } from '../../api/keys';
 import Picker from '../BottomBar/Picker';
 import HorizontalDelimiter from '../common/HorizontalDelimiter/HorizontalDelimiter';
 import Button from '../common/Input/Button/Button';
@@ -13,11 +13,8 @@ import PropertyOwner from '../Sidebar/Properties/PropertyOwner';
 
 import styles from './NodePropertiesPanel.scss';
 
-function NodePropertiesPanel({ isFocusNodePanel, uri }) {
-  const anchor = useSelector((state) => (
-    state.propertyTree.properties[NavigationAnchorKey]?.value
-  ));
-  const nodeURI = isFocusNodePanel ? ScenePrefixKey + anchor : uri;
+function NodePropertiesPanel({ uri }) {
+  const nodeURI = uri;
 
   const nodeName = useSelector((state) => (
     state.propertyTree.propertyOwners[nodeURI]?.name
@@ -37,12 +34,10 @@ function NodePropertiesPanel({ isFocusNodePanel, uri }) {
 
   // Popover visiblity
   const myPopover = useSelector((state) => (
-    isFocusNodePanel ?
-      state.local.popovers.focusNodePropertiesPanel :
-      state.local.popovers.activeNodePropertyPanels[uri]
+    state.local.popovers.activeNodePropertyPanels[uri]
   ));
   let showPopover = myPopover?.visible || false;
-  if (!renderableType || (isFocusNodePanel && !anchor)) {
+  if (!renderableType) {
     showPopover = false;
   }
   const attached = myPopover?.attached || false;
@@ -51,23 +46,15 @@ function NodePropertiesPanel({ isFocusNodePanel, uri }) {
   const dispatch = useDispatch();
 
   function togglePopover() {
-    if (isFocusNodePanel) {
-      dispatch(setPopoverVisibility({
-        popover: 'focusNodePropertiesPanel',
-        visible: !showPopover
-      }));
-    } else {
-      dispatch(removeNodePropertyPopover({
-        identifier: uri
-      }));
-    }
+    dispatch(removeNodePropertyPopover({
+      identifier: uri
+    }));
   }
 
   function setPopoverActiveTabAction(index) {
     dispatch(setPopoverActiveTab({
       identifier: uri,
-      activeTab: index,
-      isFocusNodePanel
+      activeTab: index
     }));
   }
 
@@ -160,11 +147,10 @@ function NodePropertiesPanel({ isFocusNodePanel, uri }) {
   }
 
   function popover() {
-    const windowTitle = isFocusNodePanel ? `Current Focus: ${nodeName}` : nodeName;
     return (
       <Popover
         className={`${Picker.Popover} && ${styles.nodePopover}`}
-        title={windowTitle}
+        title={nodeName}
         closeCallback={togglePopover}
         attached={attached}
         detachable
@@ -194,12 +180,9 @@ function NodePropertiesPanel({ isFocusNodePanel, uri }) {
 }
 
 NodePropertiesPanel.propTypes = {
-  isFocusNodePanel: PropTypes.bool,
   uri: PropTypes.string.isRequired
 };
 
-NodePropertiesPanel.defaultProps = {
-  isFocusNodePanel: false
-};
+NodePropertiesPanel.defaultProps = {};
 
 export default NodePropertiesPanel;
