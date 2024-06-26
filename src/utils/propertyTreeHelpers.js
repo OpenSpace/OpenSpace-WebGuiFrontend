@@ -221,6 +221,16 @@ export function displayName(propertyOwners, properties, uri) {
   return guiName || propertyOwners[uri].identifier;
 }
 
+export function guiOrderNumber(properties, uri) {
+  let property = properties[`${uri}.UseGuiOrder`];
+  const shouldUseGuiOrderNumber = property ? property.value : false;
+  if (!shouldUseGuiOrderNumber) {
+    return undefined;
+  }
+  property = properties[`${uri}.GuiOrderNumber`];
+  return property ? property.value : undefined;
+}
+
 export function identifierFromUri(uri) {
   const splitUri = uri.split('.');
   return splitUri.length > 1 ? splitUri[1] : undefined;
