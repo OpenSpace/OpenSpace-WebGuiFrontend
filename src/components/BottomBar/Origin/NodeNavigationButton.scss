@@ -1,0 +1,25 @@
+@import "../../../styles/all";
+
+$icon-size: 18px;
+
+.buttonIcon {
+  @extend .verticallyCentered;
+  font-size: $icon-size;
+  vertical-align: middle;
+}
+
+.navButton {
+  padding: 0.5em 0.7em 0.5em;
+  margin: 2px;
+}
+
+.smallNavButton {
+  @extend .navButton;
+  padding: 0.1em 0.4em 0.1em;
+}
+
+.label {
+  @extend .verticallyCentered;
+  margin-top: auto;
+  margin-left: 0.3em;
+}

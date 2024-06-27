@@ -17,20 +17,8 @@ $icon-size: 18px;
   position: relative;
 }
 
-.verticallyCentered {
-  margin-top: auto;
-  margin-bottom: auto;
-}
-
 .buttonIcon {
-  @extend .verticallyCentered;
   font-size: $icon-size;
-  vertical-align: middle;
-}
-
-.menuButtonLabel {
-  margin-top: auto;
-  margin-left: 0.3em;
 }
 
 .buttonContainer {
@@ -51,16 +39,6 @@ $icon-size: 18px;
       height: 100%;
     }
   }
-}
-
-.quickAccessFlyTo {
-  padding: 0.1em 0.4em 0.1em;
-  margin-right: 0.3em;
-}
-
-.flyToButton {
-  padding: 0.5em 0.7em 0.5em;
-  margin: 2px;
 }
 
 .menuTopLabel {
