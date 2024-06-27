@@ -34,6 +34,12 @@ function FocusEntry({
 
   const refs = useContextRefs();
 
+  // Common props for all the navbuttons
+  const navButtonProps = {
+    identifier,
+    onFinish: closePopoverIfSet
+  };
+
   return (
     <div
       className={`${styles.entry} ${isActive() && styles.active}`}
@@ -50,19 +56,19 @@ function FocusEntry({
       {showNavigationButtons && (
         <div className={styles.buttonContainer}>
           {isActive() && (
-            <NavigationButton type="frame" identifier={identifier} onFinish={closePopoverIfSet} />
+            <NavigationButton type="frame" {...navButtonProps} />
           )}
-          <NavigationButton type="fly" identifier={identifier} onFinish={closePopoverIfSet} />
+          <NavigationButton type="fly" {...navButtonProps} />
           <TooltipMenu
             sourceObject={<MdMoreVert className={styles.buttonIcon} />}
           >
             <SmallLabel className={styles.menuTopLabel}>{identifier}</SmallLabel>
             <HorizontalDelimiter />
-            <NavigationButton type="focus" identifier={identifier} showLabel onFinish={closePopoverIfSet} />
+            <NavigationButton type="focus" showLabel {...navButtonProps} />
             <HorizontalDelimiter />
-            <NavigationButton type="fly" identifier={identifier} showLabel onFinish={closePopoverIfSet} />
-            <NavigationButton type="jump" identifier={identifier} showLabel onFinish={closePopoverIfSet} />
-            <NavigationButton type="frame" identifier={identifier} showLabel onFinish={closePopoverIfSet} />
+            <NavigationButton type="fly" showLabel {...navButtonProps} />
+            <NavigationButton type="jump" showLabel {...navButtonProps} />
+            <NavigationButton type="frame" showLabel {...navButtonProps} />
           </TooltipMenu>
         </div>
       )}
