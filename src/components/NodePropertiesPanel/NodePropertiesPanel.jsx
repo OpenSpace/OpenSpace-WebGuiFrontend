@@ -14,18 +14,12 @@ import PropertyOwner from '../Sidebar/Properties/PropertyOwner';
 import styles from './NodePropertiesPanel.scss';
 
 function NodePropertiesPanel({ uri }) {
-  const nodeName = useSelector((state) => (
-    state.propertyTree.propertyOwners[uri]?.name
-  ));
+  const propertyOwners = useSelector((state) => state.propertyTree.propertyOwners);
+  const properties = useSelector((state) => state.propertyTree.properties);
 
-  // Renderable type and info
-  const renderableType = useSelector((state) => (
-    state.propertyTree.properties[`${uri}.Renderable.Type`]?.value
-  ));
-
-  const renderableProps = useSelector((state) => (
-    state.propertyTree.propertyOwners[`${uri}.Renderable`]?.properties
-  ));
+  const nodeName = propertyOwners[uri]?.name;
+  const renderableType = properties[`${uri}.Renderable.Type`]?.value;
+  const renderableProps = propertyOwners[`${uri}.Renderable`]?.properties;
 
   const isDefined = RenderableTypes[renderableType];
   const isGlobe = isDefined && renderableType === RenderableTypes.RenderableGlobe;
