@@ -256,11 +256,12 @@ function PropertyOwnerHeader({
   const shouldFadeCheckbox = (fadeUri && fadeValue > 0.0);
 
   return (
-    <Button
+    // eslint-disable-next-line max-len
+    // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
+    <div
       className={`${toggleHeaderStyles.toggle} ${isLayer && styles.layerHeader}`}
       onClick={onClick}
       ref={(el) => { refs.current[refName] = el; }}
-      noChangeOnActive
     >
       <Row>
         {expanded ?
@@ -296,7 +297,7 @@ function PropertyOwnerHeader({
           )}
         </span>
       </Row>
-    </Button>
+    </div>
   );
 }
 
