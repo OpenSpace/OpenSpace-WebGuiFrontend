@@ -39,17 +39,24 @@ function ExoplanetsPanel() {
 
   const popoverVisible = useSelector((state) => state.local.popovers.exoplanets.visible);
   const luaApi = useSelector((state) => state.luaApi);
-  const exoplanetSystems = useSelector((state) => {
-    // Find already existing systems
-    const systems = Object.values(state.propertyTree.propertyOwners).filter(
-      (owner) => owner.tags.includes('exoplanet_system')
-    );
-    return systems.map((owner) => `Scene.${owner.identifier}`);
-  });
+  const propertyOwners = useSelector((state) => state.propertyTree.propertyOwners);
+
+  // Find already existing exoplent systems among the property owners
+  const systems = Object.values(propertyOwners).filter(
+    (owner) => owner.tags.includes('exoplanet_system')
+  );
+  const exoplanetSystems = systems.map((owner) => `Scene.${owner.identifier}`);
+
   const isDataInitialized = useSelector((state) => state.exoplanets.isInitialized);
-  const anchor = useSelector((state) => state.propertyTree.properties[NavigationAnchorKey]);
   const systemList = useSelector((state) => state.exoplanets.data);
-  const aim = useSelector((state) => state.propertyTree.properties[NavigationAimKey]);
+  const aim = useSelector((state) => {
+    const aimProp = state.propertyTree.properties[NavigationAimKey];
+    return aimProp && aimProp.value;
+  });
+  const anchor = useSelector((state) => {
+    const anchorProp = state.propertyTree.properties[NavigationAnchorKey];
+    return anchorProp && anchorProp.value;
+  });
 
   const hasSystems = systemList && systemList.length > 0;
 
@@ -123,8 +130,8 @@ function ExoplanetsPanel() {
   }
 
   function removeExoplanetSystem(systemName) {
-    const matchingAnchor = (anchor.value.indexOf(systemName) === 0);
-    const matchingAim = (aim.value.indexOf(systemName) === 0);
+    const matchingAnchor = (anchor.indexOf(systemName) === 0);
+    const matchingAim = (aim.indexOf(systemName) === 0);
     if (matchingAnchor || matchingAim) {
       propertyDispatcher(dispatch, NavigationAnchorKey).set('Sun');
       propertyDispatcher(dispatch, NavigationAimKey).set('');
