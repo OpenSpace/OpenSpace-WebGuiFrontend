@@ -29,12 +29,11 @@ $icon-size: 18px;
   padding-top: 3px;
   padding-bottom: 3px;
   height: 100%;
+  display: flex;
+  align-items: center;
 
   > * {
     height: 100%;
-    display: inline-block;
-    vertical-align: top;
-    margin-right: 0.1em;
     > button {
       height: 100%;
     }
