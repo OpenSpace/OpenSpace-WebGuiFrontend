@@ -6,13 +6,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 /* eslint-disable import/no-webpack-loader-syntax */
 import DraggableIcon from 'svg-react-loader?name=Aim!../../../icons/draggable_list.svg';
-import Focus from 'svg-react-loader?name=Focus!../../../icons/focus.svg';
 
 import {
-  EngineFadeDurationKey,
-  NavigationAimKey,
-  NavigationAnchorKey,
-  RetargetAnchorKey
+  EngineFadeDurationKey
 } from '../../../api/keys';
 import propertyDispatcher from '../../../api/propertyDispatcher';
 import {
@@ -24,6 +20,8 @@ import {
   isGlobeBrowsingLayer,
   isSceneGraphNode
 } from '../../../utils/propertyTreeHelpers';
+import NavigationButton from '../../BottomBar/Origin/NodeNavigationButton';
+import HorizontalDelimiter from '../../common/HorizontalDelimiter/HorizontalDelimiter';
 import Button from '../../common/Input/Button/Button';
 import Checkbox from '../../common/Input/Checkbox/Checkbox';
 import Row from '../../common/Row/Row';
@@ -81,17 +79,6 @@ function PropertyOwnerHeader({
     return propertyDispatcher(dispatch, propertyUri);
   }
 
-  function focusAction() {
-    propertyDispatcher(dispatch, NavigationAnchorKey).set(identifier);
-    propertyDispatcher(dispatch, NavigationAimKey).set('');
-    propertyDispatcher(dispatch, RetargetAnchorKey).set(null);
-  }
-
-  function shiftFocusAction() {
-    propertyDispatcher(dispatch, NavigationAnchorKey).set(identifier);
-    propertyDispatcher(dispatch, NavigationAimKey).set('');
-  }
-
   useEffect(() => {
     if (fadeUri) {
       property(fadeUri).subscribe();
@@ -146,18 +133,6 @@ function PropertyOwnerHeader({
     e.currentTarget.blur();
   }
 
-  function onClickFocus(evt) {
-    evt.stopPropagation();
-    if (!isSceneObject) { return; }
-
-    if (evt.shiftKey) {
-      shiftFocusAction();
-    } else {
-      focusAction();
-    }
-    evt.stopPropagation();
-  }
-
   function onToggleCheckboxClick(shouldBeEnabled, event) {
     if (!enabledUri) return;
 
@@ -207,12 +182,6 @@ function PropertyOwnerHeader({
     evt.stopPropagation();
   }
 
-  const focusButton = (
-    <Button className={styles.rightButton} onClick={onClickFocus} small>
-      <SvgIcon><Focus /></SvgIcon>
-    </Button>
-  );
-
   const popoutButton = (
     <Button className={styles.menuButton} onClick={popoutClick}>
       <MdBuild />
@@ -252,7 +221,6 @@ function PropertyOwnerHeader({
     refName += ` ${identifier}`;
   }
 
-  const hasMoreButtons = (popOutAction || metaAction);
   const shouldFadeCheckbox = (fadeUri && fadeValue > 0.0);
 
   return (
@@ -284,16 +252,22 @@ function PropertyOwnerHeader({
           { isLayer && <SvgIcon className={styles.layerDraggableIcon}><DraggableIcon /></SvgIcon> }
         </span>
         <span className={styles.rightButtonContainer}>
-          { isSceneObject && focusButton }
-          { hasMoreButtons && (
-            <TooltipMenu
-              className={styles.moreButton}
-              sourceObject={<MdMoreVert />}
-            >
-              { popOutAction && popoutButton }
-              { metaAction && metaButton }
-              { trashAction && trashButton }
-            </TooltipMenu>
+          { isSceneObject && (
+            <>
+              <NavigationButton type="focus" identifier={identifier} />
+              <TooltipMenu
+                className={styles.moreButton}
+                sourceObject={<MdMoreVert />}
+              >
+                { popOutAction && popoutButton }
+                { metaAction && metaButton }
+                { trashAction && trashButton }
+                <HorizontalDelimiter />
+                <NavigationButton type="fly" showLabel identifier={identifier} />
+                <NavigationButton type="jump" showLabel identifier={identifier} />
+                <NavigationButton type="frame" showLabel identifier={identifier} />
+              </TooltipMenu>
+            </>
           )}
         </span>
       </Row>

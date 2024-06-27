@@ -9,6 +9,7 @@ import PropTypes from 'prop-types';
 // eslint-disable-next-line import/no-webpack-loader-syntax
 import Focus from 'svg-react-loader?name=Focus!../../../icons/focus.svg';
 
+import { NavigationAimKey, NavigationAnchorKey, RetargetAnchorKey } from '../../../api/keys';
 import InfoBox from '../../common/InfoBox/InfoBox';
 import Button from '../../common/Input/Button/Button';
 import Row from '../../common/Row/Row';
@@ -29,10 +30,11 @@ function NavigationButton({
   const luaApi = useSelector((state) => state.luaApi);
 
   function focus(event) {
-    // @TODO: Shift-click should focus without interpolation
-    luaApi.setPropertyValueSingle('NavigationHandler.OrbitalNavigator.RetargetAnchor', null);
-    luaApi.setPropertyValueSingle('NavigationHandler.OrbitalNavigator.Anchor', identifier);
-    luaApi.setPropertyValueSingle('NavigationHandler.OrbitalNavigator.Aim', '');
+    if (!event.shiftKey) {
+      luaApi.setPropertyValueSingle(RetargetAnchorKey, null);
+    }
+    luaApi.setPropertyValueSingle(NavigationAnchorKey, identifier);
+    luaApi.setPropertyValueSingle(NavigationAimKey, '');
     event.stopPropagation();
     onFinish();
   }
