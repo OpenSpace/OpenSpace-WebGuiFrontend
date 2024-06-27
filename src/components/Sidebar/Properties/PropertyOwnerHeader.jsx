@@ -255,10 +255,7 @@ function PropertyOwnerHeader({
           { isSceneObject && (
             <>
               <NavigationButton type="focus" identifier={identifier} />
-              <TooltipMenu
-                className={styles.moreButton}
-                sourceObject={<MdMoreVert />}
-              >
+              <TooltipMenu sourceObject={<MdMoreVert />}>
                 { popOutAction && popoutButton }
                 { metaAction && metaButton }
                 { trashAction && trashButton }
