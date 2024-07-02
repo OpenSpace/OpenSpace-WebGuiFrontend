@@ -28,7 +28,7 @@ function ScenePane({ closeCallback }) {
   const [isFeaturedExpanded, setFeaturedExpanded] = useState(false);
 
   const groups = useSelector((state) => {
-    const topLevelGroupsPaths = Object.keys(state.groups).filter((path) => {
+    const topLevelGroupsPaths = Object.keys(state.groups.groups).filter((path) => {
       // Get the number of slashes in the path
       const depth = (path.match(/\//g) || []).length;
       return (depth === 1) && (path !== '/');
@@ -37,7 +37,7 @@ function ScenePane({ closeCallback }) {
   }, shallowEqual);
 
   const nodesWithoutGroup = useSelector((state) => (
-    state.groups['/']?.propertyOwners || []
+    state.groups.groups['/']?.propertyOwners || []
   ), shallowEqual);
 
   const propertyOwners = useSelector((state) => state.propertyTree.propertyOwners, shallowEqual);

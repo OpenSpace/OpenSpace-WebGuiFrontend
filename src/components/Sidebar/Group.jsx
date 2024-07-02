@@ -13,7 +13,7 @@ import PropertyOwner, {
 } from './Properties/PropertyOwner';
 
 function shouldShowGroup(state, path, showOnlyEnabled, showHidden) {
-  const data = state.groups[path] || {};
+  const data = state.groups.groups[path] || {};
   const subGroups = data.subgroups || [];
   // If there are any enabled property owners in the result, show the groups
   if (subGroups.length === 0) {
@@ -52,6 +52,8 @@ function nodeExpansionIdentifier(path) {
 function Group({
   path, expansionIdentifier, showOnlyEnabled, showHidden
 }) {
+  const customGuiGroupOrdering = useSelector((state) => state.groups.customGroupOrdering);
+
   const isExpanded = useSelector((state) => {
     const expanded = state.local.propertyTreeExpansion[expansionIdentifier];
     return Boolean(expanded);
@@ -61,7 +63,7 @@ function Group({
 
   // Sub-groups
   const subGroupPaths = useSelector((state) => {
-    const data = state.groups[path] || {};
+    const data = state.groups.groups[path] || {};
     let result = data.subgroups || [];
     if (shouldFilter) {
       result = result.filter((group) => shouldShowGroup(state, group, showOnlyEnabled, showHidden));
@@ -72,7 +74,7 @@ function Group({
   // Property-owners
   const propertyOwnerUris = useSelector((state) => {
     const props = state.propertyTree.properties;
-    const data = state.groups[path] || {};
+    const data = state.groups.groups[path] || {};
     let result = data.propertyOwners || [];
     if (shouldFilter) {
       result = filterPropertyOwners(result, props, showOnlyEnabled, showHidden);
@@ -85,6 +87,8 @@ function Group({
     const propOwners = state.propertyTree.propertyOwners;
     return propertyOwnerUris.map((uri) => propertyOwnerName(propOwners, props, uri));
   }, shallowEqualArrays);
+
+  const dispatch = useDispatch();
 
   const propertyOwners = propertyOwnerUris.map((uri, index) => ({
     type: 'propertyOwner',
@@ -101,10 +105,7 @@ function Group({
   const entries = groups.concat(propertyOwners);
   const hasEntries = entries.length !== 0;
 
-  // TODO: get this from state
-  const sortOrdering = {}; //sortOrderingObject[path];
-
-  const dispatch = useDispatch();
+  const sortOrdering = customGuiGroupOrdering[path];
 
   const setExpanded = (expanded) => {
     dispatch(setPropertyTreeExpansion({
@@ -115,9 +116,11 @@ function Group({
 
   const sortedEntries = entries.sort((a, b) => a.name.localeCompare(b.name, 'en'));
 
-  if (sortOrdering && sortOrdering.value) {
+  if (sortOrdering) {
+    // Lua gives us an object with indexes as key, not an array...
+    const sortOrderingList = Object.values(sortOrdering);
     sortedEntries.sort((a, b) => {
-      const result = sortOrdering.value.indexOf(a.name) < sortOrdering.value.indexOf(b.name);
+      const result = sortOrderingList.indexOf(a.name) < sortOrderingList.indexOf(b.name);
       return result ? -1 : 1;
     });
   }

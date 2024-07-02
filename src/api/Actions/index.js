@@ -40,6 +40,11 @@ export const refreshGroups = () => ({
   payload: {}
 });
 
+export const updateCustomGroupOrdering = (data) => ({
+  type: actionTypes.updateCustomGroupOrdering,
+  payload: data
+});
+
 export const subscribeToProperty = (uri) => ({
   type: actionTypes.subscribeToProperty,
   payload: {
