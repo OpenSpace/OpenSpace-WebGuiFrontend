@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import shallowEqualArrays from 'shallow-equal/arrays';
 
 import { setPropertyTreeExpansion } from '../../api/Actions';
-import { sortGroups } from '../../api/keys';
 import { filterPropertyOwners } from '../../utils/propertyTreeHelpers';
 import ToggleContent from '../common/ToggleContent/ToggleContent';
 
@@ -100,11 +99,10 @@ function Group({
   }));
 
   const entries = groups.concat(propertyOwners);
-
   const hasEntries = entries.length !== 0;
-  const pathFragments = path.split('/');
-  const groupName = pathFragments[pathFragments.length - 1];
-  const sortOrdering = sortGroups[groupName];
+
+  // TODO: get this from state
+  const sortOrdering = {}; //sortOrderingObject[path];
 
   const dispatch = useDispatch();
 
