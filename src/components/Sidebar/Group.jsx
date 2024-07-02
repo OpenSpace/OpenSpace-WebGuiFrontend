@@ -105,8 +105,6 @@ function Group({
   const entries = groups.concat(propertyOwners);
   const hasEntries = entries.length !== 0;
 
-  const sortOrdering = customGuiGroupOrdering[path];
-
   const setExpanded = (expanded) => {
     dispatch(setPropertyTreeExpansion({
       identifier: expansionIdentifier,
@@ -116,12 +114,25 @@ function Group({
 
   const sortedEntries = entries.sort((a, b) => a.name.localeCompare(b.name, 'en'));
 
-  if (sortOrdering) {
-    // Lua gives us an object with indexes as key, not an array...
-    const sortOrderingList = Object.values(sortOrdering);
+  const customSortOrdering = customGuiGroupOrdering[path];
+  if (customSortOrdering) {
+    // Lua gives us an object with indexes as key, not an array. So first convert
+    // the values to an array
+    const sortOrderingList = Object.values(customSortOrdering);
+
     sortedEntries.sort((a, b) => {
-      const result = sortOrderingList.indexOf(a.name) < sortOrderingList.indexOf(b.name);
-      return result ? -1 : 1;
+      const left = sortOrderingList.indexOf(a.name);
+      const right = sortOrderingList.indexOf(b.name);
+      if (left === right) {
+        return 0; // keep original order (alphabetical)
+      }
+      if (left === -1) { // left not in list => put last
+        return 1;
+      }
+      if (right === -1) { // right not in list => put last
+        return -1;
+      }
+      return left < right ? -1 : 1;
     });
   }
 
