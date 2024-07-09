@@ -249,6 +249,16 @@ export const initializeSkyBrowser = (data) => ({
   payload: data
 });
 
+export const moveHoverCircle = (data) => ({
+  type: actionTypes.moveHoverCircle,
+  payload: data
+});
+
+export const disableHoverCircle = (data) => ({
+  type: actionTypes.disableHoverCircle,
+  payload: data
+});
+
 export const subscribeToSkyBrowser = (data) => ({
   type: actionTypes.subscribeToSkyBrowser,
   payload: data

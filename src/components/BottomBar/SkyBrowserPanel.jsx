@@ -3,7 +3,9 @@ import { IoTelescopeSharp } from 'react-icons/io5';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
+  disableHoverCircle,
   loadSkyBrowserData,
+  moveHoverCircle,
   setPopoverVisibility,
   subscribeToProperty,
   subscribeToSkyBrowser,
@@ -135,7 +137,7 @@ function SkyBrowserPanel() {
   }
 
   function moveCircleToHoverImage(identifier) {
-    luaApi.skybrowser.moveCircleToHoverImage(imageList[identifier].url);
+    dispatch(moveHoverCircle(imageList[identifier].url));
   }
 
   function removeImageSelection(identifier, passToOs = true) {
@@ -146,7 +148,7 @@ function SkyBrowserPanel() {
       event: 'image_layer_remove',
       id: String(identifier)
     });
-    luaApi.skybrowser.disableHoverCircle();
+    dispatch(disableHoverCircle);
   }
 
   function setBorderRadius(radius) {

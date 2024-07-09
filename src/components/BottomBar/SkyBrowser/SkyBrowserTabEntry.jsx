@@ -1,7 +1,6 @@
 import React from 'react';
 import { MdDelete } from 'react-icons/md';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
-import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import { stopEventPropagation } from '../../../utils/helpers';
@@ -11,6 +10,8 @@ import NumericInput from '../../common/Input/NumericInput/NumericInput';
 import SkyBrowserInfoBox from './SkyBrowserInfoBox';
 
 import styles from './SkyBrowserEntry.scss';
+import { disableHoverCircle } from '../../../api/Actions';
+import { useDispatch } from 'react-redux';
 
 function OpacitySlider({ opacity, setOpacity, identifier }) {
   function handleChange(newValue) {
@@ -62,7 +63,9 @@ function SkyBrowserTabEntry({
   setOpacity,
   thumbnail
 }) {
-  const luaApi = useSelector((state) => state.luaApi);
+
+  const dispatch = useDispatch();
+
   function select() {
     if (onSelect && identifier) {
       onSelect(identifier);
@@ -75,8 +78,8 @@ function SkyBrowserTabEntry({
       style={{ borderLeftColor: currentBrowserColor() }}
       onMouseOver={() => { moveCircleToHoverImage(identifier); }}
       onFocus={() => { moveCircleToHoverImage(identifier); }}
-      onMouseOut={() => { luaApi.skybrowser.disableHoverCircle(); }}
-      onBlur={() => { luaApi.skybrowser.disableHoverCircle(); }}
+      onMouseOut={() => { dispatch(disableHoverCircle()); }}
+      onBlur={() => { dispatch(disableHoverCircle()); }}
       onClick={select}
       onKeyPress={select}
       {...dragHandleTitleProps}

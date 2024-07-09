@@ -60,6 +60,8 @@ const actionTypes = {
   subscribeToSkyBrowser: 'SKYBROWSER_SUBSCRIBE',
   unsubscribeToSkyBrowser: 'SKYBROWSER_UNSUBSCRIBE',
   updateSkyBrowser: 'SKYBROWSER_UPDATE',
+  moveHoverCircle: 'MOVE_HOVER_CIRCLE',
+  disableHoverCircle: 'DISABLE_HOVER_CIRCLE',
 
   // action types for camera topic
   subscribeToCamera: 'CAMERA_SUBSCRIBE',

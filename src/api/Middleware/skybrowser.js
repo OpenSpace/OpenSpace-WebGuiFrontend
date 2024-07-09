@@ -46,6 +46,18 @@ const skybrowser = (store) => (next) => (action) => {
         event: 'send_image_collection'
       });
       break;
+    case actionTypes.moveHoverCircle:
+      skybrowserTopic.talk({
+        event: 'move_hover_circle',
+        url: action.payload
+      });
+      break;
+    case actionTypes.disableHoverCircle:
+      skybrowserTopic.talk({
+        event: 'disable_hover_circle',
+        url: action.payload
+      });
+      break;
     case actionTypes.onOpenConnection:
       if (nSubscribers > 0) {
         setupSubscription(store);

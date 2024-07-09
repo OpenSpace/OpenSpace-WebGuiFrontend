@@ -1,11 +1,12 @@
 import React from 'react';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
-import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import SkyBrowserInfoBox from './SkyBrowserInfoBox';
 
 import styles from './SkyBrowserEntry.scss';
+import { disableHoverCircle } from '../../../api/Actions';
 
 function SkyBrowserFocusEntry({
   credits,
@@ -23,7 +24,7 @@ function SkyBrowserFocusEntry({
   thumbnail,
   style
 }) {
-  const luaApi = useSelector((state) => state.luaApi);
+  const dispatch = useDispatch();
 
   function select() {
     if (onSelect && identifier) {
@@ -37,8 +38,8 @@ function SkyBrowserFocusEntry({
       style={{ borderLeftColor: currentBrowserColor(), ...style }}
       onMouseOver={() => { moveCircleToHoverImage(identifier); }}
       onFocus={() => { moveCircleToHoverImage(identifier); }}
-      onMouseOut={() => { luaApi.skybrowser.disableHoverCircle(); }}
-      onBlur={() => { luaApi.skybrowser.disableHoverCircle(); }}
+      onMouseOut={() => { dispatch(disableHoverCircle()); }}
+      onBlur={() => { dispatch(disableHoverCircle()); }}
       onClick={select}
       onKeyDown={select}
       role="button"
