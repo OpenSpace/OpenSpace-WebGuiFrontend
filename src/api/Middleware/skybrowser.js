@@ -58,6 +58,13 @@ const skybrowser = (store) => (next) => (action) => {
         url: action.payload
       });
       break;
+    case actionTypes.fineTuneTarget:
+      skybrowserTopic.talk({
+        event: 'fine_tune_target',
+        identifier: action.payload.identifier,
+        translation: action.payload.translation
+      });
+      break;
     case actionTypes.onOpenConnection:
       if (nSubscribers > 0) {
         setupSubscription(store);

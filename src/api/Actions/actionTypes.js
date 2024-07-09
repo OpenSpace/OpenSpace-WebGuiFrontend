@@ -62,6 +62,7 @@ const actionTypes = {
   updateSkyBrowser: 'SKYBROWSER_UPDATE',
   moveHoverCircle: 'MOVE_HOVER_CIRCLE',
   disableHoverCircle: 'DISABLE_HOVER_CIRCLE',
+  fineTuneTarget: 'FINE_TUNE_TARGET',
 
   // action types for camera topic
   subscribeToCamera: 'CAMERA_SUBSCRIBE',

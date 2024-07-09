@@ -259,6 +259,11 @@ export const disableHoverCircle = (data) => ({
   payload: data
 });
 
+export const fineTuneTarget = (data) => ({
+  type: actionTypes.fineTuneTarget,
+  payload: data
+});
+
 export const subscribeToSkyBrowser = (data) => ({
   type: actionTypes.subscribeToSkyBrowser,
   payload: data

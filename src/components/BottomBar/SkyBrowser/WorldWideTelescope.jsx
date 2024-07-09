@@ -4,10 +4,10 @@
 import React from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-
 import {
   subscribeToProperty,
-  unsubscribeToProperty
+  unsubscribeToProperty,
+  fineTuneTarget
 } from '../../../api/Actions';
 import { SkyBrowserInverseZoomDirectionKey, SkyBrowserShowTitleInBrowserKey } from '../../../api/keys';
 import { lowPrecisionEqual } from '../../../utils/customHooks';
@@ -186,11 +186,7 @@ function WorldWideTelescope({
       const translation = [end[0] - startDragPosition[0], end[1] - startDragPosition[1]];
       // Calculate [ra, dec] translation without roll
       const percentageTranslation = [translation[0] / width, translation[1] / height];
-      // Call lua function
-      skybrowserApi.finetuneTargetPosition(
-        browserId,
-        percentageTranslation
-      );
+      dispatch(fineTuneTarget({ identifier: browserId, translation: percentageTranslation }));
     }
   }
 
