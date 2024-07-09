@@ -7,7 +7,8 @@ import PropTypes from 'prop-types';
 import {
   subscribeToProperty,
   unsubscribeToProperty,
-  fineTuneTarget
+  fineTuneTarget,
+  startFineTuningTarget
 } from '../../../api/Actions';
 import { SkyBrowserInverseZoomDirectionKey, SkyBrowserShowTitleInBrowserKey } from '../../../api/keys';
 import { lowPrecisionEqual } from '../../../utils/customHooks';
@@ -191,7 +192,7 @@ function WorldWideTelescope({
   }
 
   function mouseDown(mouse) {
-    skybrowserApi.startFinetuningTarget(browserId);
+    dispatch(startFineTuningTarget(browserId));
     const mousePosition = [mouse.clientX, mouse.clientY];
     setIsDragging(true);
     setStartDragPosition(mousePosition);

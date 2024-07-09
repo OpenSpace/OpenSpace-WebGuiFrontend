@@ -264,6 +264,11 @@ export const fineTuneTarget = (data) => ({
   payload: data
 });
 
+export const startFineTuningTarget = (data) => ({
+  type: actionTypes.startFineTuningTarget,
+  payload: data
+});
+
 export const subscribeToSkyBrowser = (data) => ({
   type: actionTypes.subscribeToSkyBrowser,
   payload: data

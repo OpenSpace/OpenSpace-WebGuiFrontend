@@ -63,6 +63,7 @@ const actionTypes = {
   moveHoverCircle: 'MOVE_HOVER_CIRCLE',
   disableHoverCircle: 'DISABLE_HOVER_CIRCLE',
   fineTuneTarget: 'FINE_TUNE_TARGET',
+  startFineTuningTarget: 'START_FINE_TUNING_TARGET',
 
   // action types for camera topic
   subscribeToCamera: 'CAMERA_SUBSCRIBE',

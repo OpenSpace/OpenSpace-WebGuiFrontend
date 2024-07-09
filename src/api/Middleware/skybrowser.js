@@ -58,6 +58,12 @@ const skybrowser = (store) => (next) => (action) => {
         url: action.payload
       });
       break;
+    case actionTypes.startFineTuningTarget:
+      skybrowserTopic.talk({
+        event: 'start_fine_tuning_target',
+        identifier: action.payload
+      });
+      break;
     case actionTypes.fineTuneTarget:
       skybrowserTopic.talk({
         event: 'fine_tune_target',
