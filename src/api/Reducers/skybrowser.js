@@ -22,6 +22,7 @@ const skybrowser = (state = defaultState, action = {}) => {
     case actionTypes.initializeSkyBrowser:
       newState.isInitialized = true;
       newState.imageList = action.payload.imageList;
+      newState.imageList.sort((a, b) => a.key - b.key);
       newState.url = action.payload.url;
       return newState;
     default:
