@@ -39,7 +39,8 @@ function SkyBrowserTabs({
   setBorderRadius,
   setCurrentTabHeight,
   setOpacityOfImage,
-  setWwtRatio
+  setWwtRatio,
+  createTargetBrowserPair
 }) {
   // State
   const [showSettings, setShowSettings] = React.useState(false);
@@ -244,11 +245,6 @@ function SkyBrowserTabs({
     );
   }
 
-  function createTargetBrowserPair() {
-    luaApi.skybrowser.createTargetBrowserPair();
-    setWwtRatio(1);
-  }
-
   function removeTargetBrowserPair(browserId) {
     const ids = Object.keys(browsers);
     if (ids.length > 1) {
@@ -388,7 +384,8 @@ SkyBrowserTabs.propTypes = {
   setBorderRadius: PropTypes.func.isRequired,
   setCurrentTabHeight: PropTypes.func.isRequired,
   setOpacityOfImage: PropTypes.func.isRequired,
-  setWwtRatio: PropTypes.func.isRequired
+  setWwtRatio: PropTypes.func.isRequired,
+  createTargetBrowserPair: PropTypes.func.isRequired
 };
 
 export default SkyBrowserTabs;

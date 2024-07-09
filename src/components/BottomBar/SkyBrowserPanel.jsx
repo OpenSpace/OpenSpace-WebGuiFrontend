@@ -191,15 +191,16 @@ function SkyBrowserPanel() {
     );
   }
 
-  function addTargetBrowserPair() {
+  function createTargetBrowserPair() {
     luaApi.skybrowser.createTargetBrowserPair();
+    setWwtRatio(1);
   }
 
   function createAddBrowserInterface() {
     const addBrowserPairButton = (
       <div className={styles.upperPart}>
         <Button
-          onClick={addTargetBrowserPair}
+          onClick={createTargetBrowserPair}
           className={styles.addTabButton}
           transparent
         >
@@ -281,6 +282,7 @@ function SkyBrowserPanel() {
           moveCircleToHoverImage={moveCircleToHoverImage}
           removeImageSelection={removeImageSelection}
           setOpacityOfImage={setOpacityOfImage}
+          createTargetBrowserPair={createTargetBrowserPair}
         />
       );
       content = (
