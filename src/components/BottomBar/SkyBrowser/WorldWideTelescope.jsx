@@ -212,7 +212,7 @@ function WorldWideTelescope({
     skybrowserApi.stopAnimations(browserId);
   }
 
-  function changeSize(widthWwt, heightWwt) {
+  function changeSize({ width: widthWwt, height: heightWwt }) {
     const { innerHeight: windowHeight } = window;
     const ratio = widthWwt / (heightWwt - TopBarHeight);
     const scale = (heightWwt - TopBarHeight) / windowHeight;
