@@ -39,7 +39,7 @@ function NavigationButton({
     onFinish();
   }
 
-  const flyTo = (event) => {
+  function flyTo(event) {
     if (event.shiftKey) {
       luaApi.pathnavigation.flyTo(identifier, 0.0);
     } else {
@@ -47,9 +47,9 @@ function NavigationButton({
     }
     event.stopPropagation();
     onFinish();
-  };
+  }
 
-  const zoomToFocus = (event) => {
+  function zoomToFocus(event) {
     if (event.shiftKey) {
       luaApi.pathnavigation.createPath({
         TargetType: 'Node',
@@ -66,13 +66,13 @@ function NavigationButton({
     }
     event.stopPropagation();
     onFinish();
-  };
+  }
 
-  const fadeTo = async (event) => {
+  function fadeTo(event) {
     event.stopPropagation();
     onFinish();
     luaApi.pathnavigation.jumpTo(identifier);
-  };
+  }
 
   const buttonClass = showLabel ? styles.navButton : styles.smallNavButton;
 
