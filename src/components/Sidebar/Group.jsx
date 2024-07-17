@@ -5,7 +5,7 @@ import shallowEqualArrays from 'shallow-equal/arrays';
 
 import { setPropertyTreeExpansion } from '../../api/Actions';
 import { sortGroups } from '../../api/keys';
-import { filterPropertyOwners, guiOrderNumber } from '../../utils/propertyTreeHelpers';
+import { filterPropertyOwners, guiOrderingNumber } from '../../utils/propertyTreeHelpers';
 import ToggleContent from '../common/ToggleContent/ToggleContent';
 
 import PropertyOwner, {
@@ -88,7 +88,7 @@ function Group({
   const ownerDetails = propertyOwnerUris.map((uri) => (
     {
       name: propertyOwnerName(allPropertyOwners, allProperties, uri),
-      guiOrder: guiOrderNumber(allProperties, uri)
+      guiOrder: guiOrderingNumber(allProperties, uri)
     }
   ));
 

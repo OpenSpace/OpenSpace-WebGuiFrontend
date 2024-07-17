@@ -221,13 +221,13 @@ export function displayName(propertyOwners, properties, uri) {
   return guiName || propertyOwners[uri].identifier;
 }
 
-export function guiOrderNumber(properties, uri) {
-  let property = properties[`${uri}.UseGuiOrder`];
-  const shouldUseGuiOrderNumber = property ? property.value : false;
-  if (!shouldUseGuiOrderNumber) {
+export function guiOrderingNumber(properties, uri) {
+  let property = properties[`${uri}.UseGuiOrdering`];
+  const shouldUseGuiOrderingNumber = property ? property.value : false;
+  if (!shouldUseGuiOrderingNumber) {
     return undefined;
   }
-  property = properties[`${uri}.GuiOrderNumber`];
+  property = properties[`${uri}.GuiOrderingNumber`];
   return property ? property.value : undefined;
 }
 
