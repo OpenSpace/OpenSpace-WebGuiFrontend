@@ -17,7 +17,7 @@ import SvgIcon from '../../common/SvgIcon/SvgIcon';
 
 import styles from './NodeNavigationButton.scss';
 
-const NavigationTypes = {
+export const NavigationTypes = {
   jump: 'jump',
   fly: 'fly',
   focus: 'focus',

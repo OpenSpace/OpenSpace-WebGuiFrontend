@@ -9,7 +9,7 @@ import SmallLabel from '../../common/SmallLabel/SmallLabel';
 import TooltipMenu from '../../common/Tooltip/TooltipMenu';
 import { useContextRefs } from '../../GettingStartedTour/GettingStartedContext';
 
-import NavigationButton from './NodeNavigationButton';
+import NavigationButton, { NavigationTypes } from './NodeNavigationButton';
 
 import styles from './FocusEntry.scss';
 
@@ -56,19 +56,19 @@ function FocusEntry({
       {showNavigationButtons && (
         <div className={styles.buttonContainer}>
           {isActive() && (
-            <NavigationButton type="frame" {...navButtonProps} />
+            <NavigationButton type={NavigationTypes.frame} {...navButtonProps} />
           )}
-          <NavigationButton type="fly" {...navButtonProps} />
+          <NavigationButton type={NavigationTypes.fly} {...navButtonProps} />
           <TooltipMenu
             sourceObject={<MdMoreVert className={styles.buttonIcon} />}
           >
             <SmallLabel className={styles.menuTopLabel}>{identifier}</SmallLabel>
             <HorizontalDelimiter />
-            <NavigationButton type="focus" showLabel {...navButtonProps} />
+            <NavigationButton type={NavigationTypes.focus} showLabel {...navButtonProps} />
             <HorizontalDelimiter />
-            <NavigationButton type="fly" showLabel {...navButtonProps} />
-            <NavigationButton type="jump" showLabel {...navButtonProps} />
-            <NavigationButton type="frame" showLabel {...navButtonProps} />
+            <NavigationButton type={NavigationTypes.fly} showLabel {...navButtonProps} />
+            <NavigationButton type={NavigationTypes.jump} showLabel {...navButtonProps} />
+            <NavigationButton type={NavigationTypes.frame} showLabel {...navButtonProps} />
           </TooltipMenu>
         </div>
       )}

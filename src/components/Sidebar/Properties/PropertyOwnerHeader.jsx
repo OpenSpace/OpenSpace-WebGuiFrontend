@@ -20,7 +20,7 @@ import {
   isGlobeBrowsingLayer,
   isSceneGraphNode
 } from '../../../utils/propertyTreeHelpers';
-import NavigationButton from '../../BottomBar/Origin/NodeNavigationButton';
+import NavigationButton, { NavigationTypes } from '../../BottomBar/Origin/NodeNavigationButton';
 import HorizontalDelimiter from '../../common/HorizontalDelimiter/HorizontalDelimiter';
 import Button from '../../common/Input/Button/Button';
 import Checkbox from '../../common/Input/Checkbox/Checkbox';
@@ -254,15 +254,15 @@ function PropertyOwnerHeader({
         <span className={styles.rightButtonContainer}>
           { isSceneObject && (
             <>
-              <NavigationButton type="focus" identifier={identifier} />
+              <NavigationButton type={NavigationTypes.focus} identifier={identifier} />
               <TooltipMenu sourceObject={<MdMoreVert />}>
                 { popOutAction && popoutButton }
                 { metaAction && metaButton }
                 { trashAction && trashButton }
                 <HorizontalDelimiter />
-                <NavigationButton type="fly" showLabel identifier={identifier} />
-                <NavigationButton type="jump" showLabel identifier={identifier} />
-                <NavigationButton type="frame" showLabel identifier={identifier} />
+                <NavigationButton type={NavigationTypes.fly} showLabel identifier={identifier} />
+                <NavigationButton type={NavigationTypes.jump} showLabel identifier={identifier} />
+                <NavigationButton type={NavigationTypes.frame} showLabel identifier={identifier} />
               </TooltipMenu>
             </>
           )}
