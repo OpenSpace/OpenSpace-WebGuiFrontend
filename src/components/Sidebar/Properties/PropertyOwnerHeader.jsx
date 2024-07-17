@@ -291,7 +291,7 @@ function PropertyOwnerHeader({
         </span>
         <span className={styles.rightButtonContainer}>
           { isSceneObject && focusButton }
-          { (showPopOutSettings || showMeta || showMeta) && (
+          { (showPopOutSettings || showMeta || trashAction) && (
             <TooltipMenu
               className={styles.moreButton}
               sourceObject={<MdMoreVert />}
