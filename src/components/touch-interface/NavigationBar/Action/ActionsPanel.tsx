@@ -167,12 +167,10 @@ function ActionsPanel({
 interface ActionsState {
   isInitialized: boolean;
   data: {
-    shortcuts: {
-      key?: any;
-      guiPath: string;
-      [key: string]: any;
-    }[];
-  };
+    key?: any;
+    guiPath: string;
+    [key: string]: any;
+  }[];
   navigationPath: string;
 }
 
@@ -187,8 +185,8 @@ const mapSubStateToProps = ({ actions }: { actions: ActionsState }) => {
     };
   }
 
-  for (let i = 0; i < actions.data.shortcuts.length; i++) {
-    const action = actions.data.shortcuts[i];
+  for (let i = 0; i < actions.data.length; i++) {
+    const action = actions.data[i];
     if (action.key) {
       continue;
     }
@@ -240,7 +238,7 @@ const mapSubStateToProps = ({ actions }: { actions: ActionsState }) => {
     }
   }
 
-  const allActions = actions.data.shortcuts.filter((action) => {
+  const allActions = actions.data.filter((action) => {
     if (navPath.length === 1) {
       return true;
     }
