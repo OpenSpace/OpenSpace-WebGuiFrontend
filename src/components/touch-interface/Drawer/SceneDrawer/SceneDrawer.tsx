@@ -140,7 +140,7 @@ export const SceneDrawer = () => {
       <FilterList
         favorites={favorites}
         entries={entries}
-        showOnlyEnabled
+        showOnlyEnabled={showOnlyEnabled}
         matcher={showOnlyEnabled ? onlyEnabledMatcher : matcher || keywordMatcher}
         ignorePropsFilter={['active', 'onSelect']}
       />
