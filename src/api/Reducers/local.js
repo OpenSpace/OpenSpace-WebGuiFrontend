@@ -77,6 +77,8 @@ const defaultPopovers = {
   focusNodePropertiesPanel: popover({ attached: false }),
   activeNodePropertyPanels: {},
   activeNodeMetaPanels: {},
+  userControlPanel: popover(),
+  activeUserControlPanels: {},
   flightController: {}
 };
 
@@ -89,6 +91,26 @@ const popovers = (state = defaultPopovers, action = {}) => {
         ...state,
         [action.payload.popover]: popover(state[action.payload.popover], action)
       };
+    case actionTypes.addUserPanel:
+      return {
+        ...state,
+        activeUserControlPanels: {
+          ...state.activeUserControlPanels,
+          [action.payload]: popover(
+            { attached: false, visible: true }
+          )
+        }
+      };
+
+    case actionTypes.removeUserPanel:
+      return {
+        ...state,
+        activeUserControlPanels: {
+          ...state.activeUserControlPanels,
+          [action.payload]: undefined
+        }
+      };
+
     case actionTypes.addNodePropertyPopover:
       if (action.payload.focus) {
         return {

@@ -23,6 +23,11 @@ export const addPropertyOwners = (propertyOwners) => ({
   }
 });
 
+export const clearPropertyTree = () => ({
+  type: actionTypes.clearPropertyTree,
+  payload: {}
+});
+
 export const addProperties = (properties) => ({
   type: actionTypes.addProperties,
   payload: {
@@ -209,6 +214,26 @@ export const removeExoplanets = (data) => ({
   payload: data
 });
 
+export const loadUserPanelData = (luaApi) => ({
+  type: actionTypes.loadUserPanelData,
+  payload: luaApi
+});
+
+export const initializeUserPanels = (data) => ({
+  type: actionTypes.initializeUserPanels,
+  payload: data
+});
+
+export const addUserPanel = (data) => ({
+  type: actionTypes.addUserPanel,
+  payload: data
+});
+
+export const removeUserPanel = (data) => ({
+  type: actionTypes.removeUserPanel,
+  payload: data
+});
+
 export const loadSkyBrowserData = (luaApi) => ({
   type: actionTypes.loadSkyBrowserData,
   payload: luaApi
@@ -286,6 +311,21 @@ export const triggerAction = (data) => ({
 
 export const setActionsPath = (data) => ({
   type: actionTypes.setActionsPath,
+  payload: data
+});
+
+export const addActions = (data) => ({
+  type: actionTypes.addActions,
+  payload: data
+});
+
+export const getAction = (data) => ({
+  type: actionTypes.getAction,
+  payload: data
+});
+
+export const removeAction = (data) => ({
+  type: actionTypes.removeAction,
   payload: data
 });
 
@@ -386,6 +426,16 @@ export const refreshSessionRecording = () => ({
 
 export const updateSessionRecording = (data) => ({
   type: actionTypes.updateSessionRecording,
+  payload: data
+});
+
+export const addPropertyOwner = (data) => ({
+  type: actionTypes.addPropertyOwner,
+  payload: data
+});
+
+export const removePropertyOwners = (data) => ({
+  type: actionTypes.removePropertyOwners,
   payload: data
 });
 

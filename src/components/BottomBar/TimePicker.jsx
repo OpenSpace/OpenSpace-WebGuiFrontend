@@ -19,6 +19,7 @@ import {
   SessionStatePlaying
 } from '../../api/keys';
 import Calendar from '../common/Calendar/Calendar';
+import HorizontalDelimiter from '../common/HorizontalDelimiter/HorizontalDelimiter';
 import Button from '../common/Input/Button/Button';
 import Time from '../common/Input/Time/Time';
 import LoadingString from '../common/LoadingString/LoadingString';
@@ -62,18 +63,26 @@ function TimePicker() {
     // Spice, that is handling the time parsing in OpenSpace does not support
     // ISO 8601-style time zones (the Z). It does, however, always assume that UTC
     // is given.
-    const fixedTimeString = newTime.toJSON().replace('Z', '');
-    luaApi.time.setTime(fixedTimeString);
+    try {
+      const fixedTimeString = newTime.toJSON().replace('Z', '');
+      luaApi.time.setTime(fixedTimeString);
+    } catch {
+      luaApi.time.setTime(time);
+    }
   }
 
   function setDateRelative(delta) {
-    const newTime = new Date(time);
-    newTime.setSeconds(newTime.getSeconds() + delta);
-    // Spice, that is handling the time parsing in OpenSpace does not support
-    // ISO 8601-style time zones (the Z). It does, however, always assume that UTC
-    // is given.
-    const fixedTimeString = newTime.toJSON().replace('Z', '');
-    luaApi.time.setTime(fixedTimeString);
+    try {
+      const newTime = new Date(time);
+      newTime.setSeconds(newTime.getSeconds() + delta);
+      // Spice, that is handling the time parsing in OpenSpace does not support
+      // ISO 8601-style time zones (the Z). It does, however, always assume that UTC
+      // is given.
+      const fixedTimeString = newTime.toJSON().replace('Z', '');
+      luaApi.time.setTime(fixedTimeString);
+    } catch {
+      luaApi.time.setTime(time);
+    }
   }
 
   function interpolateDate(newTime) {
@@ -117,7 +126,14 @@ function TimePicker() {
   }
 
   function timeLabel() {
-    return time && time.toUTCString();
+    if (time) {
+      try {
+        return time.toUTCString();
+      } catch {
+        return time;
+      }
+    }
+    return time;
   }
 
   function setToPendingTime() {
@@ -200,14 +216,12 @@ function TimePicker() {
   }
 
   function calendar() {
-    return (
-      showCalendar && (
-        <div>
-          <hr className={Popover.styles.delimiter} />
-          <Calendar currentTime={time} onChange={changeDate} todayButton />
-          <hr className={Popover.styles.delimiter} />
-        </div>
-      )
+    return showCalendar && (
+      <div>
+        <HorizontalDelimiter />
+        <Calendar currentTime={time} onChange={changeDate} todayButton />
+        <HorizontalDelimiter />
+      </div>
     );
   }
 
@@ -265,7 +279,7 @@ function TimePicker() {
         <div className={Popover.styles.content}>
           <SimulationIncrement />
         </div>
-        <hr className={Popover.styles.delimiter} />
+        <HorizontalDelimiter />
 
         <div className={`${Popover.styles.row} ${Popover.styles.content}`}>
           <Button block smalltext onClick={realtime}>

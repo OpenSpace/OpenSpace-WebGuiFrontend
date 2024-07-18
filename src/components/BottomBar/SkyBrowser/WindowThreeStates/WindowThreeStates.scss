@@ -33,15 +33,22 @@ $font-size: 0.8rem;
 }
 
 .title {
+  width: auto;
   font-weight: 600;
   font-size: $font-size;
   letter-spacing: 0.1em;
   text-transform: uppercase;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.buttons {
+  margin-left: auto;
 }
 
 .topMenu {
   display: flex;
-  justify-content: space-between;
 }
 
 // Resizeable classes

@@ -5,6 +5,7 @@ import shallowEqualArrays from 'shallow-equal/arrays';
 
 import { setPropertyTreeExpansion } from '../../api/Actions';
 import { sortGroups } from '../../api/keys';
+import { filterPropertyOwners, guiOrderingNumber } from '../../utils/propertyTreeHelpers';
 import ToggleContent from '../common/ToggleContent/ToggleContent';
 
 import PropertyOwner, {
@@ -12,26 +13,22 @@ import PropertyOwner, {
   nodeExpansionIdentifier as propertyOwnerNodeExpansionIdentifier
 } from './Properties/PropertyOwner';
 
-function isEnabled(properties, uri) {
-  return properties[`${uri}.Renderable.Enabled`]?.value;
-}
-
-function shouldShowGroup(state, path) {
+function shouldShowGroup(state, path, showOnlyEnabled, showHidden) {
   const data = state.groups[path] || {};
   const subGroups = data.subgroups || [];
-  // If there are any enabled property owners in the result,
-  // show the groups
+  // If there are any enabled property owners in the result, show the groups
   if (subGroups.length === 0) {
     const propertyOwners = data.propertyOwners || [];
     const props = state.propertyTree.properties;
-
-    // Filter PropertyOwners
-    const visible = propertyOwners.filter((propertyOwner) => isEnabled(props, propertyOwner));
+    const visible = filterPropertyOwners(propertyOwners, props, showOnlyEnabled, showHidden);
     return visible.length !== 0;
   }
+  // Recursively check the subgroups
   const initialValue = false;
   const result = subGroups.reduce(
-    (accumulator, currentValue) => accumulator || shouldShowGroup(state, currentValue),
+    (accumulator, currentValue) => (
+      accumulator || shouldShowGroup(state, currentValue, showOnlyEnabled, showHidden)
+    ),
     initialValue
   );
   return result;
@@ -54,49 +51,59 @@ function nodeExpansionIdentifier(path) {
 }
 
 function Group({
-  path, expansionIdentifier, showOnlyEnabled
+  path, expansionIdentifier, showOnlyEnabled, showHidden
 }) {
   const isExpanded = useSelector((state) => {
     const expanded = state.local.propertyTreeExpansion[expansionIdentifier];
     return Boolean(expanded);
   });
-  const groupPaths = useSelector((state) => {
-    const data = state.groups[path] || {};
-    const result = data.subgroups || [];
-    // See if the groups contain any PropertyOwners
-    if (showOnlyEnabled) {
-      return result.filter((group) => shouldShowGroup(state, group));
+
+  const shouldFilter = showOnlyEnabled || !showHidden;
+
+  const groupContent = useSelector((state) => state.groups[path] || {});
+
+  const allPropertyOwners = useSelector(
+    (state) => (state.propertyTree.propertyOwners ? state.propertyTree.propertyOwners : [])
+  );
+  const allProperties = useSelector(
+    (state) => (state.propertyTree.properties ? state.propertyTree.properties : [])
+  );
+
+  // Sub-groups
+  const subGroupPaths = useSelector((state) => {
+    let result = groupContent.subgroups || [];
+    if (shouldFilter) {
+      result = result.filter((group) => shouldShowGroup(state, group, showOnlyEnabled, showHidden));
     }
     return result;
   }, shallowEqualArrays);
 
-  const ownerUris = useSelector((state) => {
-    const data = state.groups[path] || {};
-    const groupPropOwners = data.propertyOwners || [];
-    if (!showOnlyEnabled) {
-      return groupPropOwners;
+  // Property owners
+  let propertyOwnerUris = groupContent?.propertyOwners || [];
+  if (shouldFilter) {
+    propertyOwnerUris =
+      filterPropertyOwners(propertyOwnerUris, allProperties, showOnlyEnabled, showHidden);
+  }
+
+  const ownerDetails = propertyOwnerUris.map((uri) => (
+    {
+      name: propertyOwnerName(allPropertyOwners, allProperties, uri),
+      guiOrder: guiOrderingNumber(allProperties, uri)
     }
-    // Filter PropertyOwners
-    const props = state.propertyTree.properties;
-    return groupPropOwners.filter((propertyOwner) => isEnabled(props, propertyOwner));
-  }, shallowEqualArrays);
+  ));
 
-  const ownerNames = useSelector((state) => {
-    const props = state.propertyTree.properties;
-    const propOwners = state.propertyTree.propertyOwners;
-    return ownerUris.map((uri) => propertyOwnerName(propOwners, props, uri));
-  }, shallowEqualArrays);
-
-  const propertyOwners = ownerUris.map((uri, index) => ({
+  const propertyOwners = propertyOwnerUris.map((uri, index) => ({
     type: 'propertyOwner',
     payload: uri,
-    name: ownerNames[index]
+    name: ownerDetails[index].name,
+    guiOrder: ownerDetails[index].guiOrder
   }));
 
-  const groups = groupPaths.map((groupPath) => ({
+  const groups = subGroupPaths.map((groupPath) => ({
     type: 'group',
     payload: groupPath,
-    name: displayName(groupPath)
+    name: displayName(groupPath),
+    guiOrder: undefined
   }));
 
   const entries = groups.concat(propertyOwners);
@@ -104,7 +111,7 @@ function Group({
   const hasEntries = entries.length !== 0;
   const pathFragments = path.split('/');
   const groupName = pathFragments[pathFragments.length - 1];
-  const sortOrdering = sortGroups[groupName];
+  const groupSortOrdering = sortGroups[groupName];
 
   const dispatch = useDispatch();
 
@@ -115,12 +122,32 @@ function Group({
     }));
   };
 
-  const sortedEntries = entries.sort((a, b) => a.name.localeCompare(b.name, 'en'));
+  // Accumulate lists of entries with and without order number and sort the lists
+  // independently
+  const withOrderEntries = [];
+  const noOrderEntries = [];
+  entries.forEach((entry) => {
+    const target = (entry.guiOrder !== undefined) ? withOrderEntries : noOrderEntries;
+    target.push(entry); // target is a reference to the correct list
+  });
 
-  if (sortOrdering && sortOrdering.value) {
+  const numericallySortedEntries = withOrderEntries.sort((a, b) => {
+    if (a.guiOrder === b.guiOrder) {
+      // Do alphabetic sort if number is the same
+      return a.name.localeCompare(b.name, 'en');
+    }
+    return a.guiOrder > b.guiOrder;
+  });
+
+  const alphabeticallySortedEntries = noOrderEntries.sort((a, b) => a.name.localeCompare(b.name, 'en'));
+  const sortedEntries = numericallySortedEntries.concat(alphabeticallySortedEntries);
+
+  // Sort based on custom group sorting
+  if (groupSortOrdering && groupSortOrdering.value) {
     sortedEntries.sort((a, b) => {
-      const result = sortOrdering.value.indexOf(a.name) < sortOrdering.value.indexOf(b.name);
-      return result ? -1 : 1;
+      const indexA = groupSortOrdering.value.indexOf(a.name);
+      const indexB = groupSortOrdering.value.indexOf(b.name);
+      return (indexA < indexB) ? -1 : 1;
     });
   }
 
@@ -143,6 +170,7 @@ function Group({
                   path={entry.payload}
                   expansionIdentifier={childNodeIdentifier}
                   showOnlyEnabled={showOnlyEnabled}
+                  showHidden={showHidden}
                 />
               );
             }
@@ -170,11 +198,13 @@ function Group({
 Group.propTypes = {
   path: PropTypes.string.isRequired,
   expansionIdentifier: PropTypes.string.isRequired,
-  showOnlyEnabled: PropTypes.bool
+  showOnlyEnabled: PropTypes.bool,
+  showHidden: PropTypes.bool
 };
 
 Group.defaultProps = {
-  showOnlyEnabled: false
+  showOnlyEnabled: false,
+  showHidden: false
 };
 
 export default Group;

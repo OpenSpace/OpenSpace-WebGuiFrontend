@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import * as geometry from 'spherical-geometry-js';
 
 import {
-  reloadPropertyTree,
   setPopoverVisibility
 } from '../../api/Actions';
 import { useLocalStorageState } from '../../utils/customHooks';
@@ -13,6 +12,7 @@ import AnimatedCheckmark from '../common/AnimatedCheckmark/AnimatedCheckmark';
 import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
 import Dropdown from '../common/DropDown/Dropdown';
 import { FilterList, FilterListData } from '../common/FilterList/FilterList';
+import HorizontalDelimiter from '../common/HorizontalDelimiter/HorizontalDelimiter';
 import InfoBox from '../common/InfoBox/InfoBox';
 import Button from '../common/Input/Button/Button';
 import Input from '../common/Input/Input/Input';
@@ -148,10 +148,6 @@ function GeoPositionPanel() {
 
   const dispatch = useDispatch();
 
-  function refresh() {
-    dispatch(reloadPropertyTree());
-  }
-
   function togglePopover() {
     dispatch(setPopoverVisibility({
       popover: 'geoposition',
@@ -218,7 +214,7 @@ function GeoPositionPanel() {
         break;
       }
       case Interaction.jumpTo: {
-        luaApi?.globebrowsing?.goToGeo(currentAnchor, lat, long, alt);
+        luaApi?.globebrowsing?.jumpToGeo(currentAnchor, lat, long, alt);
         break;
       }
       case Interaction.addFocus: {
@@ -238,9 +234,6 @@ function GeoPositionPanel() {
         luaApi?.addSceneGraphNode(
           createSceneGraphNodeTable(currentAnchor, addressUtf8, lat, long, alt)
         );
-        // TODO: Once we have a proper way to subscribe to additions and removals
-        // of property owners, this 'hard' refresh should be removed.
-        setTimeout(() => refresh(), 300);
         break;
       }
       default: {
@@ -265,7 +258,7 @@ function GeoPositionPanel() {
       case 'Earth':
         return (
           <>
-            <hr className={Popover.styles.delimiter} />
+            <HorizontalDelimiter />
             <div className={styles.searchField}>
               <Input
                 placeholder="Search places..."
@@ -319,7 +312,7 @@ function GeoPositionPanel() {
                 position: 'absolute', bottom: 0, left: 0, width: '100%'
               }}
             >
-              <hr className={Popover.styles.delimiter} />
+              <HorizontalDelimiter />
               <p className={styles.resultsTitle} style={{ padding: '5px 0px' }}>
                 Custom Coordinate
               </p>

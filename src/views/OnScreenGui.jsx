@@ -12,6 +12,7 @@ import {
 } from '../api/Version';
 import BottomBar from '../components/BottomBar/BottomBar';
 import KeybindingPanel from '../components/BottomBar/KeybindingPanel';
+import UserControlPanelContainer from '../components/BottomBar/UserControlPanel/UserControlPanelContainer';
 import Button from '../components/common/Input/Button/Button';
 import Overlay from '../components/common/Overlay/Overlay';
 import Stack from '../components/common/Stack/Stack';
@@ -108,6 +109,7 @@ function OnScreenGui({ isInBrowser, showFlightController }) {
           {isInBrowser && luaConsoleVisible && <LuaConsole />}
           <NodePopOverContainer />
           <NodeMetaContainer />
+          <UserControlPanelContainer />
           <BottomBar showFlightController={showFlightController} />
           <KeybindingPanel />
           <TourPopup isVisible={showTutorial} setVisibility={(show) => setShowTutorial(show)} />

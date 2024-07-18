@@ -91,7 +91,7 @@ function checkConditionsStatus(content, valueStart, currentValue) {
       // The multi uri will be true if either of the uris are true, equivalent to the OR operator
         let isFulfilled = false;
         currentValue[i].forEach(((value) => {
-          if (content.uriValue === value.uri) {
+          if (content.uriValue === value) {
             isFulfilled = true;
           }
         }));

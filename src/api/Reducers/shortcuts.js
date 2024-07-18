@@ -13,8 +13,7 @@ const shortcuts = (state = defaultState, action = {}) => { // state refers to sh
       return {
         ...state,
         isInitialized: true,
-        data: { ...action.payload },
-        navigationPath: '/'
+        data: action.payload
       };
     case actionTypes.setActionsPath:
       return {
@@ -22,11 +21,31 @@ const shortcuts = (state = defaultState, action = {}) => { // state refers to sh
         navigationPath: action.payload
       };
     case actionTypes.toggleKeybindViewer:
-      console.log('was showing?', state.showKeybinds);
       return {
         ...state,
         showKeybinds: !state.showKeybinds
       };
+    case actionTypes.addActions:
+      return {
+        ...state,
+        data: [...state.data, ...action.payload]
+      };
+    case actionTypes.removeAction: {
+      const newData = state.data;
+      const index = newData.findIndex((element) => element.identifier === action.payload.uri);
+      if (index > -1) { // only splice array when item is found
+        newData.splice(index, 1); // 2nd parameter means remove one item only
+      }
+      // If the removed action was the last one with its gui path, we need to change the
+      // navigation path
+      const indexPath = newData.findIndex((element) => element.guiPath === state.navigationPath);
+      const newNavigationPath = indexPath < 0 ? '/' : state.navigationPath;
+      return {
+        ...state,
+        data: [...newData],
+        navigationPath: newNavigationPath
+      };
+    }
     default:
       return state;
   }

@@ -11,6 +11,7 @@ export const RollFrictionKey = 'NavigationHandler.OrbitalNavigator.Friction.Roll
 export const ApplyIdleBehaviorOnPathFinishKey = 'NavigationHandler.PathNavigator.ApplyIdleBehaviorOnFinish';
 export const CameraPathArrivalDistanceFactorKey = 'NavigationHandler.PathNavigator.ArrivalDistanceFactor';
 export const CameraPathSpeedFactorKey = 'NavigationHandler.PathNavigator.SpeedScale';
+export const JumpToFadeDurationKey = 'NavigationHandler.JumpToFadeDuration';
 
 // To get any scene graph node you need ScenePrefix+NodeIdentifier
 export const ScenePrefixKey = 'Scene.';
@@ -26,6 +27,8 @@ export const VersionInfoKey = 'VersionInfo';
 export const SCMInfoKey = 'SCMInfo';
 // key for getting current time subscription
 export const TimeKey = 'special:currentTime';
+
+export const InterestingTag = 'GUI.Interesting';
 
 // TODO: Some of the following constants are removed in master and
 // should be considered deprecated

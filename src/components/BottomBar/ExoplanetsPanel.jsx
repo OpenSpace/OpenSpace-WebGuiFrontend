@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import {
   loadExoplanetsData,
-  reloadPropertyTree,
   removeExoplanets,
   setPopoverVisibility
 } from '../../api/Actions';
@@ -12,6 +11,7 @@ import { NavigationAimKey, NavigationAnchorKey } from '../../api/keys';
 import propertyDispatcher from '../../api/propertyDispatcher';
 import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
 import { FilterList, FilterListData } from '../common/FilterList/FilterList';
+import HorizontalDelimiter from '../common/HorizontalDelimiter/HorizontalDelimiter';
 import InfoBox from '../common/InfoBox/InfoBox';
 import Button from '../common/Input/Button/Button';
 import Checkbox from '../common/Input/Checkbox/Checkbox';
@@ -39,17 +39,24 @@ function ExoplanetsPanel() {
 
   const popoverVisible = useSelector((state) => state.local.popovers.exoplanets.visible);
   const luaApi = useSelector((state) => state.luaApi);
-  const exoplanetSystems = useSelector((state) => {
-    // Find already existing systems
-    const systems = Object.values(state.propertyTree.propertyOwners).filter(
-      (owner) => owner.tags.includes('exoplanet_system')
-    );
-    return systems.map((owner) => `Scene.${owner.identifier}`);
-  });
+  const propertyOwners = useSelector((state) => state.propertyTree.propertyOwners);
+
+  // Find already existing exoplent systems among the property owners
+  const systems = Object.values(propertyOwners).filter(
+    (owner) => owner.tags.includes('exoplanet_system')
+  );
+  const exoplanetSystems = systems.map((owner) => `Scene.${owner.identifier}`);
+
   const isDataInitialized = useSelector((state) => state.exoplanets.isInitialized);
-  const anchor = useSelector((state) => state.propertyTree.properties[NavigationAnchorKey]);
   const systemList = useSelector((state) => state.exoplanets.data);
-  const aim = useSelector((state) => state.propertyTree.properties[NavigationAimKey]);
+  const aim = useSelector((state) => {
+    const aimProp = state.propertyTree.properties[NavigationAimKey];
+    return aimProp && aimProp.value;
+  });
+  const anchor = useSelector((state) => {
+    const anchorProp = state.propertyTree.properties[NavigationAnchorKey];
+    return anchorProp && anchorProp.value;
+  });
 
   const hasSystems = systemList && systemList.length > 0;
 
@@ -123,8 +130,8 @@ function ExoplanetsPanel() {
   }
 
   function removeExoplanetSystem(systemName) {
-    const matchingAnchor = (anchor.value.indexOf(systemName) === 0);
-    const matchingAim = (aim.value.indexOf(systemName) === 0);
+    const matchingAnchor = (anchor.indexOf(systemName) === 0);
+    const matchingAim = (aim.indexOf(systemName) === 0);
     if (matchingAnchor || matchingAim) {
       propertyDispatcher(dispatch, NavigationAnchorKey).set('Sun');
       propertyDispatcher(dispatch, NavigationAimKey).set('');
@@ -135,11 +142,6 @@ function ExoplanetsPanel() {
 
   function addSystem() {
     luaApi.exoplanets.addExoplanetSystem(starName);
-    // TODO: Once we have a proper way to subscribe to additions and removals
-    // of property owners, this 'hard' refresh should be removed.
-    setTimeout(() => {
-      dispatch(reloadPropertyTree());
-    }, 500);
   }
 
   function popover() {
@@ -203,7 +205,7 @@ function ExoplanetsPanel() {
             </div>
           </Row>
         </div>
-        <hr className={Popover.styles.delimiter} />
+        <HorizontalDelimiter />
         <ToggleContent
           title="Settings"
           expanded={isSettingsExpanded}
@@ -254,7 +256,7 @@ function ExoplanetsPanel() {
             />
           </Checkbox>
         </ToggleContent>
-        <hr className={Popover.styles.delimiter} />
+        <HorizontalDelimiter />
         <div className={Popover.styles.title}>Added Systems </div>
         <div className={styles.slideList}>
           <ScrollOverlay>

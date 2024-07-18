@@ -2,8 +2,9 @@ import React from 'react';
 import { MdInsertPhoto } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { reloadPropertyTree, setPopoverVisibility } from '../../api/Actions';
+import { setPopoverVisibility } from '../../api/Actions';
 import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
+import HorizontalDelimiter from '../common/HorizontalDelimiter/HorizontalDelimiter';
 import Button from '../common/Input/Button/Button';
 import Input from '../common/Input/Input/Input';
 import Popover from '../common/Popover/Popover';
@@ -23,11 +24,11 @@ function ScreenSpaceRenderablePanel() {
   const popoverVisible = useSelector(
     (state) => state.local.popovers.screenSpaceRenderables.visible
   );
-  const screenSpaceRenderables = useSelector(
-    (state) => (state.propertyTree.propertyOwners.ScreenSpace ?
-      state.propertyTree.propertyOwners.ScreenSpace.subowners :
-      [])
+  // Access the propertyOwners state so that useSelector is triggered by updates
+  const propertyOwners = useSelector(
+    (state) => (state.propertyTree.propertyOwners ? state.propertyTree.propertyOwners : [])
   );
+  const renderables = propertyOwners?.ScreenSpace?.subowners ?? [];
 
   const dispatch = useDispatch();
 
@@ -61,19 +62,12 @@ function ScreenSpaceRenderablePanel() {
     }
 
     luaApi.addScreenSpaceRenderable(renderable);
-
-    // TODO: Once we have a proper way to subscribe to additions and removals
-    // of property owners, this 'hard' refresh should be removed.
-    setTimeout(() => {
-      dispatch(reloadPropertyTree());
-    }, 500);
   }
 
   function popover() {
     const slideNameLabel = <span>Slide name</span>;
     const slideURLLabel = <span>URL</span>;
     const noSlidesLabel = <CenteredLabel>No active slides</CenteredLabel>;
-    const renderables = screenSpaceRenderables;
 
     let slideContent;
     if (renderables.length === 0) {
@@ -125,7 +119,7 @@ function ScreenSpaceRenderablePanel() {
             </div>
           </Row>
         </div>
-        <hr className={Popover.styles.delimiter} />
+        <HorizontalDelimiter />
         <div className={Popover.styles.title}>Slides </div>
         <div className={styles.slideList}>
           <ScrollOverlay>

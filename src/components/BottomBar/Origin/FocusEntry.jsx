@@ -5,9 +5,9 @@ import PropTypes from 'prop-types';
 // eslint-disable-next-line import/no-webpack-loader-syntax
 import Focus from 'svg-react-loader?name=Focus!../../../icons/focus.svg';
 
+import HorizontalDelimiter from '../../common/HorizontalDelimiter/HorizontalDelimiter';
 import InfoBox from '../../common/InfoBox/InfoBox';
 import Button from '../../common/Input/Button/Button';
-import Popover from '../../common/Popover/Popover';
 import Row from '../../common/Row/Row';
 import SmallLabel from '../../common/SmallLabel/SmallLabel';
 import SvgIcon from '../../common/SvgIcon/SvgIcon';
@@ -74,14 +74,7 @@ function FocusEntry({
   const fadeTo = async (event) => {
     event.stopPropagation();
     closePopoverIfSet();
-    const fadeTime = 1;
-    const promise = new Promise((resolve) => {
-      luaApi.setPropertyValueSingle('RenderEngine.BlackoutFactor', 0, fadeTime, 'QuadraticEaseOut');
-      setTimeout(() => resolve('done!'), fadeTime * 1000);
-    });
-    await promise;
-    luaApi.pathnavigation.flyTo(identifier, 0.0);
-    luaApi.setPropertyValueSingle('RenderEngine.BlackoutFactor', 1, fadeTime, 'QuadraticEaseIn');
+    luaApi.pathnavigation.jumpTo(identifier);
   };
 
   const refs = useContextRefs();
@@ -111,8 +104,8 @@ function FocusEntry({
           </Button>
           <TooltipMenu sourceObject={<MdMoreVert className={styles.buttonIcon} />}>
             <SmallLabel className={styles.menuTopLabel}>{identifier}</SmallLabel>
-            <hr className={Popover.styles.delimiter} />
-            <Button className={styles.flyToButton} onClick={select} title='Focus'>
+            <HorizontalDelimiter />
+            <Button className={styles.flyToButton} onClick={select} title="Focus">
               <Row>
                 <SvgIcon className={styles.buttonIcon}>
                   <Focus />
@@ -120,14 +113,14 @@ function FocusEntry({
                 <span className={styles.menuButtonLabel}> Focus </span>
               </Row>
             </Button>
-            <hr className={Popover.styles.delimiter} />
-            <Button className={styles.flyToButton} onClick={flyTo} title='Fly to'>
+            <HorizontalDelimiter />
+            <Button className={styles.flyToButton} onClick={flyTo} title="Fly to">
               <Row>
                 <MdFlight className={styles.buttonIcon} />
                 <span className={styles.menuButtonLabel}> Fly to </span>
               </Row>
             </Button>
-            <Button className={styles.flyToButton} onClick={fadeTo} title='Fade to'>
+            <Button className={styles.flyToButton} onClick={fadeTo} title="Jump to">
               <Row>
                 <MdFlashOn className={styles.buttonIcon} />
                 <span className={styles.menuButtonLabel}> Jump to </span>

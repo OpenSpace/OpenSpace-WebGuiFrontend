@@ -11,6 +11,7 @@ import { getBoolPropertyValue } from '../../utils/propertyTreeHelpers';
 
 import Missions from './Missions/Missions';
 import OriginPicker from './Origin/OriginPicker';
+import UserControlPanel from './UserControlPanel/UserControlPanel';
 import ActionsPanel from './ActionsPanel';
 import ExoplanetsPanel from './ExoplanetsPanel';
 import FlightControlPanel from './FlightControlPanel';
@@ -61,6 +62,7 @@ export default function BottomBar({
       <GeoPositionPanel />
       <ScreenSpaceRenderablePanel />
       {showExoplanets && <ExoplanetsPanel />}
+      <UserControlPanel />
       <ActionsPanel />
       {showFlightController && <FlightControlPanel />}
       {showSkyBrowser && <SkyBrowserPanel />}

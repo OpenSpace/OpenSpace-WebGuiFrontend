@@ -7,7 +7,6 @@ import shallowEqualArrays from 'shallow-equal/arrays';
 import {
   addNodeMetaPopover,
   addNodePropertyPopover,
-  reloadPropertyTree,
   setPropertyTreeExpansion
 } from '../../../api/Actions';
 import {
@@ -15,7 +14,6 @@ import {
   getSceneGraphNodeFromUri,
   isDeadEnd,
   isGlobeBrowsingLayer,
-  isPropertyOwnerHidden,
   isPropertyVisible,
   isSceneGraphNode,
   nodeExpansionIdentifier
@@ -24,6 +22,109 @@ import ToggleContent from '../../common/ToggleContent/ToggleContent';
 
 import Property from './Property';
 import PropertyOwnerHeader from './PropertyOwnerHeader';
+
+// Render draggable and reorderable list with layers, using Beautinful DnD
+// Based on video tutorial: https://www.youtube.com/watch?v=aYZRRyukuIw&ab_channel=ColbyFayock
+function DragDropLayerList({ expansionIdentifier, uri }) {
+  const [trigger, setTrigger] = React.useState(true);
+  const luaApi = useSelector((state) => state.luaApi);
+  const layers = useSelector((state) => {
+    const data = state.propertyTree.propertyOwners[uri];
+    const subownersRaw = data ? data.subowners : [];
+    return subownersRaw.filter((subowner) => (isGlobeBrowsingLayer(subowner)));
+  }, shallowEqualArrays);
+
+  // Use refs so they don't trigger re-renders when dragging
+  const shownLayers = React.useRef(layers);
+  const isDragging = React.useRef(false);
+
+  // Hack to make the component re-render when the layers have been updated
+  // Since the layers are stored in a ref, they would not re-render otherwise
+  React.useEffect(() => {
+    setTrigger((oldValue) => !oldValue);
+  }, [layers]);
+
+  // When a layer is added or deleted to redux, we have to update the layer order
+  // We still want the layers to be a ref so this is a workaround
+  const isUpdated = shownLayers.current.length === layers.length;
+  if (!isUpdated) {
+    shownLayers.current = [...layers];
+  }
+  if (!shownLayers.current || shownLayers.current.length === 0) {
+    return null;
+  }
+
+  // Invisible overlay that covers the entire body and prevents other hover effects
+  // from being triggered while dragging
+  const overlay = (
+    <div style={{
+      position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100
+    }}
+    />
+  );
+
+  function onDragStart() {
+    isDragging.current = true;
+  }
+
+  async function onDragEnd(result) {
+    // No change - do nothing
+    if (!result.destination || result.source.index === result.destination.index) {
+      isDragging.current = false;
+      return;
+    }
+
+    // First update the order manually, so we keep it while the properties
+    // are being refreshed below
+    const tempLayers = shownLayers.current;
+    const [reorderedItem] = tempLayers.splice(result.source.index, 1);
+    tempLayers.splice(result.destination.index, 0, reorderedItem);
+
+    isDragging.current = false;
+    shownLayers.current = tempLayers;
+
+    const resultUri = result.draggableId;
+    const globe = getSceneGraphNodeFromUri(resultUri);
+    const layerGroup = getLayerGroupFromUri(resultUri);
+
+    await luaApi.globebrowsing.moveLayer(
+      globe,
+      layerGroup,
+      result.source.index,
+      result.destination.index,
+    );
+  }
+
+  function id(uriValue) {
+    return `${expansionIdentifier}/${nodeExpansionIdentifier(uriValue)}`;
+  }
+
+  return (
+    <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
+      {isDragging.current && overlay}
+      <Droppable droppableId="layers">
+        {(provided) => (
+          <div {...provided.droppableProps} ref={provided.innerRef}>
+            {shownLayers.current.map((layerUri, index) => (
+              <Draggable key={layerUri} draggableId={layerUri} index={index}>
+                {(item) => ( // Draggable expects functions as children
+                  <div {...item.draggableProps} ref={item.innerRef}>
+                    <PropertyOwner
+                      dragHandleTitleProps={item.dragHandleProps}
+                      uri={layerUri}
+                      expansionIdentifier={id(layerUri)}
+                    />
+                  </div>
+                )}
+              </Draggable>
+            ))}
+            {provided.placeholder}
+          </div>
+        )}
+      </Droppable>
+    </DragDropContext>
+  );
+}
 
 const shouldSortAlphabetically = (uri) => {
   const splitUri = uri.split('.');
@@ -39,27 +140,19 @@ const shouldSortAlphabetically = (uri) => {
 function PropertyOwner({
   uri, name, dragHandleTitleProps, expansionIdentifier, trashAction, autoExpand
 }) {
-  const luaApi = useSelector((state) => state.luaApi);
   const propertyOwnerName = useSelector((state) => {
     const { propertyOwners, properties } = state.propertyTree;
     return name || displayName(propertyOwners, properties, uri);
   });
-
-  const layers = useSelector((state) => {
-    const data = state.propertyTree.propertyOwners[uri];
-    const subownersRaw = data ? data.subowners : [];
-    return subownersRaw.filter((subowner) => (isGlobeBrowsingLayer(subowner)));
-  }, shallowEqualArrays);
 
   const subowners = useSelector((state) => {
     const { propertyOwners, properties } = state.propertyTree;
     const data = state.propertyTree.propertyOwners[uri];
     const subownersRaw = data ? data.subowners : [];
     const shownSubowners = subownersRaw.filter((subowner) => {
-      const isOwnerVisible = !isPropertyOwnerHidden(properties, subowner);
       const isOwnerDeadEnd = isDeadEnd(propertyOwners, properties, subowner);
 
-      return isOwnerVisible && !isOwnerDeadEnd && !isGlobeBrowsingLayer(subowner);
+      return !isOwnerDeadEnd && !isGlobeBrowsingLayer(subowner);
     });
 
     if (shouldSortAlphabetically(uri)) {
@@ -96,18 +189,10 @@ function PropertyOwner({
     return (renderableTypeProp !== undefined);
   });
 
-  const isHidden = useSelector((state) => {
-    const showHidden = state.propertyTree.properties['OpenSpaceEngine.ShowHiddenSceneGraphNodes'];
-    return isPropertyOwnerHidden(state.propertyTree.properties, uri) && !showHidden.value;
-  });
   // @TODO (emmbr 2023-02-21) Make this work for other propety owners that have
   // descriptions too, such as geojson layers
   const isSceneGraphNodeOrLayer = isSceneGraphNode(uri) || isGlobeBrowsingLayer(uri);
   const isFocus = propertyOwnerName && (propertyOwnerName.lastIndexOf('Current') > -1);
-
-  // Use refs so they don't trigger re-renders
-  const shownLayers = React.useRef(layers);
-  const isDragging = React.useRef(false);
 
   const dispatch = useDispatch();
 
@@ -127,9 +212,6 @@ function PropertyOwner({
     dispatch(addNodeMetaPopover({
       identifier: uri
     }));
-  };
-  const refresh = () => {
-    dispatch(reloadPropertyTree());
   };
 
   function header() {
@@ -158,92 +240,16 @@ function PropertyOwner({
     );
   }
 
-  // Render draggable and reorderable list with layers, using Beautinful DnD
-  // Based on video tutorial: https://www.youtube.com/watch?v=aYZRRyukuIw&ab_channel=ColbyFayock
-  function renderLayersList() {
-    if (!shownLayers.current || shownLayers.current.length === 0) {
-      return null;
-    }
-
-    const onDragStart = () => {
-      isDragging.current = true;
-    };
-
-    const onDragEnd = async (result) => {
-      if (!result.destination || result.source.index === result.destination.index) {
-        isDragging.current = false;
-        return; // no change => do nothing
-      }
-
-      // First update the order manually, so we keep it while the properties
-      // are being refreshed below
-      const tempLayers = shownLayers.current;
-      const [reorderedItem] = tempLayers.splice(result.source.index, 1);
-      tempLayers.splice(result.destination.index, 0, reorderedItem);
-
-      isDragging.current = false;
-      shownLayers.current = tempLayers;
-
-      const resultUri = result.draggableId;
-      const globe = getSceneGraphNodeFromUri(resultUri);
-      const layerGroup = getLayerGroupFromUri(resultUri);
-
-      await luaApi.globebrowsing.moveLayer(
-        globe,
-        layerGroup,
-        result.source.index,
-        result.destination.index,
-      );
-
-      // TODO: Once we have a proper way to subscribe to reordering, additions and removals
-      // of property owners, this 'hard' refresh should be removed
-      refresh();
-    };
-
-    // Invisible overlay that covers the entire body and prevents other hover effects
-    // from being triggered while dragging
-    const overlay = (
-      <div style={{
-        position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100
-      }}
-      />
-    );
-    const id = (uriValue) => `${expansionIdentifier}/${nodeExpansionIdentifier(uriValue)}`;
-
-    return (
-      <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
-        {isDragging.current && overlay}
-        <Droppable droppableId="layers">
-          {(provided) => (
-            <div {...provided.droppableProps} ref={provided.innerRef}>
-              {shownLayers.current.map((layerUri, index) => (
-                <Draggable key={layerUri} draggableId={layerUri} index={index}>
-                  {(item) => ( // Draggable expects functions as children
-                    <div {...item.draggableProps} ref={item.innerRef}>
-                      <PropertyOwner
-                        dragHandleTitleProps={item.dragHandleProps}
-                        uri={layerUri}
-                        expansionIdentifier={id(layerUri)}
-                      />
-                    </div>
-                  )}
-                </Draggable>
-              ))}
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
-      </DragDropContext>
-    );
-  }
-
-  return !isHidden && (
+  return (
     <ToggleContent
       header={header()}
       expanded={isExpanded}
       setExpanded={setExpanded}
     >
-      { renderLayersList() }
+      <DragDropLayerList
+        expansionIdentifier={expansionIdentifier}
+        uri={uri}
+      />
       { subowners.map((ownerUri) => {
         const splitUri = ownerUri.split('.');
         const uriIsRenderable = splitUri.length > 0 && splitUri[splitUri.length - 1] === 'Renderable';

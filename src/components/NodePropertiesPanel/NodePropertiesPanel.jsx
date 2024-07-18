@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { removeNodePropertyPopover, setPopoverActiveTab, setPopoverVisibility } from '../../api/Actions';
 import { NavigationAnchorKey, RenderableTypes, ScenePrefixKey } from '../../api/keys';
 import Picker from '../BottomBar/Picker';
+import HorizontalDelimiter from '../common/HorizontalDelimiter/HorizontalDelimiter';
 import Button from '../common/Input/Button/Button';
 import Popover from '../common/Popover/Popover';
 import Property from '../Sidebar/Properties/Property';
@@ -175,7 +176,7 @@ function NodePropertiesPanel({ isFocusNodePanel, uri }) {
         <div className={`${Popover.styles.content} ${styles.contentContainer}`}>
           { contentForTab() }
         </div>
-        <hr className={Popover.styles.delimiter} />
+        <HorizontalDelimiter />
 
         <div className={`${Popover.styles.row} ${Popover.styles.content}`}>
           { buttonForTab(0, 'Properties') }

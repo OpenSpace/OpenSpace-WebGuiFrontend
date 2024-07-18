@@ -1,7 +1,7 @@
 // TODO: Revisit these functions and determine if any should be
 // kept since most of this functionality is now more easily handled
 // by the lua API
-import { EnginePropertyVisibilityKey, LayerGroupKeys } from '../api/keys';
+import { EnginePropertyVisibilityKey, InterestingTag, LayerGroupKeys } from '../api/keys';
 
 // Function to return a deep copy of an object
 export const keepCloning = (objectpassed) => {
@@ -221,6 +221,16 @@ export function displayName(propertyOwners, properties, uri) {
   return guiName || propertyOwners[uri].identifier;
 }
 
+export function guiOrderingNumber(properties, uri) {
+  let property = properties[`${uri}.UseGuiOrdering`];
+  const shouldUseGuiOrderingNumber = property ? property.value : false;
+  if (!shouldUseGuiOrderingNumber) {
+    return undefined;
+  }
+  property = properties[`${uri}.GuiOrderingNumber`];
+  return property ? property.value : undefined;
+}
+
 export function identifierFromUri(uri) {
   const splitUri = uri.split('.');
   return splitUri.length > 1 ? splitUri[1] : undefined;
@@ -274,4 +284,20 @@ export function checkIfVisible(properties, ownerUri) {
   }
 
   return isEnabled;
+}
+
+export function hasInterestingTag(uri, propertyOwners) {
+  return propertyOwners[uri]?.tags?.some((tag) => tag.includes(InterestingTag));
+}
+
+// Filter based on show enabled/hidden
+export function filterPropertyOwners(ownerUris, props, showOnlyEnabled, showHidden) {
+  let result = ownerUris;
+  if (showOnlyEnabled) {
+    result = result.filter((uri) => checkIfVisible(props, uri));
+  }
+  if (!showHidden) {
+    result = result.filter((uri) => !isPropertyOwnerHidden(props, uri));
+  }
+  return result;
 }

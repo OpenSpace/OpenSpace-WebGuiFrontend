@@ -25,6 +25,8 @@ import {
   EngineModeCameraPath,
   EngineModeSessionRecordingPlayback,
   EngineModeUserControl,
+  InterestingTag,
+  JumpToFadeDurationKey,
   NavigationAimKey,
   NavigationAnchorKey,
   RetargetAimKey,
@@ -56,9 +58,6 @@ import Picker from '../Picker';
 import FocusEntry from './FocusEntry';
 
 import styles from './OriginPicker.scss';
-
-// Tag that each focusable node must have
-const InterestingTag = 'GUI.Interesting';
 
 const NavigationActions = {
   Focus: 'Focus',
@@ -391,6 +390,7 @@ function OriginPicker() {
           <Property uri={CameraPathSpeedFactorKey} />
           <Property uri={CameraPathArrivalDistanceFactorKey} />
           <Property uri={ApplyIdleBehaviorOnPathFinishKey} />
+          <Property uri={JumpToFadeDurationKey} />
         </ToggleContent>
       </SettingsPopup>
     );

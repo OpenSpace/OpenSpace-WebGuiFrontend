@@ -6,6 +6,7 @@ const actionTypes = {
   subscribeToProperty: 'PROPERTY_TREE_SUBSCRIBE',
   unsubscribeToProperty: 'PROPERTY_TREE_UNSUBSCRIBE',
   addPropertyOwners: 'PROPERTY_TREE_ADD_OWNERS',
+  clearPropertyTree: 'CLEAR_PROPERTY_TREE',
   addProperties: 'PROPERTY_TREE_ADD_PROPERTIES',
   removePropertyOwners: 'PROPERTY_TREE_REMOVE_OWNERS',
   removeProperties: 'PROPERTY_TREE_REMOVE_PROPERTIES',
@@ -47,6 +48,12 @@ const actionTypes = {
   addExoplanets: 'EXOPLANETS_ADD',
   removeExoplanets: 'EXOPLANETS_REMOVE',
 
+  // action types for user panels
+  loadUserPanelData: 'USER_PANELS_LOAD_DATA',
+  initializeUserPanels: 'USER_PANELS_INITIALIZE',
+  addUserPanel: 'USER_PANELS_ADD',
+  removeUserPanel: 'USER_PANELS_REMOVE',
+
   // action types for skybrowser
   loadSkyBrowserData: 'SKYBROWSER_LOAD_DATA',
   initializeSkyBrowser: 'SKYBROWSER_INITIALIZE',
@@ -71,6 +78,9 @@ const actionTypes = {
   triggerAction: 'TRIGGER_ACTION',
   setActionsPath: 'SET_ACTIONS_PATH',
   toggleKeybindViewer: 'TOGGLE_KEYBIND_VIEWER',
+  addActions: 'ADD_ACTIONS',
+  getAction: 'GET_ACTION',
+  removeAction: 'REMOVE_ACTION',
 
   // action types for engine mode
   subscribeToEngineMode: 'ENGINE_MODE_SUBSCRIBE',
@@ -120,6 +130,9 @@ const actionTypes = {
   addStoryInfo: 'STORY_TREE_ADD_INFO',
   resetStoryInfo: 'STORY_TREE_RESET_INFO',
   resetStoryTree: 'STORY_TREE_RESET',
+
+  // Updating the property tree
+  addPropertyOwner: 'ADD_PROPERTY_OWNER',
 
   // actions types for drawers
   openDrawer: 'OPEN_DRAWER',

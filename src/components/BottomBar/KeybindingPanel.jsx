@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Keyboard from 'react-simple-keyboard';
 
 import { setPopoverVisibility } from '../../api/Actions';
+import HorizontalDelimiter from '../common/HorizontalDelimiter/HorizontalDelimiter';
 import Popover from '../common/Popover/Popover';
 import Row from '../common/Row/Row';
 
@@ -20,7 +21,7 @@ function KeybindingPanel() {
   const [activeModifiers, setActiveModifiers] = React.useState([]);
   const [currentActionInfo, setCurrentActionInfo] = React.useState({
     input: '',
-    name: 'Select a key to see it\'s action.',
+    name: 'Select a key to see its action.',
     description: 'A description of the action will appear here',
     isLocal: 'Info about if the action is local will appear here',
     path: 'The actions path will appear here'
@@ -93,8 +94,8 @@ function KeybindingPanel() {
   function getActionForKey(key) {
     // Find all action identifiers matching the given key and current modifiers
     const keyActions = [];
-    for (let i = 0; i < actions.data.shortcuts.length; i++) {
-      const action = actions.data.shortcuts[i];
+    for (let i = 0; i < actions.data.length; i++) {
+      const action = actions.data[i];
       if (action.key) {
         if (checkForModifiers(action)) {
           if ((action.key.toLowerCase() === key) || specialKeyMatch(key, action.key)) {
@@ -107,7 +108,7 @@ function KeybindingPanel() {
     // Get the actual information about the action
     let actionsForKey = [];
     keyActions.forEach((keyAction) => {
-      const matched = actions.data.shortcuts.filter(
+      const matched = actions.data.filter(
         (action) => (action.identifier === keyAction.action)
       );
       actionsForKey = actionsForKey.concat(matched);
@@ -289,8 +290,8 @@ function KeybindingPanel() {
     const inputString = ` ${currentActionInfo.input}`;
     let mappedButtonString = '';
 
-    for (let i = 0; i < actions.data.shortcuts?.length; i++) {
-      const action = actions.data.shortcuts[i];
+    for (let i = 0; i < actions.data?.length; i++) {
+      const action = actions.data[i];
       const key = action ? action.key : undefined;
       if (key) {
         let keyString = '';
@@ -336,7 +337,7 @@ function KeybindingPanel() {
         position={{ x: -450, y: -150 }}
         attached={false}
       >
-        <hr className={Popover.styles.delimiter} />
+        <HorizontalDelimiter />
         <div className={Popover.styles.content}>
           <div className="keyboardContainer">
             <Keyboard
@@ -371,7 +372,7 @@ function KeybindingPanel() {
               />
             </div>
           </div>
-          <hr className={Popover.styles.delimiter} />
+          <HorizontalDelimiter />
           <Row>
             <div className={styles.textContainer}>
               <section>
