@@ -167,7 +167,7 @@ function OriginPopup() {
       updateViewPayload.anchor = identifier;
     } else if (navigationAction === NavigationActions.Aim && anchor) {
       updateViewPayload.aim = identifier;
-      updateViewPayload.aim = anchor;
+      updateViewPayload.anchor = anchor;
     }
 
     if (!evt.shiftKey) {
