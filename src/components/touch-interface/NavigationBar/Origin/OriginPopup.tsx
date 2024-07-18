@@ -161,13 +161,13 @@ function OriginPopup() {
       updateViewPayload.focus = identifier;
       updateViewPayload.anchor = '';
     } else if (navigationAction === NavigationActions.Anchor) {
-      if (aim === '') {
-        updateViewPayload.aim = anchor || '';
+      if (aim === '' && anchor) {
+        updateViewPayload.aim = anchor;
       }
       updateViewPayload.anchor = identifier;
-    } else if (navigationAction === NavigationActions.Aim) {
+    } else if (navigationAction === NavigationActions.Aim && anchor) {
       updateViewPayload.aim = identifier;
-      updateViewPayload.aim = anchor || '';
+      updateViewPayload.aim = anchor;
     }
 
     if (!evt.shiftKey) {

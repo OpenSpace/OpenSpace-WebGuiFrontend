@@ -131,9 +131,8 @@ export const SceneDrawer = () => {
     expansionIdentifier: `scene/${item}`
   }));
 
-  // const filteredEntries = filter
-  //   ? entries.filter((entry) => entry.uri.toLowerCase().includes(filter.toLowerCase()))
-  //   : entries;
+  console.log('favorites', favorites);
+  console.log('entries', entries);
 
   const bodyContent = (
     <div className={styles.bodyContainer}>
