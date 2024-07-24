@@ -178,8 +178,7 @@ const addPropertyOwner = async (dispatch, uri) => {
     dispatch(addPropertyOwners(propertyOwners));
     dispatch(addProperties(properties));
     dispatch(refreshGroups());
-  } // This is a property
-  else {
+  } else { // This is a property
     dispatch(addProperties(value));
     dispatch(refreshGroups());
   }
