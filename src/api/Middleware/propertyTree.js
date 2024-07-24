@@ -171,12 +171,18 @@ const addPropertyOwner = async (dispatch, uri) => {
     return;
   }
 
-  // Extract the data from the property owner
-  const { propertyOwners, properties } = flattenPropertyTree(value);
-
-  dispatch(addPropertyOwners(propertyOwners));
-  dispatch(addProperties(properties));
-  dispatch(refreshGroups());
+  // This is a property owner
+  if ('subowners' in value) {
+    // Extract the data from the property owner
+    const { propertyOwners, properties } = flattenPropertyTree(value);
+    dispatch(addPropertyOwners(propertyOwners));
+    dispatch(addProperties(properties));
+    dispatch(refreshGroups());
+  } // This is a property
+  else {
+    dispatch(addProperties(value));
+    dispatch(refreshGroups());
+  }
 };
 
 const setBackendValue = (uri, value) => {
