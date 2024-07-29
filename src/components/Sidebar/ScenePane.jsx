@@ -5,7 +5,8 @@ import shallowEqualArrays from 'shallow-equal/arrays';
 
 import { useLocalStorageState } from '../../utils/customHooks';
 import {
-  filterPropertyOwners, hasInterestingTag
+  filterPropertyOwners, hasInterestingTag,
+  sortSceneMenuList
 } from '../../utils/propertyTreeHelpers';
 import { ObjectWordBeginningSubstring } from '../../utils/StringMatchers';
 import { FilterList, FilterListData, FilterListFavorites } from '../common/FilterList/FilterList';
@@ -26,6 +27,8 @@ function ScenePane({ closeCallback }) {
   const [showHiddenNodes, setShowHiddenNodes] = useLocalStorageState('showHiddenNodes', false);
 
   const [isFeaturedExpanded, setFeaturedExpanded] = useState(false);
+
+  const customGuiGroupOrdering = useSelector((state) => state.groups.customGroupOrdering);
 
   const groups = useSelector((state) => {
     const topLevelGroupsPaths = Object.keys(state.groups.groups).filter((path) => {
@@ -92,11 +95,15 @@ function ScenePane({ closeCallback }) {
     expansionIdentifier: `scene-search/${uri}`
   }));
 
-  const topLevelGroups = groups.map((item) => ({
+  let topLevelGroups = groups.map((item) => ({
     key: item,
     path: item,
+    name: item.slice(1), // without the initial slash
     expansionIdentifier: `scene/${item}`
   }));
+
+  const customTopLevelOrdering = customGuiGroupOrdering['/'];
+  topLevelGroups = sortSceneMenuList(topLevelGroups, customTopLevelOrdering);
 
   const topLevelNodes = filteredNodesWithoutGroup.map((uri) => ({
     key: uri,

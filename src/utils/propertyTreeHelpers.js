@@ -301,3 +301,58 @@ export function filterPropertyOwners(ownerUris, props, showOnlyEnabled, showHidd
   }
   return result;
 }
+
+// Sort a list of items in the scene menu. This is a bit complicated, since there are
+// multiple alternative ways to specify the order.
+export function sortSceneMenuList(listToSort, orderedNamesList) {
+  // Split the list up into three: 1) Any custom sorted objects, 2) numerically sorted
+  // objects, and 3) alphabetically sorted. In most cases, all will be alphabetical.
+
+  const customOrder = [];
+  const numericalOrder = [];
+  const alphabeticalOrder = [];
+
+  // Lua gives us an object with indexes as key, not an array. So first convert
+  // the values to an array
+  const sortOrderingList = orderedNamesList ? Object.values(orderedNamesList) : [];
+
+  listToSort.forEach((entry) => {
+    if (sortOrderingList.includes(entry.name)) {
+      customOrder.push(entry);
+    } else if (entry.guiOrder !== undefined) {
+      numericalOrder.push(entry);
+    } else {
+      alphabeticalOrder.push(entry);
+    }
+  });
+
+  // Sort based on custom sort ordering
+  customOrder.sort((a, b) => {
+    const left = sortOrderingList.indexOf(a.name);
+    const right = sortOrderingList.indexOf(b.name);
+    if (left === right) {
+      return 0; // keep original order (alphabetical)
+    }
+    if (left === -1) { // left not in list => put last
+      return 1;
+    }
+    if (right === -1) { // right not in list => put last
+      return -1;
+    }
+    return left < right ? -1 : 1;
+  });
+
+  // Numerical sorting based on provided guiOrdering number per scene graph node
+  numericalOrder.sort((a, b) => {
+    if (a.guiOrder === b.guiOrder) {
+      // Do alphabetic sort if number is the same
+      return a.name.localeCompare(b.name, 'en');
+    }
+    return a.guiOrder > b.guiOrder;
+  });
+
+  // Alphabetical
+  alphabeticalOrder.sort((a, b) => a.name.localeCompare(b.name, 'en'));
+
+  return customOrder.concat(numericalOrder).concat(alphabeticalOrder);
+}
