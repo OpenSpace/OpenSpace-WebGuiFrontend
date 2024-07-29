@@ -163,13 +163,13 @@ function SkyBrowserPanel() {
     return (browsersExist && (
       <WorldWideTelescope
         setMessageFunction={(func) => { wwt.current = func; }}
+        imageCollectionIsLoaded={imageCollectionIsLoaded}
         setImageCollectionIsLoaded={setImageCollectionIsLoaded}
         size={wwtSize}
         setSize={setWwtSize}
         position={wwtPosition}
-        togglePopover={togglePopover}
         setPosition={setWwtPosition}
-        imageCollectionIsLoaded={imageCollectionIsLoaded}
+        togglePopover={togglePopover}
       />
     )
     );
@@ -247,7 +247,6 @@ function SkyBrowserPanel() {
           selectImage={selectImage}
         />
       );
-
       const skybrowserTabs = (
         <SkyBrowserTabs
           setCurrentTabHeight={setCurrentTabHeight}
