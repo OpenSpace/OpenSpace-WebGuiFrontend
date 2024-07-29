@@ -18,6 +18,7 @@ import Picker from '../Picker';
 import FloatingWindow from './WindowThreeStates/FloatingWindow';
 
 import styles from './WorldWideTelescope.scss';
+import propertyDispatcher from '../../../api/propertyDispatcher';
 
 function WorldWideTelescope({
   imageCollectionIsLoaded,
@@ -45,6 +46,9 @@ function WorldWideTelescope({
   });
   const borderColor = useSelector((state) => {
     return state.propertyTree.properties[`Modules.SkyBrowser.${selectedPairId}.Color`]?.value;
+  });
+  const ratio = useSelector((state) => {
+    return state.propertyTree.properties[`Modules.SkyBrowser.${selectedPairId}.Ratio`]?.value;
   });
 
   // Selectors & dispatch - access Redux store
@@ -88,8 +92,17 @@ function WorldWideTelescope({
   }, [selectedPairId]);
 
   React.useEffect(() => {
+    dispatch(subscribeToProperty(`Modules.SkyBrowser.${selectedPairId}.Ratio`));
+    return () => dispatch(unsubscribeToProperty(`Module.SkyBrowser.${selectedPairId}.Ratio`));
+  }, [selectedPairId]);
+
+  React.useEffect(() => {
     setBorderColor(borderColor?.map(x => 255 * x));
   }, [borderColor]);
+
+  React.useEffect(() => {
+    setSize({ width: ratio * (size.height - TopBarHeight), height: size.height });
+  }, [ratio]);
 
   React.useEffect(() => {
     setMessageFunction(sendMessageToWwt);
@@ -223,15 +236,10 @@ function WorldWideTelescope({
     skybrowserApi.stopAnimations(browserId);
   }
 
-  function changeSize(widthWwt, heightWwt) {
-    const { innerHeight: windowHeight } = window;
-    const ratio = widthWwt / (heightWwt - TopBarHeight);
-    const scale = (heightWwt - TopBarHeight) / windowHeight;
-    const newWidth = 2 * scale * ratio;
-    const newHeight = 2 * scale;
-    const id = browserId;
+  function changeSize({width: widthWwt, height: heightWwt}) {
+    const newRatio = widthWwt / (heightWwt - TopBarHeight);
     setSize({ width: widthWwt, height: heightWwt });
-    skybrowserApi.setBrowserRatio(id, newWidth / newHeight);
+    propertyDispatcher(dispatch, `Modules.SkyBrowser.${selectedPairId}.Ratio`).set(newRatio);
   }
 
   const topBar = (

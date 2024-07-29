@@ -38,7 +38,6 @@ function SkyBrowserTabs({
   setBorderRadius,
   setCurrentTabHeight,
   setOpacityOfImage,
-  setWwtRatio,
   createTargetBrowserPair
 }) {
   // State
@@ -117,7 +116,6 @@ function SkyBrowserTabs({
     removeAllSelectedImages(selectedBrowserId, passToOs);
     addAllSelectedImages(browserId, passToOs);
     luaApi.skybrowser.setSelectedBrowser(browserId);
-    setWwtRatio(browsers[browserId].ratio);
   }
 
   function positionInfo() {
@@ -381,7 +379,6 @@ SkyBrowserTabs.propTypes = {
   setBorderRadius: PropTypes.func.isRequired,
   setCurrentTabHeight: PropTypes.func.isRequired,
   setOpacityOfImage: PropTypes.func.isRequired,
-  setWwtRatio: PropTypes.func.isRequired,
   createTargetBrowserPair: PropTypes.func.isRequired
 };
 

@@ -96,13 +96,6 @@ function SkyBrowserPanel() {
     }
   }
 
-  function setWwtRatio(ratio) {
-    setWwtSize({
-      width: ratio * wwtSize.height,
-      height: wwtSize.height
-    });
-  }
-
   function setCurrentPopoverHeight(object) {
     setCurrentPopoverHeightState(object.height);
   }
@@ -184,7 +177,6 @@ function SkyBrowserPanel() {
 
   function createTargetBrowserPair() {
     luaApi.skybrowser.createTargetBrowserPair();
-    setWwtRatio(1);
   }
 
   function createAddBrowserInterface() {
@@ -260,7 +252,6 @@ function SkyBrowserPanel() {
         <SkyBrowserTabs
           setCurrentTabHeight={setCurrentTabHeight}
           passMessageToWwt={passMessageToWwt}
-          setWwtRatio={setWwtRatio}
           activeImage={activeImage}
           selectImage={selectImage}
           maxHeight={currentPopoverHeight - MenuHeight}
