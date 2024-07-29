@@ -5,8 +5,6 @@ import PropTypes from 'prop-types';
 import shallowEqualArrays from 'shallow-equal/arrays';
 
 import {
-  addNodeMetaPopover,
-  addNodePropertyPopover,
   setPropertyTreeExpansion
 } from '../../../api/Actions';
 import {
@@ -192,7 +190,6 @@ function PropertyOwner({
   // @TODO (emmbr 2023-02-21) Make this work for other propety owners that have
   // descriptions too, such as geojson layers
   const isSceneGraphNodeOrLayer = isSceneGraphNode(uri) || isGlobeBrowsingLayer(uri);
-  const isFocus = propertyOwnerName && (propertyOwnerName.lastIndexOf('Current') > -1);
 
   const dispatch = useDispatch();
 
@@ -202,31 +199,17 @@ function PropertyOwner({
       expanded
     }));
   };
-  const popOut = () => {
-    dispatch(addNodePropertyPopover({
-      identifier: uri,
-      focus: isFocus
-    }));
-  };
-  const metaAction = () => {
-    dispatch(addNodeMetaPopover({
-      identifier: uri
-    }));
-  };
 
   function header() {
-    const popOutAction = isRenderable ? popOut : undefined;
-    const hasMetaAction = isSceneGraphNodeOrLayer ? metaAction : undefined;
-
     const headerComponent = (
       <PropertyOwnerHeader
         uri={uri}
         expanded={isExpanded}
         title={propertyOwnerName}
         setExpanded={setExpanded}
-        popOutAction={popOutAction}
+        showMeta={isSceneGraphNodeOrLayer}
+        showPopOutSettings={isRenderable}
         trashAction={trashAction}
-        metaAction={hasMetaAction}
       />
     );
     if (!dragHandleTitleProps) {

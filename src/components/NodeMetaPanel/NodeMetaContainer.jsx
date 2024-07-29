@@ -6,10 +6,8 @@ import NodeMetaPanel from './NodeMetaPanel';
 import styles from '../NodePropertiesPanel/NodePopOverContainer.scss';
 
 function NodeMetaContainer() {
-  const activeNodeMetaPanels = useSelector((state) => {
-    const panels = state.local.popovers.activeNodeMetaPanels;
-    return [...Object.keys(panels)];
-  });
+  const panels = useSelector((state) => state.local.popovers.activeNodeMetaPanels);
+  const activeNodeMetaPanels = [...Object.keys(panels)];
 
   return (
     <div className={styles.NodePopOverContainer}>
@@ -19,7 +17,6 @@ function NodeMetaContainer() {
           key={uri}
         />
       )) }
-
     </div>
   );
 }
