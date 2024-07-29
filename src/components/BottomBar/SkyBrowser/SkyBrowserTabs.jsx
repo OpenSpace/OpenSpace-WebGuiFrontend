@@ -27,7 +27,6 @@ const ButtonIds = {
 
 function SkyBrowserTabs({
   activeImage,
-  currentBrowserColor,
   height,
   imageCollectionIsLoaded,
   maxHeight,
@@ -338,7 +337,6 @@ function SkyBrowserTabs({
       <SkyBrowserSelectedImagesList
         luaApi={luaApi}
         selectImage={selectImage}
-        currentBrowserColor={currentBrowserColor}
         activeImage={activeImage}
         passMessageToWwt={passMessageToWwt}
         removeImageSelection={removeImageSelection}
@@ -372,7 +370,6 @@ function SkyBrowserTabs({
 
 SkyBrowserTabs.propTypes = {
   activeImage: PropTypes.string.isRequired,
-  currentBrowserColor: PropTypes.func.isRequired,
   height: PropTypes.number.isRequired,
   imageCollectionIsLoaded: PropTypes.bool.isRequired,
   maxHeight: PropTypes.number.isRequired,

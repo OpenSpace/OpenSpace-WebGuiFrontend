@@ -14,7 +14,6 @@ import styles from './SkyBrowserNearestImagesList.scss';
 
 function SkyBrowserNearestImagesList({
   activeImage,
-  currentBrowserColor,
   height,
   moveCircleToHoverImage,
   selectImage
@@ -110,7 +109,6 @@ function SkyBrowserNearestImagesList({
         {list.map((item) => (
           <SkyBrowserFocusEntry
             {...item}
-            currentBrowserColor={currentBrowserColor}
             onSelect={selectImage}
             isActive={activeImage === item.identifier}
             moveCircleToHoverImage={moveCircleToHoverImage}

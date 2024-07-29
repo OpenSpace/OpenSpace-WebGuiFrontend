@@ -1,6 +1,6 @@
 import React from 'react';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import SkyBrowserInfoBox from './SkyBrowserInfoBox';
@@ -11,7 +11,6 @@ import { disableHoverCircle } from '../../../api/Actions';
 function SkyBrowserFocusEntry({
   credits,
   creditsUrl,
-  currentBrowserColor,
   dec,
   fov,
   hasCelestialCoords,
@@ -24,6 +23,10 @@ function SkyBrowserFocusEntry({
   thumbnail,
   style
 }) {
+  const browserColor = useSelector((state) => {
+    const browser = state.skybrowser.browsers?.[state.skybrowser.selectedBrowserId];
+    return browser ? `rgb(${browser.color})` : 'gray';
+  });
   const dispatch = useDispatch();
 
   function select() {
@@ -35,7 +38,7 @@ function SkyBrowserFocusEntry({
   return (
     <div
       className={`${styles.entry} ${isActive && styles.active}`}
-      style={{ borderLeftColor: currentBrowserColor(), ...style }}
+      style={{ borderLeftColor: browserColor, ...style }}
       onMouseOver={() => { moveCircleToHoverImage(identifier); }}
       onFocus={() => { moveCircleToHoverImage(identifier); }}
       onMouseOut={() => { dispatch(disableHoverCircle()); }}

@@ -54,10 +54,6 @@ function SkyBrowserPanel() {
   const hideTargetsBrowsersWithGui = useSelector(
     (state) => getBoolPropertyValue(state, SkyBrowserHideTargetsBrowsersWithGuiKey)
   );
-  const browserColor = useSelector((state) => {
-    const browser = state.skybrowser.browsers?.[state.skybrowser.selectedBrowserId];
-    return browser ? `rgb(${browser.color})` : 'gray';
-  });
   const selectedBrowserId = useSelector((state) => state.skybrowser.selectedBrowserId);
 
   const dispatch = useDispatch();
@@ -113,10 +109,6 @@ function SkyBrowserPanel() {
 
   function setWwtPosition(e, data) {
     setWwtPositionState({ x: data.x, y: data.y });
-  }
-
-  function currentBrowserColor() {
-    return browserColor;
   }
 
   function selectImage(identifier, passToOs = true) {
@@ -185,7 +177,6 @@ function SkyBrowserPanel() {
         togglePopover={togglePopover}
         setPosition={setWwtPosition}
         imageCollectionIsLoaded={imageCollectionIsLoaded}
-        browserColor={browserColor}
       />
     )
     );
@@ -259,7 +250,6 @@ function SkyBrowserPanel() {
       const imageMenuList = (
         <SkyBrowserImageList
           activeImage={activeImage}
-          currentBrowserColor={currentBrowserColor}
           height={currentImageListHeight}
           moveCircleToHoverImage={moveCircleToHoverImage}
           selectImage={selectImage}
@@ -272,7 +262,6 @@ function SkyBrowserPanel() {
           passMessageToWwt={passMessageToWwt}
           setWwtRatio={setWwtRatio}
           activeImage={activeImage}
-          currentBrowserColor={currentBrowserColor}
           selectImage={selectImage}
           maxHeight={currentPopoverHeight - MenuHeight}
           minHeight={MinimumTabHeight}

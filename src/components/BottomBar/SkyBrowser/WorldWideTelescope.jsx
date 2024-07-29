@@ -39,6 +39,14 @@ function WorldWideTelescope({
   const iframe = React.useRef(null);
   const setSetupWwtFunc = React.useRef(null);
 
+  // New rewrite
+  const selectedPairId = useSelector((state) => {
+    return state.propertyTree.properties[`Modules.SkyBrowser.SelectedPairId`].value;
+  });
+  const borderColor = useSelector((state) => {
+    return state.propertyTree.properties[`Modules.SkyBrowser.${selectedPairId}.Color`]?.value;
+  });
+
   // Selectors & dispatch - access Redux store
   // Get each value separately to reduce unnecessary renders
   const selectedId = useSelector((state) => state.skybrowser.selectedBrowserId);
@@ -55,10 +63,7 @@ function WorldWideTelescope({
   );
   const browserName = useSelector((state) => state.skybrowser.browsers[selectedId].name);
   const browserId = useSelector((state) => state.skybrowser.browsers[selectedId].id);
-  const browserColor = useSelector(
-    (state) => state.skybrowser.browsers[selectedId].color,
-    shallowEqual
-  );
+
   const url = useSelector((state) => state.skybrowser.url);
   const skybrowserApi = useSelector((state) => state.luaApi.skybrowser);
   const showTitle = useSelector(
@@ -72,6 +77,20 @@ function WorldWideTelescope({
   const dispatch = useDispatch();
 
   // Effects
+  React.useEffect(() => {
+    dispatch(subscribeToProperty("Modules.SkyBrowser.SelectedPairId"));
+    return () => dispatch(unsubscribeToProperty("Module.SkyBrowser.SelectedPairId"));
+  }, []);
+
+  React.useEffect(() => {
+    dispatch(subscribeToProperty(`Modules.SkyBrowser.${selectedPairId}.Color`));
+    return () => dispatch(unsubscribeToProperty(`Module.SkyBrowser.${selectedPairId}.Color`));
+  }, [selectedPairId]);
+
+  React.useEffect(() => {
+    setBorderColor(borderColor?.map(x => 255 * x));
+  }, [borderColor]);
+
   React.useEffect(() => {
     setMessageFunction(sendMessageToWwt);
     window.addEventListener('message', handleCallbackMessage);
@@ -97,10 +116,6 @@ function WorldWideTelescope({
   React.useEffect(() => {
     setBorderRadius(borderRadius);
   }, [borderRadius]);
-
-  React.useEffect(() => {
-    setBorderColor(browserColor);
-  }, [browserColor]);
 
   React.useEffect(() => {
     dispatch(subscribeToProperty(SkyBrowserShowTitleInBrowserKey));
@@ -139,7 +154,6 @@ function WorldWideTelescope({
       url,
       loadChildFolders: true
     });
-    setBorderColor(browserColor);
     setBorderRadius(borderRadius);
   }
 

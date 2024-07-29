@@ -20,7 +20,6 @@ const ImageViewingOptions = {
 
 function SkyBrowserImageList({
   activeImage,
-  currentBrowserColor,
   height,
   moveCircleToHoverImage,
   selectImage
@@ -43,7 +42,6 @@ function SkyBrowserImageList({
       return (
         <SkyBrowserNearestImagesList
           activeImage={activeImage}
-          currentBrowserColor={currentBrowserColor}
           selectImage={selectImage}
           height={height}
           moveCircleToHoverImage={moveCircleToHoverImage}
@@ -86,7 +84,6 @@ function SkyBrowserImageList({
                       <SkyBrowserFocusEntry
                         key={key}
                         {...item}
-                        currentBrowserColor={currentBrowserColor}
                         onSelect={selectImage}
                         isActive={activeImage === item.identifier}
                         moveCircleToHoverImage={moveCircleToHoverImage}
@@ -126,7 +123,6 @@ function SkyBrowserImageList({
 
 SkyBrowserImageList.propTypes = {
   activeImage: PropTypes.string.isRequired,
-  currentBrowserColor: PropTypes.func.isRequired,
   height: PropTypes.number.isRequired,
   selectImage: PropTypes.func.isRequired,
   moveCircleToHoverImage: PropTypes.func.isRequired

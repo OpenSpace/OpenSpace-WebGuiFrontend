@@ -11,7 +11,7 @@ import SkyBrowserInfoBox from './SkyBrowserInfoBox';
 
 import styles from './SkyBrowserEntry.scss';
 import { disableHoverCircle } from '../../../api/Actions';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 function OpacitySlider({ opacity, setOpacity, identifier }) {
   function handleChange(newValue) {
@@ -47,7 +47,6 @@ OpacitySlider.propTypes = {
 function SkyBrowserTabEntry({
   credits,
   creditsUrl,
-  currentBrowserColor,
   dragHandleTitleProps,
   dec,
   fov,
@@ -63,7 +62,10 @@ function SkyBrowserTabEntry({
   setOpacity,
   thumbnail
 }) {
-
+  const browserColor = useSelector((state) => {
+    const browser = state.skybrowser.browsers?.[state.skybrowser.selectedBrowserId];
+    return browser ? `rgb(${browser.color})` : 'gray';
+  });
   const dispatch = useDispatch();
 
   function select() {
@@ -75,7 +77,7 @@ function SkyBrowserTabEntry({
   return (
     <div
       className={`${styles.entry} ${styles.tabEntry} ${isActive && styles.active}`}
-      style={{ borderLeftColor: currentBrowserColor() }}
+      style={{ borderLeftColor: browserColor }}
       onMouseOver={() => { moveCircleToHoverImage(identifier); }}
       onFocus={() => { moveCircleToHoverImage(identifier); }}
       onMouseOut={() => { dispatch(disableHoverCircle()); }}
@@ -134,7 +136,6 @@ function SkyBrowserTabEntry({
 SkyBrowserTabEntry.propTypes = {
   credits: PropTypes.string,
   creditsUrl: PropTypes.string,
-  currentBrowserColor: PropTypes.func.isRequired,
   dec: PropTypes.number,
   dragHandleTitleProps: PropTypes.object.isRequired,
   fov: PropTypes.number,

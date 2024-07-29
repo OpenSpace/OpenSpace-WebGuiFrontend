@@ -8,7 +8,6 @@ import shallowEqualArrays from 'shallow-equal/arrays';
 function SkyBrowserSelectedImagesList({
   luaApi,
   selectImage,
-  currentBrowserColor,
   activeImage,
   passMessageToWwt,
   removeImageSelection,
@@ -136,7 +135,6 @@ function SkyBrowserSelectedImagesList({
                       removeImageSelection={removeImageSelection}
                       opacity={imageOpacitiesCurrent[index]}
                       setOpacity={setOpacityOfImage}
-                      currentBrowserColor={currentBrowserColor}
                       isActive={activeImage === entry.identifier}
                       moveCircleToHoverImage={moveCircleToHoverImage}
                     />
