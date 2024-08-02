@@ -1,5 +1,5 @@
 import {
-  addPropertyOwner, getAction, refreshGroups, removeAction, removePropertyOwners
+  addUriToPropertyTree, getAction, refreshGroups, removeAction, removePropertyOwners
 } from '../Actions';
 import actionTypes from '../Actions/actionTypes';
 import api from '../api';
@@ -10,7 +10,7 @@ const nSubscribers = 0;
 async function handleData(store, data) {
   switch (data.Event) {
     case 'PropertyTreeUpdated':
-      store.dispatch(addPropertyOwner({ uri: data.Uri }));
+      store.dispatch(addUriToPropertyTree({ uri: data.Uri }));
       break;
     case 'PropertyTreePruned':
       store.dispatch(removePropertyOwners({ uris: [data.Uri] }));
