@@ -165,21 +165,21 @@ const flattenPropertyTree = (propertyOwner) => {
 };
 
 const addUriToPropertyTree = async (dispatch, uri) => {
-  const value = await api.getProperty(uri);
-  if (!value) {
+  const prop = await api.getProperty(uri);
+  if (!prop) {
     console.error('Error retrieving property with uri ', uri);
     return;
   }
 
   // This is a property owner
-  if ('subowners' in value) {
+  if ('properties' in prop) {
     // Extract the data from the property owner
-    const { propertyOwners, properties } = flattenPropertyTree(value);
+    const { propertyOwners, properties } = flattenPropertyTree(prop);
     dispatch(addPropertyOwners(propertyOwners));
     dispatch(addProperties(properties));
     dispatch(refreshGroups());
   } else { // This is a property
-    dispatch(addProperties(value));
+    dispatch(addProperties(prop));
     dispatch(refreshGroups());
   }
 };
