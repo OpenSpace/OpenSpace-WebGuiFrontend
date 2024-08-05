@@ -5,7 +5,7 @@ import shallowEqualArrays from 'shallow-equal/arrays';
 
 import { setPropertyTreeExpansion } from '../../api/Actions';
 import { sortGroups } from '../../api/keys';
-import { filterPropertyOwners } from '../../utils/propertyTreeHelpers';
+import { filterPropertyOwners, guiOrderingNumber } from '../../utils/propertyTreeHelpers';
 import ToggleContent from '../common/ToggleContent/ToggleContent';
 
 import PropertyOwner, {
@@ -60,43 +60,50 @@ function Group({
 
   const shouldFilter = showOnlyEnabled || !showHidden;
 
+  const groupContent = useSelector((state) => state.groups[path] || {});
+
+  const allPropertyOwners = useSelector(
+    (state) => (state.propertyTree.propertyOwners ? state.propertyTree.propertyOwners : [])
+  );
+  const allProperties = useSelector(
+    (state) => (state.propertyTree.properties ? state.propertyTree.properties : [])
+  );
+
   // Sub-groups
   const subGroupPaths = useSelector((state) => {
-    const data = state.groups[path] || {};
-    let result = data.subgroups || [];
+    let result = groupContent.subgroups || [];
     if (shouldFilter) {
       result = result.filter((group) => shouldShowGroup(state, group, showOnlyEnabled, showHidden));
     }
     return result;
   }, shallowEqualArrays);
 
-  // Property-owners
-  const propertyOwnerUris = useSelector((state) => {
-    const props = state.propertyTree.properties;
-    const data = state.groups[path] || {};
-    let result = data.propertyOwners || [];
-    if (shouldFilter) {
-      result = filterPropertyOwners(result, props, showOnlyEnabled, showHidden);
-    }
-    return result;
-  }, shallowEqualArrays);
+  // Property owners
+  let propertyOwnerUris = groupContent?.propertyOwners || [];
+  if (shouldFilter) {
+    propertyOwnerUris =
+      filterPropertyOwners(propertyOwnerUris, allProperties, showOnlyEnabled, showHidden);
+  }
 
-  const ownerNames = useSelector((state) => {
-    const props = state.propertyTree.properties;
-    const propOwners = state.propertyTree.propertyOwners;
-    return propertyOwnerUris.map((uri) => propertyOwnerName(propOwners, props, uri));
-  }, shallowEqualArrays);
+  const ownerDetails = propertyOwnerUris.map((uri) => (
+    {
+      name: propertyOwnerName(allPropertyOwners, allProperties, uri),
+      guiOrder: guiOrderingNumber(allProperties, uri)
+    }
+  ));
 
   const propertyOwners = propertyOwnerUris.map((uri, index) => ({
     type: 'propertyOwner',
     payload: uri,
-    name: ownerNames[index]
+    name: ownerDetails[index].name,
+    guiOrder: ownerDetails[index].guiOrder
   }));
 
   const groups = subGroupPaths.map((groupPath) => ({
     type: 'group',
     payload: groupPath,
-    name: displayName(groupPath)
+    name: displayName(groupPath),
+    guiOrder: undefined
   }));
 
   const entries = groups.concat(propertyOwners);
@@ -104,7 +111,7 @@ function Group({
   const hasEntries = entries.length !== 0;
   const pathFragments = path.split('/');
   const groupName = pathFragments[pathFragments.length - 1];
-  const sortOrdering = sortGroups[groupName];
+  const groupSortOrdering = sortGroups[groupName];
 
   const dispatch = useDispatch();
 
@@ -115,12 +122,32 @@ function Group({
     }));
   };
 
-  const sortedEntries = entries.sort((a, b) => a.name.localeCompare(b.name, 'en'));
+  // Accumulate lists of entries with and without order number and sort the lists
+  // independently
+  const withOrderEntries = [];
+  const noOrderEntries = [];
+  entries.forEach((entry) => {
+    const target = (entry.guiOrder !== undefined) ? withOrderEntries : noOrderEntries;
+    target.push(entry); // target is a reference to the correct list
+  });
 
-  if (sortOrdering && sortOrdering.value) {
+  const numericallySortedEntries = withOrderEntries.sort((a, b) => {
+    if (a.guiOrder === b.guiOrder) {
+      // Do alphabetic sort if number is the same
+      return a.name.localeCompare(b.name, 'en');
+    }
+    return a.guiOrder > b.guiOrder;
+  });
+
+  const alphabeticallySortedEntries = noOrderEntries.sort((a, b) => a.name.localeCompare(b.name, 'en'));
+  const sortedEntries = numericallySortedEntries.concat(alphabeticallySortedEntries);
+
+  // Sort based on custom group sorting
+  if (groupSortOrdering && groupSortOrdering.value) {
     sortedEntries.sort((a, b) => {
-      const result = sortOrdering.value.indexOf(a.name) < sortOrdering.value.indexOf(b.name);
-      return result ? -1 : 1;
+      const indexA = groupSortOrdering.value.indexOf(a.name);
+      const indexB = groupSortOrdering.value.indexOf(b.name);
+      return (indexA < indexB) ? -1 : 1;
     });
   }
 

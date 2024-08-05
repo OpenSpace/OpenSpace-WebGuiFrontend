@@ -84,9 +84,6 @@ function NodeMetaPanel({ uri }) {
           {`Author: ${documentation.author}`}
         </Row>
         <Row>
-          {`Version: ${documentation.version}`}
-        </Row>
-        <Row>
           {`License: ${documentation.license.replace(/\\n/g, '')}`}
         </Row>
         <Row>

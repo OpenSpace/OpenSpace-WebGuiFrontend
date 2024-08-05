@@ -6,10 +6,11 @@ const actionTypes = {
   subscribeToProperty: 'PROPERTY_TREE_SUBSCRIBE',
   unsubscribeToProperty: 'PROPERTY_TREE_UNSUBSCRIBE',
   addPropertyOwners: 'PROPERTY_TREE_ADD_OWNERS',
-  clearPropertyTree: 'CLEAR_PROPERTY_TREE',
+  addUriToPropertyTree: 'ADD_URI_TO_PROPERTY_TREE',
   addProperties: 'PROPERTY_TREE_ADD_PROPERTIES',
   removePropertyOwners: 'PROPERTY_TREE_REMOVE_OWNERS',
   removeProperties: 'PROPERTY_TREE_REMOVE_PROPERTIES',
+  clearPropertyTree: 'CLEAR_PROPERTY_TREE',
   reloadPropertyTree: 'PROPERTY_TREE_RELOAD',
   refreshGroups: 'GROUPS_REFRESH',
 
@@ -133,10 +134,7 @@ const actionTypes = {
   addStoryTree: 'STORY_TREE_ADD',
   addStoryInfo: 'STORY_TREE_ADD_INFO',
   resetStoryInfo: 'STORY_TREE_RESET_INFO',
-  resetStoryTree: 'STORY_TREE_RESET',
-
-  // Updating the property tree
-  addPropertyOwner: 'ADD_PROPERTY_OWNER'
+  resetStoryTree: 'STORY_TREE_RESET'
 };
 
 export default actionTypes;

@@ -21,7 +21,7 @@ function KeybindingPanel() {
   const [activeModifiers, setActiveModifiers] = React.useState([]);
   const [currentActionInfo, setCurrentActionInfo] = React.useState({
     input: '',
-    name: 'Select a key to see it\'s action.',
+    name: 'Select a key to see its action.',
     description: 'A description of the action will appear here',
     isLocal: 'Info about if the action is local will appear here',
     path: 'The actions path will appear here'
@@ -94,8 +94,8 @@ function KeybindingPanel() {
   function getActionForKey(key) {
     // Find all action identifiers matching the given key and current modifiers
     const keyActions = [];
-    for (let i = 0; i < actions.data.shortcuts.length; i++) {
-      const action = actions.data.shortcuts[i];
+    for (let i = 0; i < actions.data.length; i++) {
+      const action = actions.data[i];
       if (action.key) {
         if (checkForModifiers(action)) {
           if ((action.key.toLowerCase() === key) || specialKeyMatch(key, action.key)) {
@@ -108,7 +108,7 @@ function KeybindingPanel() {
     // Get the actual information about the action
     let actionsForKey = [];
     keyActions.forEach((keyAction) => {
-      const matched = actions.data.shortcuts.filter(
+      const matched = actions.data.filter(
         (action) => (action.identifier === keyAction.action)
       );
       actionsForKey = actionsForKey.concat(matched);
@@ -290,8 +290,8 @@ function KeybindingPanel() {
     const inputString = ` ${currentActionInfo.input}`;
     let mappedButtonString = '';
 
-    for (let i = 0; i < actions.data.shortcuts?.length; i++) {
-      const action = actions.data.shortcuts[i];
+    for (let i = 0; i < actions.data?.length; i++) {
+      const action = actions.data[i];
       const key = action ? action.key : undefined;
       if (key) {
         let keyString = '';
