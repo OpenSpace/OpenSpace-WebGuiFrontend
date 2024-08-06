@@ -27,6 +27,7 @@ import Picker from './Picker';
 import wwtLogo from './wwtlogo.png';
 
 import styles from './SkyBrowserPanel.scss';
+import { useSubscribeToProperty } from '../../utils/customHooks';
 
 function SkyBrowserPanel() {
   const [activeImage, setActiveImage] = React.useState('');
@@ -55,6 +56,8 @@ function SkyBrowserPanel() {
     (state) => getBoolPropertyValue(state, SkyBrowserHideTargetsBrowsersWithGuiKey)
   );
   const selectedBrowserId = useSelector((state) => state.skybrowser.selectedBrowserId);
+  const selectedPairId = useSubscribeToProperty("Module.SkyBrowser.SelectedPairId");
+  const selectedImagesUrls = useSubscribeToProperty(`ScreenSpace.${selectedBrowserId}.SelectedImagesUrls`);
 
   const dispatch = useDispatch();
 
@@ -66,6 +69,7 @@ function SkyBrowserPanel() {
       dispatch(unsubscribeToProperty(SkyBrowserHideTargetsBrowsersWithGuiKey));
     };
   }, []);
+
 
   React.useEffect(() => {
     if (!isDataInitialized) {
@@ -110,14 +114,9 @@ function SkyBrowserPanel() {
 
       if (passToOs) {
         luaApi.skybrowser.selectImage(imageList[identifier].url);
+        luaApi.appendToListProperty(`ScreenSpace.${selectedBrowserId}.SelectedImagesUrls`, imageList[identifier].url)
+        luaApi.appendToListProperty(`ScreenSpace.${selectedBrowserId}.SelectedImagesOpacities`, 1)
       }
-      passMessageToWwt({
-        event: 'image_layer_create',
-        id: String(identifier),
-        url: imageList[identifier].url,
-        mode: 'preloaded',
-        goto: false
-      });
     }
   }
 
@@ -129,18 +128,7 @@ function SkyBrowserPanel() {
     if (passToOs) {
       luaApi.skybrowser.removeSelectedImageInBrowser(selectedBrowserId, imageList[identifier].url);
     }
-    passMessageToWwt({
-      event: 'image_layer_remove',
-      id: String(identifier)
-    });
     dispatch(disableHoverCircle);
-  }
-
-  function setBorderRadius(radius) {
-    passMessageToWwt({
-      event: 'set_border_radius',
-      data: radius
-    });
   }
 
   function setOpacityOfImage(identifier, opacity, passToOs = true) {
@@ -151,12 +139,6 @@ function SkyBrowserPanel() {
         opacity
       );
     }
-    passMessageToWwt({
-      event: 'image_layer_set',
-      id: String(identifier),
-      setting: 'opacity',
-      value: opacity
-    });
   }
 
   function createWwtBrowser() {
@@ -256,7 +238,6 @@ function SkyBrowserPanel() {
           maxHeight={currentPopoverHeight - MenuHeight}
           minHeight={MinimumTabHeight}
           height={currentTabHeight}
-          setBorderRadius={setBorderRadius}
           imageCollectionIsLoaded={imageCollectionIsLoaded}
           moveCircleToHoverImage={moveCircleToHoverImage}
           removeImageSelection={removeImageSelection}

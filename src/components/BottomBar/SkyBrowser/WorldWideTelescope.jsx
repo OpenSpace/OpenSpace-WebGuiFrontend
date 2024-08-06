@@ -2,17 +2,14 @@
 // due to the many useEffects that use functions, @ylvse 2023-05-24
 /* eslint-disable no-use-before-define */
 import React from 'react';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
-  subscribeToProperty,
-  unsubscribeToProperty,
   fineTuneTarget,
   startFineTuningTarget
 } from '../../../api/Actions';
 import { SkyBrowserInverseZoomDirectionKey, SkyBrowserShowTitleInBrowserKey } from '../../../api/keys';
-import { lowPrecisionEqual } from '../../../utils/customHooks';
-import { getBoolPropertyValue } from '../../../utils/propertyTreeHelpers';
+import { lowPrecisionEqual, useSubscribeToProperty } from '../../../utils/customHooks';
 import Picker from '../Picker';
 
 import FloatingWindow from './WindowThreeStates/FloatingWindow';
@@ -30,80 +27,37 @@ function WorldWideTelescope({
   size,
   togglePopover
 }) {
-  // State
   const [isDragging, setIsDragging] = React.useState(false);
   const [startDragPosition, setStartDragPosition] = React.useState([0, 0]);
   const [wwtHasLoaded, setWwtHasLoaded] = React.useState(false);
-  const TopBarHeight = 25;
 
-  // Refs
+  const selectedPairId = useSubscribeToProperty("Modules.SkyBrowser.SelectedPairId");
+  const browserId = useSubscribeToProperty(`Modules.SkyBrowser.${selectedPairId}.Browser`);
+  const borderColor = useSubscribeToProperty(`Modules.SkyBrowser.${selectedPairId}.Color`);
+  const ratio = useSubscribeToProperty(`Modules.SkyBrowser.${selectedPairId}.Ratio`);
+  const selectedImagesUrls = useSubscribeToProperty(`ScreenSpace.${browserId}.SelectedImagesUrls`) ?? [];
+  const selectedImagesOpacities = useSubscribeToProperty(`ScreenSpace.${browserId}.SelectedImagesOpacities`) ?? [];
+  const fov = useSubscribeToProperty(`Modules.SkyBrowser.${selectedPairId}.VerticalFov`, lowPrecisionEqual) ?? [];
+  const [ra, dec] = useSubscribeToProperty(`Modules.SkyBrowser.${selectedPairId}.EquatorialAim`) ?? [];
+  const roll = useSubscribeToProperty(`Modules.SkyBrowser.${selectedPairId}.Roll`, lowPrecisionEqual) ?? [];
+  const borderRadius = useSubscribeToProperty(`Modules.SkyBrowser.${selectedPairId}.BorderRadius`);
+  const browserName = useSubscribeToProperty(`ScreenSpace.${browserId}.GuiName`);
+  const url = useSubscribeToProperty(`Modules.SkyBrowser.WwtImageCollectionUrl`);
+  const showTitle = useSubscribeToProperty(SkyBrowserShowTitleInBrowserKey);
+  const inverseZoom = useSubscribeToProperty(SkyBrowserInverseZoomDirectionKey);
+  const api = useSelector((state) => state.luaApi);
+
   const iframe = React.useRef(null);
-  const setSetupWwtFunc = React.useRef(null);
+  let previousImagesUrls = React.useRef(selectedImagesUrls);
+  let previousImagesOpacities = React.useRef(selectedImagesOpacities);
 
-  // New rewrite
-  const selectedPairId = useSelector((state) => {
-    return state.propertyTree.properties[`Modules.SkyBrowser.SelectedPairId`].value;
-  });
-  const borderColor = useSelector((state) => {
-    return state.propertyTree.properties[`Modules.SkyBrowser.${selectedPairId}.Color`]?.value;
-  });
-  const ratio = useSelector((state) => {
-    return state.propertyTree.properties[`Modules.SkyBrowser.${selectedPairId}.Ratio`]?.value;
-  });
-
-  // Selectors & dispatch - access Redux store
-  // Get each value separately to reduce unnecessary renders
-  const selectedId = useSelector((state) => state.skybrowser.selectedBrowserId);
-  const fov = useSelector((state) => state.skybrowser.browsers[selectedId].fov, lowPrecisionEqual);
-  const ra = useSelector((state) => state.skybrowser.browsers[selectedId].ra, lowPrecisionEqual);
-  const dec = useSelector((state) => state.skybrowser.browsers[selectedId].dec, lowPrecisionEqual);
-  const roll = useSelector(
-    (state) => state.skybrowser.browsers[selectedId].roll,
-    lowPrecisionEqual
-  );
-  const borderRadius = useSelector(
-    (state) => state.skybrowser.browsers[selectedId].borderRadius,
-    lowPrecisionEqual
-  );
-  const browserName = useSelector((state) => state.skybrowser.browsers[selectedId].name);
-  const browserId = useSelector((state) => state.skybrowser.browsers[selectedId].id);
-
-  const url = useSelector((state) => state.skybrowser.url);
-  const skybrowserApi = useSelector((state) => state.luaApi.skybrowser);
-  const showTitle = useSelector(
-    (state) => getBoolPropertyValue(state, SkyBrowserShowTitleInBrowserKey)
-  );
-  const inverseZoom = useSelector(
-    (state) => getBoolPropertyValue(state, SkyBrowserInverseZoomDirectionKey)
-  );
   const BorderWidth = 10;
+  const TopBarHeight = 25;
 
   const dispatch = useDispatch();
 
   // Effects
-  React.useEffect(() => {
-    dispatch(subscribeToProperty("Modules.SkyBrowser.SelectedPairId"));
-    return () => dispatch(unsubscribeToProperty("Module.SkyBrowser.SelectedPairId"));
-  }, []);
-
-  React.useEffect(() => {
-    dispatch(subscribeToProperty(`Modules.SkyBrowser.${selectedPairId}.Color`));
-    return () => dispatch(unsubscribeToProperty(`Module.SkyBrowser.${selectedPairId}.Color`));
-  }, [selectedPairId]);
-
-  React.useEffect(() => {
-    dispatch(subscribeToProperty(`Modules.SkyBrowser.${selectedPairId}.Ratio`));
-    return () => dispatch(unsubscribeToProperty(`Module.SkyBrowser.${selectedPairId}.Ratio`));
-  }, [selectedPairId]);
-
-  React.useEffect(() => {
-    setBorderColor(borderColor?.map(x => 255 * x));
-  }, [borderColor]);
-
-  React.useEffect(() => {
-    setSize({ width: ratio * (size.height - TopBarHeight), height: size.height });
-  }, [ratio]);
-
+  // Upon startup, we set the function so we can send WWT messages
   React.useEffect(() => {
     setMessageFunction(sendMessageToWwt);
     window.addEventListener('message', handleCallbackMessage);
@@ -111,19 +65,37 @@ function WorldWideTelescope({
     return () => window.removeEventListener('message', handleCallbackMessage);
   }, []);
 
-  React.useEffect(() => {
-    // Send aim messages to WorldWide Telescope to prompt it to reply with a message
-    setSetupWwtFunc.current = setInterval(setAim, 250);
-  }, []);
-
+  // Initialize - WWT has loaded and responded. Load the image
+  // collection and set the border properties
   React.useEffect(() => {
     if (wwtHasLoaded && url !== '' && !imageCollectionIsLoaded) {
-      initialize();
+      sendMessageToWwt({
+        event: 'modify_settings',
+        settings: [['hideAllChrome', true]],
+        target: 'app'
+      });
+      sendMessageToWwt({
+        event: 'load_image_collection',
+        url,
+        loadChildFolders: true
+      });
+      setBorderRadius(borderRadius);
+      setBorderColor(borderColor);
     }
   }, [wwtHasLoaded, url]);
 
   React.useEffect(() => {
-    setAim();
+    if (ra !== undefined && dec !== undefined &&
+        fov !== undefined && roll !== undefined) {
+      sendMessageToWwt({
+        event: 'center_on_coordinates',
+        ra,
+        dec,
+        fov,
+        roll,
+        instant: true
+      });
+    }
   }, [fov, roll, ra, dec]);
 
   React.useEffect(() => {
@@ -131,19 +103,49 @@ function WorldWideTelescope({
   }, [borderRadius]);
 
   React.useEffect(() => {
-    dispatch(subscribeToProperty(SkyBrowserShowTitleInBrowserKey));
-    dispatch(subscribeToProperty(SkyBrowserInverseZoomDirectionKey));
-    return () => {
-      dispatch(unsubscribeToProperty(SkyBrowserShowTitleInBrowserKey));
-      dispatch(unsubscribeToProperty(SkyBrowserInverseZoomDirectionKey));
-    };
-  }, []);
+    setBorderColor(borderColor);
+  }, [borderColor]);
 
-  // When WorldWide Telescope has replied with a message, stop sending it unnecessary messages
-  function stopSetupWwtFunc() {
-    clearInterval(setSetupWwtFunc.current);
-    setSetupWwtFunc.current = null;
-  }
+  React.useEffect(() => {
+    setSize({ width: ratio * (size.height - TopBarHeight), height: size.height });
+  }, [ratio]);
+
+  React.useEffect(() => {
+    console.log(selectedImagesUrls, previousImagesUrls.current)
+    // Image addition
+    if (selectedImagesUrls.length > previousImagesUrls.current.length) {
+      console.log(selectedImagesUrls, previousImagesUrls.current)
+      const newUrl = selectedImagesUrls.filter(url => !previousImagesUrls.current.includes(url));
+      console.log("adding image ", newUrl)
+      sendMessageToWwt({
+        event: 'image_layer_create',
+        id: newUrl[0],
+        url: newUrl[0],
+        mode: 'preloaded',
+        goto: false
+      });
+    } else if (selectedImagesUrls.length < previousImagesUrls.current.length) { // Removal
+      const removeUrl = previousImagesUrls.current.filter(url => !selectedImagesUrls.includes(url));
+      sendMessageToWwt({
+        event: 'image_layer_remove',
+        id: removeUrl[0]
+      });
+    } else { // Opacity change
+      console.log(selectedImagesOpacities, previousImagesOpacities.current)
+      selectedImagesOpacities?.forEach((x, i) => {
+        if (x !== previousImagesOpacities.current[i]) {
+          sendMessageToWwt({
+            event: 'image_layer_set',
+            id: selectedImagesUrls[i],
+            setting: 'opacity',
+            value: x
+          });
+        }
+      });
+    }
+    previousImagesUrls.current = selectedImagesUrls;
+    previousImagesOpacities.current = selectedImagesOpacities;
+  }, [selectedImagesUrls, selectedImagesOpacities]);
 
   function sendMessageToWwt(message) {
     try {
@@ -152,28 +154,13 @@ function WorldWideTelescope({
         frame.postMessage(message, '*');
       }
     } catch (error) {
-      // Do nothing
+      console.error(error);
     }
-  }
-
-  function initialize() {
-    sendMessageToWwt({
-      event: 'modify_settings',
-      settings: [['hideAllChrome', true]],
-      target: 'app'
-    });
-    sendMessageToWwt({
-      event: 'load_image_collection',
-      url,
-      loadChildFolders: true
-    });
-    setBorderRadius(borderRadius);
   }
 
   function handleCallbackMessage(event) {
     if (event.data === 'wwt_has_loaded') {
       setWwtHasLoaded(true);
-      stopSetupWwtFunc();
     }
     if (event.data === 'load_image_collection_completed') {
       setImageCollectionIsLoaded(true);
@@ -188,23 +175,15 @@ function WorldWideTelescope({
   }
 
   function setBorderColor(color) {
-    sendMessageToWwt({
-      event: 'set_background_color',
-      data: color
-    });
+    if (color !== undefined) {
+      sendMessageToWwt({
+        event: 'set_background_color',
+        data: color.map(x => 255 * x)
+      });
+    }
   }
 
-  function setAim() {
-    sendMessageToWwt({
-      event: 'center_on_coordinates',
-      ra,
-      dec,
-      fov,
-      roll,
-      instant: true
-    });
-  }
-
+  // Mouse interactions
   function handleDrag(mouse) {
     if (isDragging) {
       // Calculate pixel translation
@@ -223,7 +202,7 @@ function WorldWideTelescope({
     const mousePosition = [mouse.clientX, mouse.clientY];
     setIsDragging(true);
     setStartDragPosition(mousePosition);
-    skybrowserApi.stopAnimations(browserId);
+    propertyDispatcher(dispatch, `Modules.SkyBrowser.${selectedPairId}.StopAnimations`).set(null);
   }
 
   function mouseUp() {
@@ -232,8 +211,8 @@ function WorldWideTelescope({
 
   function scroll(e) {
     const scrollDirection = inverseZoom ? -e.deltaY : e.deltaY;
-    skybrowserApi.scrollOverBrowser(browserId, scrollDirection);
-    skybrowserApi.stopAnimations(browserId);
+    api.skybrowser.scrollOverBrowser(selectedPairId, scrollDirection);
+    propertyDispatcher(dispatch, `Modules.SkyBrowser.${selectedPairId}.StopAnimations`).set(null);
   }
 
   function changeSize({width: widthWwt, height: heightWwt}) {
@@ -241,27 +220,6 @@ function WorldWideTelescope({
     setSize({ width: widthWwt, height: heightWwt });
     propertyDispatcher(dispatch, `Modules.SkyBrowser.${selectedPairId}.Ratio`).set(newRatio);
   }
-
-  const topBar = (
-    <header className={`header ${styles.topMenu}`}>
-      <div className={styles.title}>{showTitle && browserName}</div>
-    </header>
-  );
-
-  // Covering div to handle interaction
-  const interactionDiv = (
-    <div
-      className={styles.container}
-      onMouseMove={handleDrag}
-      onMouseDown={mouseDown}
-      onMouseUp={mouseUp}
-      onMouseLeave={mouseUp}
-      onWheel={(e) => scroll(e)}
-      role="button"
-      aria-label="Dragging area for WorldWideTelescope"
-      tabIndex={0}
-    />
-  );
 
   return (
     <FloatingWindow
@@ -274,9 +232,22 @@ function WorldWideTelescope({
       handleDragStop={setPosition}
       sizeCallback={changeSize}
     >
-      {topBar}
+      <header className={`header ${styles.topMenu}`}>
+        <div className={styles.title}>{showTitle && browserName}</div>
+      </header>
       <div className={styles.content}>
-        {interactionDiv}
+        {/* Covering div to handle interaction */}
+        <div
+        className={styles.container}
+        onMouseMove={handleDrag}
+        onMouseDown={mouseDown}
+        onMouseUp={mouseUp}
+        onMouseLeave={mouseUp}
+        onWheel={(e) => scroll(e)}
+        role="button"
+        aria-label="Dragging area for WorldWideTelescope"
+        tabIndex={0}
+        />
         <iframe
           id="webpage"
           name="wwt"
