@@ -1,13 +1,30 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { formatVersion, isOlder } from '../../api/Version';
 import LoadingString from '../../components/common/LoadingString/LoadingString';
 import Row from '../../components/common/Row/Row';
 
 import logo from './logo.png';
 
 import styles from './About.scss';
+
+export const formatVersion = (version) => `${version.major}.${version.minor}.${version.patch}`;
+
+const isOlder = (a, b) => {
+  if (a.major < b.major) {
+    return true;
+  }
+  if (a.major > b.major) {
+    return false;
+  }
+  if (a.minor < b.minor) {
+    return true;
+  }
+  if (a.minor > b.minor) {
+    return false;
+  }
+  return a.patch < b.patch;
+};
 
 const openSpaceVersion = (props) => {
   const currentVersion = (
