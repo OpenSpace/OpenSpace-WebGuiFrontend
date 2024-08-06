@@ -1,5 +1,6 @@
 import React from 'react';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { subscribeToProperty, unsubscribeToProperty } from '../api/Actions';
 function useLocalStorageState(
   key,
   defaultValue = '',
@@ -42,4 +43,17 @@ function lowPrecisionEqual(oldValue, newValue) {
   return Math.floor(oldValue * Precision) === Math.floor(newValue * Precision);
 }
 
-export { lowPrecisionEqual, useLocalStorageState };
+function useSubscribeToProperty(uri, comparisonFunc = (a, b) => a === b) {
+  const propertyValue = useSelector((state) => {
+    return state.propertyTree.properties[uri]?.value;
+  }, comparisonFunc);
+  const dispatch = useDispatch();
+
+  React.useEffect(() => {
+    dispatch(subscribeToProperty(uri));
+    return () => dispatch(unsubscribeToProperty(uri));
+  }, [uri]);
+  return propertyValue;
+}
+
+export { lowPrecisionEqual, useLocalStorageState, useSubscribeToProperty };
