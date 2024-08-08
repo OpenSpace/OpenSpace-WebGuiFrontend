@@ -1,82 +1,26 @@
 import React from 'react';
-import { shallowEqual, useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd';
 
 import SkyBrowserTabEntry from './SkyBrowserTabEntry';
-import shallowEqualArrays from 'shallow-equal/arrays';
+import propertyDispatcher from '../../../api/propertyDispatcher';
+import { useSubscribeToProperty } from '../../../utils/customHooks';
 
 function SkyBrowserSelectedImagesList({
-  luaApi,
   selectImage,
   activeImage,
-  passMessageToWwt,
-  removeImageSelection,
-  setOpacityOfImage,
-  moveCircleToHoverImage
 }) {
   const [isDragging, setIsDragging] = React.useState(false);
-  // Each message to WorldWide Telescope has a unique order number
-  const [messageCounter, setMessageCounter] = React.useState(0);
+  const selectedPair = useSubscribeToProperty(`Modules.SkyBrowser.SelectedPairId`);
+  const selectedBrowserId = useSubscribeToProperty(`Modules.SkyBrowser.${selectedPair}.Browser`);
+  const selectedImagesUrls = useSubscribeToProperty(`ScreenSpace.${selectedBrowserId}.SelectedImagesUrls`) ?? [];
+  const selectedImagesOpacities = useSubscribeToProperty(`ScreenSpace.${selectedBrowserId}.SelectedImagesOpacities`) ?? [];
 
-  // Cache for when Redux store is updating from OpenSpace
-  // Using refs so the component doesn't update unnecessarily when they are set
-  const imageIndicesCache = React.useRef([]);
-  const imageOpacitiesCache = React.useRef([]);
-  const shouldUseCache = React.useRef(false);
-
-  const selectedBrowserId = useSelector((state) => state.skybrowser.selectedBrowserId);
-  const imageIndicesRedux = useSelector((state) => {
-    const browser = state.skybrowser.browsers[selectedBrowserId];
-    if (!browser || !browser?.selectedImages) {
-      return [];
-    }
-    return Object.values(browser.selectedImages);
-  }, shallowEqualArrays);
-  const imagesIndicesLengthRedux = useSelector(
-    (state) => state.skybrowser.browsers[selectedBrowserId].selectedImages.length
-  );
   const imageList = useSelector((state) => state.skybrowser.imageList);
-  const imageOpacitiesRedux = useSelector(
-    (state) => state.skybrowser.browsers[selectedBrowserId].opacities,
-    shallowEqualArrays
-  );
+  const dispatch = useDispatch();
 
   if (!imageList || imageList.length === 0) {
     return null;
-  }
-
-  // Create a cache so that the right images are displayed in the right order,
-  // even in the small gap between a reorder and the updated info from OpenSpace
-  React.useEffect(() => {
-    imageIndicesCache.current = [...imageIndicesRedux];
-    imageOpacitiesCache.current = [...imageOpacitiesRedux];
-  }, [selectedBrowserId, imagesIndicesLengthRedux]);
-
-  // Set image indices and opacities to the order they should currently have
-  let imageIndicesCurrent = imageIndicesRedux;
-  let imageOpacitiesCurrent = imageOpacitiesRedux;
-  // Check if they are currently loading or not - if they are, use cache
-  if (shouldUseCache.current) {
-    imageIndicesCurrent = imageIndicesCache.current;
-    imageOpacitiesCurrent = imageOpacitiesCache.current;
-  }
-  const imagesCurrent = imageIndicesCurrent.map((index) => imageList[index.toString()]);
-
-  // Stop using the cache when the Redux store is up to date
-  if (imageIndicesRedux.toString() === imageIndicesCache.current.toString()) {
-    shouldUseCache.current = false;
-  }
-
-  function setImageLayerOrder(browserId, identifier, order) {
-    luaApi.skybrowser.setImageLayerOrder(browserId, imageList[identifier].url, order);
-    const reverseOrder = imageIndicesCurrent.length - order - 1;
-    passMessageToWwt({
-      event: 'image_layer_order',
-      id: String(identifier),
-      order: Number(reverseOrder),
-      version: messageCounter
-    });
-    setMessageCounter(messageCounter + 1);
   }
 
   function getCurrentOrder(layers, source, destination) {
@@ -94,18 +38,15 @@ function SkyBrowserSelectedImagesList({
       setIsDragging(false);
       return; // no change => do nothing
     }
-    // First update the order manually, so we keep it while the properties
-    // are being refreshed below
     const sourceIndex = result.source.index;
     const destIndex = result.destination.index;
-    imageIndicesCache.current = getCurrentOrder(imageIndicesCurrent, sourceIndex, destIndex);
-    imageOpacitiesCache.current = getCurrentOrder(imageOpacitiesCurrent, sourceIndex, destIndex);
+    const newOrderUrls = getCurrentOrder(selectedImagesUrls, sourceIndex, destIndex);
+    const newOrderOpacities = getCurrentOrder(selectedImagesOpacities, sourceIndex, destIndex);
 
-    shouldUseCache.current = true;
+    propertyDispatcher(dispatch, `ScreenSpace.${selectedBrowserId}.SelectedImagesUrls`).set(newOrderUrls);
+    propertyDispatcher(dispatch, `ScreenSpace.${selectedBrowserId}.SelectedImagesOpacities`).set(newOrderOpacities);
+
     setIsDragging(false);
-
-    // Move image logic
-    await setImageLayerOrder(selectedBrowserId, Number(result.draggableId), destIndex);
   }
 
   // Invisible overlay that covers the entire body and prevents other hover effects
@@ -122,21 +63,17 @@ function SkyBrowserSelectedImagesList({
       <Droppable droppableId="layers">
         { (provided) => (
           <div {...provided.droppableProps} ref={provided.innerRef}>
-            { imagesCurrent.map((entry, index) => (
-              <Draggable key={entry.identifier} draggableId={entry.identifier} index={index}>
+            { selectedImagesUrls.map((entry, index) => (
+              <Draggable key={entry} draggableId={entry} index={index}>
                 {(providedDraggable) => (
                   <div {...providedDraggable.draggableProps} ref={providedDraggable.innerRef}>
                     <SkyBrowserTabEntry
                       dragHandleTitleProps={providedDraggable.dragHandleProps}
-                      {...entry}
-                      luaApi={luaApi}
-                      key={entry.identifier}
+                      key={entry}
+                      url={entry}
                       onSelect={selectImage}
-                      removeImageSelection={removeImageSelection}
-                      opacity={imageOpacitiesCurrent[index]}
-                      setOpacity={setOpacityOfImage}
-                      isActive={activeImage === entry.identifier}
-                      moveCircleToHoverImage={moveCircleToHoverImage}
+                      opacity={selectedImagesOpacities[index]}
+                      isActive={activeImage === entry}
                     />
                   </div>
                 )}
