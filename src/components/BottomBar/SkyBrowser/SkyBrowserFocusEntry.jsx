@@ -2,11 +2,12 @@ import React from 'react';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
+import { useSubscribeToProperty } from '../../../utils/customHooks';
 
 import SkyBrowserInfoBox from './SkyBrowserInfoBox';
 
 import styles from './SkyBrowserEntry.scss';
-import { disableHoverCircle } from '../../../api/Actions';
+import { disableHoverCircle, moveHoverCircle } from '../../../api/Actions';
 
 function SkyBrowserFocusEntry({
   credits,
@@ -16,17 +17,15 @@ function SkyBrowserFocusEntry({
   hasCelestialCoords,
   identifier,
   isActive,
-  moveCircleToHoverImage,
   name,
   onSelect,
   ra,
   thumbnail,
   style
 }) {
-  const browserColor = useSelector((state) => {
-    const browser = state.skybrowser.browsers?.[state.skybrowser.selectedBrowserId];
-    return browser ? `rgb(${browser.color})` : 'gray';
-  });
+  const selectedPairId = useSubscribeToProperty("Modules.SkyBrowser.SelectedPairId");
+  const borderColor = useSubscribeToProperty(`Modules.SkyBrowser.${selectedPairId}.Color`);
+
   const dispatch = useDispatch();
 
   function select() {
@@ -38,9 +37,9 @@ function SkyBrowserFocusEntry({
   return (
     <div
       className={`${styles.entry} ${isActive && styles.active}`}
-      style={{ borderLeftColor: browserColor, ...style }}
-      onMouseOver={() => { moveCircleToHoverImage(identifier); }}
-      onFocus={() => { moveCircleToHoverImage(identifier); }}
+      style={{ borderLeftColor: `rgb(${borderColor})`, ...style }}
+      onMouseOver={() => { dispatch(moveHoverCircle(identifier)); }}
+      onFocus={() => { dispatch(moveHoverCircle(identifier)); }}
       onMouseOut={() => { dispatch(disableHoverCircle()); }}
       onBlur={() => { dispatch(disableHoverCircle()); }}
       onClick={select}
@@ -87,7 +86,6 @@ SkyBrowserFocusEntry.propTypes = {
   onSelect: PropTypes.func,
   ra: PropTypes.number,
   thumbnail: PropTypes.string,
-  moveCircleToHoverImage: PropTypes.func.isRequired,
   style: PropTypes.object
 };
 
