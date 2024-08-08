@@ -106,9 +106,9 @@ function SkyBrowserPanel() {
   }
 
   function selectImage(identifier, passToOs = true) {
-    if (identifier && imageList) {
+    if (imageList?.[identifier].url) {
       setActiveImage(identifier);
-      if (passToOs && !selectedImagesUrls.includes(imageList[identifier].url)) {
+      if (passToOs && !selectedImagesUrls.includes(imageList?.[identifier].url)) {
         luaApi.appendToListProperty(`ScreenSpace.${selectedBrowserId}.SelectedImagesUrls`, imageList[identifier].url)
         luaApi.appendToListProperty(`ScreenSpace.${selectedBrowserId}.SelectedImagesOpacities`, 1)
       }

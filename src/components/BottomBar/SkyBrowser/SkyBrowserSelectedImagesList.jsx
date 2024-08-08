@@ -15,13 +15,9 @@ function SkyBrowserSelectedImagesList({
   const selectedBrowserId = useSubscribeToProperty(`Modules.SkyBrowser.${selectedPair}.Browser`);
   const selectedImagesUrls = useSubscribeToProperty(`ScreenSpace.${selectedBrowserId}.SelectedImagesUrls`) ?? [];
   const selectedImagesOpacities = useSubscribeToProperty(`ScreenSpace.${selectedBrowserId}.SelectedImagesOpacities`) ?? [];
+  const borderColor = useSubscribeToProperty(`Modules.SkyBrowser.${selectedPair}.Color`);
 
-  const imageList = useSelector((state) => state.skybrowser.imageList);
   const dispatch = useDispatch();
-
-  if (!imageList || imageList.length === 0) {
-    return null;
-  }
 
   function getCurrentOrder(layers, source, destination) {
     const [reorderedItem] = layers.splice(source, 1);
@@ -49,6 +45,17 @@ function SkyBrowserSelectedImagesList({
     setIsDragging(false);
   }
 
+  function removeImageSelection(url) {
+    const i = selectedImagesUrls.indexOf(url);
+    const newUrls = [...selectedImagesUrls];
+    newUrls.splice(i, 1);
+    const newOpacities = [...selectedImagesOpacities];
+    newOpacities.splice(i, 1);
+    propertyDispatcher(dispatch, `ScreenSpace.${selectedBrowserId}.SelectedImagesUrls`).set(newUrls);
+    propertyDispatcher(dispatch, `ScreenSpace.${selectedBrowserId}.SelectedImagesOpacities`).set(newOpacities);
+    dispatch(disableHoverCircle());
+  }
+
   // Invisible overlay that covers the entire body and prevents other hover effects
   // from being triggered while dragging
   const overlay = (
@@ -63,17 +70,19 @@ function SkyBrowserSelectedImagesList({
       <Droppable droppableId="layers">
         { (provided) => (
           <div {...provided.droppableProps} ref={provided.innerRef}>
-            { selectedImagesUrls.map((entry, index) => (
-              <Draggable key={entry} draggableId={entry} index={index}>
+            { selectedImagesUrls.map((url, index) => (
+              <Draggable key={url} draggableId={url} index={index}>
                 {(providedDraggable) => (
                   <div {...providedDraggable.draggableProps} ref={providedDraggable.innerRef}>
                     <SkyBrowserTabEntry
                       dragHandleTitleProps={providedDraggable.dragHandleProps}
-                      key={entry}
-                      url={entry}
+                      key={url}
+                      url={url}
                       onSelect={selectImage}
                       opacity={selectedImagesOpacities[index]}
-                      isActive={activeImage === entry}
+                      isActive={activeImage === url}
+                      removeSelection={removeImageSelection}
+                      borderColor
                     />
                   </div>
                 )}
