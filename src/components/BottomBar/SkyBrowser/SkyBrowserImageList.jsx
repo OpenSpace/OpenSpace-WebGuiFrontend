@@ -21,7 +21,6 @@ const ImageViewingOptions = {
 function SkyBrowserImageList({
   activeImage,
   height,
-  moveCircleToHoverImage,
   selectImage
 }) {
   const [imageViewingMode, setImageViewingMode] = React.useState(ImageViewingOptions.withinView);
@@ -44,7 +43,6 @@ function SkyBrowserImageList({
           activeImage={activeImage}
           selectImage={selectImage}
           height={height}
-          moveCircleToHoverImage={moveCircleToHoverImage}
         />
       );
     }
@@ -86,7 +84,6 @@ function SkyBrowserImageList({
                         {...item}
                         onSelect={selectImage}
                         isActive={activeImage === item.identifier}
-                        moveCircleToHoverImage={moveCircleToHoverImage}
                         style={style}
                       />
                     );
@@ -125,7 +122,6 @@ SkyBrowserImageList.propTypes = {
   activeImage: PropTypes.string.isRequired,
   height: PropTypes.number.isRequired,
   selectImage: PropTypes.func.isRequired,
-  moveCircleToHoverImage: PropTypes.func.isRequired
 };
 
 SkyBrowserImageList.defaultProps = {};

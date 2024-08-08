@@ -3,7 +3,7 @@ import { shallowEqual, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 // eslint-disable-next-line import/no-webpack-loader-syntax
 import InfographicSkyBrowser from 'svg-react-loader?name=Aim!../../../icons/infographicSkyBrowser.svg';
-
+import { useSubscribeToProperty } from '../../../utils/customHooks';
 import { lowPrecisionEqual } from '../../../utils/customHooks';
 import CenteredLabel from '../../common/CenteredLabel/CenteredLabel';
 import { FilterList, FilterListData } from '../../common/FilterList/FilterList';
@@ -15,21 +15,11 @@ import styles from './SkyBrowserNearestImagesList.scss';
 function SkyBrowserNearestImagesList({
   activeImage,
   height,
-  moveCircleToHoverImage,
   selectImage
 }) {
-  const fov = useSelector(
-    (state) => state.skybrowser.browsers[state.skybrowser.selectedBrowserId].fov,
-    lowPrecisionEqual
-  );
-  const ra = useSelector(
-    (state) => state.skybrowser.browsers[state.skybrowser.selectedBrowserId].ra,
-    lowPrecisionEqual
-  );
-  const dec = useSelector(
-    (state) => state.skybrowser.browsers[state.skybrowser.selectedBrowserId].dec,
-    lowPrecisionEqual
-  );
+  const selectedPairId = useSubscribeToProperty("Modules.SkyBrowser.SelectedPairId");
+  const fov = useSubscribeToProperty(`Modules.SkyBrowser.${selectedPairId}.VerticalFov`, lowPrecisionEqual) ?? [];
+  const [ra, dec] = useSubscribeToProperty(`Modules.SkyBrowser.${selectedPairId}.EquatorialAim`) ?? [];
   const cartesianDirection = useSelector(
     (state) => state.skybrowser.browsers[state.skybrowser.selectedBrowserId].cartesianDirection,
     shallowEqual
@@ -111,7 +101,6 @@ function SkyBrowserNearestImagesList({
             {...item}
             onSelect={selectImage}
             isActive={activeImage === item.identifier}
-            moveCircleToHoverImage={moveCircleToHoverImage}
           />
         ))}
       </FilterListData>
@@ -122,9 +111,7 @@ function SkyBrowserNearestImagesList({
 
 SkyBrowserNearestImagesList.propTypes = {
   activeImage: PropTypes.string.isRequired,
-  currentBrowserColor: PropTypes.func.isRequired,
   height: PropTypes.number.isRequired,
-  moveCircleToHoverImage: PropTypes.func.isRequired,
   selectImage: PropTypes.func.isRequired
 };
 
