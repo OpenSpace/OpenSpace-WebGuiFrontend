@@ -6,21 +6,30 @@ import PropTypes from 'prop-types';
 import { stopEventPropagation } from '../../../utils/helpers';
 import Button from '../../common/Input/Button/Button';
 import NumericInput from '../../common/Input/NumericInput/NumericInput';
-
+import propertyDispatcher from '../../../api/propertyDispatcher';
 import SkyBrowserInfoBox from './SkyBrowserInfoBox';
 
 import styles from './SkyBrowserEntry.scss';
-import { disableHoverCircle } from '../../../api/Actions';
+import { disableHoverCircle, moveHoverCircle } from '../../../api/Actions';
 import { useDispatch, useSelector } from 'react-redux';
+import { useSubscribeToProperty } from '../../../utils/customHooks';
 
-function OpacitySlider({ opacity, setOpacity, identifier }) {
+function OpacitySlider({ opacity, identifier }) {
+  const selectedPairId = useSubscribeToProperty("Modules.SkyBrowser.SelectedPairId");
+  const browserId = useSubscribeToProperty(`Modules.SkyBrowser.${selectedPairId}.Browser`);
+  const selectedImagesUrls = useSubscribeToProperty(`ScreenSpace.${browserId}.SelectedImagesUrls`) ?? [];
+  const selectedImagesOpacities = useSubscribeToProperty(`ScreenSpace.${browserId}.SelectedImagesOpacities`) ?? [];
+
+  const dispatch = useDispatch();
+
   function handleChange(newValue) {
     // Ensure the image has an id, which consists of the index of the image
-    const index = Number(identifier);
-    if (index) {
-      setOpacity(index, newValue);
-    }
+    const index = selectedImagesUrls.indexOf(identifier);
+    const newOpacities = [...selectedImagesOpacities];
+    newOpacities[index] = newValue;
+    propertyDispatcher(dispatch, `ScreenSpace.${browserId}.SelectedImagesOpacities`).set(newOpacities);
   }
+
   return (
     <div className={styles.sliderContainer}>
       <NumericInput
@@ -41,45 +50,31 @@ function OpacitySlider({ opacity, setOpacity, identifier }) {
 OpacitySlider.propTypes = {
   identifier: PropTypes.string.isRequired,
   opacity: PropTypes.number.isRequired,
-  setOpacity: PropTypes.func.isRequired
 };
 
 function SkyBrowserTabEntry({
-  credits,
-  creditsUrl,
+  url,
   dragHandleTitleProps,
-  dec,
-  fov,
-  hasCelestialCoords,
-  identifier,
   isActive,
-  moveCircleToHoverImage,
-  name,
   onSelect,
   opacity,
-  ra,
-  removeImageSelection,
-  setOpacity,
-  thumbnail
+  removeSelection,
+  borderColor
 }) {
-  const browserColor = useSelector((state) => {
-    const browser = state.skybrowser.browsers?.[state.skybrowser.selectedBrowserId];
-    return browser ? `rgb(${browser.color})` : 'gray';
-  });
+  const entry = useSelector((state) => state.skybrowser.imageList[state.skybrowser.imageMap[url]]);
+
   const dispatch = useDispatch();
 
   function select() {
-    if (onSelect && identifier) {
-      onSelect(identifier);
-    }
+    onSelect(entry.identifier);
   }
 
   return (
     <div
       className={`${styles.entry} ${styles.tabEntry} ${isActive && styles.active}`}
-      style={{ borderLeftColor: browserColor }}
-      onMouseOver={() => { moveCircleToHoverImage(identifier); }}
-      onFocus={() => { moveCircleToHoverImage(identifier); }}
+      style={{ borderLeftColor: `rgb(${borderColor})` }}
+      onMouseOver={() => { dispatch(moveHoverCircle(entry.identifier)); }}
+      onFocus={() => { dispatch(moveHoverCircle(entry.identifier)); }}
       onMouseOut={() => { dispatch(disableHoverCircle()); }}
       onBlur={() => { dispatch(disableHoverCircle()); }}
       onClick={select}
@@ -90,9 +85,9 @@ function SkyBrowserTabEntry({
     >
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         <div className={styles.image}>
-          <LazyLoadImage src={thumbnail} alt="" className={styles.imageText} onClick={select} />
+          <LazyLoadImage src={entry.thumbnail} alt="" className={styles.imageText} onClick={select} />
         </div>
-        {!hasCelestialCoords && (
+        {!entry.hasCelestialCoords && (
           <span className={styles.skySurvey}>
             Sky Survey
           </span>
@@ -100,27 +95,27 @@ function SkyBrowserTabEntry({
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '10px' }}>
         <div className={styles.imageTitle} style={{ maxWidth: '150px' }}>
-          { name || identifier }
+          { entry.name || entry.identifier }
         </div>
-        <OpacitySlider setOpacity={setOpacity} opacity={opacity} identifier={identifier} />
+        <OpacitySlider opacity={opacity} identifier={entry.identifier} />
       </div>
       <div style={{ display: 'flex', flexDirection: 'row', marginLeft: 'auto' }}>
         <SkyBrowserInfoBox
           className={styles.removeImageButton}
-          dec={dec}
-          fov={fov}
-          hasCelestialCoords={hasCelestialCoords}
+          dec={entry.dec}
+          fov={entry.fov}
+          hasCelestialCoords={entry.hasCelestialCoords}
           infoPlacement="left"
-          ra={ra}
+          ra={entry.ra}
           style={{ display: 'flex', justifyContent: 'center', borderRadius: '4px' }}
-          text={credits}
-          textUrl={creditsUrl}
-          title={(name || identifier)}
+          text={entry.credits}
+          textUrl={entry.creditsUrl}
+          title={(entry.name || entry.identifier)}
         />
         <Button
           onClick={(e) => {
             stopEventPropagation(e);
-            removeImageSelection(identifier);
+            removeSelection(url);
           }}
           className={styles.removeImageButton}
           small
@@ -134,33 +129,14 @@ function SkyBrowserTabEntry({
 }
 
 SkyBrowserTabEntry.propTypes = {
-  credits: PropTypes.string,
-  creditsUrl: PropTypes.string,
-  dec: PropTypes.number,
   dragHandleTitleProps: PropTypes.object.isRequired,
-  fov: PropTypes.number,
-  hasCelestialCoords: PropTypes.bool.isRequired,
-  identifier: PropTypes.string.isRequired,
   isActive: PropTypes.bool,
-  moveCircleToHoverImage: PropTypes.func.isRequired,
-  name: PropTypes.string,
   onSelect: PropTypes.func.isRequired,
   opacity: PropTypes.number.isRequired,
-  ra: PropTypes.number,
-  removeImageSelection: PropTypes.func.isRequired,
-  setOpacity: PropTypes.func.isRequired,
-  thumbnail: PropTypes.string
 };
 
 SkyBrowserTabEntry.defaultProps = {
   isActive: false,
-  credits: '',
-  creditsUrl: '',
-  dec: 0,
-  fov: 90,
-  name: '',
-  ra: 0,
-  thumbnail: ''
 };
 
 export default SkyBrowserTabEntry;
