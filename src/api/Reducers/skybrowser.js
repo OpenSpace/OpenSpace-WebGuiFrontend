@@ -5,6 +5,7 @@ const defaultState = {
   isInitialized: false,
   url: undefined,
   imageList: undefined,
+  imageMap: undefined,
   browsers: undefined,
   selectedBrowserId: undefined,
   cameraInSolarSystem: undefined
@@ -23,6 +24,10 @@ const skybrowser = (state = defaultState, action = {}) => {
       newState.isInitialized = true;
       newState.imageList = action.payload.imageList;
       newState.imageList.sort((a, b) => a.key - b.key);
+      newState.imageMap = {};
+      newState.imageList.forEach((img) => {
+        newState.imageMap[img.url] = img.identifier;
+      });
       newState.url = action.payload.url;
       return newState;
     default:
