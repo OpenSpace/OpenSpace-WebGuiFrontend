@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import {
@@ -22,22 +22,23 @@ import ToggleContent from '../../common/ToggleContent/ToggleContent';
 import Property from '../../Sidebar/Properties/Property';
 
 import styles from './SkyBrowserSettings.scss';
+import { subscribeToProperty, unsubscribeToProperty } from '../../../api/Actions';
+import { useSubscribeToProperty } from '../../../utils/customHooks';
 
 function SkyBrowserSettings({
-  setBorderRadius
+
 }) {
   const [showExpandedCopies, setShowExpandedCopies] = React.useState(false);
   const [showExpandedSettings, setShowExpandedSettings] = React.useState(false);
   const [generalSettingsExpanded, setGeneralSettingsExpanded] = React.useState(false);
   const [newPosition, setNewPosition] = React.useState([0, 0, -2]);
   const [noOfCopies, setNoOfCopies] = React.useState(1);
+  const api = useSelector((state) => state.luaApi);
 
-  const browser = useSelector(
-    (state) => state.skybrowser.browsers[state.skybrowser.selectedBrowserId]
-  );
-  const selectedBrowserId = useSelector((state) => state.skybrowser.selectedBrowserId);
-  const luaApi = useSelector((state) => state.luaApi);
+  const selectedBrowserId = useSubscribeToProperty(`Modules.SkyBrowser.SelectedPairId`);
+  const dispatch = useDispatch();
 
+/*
   const PrecisionLow = 2;
   const PrecisionHigh = 10;
   // Cartesian
@@ -66,25 +67,6 @@ function SkyBrowserSettings({
     const uriBrowser = `ScreenSpace.${browser.id}.UseRadiusAzimuthElevation`;
     luaApi.setPropertyValueSingle(uriBrowser, !browser.isUsingRae);
     setNewPosition(browser.isUsingRae ? CartesianStartVector : RaeStartVector);
-  }
-
-  function valueToColor(color) {
-    return {
-      r: color[0],
-      g: color[1],
-      b: color[2],
-      a: 1.0
-    };
-  }
-
-  function onColorPickerChange(color) {
-    const { rgb } = color;
-    luaApi.skybrowser.setBorderColor(
-      selectedBrowserId,
-      rgb.r,
-      rgb.g,
-      rgb.b,
-    );
   }
 
   function createDisplayCopiesSection() {
@@ -233,104 +215,26 @@ function SkyBrowserSettings({
     );
   }
 
-  const colorValues = browser.color;
-  const colorLabels = ['Border Color: R', 'G', 'B'];
   const displayDisplaySection = createDisplayCopiesSection();
 
-  const colorPicker = (
-    <ColorPickerPopup
-      className={styles.colorPicker}
-      disableAlpha
-      color={valueToColor(browser.color)}
-      onChange={onColorPickerChange}
-      disabled={false}
-    />
   );
-
+*/
   return (
     <div>
-      <NumericInput
-        label="Vertical Field of View"
-        max={70}
-        min={0}
-        disabled={!luaApi.skybrowser.setVerticalFov}
-        onValueChanged={(fov) => {
-          luaApi.skybrowser.setVerticalFov(selectedBrowserId, fov);
-        }}
-        step={1}
-        value={parseFloat(browser.fov.toFixed(PrecisionHigh))}
-        placeholder="value 0"
-      />
-      <Row>
-        <NumericInput
-          label="Right Ascension"
-          max={360}
-          min={0}
-          disabled={!luaApi.skybrowser.setVerticalFov}
-          onValueChanged={
-            (value) => luaApi.skybrowser.setEquatorialAim(selectedBrowserId, value, browser.dec)
-          }
-          step={0.1}
-          value={parseFloat(browser.ra.toFixed(PrecisionHigh))}
-          placeholder="value 1"
-        />
-        <NumericInput
-          label="Declination"
-          max={90}
-          min={-90}
-          disabled={!luaApi.skybrowser.setVerticalFov}
-          onValueChanged={
-            (value) => luaApi.skybrowser.setEquatorialAim(selectedBrowserId, browser.ra, value)
-          }
-          step={0.1}
-          value={parseFloat(browser.dec.toFixed(PrecisionHigh))}
-          placeholder="value 2"
-        />
-      </Row>
-      <Row className={styles.vectorProperty}>
-        {colorPicker}
-        {colorValues.map((color, index) => (
-          <NumericInput
-            key={`color${colorLabels[index]}`}
-            label={colorLabels[index]}
-            max={255}
-            min={0}
-            onValueChanged={(value) => {
-              const newColor = colorValues;
-              newColor[index] = value;
-              luaApi.skybrowser.setBorderColor(
-                selectedBrowserId,
-                newColor[0],
-                newColor[1],
-                newColor[2],
-              );
-            }}
-            step={1}
-            value={color}
-            placeholder={`value ${index}`}
-          />
-        ))}
-      </Row>
-      <Property uri={`Scene.${browser.targetId}.Renderable.ApplyRoll`} />
-      <Property uri={`ScreenSpace.${selectedBrowserId}.PointSpacecraft`} />
+      <Property uri={`Modules.SkyBrowser.${selectedBrowserId}.Roll`} />
+      <Property uri={`Modules.SkyBrowser.${selectedBrowserId}.EquatorialAim`} />
+      <Property uri={`Modules.SkyBrowser.${selectedBrowserId}.Color`} />
+      <Property uri={`Modules.SkyBrowser.${selectedBrowserId}.PointSpacecraft`} />
+      <Property uri={`Modules.SkyBrowser.${selectedBrowserId}.ApplyRoll`} />
+      {/*
       {displayDisplaySection}
+      */}
       <ToggleContent
         title="General Settings"
         expanded={generalSettingsExpanded}
         setExpanded={setGeneralSettingsExpanded}
       >
-        <NumericInput
-          label="Border Radius"
-          max={1}
-          min={0}
-          onValueChanged={(value) => {
-            luaApi.skybrowser.setBorderRadius(browser.id, value);
-            setBorderRadius(value);
-          }}
-          step={0.01}
-          value={browser.borderRadius}
-          placeholder="value 2"
-        />
+        <Property uri={`Modules.SkyBrowser.${selectedBrowserId}.BorderRadius`} />
         <Property uri={SkyBrowserShowTitleInBrowserKey} />
         <Property uri={SkyBrowserAllowCameraRotationKey} />
         <Property uri={SkyBrowserCameraRotationSpeedKey} />
@@ -345,7 +249,6 @@ function SkyBrowserSettings({
 }
 
 SkyBrowserSettings.propTypes = {
-  setBorderRadius: PropTypes.func.isRequired
 };
 
 export default SkyBrowserSettings;
