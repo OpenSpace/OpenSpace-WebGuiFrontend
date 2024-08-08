@@ -18,6 +18,7 @@ function SkyBrowserNearestImagesList({
   selectImage
 }) {
   const selectedPairId = useSubscribeToProperty("Modules.SkyBrowser.SelectedPairId");
+  const borderColor = useSubscribeToProperty(`Modules.SkyBrowser.${selectedPairId}.Color`).map(x => x * 255);
   const fov = useSubscribeToProperty(`Modules.SkyBrowser.${selectedPairId}.VerticalFov`, lowPrecisionEqual) ?? [];
   const [ra, dec] = useSubscribeToProperty(`Modules.SkyBrowser.${selectedPairId}.EquatorialAim`) ?? [];
   const cartesianDirection = useSelector(
@@ -101,6 +102,8 @@ function SkyBrowserNearestImagesList({
             {...item}
             onSelect={selectImage}
             isActive={activeImage === item.identifier}
+            selectedPairId={selectedPairId}
+            borderColor={borderColor}
           />
         ))}
       </FilterListData>

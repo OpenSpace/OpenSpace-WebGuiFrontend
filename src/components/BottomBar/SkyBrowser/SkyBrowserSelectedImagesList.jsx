@@ -1,7 +1,6 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd';
-
 import SkyBrowserTabEntry from './SkyBrowserTabEntry';
 import propertyDispatcher from '../../../api/propertyDispatcher';
 import { useSubscribeToProperty } from '../../../utils/customHooks';
@@ -53,7 +52,6 @@ function SkyBrowserSelectedImagesList({
     newOpacities.splice(i, 1);
     propertyDispatcher(dispatch, `ScreenSpace.${selectedBrowserId}.SelectedImagesUrls`).set(newUrls);
     propertyDispatcher(dispatch, `ScreenSpace.${selectedBrowserId}.SelectedImagesOpacities`).set(newOpacities);
-    dispatch(disableHoverCircle());
   }
 
   // Invisible overlay that covers the entire body and prevents other hover effects

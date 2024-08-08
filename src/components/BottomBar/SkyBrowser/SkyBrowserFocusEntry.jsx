@@ -21,11 +21,10 @@ function SkyBrowserFocusEntry({
   onSelect,
   ra,
   thumbnail,
-  style
+  style,
+  selectedPairId,
+  borderColor
 }) {
-  const selectedPairId = useSubscribeToProperty("Modules.SkyBrowser.SelectedPairId");
-  const borderColor = useSubscribeToProperty(`Modules.SkyBrowser.${selectedPairId}.Color`);
-
   const dispatch = useDispatch();
 
   function select() {

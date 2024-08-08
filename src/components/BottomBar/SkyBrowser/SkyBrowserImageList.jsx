@@ -11,6 +11,7 @@ import Input from '../../common/Input/Input/Input';
 
 import SkyBrowserFocusEntry from './SkyBrowserFocusEntry';
 import SkyBrowserNearestImagesList from './SkyBrowserNearestImagesList';
+import { useSubscribeToProperty } from '../../../utils/customHooks';
 
 const ImageViewingOptions = {
   withinView: 'Images within view',
@@ -23,6 +24,8 @@ function SkyBrowserImageList({
   height,
   selectImage
 }) {
+  const selectedPairId = useSubscribeToProperty("Modules.SkyBrowser.SelectedPairId");
+  const borderColor = useSubscribeToProperty(`Modules.SkyBrowser.${selectedPairId}.Color`).map(x => x * 255);
   const [imageViewingMode, setImageViewingMode] = React.useState(ImageViewingOptions.withinView);
   const [searchString, setSearchString] = React.useState('');
   const imageList = useSelector((state) => state.skybrowser.imageList);
@@ -85,6 +88,8 @@ function SkyBrowserImageList({
                         onSelect={selectImage}
                         isActive={activeImage === item.identifier}
                         style={style}
+                        selectedPairId={selectedPairId}
+                        borderColor={borderColor}
                       />
                     );
                   }}
