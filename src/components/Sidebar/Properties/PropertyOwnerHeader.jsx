@@ -8,7 +8,11 @@ import PropTypes from 'prop-types';
 import DraggableIcon from 'svg-react-loader?name=Aim!../../../icons/draggable_list.svg';
 
 import {
-  EngineFadeDurationKey
+  addNodeMetaPopover,
+  addNodePropertyPopover
+} from '../../../api/Actions';
+import {
+  EngineFadeDurationKey,
 } from '../../../api/keys';
 import propertyDispatcher from '../../../api/propertyDispatcher';
 import {
@@ -33,7 +37,7 @@ import toggleHeaderStyles from '../../common/ToggleContent/ToggleHeader.scss';
 import styles from './PropertyOwnerHeader.scss';
 
 function PropertyOwnerHeader({
-  expanded, metaAction, popOutAction, setExpanded, title, trashAction, uri
+  expanded, showMeta, showPopOutSettings, setExpanded, title, trashAction, uri
 }) {
   const identifier = identifierFromUri(uri);
   const isSceneObject = isSceneGraphNode(uri);
@@ -167,13 +171,17 @@ function PropertyOwnerHeader({
     }
   }
 
-  function popoutClick(evt) {
-    popOutAction();
+  function popoutSettingsClick(evt) {
+    dispatch(addNodePropertyPopover({
+      identifier: uri
+    }));
     evt.stopPropagation();
   }
 
   function metaClick(evt) {
-    metaAction();
+    dispatch(addNodeMetaPopover({
+      identifier: uri
+    }));
     evt.stopPropagation();
   }
 
@@ -183,7 +191,7 @@ function PropertyOwnerHeader({
   }
 
   const popoutButton = (
-    <Button className={styles.menuButton} onClick={popoutClick}>
+    <Button className={styles.menuButton} onClick={popoutSettingsClick}>
       <MdBuild />
       {' '}
       Quick access settings
@@ -256,15 +264,20 @@ function PropertyOwnerHeader({
             <>
               <NavigationButton type={NavigationTypes.focus} identifier={identifier} />
               <TooltipMenu sourceObject={<MdMoreVert />}>
-                { popOutAction && popoutButton }
-                { metaAction && metaButton }
-                { trashAction && trashButton }
+                {showPopOutSettings && popoutButton}
+                {showMeta && metaButton}
+                {trashAction && trashButton}
                 <HorizontalDelimiter />
                 <NavigationButton type={NavigationTypes.fly} showLabel identifier={identifier} />
                 <NavigationButton type={NavigationTypes.jump} showLabel identifier={identifier} />
                 <NavigationButton type={NavigationTypes.frame} showLabel identifier={identifier} />
               </TooltipMenu>
             </>
+          )}
+          { !isSceneObject && showMeta && (
+            <TooltipMenu sourceObject={<MdMoreVert />}>
+              {metaButton}
+            </TooltipMenu>
           )}
         </span>
       </Row>
@@ -275,16 +288,16 @@ function PropertyOwnerHeader({
 PropertyOwnerHeader.propTypes = {
   expanded: PropTypes.bool.isRequired,
   setExpanded: PropTypes.func.isRequired,
-  metaAction: PropTypes.func,
-  popOutAction: PropTypes.func,
+  showPopOutSettings: PropTypes.bool,
+  showMeta: PropTypes.bool,
   title: PropTypes.string,
   trashAction: PropTypes.func,
   uri: PropTypes.string.isRequired
 };
 
 PropertyOwnerHeader.defaultProps = {
-  metaAction: undefined,
-  popOutAction: undefined,
+  showPopOutSettings: false,
+  showMeta: false,
   title: undefined,
   trashAction: undefined
 };

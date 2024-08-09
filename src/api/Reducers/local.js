@@ -74,7 +74,6 @@ const defaultPopovers = {
   actions: popover(),
   keybinds: popover(),
   geoposition: popover(),
-  focusNodePropertiesPanel: popover({ attached: false }),
   activeNodePropertyPanels: {},
   activeNodeMetaPanels: {},
   userControlPanel: popover(),
@@ -112,12 +111,6 @@ const popovers = (state = defaultPopovers, action = {}) => {
       };
 
     case actionTypes.addNodePropertyPopover:
-      if (action.payload.focus) {
-        return {
-          ...state,
-          focusNodePropertiesPanel: { ...state.focusNodePropertiesPanel, visible: true }
-        };
-      }
       return {
         ...state,
         activeNodePropertyPanels: {
@@ -157,15 +150,7 @@ const popovers = (state = defaultPopovers, action = {}) => {
         }
       };
     case actionTypes.setPopoverActiveTab:
-      if (action.payload.isFocusNodePanel) {
-        return {
-          ...state,
-          focusNodePropertiesPanel: {
-            ...state.focusNodePropertiesPanel,
-            activeTab: action.payload.activeTab
-          }
-        };
-      } if (action.payload.isMeta) {
+      if (action.payload.isMeta) {
         return {
           ...state,
           activeNodeMetaPanels: {
