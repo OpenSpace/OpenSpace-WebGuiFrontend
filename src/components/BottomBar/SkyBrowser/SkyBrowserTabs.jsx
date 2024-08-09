@@ -143,7 +143,7 @@ function SkyBrowserTabs({
                 Icon={MdFilterCenterFocus}
                 text={'Move target to center of view'}
                 onClick={() => {
-                  luaApi.skybrowser.stopAnimations(selectedPairId);
+                  propertyDispatcher(dispatch, `Modules.SkyBrowser.${selectedPairId}.StopAnimations`).set(null);
                   luaApi.skybrowser.centerTargetOnScreen(selectedPairId);
                 }}
               />
@@ -156,18 +156,18 @@ function SkyBrowserTabs({
                 Icon={MdZoomIn}
                 text={'Zoom in'}
                 onClick={() => {
-                  luaApi.skybrowser.stopAnimations(selectedPairId);
+                  propertyDispatcher(dispatch, `Modules.SkyBrowser.${selectedPairId}.StopAnimations`).set(null);
                   const newFov = Math.max(fov - 5, 0.01);
-                  luaApi.skybrowser.setVerticalFov(selectedPairId, Number(newFov));
+                  luaApi.setPropertyValueSingle(`Modules.SkyBrowser.${selectedPairId}.VerticalFov`, newFov, 0.5, "QuadraticEaseInOut");
                 }}
               />
               <SettingsButton
                 Icon={MdZoomOut}
                 text={'Zoom out'}
                 onClick={() => {
-                  luaApi.skybrowser.stopAnimations(selectedPairId);
+                  propertyDispatcher(dispatch, `Modules.SkyBrowser.${selectedPairId}.StopAnimations`).set(null);
                   const newFov = Math.min(fov + 5, 70);
-                  luaApi.skybrowser.setVerticalFov(selectedPairId, Number(newFov));
+                  luaApi.setPropertyValueSingle(`Modules.SkyBrowser.${selectedPairId}.VerticalFov`, newFov, 0.5, "QuadraticEaseInOut");
                 }}
               />
               <SettingsButton
