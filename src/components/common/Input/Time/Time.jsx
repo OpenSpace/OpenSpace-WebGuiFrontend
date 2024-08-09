@@ -51,7 +51,11 @@ function zeroPad(number) {
   return number < 10 ? `0${number}` : number;
 }
 
-function Time({ elements, onChange, time }) {
+function Time({
+  elements = Elements.DateAndTime,
+  onChange = null,
+  time
+}) {
   const hasCallback = onChange !== null;
   function shouldInclude(what) {
     return elements.includes(what);
@@ -260,11 +264,6 @@ Time.propTypes = {
   elements: PropTypes.arrayOf(PropTypes.string),
   onChange: PropTypes.func,
   time: PropTypes.instanceOf(Date).isRequired
-};
-
-Time.defaultProps = {
-  elements: Elements.DateAndTime,
-  onChange: null
 };
 
 export default Time;

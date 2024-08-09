@@ -11,7 +11,7 @@ import styles from './ScrollOverlay.scss';
  *
  * Exposes the global CSS class `scroll-content`, so that it may be styled.
  */
-function ScrollOverlay({ className, children }) {
+function ScrollOverlay({ className = '', children }) {
   const [atTop, setAtTop] = React.useState(true);
   const [atBottom, setAtBottom] = React.useState(false);
 
@@ -64,10 +64,6 @@ ScrollOverlay.elementId = () => `scroll-overlay-${ScrollOverlay.elementCount++}`
 ScrollOverlay.propTypes = {
   children: PropTypes.node.isRequired,
   className: PropTypes.string
-};
-
-ScrollOverlay.defaultProps = {
-  className: ''
 };
 
 export default ScrollOverlay;

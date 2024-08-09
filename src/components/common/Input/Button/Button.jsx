@@ -35,16 +35,16 @@ const Button = React.forwardRef((props, ref) => {
 
 Button.propTypes = {
   block: PropTypes.bool,
-  className: PropTypes.string,
   children: PropTypes.node.isRequired,
+  className: PropTypes.string,
   noChangeOnActive: PropTypes.bool,
   nopadding: PropTypes.bool,
   onClick: PropTypes.func,
+  regular: PropTypes.bool,
   small: PropTypes.bool,
   smalltext: PropTypes.bool,
   transparent: PropTypes.bool,
   uppercase: PropTypes.bool,
-  regular: PropTypes.bool,
   wide: PropTypes.bool
 };
 

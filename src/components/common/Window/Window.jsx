@@ -10,7 +10,13 @@ import styles from './Window.scss';
 
 function Window(props) {
   const {
-    children, title, closeCallback, className, size, position, headerButton
+    children = '',
+    className = '',
+    closeCallback = null,
+    headerButton = undefined,
+    position = { x: 10, y: 10 },
+    size = { width: '300px' },
+    title = 'Window'
   } = props;
   return (
     <Draggable defaultPosition={position} handle=".header">
@@ -55,16 +61,6 @@ Window.propTypes = {
     width: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
   }),
   title: PropTypes.string
-};
-
-Window.defaultProps = {
-  children: '',
-  closeCallback: null,
-  className: '',
-  headerButton: undefined,
-  position: { x: 10, y: 10 },
-  size: { width: '300px' },
-  title: 'Window'
 };
 
 export default Window;

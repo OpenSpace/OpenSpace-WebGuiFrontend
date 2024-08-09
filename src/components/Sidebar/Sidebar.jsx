@@ -18,7 +18,7 @@ const views = {
   scene: ScenePane
 };
 
-function Sidebar({ showTutorial }) {
+function Sidebar({ showTutorial = undefined }) {
   const [view, setView] = React.useState(null);
   const [width, setWidth] = React.useState(300);
 
@@ -80,10 +80,6 @@ function Sidebar({ showTutorial }) {
 
 Sidebar.propTypes = {
   showTutorial: PropTypes.func
-};
-
-Sidebar.defaultProps = {
-  showTutorial: undefined
 };
 
 export default Sidebar;

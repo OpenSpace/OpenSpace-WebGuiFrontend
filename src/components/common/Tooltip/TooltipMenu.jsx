@@ -8,7 +8,7 @@ import Tooltip from './Tooltip';
 import styles from './TooltipMenu.scss';
 
 function TooltipMenu({
-  children, className, disabled, sourceObject
+  children = [], className = '', disabled = false, sourceObject
 }) {
   const [showPopup, setShowPopup] = React.useState(false);
   const wrapperRef = React.useRef(null);
@@ -91,12 +91,6 @@ TooltipMenu.propTypes = {
   disabled: PropTypes.bool,
   // An object that this tooltip menu should originate from
   sourceObject: PropTypes.object.isRequired
-};
-
-TooltipMenu.defaultProps = {
-  children: undefined,
-  className: '',
-  disabled: false
 };
 
 export default TooltipMenu;

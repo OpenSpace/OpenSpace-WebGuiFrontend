@@ -7,7 +7,7 @@ import Tooltip from '../Tooltip/Tooltip';
 import buttonStyles from '../Input/Button/Button.scss';
 import styles from './SettingsPopup.scss';
 
-function SettingsPopup({ children }) {
+function SettingsPopup({ children = [] }) {
   const [showPopup, setShowPopup] = React.useState(false);
 
   return (
@@ -30,10 +30,6 @@ function SettingsPopup({ children }) {
 
 SettingsPopup.propTypes = {
   children: PropTypes.node
-};
-
-SettingsPopup.defaultProps = {
-  children: []
 };
 
 export default SettingsPopup;

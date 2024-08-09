@@ -109,7 +109,12 @@ const shouldSortAlphabetically = (uri) => {
 };
 
 function PropertyOwner({
-  uri, name, dragHandleTitleProps, expansionIdentifier, trashAction, autoExpand
+  autoExpand = false,
+  dragHandleTitleProps = false,
+  expansionIdentifier,
+  name = null,
+  trashAction = null,
+  uri
 }) {
   const propertyOwnerName = useSelector((state) => {
     const { propertyOwners, properties } = state.propertyTree;
@@ -230,13 +235,6 @@ PropertyOwner.propTypes = {
   name: PropTypes.string,
   trashAction: PropTypes.func,
   uri: PropTypes.string.isRequired
-};
-
-PropertyOwner.defaultProps = {
-  autoExpand: false,
-  dragHandleTitleProps: false,
-  name: null,
-  trashAction: null
 };
 
 export default PropertyOwner;

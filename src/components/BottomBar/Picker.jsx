@@ -6,7 +6,7 @@ import { useContextRefs } from '../GettingStartedTour/GettingStartedContext';
 import styles from './Picker.scss';
 
 function Picker({
-  children, className, refKey, ...props
+  children, className = '', refKey = '', ...props
 }) {
   const refs = refKey ? useContextRefs() : null;
   return (
@@ -19,17 +19,6 @@ function Picker({
     </div>
   );
 }
-
-Picker.propTypes = {
-  children: PropTypes.node.isRequired,
-  className: PropTypes.string,
-  refKey: PropTypes.string
-};
-
-Picker.defaultProps = {
-  className: '',
-  refKey: ''
-};
 
 Picker.Active = styles.Active;
 Picker.Name = styles.Name;
@@ -44,5 +33,11 @@ Picker.DisabledOrange = styles.DisabledOrange;
 Picker.Blue = styles.Blue;
 Picker.Orange = styles.Orange;
 Picker.Red = styles.Red;
+
+Picker.propTypes = {
+  children: PropTypes.node.isRequired,
+  className: PropTypes.string,
+  refKey: PropTypes.string
+};
 
 export default Picker;

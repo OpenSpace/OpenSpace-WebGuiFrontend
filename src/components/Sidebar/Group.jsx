@@ -12,7 +12,7 @@ import PropertyOwner, {
   nodeExpansionIdentifier as propertyOwnerNodeExpansionIdentifier
 } from './Properties/PropertyOwner';
 
-function shouldShowGroup(state, path, showOnlyEnabled, showHidden) {
+function shouldShowGroup(state, path, showOnlyEnabled = false, showHidden = false) {
   const data = state.groups.groups[path] || {};
   const subGroups = data.subgroups || [];
   // If there are any enabled property owners in the result, show the groups
@@ -171,11 +171,6 @@ Group.propTypes = {
   expansionIdentifier: PropTypes.string.isRequired,
   showOnlyEnabled: PropTypes.bool,
   showHidden: PropTypes.bool
-};
-
-Group.defaultProps = {
-  showOnlyEnabled: false,
-  showHidden: false
 };
 
 export default Group;

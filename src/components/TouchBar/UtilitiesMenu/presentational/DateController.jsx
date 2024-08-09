@@ -12,7 +12,7 @@ import SmallLabel from '../../../common/SmallLabel/SmallLabel';
 import styles from '../style/DateController.scss';
 import buttonStyle from '../style/UtilitiesButtons.scss';
 
-function DateController({ dateList, onChangeSight }) {
+function DateController({ dateList = [], onChangeSight = () => {}}) {
   const [showPopover, setShowPopover] = React.useState(false);
 
   const luaApi = useSelector((state) => state.luaApi);
@@ -88,11 +88,6 @@ DateController.propTypes = {
       location: PropTypes.object
     }),
   )
-};
-
-DateController.defaultProps = {
-  onChangeSight: () => {},
-  dateList: []
 };
 
 export default DateController;

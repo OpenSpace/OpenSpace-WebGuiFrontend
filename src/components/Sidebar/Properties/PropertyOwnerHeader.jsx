@@ -37,7 +37,13 @@ import toggleHeaderStyles from '../../common/ToggleContent/ToggleHeader.scss';
 import styles from './PropertyOwnerHeader.scss';
 
 function PropertyOwnerHeader({
-  expanded, showMeta, showPopOutSettings, setExpanded, title, trashAction, uri
+  expanded,
+  setExpanded,
+  showMeta = false,
+  showPopOutSettings = false,
+  title = undefined,
+  trashAction = undefined,
+  uri
 }) {
   const identifier = identifierFromUri(uri);
   const isSceneObject = isSceneGraphNode(uri);
@@ -288,18 +294,11 @@ function PropertyOwnerHeader({
 PropertyOwnerHeader.propTypes = {
   expanded: PropTypes.bool.isRequired,
   setExpanded: PropTypes.func.isRequired,
-  showPopOutSettings: PropTypes.bool,
   showMeta: PropTypes.bool,
+  showPopOutSettings: PropTypes.bool,
   title: PropTypes.string,
   trashAction: PropTypes.func,
   uri: PropTypes.string.isRequired
-};
-
-PropertyOwnerHeader.defaultProps = {
-  showPopOutSettings: false,
-  showMeta: false,
-  title: undefined,
-  trashAction: undefined
 };
 
 export default PropertyOwnerHeader;

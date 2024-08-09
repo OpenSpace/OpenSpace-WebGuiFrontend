@@ -44,6 +44,4 @@ SettingsPaneListItem.propTypes = {
   uri: PropTypes.string.isRequired
 };
 
-SettingsPaneListItem.defaultProps = {};
-
 export default SettingsPaneListItem;

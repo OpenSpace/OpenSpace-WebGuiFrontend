@@ -5,8 +5,18 @@ import PropTypes from 'prop-types';
 import styles from './Input.scss';
 
 function Input({
-  children, className, clearable, label, loading,
-  onChange, onEnter, placeholder, value, wide, step, ...props
+  children = [],
+  className = '',
+  clearable = false,
+  label = null,
+  loading = false,
+  onChange = () => {},
+  onEnter = () => {},
+  placeholder,
+  value = '',
+  wide = true,
+  step = 1,
+  ...props
 }) {
   const [storedValue, setStoredValue] = React.useState(value);
   const hasInput = storedValue !== '';
@@ -102,19 +112,6 @@ Input.propTypes = {
   step: PropTypes.number,
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   wide: PropTypes.bool
-};
-
-Input.defaultProps = {
-  onChange: () => {},
-  onEnter: () => {},
-  children: [],
-  className: '',
-  clearable: false,
-  label: null,
-  loading: false,
-  step: 1,
-  value: '',
-  wide: true
 };
 
 export default Input;

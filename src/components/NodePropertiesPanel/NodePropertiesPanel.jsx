@@ -175,6 +175,4 @@ NodePropertiesPanel.propTypes = {
   uri: PropTypes.string.isRequired
 };
 
-NodePropertiesPanel.defaultProps = {};
-
 export default NodePropertiesPanel;

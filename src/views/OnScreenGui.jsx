@@ -24,8 +24,8 @@ import '../styles/base.scss';
 import styles from './OnScreenGui.scss';
 
 function OnScreenGui({
-  isInBrowser,
-  showFlightController
+  isInBrowser = false,
+  showFlightController = false
 }) {
   const [showTutorial, setShowTutorial] = React.useState(false);
   const [luaConsoleVisible, setLuaConsoleVisible] = React.useState(false);
@@ -91,11 +91,6 @@ function OnScreenGui({
 OnScreenGui.propTypes = {
   isInBrowser: PropTypes.bool,
   showFlightController: PropTypes.bool
-};
-
-OnScreenGui.defaultProps = {
-  isInBrowser: false,
-  showFlightController: false
 };
 
 export default OnScreenGui;

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import styles from './Stack.scss';
 
-function Stack({ className, children, ...props }) {
+function Stack({ className = '', children, ...props }) {
   return (
     <div {...props} className={`${styles.stack} ${className}`}>
       { children }
@@ -14,10 +14,6 @@ function Stack({ className, children, ...props }) {
 Stack.propTypes = {
   children: PropTypes.node.isRequired,
   className: PropTypes.string
-};
-
-Stack.defaultProps = {
-  className: ''
 };
 
 export default Stack;

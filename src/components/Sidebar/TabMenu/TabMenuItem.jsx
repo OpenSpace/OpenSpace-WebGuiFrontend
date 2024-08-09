@@ -5,7 +5,7 @@ import Button from '../../common/Input/Button/Button';
 
 import styles from './TabMenuItem.scss';
 
-function TabMenuItem({ children, onClick, active }) {
+function TabMenuItem({ active, children, onClick = () => {} }) {
   const activeClass = active ? styles.active : '';
   return (
     <Button
@@ -20,13 +20,9 @@ function TabMenuItem({ children, onClick, active }) {
 }
 
 TabMenuItem.propTypes = {
-  children: PropTypes.node.isRequired,
   active: PropTypes.bool.isRequired,
+  children: PropTypes.node.isRequired,
   onClick: PropTypes.func
-};
-
-TabMenuItem.defaultProps = {
-  onClick: (() => {})
 };
 
 export default TabMenuItem;

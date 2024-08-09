@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 
 import styles from './CenteredLabel.scss';
 
-function CenteredLabel(props) {
+function CenteredLabel({ children, className = '', ...props}) {
   return (
-    <div {...props} className={`${props.className} ${styles.centeredLabel}`}>
-      { props.children }
+    <div {...props} className={`${className} ${styles.centeredLabel}`}>
+      { children }
     </div>
   );
 }
@@ -14,10 +14,6 @@ function CenteredLabel(props) {
 CenteredLabel.propTypes = {
   children: PropTypes.node.isRequired,
   className: PropTypes.string
-};
-
-CenteredLabel.defaultProps = {
-  className: ''
 };
 
 export default CenteredLabel;

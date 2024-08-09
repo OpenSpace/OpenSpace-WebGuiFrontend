@@ -145,7 +145,4 @@ TourPopup.propTypes = {
   setVisibility: PropTypes.func.isRequired
 };
 
-TourPopup.defaultProps = {
-};
-
 export default TourPopup;

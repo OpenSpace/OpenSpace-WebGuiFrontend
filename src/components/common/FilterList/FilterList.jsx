@@ -42,7 +42,7 @@ function filterChildren({
 /**
  * FilterListFavorites
  */
-function FilterListFavorites({ className, children }) {
+function FilterListFavorites({ className = '', children = [] }) {
   return (
     <ScrollOverlay className={`${className}`}>
       {children}
@@ -55,18 +55,13 @@ FilterListFavorites.propTypes = {
   className: PropTypes.string
 };
 
-FilterListFavorites.defaultProps = {
-  children: [],
-  className: ''
-};
-
 FilterListFavorites.displayName = 'FilterListFavorites';
 
 /**
  * FilterListData
  */
 function FilterListData({
-  matcher, searchString, ignorePropsFilter, className, children
+  matcher = undefined, searchString = '', ignorePropsFilter = [], className = '', children = []
 }) {
   const content = filterChildren({
     matcher, searchString, ignorePropsFilter, children
@@ -87,21 +82,13 @@ FilterListData.propTypes = {
   searchString: PropTypes.string
 };
 
-FilterListData.defaultProps = {
-  matcher: undefined,
-  children: [],
-  className: '',
-  ignorePropsFilter: [],
-  searchString: ''
-};
-
 FilterListData.displayName = 'FilterListData';
 
 /**
  * FilterListInputButton
  */
 function FilterListInputButton({
-  key, children, className, ...props
+  key = undefined, children = [], className = '', ...props
 }) {
   return (
     <div key={key} className={`${styles.favoritesButton} ${className}`} {...props}>
@@ -116,18 +103,12 @@ FilterListInputButton.propTypes = {
   className: PropTypes.string
 };
 
-FilterListInputButton.defaultProps = {
-  key: undefined,
-  children: [],
-  className: ''
-};
-
 FilterListInputButton.displayName = 'FilterListInputButton';
 
 /**
  * FilterListShowMoreButton
  */
-function FilterListShowMoreButton({ key, toggleShowDataInstead, showDataInstead }) {
+function FilterListShowMoreButton({ key= '', toggleShowDataInstead = () => {}, showDataInstead = true}) {
   // Create "Less" and "More" toggle button
   return (
     <FilterListInputButton key={key} onClick={toggleShowDataInstead}>
@@ -142,19 +123,19 @@ FilterListShowMoreButton.propTypes = {
   showDataInstead: PropTypes.bool
 };
 
-FilterListShowMoreButton.defaultProps = {
-  key: '',
-  toggleShowDataInstead: () => {},
-  showDataInstead: true
-};
-
 FilterListShowMoreButton.displayName = 'FilterListShowMoreButton';
 
 /**
  * FilterList
  */
 function FilterList({
-  matcher, ignorePropsFilter, searchText, height, className, searchAutoFocus, children
+  children = [],
+  className = '',
+  height = undefined,
+  ignorePropsFilter = ['active', 'onSelect'],
+  matcher = undefined,
+  searchAutoFocus = true,
+  searchText = 'Search...'
 }) {
   const [searchString, setSearchString] = React.useState('');
   const [showDataInstead, setShowDataInstead] = React.useState(false);
@@ -242,16 +223,6 @@ FilterList.propTypes = {
    * A list of props that will be ignored in the search
    */
   ignorePropsFilter: PropTypes.array
-};
-
-FilterList.defaultProps = {
-  children: [],
-  className: '',
-  height: undefined,
-  matcher: undefined,
-  searchText: 'Search...',
-  searchAutoFocus: true,
-  ignorePropsFilter: ['active', 'onSelect']
 };
 
 export {

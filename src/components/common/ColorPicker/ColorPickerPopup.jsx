@@ -10,7 +10,7 @@ import styles from './ColorPickerPopup.scss';
 const { Checkboard } = require('react-color/lib/components/common');
 
 function ColorPickerPopup({
-  className, color, disableAlpha, disabled, onChange
+  className = '', color, disableAlpha = false, disabled = false, onChange
 }) {
   const colorSwatchBg = {
     background: `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`
@@ -46,12 +46,6 @@ ColorPickerPopup.propTypes = {
   disableAlpha: PropTypes.bool,
   disabled: PropTypes.bool,
   onChange: PropTypes.func.isRequired
-};
-
-ColorPickerPopup.defaultProps = {
-  className: '',
-  disableAlpha: false,
-  disabled: false
 };
 
 export default ColorPickerPopup;

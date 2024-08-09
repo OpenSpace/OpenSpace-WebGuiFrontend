@@ -13,7 +13,7 @@ import { useContextRefs } from '../GettingStartedTour/GettingStartedContext';
 
 import styles from './SystemMenu.scss';
 
-function SystemMenu({ showTutorial }) {
+function SystemMenu({ showTutorial = undefined }) {
   const [showMenu, setShowMenu] = React.useState(false);
   const refs = useContextRefs();
 
@@ -184,10 +184,6 @@ function SystemMenu({ showTutorial }) {
 
 SystemMenu.propTypes = {
   showTutorial: PropTypes.func
-};
-
-SystemMenu.defaultProps = {
-  showTutorial: undefined
 };
 
 export default SystemMenu;

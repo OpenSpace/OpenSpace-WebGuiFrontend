@@ -35,7 +35,7 @@ function collectUrisRecursively(owners, allPropertyOwners, collectedOwners, coll
   return [collectedOwners, collectedProperties];
 }
 
-function SettingsPane({ closeCallback }) {
+function SettingsPane({ closeCallback = null }) {
   const propertyOwners = useSelector((state) => state.propertyTree.propertyOwners);
   const properties = useSelector((state) => state.propertyTree.properties);
 
@@ -140,10 +140,6 @@ function SettingsPane({ closeCallback }) {
 
 SettingsPane.propTypes = {
   closeCallback: PropTypes.func
-};
-
-SettingsPane.defaultProps = {
-  closeCallback: null
 };
 
 export default SettingsPane;

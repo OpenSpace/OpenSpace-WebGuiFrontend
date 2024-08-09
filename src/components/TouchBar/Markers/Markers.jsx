@@ -83,7 +83,7 @@ function getInfoText(node, infoNodes) {
   return 'No info available';
 }
 
-function Markers({ trackingNodes, markerNodes }) {
+function Markers({ trackingNodes = [], markerNodes = []}) {
   const dispatch = useDispatch();
 
   function changePropertyValue(uri, value) {
@@ -233,11 +233,6 @@ Markers.propTypes = {
   markerNodes: PropTypes.arrayOf(PropTypes.object),
   // Keeps track of the nodes we need to subscribe screen space data from
   trackingNodes: PropTypes.arrayOf(PropTypes.string)
-};
-
-Markers.defaultProps = {
-  markerNodes: [],
-  trackingNodes: []
 };
 
 export default connect(mapStateToProps)(Markers);

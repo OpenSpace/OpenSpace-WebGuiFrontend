@@ -8,7 +8,13 @@ import styles from './Dropdown.scss';
 const DEFAULT_PLACEHOLDER_STRING = 'Select...';
 
 function Dropdown({
-  value, placeholder, options, onFocus, disabled, onChange, ...props
+  disabled = false,
+  onChange = () => {},
+  onFocus = () => {},
+  options,
+  placeholder,
+  value,
+  ...props
 }) {
   const [selected, setSelected] = React.useState(value || {
     label: typeof placeholder === 'undefined' ? DEFAULT_PLACEHOLDER_STRING : placeholder,
@@ -136,12 +142,6 @@ Dropdown.propTypes = {
   onChange: PropTypes.func,
   onFocus: PropTypes.func,
   disabled: PropTypes.bool
-};
-
-Dropdown.defaultProps = {
-  onChange: () => {},
-  onFocus: () => {},
-  disabled: false
 };
 
 export default Dropdown;

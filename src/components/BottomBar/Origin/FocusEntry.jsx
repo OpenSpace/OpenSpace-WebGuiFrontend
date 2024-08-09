@@ -14,7 +14,12 @@ import NavigationButton, { NavigationTypes } from './NodeNavigationButton';
 import styles from './FocusEntry.scss';
 
 function FocusEntry({
-  name, identifier, onSelect, active, showNavigationButtons, closePopoverIfSet
+  identifier,
+  active = '',
+  name = undefined,
+  onSelect = null,
+  showNavigationButtons = false,
+  closePopoverIfSet = () => {}
 }) {
   function isActive() {
     return identifier === active;
@@ -77,20 +82,12 @@ function FocusEntry({
 }
 
 FocusEntry.propTypes = {
-  closePopoverIfSet: PropTypes.func,
   identifier: PropTypes.string.isRequired,
+  closePopoverIfSet: PropTypes.func,
   name: PropTypes.string,
   onSelect: PropTypes.func,
   active: PropTypes.string,
   showNavigationButtons: PropTypes.bool
-};
-
-FocusEntry.defaultProps = {
-  closePopoverIfSet: () => {},
-  name: undefined,
-  onSelect: null,
-  showNavigationButtons: false,
-  active: ''
 };
 
 export default FocusEntry;

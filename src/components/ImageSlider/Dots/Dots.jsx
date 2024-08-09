@@ -5,7 +5,7 @@ import Dot from './Dot';
 
 import styles from './Dots.scss';
 
-function Dots({ index, imagePaths, dotClick }) {
+function Dots({ index, imagePaths = null, dotClick }) {
   // Map the dots and the images
   const dotsGroup = imagePaths.map((image, i) => {
     const active = (i === index);
@@ -25,10 +25,6 @@ function Dots({ index, imagePaths, dotClick }) {
     </div>
   );
 }
-
-Dots.defaultProps = {
-  imagePaths: null
-};
 
 Dots.propTypes = {
   index: PropTypes.number.isRequired,

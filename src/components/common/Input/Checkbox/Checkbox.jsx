@@ -7,7 +7,14 @@ import Button from '../Button/Button';
 import styles from './Checkbox.scss';
 
 function Checkbox({
-  checked, disabled, wide, left, className, setChecked, children, ...rest
+  checked = false,
+  children = [],
+  className = '',
+  disabled = false,
+  left = false,
+  setChecked,
+  wide = true,
+  ...rest
 }) {
   function onClick(evt) {
     if (disabled) {
@@ -38,21 +45,9 @@ Checkbox.propTypes = {
   className: PropTypes.string,
   disabled: PropTypes.bool,
   left: PropTypes.bool,
-  onChange: PropTypes.func,
   setChecked: PropTypes.func.isRequired,
   value: PropTypes.bool,
   wide: PropTypes.bool
-};
-
-Checkbox.defaultProps = {
-  checked: false,
-  children: [],
-  className: '',
-  disabled: false,
-  left: false,
-  onChange: () => {},
-  value: false,
-  wide: true
 };
 
 export default Checkbox;

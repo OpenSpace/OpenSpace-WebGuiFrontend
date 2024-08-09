@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import styles from './Error.scss';
 
-function Error({ children, className }) {
+function Error({ children, className = styles.error }) {
   return (
     <div className={`${className} ${styles.ErrorBox}`}>
       { children }
@@ -14,10 +14,6 @@ function Error({ children, className }) {
 Error.propTypes = {
   children: PropTypes.node.isRequired,
   className: PropTypes.string
-};
-
-Error.defaultProps = {
-  className: styles.error
 };
 
 Error.styles = styles;

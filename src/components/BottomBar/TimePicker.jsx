@@ -321,12 +321,4 @@ function TimePicker() {
   );
 }
 
-TimePicker.propTypes = {
-
-};
-
-TimePicker.defaultProps = {
-
-};
-
 export default TimePicker;

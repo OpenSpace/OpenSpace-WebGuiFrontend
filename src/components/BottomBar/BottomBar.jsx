@@ -24,7 +24,7 @@ import TimePicker from './TimePicker';
 import styles from './BottomBar.scss';
 
 export default function BottomBar({
-  showFlightController
+  showFlightController = false
 }) {
   const showExoplanets = useSelector(
     (state) => getBoolPropertyValue(state, ExoplanetsModuleEnabledKey)
@@ -73,8 +73,4 @@ export default function BottomBar({
 
 BottomBar.propTypes = {
   showFlightController: PropTypes.bool
-};
-
-BottomBar.defaultProps = {
-  showFlightController: false
 };

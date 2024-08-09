@@ -117,7 +117,7 @@ function getDisplayedActions(allActions, navPath) {
   });
 }
 
-function ActionsPanel({ singlewindow }) {
+function ActionsPanel({ singlewindow = false }) {
   const popoverVisible = useSelector((state) => state.local.popovers.actions.visible);
   const navigationPath = useSelector((state) => state.shortcuts.navigationPath);
   const isInitialized = useSelector((state) => state.shortcuts.isInitialized);
@@ -299,10 +299,6 @@ function ActionsPanel({ singlewindow }) {
     </div>
   );
 }
-
-ActionsPanel.defaultProps = {
-  singlewindow: false
-};
 
 ActionsPanel.propTypes = {
   singlewindow: PropTypes.bool

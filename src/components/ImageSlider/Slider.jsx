@@ -11,7 +11,7 @@ import Slide from './Slide';
 
 import styles from './Slider.scss';
 
-function Slider({ changeStory, startSlide }) {
+function Slider({ changeStory, startSlide = '' }) {
   const sliderStories = stories.stories;
 
   // Push images from stories object into images array
@@ -90,10 +90,6 @@ function Slider({ changeStory, startSlide }) {
 Slider.propTypes = {
   changeStory: PropTypes.func.isRequired,
   startSlide: PropTypes.string
-};
-
-Slider.defaultProps = {
-  startSlide: ''
 };
 
 export default Slider;

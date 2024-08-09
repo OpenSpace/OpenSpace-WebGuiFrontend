@@ -5,7 +5,7 @@ import { useContextRefs } from '../../GettingStartedTour/GettingStartedContext';
 
 import styles from './SmallLabel.scss';
 
-function SmallLabel({ children, refKey, ...props }) {
+function SmallLabel({ children = [], refKey = undefined, ...props }) {
   const refs = refKey ? useContextRefs() : null;
 
   function setRef(el) {
@@ -28,11 +28,6 @@ function SmallLabel({ children, refKey, ...props }) {
 SmallLabel.propTypes = {
   children: PropTypes.node,
   refKey: PropTypes.string
-};
-
-SmallLabel.defaultProps = {
-  children: [],
-  refKey: undefined
 };
 
 export default SmallLabel;

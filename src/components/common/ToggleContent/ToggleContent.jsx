@@ -6,7 +6,7 @@ import ToggleHeader from './ToggleHeader';
 import styles from './ToggleContent.scss';
 
 function ToggleContent({
-  setExpanded, children, header, title, expanded, showEnabled
+  setExpanded, children = null, header = null, title = '', expanded = false, showEnabled = false
 }) {
   // If there are no children, return
   if (children.length === 0) {
@@ -45,14 +45,6 @@ ToggleContent.propTypes = {
     PropTypes.string,
     PropTypes.object
   ])
-};
-
-ToggleContent.defaultProps = {
-  children: null,
-  header: null,
-  showEnabled: false,
-  expanded: false,
-  title: ''
 };
 
 export default ToggleContent;

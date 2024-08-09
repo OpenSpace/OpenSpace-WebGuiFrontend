@@ -8,7 +8,7 @@ import PropertyLabel from './PropertyLabel';
 import styles from './Property.scss';
 
 function BoolProperty({
-  checkBoxOnly, description, dispatcher, value
+  checkBoxOnly = false, description, dispatcher, value
 }) {
   const disabled = description.MetaData.isReadOnly;
   const showText = !checkBoxOnly;
@@ -43,10 +43,6 @@ BoolProperty.propTypes = {
   }).isRequired,
   dispatcher: PropTypes.object.isRequired,
   value: PropTypes.any.isRequired
-};
-
-BoolProperty.defaultProps = {
-  checkBoxOnly: false
 };
 
 export default BoolProperty;

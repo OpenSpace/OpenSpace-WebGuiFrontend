@@ -25,7 +25,10 @@ import styles from './GeoPositionPanel.scss';
 
 // @TODO: Put in its own file, somewhere in common
 function MultiStateToggle({
-  labels, checked, setChecked, infoText
+  checked,
+  setChecked = () => {},
+  infoText = undefined,
+  labels
 }) {
   return (
     <div className={styles.wrapper}>
@@ -73,11 +76,6 @@ MultiStateToggle.propTypes = {
   checked: PropTypes.string.isRequired,
   setChecked: PropTypes.func,
   infoText: PropTypes.string
-};
-
-MultiStateToggle.defaultProps = {
-  setChecked: () => {},
-  infoText: undefined
 };
 
 const Interaction = {

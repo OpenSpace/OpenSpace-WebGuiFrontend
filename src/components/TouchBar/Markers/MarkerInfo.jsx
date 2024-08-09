@@ -42,17 +42,13 @@ function MarkerInfo({
 }
 
 MarkerInfo.propTypes = {
-  position: PropTypes.array,
+  position: PropTypes.array.isRequired,
   identifier: PropTypes.string.isRequired,
   size: PropTypes.number.isRequired,
   showInfoIcon: PropTypes.bool.isRequired,
   infoText: PropTypes.string.isRequired,
   showLabel: PropTypes.bool.isRequired,
   offset: PropTypes.number.isRequired
-};
-
-MarkerInfo.defaultProps = {
-  position: ''
 };
 
 export default MarkerInfo;

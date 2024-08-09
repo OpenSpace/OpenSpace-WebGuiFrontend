@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import Tooltip from '../Tooltip/Tooltip';
 
-function InfoBox({ text, Icon, ...props }) {
+function InfoBox({ text, Icon = MdInfo, ...props }) {
   const [showPopup, setShowPopup] = React.useState(false);
   const wrapper = React.useRef(null);
 
@@ -36,10 +36,6 @@ function InfoBox({ text, Icon, ...props }) {
 InfoBox.propTypes = {
   text: PropTypes.node.isRequired, // should be text or html object,
   Icon: PropTypes.func
-};
-
-InfoBox.defaultProps = {
-  Icon: MdInfo
 };
 
 export default InfoBox;

@@ -12,7 +12,14 @@ const findStyles = (arr) => arr.split(' ')
   .join(' ');
 
 function Popover({
-  attached, className, title, headerButton, detachable, closeCallback, children, ...props
+  attached = true,
+  children,
+  className = '',
+  closeCallback = null,
+  detachable = false,
+  headerButton = undefined,
+  title = null,
+  ...props
 }) {
   const [isDetached, setIsDetached] = React.useState(!attached);
 
@@ -90,15 +97,6 @@ Popover.propTypes = {
   detachable: PropTypes.bool,
   headerButton: PropTypes.element,
   title: PropTypes.string
-};
-
-Popover.defaultProps = {
-  attached: true,
-  className: '',
-  closeCallback: null,
-  detachable: false,
-  headerButton: undefined,
-  title: null
 };
 
 Popover.styles = styles;

@@ -8,7 +8,7 @@ import Button from '../../common/Input/Button/Button';
 
 import styles from './ActionsButton.scss';
 
-export default function ActionsButton({ action, className }) {
+export default function ActionsButton({ action = undefined, className = '' }) {
   if (!action) {
     return null;
   }
@@ -55,9 +55,4 @@ ActionsButton.propTypes = {
     // }))
   ]),
   className: PropTypes.string
-};
-
-ActionsButton.defaultProps = {
-  action: undefined,
-  className: ''
 };

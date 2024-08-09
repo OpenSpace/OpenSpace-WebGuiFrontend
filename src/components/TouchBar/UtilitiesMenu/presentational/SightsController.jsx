@@ -10,7 +10,7 @@ import SmallLabel from '../../../common/SmallLabel/SmallLabel';
 import styles from '../style/SightsController.scss';
 import buttonStyle from '../style/UtilitiesButtons.scss';
 
-function SightsController({ onChangeSight, sightsList }) {
+function SightsController({ onChangeSight = () => {}, sightsList = [] }) {
   const [showPopover, setShowPopover] = React.useState(false);
 
   function togglePopover() {
@@ -78,11 +78,6 @@ SightsController.propTypes = {
       location: PropTypes.object
     }),
   )
-};
-
-SightsController.defaultProps = {
-  onChangeSight: () => {},
-  sightsList: []
 };
 
 export default SightsController;

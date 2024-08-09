@@ -12,9 +12,23 @@ import styles from './MinMaxRangeInput.scss';
 const Scale = require('d3-scale');
 
 function MinMaxRangeInput({
-  valueMin, valueMax, min, max, disabled, inputOnly, exponent, step,
-  onMinValueChanged, onMaxValueChanged, placeholder, label, className,
-  wide, noHoverHint, noTooltip, noValue, type, ...props
+  className = '',
+  disabled = false,
+  exponent = 1.0,
+  inputOnly = false,
+  label = null,
+  max,
+  min,
+  noHoverHint = false,
+  noTooltip = false,
+  onMaxValueChanged = () => {},
+  onMinValueChanged = () => {},
+  placeholder = 'value',
+  step = 1,
+  valueMax,
+  valueMin,
+  wide = true,
+  ...props
 }) {
   const [minValue, setMinValue] = React.useState(valueMin);
   const [maxValue, setMaxValue] = React.useState(valueMax);
@@ -426,30 +440,15 @@ MinMaxRangeInput.propTypes = {
   label: PropTypes.node,
   max: PropTypes.number.isRequired,
   min: PropTypes.number.isRequired,
-  valueMax: PropTypes.number.isRequired,
-  valueMin: PropTypes.number.isRequired,
   noHoverHint: PropTypes.bool,
   noTooltip: PropTypes.bool,
-  onMinValueChanged: PropTypes.func,
   onMaxValueChanged: PropTypes.func,
+  onMinValueChanged: PropTypes.func,
   placeholder: PropTypes.string,
   step: PropTypes.number,
+  valueMax: PropTypes.number.isRequired,
+  valueMin: PropTypes.number.isRequired,
   wide: PropTypes.bool
-};
-
-MinMaxRangeInput.defaultProps = {
-  className: '',
-  disabled: false,
-  exponent: 1.0,
-  inputOnly: false,
-  label: null,
-  noHoverHint: false,
-  noTooltip: false,
-  onMinValueChanged: () => {},
-  onMaxValueChanged: () => {},
-  placeholder: 'value',
-  step: 1,
-  wide: true
 };
 
 export default MinMaxRangeInput;

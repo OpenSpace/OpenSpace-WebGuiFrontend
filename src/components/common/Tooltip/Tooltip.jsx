@@ -7,7 +7,7 @@ import { excludeKeys } from '../../../utils/helpers';
 import styles from './Tooltip.scss';
 
 function Tooltip({
-  children, className, fixed, placement, ...props
+  children, className = '', fixed = false, placement = 'top', ...props
 }) {
   const [domReady, setDomReady] = React.useState(false);
   React.useEffect(() => {
@@ -39,12 +39,6 @@ Tooltip.propTypes = {
   className: PropTypes.string,
   fixed: PropTypes.bool,
   placement: PropTypes.oneOf('top right bottom left'.split(' '))
-};
-
-Tooltip.defaultProps = {
-  className: '',
-  fixed: false,
-  placement: 'top'
 };
 
 export default Tooltip;

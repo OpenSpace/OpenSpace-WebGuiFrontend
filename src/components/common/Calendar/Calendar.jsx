@@ -30,7 +30,9 @@ const WeekStartsOn = Days.Monday;
 const DayHeaders = 'M T W T F S S'.split(' ');
 
 function Calendar({
-  currentTime, onChange, todayButton
+  currentTime = new Date(),
+  onChange = () => {},
+  todayButton = false
 }) {
   const [viewedMonth, setViewedMonth] = React.useState(currentTime);
   const [viewFreeCoupled, setViewFreeCoupled] = React.useState(false);
@@ -242,12 +244,6 @@ Calendar.propTypes = {
   currentTime: PropTypes.instanceOf(Date),
   onChange: PropTypes.func,
   todayButton: PropTypes.bool
-};
-
-Calendar.defaultProps = {
-  currentTime: new Date(),
-  onChange: () => {},
-  todayButton: false
 };
 
 export default Calendar;

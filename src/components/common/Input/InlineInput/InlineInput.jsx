@@ -15,7 +15,13 @@ import styles from './InlineInput.scss';
  * be looked at again. // Emma (2024-08-09)
  */
 function InlineInput({
-  className, type, value, onEnter, onChange, id, ...props
+  className = '',
+  id = null,
+  onChange = () => {},
+  onEnter = () => {},
+  type = 'text',
+  value = '',
+  ...props
 }) {
   const [storedValue, setStoredValue] = React.useState(value);
   const [isFocused, setIsFocused] = React.useState(false);
@@ -87,15 +93,6 @@ InlineInput.propTypes = {
   onEnter: PropTypes.func,
   type: PropTypes.string,
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
-};
-
-InlineInput.defaultProps = {
-  className: '',
-  id: null,
-  onChange: () => {},
-  onEnter: () => {},
-  type: 'text',
-  value: ''
 };
 
 export default InlineInput;

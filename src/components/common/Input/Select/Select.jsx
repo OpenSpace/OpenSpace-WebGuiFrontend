@@ -53,7 +53,13 @@ const selectStyles = {
 };
 
 function Select({
-  value, label, id, disabled, options, onChange, ...props
+  label,
+  options,
+  value = undefined,
+  id = null,
+  disabled = false,
+  onChange = () => {},
+  ...props
 }) {
   const identifier = id || `select-${Input.nextId}`;
 
@@ -81,7 +87,6 @@ function Select({
 }
 
 Select.propTypes = {
-  clearable: PropTypes.bool,
   disabled: PropTypes.bool,
   id: PropTypes.string,
   label: PropTypes.node.isRequired,
@@ -92,17 +97,7 @@ Select.propTypes = {
       label: PropTypes.string
     })
   ).isRequired,
-  searchable: PropTypes.bool,
   value: PropTypes.node
-};
-
-Select.defaultProps = {
-  clearable: false,
-  disabled: false,
-  id: null,
-  onChange: () => {},
-  searchable: false,
-  value: undefined
 };
 
 export default Select;

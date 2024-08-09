@@ -25,7 +25,7 @@ export const NavigationTypes = {
 };
 
 function NavigationButton({
-  identifier, onFinish, showLabel, type
+  identifier, onFinish = () => {}, showLabel = false, type
 }) {
   const luaApi = useSelector((state) => state.luaApi);
 
@@ -125,11 +125,6 @@ NavigationButton.propTypes = {
   onFinish: PropTypes.func,
   showLabel: PropTypes.bool,
   type: PropTypes.oneOf(Object.values(NavigationTypes)).isRequired
-};
-
-NavigationButton.defaultProps = {
-  onFinish: () => {},
-  showLabel: false
 };
 
 export default NavigationButton;

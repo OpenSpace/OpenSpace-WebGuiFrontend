@@ -22,7 +22,7 @@ import ContextSection from './ContextSection';
 import Group from './Group';
 import Pane from './Pane';
 
-function ScenePane({ closeCallback }) {
+function ScenePane({ closeCallback = null }) {
   const [showOnlyEnabled, setShowOnlyEnabled] = useLocalStorageState('showOnlyEnabled', false);
   const [showHiddenNodes, setShowHiddenNodes] = useLocalStorageState('showHiddenNodes', false);
 
@@ -180,10 +180,6 @@ function ScenePane({ closeCallback }) {
 
 ScenePane.propTypes = {
   closeCallback: PropTypes.func
-};
-
-ScenePane.defaultProps = {
-  closeCallback: null
 };
 
 export default ScenePane;

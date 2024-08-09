@@ -6,17 +6,17 @@ import Input from '../Input/Input';
 import styles from './ScaleInput.scss';
 
 function ScaleInput({
-  centerMarker,
-  defaultValue,
-  leftLabel,
-  rightLabel,
-  leftTicks,
-  rightTicks,
-  label,
-  onChange,
-  min,
-  max,
-  wide,
+  centerMarker = true,
+  defaultValue = 0,
+  label = '',
+  leftLabel = '-',
+  leftTicks = 5,
+  max = 1,
+  min = -1,
+  onChange = () => {},
+  rightLabel = '+',
+  rightTicks = 5,
+  wide = true,
   ...rest
 }) {
   const [value, setValue] = React.useState(defaultValue);
@@ -82,28 +82,12 @@ ScaleInput.propTypes = {
   label: PropTypes.string,
   leftLabel: PropTypes.string,
   leftTicks: PropTypes.number,
-  min: PropTypes.number,
   max: PropTypes.number,
+  min: PropTypes.number,
   onChange: PropTypes.func,
   rightLabel: PropTypes.string,
   rightTicks: PropTypes.number,
-  step: PropTypes.number,
   wide: PropTypes.bool
-};
-
-ScaleInput.defaultProps = {
-  centerMarker: true,
-  defaultValue: 0,
-  label: '',
-  leftLabel: '-',
-  leftTicks: 5,
-  min: -1,
-  max: 1,
-  onChange: () => {},
-  rightLabel: '+',
-  rightTicks: 5,
-  step: 0.01,
-  wide: true
 };
 
 export default ScaleInput;

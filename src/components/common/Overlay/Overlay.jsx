@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import styles from './Overlay.scss';
 
-function Overlay({ children }) {
+function Overlay({ children = [] }) {
   return (
     <div className={styles.messageOverlay}>
       { children }
@@ -13,10 +13,6 @@ function Overlay({ children }) {
 
 Overlay.propTypes = {
   children: PropTypes.node
-};
-
-Overlay.defaultProps = {
-  children: []
 };
 
 export default Overlay;

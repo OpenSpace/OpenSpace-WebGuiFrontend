@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import styles from './Pane.scss';
 
 function Pane({
-  children, title, headerButton, closeCallback
+  children = [], title = null, headerButton = null, closeCallback = null
 }) {
   return (
     <section className={styles.Pane}>
@@ -32,13 +32,6 @@ Pane.propTypes = {
   closeCallback: PropTypes.func,
   title: PropTypes.node,
   headerButton: PropTypes.node
-};
-
-Pane.defaultProps = {
-  children: [],
-  closeCallback: null,
-  title: null,
-  headerButton: null
 };
 
 Pane.styles = styles;

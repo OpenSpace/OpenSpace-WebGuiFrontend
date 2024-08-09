@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import styles from './ColorPicker.scss';
 
-function ColorPicker({ color, disableAlpha, onChange }) {
+function ColorPicker({ color, disableAlpha = false, onChange }) {
   // Override some default styling
   const customPickerStyles = {
     default: {
@@ -47,10 +47,6 @@ ColorPicker.propTypes = {
   color: PropTypes.object.isRequired,
   disableAlpha: PropTypes.bool,
   onChange: PropTypes.func.isRequired
-};
-
-ColorPicker.defaultProps = {
-  disableAlpha: false
 };
 
 export default ColorPicker;

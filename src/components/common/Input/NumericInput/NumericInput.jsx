@@ -11,9 +11,25 @@ import styles from './NumericInput.scss';
 const Scale = require('d3-scale');
 
 function NumericInput({
-  placeholder, className, inputOnly, noHoverHint, noTooltip, label, reverse, noValue,
-  decimals, min, max, showOutsideRangeHint, wide, value, step, exponent, disabled,
-  onValueChanged, ...props
+  className = '',
+  decimals = undefined,
+  disabled = false,
+  exponent = 1.0,
+  inputOnly = false,
+  label = null,
+  max = 100,
+  min = 0,
+  noHoverHint = false,
+  noTooltip = false,
+  noValue = false,
+  onValueChanged = () => {},
+  placeholder,
+  reverse = false,
+  showOutsideRangeHint = true,
+  step = 1,
+  value = 0,
+  wide = true,
+  ...props
 }) {
   const [storedValue, setStoredValue] = React.useState(value);
   const [showTextInput, setShowTextInput] = React.useState(false);
@@ -289,26 +305,6 @@ NumericInput.propTypes = {
   value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   wide: PropTypes.bool,
   decimals: PropTypes.number
-};
-
-NumericInput.defaultProps = {
-  className: '',
-  disabled: false,
-  exponent: 1.0,
-  inputOnly: false,
-  label: null,
-  max: 100,
-  min: 0,
-  reverse: false,
-  noHoverHint: false,
-  noTooltip: false,
-  noValue: false,
-  onValueChanged: () => {},
-  showOutsideRangeHint: true,
-  step: 1,
-  value: 0,
-  wide: true,
-  decimals: undefined
 };
 
 export default NumericInput;
