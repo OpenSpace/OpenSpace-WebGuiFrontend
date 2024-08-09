@@ -110,7 +110,7 @@ function SkyBrowserTabs({
               event.cancelBubble = true;
               e?.stopPropagation();
               if (!isActive) {
-                luaApi.skybrowser.setSelectedBrowser(id);
+                propertyDispatcher(dispatch, "Modules.SkyBrowser.SelectedPairId").set(id);
               }
             }}
             role="button"
