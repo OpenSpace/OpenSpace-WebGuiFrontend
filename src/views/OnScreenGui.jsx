@@ -4,9 +4,6 @@ import PropTypes from 'prop-types';
 
 import { setShowAbout, startConnection } from '../api/Actions';
 import environment from '../api/Environment';
-import {
-  formatVersion, isCompatible, RequiredOpenSpaceVersion, RequiredSocketApiVersion
-} from '../api/Version';
 import BottomBar from '../components/BottomBar/BottomBar';
 import KeybindingPanel from '../components/BottomBar/KeybindingPanel';
 import UserControlPanelContainer from '../components/BottomBar/UserControlPanel/UserControlPanelContainer';
@@ -30,11 +27,9 @@ function OnScreenGui({
   isInBrowser,
   showFlightController
 }) {
-  let hasCheckedVersion = false;
   const [showTutorial, setShowTutorial] = React.useState(false);
   const [luaConsoleVisible, setLuaConsoleVisible] = React.useState(false);
 
-  const version = useSelector((state) => state.version);
   const showAbout = useSelector((state) => state.local.showAbout);
 
   const dispatch = useDispatch();
@@ -54,28 +49,6 @@ function OnScreenGui({
 
   function hideAbout() {
     dispatch(setShowAbout(false));
-  }
-
-  // Check the version
-  if (!hasCheckedVersion && version.isInitialized) {
-    const versionData = version.data;
-    if (!isCompatible(versionData.openSpaceVersion, RequiredOpenSpaceVersion)) {
-      console.warn(
-        `Possible incompatibility: \nRequired OpenSpace version: ${
-          formatVersion(RequiredOpenSpaceVersion)
-        }. Currently controlling OpenSpace version ${
-          formatVersion(versionData.openSpaceVersion)}.`,
-      );
-    }
-    if (!isCompatible(versionData.socketApiVersion, RequiredSocketApiVersion)) {
-      console.warn(
-        `Possible incompatibility: \nRequired Socket API version: ${
-          formatVersion(RequiredSocketApiVersion)
-        }. Currently operating over API version ${
-          formatVersion(versionData.socketApiVersion)}.`,
-      );
-    }
-    hasCheckedVersion = true;
   }
 
   return (

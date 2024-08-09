@@ -9,9 +9,6 @@ import {
   DefaultStory, InfoIconKey, NavigationAnchorKey, ScaleKey,
   ValuePlaceholder, ZoomInLimitKey, ZoomOutLimitKey
 } from '../api/keys';
-import {
-  formatVersion, isCompatible, RequiredOpenSpaceVersion, RequiredSocketApiVersion
-} from '../api/Version';
 import Error from '../components/common/Error/Error';
 import Overlay from '../components/common/Overlay/Overlay';
 import Slider from '../components/ImageSlider/Slider';
@@ -32,11 +29,9 @@ function OnTouchGui() {
   const [developerMode, setDeveloperMode] = React.useState(false);
   const [currentStory, setCurrentStory] = React.useState(DefaultStory);
   const [sliderStartStory, setSliderStartStory] = React.useState();
-  const [hasCheckedVersion, setHasCheckedVersion] = React.useState(false);
 
   const luaApi = useSelector((state) => state.luaApi);
   const connectionLost = useSelector((state) => state.connection.connectionLost);
-  const version = useSelector((state) => state.version);
 
   const story = useSelector((state) => state.storyTree?.story);
   const storyIdentifier = story?.identifier;
@@ -62,31 +57,6 @@ function OnTouchGui() {
   function changePropertyValue(uri, value) {
     dispatch(setPropertyValue(uri, value));
   }
-
-  React.useEffect(() => {
-    if (!hasCheckedVersion && version?.isInitialized) {
-      const versionData = version.data;
-      if (!isCompatible(versionData.openSpaceVersion, RequiredOpenSpaceVersion)) {
-        console.warn(
-          `Possible incompatibility: \nRequired OpenSpace version: ${
-            formatVersion(RequiredOpenSpaceVersion)
-          }. Currently controlling OpenSpace version ${
-            formatVersion(versionData.openSpaceVersion)
-          }.`
-        );
-      }
-      if (!isCompatible(versionData.socketApiVersion, RequiredSocketApiVersion)) {
-        console.warn(
-          `Possible incompatibility: \nRequired Socket API version: ${
-            formatVersion(RequiredSocketApiVersion)
-          }. Currently operating over API version ${
-            formatVersion(versionData.socketApiVersion)
-          }.`
-        );
-      }
-      setHasCheckedVersion(true);
-    }
-  }, [version]);
 
   React.useEffect(() => {
     // StartConnection(); // Was not called?
