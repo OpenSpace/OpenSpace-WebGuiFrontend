@@ -13,19 +13,20 @@
 .rightButtonContainer {
   position: relative;
   display: flex;
+  align-items: center;
   margin-left: auto; // Right align flex item
   cursor: default; /* visually distinguish from dragging (OBS! Kind of ugly.
                       And does not actually prevent dragging from happening)*/
-}
 
-.rightButton {
-  height: 100%;
-  background: rgba(0, 0, 0, 0); // Completely transparent
-  vertical-align: top;
-}
-
-.moreButton > button {
-  @extend .rightButton;
+  > * {
+    height: 100%;
+    background: rgba(0, 0, 0, 0); // Completely transparent
+    > button {
+      display: flex;
+      align-items: center;
+      height: 100%;
+    }
+  }
 }
 
 .menuButton {

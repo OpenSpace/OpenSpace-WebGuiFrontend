@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 /* eslint-disable import/no-webpack-loader-syntax */
 import DraggableIcon from 'svg-react-loader?name=Aim!../../../icons/draggable_list.svg';
-import Focus from 'svg-react-loader?name=Focus!../../../icons/focus.svg';
 
 import {
   addNodeMetaPopover,
@@ -14,9 +13,6 @@ import {
 } from '../../../api/Actions';
 import {
   EngineFadeDurationKey,
-  NavigationAimKey,
-  NavigationAnchorKey,
-  RetargetAnchorKey
 } from '../../../api/keys';
 import propertyDispatcher from '../../../api/propertyDispatcher';
 import {
@@ -28,6 +24,8 @@ import {
   isGlobeBrowsingLayer,
   isSceneGraphNode
 } from '../../../utils/propertyTreeHelpers';
+import NavigationButton, { NavigationTypes } from '../../BottomBar/Origin/NodeNavigationButton';
+import HorizontalDelimiter from '../../common/HorizontalDelimiter/HorizontalDelimiter';
 import Button from '../../common/Input/Button/Button';
 import Checkbox from '../../common/Input/Checkbox/Checkbox';
 import Row from '../../common/Row/Row';
@@ -85,17 +83,6 @@ function PropertyOwnerHeader({
     return propertyDispatcher(dispatch, propertyUri);
   }
 
-  function focusAction() {
-    propertyDispatcher(dispatch, NavigationAnchorKey).set(identifier);
-    propertyDispatcher(dispatch, NavigationAimKey).set('');
-    propertyDispatcher(dispatch, RetargetAnchorKey).set(null);
-  }
-
-  function shiftFocusAction() {
-    propertyDispatcher(dispatch, NavigationAnchorKey).set(identifier);
-    propertyDispatcher(dispatch, NavigationAimKey).set('');
-  }
-
   useEffect(() => {
     if (fadeUri) {
       property(fadeUri).subscribe();
@@ -148,18 +135,6 @@ function PropertyOwnerHeader({
   function onClick(e) {
     setExpanded(!expanded);
     e.currentTarget.blur();
-  }
-
-  function onClickFocus(evt) {
-    evt.stopPropagation();
-    if (!isSceneObject) { return; }
-
-    if (evt.shiftKey) {
-      shiftFocusAction();
-    } else {
-      focusAction();
-    }
-    evt.stopPropagation();
   }
 
   function onToggleCheckboxClick(shouldBeEnabled, event) {
@@ -215,12 +190,6 @@ function PropertyOwnerHeader({
     evt.stopPropagation();
   }
 
-  const focusButton = (
-    <Button className={styles.rightButton} onClick={onClickFocus} small>
-      <SvgIcon><Focus /></SvgIcon>
-    </Button>
-  );
-
   const popoutButton = (
     <Button className={styles.menuButton} onClick={popoutSettingsClick}>
       <MdBuild />
@@ -263,11 +232,12 @@ function PropertyOwnerHeader({
   const shouldFadeCheckbox = (fadeUri && fadeValue > 0.0);
 
   return (
-    <Button
+    // eslint-disable-next-line max-len
+    // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
+    <div
       className={`${toggleHeaderStyles.toggle} ${isLayer && styles.layerHeader}`}
       onClick={onClick}
       ref={(el) => { refs.current[refName] = el; }}
-      noChangeOnActive
     >
       <Row>
         {expanded ?
@@ -290,20 +260,28 @@ function PropertyOwnerHeader({
           { isLayer && <SvgIcon className={styles.layerDraggableIcon}><DraggableIcon /></SvgIcon> }
         </span>
         <span className={styles.rightButtonContainer}>
-          { isSceneObject && focusButton }
-          { (showPopOutSettings || showMeta || trashAction) && (
-            <TooltipMenu
-              className={styles.moreButton}
-              sourceObject={<MdMoreVert />}
-            >
-              { showPopOutSettings && popoutButton }
-              { showMeta && metaButton }
-              { trashAction && trashButton }
+          { isSceneObject && (
+            <>
+              <NavigationButton type={NavigationTypes.focus} identifier={identifier} />
+              <TooltipMenu sourceObject={<MdMoreVert />}>
+                {showPopOutSettings && popoutButton}
+                {showMeta && metaButton}
+                {trashAction && trashButton}
+                <HorizontalDelimiter />
+                <NavigationButton type={NavigationTypes.fly} showLabel identifier={identifier} />
+                <NavigationButton type={NavigationTypes.jump} showLabel identifier={identifier} />
+                <NavigationButton type={NavigationTypes.frame} showLabel identifier={identifier} />
+              </TooltipMenu>
+            </>
+          )}
+          { !isSceneObject && showMeta && (
+            <TooltipMenu sourceObject={<MdMoreVert />}>
+              {metaButton}
             </TooltipMenu>
           )}
         </span>
       </Row>
-    </Button>
+    </div>
   );
 }
 
