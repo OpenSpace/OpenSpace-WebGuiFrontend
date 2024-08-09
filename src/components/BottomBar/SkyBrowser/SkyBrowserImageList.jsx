@@ -25,7 +25,7 @@ function SkyBrowserImageList({
   selectImage
 }) {
   const selectedPairId = useSubscribeToProperty("Modules.SkyBrowser.SelectedPairId");
-  const borderColor = useSubscribeToProperty(`Modules.SkyBrowser.${selectedPairId}.Color`).map(x => x * 255);
+  const borderColor = useSubscribeToProperty(`Modules.SkyBrowser.${selectedPairId}.Color`)?.map(x => x * 255);
   const [imageViewingMode, setImageViewingMode] = React.useState(ImageViewingOptions.withinView);
   const [searchString, setSearchString] = React.useState('');
   const imageList = useSelector((state) => state.skybrowser.imageList);

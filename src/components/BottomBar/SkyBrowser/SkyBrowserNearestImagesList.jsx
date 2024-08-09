@@ -18,13 +18,10 @@ function SkyBrowserNearestImagesList({
   selectImage
 }) {
   const selectedPairId = useSubscribeToProperty("Modules.SkyBrowser.SelectedPairId");
-  const borderColor = useSubscribeToProperty(`Modules.SkyBrowser.${selectedPairId}.Color`).map(x => x * 255);
+  const borderColor = useSubscribeToProperty(`Modules.SkyBrowser.${selectedPairId}.Color`)?.map(x => x * 255);
   const fov = useSubscribeToProperty(`Modules.SkyBrowser.${selectedPairId}.VerticalFov`, lowPrecisionEqual) ?? [];
   const [ra, dec] = useSubscribeToProperty(`Modules.SkyBrowser.${selectedPairId}.EquatorialAim`) ?? [];
-  const cartesianDirection = useSelector(
-    (state) => state.skybrowser.browsers[state.skybrowser.selectedBrowserId].cartesianDirection,
-    shallowEqual
-  );
+  const cartesianDirection = useSubscribeToProperty(`Modules.SkyBrowser.${selectedPairId}.CartesianDirection`) ?? [];
   const imageList = useSelector((state) => state.skybrowser.imageList);
 
   const DistanceSortThreshold = 0.1;
