@@ -219,19 +219,20 @@ function SkyBrowserPanel() {
           height={currentPopoverHeight}
           defaultHeight={440}
           minHeight={440}
-        >
+          >
           {popover()}
         </WindowThreeStates>
       )}
       {popoverVisible && browsersExist && (
         <WorldWideTelescope
-          imageCollectionIsLoaded={imageCollectionIsLoaded}
-          setImageCollectionIsLoaded={setImageCollectionIsLoaded}
-          size={wwtSize}
-          setSize={setWwtSize}
-          position={wwtPosition}
-          setPosition={setWwtPosition}
-          togglePopover={togglePopover}
+        imageCollectionIsLoaded={imageCollectionIsLoaded}
+        setImageCollectionIsLoaded={setImageCollectionIsLoaded}
+        size={wwtSize}
+        setSize={setWwtSize}
+        position={wwtPosition}
+        setPosition={setWwtPosition}
+        togglePopover={togglePopover}
+        activeImage={activeImage}
         />
       )}
     </div>
