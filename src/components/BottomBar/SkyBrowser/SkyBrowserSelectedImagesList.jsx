@@ -77,10 +77,10 @@ function SkyBrowserSelectedImagesList({
                       key={url}
                       url={url}
                       onSelect={selectImage}
-                      opacity={selectedImagesOpacities[index]}
+                      opacity={selectedImagesOpacities[index] ?? 1}
                       isActive={activeImage === url}
                       removeSelection={removeImageSelection}
-                      borderColor
+                      borderColor={borderColor}
                     />
                   </div>
                 )}
