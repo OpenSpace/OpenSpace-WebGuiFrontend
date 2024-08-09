@@ -1,8 +1,10 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 import ReactSelect from 'react-select';
+import PropTypes from 'prop-types';
+
 import { excludeKeys } from '../../../../utils/helpers';
 import Input from '../Input/Input';
+
 import styles from './Select.scss';
 
 const selectStyles = {
@@ -38,7 +40,7 @@ const selectStyles = {
     color: '#FFF',
     backgroundColor: state.isFocused ? '#333' : '#222'
   }),
-  singleValue: (provided, state) => ({
+  singleValue: (provided) => ({
     ...provided,
     color: 'inherited',
     paddingTop: 10,
@@ -46,42 +48,57 @@ const selectStyles = {
   })
 };
 
-const Select = (props) => {
-  const { value, label } = props;
-  const inheritedProps = excludeKeys(props, 'label');
-  const id = props.id || `select-${Input.nextId}`;
+function Select({
+  value, label, id, disabled, options, onChange, ...props
+}) {
+  const identifier = id || `select-${Input.nextId}`;
 
   return (
     <div className={styles.selectgroup}>
       <ReactSelect
-        {...inheritedProps}
-        id={id}
+        {...props}
+        id={identifier}
+        isDisabled={disabled}
         placeholder={label}
         styles={selectStyles}
-        value={inheritedProps.options.filter(opt => opt.value == value)}
+        options={options}
+        onChange={onChange}
+        // Convert to string to ensure both are the same type
+        value={options.filter((opt) => `${opt.value}` === `${value}`)}
         blurInputOnSelect
       />
-      { props.value !== undefined && <label htmlFor={id} className={styles.selectlabel}>{ label }</label> }
+      {value !== undefined && (
+        <label htmlFor={id} className={styles.selectlabel}>
+          {label}
+        </label>
+      )}
     </div>
   );
-};
+}
 
 Select.propTypes = {
   clearable: PropTypes.bool,
+  disabled: PropTypes.bool,
   id: PropTypes.string,
   label: PropTypes.node.isRequired,
+  onChange: PropTypes.func,
   options: PropTypes.arrayOf(
     PropTypes.shape({
       value: PropTypes.string,
-      label: PropTypes.string,
-    })).isRequired,
+      label: PropTypes.string
+    })
+  ).isRequired,
   searchable: PropTypes.bool,
+  value: PropTypes.node
 };
 
 Select.defaultProps = {
-  id: null,
-  searchable: false,
   clearable: false,
+  disabled: false,
+  id: null,
+  onChange: () => {},
+  searchable: false,
+  value: undefined
 };
 
 export default Select;

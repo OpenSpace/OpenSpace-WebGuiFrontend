@@ -1,41 +1,41 @@
 import {
-  initializeExoplanets,
+  initializeExoplanets
 } from '../Actions';
-
+import actionTypes from '../Actions/actionTypes';
 import api from '../api';
 
-import { actionTypes } from '../Actions/actionTypes';
-
 const getExoplanets = async (luaApi, callback) => {
-  var planetList = await luaApi.exoplanets.getListOfExoplanets();
-  var listArray = Object.values(planetList[1])
-  listArray = listArray.map(item => {
-    return {"name": item, "identifier": item};
-  })
+  const planetList = await luaApi.exoplanets.listOfExoplanets();
+  const actualList = planetList[1];
+  if (!actualList) {
+    return;
+  }
+  let listArray = Object.values(actualList);
+  listArray = listArray.map((item) => ({ name: item, identifier: item }));
   callback(listArray);
 };
 
 const removeSystem = async (data, callback) => {
-  let script = "openspace.exoplanets.removeExoplanetSystem('"+ data +"')";
+  const script = `openspace.exoplanets.removeExoplanetSystem('${data}')`;
   api.executeLuaScript(script, false);
   api.executeLuaScript("openspace.setPropertyValueSingle('Modules.CefWebGui.Reload', nil)");
   callback();
-}
+};
 
-export const exoplanets = store => next => (action) => {
+const exoplanets = (store) => (next) => (action) => {
   const result = next(action);
   switch (action.type) {
-    case actionTypes.initializeLuaApi:
+    case actionTypes.loadExoplanetsData:
       getExoplanets(action.payload, (data) => {
         store.dispatch(initializeExoplanets(data));
       });
       break;
     case actionTypes.removeExoplanets:
-      removeSystem(action.payload.system, () => {
-      })
+      removeSystem(action.payload.system, () => {});
       break;
     default:
       break;
   }
   return result;
 };
+export default exoplanets;

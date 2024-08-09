@@ -1,6 +1,6 @@
 @import "../../../../styles/all";
 
-$small-padding: ($vertical-padding / 2) ($base-padding / 2);
+$small-padding: calc($vertical-padding / 2) calc($base-padding / 2);
 
 .button {
   background: $ui-background-selected;
@@ -39,7 +39,23 @@ $small-padding: ($vertical-padding / 2) ($base-padding / 2);
   font-size: 1.4em;
 }
 
+// Style as regular text
+.regular {
+  text-align: left;
+  font-family: $font-family;
+  letter-spacing: normal;
+  background-color: transparent;
+}
 
+@media only screen and (min-width: 1600px) {
+  .regular {
+    font-size: $font-size-hires;
+  }
+}
+
+.wide {
+  width: 100%;
+}
 
 // Why redeclaring some styles here?!
 // Well, some properties from the classes above (small, for instance)
@@ -60,6 +76,7 @@ $small-padding: ($vertical-padding / 2) ($base-padding / 2);
 
   &:active {
     background: $ui-background-active;
+    color: $text-color-blur;
   }
 
   &:disabled {

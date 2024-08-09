@@ -1,6 +1,8 @@
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
 import { defer } from '../../../utils/helpers';
+
 import styles from './ScrollOverlay.scss';
 
 /**
@@ -21,13 +23,13 @@ class ScrollOverlay extends Component {
     this.state = {
       id: ScrollOverlay.elementId,
       atTop: true,
-      atBottom: false,
+      atBottom: false
     };
     this.setDomNode = this.setDomNode.bind(this);
     this.updateScrollIndicators = this.updateScrollIndicators.bind(this);
   }
 
-  // @TODO (emmbr 2021-05-06): This function is deprecated and should be replaced with 
+  // @TODO (emmbr 2021-05-06): This function is deprecated and should be replaced with
   // something else. Although, I fail to see how this call is actually needed so just
   // comment it out for now. Should be removed if it's actually not needed
   // componentWillReceiveProps() {
@@ -45,6 +47,29 @@ class ScrollOverlay extends Component {
     }
   }
 
+  get hasScrollBar() {
+    if (!this.node || !this.node.scrollHeight) {
+      return false;
+    }
+
+    return this.node.clientHeight < this.node.scrollHeight;
+  }
+
+  get stateClasses() {
+    const { atBottom, atTop } = this.state;
+    if (!this.hasScrollBar) return false;
+
+    let classes = '';
+    if (!atBottom) {
+      classes += `${styles.notAtBottom} `;
+    }
+    if (!atTop) {
+      classes += styles.notAtTop;
+    }
+
+    return classes;
+  }
+
   /**
    * decide if the scroll indicators should be shown or not
    * @param target - the `.scroll-content` node
@@ -60,36 +85,16 @@ class ScrollOverlay extends Component {
     this.setState({ atTop, atBottom });
   }
 
-  get hasScrollBar() {
-    if (!this.node || !this.node.scrollHeight) {
-      return false;
-    }
-
-    return this.node.clientHeight < this.node.scrollHeight;
-  }
-
-  get stateClasses() {
-    if (!this.hasScrollBar) return false;
-
-    let classes = '';
-    if (!this.state.atBottom) {
-      classes += `${styles.notAtBottom} `;
-    }
-    if (!this.state.atTop) {
-      classes += styles.notAtTop;
-    }
-
-    return classes;
-  }
-
   render() {
+    const { className, children } = this.props;
+    const { id } = this.state;
     return (
       <div
-        className={`scroll-content ${this.props.className} ${styles.ScrollOverlay} ${this.stateClasses}`}
-        id={this.state.id}
+        className={`scroll-content ${className} ${styles.ScrollOverlay} ${this.stateClasses}`}
+        id={id}
         ref={this.setDomNode}
       >
-        { this.props.children }
+        { children }
       </div>
     );
   }
@@ -99,11 +104,11 @@ ScrollOverlay.elementCount = 0;
 
 ScrollOverlay.propTypes = {
   children: PropTypes.node.isRequired,
-  className: PropTypes.string,
+  className: PropTypes.string
 };
 
 ScrollOverlay.defaultProps = {
-  className: '',
+  className: ''
 };
 
 export default ScrollOverlay;

@@ -6,9 +6,7 @@
  * @param search - string to match with
  * @constructor
  */
-export const SimpleSubstring = (test: string, search: string): bool => {
-  return test.includes(search);
-}
+export const SimpleSubstring = (test: string, search: string): bool => test.includes(search);
 
 export const CaseInsensitiveSubstring = (test: string, search: string): bool => {
   const lowerCaseTest = test.toLowerCase();
@@ -19,9 +17,12 @@ export const CaseInsensitiveSubstring = (test: string, search: string): bool => 
 export const WordBeginningSubstring = (test: string, search: string): bool => {
   const searchWords = search.split(' ');
   const testWords = test.split(' ');
-  return searchWords.every(searchWord =>
-    testWords.some(testWord => testWord.indexOf(searchWord) === 0)
-  );
+
+  function containsWordAsFirst(searchWord) {
+    return testWords.some((testWord) => testWord.indexOf(searchWord) === 0);
+  }
+
+  return searchWords.every((searchWord) => containsWordAsFirst(searchWord));
 };
 
 /**
@@ -30,20 +31,22 @@ export const WordBeginningSubstring = (test: string, search: string): bool => {
  * @param search - string to match with
  * @constructor
  */
+// eslint-disable-next-line no-undef
 export const ObjectSimpleSubstring = (test: object, search: string): bool => {
   const valuesAsStrings = Object.values(test)
-    .filter(t => ['number', 'string'].includes(typeof t))
-    .map(t => t.toString())
-    .map(t => t.toLowerCase());
-  return valuesAsStrings.some(v => SimpleSubstring(v, search));
+    .filter((t) => ['number', 'string'].includes(typeof t))
+    .map((t) => t.toString())
+    .map((t) => t.toLowerCase());
+  return valuesAsStrings.some((v) => SimpleSubstring(v, search));
 };
 
+// eslint-disable-next-line no-undef
 export const ObjectWordBeginningSubstring = (test: object, search: string): bool => {
   const valuesAsStrings = Object.values(test)
-    .filter(t => ['number', 'string'].includes(typeof t))
-    .map(t => t.toString())
-    .map(t => t.toLowerCase());
-  return valuesAsStrings.some(v => WordBeginningSubstring(v, search));
+    .filter((t) => ['number', 'string'].includes(typeof t))
+    .map((t) => t.toString())
+    .map((t) => t.toLowerCase());
+  return valuesAsStrings.some((v) => WordBeginningSubstring(v, search));
 };
 
 /**
@@ -53,7 +56,7 @@ export const ObjectWordBeginningSubstring = (test: object, search: string): bool
  * @constructor
  */
 export const ListCaseInsensitiveSubstring = (test: string[], search: string): bool => {
-  const lowerCaseTest = test.map(t => t.toLowerCase());
+  const lowerCaseTest = test.map((t) => t.toLowerCase());
   const lowerCaseSearch = search.toLowerCase();
-  return lowerCaseTest.some(v => v.includes(lowerCaseSearch));
+  return lowerCaseTest.some((v) => v.includes(lowerCaseSearch));
 };

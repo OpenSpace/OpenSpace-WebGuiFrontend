@@ -1,16 +1,15 @@
-import {
-  updatePropertyValue,
-  addPropertyOwners, 
-  addProperties,
-  refreshGroups
-} from '../Actions';
-import { actionTypes } from '../Actions/actionTypes';
-import { reloadPropertyTree } from '../Actions';
-import { rootOwnerKey } from '../keys';
-
-import api from '../api';
-
 import { throttle } from 'lodash/function';
+
+import {
+  addProperties,
+  addPropertyOwners,
+  refreshGroups,
+  reloadPropertyTree,
+  updatePropertyValue
+} from '../Actions';
+import actionTypes from '../Actions/actionTypes';
+import api from '../api';
+import { rootOwnerKey } from '../keys';
 
 // The property tree middleware is designed to populate the react store's
 // copy of the property tree when the frontend is connected to OpenSpace.
@@ -74,16 +73,29 @@ const handleUpdatedValues = (store, uri, value) => {
   const subscriptionInfo = subscriptionInfos[uri];
   if (subscriptionInfo &&
       subscriptionInfo.state === ActiveState &&
-      subscriptionInfo.nSubscribers < 1)
-  {
+      subscriptionInfo.nSubscribers < 1) {
     subscriptionInfo.subscription.cancel();
     delete subscriptionInfos[uri];
   }
 };
 
+const createSubscription = (store, uri) => {
+  const subscription = api.subscribeToProperty(uri);
+  const handleUpdates = (value) => handleUpdatedValues(store, uri, value);
+  const throttledHandleUpdates = throttle(handleUpdates, 200);
+
+  (async () => {
+    // eslint-disable-next-line no-restricted-syntax
+    for await (const data of subscription.iterator()) {
+      throttledHandleUpdates(data.Value);
+    }
+  })();
+  return subscription;
+};
+
 const tryPromoteSubscription = (store, uri) => {
   const state = store.getState();
-  const isConnected = state.connection.isConnected;
+  const { isConnected } = state.connection;
   const subscriptionInfo = subscriptionInfos[uri];
 
   if (!isConnected) {
@@ -102,8 +114,8 @@ const tryPromoteSubscription = (store, uri) => {
   }
 };
 
-const promoteSubscriptions = store => {
-  Object.keys(subscriptionInfos).forEach(uri => {
+const promoteSubscriptions = (store) => {
+  Object.keys(subscriptionInfos).forEach((uri) => {
     tryPromoteSubscription(store, uri);
   });
 };
@@ -114,35 +126,22 @@ const markAllSubscriptionsAsPending = () => {
   });
 };
 
-const createSubscription = (store, uri) => {
-  const subscription = api.subscribeToProperty(uri);
-  const handleUpdates = (value) => handleUpdatedValues(store, uri, value);
-  const throttledHandleUpdates = throttle(handleUpdates, 200);
-
-  (async () => {
-    for await (const data of subscription.iterator()) {
-      throttledHandleUpdates(data.Value);
-    }
-  })();
-  return subscription;
-};
-
 const flattenPropertyTree = (propertyOwner, baseUri) => {
   let propertyOwners = [];
   let properties = [];
   const groups = {};
 
-  propertyOwner.subowners.forEach(subowner => {
+  propertyOwner.subowners.forEach((subowner) => {
     const uri = baseUri ?
-      baseUri + '.' + subowner.identifier : 
+      `${baseUri}.${subowner.identifier}` :
       subowner.identifier;
 
     propertyOwners.push({
       uri,
       identifier: subowner.identifier,
       name: subowner.guiName,
-      properties: subowner.properties.map(p => p.Description.Identifier),
-      subowners: subowner.subowners.map(p => uri + '.' + p.identifier),
+      properties: subowner.properties.map((p) => p.Description.Identifier),
+      subowners: subowner.subowners.map((p) => `${uri}.${p.identifier}`),
       tags: subowner.tag,
       description: subowner.description
     });
@@ -151,7 +150,7 @@ const flattenPropertyTree = (propertyOwner, baseUri) => {
     properties = properties.concat(childData.properties);
   });
 
-  propertyOwner.properties.forEach(property => {
+  propertyOwner.properties.forEach((property) => {
     const uri = property.Description.Identifier;
     properties.push({
       uri,
@@ -163,24 +162,24 @@ const flattenPropertyTree = (propertyOwner, baseUri) => {
   return {
     propertyOwners,
     properties,
-    groups,
-  }
+    groups
+  };
 };
 
 const getPropertyTree = async (dispatch) => {
   const value = await api.getProperty(rootOwnerKey);
-  
-  const {propertyOwners, properties, groups} = flattenPropertyTree(value);
+
+  const { propertyOwners, properties } = flattenPropertyTree(value);
   dispatch(addPropertyOwners(propertyOwners));
   dispatch(addProperties(properties));
-  dispatch(refreshGroups())
+  dispatch(refreshGroups());
 };
 
 const setBackendValue = (uri, value) => {
   api.setProperty(uri, value);
 };
 
-export const propertyTree = store => next => action => {
+const propertyTree = (store) => (next) => (action) => {
   let result;
 
   if (action.type === actionTypes.setPropertyValue) {
@@ -205,9 +204,9 @@ export const propertyTree = store => next => action => {
       break;
     }
     case actionTypes.addProperties: {
-      // The added properteis may include properties whose
-      // uri is marked as a `pending`/`orphan` subscription, so
-      // we check if any subscriptions can be promoted to `active`.
+    // The added properteis may include properties whose
+    // uri is marked as a `pending`/`orphan` subscription, so
+    // we check if any subscriptions can be promoted to `active`.
       promoteSubscriptions(store);
       break;
     }
@@ -216,7 +215,7 @@ export const propertyTree = store => next => action => {
       break;
     }
     case actionTypes.subscribeToProperty: {
-      const uri = action.payload.uri;
+      const { uri } = action.payload;
       const subscriptionInfo = subscriptionInfos[uri];
       if (subscriptionInfo) {
         ++subscriptionInfo.nSubscribers;
@@ -230,7 +229,7 @@ export const propertyTree = store => next => action => {
       break;
     }
     case actionTypes.unsubscribeToProperty: {
-      const uri = action.payload.uri;
+      const { uri } = action.payload;
       const subscriptionInfo = subscriptionInfos[uri];
       if (subscriptionInfo) {
         --subscriptionInfo.nSubscribers;

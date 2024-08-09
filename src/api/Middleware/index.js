@@ -1,21 +1,22 @@
 import { applyMiddleware } from 'redux';
-import { propertyTree } from './propertyTree';
-import { time } from './time';
-import { connection } from './connection';
-import { engineMode } from './engineMode';
-import { fetchData } from './fetchData';
-import { shortcuts } from './shortcuts';
-import { version } from './version';
-import { sessionRecording } from './sessionRecording';
-import { flightController } from './flightController';
-import { documentation } from './documentation';
-import { exoplanets } from './exoplanets';
-import { skybrowser } from './skybrowser';
 
-import logger from './logger';
+import camera from './camera';
+import connection from './connection';
+import documentation from './documentation';
+import engineMode from './engineMode';
+import exoplanets from './exoplanets';
+import fetchData from './fetchData';
+import flightController from './flightController';
+import missions from './missions';
+import propertyTree from './propertyTree';
+import sessionRecording from './sessionRecording';
+import shortcuts from './shortcuts';
+import skybrowser from './skybrowser';
+import time from './time';
+import version from './version';
 
 const middleware = applyMiddleware(
-  //logger, // middleWare for logging state change
+  // logger, // middleWare for logging state change
   propertyTree,
   time,
   engineMode,
@@ -23,11 +24,13 @@ const middleware = applyMiddleware(
   connection,
   shortcuts,
   version,
+  missions,
   fetchData,
   flightController,
   documentation,
   exoplanets,
   skybrowser,
+  camera
 );
 
 export default middleware;

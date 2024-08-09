@@ -1,17 +1,15 @@
 import {
-  initializeDocumentation,
+  initializeDocumentation
 } from '../Actions';
-
+import actionTypes from '../Actions/actionTypes';
 import api from '../api';
 
-import { actionTypes } from '../Actions/actionTypes';
-
-const getDocumentation = async callback => {
-  var documentation = await api.getDocumentation("meta");
+const getDocumentation = async (callback) => {
+  const documentation = await api.getDocumentation('meta');
   callback(documentation);
 };
 
-export const documentation = store => next => (action) => {
+const documentation = (store) => (next) => (action) => {
   const result = next(action);
   switch (action.type) {
     case actionTypes.onOpenConnection:
@@ -24,3 +22,4 @@ export const documentation = store => next => (action) => {
   }
   return result;
 };
+export default documentation;

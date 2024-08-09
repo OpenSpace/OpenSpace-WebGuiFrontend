@@ -1,43 +1,36 @@
-import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import { excludeKeys } from '../../../../utils/helpers';
+
 import styles from './Button.scss';
 
-/* eslint-disable react/no-unused-prop-types */
-
-const Button = (props) => {
-  const specialClasses = 'onClick block small transparent uppercase smalltext nopadding largetext';
+const Button = React.forwardRef((props, ref) => {
+  const specialClasses = 'onClick block small transparent uppercase smalltext nopadding largetext regular wide';
   const inheritProps = excludeKeys(props, specialClasses);
 
   const extraClass = specialClasses.split(' ')
-    .filter(c => props[c])
-    .map(c => styles[c])
+    .filter((c) => props[c])
+    .map((c) => styles[c])
     .join(' ');
 
-  let buttonElement = null;
-
-  const onClick = evt => {
+  function onClick(evt) {
     props.onClick(evt);
-    if (buttonElement) {
-      buttonElement.blur();
-    }
-  };
-
-  const ref = domElement => {
-    buttonElement = domElement;
-  };
+    evt.currentTarget.blur();
+  }
 
   return (
     <button
       {...inheritProps}
-      className={`${props.className} ${extraClass} ${styles.button}`}
+      className={`${styles.button} ${props.className} ${extraClass}`}
       onClick={onClick}
       ref={ref}
+      type="button"
     >
       { props.children }
     </button>
   );
-};
+});
 
 Button.propTypes = {
   block: PropTypes.bool,
@@ -49,6 +42,8 @@ Button.propTypes = {
   smalltext: PropTypes.bool,
   transparent: PropTypes.bool,
   uppercase: PropTypes.bool,
+  regular: PropTypes.bool,
+  wide: PropTypes.bool
 };
 
 Button.defaultProps = {
@@ -60,6 +55,8 @@ Button.defaultProps = {
   smalltext: false,
   transparent: false,
   uppercase: false,
+  regular: false,
+  wide: false
 };
 
 export default Button;

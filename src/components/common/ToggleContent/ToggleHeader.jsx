@@ -1,35 +1,44 @@
-import PropTypes from 'prop-types';
 import React from 'react';
-import MaterialIcon from '../MaterialIcon/MaterialIcon';
+import { MdChevronRight, MdExpandMore } from 'react-icons/md';
+import PropTypes from 'prop-types';
+
+import { useContextRefs } from '../../GettingStartedTour/GettingStartedContext';
+import Button from '../Input/Button/Button';
+
 import styles from './ToggleHeader.scss';
 
-const ToggleHeader = ({ title, expanded, onClick, onIcon, offIcon, showEnabled }) => (
-  <header className={styles.toggle} onClick={onClick} role="button" tabIndex={0}>
-    <MaterialIcon
-      icon={expanded ? onIcon : offIcon}
-      className={styles.icon}
-    />
-    <span className={`${styles.title}`} >
-      { title }
-    </span>
-  </header>
-);
+function ToggleHeader({
+  title, expanded, onClick
+}) {
+  const refs = useContextRefs();
+
+  return (
+    <Button
+      ref={(el) => { refs.current[`Group ${title}`] = el; }}
+      className={styles.toggle}
+      onClick={onClick}
+    >
+      {expanded ?
+        <MdExpandMore className={styles.icon} /> :
+        <MdChevronRight className={styles.icon} />}
+      <span className={`${styles.title}`}>
+        { title }
+      </span>
+    </Button>
+  );
+}
 
 ToggleHeader.propTypes = {
-  offIcon: PropTypes.string,
   onClick: PropTypes.func.isRequired,
-  onIcon: PropTypes.string,
   title: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.object
   ]).isRequired,
-  showEnabled: PropTypes.bool,
-  expanded: PropTypes.bool.isRequired,
+  expanded: PropTypes.bool.isRequired
 };
 
 ToggleHeader.defaultProps = {
-  offIcon: 'chevron_right',
-  onIcon: 'expand_more',
+
 };
 
 export default ToggleHeader;

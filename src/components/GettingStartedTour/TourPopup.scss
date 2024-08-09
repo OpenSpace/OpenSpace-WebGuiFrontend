@@ -1,0 +1,355 @@
+@import "../../styles/all.scss";
+
+$padding-horizontal: 0.3rem;
+$padding-vertical: 0.5rem;
+$padding: $padding-horizontal $padding-vertical;
+$highlight-color: #ffb51d;
+$margin-over-mouse-button: 40px;
+$mouse-color: $text-color-blur;
+
+.window {
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+    background: $ui-background;
+    border-radius: $popover-corner-radius;
+    box-shadow: $box-shadow;
+    color: $text-color-focus;
+}
+
+.title {
+    font-weight: 600;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    padding: $padding;
+    text-transform: uppercase;
+}
+
+.content {
+    padding: $padding;
+    width: 100%;
+    height: 100%;
+    bottom: 0;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+}
+
+.text {
+    overflow-wrap: break-word;
+    padding: $padding;
+}
+
+.infoText {
+    color: $text-color-blur;
+    font-style: italic;
+}
+
+.progressBarContent {
+    height: 3px;
+    background-color: $text-color-blur;
+    bottom: 0;
+    position: absolute;
+    border-bottom-left-radius: 3px;
+}
+
+.scroll {
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-color: $text-color-blur transparent;
+}
+
+.scroll::-webkit-scrollbar-thumb {
+    background-color: $text-color-blur;
+}
+
+.centerContent {
+    display: flex;
+    justify-content: center;
+}
+
+.spaceBetweenContent {
+    display: flex;
+    justify-content: space-between;
+}
+
+.mouseButtonText {
+    text-align: center;
+    margin-top: $margin-over-mouse-button;
+    color: $mouse-color;
+}
+
+.goalText {
+    color:$highlight-color;
+    font-style: italic;
+}
+
+.buttonContainer {
+    width: 100%;
+    padding: $padding;
+    margin-top: auto;
+    margin-bottom: 5px;
+}
+
+.mouseDescription {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+}
+
+.logo {
+    width: 300px; 
+    object-fit: contain;
+    padding: 20px;
+}
+
+.nextButton {
+    color: $ui-background-solid;
+    font-weight: bold;
+}
+
+.nextButton:enabled {
+    display: inline-block;
+    transition: all .3s;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+
+    &:after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: $highlight-color;
+        z-index: -2;
+    }
+
+    &:before {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0%;
+        height: 100%;
+        background-color: darken($highlight-color, 15%);
+        transition: all .3s;
+        z-index: -1;
+    }
+
+    &:hover {
+        color: #fff;
+
+        &:before {
+            width: 100%;
+        }
+    }
+}
+
+.geoPositionBox {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 450px;
+    height: 70px;
+}
+
+$animated-border-width : 3px;
+$animated-border-length : 15px;
+
+.animatedBorder {
+    pointer-events: none;
+    background-image: linear-gradient(90deg, $highlight-color 50%, transparent 50%), 
+                      linear-gradient(90deg, $highlight-color 50%, transparent 50%), 
+                      linear-gradient(0deg, $highlight-color 50%, transparent 50%), 
+                      linear-gradient(0deg, $highlight-color 50%, transparent 50%);
+    background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
+    background-size: $animated-border-length $animated-border-width, $animated-border-length $animated-border-width, $animated-border-width $animated-border-length, $animated-border-width $animated-border-length;
+    background-position: left top, right bottom, left bottom, right top;
+    animation: border-dance 1s infinite linear;
+}
+
+@keyframes border-dance {
+    0% {
+        background-position: left top, right bottom, left bottom, right top;
+    }
+
+    100% {
+        background-position: left $animated-border-length top, right $animated-border-length bottom, left bottom $animated-border-length, right top $animated-border-length;
+    }
+}
+
+.clickEffect {
+    position: absolute;
+    box-sizing: border-box;
+    border-style: solid;
+    border-color: $highlight-color;
+    border-radius: 50%;
+    animation: clickEffect 1s ease-out infinite;
+    pointer-events: none;
+    z-index: 10;
+}
+
+@keyframes clickEffect{
+    0%{
+        width: 0.5em; height: 0.5em;
+        margin: -0.25em;
+        border-width: 0.5em;
+        border-color: $highlight-color;
+    }
+    100%{
+        width: 15em; height: 15em;
+        margin: -7.5em;
+        border-width: 0.13em;
+        border-color: darken($highlight-color, 20%);
+    }
+}
+
+/* Keyboard button */
+.keyboardButton {
+    background-color: transparent;
+    border: 1;
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 5px;
+    border-color: $mouse-color;
+    width: fit-content;
+    padding: 10px;
+    height: fit-content;
+    margin-top: calc(1.5 * $margin-over-mouse-button);
+    margin-left: 20px;
+}
+
+.keyboardButtonText {
+    font-style: italic;
+    letter-spacing: 3px;
+    color: $mouse-color;
+}
+
+.plus {
+    color: $mouse-color;
+    margin-top: calc(1.7 * $margin-over-mouse-button);
+    margin-left: 20px;
+}
+
+/* Animated mouse */
+$mouse-size: 80px;
+$button-border: 0.4;
+$mouse-ratio: 0.65;
+$line-width: 2px;
+
+.mouseContainer {
+    padding: 40px;
+    padding-bottom: 60px;
+}
+
+.leftButton, .rightButton, .bar, .mouseButton, .verticalBar {
+    background-color: $mouse-color;
+} 
+
+.mouse {
+    width: calc($mouse-size * $mouse-ratio);
+    height: $mouse-size;
+    position: relative;
+    border-radius: calc($mouse-size * 0.45);
+    border: 2px solid $mouse-color;
+}
+
+.leftButton, .rightButton {
+    width: calc($mouse-size * $mouse-ratio * 0.5);
+    margin-left: -2px;
+    height: calc($mouse-size * $button-border + 3px);
+    position: absolute;
+    animation: fadebackground 1s infinite alternate;
+    margin-top: - calc($line-width * 0.5);
+}
+
+.leftButton {
+    border-radius: calc($mouse-size * 0.45) 0 0 0;
+}
+
+.rightButton {
+    border-radius: 0 calc($mouse-size * 0.45) 0 0;
+    margin-left: calc($mouse-size * $mouse-ratio * 0.5 - 2px);
+}
+
+.bar {
+    height: 2px;
+    width: calc($mouse-size * $mouse-ratio - 2px);
+    margin-top: calc($mouse-size * $button-border);
+    margin-left: -1px;
+    position: absolute;
+}
+
+.verticalBar {
+    width: 2px;
+    height: calc($mouse-size * $button-border);
+    margin-left: calc($mouse-size * $mouse-ratio * 0.45 );
+    position: absolute;
+}
+
+.mouseButton {
+    width: calc($mouse-size * 0.1);
+    height: calc($mouse-size * 0.25);
+    border-radius: calc(0.05 * $mouse-size);
+    position: absolute;
+    height: calc($mouse-size * 0.25);
+    left: calc(50% - ($mouse-size * 0.025));
+    margin: calc(0.15 * $mouse-size) 0 0 -2px;
+    animation: fadebackground 1s infinite alternate;
+}
+
+@keyframes fadebackground {
+    from {
+        background-color: $mouse-color;
+    }
+
+    to {
+        background-color: transparent;
+    }
+}
+
+/* Animated arrows */
+$arrows-width : 10px;
+$arrows-translation: calc($arrows-width * 0.4);
+$arrows-line-width: 2px;
+
+.arrows {
+    display: flex;
+    justify-content: center;
+}
+
+.arrows span {
+    display: block;
+    width: $arrows-width;
+    height: $arrows-width;
+    border-top: $arrows-line-width solid $mouse-color;
+    border-left: $arrows-line-width solid $mouse-color;
+    animation: arrowsAnimation 2s infinite;
+    transform: rotate(45deg)
+}
+
+.arrows span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.arrows span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+@keyframes arrowsAnimation {
+    0% {
+        opacity: 0;
+        transform: rotate(45deg) translate($arrows-translation, $arrows-translation);
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+        transform: rotate(45deg) translate(-$arrows-translation, -$arrows-translation);
+    }
+}
+

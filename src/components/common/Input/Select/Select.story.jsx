@@ -1,14 +1,15 @@
 /* eslint import/no-extraneous-dependencies: 0 */
-import { storiesOf } from '@storybook/react';
 import React from 'react';
+import { storiesOf } from '@storybook/react';
+
 import Select from './Select';
 
 /* globals module */
 
-const options = 'a b c d e f g h'.split(' ').map(v => ({ value: v, label: v }));
+const options = 'a b c d e f g h'.split(' ').map((v) => ({ value: v, label: v }));
 
 storiesOf('Input/Select', module)
-  .addDecorator(story => (
+  .addDecorator((story) => (
     <div style={{ background: '#252525', padding: '20px', color: 'white' }}>
       { story() }
     </div>

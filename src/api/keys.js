@@ -43,6 +43,7 @@ export const ZoomOutLimitKey = 'Modules.Touch.TouchInteraction.ZoomOutLimit';
 export const ZoomInLimitKey = 'Modules.Touch.TouchInteraction.ZoomInLimit';
 // key for scale property
 export const ScaleKey = `Scene.${ValuePlaceholder}.Scale.Scale`;
+export const ScaleScreenSpaceKey = `ScreenSpace.${ValuePlaceholder}.Scale`;
 // keys for timePlayerController
 export const FastRewind = 'fast_rewind';
 export const Rewind = 'rewind';
@@ -58,6 +59,24 @@ export const SessionStateIdle = 'idle';
 export const SessionStateRecording = 'recording';
 export const SessionStatePlaying = 'playing';
 export const SessionStatePaused = 'playing-paused';
+
+// Component/Module enabled properties
+export const ExoplanetsModuleEnabledKey = 'Modules.Exoplanets.Enabled';
+export const SkyBrowserModuleEnabledKey = 'Modules.SkyBrowser.Enabled';
+
+// Sky browser properties
+export const SkyBrowserShowTitleInBrowserKey = 'Modules.SkyBrowser.ShowTitleInGuiBrowser';
+export const SkyBrowserAllowCameraRotationKey = 'Modules.SkyBrowser.AllowCameraRotation';
+export const SkyBrowserCameraRotationSpeedKey = 'Modules.SkyBrowser.CameraRotationSpeed';
+export const SkyBrowserTargetAnimationSpeedKey = 'Modules.SkyBrowser.TargetAnimationSpeed';
+export const SkyBrowserBrowserAnimationSpeedKey = 'Modules.SkyBrowser.BrowserAnimationSpeed';
+export const SkyBrowserHideTargetsBrowsersWithGuiKey = 'Modules.SkyBrowser.HideTargetsBrowsersWithGui';
+export const SkyBrowserInverseZoomDirectionKey = 'Modules.SkyBrowser.InverseZoomDirection';
+export const SkyBrowserSpaceCraftAnimationTimeKey = 'Modules.SkyBrowser.SpaceCraftAnimationTime';
+
+// OpenSpace engine
+export const EnginePropertyVisibilityKey = 'OpenSpaceEngine.PropertyVisibility';
+export const EngineFadeDurationKey = 'OpenSpaceEngine.FadeDuration';
 
 // renderableTypes
 export const RenderableTypes = {
@@ -82,7 +101,7 @@ export const RenderableTypes = {
   RenderableGlobe: 'RenderableGlobe',
   // RenderableConstellationBounds: "RenderableConstellationBounds",
   // RenderableRings: "RenderableRings",
-  RenderableStars: 'RenderableStars',
+  RenderableStars: 'RenderableStars'
   // RenderableCrawlingLine: "RenderableCrawlingLine",
   // RenderableFov: "RenderableFov",
   // RenderableModelProjection: "RenderableModelProjection",
@@ -105,9 +124,9 @@ export const sortGroups = {
   Planets: {
     value: ['Mercury', 'Venus',
       'Earth', 'Mars', 'Jupiter',
-      'Saturn', 'Uranus', 'Neptune'],
+      'Saturn', 'Uranus', 'Neptune']
   },
   'Solar System': {
-    value: ['Planets', 'Dwarf Planets', 'Sun', 'Solar System Barycenter'],
-  },
+    value: ['Planets', 'Dwarf Planets', 'Sun', 'Solar System Barycenter']
+  }
 };

@@ -1,55 +1,34 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React from 'react';
+import { useSelector } from 'react-redux';
+
 import ToggleBoolButton from './ToggleBoolButton';
 
-class ToggleBoolButtons extends Component {
-  constructor(props) {
-    super(props);
-    this.handleGroup = this.handleGroup.bind(this);
-    this.toggleButtons = [];
-  }
+function ToggleBoolButtons() {
+  const properties = useSelector((state) => state.storyTree.story.toggleboolproperties);
 
-  handleGroup(clickedProperty) {
-    const { properties } = this.props;
-    properties.map((p, i) => {
-      if (clickedProperty.property.URI !== p.URI && clickedProperty.property.group === p.group) {
-        this.toggleButtons[p.URI].disableIfChecked();
+  // @TODO fix groups
+  // @ TODO: this probably broke with rewrite. Find out where it's used and bring it back
+  function handleGroup(clickedProperty) {
+    properties.forEach((p) => {
+      if (clickedProperty.URI !== p.URI && clickedProperty.group === p.group) {
+        // this.toggleButtons[p.URI].disableIfChecked();
       }
     });
   }
 
-  get propertiesButtons() {
-    const { properties } = this.props;
-    return (
-      properties.map((property, i) => (
+  return (
+    <div style={{ display: 'flex' }}>
+      {properties.map((property) => (
         <ToggleBoolButton
-          ref={ref => this.toggleButtons[property.URI] = ref}
+          // @TODO fix groups
+          // ref={(ref) => { this.toggleButtons[property.URI] = ref; }}
           key={property.URI}
           property={property}
-          handleGroup={this.handleGroup}
+          handleGroup={handleGroup}
         />
-      ))
-    );
-  }
-
-  render() {
-    return (
-      <div style={{ display: 'flex' }}>
-        {this.propertiesButtons}
-      </div>
-    );
-  }
+      ))}
+    </div>
+  );
 }
-
-const mapStateToProps = (state, ownProps) => {
-  const properties = state.storyTree.story.toggleboolproperties;
-  return {
-    properties,
-  };
-};
-
-ToggleBoolButtons = connect(
-  mapStateToProps,
-)(ToggleBoolButtons);
 
 export default ToggleBoolButtons;

@@ -1,6 +1,5 @@
 /* All the action types are collected here, to make it easier for debugging. */
-
-export const actionTypes = {
+const actionTypes = {
   // action types for property tree
   updatePropertyValue: 'PROPERTY_TREE_UPDATE_NODE',
   setPropertyValue: 'PROPERTY_TREE_SET',
@@ -34,17 +33,31 @@ export const actionTypes = {
   getVersion: 'VERSION_GET',
   initializeVersion: 'VERSION_INITIALIZE',
 
+  // action types for missions
+  getMissions: 'MISSIONS_GET',
+  initializeMissions: 'MISSIONS_INITIALIZE',
+
   // action types for documentation
   getDocumentation: 'DOCUMENTATION_GET',
   initializeDocumentation: 'DOCUMENTATION_INITIALIZE',
 
   // action types for exoplanets
+  loadExoplanetsData: 'EXOPLANETS_LOAD_DATA',
   initializeExoplanets: 'EXOPLANETS_INITIALIZE',
   addExoplanets: 'EXOPLANETS_ADD',
   removeExoplanets: 'EXOPLANETS_REMOVE',
 
   // action types for skybrowser
+  loadSkyBrowserData: 'SKYBROWSER_LOAD_DATA',
   initializeSkyBrowser: 'SKYBROWSER_INITIALIZE',
+  subscribeToSkyBrowser: 'SKYBROWSER_SUBSCRIBE',
+  unsubscribeToSkyBrowser: 'SKYBROWSER_UNSUBSCRIBE',
+  updateSkyBrowser: 'SKYBROWSER_UPDATE',
+
+  // action types for camera topic
+  subscribeToCamera: 'CAMERA_SUBSCRIBE',
+  unsubscribeToCamera: 'CAMERA_UNSUBSCRIBE',
+  updateCamera: 'CAMERA_UPDATE',
 
   // action types for shortcuts
   subscribeToShortcuts: 'SHORTCUTS_SUBSCRIBE',
@@ -73,7 +86,6 @@ export const actionTypes = {
 
   // action types for local gui settings
   setNavigationAction: 'LOCAL_SET_NAVIGATION_ACTION',
-  setOriginPickerShowFavorites: 'LOCAL_SET_ORIGIN_PICKER_SHOW_FAVORITES',
   setPropertyTreeExpansion: 'LOCAL_SET_PROPERTY_TREE_EXPANSION',
   setPopoverPosition: 'LOCAL_POPOVER_SET_POSIITON',
   setPopoverVisibility: 'LOCAL_POPOVER_SET_VISIBILITY',
@@ -102,5 +114,7 @@ export const actionTypes = {
   addStoryTree: 'STORY_TREE_ADD',
   addStoryInfo: 'STORY_TREE_ADD_INFO',
   resetStoryInfo: 'STORY_TREE_RESET_INFO',
-  resetStoryTree: 'STORY_TREE_RESET',
+  resetStoryTree: 'STORY_TREE_RESET'
 };
+
+export default actionTypes;

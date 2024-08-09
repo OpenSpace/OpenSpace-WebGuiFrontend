@@ -1,0 +1,105 @@
+@import "../../styles/all";
+
+.bottomBarIcon {
+  font-size: 2em;
+}
+
+.place {
+  width: 100%;
+  text-align: left;
+  min-height: 34px;
+}
+
+.placeButton {
+  display: flex;
+  justify-content: space-between;
+}
+
+.geoPositionPanel {
+  min-width: 394px;
+  max-width: 394px;
+  height: 480px;
+  max-height: 600px;
+  min-height: 400px;
+  display: flex;
+  flex-flow: column;
+}
+
+.resultsTitle {
+  font-weight: 600;
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-left: 4px;
+}
+
+.content {
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+}
+
+.searchField {
+  display: flex;
+  flex-flow: row;
+}
+
+.latLongInput {
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+}
+
+.latLongButton {
+  white-space: nowrap;
+}
+
+/* Multitoggle switch */
+
+.wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  padding-left: 4px;
+}
+
+.wrapper input:checked + label {
+ background: $ui-highlight-secondary;
+ color: $ui-background-solid;
+}
+
+.toggleTitle {
+  padding: 2px 9px 2px 0px;
+  margin: 6px 0px 10px 0px;
+  border-radius: 20px;
+  text-indent: 0px;
+  margin-right: auto;
+}
+
+.toggles{
+  background: rgba(255, 255, 255, 0.1);
+  margin: 4px;
+  padding: 0px;
+  -webkit-border-radius: 50px;
+  -moz-border-radius: 50px;
+  border-radius: 50px;
+  height: 26px;
+  width: 80%;
+  display: flex;
+  justify-content: stretch;
+}
+
+.toggles input[type=radio] {
+  display: none;
+}
+
+.toggles label {
+  flex: 1;
+  text-indent: 0px;
+  height: 100%;
+  padding: 1px 6px;
+  -webkit-border-radius: 50px;
+  -moz-border-radius: 50px;
+  border-radius: 50px;
+  text-align: center;
+}

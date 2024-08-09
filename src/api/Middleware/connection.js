@@ -1,14 +1,12 @@
 import {
-  onOpenConnection,
   initializeLuaApi,
   onCloseConnection,
-  subscribeToShortcuts
+  onOpenConnection
 } from '../Actions';
-
-import { actionTypes } from '../Actions/actionTypes';
+import actionTypes from '../Actions/actionTypes';
 import api from '../api';
 
-let openspace = undefined;
+let openspace;
 
 function initializeConnection(store) {
   async function onConnect() {
@@ -33,7 +31,7 @@ function initializeConnection(store) {
   api.connect();
 }
 
-export const connection = store => next => action => {
+const connection = (store) => (next) => (action) => {
   const result = next(action);
   switch (action.type) {
     case actionTypes.startConnection:
@@ -44,3 +42,4 @@ export const connection = store => next => action => {
   }
   return result;
 };
+export default connection;

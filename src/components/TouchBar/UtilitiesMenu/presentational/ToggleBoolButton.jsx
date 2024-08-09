@@ -1,128 +1,97 @@
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import propertyDispatcher from '../../../../api/propertyDispatcher';
+
 import { triggerAction } from '../../../../api/Actions';
+import propertyDispatcher from '../../../../api/propertyDispatcher';
+import Button from '../../../common/Input/Button/Button';
 import SmallLabel from '../../../common/SmallLabel/SmallLabel';
+
 import styles from '../style/UtilitiesButtons.scss';
 
-class ToggleBoolButton extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      checked: this.props.property.isAction ? this.props.property.defaultvalue : this.props.propertyNode.value,
-    };
-
-    this.disableIfChecked = this.disableIfChecked.bind(this);
-    this.toggleChecked = this.toggleChecked.bind(this);
-    this.handleOnClick = this.handleOnClick.bind(this);
-  }
-
-  componentDidMount() {
-    const { boolPropertyDispatcher, property } = this.props;
+function ToggleBoolButton({ property, handleGroup }) {
+  const propertyNode = useSelector((state) => {
     if (!property.isAction) {
-      boolPropertyDispatcher.subscribe();
+      return state.propertyTree.properties[property.URI];
     }
-  }
+    return null;
+  });
 
-  componentWillUnmount() {
-    const { boolPropertyDispatcher, property } = this.props;
+  const [checked, setChecked] = React.useState(
+    property.isAction ? property.defaultvalue : propertyNode.value
+  );
+
+  const dispatch = useDispatch();
+  const boolPropertyDispatcher = React.useRef(propertyDispatcher(dispatch, property.URI));
+
+  React.useEffect(() => {
     if (!property.isAction) {
-      boolPropertyDispatcher.unsubscribe();
+      boolPropertyDispatcher.current.subscribe();
     }
-  }
-
-  disableIfChecked() {
-    const { boolPropertyDispatcher, property } = this.props;
-    const { checked } = this.state;
-    if (checked) {
-      if (property.isAction) {
-        this.props.triggerActionDispatcher(property.actionDisabled);
-      } else {
-        boolPropertyDispatcher.set(false);
+    return () => {
+      if (!property.isAction) {
+        boolPropertyDispatcher.current.unsubscribe();
       }
-      this.setState({ checked: false });
-    }
-  }
+    };
+  }, []);
 
-  toggleChecked() {
-    const { property } = this.props;
-    const { checked } = this.state;
+  function toggleChecked() {
     if (property.isAction) {
       if (!checked) {
-        this.props.triggerActionDispatcher(property.actionEnabled);
-        this.setState({ checked: true });
+        dispatch(triggerAction(property.actionEnabled));
+        setChecked(true);
       } else {
-        this.props.triggerActionDispatcher(property.actionDisabled);
-        this.setState({ checked: false });
+        dispatch(triggerAction(property.actionDisabled));
+        setChecked(false);
       }
     } else {
       const value = !checked;
-      this.setState({ checked: value });
-      this.props.boolPropertyDispatcher.set(value);
+      setChecked(value);
+      boolPropertyDispatcher.current.set(value);
     }
   }
 
-  handleOnClick() {
-    const { property } = this.props;
-	  this.toggleChecked();
-	  if (property.group) {
-      this.props.handleGroup(this.props);
-	  }
+  // Used by parent ref. How?
+  // function disableIfChecked() {
+  //   if (checked) {
+  //     if (property.isAction) {
+  //       dispatch(triggerAction(property.actionDisabled));
+  //     } else {
+  //       boolPropertyDispatcher.current.set(false);
+  //     }
+  //     setChecked(false);
+  //   }
+  // }
+
+  function handleOnClick() {
+    toggleChecked();
+    if (property.group && handleGroup) {
+      handleGroup(property);
+    }
   }
 
-  render() {
-    const { property } = this.props;
-    const { checked } = this.state;
-    return (
-      <div
-        className={`${styles.UtilitiesButton} ${checked === true && styles.active}`}
-        role="button"
-        tabIndex="0"
-        key={property.URI}
-        onClick={this.handleOnClick}
-        id={property.URI}
-      >
-        <SmallLabel id={property.URI} style={{ textAlign: 'center' }}>
-          {property.label}
-        </SmallLabel>
-      </div>
-    );
-  }
+  return (
+    <Button
+      className={`${styles.UtilitiesButton} ${checked === true && styles.active}`}
+      key={property.URI}
+      onClick={handleOnClick}
+      id={property.URI}
+      regular
+    >
+      <SmallLabel id={property.URI} style={{ textAlign: 'center' }}>
+        {property.label}
+      </SmallLabel>
+    </Button>
+  );
 }
 
-const mapStateToProps = (state, ownProps) => {
-  // TODO (emmbr, 2022-01-18) Should check that the property node actually
-  // exists as well, and handle the case when it doesn't
-
-  if (!ownProps.property.isAction) {
-    const propertyNode = state.propertyTree.properties[ownProps.property.URI];
-    return {
-      propertyNode,
-    };
-  } return { propertyNode: null };
-};
-
-const mapDispatchToProps = (dispatch, ownProps) => ({
-  boolPropertyDispatcher: propertyDispatcher(dispatch, ownProps.property.URI),
-  triggerActionDispatcher: (action) => {
-    dispatch(triggerAction(action));
-  },
-});
-
-ToggleBoolButton = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-  null,
-  { forwardRef: true },
-)(ToggleBoolButton);
-
 ToggleBoolButton.propTypes = {
-  propertyNode: PropTypes.shape({
-    description: PropTypes.string,
-    value: PropTypes.bool,
-  }),
+  property: PropTypes.shape({
+    URI: PropTypes.string,
+    defaultvalue: PropTypes.bool,
+    label: PropTypes.string,
+    isAction: PropTypes.bool
+  }).isRequired
 };
 
 export default ToggleBoolButton;

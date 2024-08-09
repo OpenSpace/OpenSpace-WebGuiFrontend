@@ -3,12 +3,24 @@
 $height: $font-size + $base-padding * 1.5;
 
 .wrapper {
+  padding: 0;
+  margin: 0;
+  font-size: 16px;
+  background-color: transparent;
+  display: flex;
   &:hover {
-    background: $ui-background-hover;
+    background-color: transparent;
+  }
+
+  &:not(:disabled) {
+    &:hover {
+      background: transparent;
+    }
   }
 
   &:hover .checkbox {
     color: $blue;
+    background-color: transparent;
   }
 
   &.wide {
@@ -24,5 +36,21 @@ $height: $font-size + $base-padding * 1.5;
 
   &.left {
     flex-direction: row;
+  }
+}
+
+.checkbox {
+  margin-top: 1px;
+  width: $font-size;
+  height: $font-size;
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+
+@media only screen and (min-width: 1600px) {
+  .checkbox {
+    padding-top: 2px;
+    width: $font-size-hires;
+    height: $font-size-hires;
   }
 }

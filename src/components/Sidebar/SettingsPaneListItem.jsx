@@ -1,42 +1,49 @@
-import React, { Component } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
+
 import { removeLastWordFromUri } from '../../utils/propertyTreeHelpers';
+
 import Property from './Properties/Property';
 import PropertyOwner from './Properties/PropertyOwner';
+
 import styles from './SettingsPaneListItem.scss';
 
-class SettingsPaneListItem extends Component {
-  constructor(props) {
-    super(props);
+function SettingsPaneListItem({ type, uri }) {
+  if (type === 'subPropertyOwner') {
+    return (
+      <div className={styles.propertyItemGroup}>
+        <p>{removeLastWordFromUri(uri)}</p>
+        <PropertyOwner
+          uri={uri}
+          expansionIdentifier={`scene-search/${uri}`}
+        />
+      </div>
+    );
   }
-
-  render() {
-    const props = this.props;
-
-    if (props.type === 'subPropertyOwner') {
-      return (
-        <div className={styles.propertyItemGroup}>
-          <p>{removeLastWordFromUri(this.props.uri)}</p>
-          <PropertyOwner
-              uri={this.props.uri}
-              expansionIdentifier={'scene-search/' + this.props.uri} />
-        </div>
-      );
-    }
-    if (props.type === 'propertyOwner') {
-      return <PropertyOwner
-              uri={this.props.uri}
-              expansionIdentifier={'scene-search/' + this.props.uri} />
-    }
-    if (props.type === 'property') {
-      return (
-        <div className={styles.propertyItemGroup}>
-          <p>{removeLastWordFromUri(this.props.uri)}</p>
-          <Property index={this.props.index} key={this.props.uri} uri={this.props.uri}/>
-        </div>
-      );
-    }
-    return null;
+  if (type === 'propertyOwner') {
+    return (
+      <PropertyOwner
+        uri={uri}
+        expansionIdentifier={`scene-search/${uri}`}
+      />
+    );
   }
+  if (type === 'property') {
+    return (
+      <div className={styles.propertyItemGroup}>
+        <p>{removeLastWordFromUri(uri)}</p>
+        <Property key={uri} uri={uri} />
+      </div>
+    );
+  }
+  return null;
 }
+
+SettingsPaneListItem.propTypes = {
+  type: PropTypes.string.isRequired,
+  uri: PropTypes.string.isRequired
+};
+
+SettingsPaneListItem.defaultProps = {};
 
 export default SettingsPaneListItem;

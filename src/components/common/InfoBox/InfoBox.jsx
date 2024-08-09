@@ -1,73 +1,44 @@
+import React from 'react';
+import { MdInfo } from 'react-icons/md';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import MaterialIcon from '../MaterialIcon/MaterialIcon';
+
 import Tooltip from '../Tooltip/Tooltip';
 
-class InfoBox extends Component {
-  constructor(props) {
-    super(props);
+function InfoBox({ text, Icon, ...props }) {
+  const [showPopup, setShowPopup] = React.useState(false);
+  const wrapper = React.useRef(null);
 
-    this.state = { showPopup: false };
+  function position() {
+    if (!wrapper.current) return { top: '0px', left: '0px' };
 
-    this.setRef = this.setRef.bind(this);
-    this.showPopup = this.showPopup.bind(this);
-    this.hidePopup = this.hidePopup.bind(this);
+    const { top, right } = wrapper.current.getBoundingClientRect();
+    return { top: `${top}px`, left: `${right}px` };
   }
 
-  setRef(what) {
-    return (element) => {
-      this[what] = element;
-    };
-  }
-
-  get position() {
-    if (!this.wrapper) return { top: '0px', left: '0px' };
-    if (this.props.inpanel) {
-      var scrollParent = document.getElementById(this.props.panelscroll);
-      var buttonScroll = scrollParent.scrollTop;
-      var rect = this.wrapper.getBoundingClientRect();
-      return { top: `${this.wrapper.offsetTop - buttonScroll}px`, left: `${this.wrapper.offsetLeft + rect.width}px` };
-    } else {
-      const { top, right } = this.wrapper.getBoundingClientRect();
-      return { position: "fixed", top: `${top}px`, left: `${right}px` };
-    }
-  }
-
-  showPopup() {
-    this.setState({ showPopup: true });
-  }
-
-  hidePopup() {
-    this.setState({ showPopup: false });
-  }
-
-  render() {
-    const { icon, text, inpanel } = this.props;
-    const { showPopup } = this.state;
-    return (
-      <span
-        ref={this.setRef('wrapper')}
-      >
-        <MaterialIcon icon={icon}
-         onMouseEnter={this.showPopup}
-         onMouseLeave={this.hidePopup} />
-        { showPopup && (
-          <Tooltip fixed placement="right" style={this.position}>
-            { text }
-          </Tooltip>
-        )}
-      </span>
-    );
-  }
+  return (
+    <span
+      ref={wrapper}
+      {...props}
+    >
+      <Icon
+        onMouseEnter={() => setShowPopup(true)}
+        onMouseLeave={() => setShowPopup(false)}
+      />
+      { showPopup && (
+        <Tooltip fixed placement="right" style={position()}>
+          { text }
+        </Tooltip>
+      )}
+    </span>
+  );
 }
 
 InfoBox.propTypes = {
-  icon: PropTypes.string,
-  text: PropTypes.string.isRequired,
+  text: PropTypes.node.isRequired // should be text or html object
 };
 
 InfoBox.defaultProps = {
-  icon: 'info',
+  Icon: MdInfo
 };
 
 export default InfoBox;

@@ -1,10 +1,12 @@
 // @flow
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import { MdChevronLeft, MdChevronRight, MdToday } from 'react-icons/md';
+import PropTypes from 'prop-types';
+
 import { rotate } from '../../../utils/helpers';
 import Button from '../Input/Button/Button';
 import InlineInput from '../Input/InlineInput/InlineInput';
-import MaterialIcon from '../MaterialIcon/MaterialIcon';
+
 import styles from './Calendar.scss';
 
 const Days = {
@@ -14,7 +16,7 @@ const Days = {
   Wednesday: 3,
   Thursday: 4,
   Friday: 5,
-  Saturday: 6,
+  Saturday: 6
 };
 Object.freeze(Days);
 
@@ -75,26 +77,26 @@ class Calendar extends Component {
     super(props);
 
     this.state = {
-      activeMonth: Calendar.toStartOfMonth(props.activeMonth),
+      activeMonth: Calendar.toStartOfMonth(props.activeMonth)
     };
 
     this.setCurrentMonth = this.setCurrentMonth.bind(this);
     this.setYear = this.setYear.bind(this);
   }
 
-  state: { activeMonth: Date };
-
-  componentWillReceiveProps({ activeMonth }) {
+  UNSAFE_componentWillReceiveProps({ activeMonth }) {
     // update calendar focus (unless user has moved away from previously given active month)
-    if (Calendar.isSameDay(Calendar.toStartOfMonth(this.props.activeMonth),
-                           Calendar.toStartOfMonth(this.state.activeMonth))) {
+    if (Calendar.isSameDay(
+      Calendar.toStartOfMonth(this.props.activeMonth),
+      Calendar.toStartOfMonth(this.state.activeMonth)
+    )) {
       this.setState({ activeMonth: Calendar.toStartOfMonth(activeMonth) });
     }
   }
 
   onSelect(day: Date): Function {
     return (e) => {
-      const shift = e.getModifierState("Shift");
+      const shift = e.getModifierState('Shift');
       this.props.onChange({
         time: day,
         interpolate: !shift,
@@ -122,6 +124,17 @@ class Calendar extends Component {
     days.push(...next.slice(0, daysFromNextMonth));
 
     return days;
+  }
+
+  setCurrentMonth() {
+    this.setState({ activeMonth: Calendar.toStartOfMonth(new Date()) });
+  }
+
+  setYear(event) {
+    const { value } = event.currentTarget;
+    const { activeMonth } = this.state;
+    activeMonth.setFullYear(Number.parseInt(value, 10));
+    this.setState({ activeMonth });
   }
 
   daysToGet(day: number): number {
@@ -160,17 +173,6 @@ class Calendar extends Component {
     return () => this.setState({ activeMonth: this.month(dir) });
   }
 
-  setCurrentMonth() {
-    this.setState({ activeMonth: Calendar.toStartOfMonth(new Date()) });
-  }
-
-  setYear(event) {
-    const { value } = event.currentTarget;
-    const { activeMonth } = this.state;
-    activeMonth.setFullYear(Number.parseInt(value, 10));
-    this.setState({ activeMonth });
-  }
-
   extraClasses(day: Date): string {
     let classes = '';
 
@@ -194,30 +196,34 @@ class Calendar extends Component {
       <section>
         <header className={styles.header}>
           <Button transparent small onClick={this.changeMonth(-1)}>
-            <MaterialIcon icon="chevron_left" />
+            <MdChevronLeft />
           </Button>
           <div>
             { this.props.todayButton && (
               <Button onClick={this.setCurrentMonth} title="Today" small transparent>
-                <MaterialIcon icon="today" />
+                <MdToday />
               </Button>
-            )} {
+            )}
+            {' '}
+            {
               this.monthString()
-            } <InlineInput
+            }
+            {' '}
+            <InlineInput
               type="number"
               value={this.month().getFullYear()}
               onChange={this.setYear}
               className={styles.year}
             />
           </div>
-          <Button transparent small onClick={this.changeMonth(1)}>
-            <MaterialIcon icon="chevron_right" />
+          <Button regular transparent small onClick={this.changeMonth(1)}>
+            <MdChevronRight />
           </Button>
         </header>
 
         <section className={styles.calendar}>
           <header className={styles.weekdays}>
-            { this.dayHeader.map(d => (
+            { this.dayHeader.map((d) => (
               <div key={d.index} className={styles.weekday}>
                 { d.day }
               </div>
@@ -225,16 +231,15 @@ class Calendar extends Component {
           </header>
 
           <section className={styles.month}>
-            { this.days.map(day => (
-              <div
+            { this.days.map((day) => (
+              <Button
                 key={`${day.getMonth()}-${day.getDate()}`}
                 className={`${styles.day} ${this.extraClasses(day)}`}
                 onClick={this.onSelect(day)}
-                role="button"
-                tabIndex={0}
+                regular
               >
                 { day.getDate() }
-              </div>
+              </Button>
             ))}
           </section>
         </section>
@@ -250,7 +255,7 @@ Calendar.propTypes = {
   onChange: PropTypes.func,
   selected: PropTypes.instanceOf(Date),
   todayButton: PropTypes.bool,
-  weekStartsOn: PropTypes.number,
+  weekStartsOn: PropTypes.number
 };
 
 Calendar.defaultProps = {
@@ -260,7 +265,7 @@ Calendar.defaultProps = {
   onChange: () => {},
   selected: null,
   todayButton: false,
-  weekStartsOn: Calendar.Days.Monday,
+  weekStartsOn: Calendar.Days.Monday
 };
 
 export default Calendar;

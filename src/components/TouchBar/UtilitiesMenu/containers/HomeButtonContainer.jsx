@@ -1,46 +1,24 @@
+import React from 'react';
+import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+
 import { resetStoryTree } from '../../../../api/Actions';
 import HomeButton from '../presentational/HomeButton';
 
-class HomeButtonContainer extends Component {
-  constructor(props) {
-    super(props);
+function HomeButtonContainer({ resetStory }) {
+  const dispatch = useDispatch();
 
-    this.goToMenu = this.goToMenu.bind(this);
+  function goToMenu() {
+    dispatch(resetStoryTree(true));
+    resetStory();
   }
-
-  goToMenu() {
-    this.props.ResetStoryTree(true);
-    this.props.resetStory();
-  }
-
-  render() {
-    return (
-      <HomeButton handleClick={this.goToMenu} />
-    );
-  }
+  return (
+    <HomeButton handleClick={goToMenu} />
+  );
 }
 
-const mapDispatchToProps = dispatch => ({
-  ResetStoryTree: (reset) => {
-    dispatch(resetStoryTree(reset));
-  },
-});
-
-HomeButtonContainer = connect(
-  null,
-  mapDispatchToProps,
-)(HomeButtonContainer);
-
-
 HomeButtonContainer.propTypes = {
-  ResetStoryTree: PropTypes.func,
-};
-
-HomeButtonContainer.defaultProps = {
-  ResetStoryTree: () => {},
+  resetStory: PropTypes.func.isRequired
 };
 
 export default HomeButtonContainer;

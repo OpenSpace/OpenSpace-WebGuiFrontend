@@ -1,26 +1,21 @@
-import { connectFlightController, disconnectFlightController, sendFlightControl } from '../Actions';
-import { actionTypes } from '../Actions/actionTypes';
-import { rootOwnerKey } from '../keys';
-
+import actionTypes from '../Actions/actionTypes';
 import api from '../api';
 
-let topic = undefined;
-let nSubscribers = 0;
+let topic;
 
-async function connectToFlightControllerTopic(store) {
-  topic = api.startTopic('flightcontroller', {type: "connect"});
+async function connectToFlightControllerTopic() {
+  topic = api.startTopic('flightcontroller', { type: 'connect' });
 }
 
 function sendFlightControlMessage(data) {
   topic.talk(data);
 }
 
-export const flightController = store => next => action => {
+const flightController = () => (next) => (action) => {
   const result = next(action);
-  const state = store.getState();
   switch (action.type) {
     case actionTypes.onOpenConnection:
-        connectToFlightControllerTopic()
+      connectToFlightControllerTopic();
       break;
     case actionTypes.sendFlightControl: {
       if (topic) {
@@ -33,6 +28,5 @@ export const flightController = store => next => action => {
   }
   return result;
 };
-
 
 export default flightController;

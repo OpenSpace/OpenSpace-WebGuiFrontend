@@ -1,41 +1,48 @@
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
 import { setPropertyValue, subscribeToProperty, unsubscribeToProperty } from '../../../../api/Actions';
 import { NavigationAnchorKey, ScaleKey, ValuePlaceholder } from '../../../../api/keys';
 import { UpdateDeltaTimeNow } from '../../../../utils/timeHelpers';
-import DateController from './../presentational/DateController';
-import ScaleController from './../presentational/ScaleController';
-import SightsController from './../presentational/SightsController';
-import TimePlayerController from './../presentational/TimePlayerController';
-import ToggleBoolButtons from './../presentational/ToggleBoolButtons';
+import DateController from '../presentational/DateController';
+import ScaleController from '../presentational/ScaleController';
+import SightsController from '../presentational/SightsController';
+import TimePlayerController from '../presentational/TimePlayerController';
+import ToggleBoolButtons from '../presentational/ToggleBoolButtons';
 
+function Controllers() {
+  const luaApi = useSelector((state) => state.luaApi);
+  const story = useSelector((state) => state.storyTree.story);
+  const originNode = useSelector((state) => state.propertyTree.properties[NavigationAnchorKey]);
 
-class Controllers extends Component {
-  constructor(props) {
-    super(props);
-
-    this.onChangeSight = this.onChangeSight.bind(this);
-    this.onChangeScale = this.onChangeScale.bind(this);
-  }
-
-  componentDidMount() {
-    const { scaleNodes, startListening } = this.props;
-    if (scaleNodes.length !== 0) {
-      scaleNodes.forEach(n => startListening(n.description.Identifier));
+  const scaleNodes = useSelector((state) => {
+    const nodes = [];
+    if (story.scalenodes) {
+      story.scalenodes.nodes.forEach((node) => {
+        const key = ScaleKey.replace(ValuePlaceholder, `${node}`);
+        const scaleNode = state.propertyTree.properties[key];
+        if (scaleNode) {
+          nodes.push(scaleNode);
+        }
+      });
     }
+    return nodes;
+  });
+
+  const dispatch = useDispatch();
+
+  React.useEffect(() => {
+    scaleNodes.forEach((n) => dispatch(subscribeToProperty(n.description.Identifier)));
+    return () => {
+      scaleNodes.forEach((n) => dispatch(unsubscribeToProperty(n.description.Identifier)));
+    };
+  }, []);
+
+  function changePropertyValue(uri, value) {
+    dispatch(setPropertyValue(uri, value));
   }
 
-  componentWillUnmount() {
-    const { scaleNodes, stopListening } = this.props;
-    if (scaleNodes.length !== 0) {
-      scaleNodes.forEach(n => stopListening(n.description.Identifier));
-    }
-  }
-
-  onChangeSight(selected) {
-    const { changePropertyValue, luaApi, originNode } = this.props;
-
+  function onChangeSight(selected) {
     UpdateDeltaTimeNow(luaApi, 1);
     // Check if the sight is on the current anchor, otherwise change anchor node
     if (originNode !== selected.planet) {
@@ -49,127 +56,53 @@ class Controllers extends Component {
     );
   }
 
-  onChangeScale() {
-    const { changePropertyValue, scaleNodes, story } = this.props;
-
-    const scale = story.scalenodes.scale;
+  function onChangeScale() {
+    const { scale } = story.scalenodes;
     const currentScale = scaleNodes[0].value;
 
     if (Number(currentScale) !== Number(scale)) {
       story.scalenodes.nodes.forEach((node, i) => {
         changePropertyValue(scaleNodes[i].description.Identifier, scale);
-        scaleNodes[i].value = scale;
+        // scaleNodes[i].value = scale;
       });
     } else {
       story.scalenodes.nodes.forEach((node, i) => {
         changePropertyValue(scaleNodes[i].description.Identifier, 1);
-        scaleNodes[i].value = 1;
+        // scaleNodes[i].value = 1;
       });
     }
   }
 
-  render() {
-    const { story, scaleNodes } = this.props;
-
-    return (
-      <div style={{ display: 'flex' }}>
-        { (story && story.timecontroller) && (
-          <TimePlayerController />
-        )}
-        {(story && story.datecontroller) && (
-          <DateController
-            dateList={story.datecontroller}
-            onChangeSight={this.onChangeSight}
-          />
-        )}
-        {(story && story.sightscontroller) && (
-          <SightsController
-            sightsList={story.sightscontroller}
-            onChangeSight={this.onChangeSight}
-          />
-        )}
-        {(story && story.scalenodes) && (
-          <ScaleController
-            info={story.scalenodes.info}
-            scale={(Number(scaleNodes[0].value) !== Number(story.scalenodes.scale))
-              ? 1 : Number(story.scalenodes.scale)}
-            onChangeScale={this.onChangeScale}
-          />
-        )}
-        {(story && story.toggleboolproperties) && (
-          <ToggleBoolButtons />
-        )}
-      </div>
-    );
-  }
+  return (
+    <div style={{ display: 'flex' }}>
+      {(story && story.timecontroller) && (
+        <TimePlayerController />
+      )}
+      {(story && story.datecontroller) && (
+        <DateController
+          dateList={story.datecontroller}
+          onChangeSight={onChangeSight}
+        />
+      )}
+      {(story && story.sightscontroller) && (
+        <SightsController
+          sightsList={story.sightscontroller}
+          onChangeSight={onChangeSight}
+        />
+      )}
+      {(story && story.scalenodes) && (
+        <ScaleController
+          info={story.scalenodes.info}
+          scale={(Number(scaleNodes[0].value) !== Number(story.scalenodes.scale)) ?
+            1 : Number(story.scalenodes.scale)}
+          onChangeScale={onChangeScale}
+        />
+      )}
+      {(story && story.toggleboolproperties) && (
+        <ToggleBoolButtons />
+      )}
+    </div>
+  );
 }
-
-const mapStateToProps = (state) => {
-  let originNode = [];
-  const { story } = state.storyTree;
-  const scaleNodes = [];
-
-  originNode = state.propertyTree.properties[NavigationAnchorKey];
-
-  if (story.scalenodes) {
-    story.scalenodes.nodes.forEach((node) => {
-      const key = ScaleKey.replace(ValuePlaceholder, `${node}`);
-      const scaleNode = state.propertyTree.properties[key];
-      if (scaleNode) {
-        scaleNodes.push(scaleNode);
-      }
-    });
-  }
-
-  return {
-    originNode,
-    story,
-    scaleNodes,
-    luaApi: state.luaApi,
-  };
-};
-
-const mapDispatchToProps = dispatch => ({
-  changePropertyValue: (uri, value) => {
-    dispatch(setPropertyValue(uri, value));
-  },
-  startListening: (uri) => {
-    dispatch(subscribeToProperty(uri));
-  },
-  stopListening: (uri) => {
-    dispatch(unsubscribeToProperty(uri));
-  },
-});
-
-Controllers = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(Controllers);
-
-Controllers.propTypes = {
-  originNode: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.string,
-    description: PropTypes.string,
-    value: PropTypes.string,
-    listeners: PropTypes.number,
-  })),
-  changePropertyValue: PropTypes.func,
-  startListening: PropTypes.func,
-  stopListening: PropTypes.func,
-  scaleNodes: PropTypes.objectOf(PropTypes.shape({
-    value: PropTypes.string,
-    description: PropTypes.string,
-  })),
-  story: PropTypes.objectOf(PropTypes.shape({})),
-};
-
-Controllers.defaultProps = {
-  originNode: [],
-  scaleNodes: {},
-  story: {},
-  changePropertyValue: () => {},
-  startListening: () => {},
-  stopListening: () => {},
-};
 
 export default Controllers;

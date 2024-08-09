@@ -1,0 +1,82 @@
+@import "../../../styles/all";
+
+$arrow-size: 4px;
+$slider-button: rgba(125,125,125,1);
+$slider-line: rgba(22,22,22,1);
+$image-width: 96px;
+
+.entry {
+  padding: $popover-horizontal-padding;
+  height: 110px;
+  width: 110px;
+  display: inline-grid;
+  align-content: flex-start;
+  &:hover {
+    background: $ui-background-hover;
+  }
+  &.active {
+    background: $ui-background-hover;
+    border-left-width: 4px solid;
+    border-left-style: solid;
+  }
+}
+
+.tabEntry {
+  height: 80px;
+  margin-top: 4px;
+  width: 100%;
+  display: flex;
+}
+
+.imageHeader {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1px;
+  width: $image-width;
+}
+
+.removeImageButton {
+  padding: 3px 4px 3px 4px;
+  border-radius: 4px;
+}
+
+.addTo3DButton {
+  padding: 3px 3px 2px 3px;
+  border-radius: 4px;
+}
+
+.imageTitle {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 16px;
+}
+
+.skySurvey {
+  font-size: 12px;
+  border-radius: 2px;
+  background: transparent;
+  color: $text-color-blur;
+  width: 70%;
+  margin-bottom: 3px;
+  padding-left: 3px;
+  margin-right: auto;
+}
+
+.image {
+  width: 96px;
+  height: 50px;
+  border-radius: 2px;
+  display: flex;
+  padding-top: 5px;
+  &Text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 16px;
+  }
+}
+
+.sliderContainer {
+  width: 160px; 
+}

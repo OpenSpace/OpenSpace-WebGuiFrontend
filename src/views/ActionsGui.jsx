@@ -1,87 +1,55 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
 import { startConnection } from '../api/Actions';
-import { formatVersion, isCompatible, RequiredOpenSpaceVersion, RequiredSocketApiVersion } from '../api/Version';
+import {
+  formatVersion, isCompatible, RequiredOpenSpaceVersion, RequiredSocketApiVersion
+} from '../api/Version';
 import ActionsPanel from '../components/BottomBar/ActionsPanel';
+
+import ErrorMessage from './ErrorMessage';
+
 import '../styles/base.scss';
 import styles from './ActionsGui.scss';
 
-class ActionsGui extends Component {
-  constructor(props) {
-    super(props);
-    this.checkedVersion = false;
-  }
+function ActionsGui() {
+  const [checkedVersion, setCheckedVersion] = React.useState(false);
 
-  componentDidMount() {
-    this.props.startConnection();
-  }
+  const version = useSelector((state) => state.version);
 
-  checkVersion() {
-    if (!this.checkedVersion && this.props.version.isInitialized) {
-      const versionData = this.props.version.data;
-      if (!isCompatible(
-        versionData.openSpaceVersion, RequiredOpenSpaceVersion))
-      {
-        console.warn(
-          'Possible incompatibility: \nRequired OpenSpace version: ' +
-          formatVersion(RequiredOpenSpaceVersion) +
-          '. Currently controlling OpenSpace version ' +
-          formatVersion(versionData.openSpaceVersion) + '.'
-        );
-      }
-      if (!isCompatible(
-        versionData.socketApiVersion, RequiredSocketApiVersion))
-      {
-        console.warn(
-          "Possible incompatibility: \nRequired Socket API version: " +
-          formatVersion(RequiredSocketApiVersion) +
-          ". Currently operating over API version " +
-          formatVersion(versionData.socketApiVersion) + '.'
-        );
-      }
-      this.checkedVersion = true;
-    }
-  }
+  const dispatch = useDispatch();
 
-  reloadGui() {
-    location.reload();
-  }
-
-  render() {
-    this.checkVersion();
-    return (
-      <div className={styles.app}>
-        { this.props.connectionLost && (
-          <Overlay>
-            <Error>
-              <h2>Houston, we've had a...</h2>
-              <p>...disconnection between the user interface and OpenSpace.</p>
-              <p>Trying to reconnect automatically, but you may want to...</p>
-              <Button className={Error.styles.errorButton} onClick={this.reloadGui}>Reload the user interface</Button>
-            </Error>
-          </Overlay>
-        )}
-        <ActionsPanel singlewindow />
-      </div>
-    );
-  }
-}
-
-const mapStateToProps = state => ({
-  connectionLost: state.connection.connectionLost,
-  version: state.version,
-});
-
-const mapDispatchToProps = dispatch => ({
-  startConnection: () => {
+  React.useEffect(() => {
     dispatch(startConnection());
-  },
-});
+  }, []);
 
-ActionsGui = withRouter(connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(ActionsGui));
+  if (!checkedVersion && version.isInitialized) {
+    const versionData = version.data;
+    if (!isCompatible(versionData.openSpaceVersion, RequiredOpenSpaceVersion)) {
+      console.warn(
+        `Possible incompatibility: \nRequired OpenSpace version: ${
+          formatVersion(RequiredOpenSpaceVersion)
+        }. Currently controlling OpenSpace version ${
+          formatVersion(versionData.openSpaceVersion)}.`
+      );
+    }
+    if (!isCompatible(versionData.socketApiVersion, RequiredSocketApiVersion)) {
+      console.warn(
+        `Possible incompatibility: \nRequired Socket API version: ${
+          formatVersion(RequiredSocketApiVersion)
+        }. Currently operating over API version ${
+          formatVersion(versionData.socketApiVersion)}.`
+      );
+    }
+    setCheckedVersion(true);
+  }
+
+  return (
+    <div className={styles.app}>
+      <ErrorMessage />
+      <ActionsPanel singlewindow />
+    </div>
+  );
+}
 
 export default ActionsGui;
