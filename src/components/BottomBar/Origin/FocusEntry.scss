@@ -5,6 +5,8 @@ $icon-size: 18px;
 .entry {
   padding: $popover-horizontal-padding;
   list-style: none;
+  position: relative;
+
   &:hover {
     background: $ui-background-hover;
   }
@@ -13,8 +15,6 @@ $icon-size: 18px;
     background: $ui-background-hover;
     border-left: 4px solid $blue;
   }
-
-  position: relative;
 }
 
 .buttonIcon {

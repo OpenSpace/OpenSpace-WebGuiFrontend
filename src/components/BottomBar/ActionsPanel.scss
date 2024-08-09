@@ -9,10 +9,9 @@
   justify-content: flex-start;
   align-content: flex-start;
 
-  &:before,
-    &:after {
-      display: none;
-    }
+  &:before, &:after {
+    display: none;
+  }
 }
 
 .scroller {
@@ -31,6 +30,13 @@
 }
 
 .windowContainer {
+  font-size: 3.4em;
+  overflow: scroll;
+  overflow-y: auto;
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+
   .button {
     min-width: 310px !important;
     min-height: 100px !important;
@@ -39,13 +45,6 @@
   .navPathTitle {
     font-size: 1em;
   }
-
-  font-size: 3.4em;
-  overflow: scroll;
-  overflow-y: auto;
-  height: 100%;
-  width: 100%;
-  overflow-x: hidden;
 }
 
 .folderButton {

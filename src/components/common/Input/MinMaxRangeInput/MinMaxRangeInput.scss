@@ -13,12 +13,11 @@
   @extend .label;
   display: block;
   pointer-events: none;
+  z-index: 4 !important; // same as top slider
 
   > span > span {
     pointer-events: all;
   }
-
-  z-index: 4 !important; // same as top slider
 }
 
 // display value
@@ -112,13 +111,13 @@
   --bg-start: calc(100% * var(--normalized-minValue) / var(--full-width));
   --bg-stop: calc(100% * var(--diff) / var(--full-width) + var(--bg-start));
 
-    transition: $background-transition;
-    background: linear-gradient(
-      to right,
-      transparent var(--bg-start),
-      $ui-background-slider-input var(--bg-start) var(--bg-stop),
-      transparent var(--bg-stop)
-    );
+  transition: $background-transition;
+  background: linear-gradient(
+    to right,
+    transparent var(--bg-start),
+    $ui-background-slider-input var(--bg-start) var(--bg-stop),
+    transparent var(--bg-stop)
+  );
 }
 
 .outsideMinMaxRange {

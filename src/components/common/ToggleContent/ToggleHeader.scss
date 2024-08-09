@@ -9,6 +9,8 @@
   font-size: $font-size;
   letter-spacing: normal;
   font-family: $font-family;
+  margin-left: -3px;
+
   &:hover {
     background: $ui-background-buttons-hover;
   }
@@ -16,8 +18,6 @@
   &:focus {
     outline: 0;
   }
-
-  margin-left: -3px;
 }
 
 @media only screen and (min-width: 1600px) {
