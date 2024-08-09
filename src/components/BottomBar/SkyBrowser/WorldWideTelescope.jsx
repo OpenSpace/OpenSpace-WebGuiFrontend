@@ -11,6 +11,7 @@ import {
 import { SkyBrowserInverseZoomDirectionKey, SkyBrowserShowTitleInBrowserKey } from '../../../api/keys';
 import { lowPrecisionEqual, useSubscribeToProperty } from '../../../utils/customHooks';
 import Picker from '../Picker';
+import shallowEqualArrays from 'shallow-equal/arrays';
 
 import FloatingWindow from './WindowThreeStates/FloatingWindow';
 
@@ -21,19 +22,20 @@ function WorldWideTelescope({
   imageCollectionIsLoaded,
   position,
   setImageCollectionIsLoaded,
-  setMessageFunction,
   setPosition,
   setSize,
   size,
-  togglePopover
+  togglePopover,
+  activeImage
 }) {
+  const hasNewPosition = React.useRef(false);
   const [isDragging, setIsDragging] = React.useState(false);
   const [startDragPosition, setStartDragPosition] = React.useState([0, 0]);
   const [wwtHasLoaded, setWwtHasLoaded] = React.useState(false);
 
   const selectedPairId = useSubscribeToProperty("Modules.SkyBrowser.SelectedPairId");
   const browserId = useSubscribeToProperty(`Modules.SkyBrowser.${selectedPairId}.Browser`);
-  const borderColor = useSubscribeToProperty(`Modules.SkyBrowser.${selectedPairId}.Color`);
+  const borderColor = useSubscribeToProperty(`Modules.SkyBrowser.${selectedPairId}.Color`)?.map(x => x * 255);
   const ratio = useSubscribeToProperty(`Modules.SkyBrowser.${selectedPairId}.Ratio`);
   const selectedImagesUrls = useSubscribeToProperty(`ScreenSpace.${browserId}.SelectedImagesUrls`) ?? [];
   const selectedImagesOpacities = useSubscribeToProperty(`ScreenSpace.${browserId}.SelectedImagesOpacities`) ?? [];
@@ -46,24 +48,68 @@ function WorldWideTelescope({
   const showTitle = useSubscribeToProperty(SkyBrowserShowTitleInBrowserKey);
   const inverseZoom = useSubscribeToProperty(SkyBrowserInverseZoomDirectionKey);
   const api = useSelector((state) => state.luaApi);
+  const imageList = useSelector((state) => state.skybrowser.imageList);
 
   const iframe = React.useRef(null);
-  let previousImagesUrls = React.useRef(selectedImagesUrls);
-  let previousImagesOpacities = React.useRef(selectedImagesOpacities);
+  const container = React.useRef(null);
+  const pingPongInterval = React.useRef(null);
+  const wwtAim = React.useRef({ ra: 0, dec: 0, fov: 70, roll: 0});
+  const previousImagesUrls = React.useRef(selectedImagesUrls);
+  const previousImagesOpacities = React.useRef(selectedImagesOpacities);
 
   const BorderWidth = 10;
   const TopBarHeight = 25;
+  const w = container.current?.clientWidth ?? 1;
+  const h = container.current?.clientHeight ?? 1;
+  const radiusPixels = borderRadius * Math.min(w * 0.5, h * 0.5);
+  const coloredBorderWidth = 5;
 
   const dispatch = useDispatch();
 
   // Effects
-  // Upon startup, we set the function so we can send WWT messages
   React.useEffect(() => {
-    setMessageFunction(sendMessageToWwt);
-    window.addEventListener('message', handleCallbackMessage);
     setImageCollectionIsLoaded(false);
+  }, [])
+
+  // Upon startup, we set the function so we can send WWT messages
+  // Dependent on the id of the selected pair so we send to the correct pair
+  React.useEffect(() => {
+    window.addEventListener('message', handleCallbackMessage);
     return () => window.removeEventListener('message', handleCallbackMessage);
-  }, []);
+  }, [selectedPairId]);
+
+  // Start pinging WWT to see when it responds
+  React.useEffect(() => {
+    if (!wwtHasLoaded) {
+      pingPongInterval.current = setInterval(() => {
+        sendMessageToWwt({
+          event: 'center_on_coordinates',
+          ra: 0,
+          dec: 0,
+          fov: 60,
+          roll: 0,
+          instant: true
+        });
+      }, 1000);
+    } else {
+      clearInterval(pingPongInterval.current);
+    }
+  }, [wwtHasLoaded]);
+
+  // Go to images when a new one is selected
+  React.useEffect(() => {
+    const imageData = imageList[activeImage];
+    if (!imageData) return;
+    sendMessageToWwt({
+      event: 'center_on_coordinates',
+      ra: imageData.ra,
+      dec: imageData.dec,
+      fov: imageData.fov,
+      roll,
+      instant: false
+    })
+  }, [activeImage])
+
 
   // Initialize - WWT has loaded and responded. Load the image
   // collection and set the border properties
@@ -79,79 +125,96 @@ function WorldWideTelescope({
         url,
         loadChildFolders: true
       });
-      setBorderRadius(borderRadius);
-      setBorderColor(borderColor);
     }
   }, [wwtHasLoaded, url]);
 
   React.useEffect(() => {
-    if (ra !== undefined && dec !== undefined &&
-        fov !== undefined && roll !== undefined) {
-      sendMessageToWwt({
-        event: 'center_on_coordinates',
-        ra,
-        dec,
-        fov,
-        roll,
-        instant: true
-      });
+    if (!isDragging && (!lowPrecisionEqual(ra, wwtAim.current.ra) ||
+        !lowPrecisionEqual(dec, wwtAim.current.dec) ||
+        !lowPrecisionEqual(fov, wwtAim.current.fov) ||
+        !lowPrecisionEqual(roll, wwtAim.current.roll))) {
+
+
     }
-  }, [fov, roll, ra, dec]);
-
-  React.useEffect(() => {
-    setBorderRadius(borderRadius);
-  }, [borderRadius]);
-
-  React.useEffect(() => {
-    setBorderColor(borderColor);
-  }, [borderColor]);
+  }, [roll]);
 
   React.useEffect(() => {
     setSize({ width: ratio * (size.height - TopBarHeight), height: size.height });
   }, [ratio]);
 
+  // Brute force this as the performance loss is negligible and there are many complicated cases
   React.useEffect(() => {
-    console.log(selectedImagesUrls, previousImagesUrls.current)
-    // Image addition
-    if (selectedImagesUrls.length > previousImagesUrls.current.length) {
-      console.log(selectedImagesUrls, previousImagesUrls.current)
-      const newUrl = selectedImagesUrls.filter(url => !previousImagesUrls.current.includes(url));
-      console.log("adding image ", newUrl)
-      sendMessageToWwt({
-        event: 'image_layer_create',
-        id: newUrl[0],
-        url: newUrl[0],
-        mode: 'preloaded',
-        goto: false
-      });
-    } else if (selectedImagesUrls.length < previousImagesUrls.current.length) { // Removal
-      const removeUrl = previousImagesUrls.current.filter(url => !selectedImagesUrls.includes(url));
+    previousImagesUrls.current.map(url => {
       sendMessageToWwt({
         event: 'image_layer_remove',
-        id: removeUrl[0]
+        id: url
       });
-    } else { // Opacity change
-      console.log(selectedImagesOpacities, previousImagesOpacities.current)
-      selectedImagesOpacities?.forEach((x, i) => {
-        if (x !== previousImagesOpacities.current[i]) {
-          sendMessageToWwt({
-            event: 'image_layer_set',
-            id: selectedImagesUrls[i],
-            setting: 'opacity',
-            value: x
-          });
-        }
+    });
+    selectedImagesUrls.map((url, i) => {
+      console.log(selectedImagesOpacities, i)
+      sendMessageToWwt({
+        event: 'image_layer_create',
+        id: url,
+        url: url,
+        mode: 'preloaded',
+        goto: false
+      })
+      if (selectedImagesOpacities[i]) {
+        sendMessageToWwt({
+          event: 'image_layer_set',
+          id: url,
+          setting: 'opacity',
+          value: selectedImagesOpacities[i]
+        });
+      }
       });
-    }
     previousImagesUrls.current = selectedImagesUrls;
     previousImagesOpacities.current = selectedImagesOpacities;
-  }, [selectedImagesUrls, selectedImagesOpacities]);
+  }, [wwtHasLoaded, selectedImagesUrls, selectedImagesOpacities]);
+
+  /*
+    function setImageLayerOrder(browserId, identifier, order) {
+    luaApi.skybrowser.setImageLayerOrder(browserId, imageList[identifier].url, order);
+    const reverseOrder = imageIndicesCurrent.length - order - 1;
+    passMessageToWwt({
+      event: 'image_layer_order',
+      id: String(identifier),
+      order: Number(reverseOrder),
+      version: messageCounter
+    });
+    setMessageCounter(messageCounter + 1);
+  }
+
+    // Each message to WorldWide Telescope has a unique order number
+  const [messageCounter, setMessageCounter] = React.useState(0);
+
+
+    function addAllSelectedImages(browserId, passToOs = true) {
+    if (browsers === undefined || browsers[browserId] === undefined) {
+      return;
+    }
+    // Make deep copies in order to reverse later
+    const reverseImages = [...browsers[browserId].selectedImages];
+    const opacities = [...browsers[browserId].opacities];
+    reverseImages.reverse().forEach((image, index) => {
+      selectImage(String(image), passToOs);
+      setOpacityOfImage(String(image), opacities.reverse()[index], passToOs);
+    });
+      // When WWT has loaded the image collection, add all selected images
+  React.useEffect(() => {
+    if (imageCollectionIsLoaded) {
+      // eslint-disable-next-line no-use-before-define
+      //addAllSelectedImages(selectedBrowserId, false);
+    }
+  }, [imageCollectionIsLoaded]);
+  }
+*/
 
   function sendMessageToWwt(message) {
     try {
-      const frame = iframe.current.contentWindow;
+      const frame = iframe.current?.contentWindow;
       if (frame && message) {
-        frame.postMessage(message, '*');
+        frame.postMessage(message, 'http://localhost:8080/');
       }
     } catch (error) {
       console.error(error);
@@ -159,27 +222,35 @@ function WorldWideTelescope({
   }
 
   function handleCallbackMessage(event) {
-    if (event.data === 'wwt_has_loaded') {
+    if (event.data.type === 'wwt_pointer_move') {
+      setIsDragging(true);
+    }
+    if (event.data.type === 'wwt_pointer_up') {
+      hasNewPosition.current = true;
+      setIsDragging(false);
+    }
+    if (event.data.type === "wwt_ping_pong") {
       setWwtHasLoaded(true);
     }
-    if (event.data === 'load_image_collection_completed') {
-      setImageCollectionIsLoaded(true);
+    if (event.data.type === 'wwt_view_state') {
+      if (!wwtHasLoaded) {
+        setWwtHasLoaded(true);
+      }
+        const newAim = [ event.data.raRad, event.data.decRad ].map(rad => rad * (180/Math.PI));
+        const newRoll = event.data.rollDeg;
+        const newFov = event.data.fovDeg;
+        propertyDispatcher(dispatch, `Modules.SkyBrowser.${selectedPairId}.EquatorialAim`).set(newAim);
+
+        //api.setPropertyValueSingle(`Modules.SkyBrowser.${selectedPairId}.EquatorialAim`, newAim, 0.1);
+        //api.setPropertyValueSingle(`Modules.SkyBrowser.${selectedPairId}.VerticalFov`, newFov, 0.1);
+        //api.setPropertyValueSingle(`Modules.SkyBrowser.${selectedPairId}.Roll`, newRoll, 0.1);
+        propertyDispatcher(dispatch, `Modules.SkyBrowser.${selectedPairId}.Roll`).set(newRoll);
+        propertyDispatcher(dispatch, `Modules.SkyBrowser.${selectedPairId}.VerticalFov`).set(newFov);
+        wwtAim.current = ({ ra: newAim[0], dec: newAim[1], fov: newFov, roll: newRoll});
+        hasNewPosition.current = false;
     }
-  }
-
-  function setBorderRadius(radius) {
-    sendMessageToWwt({
-      event: 'set_border_radius',
-      data: radius
-    });
-  }
-
-  function setBorderColor(color) {
-    if (color !== undefined) {
-      sendMessageToWwt({
-        event: 'set_background_color',
-        data: color.map(x => 255 * x)
-      });
+    if (event.data.event === 'load_image_collection_completed') {
+      setImageCollectionIsLoaded(true);
     }
   }
 
@@ -235,8 +306,7 @@ function WorldWideTelescope({
       <header className={`header ${styles.topMenu}`}>
         <div className={styles.title}>{showTitle && browserName}</div>
       </header>
-      <div className={styles.content}>
-        {/* Covering div to handle interaction */}
+        {/* Covering div to handle interaction
         <div
         className={styles.container}
         onMouseMove={handleDrag}
@@ -248,20 +318,30 @@ function WorldWideTelescope({
         aria-label="Dragging area for WorldWideTelescope"
         tabIndex={0}
         />
-        <iframe
-          id="webpage"
-          name="wwt"
-          title="WorldWideTelescope"
-          ref={(el) => { iframe.current = el; }}
-          src="http://wwt.openspaceproject.com/1/gui/"
-          allow="accelerometer; clipboard-write; gyroscope"
-          allowFullScreen
-          frameBorder="0"
-          align="middle"
-          className={styles.wwt}
-        >
-          <p>ERROR: cannot display AAS WorldWide Telescope research app!</p>
-        </iframe>
+        */}
+        <div
+          className={styles.roundedCorners}
+          style={{
+            borderRadius: `${radiusPixels}px`,
+            borderWidth: `${coloredBorderWidth}px`,
+            borderColor: `rgb(${borderColor})`
+            }}
+          ref={container}
+          >
+          <iframe
+              id="webpage"
+              name="wwt"
+              title="WorldWideTelescope"
+              ref={(el) => { iframe.current = el; }}
+              src={`http://localhost:8080/?origin=${window.location.origin}`}
+              allow="accelerometer; clipboard-write; gyroscope"
+              allowFullScreen
+              frameBorder="0"
+              align="middle"
+              className={styles.wwt}
+            >
+              <p>ERROR: cannot display AAS WorldWide Telescope research app!</p>
+            </iframe>
       </div>
     </FloatingWindow>
   );
@@ -271,7 +351,6 @@ WorldWideTelescope.propTypes = {
   imageCollectionIsLoaded: PropTypes.bool.isRequired,
   position: PropTypes.object.isRequired,
   setImageCollectionIsLoaded: PropTypes.func.isRequired,
-  setMessageFunction: PropTypes.func.isRequired,
   setPosition: PropTypes.func.isRequired,
   setSize: PropTypes.func.isRequired,
   size: PropTypes.object.isRequired,
