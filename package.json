@@ -40,7 +40,6 @@
     "react-dom": "^18.2.0",
     "react-draggable": "^4.4.3",
     "react-icons": "^4.10.1",
-    "react-input-autosize": "^3.0.0",
     "react-lazy-load-image-component": "^1.5.5",
     "react-redux": "^7.2.8",
     "react-refresh": "^0.14.0",

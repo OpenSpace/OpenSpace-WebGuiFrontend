@@ -2,7 +2,7 @@
 
 .input {
   background: $ui-background-selected;
-  border: 0;
+  border: none;
   box-sizing: content-box;
   color: $text-color-focus;
   display: inline;
@@ -16,15 +16,9 @@
     display: none;
   }
 
-  input {
-    background: transparent;
-    color: $text-color-focus;
-    border: none;
-
-    &:focus,
-    &:hover {
-      outline: 0;
-      background: $ui-background-hover;
-    }
+  &:focus,
+  &:hover {
+    outline: 0;
+    background: $ui-background-hover;
   }
 }
