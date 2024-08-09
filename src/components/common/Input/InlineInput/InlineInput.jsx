@@ -1,16 +1,32 @@
 import React from 'react';
-import AutosizeInput from 'react-input-autosize';
 import PropTypes from 'prop-types';
 
 import Input from '../Input/Input';
 
 import styles from './InlineInput.scss';
 
+/**
+ * This component is as bit of a hack, due to a temporary fix ot replace a dependency that was no
+ * longer being maintained. Eventually, it should be replaced or rewritten. It currently always
+ * autosizes based on the current input
+ *
+ * For now, just make it work. It is only used in the Time component, which requires some
+ * improvements anyways (e.g. for validating input). When that component is fixed, this one should
+ * be looked at again. // Emma (2024-08-09)
+ */
 function InlineInput({
   className, type, value, onEnter, onChange, noExtraWidth, id, ...props
 }) {
   const [storedValue, setStoredValue] = React.useState(value);
   const [isFocused, setIsFocused] = React.useState(false);
+
+  // Autosize based on input
+  const [width, setWidth] = React.useState(0);
+  const span = React.useRef();
+
+  React.useEffect(() => {
+    setWidth(span.current.offsetWidth);
+  }, [storedValue]);
 
   React.useEffect(() => {
     if (storedValue !== value && !isFocused) {
@@ -30,6 +46,7 @@ function InlineInput({
   function onKeyUp(event) {
     if (event.key === 'Enter') {
       onEnter(event);
+      event.currentTarget.blur();
     }
   }
 
@@ -38,19 +55,29 @@ function InlineInput({
     onChange(event);
   }
 
+  const hideStyle = {
+    opacity: '0',
+    // To place it on top over and behind the actual input
+    position: 'absolute',
+    zIndex: -1
+  }
+
   return (
-    <AutosizeInput
-      {...props}
-      id={id || `inlineinput-${Input.nextId}`}
-      value={storedValue}
-      onChange={onInputChange}
-      onKeyUp={onKeyUp}
-      onBlur={onBlur}
-      onFocus={onFocus}
-      className={`${styles.input} ${className}`}
-      extraWidth={noExtraWidth ? 0 : undefined}
-      tabIndex={0}
-    />
+    <div>
+      <span style={hideStyle} ref={span}>{storedValue}</span>
+      <input
+        {...props}
+        className={`${styles.input} ${className}`}
+        style={{ width }}
+        id={id || `inlineinput-${Input.nextId}`}
+        value={storedValue}
+        onChange={onInputChange}
+        onKeyUp={onKeyUp}
+        onBlur={onBlur}
+        onFocus={onFocus}
+        placeholder='test'
+      />
+    </div>
   );
 }
 
@@ -60,8 +87,7 @@ InlineInput.propTypes = {
   onChange: PropTypes.func,
   onEnter: PropTypes.func,
   type: PropTypes.string,
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  noExtraWidth: PropTypes.bool
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 };
 
 InlineInput.defaultProps = {
@@ -70,8 +96,7 @@ InlineInput.defaultProps = {
   onChange: () => {},
   onEnter: () => {},
   type: 'text',
-  value: '',
-  noExtraWidth: false
+  value: ''
 };
 
 export default InlineInput;
