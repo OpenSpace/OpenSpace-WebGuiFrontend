@@ -2,7 +2,7 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd';
 import PropTypes from 'prop-types';
-import shallowEqualArrays from 'shallow-equal/arrays';
+import { shallowEqualArrays } from 'shallow-equal';
 
 import {
   setPropertyTreeExpansion

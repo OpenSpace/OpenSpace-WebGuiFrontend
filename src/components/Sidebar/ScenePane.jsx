@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import shallowEqualArrays from 'shallow-equal/arrays';
+import { shallowEqualArrays } from 'shallow-equal';
 
 import { useLocalStorageState } from '../../utils/customHooks';
 import {
