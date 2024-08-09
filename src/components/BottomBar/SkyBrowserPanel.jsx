@@ -185,7 +185,7 @@ function SkyBrowserPanel() {
               showSettings={showSettings}
             >
               {showSettings && <SkyBrowserSettings />}
-              {!showSettings && selectedImagesUrls?.length === 0 ?
+              {!showSettings && (selectedImagesUrls?.length === 0 ?
                 <CenteredLabel>
                   There are no selected images in this sky browser
                 </CenteredLabel>
@@ -194,7 +194,7 @@ function SkyBrowserPanel() {
                   selectImage={selectImage}
                   activeImage={activeImage}
                 />
-              }
+              )}
             </SkyBrowserTabs>
           </div>
         );
