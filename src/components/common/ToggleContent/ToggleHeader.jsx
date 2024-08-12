@@ -37,8 +37,4 @@ ToggleHeader.propTypes = {
   expanded: PropTypes.bool.isRequired
 };
 
-ToggleHeader.defaultProps = {
-
-};
-
 export default ToggleHeader;
