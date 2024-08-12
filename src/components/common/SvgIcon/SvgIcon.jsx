@@ -1,19 +1,27 @@
 import React from 'react';
+import { ReactSVG } from 'react-svg';
 import PropTypes from 'prop-types';
 
-function SvgIcon({ style = {}, children, ...props }) {
+function SvgIcon({ style = {}, src, ...props }) {
   return (
     <div
       style={{ style, display: 'inline-grid', width: '1em' }}
       {...props}
     >
-      {children}
+      <ReactSVG src={src} />
     </div>
   );
 }
 
 SvgIcon.propTypes = {
-  children: PropTypes.node.isRequired,
+  /**
+   * The loaded Svg
+   */
+  src: PropTypes.node.isRequired,
+
+  /**
+   * Any custom style
+   */
   style: PropTypes.object
 };
 

@@ -4,17 +4,16 @@ import {
 } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-/* eslint-disable import/no-webpack-loader-syntax */
-import DraggableIcon from 'svg-react-loader?name=Aim!../../../icons/draggable_list.svg';
 
 import {
   addNodeMetaPopover,
   addNodePropertyPopover
 } from '../../../api/Actions';
 import {
-  EngineFadeDurationKey,
+  EngineFadeDurationKey
 } from '../../../api/keys';
 import propertyDispatcher from '../../../api/propertyDispatcher';
+import DraggableIconSvg from '../../../icons/draggable_list.svg';
 import {
   checkIfVisible,
   displayName,
@@ -263,7 +262,7 @@ function PropertyOwnerHeader({
         <span className={`${toggleHeaderStyles.title} ${styles.title} ${titleClass}`}>
           { renderedTitle }
           { isHeightLayer && <MdLandscape className={styles.heightLayerIcon} /> }
-          { isLayer && <SvgIcon className={styles.layerDraggableIcon}><DraggableIcon /></SvgIcon> }
+          { isLayer && <SvgIcon className={styles.layerDraggableIcon} src={DraggableIconSvg} /> }
         </span>
         <span className={styles.rightButtonContainer}>
           { isSceneObject && (

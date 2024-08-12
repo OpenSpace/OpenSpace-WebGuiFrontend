@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import TfIcon from 'svg-react-loader?name=TfIcon!../images/tf.svg';
+import { ReactSVG } from "react-svg";
+import TfIcon from '../images/tf.svg';
 
 import { subscribeToProperty, unsubscribeToProperty } from '../../../../api/Actions';
 import {
@@ -97,7 +98,7 @@ class TfEditor extends Component {
           <div className={styles.Wrapper}>
             <Picker onClick={this.toggleTfEditor} className={(showTfEditor ? styles.Active : '')}>
               <div className={styles.FlexColumn}>
-                <TfIcon className={styles.iconImage} />
+                <ReactSVG className={styles.iconImage} src={TfIcon} />
                 <SmallLabel>Tf-Editor</SmallLabel>
               </div>
             </Picker>

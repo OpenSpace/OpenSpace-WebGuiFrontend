@@ -1,10 +1,6 @@
 import React from 'react';
 import { MdAirplanemodeInactive, MdFlight } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
-/* eslint-disable import/no-webpack-loader-syntax */
-import Aim from 'svg-react-loader?name=Aim!../../../icons/aim.svg';
-import Anchor from 'svg-react-loader?name=Anchor!../../../icons/anchor.svg';
-import Focus from 'svg-react-loader?name=Focus!../../../icons/focus.svg';
 
 import {
   connectFlightController,
@@ -36,6 +32,9 @@ import {
   SessionStatePlaying
 } from '../../../api/keys';
 import propertyDispatcher from '../../../api/propertyDispatcher';
+import AimSvg from '../../../icons/aim.svg';
+import AnchorSvg from '../../../icons/anchor.svg';
+import FocusSvg from '../../../icons/focus.svg';
 import { useLocalStorageState } from '../../../utils/customHooks';
 import {
   FilterList, FilterListData, FilterListFavorites, FilterListShowMoreButton
@@ -238,7 +237,7 @@ function OriginPicker() {
   function focusPicker() {
     return (
       <div className={styles.Grid}>
-        <SvgIcon className={styles.Icon}><Focus /></SvgIcon>
+        <SvgIcon className={styles.Icon} src={FocusSvg} />
         <div className={Picker.Title}>
           <span className={Picker.Name}>
             <LoadingString loading={anchor === undefined}>
@@ -254,7 +253,7 @@ function OriginPicker() {
   function anchorAndAimPicker() {
     return (
       <div className={styles.Grid}>
-        <SvgIcon className={styles.Icon}><Anchor /></SvgIcon>
+        <SvgIcon className={styles.Icon} src={AnchorSvg} />
         <div className={Picker.Title}>
           <span className={Picker.Name}>
             <LoadingString loading={anchor === undefined}>
@@ -263,7 +262,7 @@ function OriginPicker() {
           </span>
           <SmallLabel>Anchor</SmallLabel>
         </div>
-        <SvgIcon style={{ marginLeft: 10 }} className={styles.Icon}><Aim /></SvgIcon>
+        <SvgIcon style={{ marginLeft: 10 }} className={styles.Icon} src={AimSvg} />
         <div className={Picker.Title}>
           <span className={Picker.Name}>
             <LoadingString loading={anchor === undefined}>
@@ -304,7 +303,7 @@ function OriginPicker() {
             </Row>
             <SmallLabel className={styles.cancelButtonLabel}>
               {' ('}
-              <SvgIcon className={styles.SmallPickerIcon}><Anchor /></SvgIcon>
+              <SvgIcon className={styles.SmallPickerIcon} src={AnchorSvg} />
               <span className={styles.cancelButtonAnchorLabelText}>
                 {cappedAnchorName}
               </span>
@@ -432,7 +431,7 @@ function OriginPicker() {
             title="Select focus"
             transparent={navigationAction !== NavigationActions.Focus}
           >
-            <SvgIcon className={styles.TabIcon}><Focus /></SvgIcon>
+            <SvgIcon className={styles.TabIcon} src={FocusSvg} />
           </Button>
           <Button
             className={styles.NavigationButton}
@@ -440,7 +439,7 @@ function OriginPicker() {
             title="Select anchor"
             transparent={navigationAction !== NavigationActions.Anchor}
           >
-            <SvgIcon className={styles.TabIcon}><Anchor /></SvgIcon>
+            <SvgIcon className={styles.TabIcon} src={AnchorSvg} />
           </Button>
           <Button
             className={styles.NavigationButton}
@@ -448,7 +447,7 @@ function OriginPicker() {
             title="Select aim"
             transparent={navigationAction !== NavigationActions.Aim}
           >
-            <SvgIcon className={styles.TabIcon}><Aim /></SvgIcon>
+            <SvgIcon className={styles.TabIcon} src={AimSvg} />
           </Button>
         </div>
         <FilterList

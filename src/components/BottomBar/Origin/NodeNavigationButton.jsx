@@ -6,10 +6,9 @@ import {
 } from 'react-icons/md';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-// eslint-disable-next-line import/no-webpack-loader-syntax
-import Focus from 'svg-react-loader?name=Focus!../../../icons/focus.svg';
 
 import { NavigationAimKey, NavigationAnchorKey, RetargetAnchorKey } from '../../../api/keys';
+import FocusSvg from '../../../icons/focus.svg';
 import InfoBox from '../../common/InfoBox/InfoBox';
 import Button from '../../common/Input/Button/Button';
 import Row from '../../common/Row/Row';
@@ -92,7 +91,7 @@ function NavigationButton({
     case NavigationTypes.focus:
       content.onClick = focus;
       content.title = 'Focus';
-      content.icon = <SvgIcon className={styles.buttonIcon}><Focus /></SvgIcon>;
+      content.icon = <SvgIcon className={styles.buttonIcon} src={FocusSvg} />;
       break;
     case NavigationTypes.fly:
       content.onClick = flyTo;
