@@ -11,7 +11,15 @@ import SkyBrowserTooltip from './SkyBrowserTooltip';
 import styles from './SkyBrowserTooltip.scss';
 
 function SkyBrowserInfoBox({
-  dec, fov, hasCelestialCoords, infoPlacement, ra, text, textUrl, title, ...props
+  dec = 0.0,
+  fov = 0.0,
+  hasCelestialCoords,
+  infoPlacement = 'bottom-left',
+  ra = 0.0,
+  text = '',
+  textUrl = '',
+  title,
+  ...props
 }) {
   const [isPopupShowing, setIsPopupShowing] = React.useState(false);
 
@@ -76,15 +84,6 @@ function SkyBrowserInfoBox({
     </span>
   );
 }
-
-SkyBrowserInfoBox.defaultProps = {
-  infoPlacement: 'bottom-left',
-  dec: 0,
-  fov: 0,
-  ra: 0,
-  text: '',
-  textUrl: ''
-};
 
 SkyBrowserInfoBox.propTypes = {
   dec: PropTypes.number,

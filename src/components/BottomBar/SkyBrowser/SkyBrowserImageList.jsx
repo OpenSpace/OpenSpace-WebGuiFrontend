@@ -132,6 +132,4 @@ SkyBrowserImageList.propTypes = {
   moveCircleToHoverImage: PropTypes.func.isRequired
 };
 
-SkyBrowserImageList.defaultProps = {};
-
 export default SkyBrowserImageList;

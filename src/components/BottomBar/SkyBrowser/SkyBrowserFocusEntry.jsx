@@ -8,20 +8,20 @@ import SkyBrowserInfoBox from './SkyBrowserInfoBox';
 import styles from './SkyBrowserEntry.scss';
 
 function SkyBrowserFocusEntry({
-  credits,
-  creditsUrl,
-  currentBrowserColor,
-  dec,
-  fov,
+  credits = '',
+  creditsUrl = '',
+  currentBrowserColor = null,
+  dec = 0.0,
+  fov = 90.0,
   hasCelestialCoords,
   identifier,
-  isActive,
+  isActive = false,
   moveCircleToHoverImage,
-  name,
-  onSelect,
-  ra,
-  thumbnail,
-  style
+  name = '',
+  onSelect = null,
+  ra = 0.0,
+  thumbnail = '',
+  style = {}
 }) {
   const luaApi = useSelector((state) => state.luaApi);
 
@@ -85,20 +85,6 @@ SkyBrowserFocusEntry.propTypes = {
   thumbnail: PropTypes.string,
   moveCircleToHoverImage: PropTypes.func.isRequired,
   style: PropTypes.object
-};
-
-SkyBrowserFocusEntry.defaultProps = {
-  isActive: false,
-  onSelect: null,
-  credits: '',
-  creditsUrl: '',
-  currentBrowserColor: null,
-  dec: 0,
-  fov: 90,
-  name: '',
-  ra: 0,
-  thumbnail: '',
-  style: {}
 };
 
 export default SkyBrowserFocusEntry;

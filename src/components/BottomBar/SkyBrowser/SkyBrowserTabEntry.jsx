@@ -44,23 +44,23 @@ OpacitySlider.propTypes = {
 };
 
 function SkyBrowserTabEntry({
-  credits,
-  creditsUrl,
+  credits = '',
+  creditsUrl = '',
   currentBrowserColor,
   dragHandleTitleProps,
-  dec,
-  fov,
+  dec = 0.0,
+  fov = 90.0,
   hasCelestialCoords,
   identifier,
-  isActive,
+  isActive = false,
   moveCircleToHoverImage,
-  name,
+  name = '',
   onSelect,
   opacity,
-  ra,
+  ra = 0.0,
   removeImageSelection,
   setOpacity,
-  thumbnail
+  thumbnail = ''
 }) {
   const luaApi = useSelector((state) => state.luaApi);
   function select() {
@@ -146,17 +146,6 @@ SkyBrowserTabEntry.propTypes = {
   removeImageSelection: PropTypes.func.isRequired,
   setOpacity: PropTypes.func.isRequired,
   thumbnail: PropTypes.string
-};
-
-SkyBrowserTabEntry.defaultProps = {
-  isActive: false,
-  credits: '',
-  creditsUrl: '',
-  dec: 0,
-  fov: 90,
-  name: '',
-  ra: 0,
-  thumbnail: ''
 };
 
 export default SkyBrowserTabEntry;

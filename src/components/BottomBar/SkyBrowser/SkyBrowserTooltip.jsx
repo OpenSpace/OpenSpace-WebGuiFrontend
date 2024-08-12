@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import styles from './SkyBrowserTooltip.scss';
 
 function SkyBrowserTooltip({
-  children, fixed, placement, ...props
+  children, fixed = false, placement = 'top', ...props
 }) {
   return (
     <div
@@ -22,11 +22,6 @@ SkyBrowserTooltip.propTypes = {
   children: PropTypes.node.isRequired,
   fixed: PropTypes.bool,
   placement: PropTypes.oneOf('bottom-left bottom-right left'.split(' '))
-};
-
-SkyBrowserTooltip.defaultProps = {
-  placement: 'top',
-  fixed: false
 };
 
 export default SkyBrowserTooltip;

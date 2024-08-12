@@ -6,7 +6,13 @@ import { Resizable } from 're-resizable';
 import styles from './WindowThreeStates.scss';
 
 function FloatingWindow({
-  children, defaultSize, handleDragStop, minHeight, defaultPosition, size, sizeCallback
+  children = [],
+  defaultSize = { height: 'auto', width: 'auto' },
+  handleDragStop = () => {},
+  minHeight = undefined,
+  defaultPosition = { x: 10, y: -600 },
+  size = undefined,
+  sizeCallback = undefined
 }) {
   const windowDiv = React.useRef(null);
   return (
@@ -59,16 +65,6 @@ FloatingWindow.propTypes = {
     width: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
   }),
   sizeCallback: PropTypes.func
-};
-
-FloatingWindow.defaultProps = {
-  children: [],
-  defaultSize: { height: 'auto', width: 'auto' },
-  handleDragStop: () => {},
-  minHeight: undefined,
-  size: undefined,
-  defaultPosition: { x: 10, y: -600 },
-  sizeCallback: undefined
 };
 
 export default FloatingWindow;

@@ -22,6 +22,7 @@
     "linebreak-style": "off", // We should not bother with this since git converts line endings anyways
     "no-plusplus": "off", // overly strict - maybe only allow in for loops though?
     "react/forbid-prop-types": "off", // Forbids "any" as prop type. Sometimes you need "any"
+    "react/require-default-props": "off", // Leads to an for non-required prop-types without a corresponding defaultProps. However, defaultProps is deprecated with new react versions.
     "react/jsx-props-no-spreading": "off", // Although it is less safe, i think it gives developers more flexibility
     "comma-dangle": ["error", "never"], // Just nicer
     "react/jsx-no-bind": "off",

@@ -20,8 +20,17 @@ const WindowStyle = {
 };
 
 function WindowThreeStates({
-  defaultStyle, defaultHeight, defaultWidth, children, minHeight,
-  closeCallback, title, acceptedStyles, sizeCallback, positionCallback, defaultPosition
+  acceptedStyles = [WindowStyle.ATTACHED, WindowStyle.DETACHED, WindowStyle.PANE],
+  children = [],
+  closeCallback = null,
+  defaultHeight = 440,
+  defaultPosition = WindowThreeStates.positionPopover,
+  defaultStyle = WindowStyle.ATTACHED,
+  defaultWidth = 350,
+  minHeight = 100,
+  positionCallback = () => {},
+  sizeCallback = () => {},
+  title = ''
 }) {
   const [windowStyle, setWindowStyle] = React.useState(defaultStyle);
   const [sizePopover, setSizePopover] = useLocalStorageState(
@@ -153,19 +162,6 @@ WindowThreeStates.propTypes = {
   minHeight: PropTypes.number,
   sizeCallback: PropTypes.func,
   title: PropTypes.string
-};
-
-WindowThreeStates.defaultProps = {
-  acceptedStyles: [WindowStyle.ATTACHED, WindowStyle.DETACHED, WindowStyle.PANE],
-  closeCallback: null,
-  positionCallback: () => {},
-  defaultPosition: WindowThreeStates.positionPopover,
-  defaultHeight: 440,
-  defaultStyle: WindowStyle.ATTACHED,
-  defaultWidth: 350,
-  minHeight: 100,
-  sizeCallback: () => {},
-  title: ''
 };
 
 WindowThreeStates.styles = styles;

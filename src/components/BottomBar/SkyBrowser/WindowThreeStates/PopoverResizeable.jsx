@@ -5,7 +5,10 @@ import { Resizable } from 're-resizable';
 import styles from './WindowThreeStates.scss';
 
 function PopoverResizeable({
-  children, minHeight, defaultSize, sizeCallback
+  children = [],
+  minHeight = 50,
+  defaultSize = { height: 'auto', width: 'auto' },
+  sizeCallback = () => {}
 }) {
   const windowDiv = React.useRef(null);
   return (
@@ -51,13 +54,6 @@ PopoverResizeable.propTypes = {
     width: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
   }),
   sizeCallback: PropTypes.func
-};
-
-PopoverResizeable.defaultProps = {
-  children: [],
-  minHeight: 50,
-  defaultSize: { height: 'auto', width: 'auto' },
-  sizeCallback: () => {}
 };
 
 PopoverResizeable.styles = styles;
