@@ -2,9 +2,17 @@ import React from 'react';
 import { ReactSVG } from 'react-svg';
 import PropTypes from 'prop-types';
 
-function SvgIcon({ style = {}, src, ...props }) {
+import styles from './SvgIcon.scss';
+
+function SvgIcon({
+  className = '',
+  src,
+  style = {},
+  ...props
+}) {
   return (
     <div
+      className={`${className} ${styles.SvgIcon}`}
       style={{ style, display: 'inline-grid', width: '1em' }}
       {...props}
     >
@@ -14,6 +22,8 @@ function SvgIcon({ style = {}, src, ...props }) {
 }
 
 SvgIcon.propTypes = {
+  className: PropTypes.string,
+
   /**
    * The loaded Svg
    */
