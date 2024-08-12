@@ -11,7 +11,6 @@ import {
 import { SkyBrowserInverseZoomDirectionKey, SkyBrowserShowTitleInBrowserKey } from '../../../api/keys';
 import { lowPrecisionEqual, useSubscribeToProperty } from '../../../utils/customHooks';
 import Picker from '../Picker';
-import shallowEqualArrays from 'shallow-equal/arrays';
 
 import FloatingWindow from './WindowThreeStates/FloatingWindow';
 
@@ -151,7 +150,6 @@ function WorldWideTelescope({
       });
     });
     selectedImagesUrls.map((url, i) => {
-      console.log(selectedImagesOpacities, i)
       sendMessageToWwt({
         event: 'image_layer_create',
         id: url,
@@ -170,45 +168,7 @@ function WorldWideTelescope({
       });
     previousImagesUrls.current = selectedImagesUrls;
     previousImagesOpacities.current = selectedImagesOpacities;
-  }, [wwtHasLoaded, selectedImagesUrls, selectedImagesOpacities]);
-
-  /*
-    function setImageLayerOrder(browserId, identifier, order) {
-    luaApi.skybrowser.setImageLayerOrder(browserId, imageList[identifier].url, order);
-    const reverseOrder = imageIndicesCurrent.length - order - 1;
-    passMessageToWwt({
-      event: 'image_layer_order',
-      id: String(identifier),
-      order: Number(reverseOrder),
-      version: messageCounter
-    });
-    setMessageCounter(messageCounter + 1);
-  }
-
-    // Each message to WorldWide Telescope has a unique order number
-  const [messageCounter, setMessageCounter] = React.useState(0);
-
-
-    function addAllSelectedImages(browserId, passToOs = true) {
-    if (browsers === undefined || browsers[browserId] === undefined) {
-      return;
-    }
-    // Make deep copies in order to reverse later
-    const reverseImages = [...browsers[browserId].selectedImages];
-    const opacities = [...browsers[browserId].opacities];
-    reverseImages.reverse().forEach((image, index) => {
-      selectImage(String(image), passToOs);
-      setOpacityOfImage(String(image), opacities.reverse()[index], passToOs);
-    });
-      // When WWT has loaded the image collection, add all selected images
-  React.useEffect(() => {
-    if (imageCollectionIsLoaded) {
-      // eslint-disable-next-line no-use-before-define
-      //addAllSelectedImages(selectedBrowserId, false);
-    }
-  }, [imageCollectionIsLoaded]);
-  }
-*/
+  }, [wwtHasLoaded, selectedImagesUrls, selectedImagesOpacities, imageCollectionIsLoaded]);
 
   function sendMessageToWwt(message) {
     try {
@@ -239,15 +199,22 @@ function WorldWideTelescope({
         const newAim = [ event.data.raRad, event.data.decRad ].map(rad => rad * (180/Math.PI));
         const newRoll = event.data.rollDeg;
         const newFov = event.data.fovDeg;
-        propertyDispatcher(dispatch, `Modules.SkyBrowser.${selectedPairId}.EquatorialAim`).set(newAim);
-
-        //api.setPropertyValueSingle(`Modules.SkyBrowser.${selectedPairId}.EquatorialAim`, newAim, 0.1);
-        //api.setPropertyValueSingle(`Modules.SkyBrowser.${selectedPairId}.VerticalFov`, newFov, 0.1);
-        //api.setPropertyValueSingle(`Modules.SkyBrowser.${selectedPairId}.Roll`, newRoll, 0.1);
-        propertyDispatcher(dispatch, `Modules.SkyBrowser.${selectedPairId}.Roll`).set(newRoll);
-        propertyDispatcher(dispatch, `Modules.SkyBrowser.${selectedPairId}.VerticalFov`).set(newFov);
-        wwtAim.current = ({ ra: newAim[0], dec: newAim[1], fov: newFov, roll: newRoll});
-        hasNewPosition.current = false;
+        if (!lowPrecisionEqual(newAim[0], wwtAim.current.ra) || !lowPrecisionEqual(newAim[1], wwtAim.current.dec)) {
+          api.setPropertyValueSingle(`Modules.SkyBrowser.${selectedPairId}.EquatorialAim`, newAim, 0.1);
+          wwtAim.current.ra = newAim[0];
+          wwtAim.current.dec = newAim[1];
+        }
+        if (!lowPrecisionEqual(newFov, wwtAim.current.fov)) {
+          api.setPropertyValueSingle(`Modules.SkyBrowser.${selectedPairId}.VerticalFov`, newFov, 0.1);
+          wwtAim.current.ra = newFov;
+        }
+        if (!lowPrecisionEqual(newRoll, wwtAim.current.roll)) {
+          api.setPropertyValueSingle(`Modules.SkyBrowser.${selectedPairId}.Roll`, newRoll, 0.1);
+          wwtAim.current.roll = newRoll;
+        }
+        //propertyDispatcher(dispatch, `Modules.SkyBrowser.${selectedPairId}.EquatorialAim`).set(newAim);
+        //propertyDispatcher(dispatch, `Modules.SkyBrowser.${selectedPairId}.Roll`).set(newRoll);
+        //propertyDispatcher(dispatch, `Modules.SkyBrowser.${selectedPairId}.VerticalFov`).set(newFov);
     }
     if (event.data.event === 'load_image_collection_completed') {
       setImageCollectionIsLoaded(true);
