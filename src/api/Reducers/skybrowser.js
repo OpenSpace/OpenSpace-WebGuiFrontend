@@ -3,11 +3,9 @@ import { applyPatch } from 'fast-json-patch';
 
 const defaultState = {
   isInitialized: false,
-  url: undefined,
-  imageList: undefined,
-  imageMap: undefined,
-  browsers: undefined,
-  selectedBrowserId: undefined,
+  url: undefined, // Urls for the image collection
+  imageList: undefined, // Contains all the image data
+  imageMap: undefined, // Maps the index to the url with a map
   cameraInSolarSystem: undefined
 };
 
@@ -15,11 +13,8 @@ const skybrowser = (state = defaultState, action = {}) => {
   const newState = { ...state };
   switch (action.type) {
     case actionTypes.updateSkyBrowser:
-      // Data changes are sent as an array with operations
-      // These operations are standard json patch types
-      // https://json.nlohmann.me/api/basic_json/patch/
-      // These can be these three types: "replace", "add", and "remove"
-      return applyPatch(newState, action.payload).newDocument;
+      newState.cameraInSolarSystem = action.payload.cameraInSolarSystem;
+      return newState;
     case actionTypes.initializeSkyBrowser:
       newState.isInitialized = true;
       newState.imageList = action.payload.imageList;
