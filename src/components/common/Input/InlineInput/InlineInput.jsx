@@ -15,7 +15,7 @@ import styles from './InlineInput.scss';
  * be looked at again. // Emma (2024-08-09)
  */
 function InlineInput({
-  className, type, value, onEnter, onChange, noExtraWidth, id, ...props
+  className, type, value, onEnter, onChange, id, ...props
 }) {
   const [storedValue, setStoredValue] = React.useState(value);
   const [isFocused, setIsFocused] = React.useState(false);
@@ -25,7 +25,7 @@ function InlineInput({
   const span = React.useRef();
 
   React.useEffect(() => {
-    setWidth(span.current.offsetWidth);
+    setWidth(span.current.clientWidth);
   }, [storedValue]);
 
   React.useEffect(() => {
@@ -60,7 +60,7 @@ function InlineInput({
     // To place it on top over and behind the actual input
     position: 'absolute',
     zIndex: -1
-  }
+  };
 
   return (
     <div>
@@ -75,7 +75,6 @@ function InlineInput({
         onKeyUp={onKeyUp}
         onBlur={onBlur}
         onFocus={onFocus}
-        placeholder='test'
       />
     </div>
   );
