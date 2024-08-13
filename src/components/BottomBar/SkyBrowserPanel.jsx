@@ -92,8 +92,8 @@ function SkyBrowserPanel() {
       luaApi.skybrowser.showAllTargetsAndBrowsers(!popoverVisible);
     }
   }
-
-  componentWillUnmount() {
+/*
+  function componentWillUnmount() {
     clearInterval(this.targetDataID);
   }
 
@@ -124,7 +124,7 @@ function SkyBrowserPanel() {
       //console.log(e);
     }
   }
-
+*/
   function passMessageToWwt(args) {
     if (wwt.current) {
       wwt.current(args);
