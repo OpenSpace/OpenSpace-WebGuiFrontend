@@ -5,7 +5,7 @@ import {
 import actionTypes from '../Actions/actionTypes';
 
 const getGuiGroupsOrdering = async (luaApi, callback) => {
-  const object = await luaApi.guiTreeOrdering();
+  const object = await luaApi.guiOrder();
   const orderingMap = object[1];
   if (!orderingMap) {
     return;
