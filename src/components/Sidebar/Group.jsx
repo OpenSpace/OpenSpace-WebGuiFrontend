@@ -4,8 +4,7 @@ import PropTypes from 'prop-types';
 import { shallowEqualArrays } from 'shallow-equal';
 
 import { setPropertyTreeExpansion } from '../../api/Actions';
-import { sortGroups } from '../../api/keys';
-import { filterPropertyOwners, guiOrderingNumber } from '../../utils/propertyTreeHelpers';
+import { filterPropertyOwners, guiOrderingNumber, sortSceneMenuList } from '../../utils/propertyTreeHelpers';
 import ToggleContent from '../common/ToggleContent/ToggleContent';
 
 import PropertyOwner, {
@@ -14,7 +13,7 @@ import PropertyOwner, {
 } from './Properties/PropertyOwner';
 
 function shouldShowGroup(state, path, showOnlyEnabled, showHidden) {
-  const data = state.groups[path] || {};
+  const data = state.groups.groups[path] || {};
   const subGroups = data.subgroups || [];
   // If there are any enabled property owners in the result, show the groups
   if (subGroups.length === 0) {
@@ -53,6 +52,8 @@ function nodeExpansionIdentifier(path) {
 function Group({
   path, expansionIdentifier, showOnlyEnabled, showHidden
 }) {
+  const customGuiGroupOrdering = useSelector((state) => state.groups.customGroupOrdering);
+
   const isExpanded = useSelector((state) => {
     const expanded = state.local.propertyTreeExpansion[expansionIdentifier];
     return Boolean(expanded);
@@ -60,7 +61,7 @@ function Group({
 
   const shouldFilter = showOnlyEnabled || !showHidden;
 
-  const groupContent = useSelector((state) => state.groups[path] || {});
+  const groupContent = useSelector((state) => state.groups.groups[path] || {});
 
   const allPropertyOwners = useSelector(
     (state) => (state.propertyTree.propertyOwners ? state.propertyTree.propertyOwners : [])
@@ -92,6 +93,8 @@ function Group({
     }
   ));
 
+  const dispatch = useDispatch();
+
   const propertyOwners = propertyOwnerUris.map((uri, index) => ({
     type: 'propertyOwner',
     payload: uri,
@@ -107,13 +110,7 @@ function Group({
   }));
 
   const entries = groups.concat(propertyOwners);
-
   const hasEntries = entries.length !== 0;
-  const pathFragments = path.split('/');
-  const groupName = pathFragments[pathFragments.length - 1];
-  const groupSortOrdering = sortGroups[groupName];
-
-  const dispatch = useDispatch();
 
   const setExpanded = (expanded) => {
     dispatch(setPropertyTreeExpansion({
@@ -122,34 +119,8 @@ function Group({
     }));
   };
 
-  // Accumulate lists of entries with and without order number and sort the lists
-  // independently
-  const withOrderEntries = [];
-  const noOrderEntries = [];
-  entries.forEach((entry) => {
-    const target = (entry.guiOrder !== undefined) ? withOrderEntries : noOrderEntries;
-    target.push(entry); // target is a reference to the correct list
-  });
-
-  const numericallySortedEntries = withOrderEntries.sort((a, b) => {
-    if (a.guiOrder === b.guiOrder) {
-      // Do alphabetic sort if number is the same
-      return a.name.localeCompare(b.name, 'en');
-    }
-    return a.guiOrder > b.guiOrder;
-  });
-
-  const alphabeticallySortedEntries = noOrderEntries.sort((a, b) => a.name.localeCompare(b.name, 'en'));
-  const sortedEntries = numericallySortedEntries.concat(alphabeticallySortedEntries);
-
-  // Sort based on custom group sorting
-  if (groupSortOrdering && groupSortOrdering.value) {
-    sortedEntries.sort((a, b) => {
-      const indexA = groupSortOrdering.value.indexOf(a.name);
-      const indexB = groupSortOrdering.value.indexOf(b.name);
-      return (indexA < indexB) ? -1 : 1;
-    });
-  }
+  const customSortOrdering = customGuiGroupOrdering[path];
+  const sortedEntries = sortSceneMenuList(entries, customSortOrdering);
 
   return hasEntries && (
     <ToggleContent

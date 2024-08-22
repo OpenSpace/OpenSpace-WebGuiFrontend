@@ -1,5 +1,10 @@
 import actionTypes from '../Actions/actionTypes';
 
+const defaultState = {
+  customGroupOrdering: {},
+  groups: {}
+};
+
 const emptyGroup = () => ({
   subgroups: [],
   propertyOwners: []
@@ -46,10 +51,18 @@ const computeGroups = (propertyTree) => {
   return groups;
 };
 
-const groups = (state = {}, action = {}, propertyTree = {}) => {
+const groups = (state = defaultState, action = {}, propertyTree = {}) => {
   switch (action.type) {
     case actionTypes.refreshGroups:
-      return computeGroups(propertyTree);
+      return {
+        ...state,
+        groups: computeGroups(propertyTree)
+      };
+    case actionTypes.updateCustomGroupOrdering:
+      return {
+        ...state,
+        customGroupOrdering: action.payload
+      };
     default:
       return state;
   }

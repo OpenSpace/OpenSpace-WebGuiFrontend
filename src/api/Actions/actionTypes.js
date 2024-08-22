@@ -13,6 +13,8 @@ const actionTypes = {
   clearPropertyTree: 'CLEAR_PROPERTY_TREE',
   reloadPropertyTree: 'PROPERTY_TREE_RELOAD',
   refreshGroups: 'GROUPS_REFRESH',
+  getCustomGroupsOrdering: 'GROUP_ORDERING_GET',
+  updateCustomGroupOrdering: 'GROUP_ORDERING_UPDATE',
 
   updateTime: 'TIME_UPDATE',
   subscribeToTime: 'TIME_SUBSCRIBE',

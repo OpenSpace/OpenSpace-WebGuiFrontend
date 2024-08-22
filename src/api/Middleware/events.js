@@ -1,5 +1,10 @@
 import {
-  addUriToPropertyTree, getAction, refreshGroups, removeAction, removePropertyOwners
+  addUriToPropertyTree,
+  getAction,
+  getCustomGroupsOrdering,
+  refreshGroups,
+  removeAction,
+  removePropertyOwners
 } from '../Actions';
 import actionTypes from '../Actions/actionTypes';
 import api from '../api';
@@ -21,6 +26,9 @@ async function handleData(store, data) {
       break;
     case 'ActionRemoved':
       store.dispatch(removeAction({ uri: data.Uri }));
+      break;
+    case 'GuiTreeUpdated':
+      store.dispatch(getCustomGroupsOrdering());
       break;
     default:
       break;
