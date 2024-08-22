@@ -4,14 +4,17 @@ import {
 } from '../Actions';
 import actionTypes from '../Actions/actionTypes';
 
-const getGuiGroupsOrdering = async (luaApi, callback) => {
-  const object = await luaApi.guiOrder();
-  const orderingMap = object[1];
-  if (!orderingMap) {
-    return;
-  }
-  // Use a callback since we need to wait for the value to be returned
-  callback(orderingMap);
+const getGuiGroupsOrdering = async (luaApi, dispatch) => {
+  await luaApi.guiOrder()
+    // eslint-disable-next-line no-console
+    .catch((e) => console.log(e))
+    .then((data) => {
+      const orderingMap = data[1];
+      if (!orderingMap) {
+        console.error('Error retrieving GUI tree ordering');
+      }
+      dispatch(updateCustomGroupOrdering(orderingMap));
+    });
 };
 
 const groups = (store) => (next) => (action) => {
@@ -21,9 +24,7 @@ const groups = (store) => (next) => (action) => {
       store.dispatch(getCustomGroupsOrdering(action.payload));
       break;
     case actionTypes.getCustomGroupsOrdering:
-      getGuiGroupsOrdering(action.payload, (data) => {
-        store.dispatch(updateCustomGroupOrdering(data));
-      });
+      getGuiGroupsOrdering(action.payload, store.dispatch);
       break;
     default:
       break;
