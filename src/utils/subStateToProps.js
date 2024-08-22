@@ -1,4 +1,4 @@
-import shallowEqual from 'shallow-equal/objects';
+import { shallowEqual } from 'shallow-equal';
 
 /**
  * Generate a new memoized mapStateToProps function, based on two components:

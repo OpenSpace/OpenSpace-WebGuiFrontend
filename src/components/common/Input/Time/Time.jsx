@@ -118,11 +118,9 @@ function Time({ elements, onChange, time }) {
           <span key={`span${what}`} ref={(el) => { ref.current[what] = el; }}>
             <InlineInput
               value={inner}
-              size={width}
               className={styles.textInput}
               onEnter={onInput(what)}
               type={type}
-              noExtraWidth
             />
           </span>
           <Button nopadding transparent onClick={(e) => onClick(e, what, -1)}>

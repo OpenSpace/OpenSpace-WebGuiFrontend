@@ -40,7 +40,6 @@
     "react-dom": "^18.2.0",
     "react-draggable": "^4.4.3",
     "react-icons": "^4.10.1",
-    "react-input-autosize": "^3.0.0",
     "react-lazy-load-image-component": "^1.5.5",
     "react-redux": "^7.2.8",
     "react-refresh": "^0.14.0",
@@ -51,7 +50,7 @@
     "react-virtualized": "^9.22.3",
     "redux": "^4.2.0",
     "sass": "^1.49.9",
-    "shallow-equal": "^1.2.1",
+    "shallow-equal": "^3.1.0",
     "simple-keyboard-layouts": "^3.0.176",
     "spherical-geometry-js": "^3.0.0",
     "svg-react-loader": "^0.4.6"

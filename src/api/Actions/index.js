@@ -444,8 +444,8 @@ export const updateSessionRecording = (data) => ({
   payload: data
 });
 
-export const addPropertyOwner = (data) => ({
-  type: actionTypes.addPropertyOwner,
+export const addUriToPropertyTree = (data) => ({
+  type: actionTypes.addUriToPropertyTree,
   payload: data
 });
 

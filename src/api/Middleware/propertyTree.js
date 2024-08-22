@@ -164,19 +164,24 @@ const flattenPropertyTree = (propertyOwner) => {
   };
 };
 
-const addPropertyOwner = async (dispatch, uri) => {
-  const value = await api.getProperty(uri);
-  if (!value) {
+const addUriToPropertyTree = async (dispatch, uri) => {
+  const prop = await api.getProperty(uri);
+  if (!prop) {
     console.error('Error retrieving property with uri ', uri);
     return;
   }
 
-  // Extract the data from the property owner
-  const { propertyOwners, properties } = flattenPropertyTree(value);
-
-  dispatch(addPropertyOwners(propertyOwners));
-  dispatch(addProperties(properties));
-  dispatch(refreshGroups());
+  // This is a property owner
+  if ('properties' in prop) {
+    // Extract the data from the property owner
+    const { propertyOwners, properties } = flattenPropertyTree(prop);
+    dispatch(addPropertyOwners(propertyOwners));
+    dispatch(addProperties(properties));
+    dispatch(refreshGroups());
+  } else { // This is a property
+    dispatch(addProperties(prop));
+    dispatch(refreshGroups());
+  }
 };
 
 const setBackendValue = (uri, value) => {
@@ -199,13 +204,13 @@ const propertyTree = (store) => (next) => (action) => {
       store.dispatch(reloadPropertyTree());
       break;
     }
-    case actionTypes.addPropertyOwner: {
-      addPropertyOwner(store.dispatch, action.payload.uri);
+    case actionTypes.addUriToPropertyTree: {
+      addUriToPropertyTree(store.dispatch, action.payload.uri);
       break;
     }
     case actionTypes.reloadPropertyTree: {
       store.dispatch(clearPropertyTree());
-      addPropertyOwner(store.dispatch, rootOwnerKey);
+      addUriToPropertyTree(store.dispatch, rootOwnerKey);
       break;
     }
     case actionTypes.onCloseConnection: {

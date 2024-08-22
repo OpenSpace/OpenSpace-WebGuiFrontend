@@ -1,5 +1,5 @@
 import {
-  addPropertyOwner,
+  addUriToPropertyTree,
   getAction,
   getCustomGroupsOrdering,
   refreshGroups,
@@ -14,14 +14,10 @@ const nSubscribers = 0;
 
 async function handleData(store, data) {
   switch (data.Event) {
-    case 'LayerAdded':
-    case 'SceneGraphNodeAdded':
-    case 'ScreenSpaceRenderableAdded':
-      store.dispatch(addPropertyOwner({ uri: data.Uri }));
+    case 'PropertyTreeUpdated':
+      store.dispatch(addUriToPropertyTree({ uri: data.Uri }));
       break;
-    case 'LayerRemoved':
-    case 'SceneGraphNodeRemoved':
-    case 'ScreenSpaceRenderableRemoved':
+    case 'PropertyTreePruned':
       store.dispatch(removePropertyOwners({ uris: [data.Uri] }));
       store.dispatch(refreshGroups());
       break;
