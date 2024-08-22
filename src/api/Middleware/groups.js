@@ -21,10 +21,10 @@ const groups = (store) => (next) => (action) => {
   const result = next(action);
   switch (action.type) {
     case actionTypes.initializeLuaApi:
-      store.dispatch(getCustomGroupsOrdering(action.payload));
+      store.dispatch(getCustomGroupsOrdering());
       break;
     case actionTypes.getCustomGroupsOrdering:
-      getGuiGroupsOrdering(action.payload, store.dispatch);
+      getGuiGroupsOrdering(store.getState().luaApi, store.dispatch);
       break;
     default:
       break;

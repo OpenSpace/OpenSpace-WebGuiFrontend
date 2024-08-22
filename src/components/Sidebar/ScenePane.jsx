@@ -37,11 +37,11 @@ function ScenePane({ closeCallback }) {
       return (depth === 1) && (path !== '/');
     });
     return topLevelGroupsPaths;
-  }, shallowEqual);
+  }, shallowEqualArrays);
 
   const nodesWithoutGroup = useSelector((state) => (
     state.groups.groups['/']?.propertyOwners || []
-  ), shallowEqual);
+  ), shallowEqualArrays);
 
   const propertyOwners = useSelector((state) => state.propertyTree.propertyOwners, shallowEqual);
   const propertyOwnersScene = propertyOwners.Scene?.subowners ?? [];

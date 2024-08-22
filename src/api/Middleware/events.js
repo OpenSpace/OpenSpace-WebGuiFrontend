@@ -28,7 +28,7 @@ async function handleData(store, data) {
       store.dispatch(removeAction({ uri: data.Uri }));
       break;
     case 'GuiTreeUpdated':
-      store.dispatch(getCustomGroupsOrdering(store.getState().luaApi));
+      store.dispatch(getCustomGroupsOrdering());
       break;
     default:
       break;

@@ -40,9 +40,9 @@ export const refreshGroups = () => ({
   payload: {}
 });
 
-export const getCustomGroupsOrdering = (luaApi) => ({
+export const getCustomGroupsOrdering = () => ({
   type: actionTypes.getCustomGroupsOrdering,
-  payload: luaApi
+  payload: {}
 });
 
 export const updateCustomGroupOrdering = (data) => ({
