@@ -150,7 +150,7 @@ function ScenePane({ closeCallback }) {
 
   return (
     <Pane title="Scene" closeCallback={closeCallback} headerButton={settingsButton}>
-      {allEntries.length > 0 ? (
+      {propertyOwnersScene.length > 0 ? (
         <FilterList matcher={matcher}>
           <FilterListFavorites>
             <ContextSection expansionIdentifier="context" />
