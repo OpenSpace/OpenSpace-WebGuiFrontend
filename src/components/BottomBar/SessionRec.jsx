@@ -100,12 +100,7 @@ function SessionRec() {
   }
 
   function startRecording() {
-    if (useTextFormat) {
-      luaApi.sessionRecording.startRecordingAscii(filenameRecording);
-    } else {
-      // Binary
-      luaApi.sessionRecording.startRecording(filenameRecording);
-    }
+      luaApi.sessionRecording.startRecording();
   }
 
   function toggleRecording() {
