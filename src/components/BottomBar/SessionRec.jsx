@@ -112,10 +112,11 @@ function SessionRec() {
   }
 
   function startPlayback() {
-    if (shouldOutputFrames) {
-      luaApi.sessionRecording.enableTakeScreenShotDuringPlayback(parseInt(outputFramerate, 10));
-    }
-    luaApi.sessionRecording.startPlaybackRecordedTime(filenamePlayback, loopPlayback);
+    const shouldWaitForTiles = true;
+    luaApi.sessionRecording.startPlayback(
+      filenamePlayback, loopPlayback, shouldWaitForTiles,
+      shouldOutputFrames, parseInt(outputFramerate, 10)
+    );
   }
 
   function stopPlayback() {
