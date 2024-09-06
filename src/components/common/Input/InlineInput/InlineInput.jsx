@@ -19,7 +19,6 @@ function InlineInput({
   id = null,
   onChange = () => {},
   onEnter = () => {},
-  type = 'text',
   value = '',
   ...props
 }) {
@@ -91,7 +90,6 @@ InlineInput.propTypes = {
   id: PropTypes.string,
   onChange: PropTypes.func,
   onEnter: PropTypes.func,
-  type: PropTypes.string,
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 };
 
