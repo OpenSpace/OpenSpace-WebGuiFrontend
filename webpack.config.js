@@ -88,6 +88,7 @@ module.exports = {
   resolve: {
     extensions: ['.js', '.jsx']
   },
+  stats: { warnings: false },
   plugins: [
     // enable HMR globally
     new webpack.HotModuleReplacementPlugin()
