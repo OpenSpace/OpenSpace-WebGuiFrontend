@@ -107,8 +107,9 @@ function SessionRec() {
     if (isIdle()) {
       startRecording();
     } else {
-      luaApi.sessionRecording.stopRecording(
-        filenameRecording, useTextFormat ? "Ascii" : "Binary"
+      const format = useTextFormat ? "Ascii" : "Binary";
+      luaApi.absPath("${RECORDINGS}/" + filenameRecording).then(
+        (value) => luaApi.sessionRecording.stopRecording(value[1], format)
       );
     }
   }
