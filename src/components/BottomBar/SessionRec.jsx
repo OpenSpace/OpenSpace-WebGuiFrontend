@@ -34,7 +34,6 @@ import styles from './SessionRec.scss';
 
 function SessionRec() {
   const [useTextFormat, setUseTextFormat] = React.useState(false);
-  const [forceTime, setForceTime] = React.useState(true);
   const [filenameRecording, setFilenameRecording] = React.useState('');
   const [filenamePlayback, setFilenamePlayback] = React.useState(undefined);
   const [shouldOutputFrames, setShouldOutputFrames] = React.useState(false);
@@ -121,11 +120,7 @@ function SessionRec() {
     if (shouldOutputFrames) {
       luaApi.sessionRecording.enableTakeScreenShotDuringPlayback(parseInt(outputFramerate, 10));
     }
-    if (forceTime) {
-      luaApi.sessionRecording.startPlayback(filenamePlayback, loopPlayback);
-    } else {
-      luaApi.sessionRecording.startPlaybackRecordedTime(filenamePlayback, loopPlayback);
-    }
+    luaApi.sessionRecording.startPlaybackRecordedTime(filenamePlayback, loopPlayback);
   }
 
   function stopPlayback() {
@@ -290,13 +285,6 @@ function SessionRec() {
         <HorizontalDelimiter />
         <div className={Popover.styles.title}>Play session</div>
         <div className={Popover.styles.content}>
-          <Checkbox
-            checked={forceTime}
-            name="forceTimeInput"
-            setChecked={setForceTime}
-          >
-            <p>Force time change to recorded time</p>
-          </Checkbox>
           <Checkbox
             checked={loopPlayback}
             name="loopPlaybackInput"
