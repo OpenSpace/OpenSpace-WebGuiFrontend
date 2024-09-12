@@ -115,11 +115,18 @@ function SessionRec() {
   }
 
   function startPlayback() {
-    const shouldWaitForTiles = true;
-    luaApi.sessionRecording.startPlayback(
-      filenamePlayback, loopPlayback, shouldWaitForTiles,
-      shouldOutputFrames, parseInt(outputFramerate, 10)
-    );
+    const ShouldWaitForTiles = true;
+    luaApi.absPath("${RECORDINGS}/" + filenamePlayback).then(function(value) {
+      if (shouldOutputFrames) {
+        const framerate = parseInt(outputFramerate, 10)
+        luaApi.sessionRecording.startPlayback(
+          value[1], loopPlayback, ShouldWaitForTiles, framerate
+        );
+      }
+      else {
+        luaApi.sessionRecording.startPlayback(value[1], loopPlayback, ShouldWaitForTiles);
+      }
+    });
   }
 
   function stopPlayback() {
