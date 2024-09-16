@@ -34,7 +34,6 @@ import styles from './SessionRec.scss';
 
 function SessionRec() {
   const [useTextFormat, setUseTextFormat] = React.useState(false);
-  const [forceTime, setForceTime] = React.useState(true);
   const [filenameRecording, setFilenameRecording] = React.useState('');
   const [filenamePlayback, setFilenamePlayback] = React.useState(undefined);
   const [shouldOutputFrames, setShouldOutputFrames] = React.useState(false);
@@ -101,31 +100,33 @@ function SessionRec() {
   }
 
   function startRecording() {
-    if (useTextFormat) {
-      luaApi.sessionRecording.startRecordingAscii(filenameRecording);
-    } else {
-      // Binary
-      luaApi.sessionRecording.startRecording(filenameRecording);
-    }
+      luaApi.sessionRecording.startRecording();
   }
 
   function toggleRecording() {
     if (isIdle()) {
       startRecording();
     } else {
-      luaApi.sessionRecording.stopRecording();
+      const format = useTextFormat ? "Ascii" : "Binary";
+      luaApi.absPath("${RECORDINGS}/" + filenameRecording).then(
+        (value) => luaApi.sessionRecording.stopRecording(value[1], format)
+      );
     }
   }
 
   function startPlayback() {
-    if (shouldOutputFrames) {
-      luaApi.sessionRecording.enableTakeScreenShotDuringPlayback(parseInt(outputFramerate, 10));
-    }
-    if (forceTime) {
-      luaApi.sessionRecording.startPlayback(filenamePlayback, loopPlayback);
-    } else {
-      luaApi.sessionRecording.startPlaybackRecordedTime(filenamePlayback, loopPlayback);
-    }
+    const ShouldWaitForTiles = true;
+    luaApi.absPath("${RECORDINGS}/" + filenamePlayback).then(function(value) {
+      if (shouldOutputFrames) {
+        const framerate = parseInt(outputFramerate, 10)
+        luaApi.sessionRecording.startPlayback(
+          value[1], loopPlayback, ShouldWaitForTiles, framerate
+        );
+      }
+      else {
+        luaApi.sessionRecording.startPlayback(value[1], loopPlayback, ShouldWaitForTiles);
+      }
+    });
   }
 
   function stopPlayback() {
@@ -290,13 +291,6 @@ function SessionRec() {
         <HorizontalDelimiter />
         <div className={Popover.styles.title}>Play session</div>
         <div className={Popover.styles.content}>
-          <Checkbox
-            checked={forceTime}
-            name="forceTimeInput"
-            setChecked={setForceTime}
-          >
-            <p>Force time change to recorded time</p>
-          </Checkbox>
           <Checkbox
             checked={loopPlayback}
             name="loopPlaybackInput"
