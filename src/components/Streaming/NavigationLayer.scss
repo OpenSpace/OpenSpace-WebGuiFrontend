@@ -1,0 +1,17 @@
+/*************************************************************************
+2022/THESIS/REMOTE-STREAMING
+This component is in essence the same as the control panel-div in the 
+FlightControlPanel-component.
+Size is adjusted so it spans over the entire screen, but never
+overlays the menu/GUI elements.
+*************************************************************************/
+
+@import "../../styles/all";
+
+.control_area {
+  position: fixed;
+  cursor: crosshair;
+  z-index: 0;
+  height: 100vh;
+  width: 100vw;
+}
