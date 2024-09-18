@@ -7,6 +7,7 @@ over the entire screen.
 **********************************************************/
 
 import React, { useRef } from 'react';
+import { useDispatch } from 'react-redux';
  import {
    sendFlightControl
  } from '../../api/Actions';
