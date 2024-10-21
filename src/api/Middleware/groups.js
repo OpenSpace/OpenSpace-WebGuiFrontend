@@ -9,9 +9,10 @@ const getGuiGroupsOrdering = async (luaApi, dispatch) => {
     // eslint-disable-next-line no-console
     .catch((e) => console.log(e))
     .then((data) => {
-      const orderingMap = data[1];
+      let orderingMap = data[1];
       if (!orderingMap) {
-        console.error('Error retrieving GUI tree ordering');
+        console.error('No GUI tree ordering was set');
+        orderingMap = {};
       }
       dispatch(updateCustomGroupOrdering(orderingMap));
     });
