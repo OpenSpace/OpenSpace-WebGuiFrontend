@@ -11,10 +11,18 @@
 // webpack dev server, see webpack.config.js.
 
 const defaults = {
-  wsAddress: 'localhost',
+  wsAddress: '155.98.19.66',
   wsPort: 4682,
-  developmentMode: false
+  developmentMode: false,
+  signalingAddress: '155.98.19.66',
+  signalingPort: 8443,
 };
+
+const urlParams = new URLSearchParams(window.location.href.split('?')[1]);
+let id = urlParams.get('id');
+if (id) {
+    defaults.wsPort += parseInt(id);
+}
 
 const openSpaceOverrides = window.OpenSpaceEnvironment || {};
 const devOverrides = window.DevelopmentEnvironment || {};

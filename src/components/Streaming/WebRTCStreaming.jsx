@@ -1,9 +1,21 @@
+import env from '../../api/Environment.js';
+
+
+/*
 // TODO: Städa upp bland dessa variabler
 //var signalingServer = 'localhost';
-var signalingServer = 'localhost';
+var signalingServer = '155.98.19.66';
 var signalingPort = 8443;
-// Dummy value to check if we have a valid peer
-var peerID = 0;
+// Dummy value to check if we have a valid peer ID */
+
+
+var peerID = 100;
+const urlParams = new URLSearchParams(window.location.href.split('?')[1]);
+let id = urlParams.get('id');
+if (id) {
+    peerID += parseInt(id);
+}
+
 // TODO: Other STUN servers could be chosen
 var rtc_configuration = {iceServers: [{urls: "stun:stun.services.mozilla.com"},
                                       {urls: "stun:stun.l.google.com:19302"}]};
@@ -14,8 +26,6 @@ var wsConnection;
 var local_stream_promise;
 
 export const joinSession = () => {
-    // TODO: Set this value dynamically
-    peerID = '2';
     // The peer that is joining the session should not share any media (video:false)
     default_constraints = 
         {
@@ -28,7 +38,8 @@ export const joinSession = () => {
 
 // Creates a connection between the peer and the signaling server
 function websocketServerConnect() {
-    var signalingUrl = 'ws://' + signalingServer + ':' + signalingPort;
+    var signalingUrl =
+        `ws://${env.signalingAddress}:${env.signalingPort}`;
     setStatus("Connecting to server " + signalingUrl);
     wsConnection = new WebSocket(signalingUrl);
 
@@ -41,7 +52,6 @@ function websocketServerConnect() {
     wsConnection.addEventListener('error', onServerError);
     wsConnection.addEventListener('message', onServerMessage);
     wsConnection.addEventListener('close', onServerClose);
-
 }
 
 // Set error if connection fails
