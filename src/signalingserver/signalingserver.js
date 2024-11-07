@@ -123,7 +123,9 @@ function handleAndRemoveQueuedSessionInvite(invitee) {
             let inviter = queuedCalls[i].from;
             printServerStatus(`Found a call request from ${inviter}`);
             assignSessionBetweenPeers(inviter, invitee);
-            queuedCalls.splice(i, 1); //Remove the invite
+            //Am no longer removing invites once accepted. This allows for
+            // multiple re-connects.
+            //queuedCalls.splice(i, 1); //Remove the invite
             break;
         }
     }
