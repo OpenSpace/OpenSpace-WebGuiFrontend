@@ -24,6 +24,8 @@ var default_constraints;
 var peer_connection;
 var wsConnection;
 var local_stream_promise;
+var nIceCandidates = 0;
+var minIceCandidatesRequired = 6;
 
 export const joinSession = () => {
     // The peer that is joining the session should not share any media (video:false)
@@ -71,8 +73,13 @@ function onServerMessage(event) {
         // The host asks for an SDP answer to their offer
         case "OFFER_REQUEST":
             // The peer wants us to set up and then send an offer
-            if (!peer_connection)
+            if (!peer_connection) {
+                setStatus("Offer request received while having no peer connetion.");
                 createCall(null).then (generateOffer);
+            }
+            else {
+                setStatus("Offer request received but peer connection exists, so ignore.");
+            }
             return;
 
         // Basically error handling if we receive an unknown message
@@ -94,9 +101,10 @@ function onServerMessage(event) {
             }
 
             // Incoming JSON signals the beginning of a call
-            if (!peer_connection) 
+            if (!peer_connection) {
+                setStatus("Received 'default' server message while having no peer connection.");
                 createCall(msg);
-
+            }
             // Handle SDP or ICE messages
             if (msg.type == "SDP") {
                 onIncomingSDP(msg.content.sdp);
@@ -137,6 +145,11 @@ function setError(text) {
     console.error(text);
 }
 
+async function artificialDelayAfterGetLocalStream(text) {
+    setStatus('Adding artificial wait here to avoid possible race condition.');
+    await sleep(3500);
+}
+
 // Prints the status in the browser console
 function setStatus(text) {
     console.log("setStatus: ", text);
@@ -160,26 +173,44 @@ function createCall(msg) {
     // share any media. But as it is now, this must still be in place since the host expects something
     // in return. However, our stream here does not contain anything since we set the constraints
     // to video:false
-    local_stream_promise = getLocalStream().then((stream) => {
+
+    //local_stream_promise = getLocalStream().then((stream) => {
+    local_stream_promise = dummyVideoStream().then((stream) => {
         setStatus('Adding local stream');
         peer_connection.addStream(stream);
         return stream;
     }).catch(setError);
 
+    artificialDelayAfterGetLocalStream();
 
     if (msg != null && msg.type != "SDP") {
         setError("First message wasn't an SDP message");
     }
 
-    peer_connection.onicecandidate = (event) => {
-        if (event.candidate == null) {
-                setError("ICE Candidate was null");
-                return;
+    peer_connection.onicecandidateerror = (event) => {
+        if (event.errorCode >= 300 && event.errorCode < 700) {
+            setStatus(
+                `Standardized ICE error ${event.errorCode} occurred` +
+                `: ${event.errorText}`
+            );
         }
-
-        let icemsg = {'ice': event.candidate};
-        sendToSocket('ICE', icemsg);
+        else if (event.errorCode >= 700 && event.errorCode < 800) {
+            setStatus(
+                `Browser-generated ICE error ${event.errorCode} occurred` +
+                `: ${event.errorText}`
+            );
+        }
+        else {
+            setStatus(
+                `Unknown ICE error ${event.errorCode} occurred` +
+                `: ${event.errorText}`
+            );
+        }
     };
+
+    peer_connection.onconnectionstatechange = (event) => {
+        setStatus(`onconnectionstatechange: ${event.type}`);
+    }
 
     if (msg != null)
         setStatus("Created peer connection for call, waiting for SDP");
@@ -187,24 +218,39 @@ function createCall(msg) {
     return local_stream_promise;
 }
 
+function sleep(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 // SDP offer received from peer, set remote description and create an answer
 function onIncomingSDP(sdp) {
-    peer_connection.setRemoteDescription(sdp).then(() => {
+    setStatus(`>>onIncomingSDP`);
+    peer_connection.setRemoteDescription(sdp).then(async function () {
         setStatus("Remote SDP set");
         if (sdp.type != "offer")
             return;
         setStatus("Got SDP offer");
 
+        // Wait here until we have received the exepected number of ICE
+        // candidates. It seems that proceeding with the steps below causes
+        // a streaming video failure it the steps happen before all of the
+        // ICE candidates have been received (race condition).
+        while (nIceCandidates < minIceCandidatesRequired) {
+            await sleep(750);
+        }
+        setStatus(`Received ${nIceCandidates} ICE candidates.`);
+        await sleep(500); //Another arbitrary wait
         local_stream_promise.then((stream) => {
             setStatus("Got local stream, creating answer");
             peer_connection.createAnswer()
-                .then(onLocalDescription).catch(setError);
+                .then(onLocalSDPDescription).catch(setError);
         }).catch(setError);
     }).catch(setError);
 }
 
 // Local description was set, send it to peer
-function onLocalDescription(desc) {
+function onLocalSDPDescription(desc) {
+    setStatus(">>onLocalSDPDescription");
     peer_connection.setLocalDescription(desc).then(function() {
         setStatus("Sending SDP " + desc.type);
         var sdp = {'sdp': peer_connection.localDescription};
@@ -214,23 +260,39 @@ function onLocalDescription(desc) {
 
 // Generate an SDP (offer/answer)
 function generateOffer() {
-    peer_connection.createOffer().then(onLocalDescription).catch(setError);
+    setStatus("generateOffer()");
+    peer_connection.createOffer().then(onLocalSDPDescription).catch(setError);
 }
 
 // ICE candidate received from peer, add it to the peer connection
 function onIncomingICE(ice) {
+    setStatus(`onIncomingICE(): '${ice.candidate}'`);
     var candidate = new RTCIceCandidate(ice);
     peer_connection.addIceCandidate(candidate).catch(setError);
+
+    if (++nIceCandidates >= minIceCandidatesRequired) {
+        peer_connection.onicecandidate = (event) => {
+            setStatus(`onicecandidate.`);
+            if (event.candidate == null) {
+                setError("ICE Candidate was null");
+                return;
+            }
+            let icemsg = {'ice': event.candidate};
+            sendToSocket('ICE', icemsg);
+        };
+    }
 }
 
 // Get the video component id in the GUI
 function getVideoElement() {
+    setStatus("getVideoElement()");
     return document.getElementById("remote-video");
 }
 
 // Receive the streamed video track 
 function onRemoteTrack(event) {
     if (getVideoElement().srcObject !== event.streams[0]) {
+        setStatus("onRemoteTrack() with different event");
         getVideoElement().srcObject = event.streams[0];
     }
 }
@@ -238,6 +300,7 @@ function onRemoteTrack(event) {
 // Get the local stream (not really necessary for GStreamer)
 function getLocalStream() {
     var constraints = default_constraints;
+    setStatus("getLocalStream()");
 
     // Add local stream 
     if (navigator.mediaDevices.getUserMedia) {
@@ -245,12 +308,26 @@ function getLocalStream() {
     } else {
         setError("Browser doesn't support getUserMedia!");
     }
+}
 
+function dummyVideoStream() {
+    const canvas = document.createElement('canvas');
+    canvas.width = 320;
+    canvas.height = 240;
+
+    const context = canvas.getContext('2d');
+    context.fillStyle = 'black';
+    context.fillRect(0, 0, canvas.width, canvas.height);
+
+    const stream = canvas.captureStream(10);
+    const videoTrack = stream.getVideoTracks()[0];
+
+    let theStream = new MediaStream([videoTrack]);
+    return Promise.resolve(theStream);
 }
 
 // Send message to the signaling server
 function sendToSocket(type, content) {
-
     let id = {'caller_id': peerID};
     let message_type = {'type': type};
     let message_content = {'content': content}
@@ -259,5 +336,8 @@ function sendToSocket(type, content) {
         ...message_content,
         ...id
     };
-    wsConnection.send(JSON.stringify(fullMsg));
+    const stringified = JSON.stringify(fullMsg);
+    setStatus(`sendToSocket: '${message_type.type}'.`)
+
+    wsConnection.send(stringified);
 }
