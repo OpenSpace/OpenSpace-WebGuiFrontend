@@ -26,6 +26,9 @@ var wsConnection;
 var local_stream_promise;
 var nIceCandidates = 0;
 var minIceCandidatesRequired = 6;
+var haveIceConnectionStateChange = false;
+var sentFlagSdp = false;
+var sentFlagIce = false;
 
 export const joinSession = () => {
     // The peer that is joining the session should not share any media (video:false)
@@ -148,6 +151,7 @@ function setError(text) {
 async function artificialDelayAfterGetLocalStream(text) {
     setStatus('Adding artificial wait here to avoid possible race condition.');
     await sleep(3500);
+    setStatus('Arbitrary delay.');
 }
 
 // Prints the status in the browser console
@@ -212,14 +216,37 @@ function createCall(msg) {
         setStatus(`onconnectionstatechange: ${event.type}`);
     }
 
+    peer_connection.oniceconnectionstatechange = async (event) => {
+        setStatus(`oniceconnectionstatechange: ${event.type}`);
+        haveIceConnectionStateChange = true;
+    }
+    peer_connection.onicegatheringstatechange = (event) => {
+        setStatus(`onicegatheringstatechange: ${event.type}`);
+    }
+    peer_connection.onnegotiationneeded = (event) => {
+        setStatus(`onnegotiationneeded: ${event.type}`);
+    }
+    peer_connection.onsignalingstatechange = (event) => {
+        setStatus(`onsignalingstatechange: ${event.type}`);
+    }
+    peer_connection.ondatachannel = (event) => {
+        setStatus(`ondatachannel: ${event.type}`);
+    }
+
+
     if (msg != null)
         setStatus("Created peer connection for call, waiting for SDP");
 
     return local_stream_promise;
 }
 
-function sleep(ms) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
+async function sleep(ms) {
+    let newPromise = new Promise(function (resolve, reject) {
+        setTimeout(function () {
+            resolve();
+        }, ms);
+    });
+    await newPromise;
 }
 
 // SDP offer received from peer, set remote description and create an answer
@@ -239,7 +266,9 @@ function onIncomingSDP(sdp) {
             await sleep(750);
         }
         setStatus(`Received ${nIceCandidates} ICE candidates.`);
+        //while (!haveIceConnectionStateChange) {
         await sleep(500); //Another arbitrary wait
+        //}
         local_stream_promise.then((stream) => {
             setStatus("Got local stream, creating answer");
             peer_connection.createAnswer()
@@ -255,6 +284,7 @@ function onLocalSDPDescription(desc) {
         setStatus("Sending SDP " + desc.type);
         var sdp = {'sdp': peer_connection.localDescription};
         sendToSocket('SDP', sdp);
+        sentFlagSdp = true;
     });
 }
 
@@ -272,13 +302,16 @@ function onIncomingICE(ice) {
 
     if (++nIceCandidates >= minIceCandidatesRequired) {
         peer_connection.onicecandidate = (event) => {
-            setStatus(`onicecandidate.`);
             if (event.candidate == null) {
-                setError("ICE Candidate was null");
+                setStatus("onicecandidate with null ICE Candidate; ignoring");
                 return;
+            }
+            else {
+                setStatus('onicecandidate');
             }
             let icemsg = {'ice': event.candidate};
             sendToSocket('ICE', icemsg);
+            sentFlagIce = true;
         };
     }
 }
@@ -290,9 +323,23 @@ function getVideoElement() {
 }
 
 // Receive the streamed video track 
-function onRemoteTrack(event) {
+/*async*/ function onRemoteTrack(event) {
+    setStatus(`onRemoteTrack called`);
     if (getVideoElement().srcObject !== event.streams[0]) {
         setStatus("onRemoteTrack() with different event");
+/*        // Introduce a wait until SDP and ICE responses have been sent before setting
+        // the video element to the provided stream
+        let waitCount = 0;
+        setStatus('In onRemoteTrack, waiting for SDP and ICE send flags');
+        while (waitCount < 10 && (!sentFlagSdp || !sentFlagIce)) {
+            await sleep(500);
+            waitCount++;
+        }
+        setStatus('Done waiting for SDP and ICE send flags');
+        await sleep(500);
+        setStatus('Final onRemoteTrack wait.');
+        setStatus(`onRemoteTrack() with different event. Have ${event.streams.length} streams; setting to stream 0.`);
+*/
         getVideoElement().srcObject = event.streams[0];
     }
 }
