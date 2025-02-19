@@ -185,8 +185,6 @@ function createCall(msg) {
         return stream;
     }).catch(setError);
 
-    artificialDelayAfterGetLocalStream();
-
     if (msg != null && msg.type != "SDP") {
         setError("First message wasn't an SDP message");
     }
