@@ -218,6 +218,11 @@ function createCall(msg) {
 
     peer_connection.oniceconnectionstatechange = async (event) => {
         setStatus(`oniceconnectionstatechange: ${event.type}`);
+        //Force a blocking wait for debug purposes
+        const start = Date.now();
+        while((Date.now() - start) < 2000) {
+            ;
+        }
         haveIceConnectionStateChange = true;
     }
     peer_connection.onicegatheringstatechange = (event) => {
