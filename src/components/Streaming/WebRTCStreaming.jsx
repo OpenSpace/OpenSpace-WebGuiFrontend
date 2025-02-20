@@ -216,11 +216,13 @@ function createCall(msg) {
 
     peer_connection.oniceconnectionstatechange = async (event) => {
         setStatus(`oniceconnectionstatechange: ${event.type}`);
-        //Force a blocking wait for debug purposes
+        // Force a blocking wait rather than a timer callback. This is necessary
+        // to prevent other callbacks from hitting during the wait
         const start = Date.now();
         while((Date.now() - start) < 2000) {
             ;
         }
+        setStatus(`post-2 sec blocking wait (oniceconnectionstatechange)`);
         haveIceConnectionStateChange = true;
     }
     peer_connection.onicegatheringstatechange = (event) => {
@@ -326,23 +328,10 @@ function getVideoElement() {
 }
 
 // Receive the streamed video track 
-/*async*/ function onRemoteTrack(event) {
+function onRemoteTrack(event) {
     setStatus(`onRemoteTrack called`);
     if (getVideoElement().srcObject !== event.streams[0]) {
         setStatus("onRemoteTrack() with different event");
-/*        // Introduce a wait until SDP and ICE responses have been sent before setting
-        // the video element to the provided stream
-        let waitCount = 0;
-        setStatus('In onRemoteTrack, waiting for SDP and ICE send flags');
-        while (waitCount < 10 && (!sentFlagSdp || !sentFlagIce)) {
-            await sleep(500);
-            waitCount++;
-        }
-        setStatus('Done waiting for SDP and ICE send flags');
-        await sleep(500);
-        setStatus('Final onRemoteTrack wait.');
-        setStatus(`onRemoteTrack() with different event. Have ${event.streams.length} streams; setting to stream 0.`);
-*/
         getVideoElement().srcObject = event.streams[0];
     }
 }
