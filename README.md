@@ -1,6 +1,6 @@
 # OpenSpace WebGUI Module
 
-## Develop
+## Develop 
 
 First, go get [Node.js](https://nodejs.org/en/)
 
