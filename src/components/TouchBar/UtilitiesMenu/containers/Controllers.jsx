@@ -49,7 +49,7 @@ function Controllers() {
       changePropertyValue(originNode.description.Identifier, selected.planet);
     }
 
-    luaApi?.globebrowsing?.jumpToGeo(
+    luaApi?.navigation?.jumpToGeo(
       '',
       selected.location.latitude,
       selected.location.longitude,

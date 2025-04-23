@@ -50,7 +50,7 @@ function FocusMenu() {
   }, [anchor]);
 
   function applyFlyTo() {
-    luaApi.pathnavigation.zoomToDistanceRelative(DISTANCE_FACTOR, SWITCH_FOCUS_DURATION);
+    luaApi.navigation.zoomToDistanceRelative(DISTANCE_FACTOR, SWITCH_FOCUS_DURATION);
     // TODO: use camera path instead
   }
 
@@ -69,7 +69,7 @@ function FocusMenu() {
   function applyOverview() {
     // TODO: Handle an interpolation of SetNavigationState to be able to have a
     // smooth navigation to a pre-defined overview location
-    luaApi.pathnavigation.zoomToDistance(overviewLimit, SWITCH_FOCUS_DURATION);
+    luaApi.navigation.zoomToDistance(overviewLimit, SWITCH_FOCUS_DURATION);
   }
 
   function createFocusButtons() {

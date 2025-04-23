@@ -3,17 +3,17 @@ import { setDate } from './timeHelpers';
 // Activates flying linearly to a set distance from the anchor
 export const flyTo = (luaApi, distance, duration = undefined) => {
   if (typeof duration === 'number') {
-    luaApi.pathnavigation.zoomToDistance(distance, duration);
+    luaApi.navigation.zoomToDistance(distance, duration);
     return;
   }
-  luaApi.pathnavigation.zoomToDistance(distance);
+  luaApi.navigation.zoomToDistance(distance);
 };
 
 // Function to set the time and location for the start of a story
 export const setStoryStart = (luaApi, startPosition, startTime) => {
   luaApi.pathnavigation.stopPath();
 
-  luaApi?.globebrowsing?.jumpToGeo(
+  luaApi?.navigation?.jumpToGeo(
     '',
     startPosition.latitude,
     startPosition.longitude,

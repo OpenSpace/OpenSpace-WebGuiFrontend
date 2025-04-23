@@ -210,15 +210,15 @@ function GeoPositionPanel() {
     const alt = extent ? calculateAltitude(extent) : altitude * 1000;
     switch (interaction) {
       case Interaction.flyTo: {
-        luaApi?.globebrowsing?.flyToGeo(currentAnchor, lat, long, alt);
+        luaApi?.navigation?.flyToGeo(currentAnchor, lat, long, alt);
         break;
       }
       case Interaction.jumpTo: {
-        luaApi?.globebrowsing?.jumpToGeo(currentAnchor, lat, long, alt);
+        luaApi?.navigation?.jumpToGeo(currentAnchor, lat, long, alt);
         break;
       }
       case Interaction.addFocus: {
-      // Don't add if it is already added
+        // Don't add if it is already added
         if (addedSceneGraphNodes.indexOf(address) > -1) {
           break;
         }
@@ -237,7 +237,7 @@ function GeoPositionPanel() {
         break;
       }
       default: {
-        luaApi?.globebrowsing?.flyToGeo(currentAnchor, lat, long, alt);
+        luaApi?.navigation?.flyToGeo(currentAnchor, lat, long, alt);
         break;
       }
     }

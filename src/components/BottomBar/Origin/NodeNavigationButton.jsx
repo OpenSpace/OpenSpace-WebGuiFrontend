@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-  MdCenterFocusStrong,
-  MdFlashOn,
-  MdFlight
-} from 'react-icons/md';
+import { MdCenterFocusStrong, MdFlashOn, MdFlight } from 'react-icons/md';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 // eslint-disable-next-line import/no-webpack-loader-syntax
@@ -24,9 +20,7 @@ export const NavigationTypes = {
   frame: 'frame'
 };
 
-function NavigationButton({
-  identifier, onFinish, showLabel, type
-}) {
+function NavigationButton({ identifier, onFinish, showLabel, type }) {
   const luaApi = useSelector((state) => state.luaApi);
 
   function focus(event) {
@@ -41,9 +35,9 @@ function NavigationButton({
 
   function flyTo(event) {
     if (event.shiftKey) {
-      luaApi.pathnavigation.flyTo(identifier, 0.0);
+      luaApi.navigation.flyTo(identifier, 0.0);
     } else {
-      luaApi.pathnavigation.flyTo(identifier);
+      luaApi.navigation.flyTo(identifier);
     }
     event.stopPropagation();
     onFinish();
@@ -51,14 +45,14 @@ function NavigationButton({
 
   function zoomToFocus(event) {
     if (event.shiftKey) {
-      luaApi.pathnavigation.createPath({
+      luaApi.navigation.createPath({
         TargetType: 'Node',
         Target: identifier,
         Duration: 0,
         PathType: 'Linear'
       });
     } else {
-      luaApi.pathnavigation.createPath({
+      luaApi.navigation.createPath({
         TargetType: 'Node',
         Target: identifier,
         PathType: 'Linear'
@@ -71,7 +65,7 @@ function NavigationButton({
   function fadeTo(event) {
     event.stopPropagation();
     onFinish();
-    luaApi.pathnavigation.jumpTo(identifier);
+    luaApi.navigation.jumpTo(identifier);
   }
 
   const buttonClass = showLabel ? styles.navButton : styles.smallNavButton;
@@ -92,7 +86,11 @@ function NavigationButton({
     case NavigationTypes.focus:
       content.onClick = focus;
       content.title = 'Focus';
-      content.icon = <SvgIcon className={styles.buttonIcon}><Focus /></SvgIcon>;
+      content.icon = (
+        <SvgIcon className={styles.buttonIcon}>
+          <Focus />
+        </SvgIcon>
+      );
       break;
     case NavigationTypes.fly:
       content.onClick = flyTo;
@@ -106,7 +104,8 @@ function NavigationButton({
       content.info = `Focus on the target object by moving the camera in a straigt line
         and rotate towards the object`;
       break;
-    default: break;
+    default:
+      break;
   }
 
   return (
