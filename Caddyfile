@@ -1,0 +1,10 @@
+webrtc.motionsync.io {
+    reverse_proxy /468* 127.0.0.1:8080
+    reverse_proxy /8443 127.0.0.1:8080
+    reverse_proxy /frontend* https://localhost:4690 {
+        transport http {
+            tls_insecure_skip_verify
+        }
+    }
+    reverse_proxy /ws localhost:8080
+}

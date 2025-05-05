@@ -4,3 +4,10 @@ node_modules
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
+
+#SSL Certificates
+cert.pem
+key.pem
+
+#Testing files
+test.html

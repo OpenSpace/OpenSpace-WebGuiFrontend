@@ -11,10 +11,10 @@
 // webpack dev server, see webpack.config.js.
 
 const defaults = {
-  wsAddress: '155.98.19.66',
+  wsAddress: '52.54.32.164',
   wsPort: 4682,
   developmentMode: false,
-  signalingAddress: '155.98.19.66',
+  signalingAddress: '52.54.32.164',
   signalingPort: 8443,
 };
 
