@@ -1,4 +1,4 @@
-import openspaceApi from 'openspace-api-js';
+import openspaceApi from 'openspace-api-wss-js';
 
 import Environment from './Environment';
 
