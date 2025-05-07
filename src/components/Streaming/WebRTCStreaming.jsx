@@ -43,8 +43,10 @@ export const joinSession = () => {
 
 // Creates a connection between the peer and the signaling server
 function websocketServerConnect() {
-    var signalingUrl =
-        `ws://${env.signalingAddress}:${env.signalingPort}`;
+    const signalingUrl = window.location.protocol === 'https:'
+        ? `wss://${env.signalingAddress}/${env.signalingPort}`
+        : `ws://${env.signalingAddress}:${env.signalingPort}`;
+      
     setStatus("Connecting to server " + signalingUrl);
     wsConnection = new WebSocket(signalingUrl);
 

@@ -1,0 +1,14 @@
+Node module webpack-dev-server/client/utils/socket.js:
+
+modify the function:
+var socket = function initSocket(url, handlers, reconnect) {
+  // if url is wss:// then remove the port
+  if (url.startsWith("wss://")) {
+    url = url.replace(":4690", "");
+  }
+  
+  client = new Client(url);
+
+  // other code remains same
+  ...
+}

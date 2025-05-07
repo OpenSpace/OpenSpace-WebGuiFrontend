@@ -1,10 +1,36 @@
 webrtc.motionsync.io {
-    reverse_proxy /468* 127.0.0.1:8080
-    reverse_proxy /8443 127.0.0.1:8080
-    reverse_proxy /frontend* https://localhost:4690 {
-        transport http {
-            tls_insecure_skip_verify
-        }
+    encode gzip
+    # Serve test.html directly
+
+    handle /test.html {
+        root * C:\webrtc\OpenSpace-Web-Backend\OpenSpace-WebGuiFrontend
+        file_server
     }
-    reverse_proxy /ws localhost:8080
+
+    # Reverse proxy for React frontend
+    reverse_proxy /frontend/* http://localhost:4690 {
+        header_up Host {host}
+        header_up X-Real-IP {remote}
+    }
+
+    # Reverse proxy for WebSocket proxy
+    reverse_proxy /ws http://localhost:8080
+    reverse_proxy /4682 http://localhost:8080
+    reverse_proxy /4683 http://localhost:8080
+    reverse_proxy /4684 http://localhost:8080
+    reverse_proxy /4685 http://localhost:8080
+    reverse_proxy /4686 http://localhost:8080
+    reverse_proxy /4687 http://localhost:8080
+    reverse_proxy /4688 http://localhost:8080
+    reverse_proxy /4689 http://localhost:8080
+    reverse_proxy /4690 http://localhost:8080
+    reverse_proxy /8443 http://localhost:8080
+
+    @wsPath path_regexp ^/(468[0-9]|4690|469[1-9]|47[0-8][0-9]|4790|8443)$
+    reverse_proxy @wsPath http://localhost:8080
+
+    # Redirect root path to frontend
+    redir / /frontend/
+
+    tls ag9489@nyu.edu
 }

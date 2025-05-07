@@ -25,6 +25,7 @@ module.exports = {
       directory: resolve(__dirname, 'dist'),
       publicPath: PublicPath
     },
+    allowedHosts: 'all',
     proxy: {
       '/': {
         target: 'http://localhost:4680',

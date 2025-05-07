@@ -11,10 +11,10 @@
 // webpack dev server, see webpack.config.js.
 
 const defaults = {
-  wsAddress: '52.54.32.164',
+  wsAddress: 'webrtc.motionsync.io',
   wsPort: 4682,
   developmentMode: false,
-  signalingAddress: '52.54.32.164',
+  signalingAddress: 'webrtc.motionsync.io',
   signalingPort: 8443,
 };
 
