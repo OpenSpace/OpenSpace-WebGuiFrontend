@@ -37,7 +37,7 @@ export default function Missions() {
   // Access Redux state
   const missions = useSelector((state) => state.missions);
   const overview = useSelector((state) => state.missions?.data?.missions[0]);
-  const allActions = useSelector((state) => state.shortcuts?.data?.shortcuts);
+  const allActions = useSelector((state) => state.shortcuts.actions);
   const luaApi = useSelector((state) => state.luaApi);
   // Use time that is updated every second - optimization
   const now = useSelector((state) => state.time.timeCapped);
@@ -115,7 +115,7 @@ export default function Missions() {
 
   // Locate the next instrument activity capture
   function nextCapture() {
-    if (!now || typeof (now) === 'string') {
+    if (!now || typeof now === 'string') {
       return null;
     }
     // Assume the captures are sorted w regards to time
@@ -129,7 +129,7 @@ export default function Missions() {
 
   // Locate the previous instrument activity capture
   function lastCapture() {
-    if (!now || typeof (now) === 'string') {
+    if (!now || typeof now === 'string') {
       return null;
     }
     // Assume the captures are sorted w regards to time
@@ -171,7 +171,12 @@ export default function Missions() {
     const diffBiggerThanADay = timeDiffSeconds > 86400; // No of seconds in a day
     if (diffBiggerThanADay) {
       const promise = new Promise((resolve) => {
-        luaApi.setPropertyValueSingle('RenderEngine.BlackoutFactor', 0, fadeTime, 'QuadraticEaseOut');
+        luaApi.setPropertyValueSingle(
+          'RenderEngine.BlackoutFactor',
+          0,
+          fadeTime,
+          'QuadraticEaseOut'
+        );
         setTimeout(() => resolve('done!'), fadeTime * 1000);
       });
       await promise;
@@ -219,10 +224,7 @@ export default function Missions() {
         const phaseType = displayedPhase.data === overview ? 'Mission' : 'Phase';
         return (
           <>
-            <SetTimeButton
-              name={`Set Time to End of ${phaseType}`}
-              onClick={jumpToEndOfPhase}
-            />
+            <SetTimeButton name={`Set Time to End of ${phaseType}`} onClick={jumpToEndOfPhase} />
             <SetTimeButton
               name={`Set Time to Beginning of ${phaseType}`}
               onClick={jumpToStartOfPhase}
@@ -231,7 +233,7 @@ export default function Missions() {
         );
       }
       case DisplayType.milestone: {
-        return <SetTimeButton name="Set Time" onClick={jumpToDate} />;
+        return <SetTimeButton name='Set Time' onClick={jumpToDate} />;
       }
       default: {
         return null;
@@ -270,7 +272,7 @@ export default function Missions() {
 
     return (
       <>
-        { browserHasLoaded ? (
+        {browserHasLoaded ? (
           <Timeline
             fullWidth={120}
             fullHeight={window.innerHeight}
@@ -284,20 +286,17 @@ export default function Missions() {
             milestones={overview?.milestones}
             jumpToTime={jumpToTime}
           />
-        ) :
-          null}
+        ) : null}
         <WindowThreeStates
           title={overview.name}
           acceptedStyles={['PANE']}
-          defaultStyle="PANE"
+          defaultStyle='PANE'
           closeCallback={() => setPopoverVisibility(false)}
           sizeCallback={setSize}
         >
           <div style={{ height: size.height, overflow: 'auto' }}>
             <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-              <Button
-                onClick={() => setPhaseManually({ type: DisplayType.phase, data: overview })}
-              >
+              <Button onClick={() => setPhaseManually({ type: DisplayType.phase, data: overview })}>
                 Overview
               </Button>
               <Button
@@ -311,15 +310,14 @@ export default function Missions() {
               {displayedPhase.data ? (
                 <>
                   <p>{title}</p>
-                  <p style={{ color: 'darkgray' }}>
-                    {timeString}
-                  </p>
+                  <p style={{ color: 'darkgray' }}>{timeString}</p>
                   <p style={{ paddingBottom: '15px' }}>
                     <br />
                     {displayedPhase.data?.description}
                   </p>
-                  {displayedPhase.data?.link &&
-                  <Button onClick={() => openUrl(displayedPhase.data.link)}>Read more</Button>}
+                  {displayedPhase.data?.link && (
+                    <Button onClick={() => openUrl(displayedPhase.data.link)}>Read more</Button>
+                  )}
                   {displayedPhase.data?.image && (
                     <img
                       style={{
@@ -328,33 +326,32 @@ export default function Missions() {
                         maxWidth: window.innerWidth * 0.25
                       }}
                       src={displayedPhase.data.image}
-                      alt=""
+                      alt=''
                     />
                   )}
                 </>
-              ) :
-                <CenteredLabel>No current phase in this mission</CenteredLabel>}
-              <div style={{
-                display: 'flex', gap: '10px', flexDirection: 'column', padding: '10px 0px'
-              }}
+              ) : (
+                <CenteredLabel>No current phase in this mission</CenteredLabel>
+              )}
+              <div
+                style={{
+                  display: 'flex',
+                  gap: '10px',
+                  flexDirection: 'column',
+                  padding: '10px 0px'
+                }}
               >
                 {createTimeButtons()}
                 {nextCapture() && (
-                  <SetTimeButton
-                    name="Set Time to Next Capture"
-                    onClick={jumpToNextCapture}
-                  />
+                  <SetTimeButton name='Set Time to Next Capture' onClick={jumpToNextCapture} />
                 )}
                 {lastCapture() && (
-                  <SetTimeButton
-                    name="Set Time to Last Capture"
-                    onClick={jumpToLastCapture}
-                  />
+                  <SetTimeButton name='Set Time to Last Capture' onClick={jumpToLastCapture} />
                 )}
               </div>
-              {currentActions.map(
-                (action) => <ActionsButton key={action.identifier} action={action} />
-              )}
+              {currentActions.map((action) => (
+                <ActionsButton key={action.identifier} action={action} />
+              ))}
             </div>
           </div>
         </WindowThreeStates>
@@ -366,14 +363,14 @@ export default function Missions() {
     <>
       <div className={Picker.Wrapper}>
         <Picker
-          refKey="Missions"
+          refKey='Missions'
           className={`${popoverVisible && Picker.Active}`}
           onClick={togglePopover}
         >
-          <MdRocketLaunch className={Picker.Icon} alt="Missions" />
+          <MdRocketLaunch className={Picker.Icon} alt='Missions' />
         </Picker>
       </div>
-      { popoverVisible && popover() }
+      {popoverVisible && popover()}
     </>
   );
 }

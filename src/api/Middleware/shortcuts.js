@@ -5,21 +5,21 @@ import api from '../api';
 let topic;
 
 async function getAllShortcuts(store) {
-  topic = api.startTopic('shortcuts', {
-    event: 'get_all_shortcuts'
+  topic = api.startTopic('actionsKeybinds', {
+    event: 'get_all'
   });
   const { value } = await topic.iterator().next();
-  store.dispatch(initializeShortcuts(value.shortcuts));
+  store.dispatch(initializeShortcuts(value));
   topic.cancel();
 }
 
 async function getShortcut(store, uri) {
-  topic = api.startTopic('shortcuts', {
-    event: 'get_shortcut',
+  topic = api.startTopic('actionsKeybinds', {
+    event: 'get_action',
     identifier: uri
   });
   const { value } = await topic.iterator().next();
-  store.dispatch(addActions(value.shortcuts));
+  store.dispatch(addActions(value));
   topic.cancel();
 }
 
