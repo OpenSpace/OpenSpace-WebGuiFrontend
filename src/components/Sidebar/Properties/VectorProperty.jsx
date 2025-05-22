@@ -11,23 +11,24 @@ import PropertyLabel from './PropertyLabel';
 
 import styles from './Property.scss';
 
-function VectorProperty({ dispatcher, description, value }) {
-  const {
-    SteppingValue, MaximumValue, MinimumValue, Exponent
-  } = description.AdditionalData;
-  const { MetaData } = description;
-  const isDisabled = MetaData.isReadOnly;
+function VectorProperty({ dispatcher, metaData, value }) {
+  const { step, max, min, exponent } = metaData.additionalData;
+  const isDisabled = metaData.isReadOnly;
   const couldBeColor = value.length <= 4 && value.length > 2;
-  const isColor = couldBeColor && MetaData.ViewOptions.Color;
+  const isColor = couldBeColor && metaData.viewOptions?.Color;
   const hasAlpha = isColor && value.length === 4;
-  const isMinMaxRange = value.length === 2 ? MetaData.ViewOptions.MinMaxRange : false;
+  const isMinMaxRange = value.length === 2 ? metaData.viewOptions?.MinMaxRange : false;
+
   // eslint-disable-next-line react/no-array-index-key
   const values = value.map((element, index) => ({
-    key: `${description.Name}-${index}`, value: element
+    key: `${metaData.guiName}-${index}`,
+    value: element
   }));
 
   function valueToColor() {
-    if (!isColor) { return null; }
+    if (!isColor) {
+      return null;
+    }
 
     return {
       r: value[0] * 255,
@@ -58,13 +59,13 @@ function VectorProperty({ dispatcher, description, value }) {
     dispatcher.set(newValue);
   }
 
-  const firstLabel = <PropertyLabel description={description} />;
+  const firstLabel = <PropertyLabel metaData={metaData} />;
 
   function asMinMaxRange() {
     if (!isMinMaxRange) return null;
 
     // Different step sizes does not make sense here, so just use the minimum
-    const stepSize = Math.min(...SteppingValue);
+    const stepSize = Math.min(...step);
 
     return (
       <Row className={`${styles.vectorProperty} ${isDisabled ? styles.disabled : ''}`}>
@@ -75,9 +76,9 @@ function VectorProperty({ dispatcher, description, value }) {
           onMinValueChanged={onChange(0)}
           onMaxValueChanged={onChange(1)}
           step={stepSize}
-          exponent={Exponent}
-          max={Math.max(...MaximumValue)}
-          min={Math.min(...MinimumValue)}
+          exponent={exponent}
+          max={Math.max(...max)}
+          min={Math.min(...min)}
           disabled={isDisabled}
         />
       </Row>
@@ -90,29 +91,31 @@ function VectorProperty({ dispatcher, description, value }) {
   const refs = useContextRefs();
   return (
     <Row
-      ref={(el) => { refs.current[description.Identifier] = el; }}
+      ref={(el) => {
+        refs.current[metaData.identifier] = el;
+      }}
       className={`${styles.vectorProperty} ${isDisabled ? styles.disabled : ''}`}
     >
-      { values.map((component, index) => (
+      {values.map((component, index) => (
         <NumericInput
           key={component.key}
           value={component.value}
           label={index === 0 ? firstLabel : ' '}
           placeholder={`value ${index}`}
           onValueChanged={onChange(index)}
-          step={SteppingValue[index]}
-          exponent={Exponent}
-          max={MaximumValue[index]}
-          min={MinimumValue[index]}
+          step={step[index]}
+          exponent={exponent}
+          max={max[index]}
+          min={min[index]}
           disabled={isDisabled}
         />
       ))}
-      { isColor && (
+      {isColor && (
         <ColorPickerPopup
           disableAlpha={!hasAlpha}
           color={valueToColor()}
           onChange={onColorPickerChange}
-          placement="right"
+          placement='right'
           disabled={isDisabled}
         />
       )}
@@ -121,18 +124,16 @@ function VectorProperty({ dispatcher, description, value }) {
 }
 
 VectorProperty.propTypes = {
-  description: PropTypes.shape({
-    Identifier: PropTypes.string,
-    Name: PropTypes.string,
-    MetaData: PropTypes.shape({
-      isReadOnly: PropTypes.bool,
-      ViewOptions: PropTypes.object
-    }),
-    AdditionalData: PropTypes.shape({
-      SteppingValue: PropTypes.arrayOf(PropTypes.number),
-      MaximumValue: PropTypes.arrayOf(PropTypes.number),
-      MinimumValue: PropTypes.arrayOf(PropTypes.number),
-      Exponent: PropTypes.number
+  metaData: PropTypes.shape({
+    identifier: PropTypes.string,
+    guiName: PropTypes.string,
+    isReadOnly: PropTypes.bool,
+    viewOptions: PropTypes.object,
+    additionalData: PropTypes.shape({
+      step: PropTypes.arrayOf(PropTypes.number),
+      max: PropTypes.arrayOf(PropTypes.number),
+      min: PropTypes.arrayOf(PropTypes.number),
+      exponent: PropTypes.number
     }),
     description: PropTypes.string
   }).isRequired,

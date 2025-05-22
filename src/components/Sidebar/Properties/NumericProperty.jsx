@@ -7,31 +7,29 @@ import PropertyLabel from './PropertyLabel';
 
 import styles from './Property.scss';
 
-function NumericProperty({ description, dispatcher, value }) {
-  const disabled = description.MetaData.isReadOnly;
+function NumericProperty({ metaData, dispatcher, value }) {
+  const disabled = metaData.isReadOnly;
 
   function onChange(newValue) {
     dispatcher.set(newValue);
   }
 
-  const {
-    SteppingValue, MaximumValue, MinimumValue, Exponent
-  } = description.AdditionalData;
+  const { step, max, min, exponent } = metaData.additionalData;
   // Add min & max value to description
-  const enhancedDescription = { ...description };
-  const minMaxString = `${description.description}\nMin: ${MinimumValue}, max: ${MaximumValue}`;
+  const enhancedDescription = { ...metaData };
+  const minMaxString = `${metaData.description}\nMin: ${min}, max: ${max}`;
   enhancedDescription.description = minMaxString;
   return (
     <div className={`${disabled ? styles.disabled : ''}`}>
       <NumericInput
         value={value}
-        label={<PropertyLabel description={enhancedDescription} />}
-        placeholder={description.Name}
+        label={<PropertyLabel metaData={enhancedDescription} />}
+        placeholder={metaData.guiName}
         onValueChanged={onChange}
-        step={SteppingValue}
-        exponent={Exponent}
-        max={MaximumValue}
-        min={MinimumValue}
+        step={step}
+        exponent={exponent}
+        max={max}
+        min={min}
         disabled={disabled}
       />
     </div>
@@ -39,17 +37,15 @@ function NumericProperty({ description, dispatcher, value }) {
 }
 
 NumericProperty.propTypes = {
-  description: PropTypes.shape({
-    Identifier: PropTypes.string,
-    Name: PropTypes.string,
-    MetaData: PropTypes.shape({
-      isReadOnly: PropTypes.bool
-    }),
-    AdditionalData: PropTypes.shape({
-      SteppingValue: PropTypes.number,
-      MaximumValue: PropTypes.number,
-      MinimumValue: PropTypes.number,
-      Exponent: PropTypes.number
+  metaData: PropTypes.shape({
+    identifier: PropTypes.string,
+    guiName: PropTypes.string,
+    isReadOnly: PropTypes.bool,
+    additionalData: PropTypes.shape({
+      step: PropTypes.number,
+      max: PropTypes.number,
+      min: PropTypes.number,
+      exponent: PropTypes.number
     }),
     description: PropTypes.string
   }).isRequired,

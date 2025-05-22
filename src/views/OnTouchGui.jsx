@@ -2,12 +2,22 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
-  addStoryInfo, addStoryTree, fetchData, resetStoryInfo, setPropertyValue,
-  startConnection, triggerAction
+  addStoryInfo,
+  addStoryTree,
+  fetchData,
+  resetStoryInfo,
+  setPropertyValue,
+  startConnection,
+  triggerAction
 } from '../api/Actions';
 import {
-  DefaultStory, InfoIconKey, NavigationAnchorKey, ScaleKey,
-  ValuePlaceholder, ZoomInLimitKey, ZoomOutLimitKey
+  DefaultStory,
+  InfoIconKey,
+  NavigationAnchorKey,
+  ScaleKey,
+  ValuePlaceholder,
+  ZoomInLimitKey,
+  ZoomOutLimitKey
 } from '../api/keys';
 import Error from '../components/common/Error/Error';
 import Overlay from '../components/common/Overlay/Overlay';
@@ -15,8 +25,15 @@ import Slider from '../components/ImageSlider/Slider';
 import TouchBar from '../components/TouchBar/TouchBar';
 import DeveloperMenu from '../components/TouchBar/UtilitiesMenu/presentational/DeveloperMenu';
 import {
-  flyTo, infoFileParser, setStoryStart, showDevInfoOnScreen,
-  storyFileParser, toggleGalaxies, toggleHighResolution, toggleShading, toggleShowNode
+  flyTo,
+  infoFileParser,
+  setStoryStart,
+  showDevInfoOnScreen,
+  storyFileParser,
+  toggleGalaxies,
+  toggleHighResolution,
+  toggleShading,
+  toggleShowNode
 } from '../utils/storyHelpers';
 import { UpdateDeltaTimeNow } from '../utils/timeHelpers';
 
@@ -118,7 +135,7 @@ function OnTouchGui() {
     const json = addStoryTreeFromSelection(selectedStory);
 
     // Set all the story specific properties
-    changePropertyValue(anchorNode.description.Identifier, json.start.planet);
+    changePropertyValue(anchorNode.metaData.identifier, json.start.planet);
     setStoryStart(luaApi, json.start.location, json.start.date);
 
     if (json.overviewlimit) {
@@ -134,7 +151,7 @@ function OnTouchGui() {
       flyTo(luaApi, json.overviewlimit, 5.0);
     }
 
-    changePropertyValue(anchorNode.description.Identifier, json.start.planet);
+    changePropertyValue(anchorNode.metaData.identifier, json.start.planet);
 
     // Check settings of the previous story and reset values
     checkStorySettings(story, true);
@@ -144,7 +161,7 @@ function OnTouchGui() {
     // If the previous story scaled planets reset value
     if (story.scalenodes) {
       scaleNodes.forEach((node) => {
-        changePropertyValue(node.description.Identifier, 1);
+        changePropertyValue(node.metaData.identifier, 1);
       });
     }
     // If the previous story toggled bool properties reset them to default value
@@ -176,25 +193,20 @@ function OnTouchGui() {
 
   return (
     <div className={styles.app}>
-      { connectionLost && (
+      {connectionLost && (
         <Overlay>
-          <Error>
-            Connection lost. Trying to reconnect again soon.
-          </Error>
+          <Error>Connection lost. Trying to reconnect again soon.</Error>
         </Overlay>
       )}
-      { developerMode && (
-        <DeveloperMenu
-          changeStory={changeStory}
-          storyIdentifier={storyIdentifier}
-        />
+      {developerMode && (
+        <DeveloperMenu changeStory={changeStory} storyIdentifier={storyIdentifier} />
       )}
-      <p className={styles.storyTitle}>
-        {story.title}
-      </p>
-      {(currentStory === DefaultStory) ?
-        <Slider startSlide={sliderStartStory} changeStory={setStory} /> :
-        <TouchBar resetStory={resetStory} />}
+      <p className={styles.storyTitle}>{story.title}</p>
+      {currentStory === DefaultStory ? (
+        <Slider startSlide={sliderStartStory} changeStory={setStory} />
+      ) : (
+        <TouchBar resetStory={resetStory} />
+      )}
     </div>
   );
 }
@@ -214,7 +226,11 @@ function RequireLuaApi({ children }) {
 }
 
 function WrappedOnTouchGui(props) {
-  return <RequireLuaApi><OnTouchGui {...props} /></RequireLuaApi>;
+  return (
+    <RequireLuaApi>
+      <OnTouchGui {...props} />
+    </RequireLuaApi>
+  );
 }
 
 export default WrappedOnTouchGui;

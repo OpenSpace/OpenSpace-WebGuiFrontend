@@ -61,10 +61,10 @@ const concreteProperties = {
 };
 
 function Property({ uri, ...props }) {
-  const description = useSelector((state) => state.propertyTree.properties[uri].description);
+  const metaData = useSelector((state) => state.propertyTree.properties[uri].metaData);
   const value = useSelector((state) => state.propertyTree.properties[uri].value);
 
-  if (!description) return null;
+  if (!metaData) return null;
 
   const dispatch = useDispatch();
   const dispatcher = propertyDispatcher(dispatch, uri);
@@ -74,18 +74,18 @@ function Property({ uri, ...props }) {
     return dispatcher.unsubscribe;
   }, []);
 
-  const ConcreteProperty = concreteProperties[description.Type];
+  const ConcreteProperty = concreteProperties[metaData.type];
 
   if (!ConcreteProperty) {
-    console.error('Missing property', description?.Type, description);
+    console.error('Missing property', metaData.type, metaData);
     return null;
   }
 
   return (
     <ConcreteProperty
       dispatcher={dispatcher}
-      key={description.Identifier}
-      description={description}
+      key={metaData.identifier}
+      metaData={metaData}
       value={value}
       subscribe
       {...props}

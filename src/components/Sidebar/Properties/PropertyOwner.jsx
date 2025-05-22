@@ -4,11 +4,10 @@ import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd';
 import PropTypes from 'prop-types';
 import { shallowEqualArrays } from 'shallow-equal';
 
+import { setPropertyTreeExpansion } from '../../../api/Actions';
 import {
-  setPropertyTreeExpansion
-} from '../../../api/Actions';
-import {
-  displayName, getLayerGroupFromUri,
+  displayName,
+  getLayerGroupFromUri,
   getSceneGraphNodeFromUri,
   isDeadEnd,
   isGlobeBrowsingLayer,
@@ -28,7 +27,7 @@ function DragDropLayerList({ expansionIdentifier, uri }) {
   const layers = useSelector((state) => {
     const data = state.propertyTree.propertyOwners[uri];
     const subownersRaw = data ? data.subowners : [];
-    return subownersRaw.filter((subowner) => (isGlobeBrowsingLayer(subowner)));
+    return subownersRaw.filter((subowner) => isGlobeBrowsingLayer(subowner));
   }, shallowEqualArrays);
   const [shownLayers, setShownLayers] = React.useState(layers);
 
@@ -63,7 +62,7 @@ function DragDropLayerList({ expansionIdentifier, uri }) {
       globe,
       layerGroup,
       result.source.index,
-      result.destination.index,
+      result.destination.index
     );
   }
 
@@ -73,12 +72,14 @@ function DragDropLayerList({ expansionIdentifier, uri }) {
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <Droppable droppableId="layers">
+      <Droppable droppableId='layers'>
         {(provided) => (
           <div {...provided.droppableProps} ref={provided.innerRef}>
             {shownLayers.map((layerUri, index) => (
               <Draggable key={layerUri} draggableId={layerUri} index={index}>
-                {(item) => ( // Draggable expects functions as children
+                {(
+                  item // Draggable expects functions as children
+                ) => (
                   <div {...item.draggableProps} ref={item.innerRef}>
                     <PropertyOwner
                       dragHandleTitleProps={item.dragHandleProps}
@@ -105,11 +106,16 @@ const shouldSortAlphabetically = (uri) => {
   if (splitUri.length < 2) {
     return true;
   }
-  return splitUri.indexOf('Layers') !== (splitUri.length - 2);
+  return splitUri.indexOf('Layers') !== splitUri.length - 2;
 };
 
 function PropertyOwner({
-  uri, name, dragHandleTitleProps, expansionIdentifier, trashAction, autoExpand
+  uri,
+  name,
+  dragHandleTitleProps,
+  expansionIdentifier,
+  trashAction,
+  autoExpand
 }) {
   const propertyOwnerName = useSelector((state) => {
     const { propertyOwners, properties } = state.propertyTree;
@@ -118,11 +124,10 @@ function PropertyOwner({
 
   const subowners = useSelector((state) => {
     const { propertyOwners, properties } = state.propertyTree;
-    const data = state.propertyTree.propertyOwners[uri];
+    const data = propertyOwners[uri];
     const subownersRaw = data ? data.subowners : [];
     const shownSubowners = subownersRaw.filter((subowner) => {
       const isOwnerDeadEnd = isDeadEnd(propertyOwners, properties, subowner);
-
       return !isOwnerDeadEnd && !isGlobeBrowsingLayer(subowner);
     });
 
@@ -157,7 +162,7 @@ function PropertyOwner({
 
   const isRenderable = useSelector((state) => {
     const renderableTypeProp = state.propertyTree.properties[`${uri}.Renderable.Type`];
-    return (renderableTypeProp !== undefined);
+    return renderableTypeProp !== undefined;
   });
 
   // @TODO (emmbr 2023-02-21) Make this work for other propety owners that have
@@ -167,10 +172,12 @@ function PropertyOwner({
   const dispatch = useDispatch();
 
   const setExpanded = (expanded) => {
-    dispatch(setPropertyTreeExpansion({
-      identifier: expansionIdentifier,
-      expanded
-    }));
+    dispatch(
+      setPropertyTreeExpansion({
+        identifier: expansionIdentifier,
+        expanded
+      })
+    );
   };
 
   function header() {
@@ -188,27 +195,16 @@ function PropertyOwner({
     if (!dragHandleTitleProps) {
       return headerComponent;
     }
-    return (
-      <div {...dragHandleTitleProps}>
-        {' '}
-        {headerComponent}
-      </div>
-    );
+    return <div {...dragHandleTitleProps}> {headerComponent}</div>;
   }
 
   return (
-    <ToggleContent
-      header={header()}
-      expanded={isExpanded}
-      setExpanded={setExpanded}
-    >
-      <DragDropLayerList
-        expansionIdentifier={expansionIdentifier}
-        uri={uri}
-      />
-      { subowners.map((ownerUri) => {
+    <ToggleContent header={header()} expanded={isExpanded} setExpanded={setExpanded}>
+      <DragDropLayerList expansionIdentifier={expansionIdentifier} uri={uri} />
+      {subowners.map((ownerUri) => {
         const splitUri = ownerUri.split('.');
-        const uriIsRenderable = splitUri.length > 0 && splitUri[splitUri.length - 1] === 'Renderable';
+        const uriIsRenderable =
+          splitUri.length > 0 && splitUri[splitUri.length - 1] === 'Renderable';
         return (
           <PropertyOwner
             key={ownerUri}
@@ -218,7 +214,9 @@ function PropertyOwner({
           />
         );
       })}
-      { properties.map((propUri) => <Property key={propUri} uri={propUri} />) }
+      {properties.map((propUri) => (
+        <Property key={propUri} uri={propUri} />
+      ))}
     </ToggleContent>
   );
 }

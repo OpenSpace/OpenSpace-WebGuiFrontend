@@ -4,7 +4,10 @@ import PropTypes from 'prop-types';
 
 import { SceneKey } from '../../api/keys';
 import {
-  getLastWordOfUri, isDeadEnd, isPropertyOwnerHidden, isPropertyVisible
+  getLastWordOfUri,
+  isDeadEnd,
+  isPropertyOwnerHidden,
+  isPropertyVisible
 } from '../../utils/propertyTreeHelpers';
 import { CaseInsensitiveSubstring, ListCaseInsensitiveSubstring } from '../../utils/StringMatchers';
 import { FilterList, FilterListData, FilterListFavorites } from '../common/FilterList/FilterList';
@@ -41,10 +44,13 @@ function SettingsPane({ closeCallback }) {
 
   const allOwnerUris = Object.keys(propertyOwners || []);
   // Remove owners that are in the Scene
-  const topPropertyOwners = allOwnerUris.filter((uri) => uri !== SceneKey && uri.indexOf('.') === -1);
+  const topPropertyOwners = allOwnerUris.filter(
+    (uri) => uri !== SceneKey && uri.indexOf('.') === -1
+  );
 
   const topPropertyOwnersInfo = topPropertyOwners.map((uri) => ({
-    uri, name: getLastWordOfUri(uri)
+    uri,
+    name: getLastWordOfUri(uri)
   }));
 
   let searchableSubOwners = [];
@@ -58,22 +64,19 @@ function SettingsPane({ closeCallback }) {
 
   // Remove any hidden owners/properties
   searchableSubOwners = searchableSubOwners.filter(
-    (uri) => (
-      !isPropertyOwnerHidden(properties, uri) &&
-      !isDeadEnd(propertyOwners, properties, uri)
-    )
+    (uri) => !isPropertyOwnerHidden(properties, uri) && !isDeadEnd(propertyOwners, properties, uri)
   );
-  searchableProperties = searchableProperties.filter(
-    (uri) => isPropertyVisible(properties, uri)
-  );
+  searchableProperties = searchableProperties.filter((uri) => isPropertyVisible(properties, uri));
 
   // Compose the information we need for the search
   const subPropertyOwnersInfo = searchableSubOwners.map((uri) => ({
-    uri, name: getLastWordOfUri(uri)
+    uri,
+    name: getLastWordOfUri(uri)
   }));
 
   const propertiesInfo = searchableProperties.map((uri) => ({
-    uri, names: [getLastWordOfUri(uri), properties[uri].description.Name]
+    uri,
+    names: [getLastWordOfUri(uri), properties[uri].metaData.guiName]
   }));
 
   const defaultEntries = topPropertyOwnersInfo.map((p) => ({
@@ -84,20 +87,24 @@ function SettingsPane({ closeCallback }) {
     expansionIdentifier: p.uri
   }));
 
-  const searchEntries = defaultEntries
-    .concat(subPropertyOwnersInfo.map((p) => ({
-      key: p.uri,
-      uri: p.uri,
-      name: p.name,
-      type: 'subPropertyOwner',
-      expansionIdentifier: p.uri
-    }))
-      .concat(propertiesInfo.map((p) => ({
+  const searchEntries = defaultEntries.concat(
+    subPropertyOwnersInfo
+      .map((p) => ({
         key: p.uri,
         uri: p.uri,
-        names: p.names,
-        type: 'property'
-      }))));
+        name: p.name,
+        type: 'subPropertyOwner',
+        expansionIdentifier: p.uri
+      }))
+      .concat(
+        propertiesInfo.map((p) => ({
+          key: p.uri,
+          uri: p.uri,
+          names: p.names,
+          type: 'property'
+        }))
+      )
+  );
 
   const matcher = (entry, searchString) => {
     const trimmedSearchString = searchString.trim();
@@ -119,18 +126,20 @@ function SettingsPane({ closeCallback }) {
   };
 
   return (
-    <Pane title="Settings" closeCallback={closeCallback}>
-      {(defaultEntries.length === 0) && (
-        <LoadingBlocks className={Pane.styles.loading} />
-      )}
+    <Pane title='Settings' closeCallback={closeCallback}>
+      {defaultEntries.length === 0 && <LoadingBlocks className={Pane.styles.loading} />}
 
-      {(defaultEntries.length > 0) && (
+      {defaultEntries.length > 0 && (
         <FilterList matcher={matcher}>
           <FilterListFavorites>
-            {defaultEntries.map((entry) => <SettingsPaneListItem {...entry} />)}
+            {defaultEntries.map((entry) => (
+              <SettingsPaneListItem {...entry} />
+            ))}
           </FilterListFavorites>
           <FilterListData>
-            {searchEntries.map((entry) => <SettingsPaneListItem {...entry} />)}
+            {searchEntries.map((entry) => (
+              <SettingsPaneListItem {...entry} />
+            ))}
           </FilterListData>
         </FilterList>
       )}

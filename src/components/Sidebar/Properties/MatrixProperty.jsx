@@ -8,8 +8,8 @@ import PropertyLabel from './PropertyLabel';
 
 import styles from './Property.scss';
 
-function MatrixProperty({ description, dispatcher, value }) {
-  const disabled = description.MetaData.isReadOnly;
+function MatrixProperty({ metaData, dispatcher, value }) {
+  const disabled = metaData.isReadOnly;
 
   function onChange(index) {
     return (newValue) => {
@@ -19,13 +19,11 @@ function MatrixProperty({ description, dispatcher, value }) {
     };
   }
 
-  const {
-    SteppingValue, MaximumValue, MinimumValue, Exponent
-  } = description.AdditionalData;
-  const firstLabel = <PropertyLabel description={description} />;
+  const { step, max, min, exponent } = metaData.additionalData;
+  const firstLabel = <PropertyLabel metaData={metaData} />;
 
   const values = value.map((val, index) => ({
-    key: `${description.Name}-${index}`,
+    key: `${metaData.guiName}-${index}`,
     value: parseFloat(val),
     index
   }));
@@ -37,9 +35,9 @@ function MatrixProperty({ description, dispatcher, value }) {
   // eslint-disable react/no-array-index-key
   return (
     <div className={`${styles.matrixProperty} ${disabled ? styles.disabled : ''}`}>
-      { groups.map((group) => (
+      {groups.map((group) => (
         <Row key={`row-${group[0].key}`}>
-          { group.map((comp) => (
+          {group.map((comp) => (
             <NumericInput
               inputOnly
               key={comp.key}
@@ -47,10 +45,10 @@ function MatrixProperty({ description, dispatcher, value }) {
               label={comp.index === 0 ? firstLabel : ' '}
               placeholder={`value ${comp.index}`}
               onValueChanged={onChange(comp.index)}
-              exponent={Exponent}
-              step={SteppingValue[comp.index] || 0.01}
-              max={MaximumValue[comp.index] || 100}
-              min={MinimumValue[comp.index] || -100}
+              exponent={exponent}
+              step={step[comp.index] || 0.01}
+              max={max[comp.index] || 100}
+              min={min[comp.index] || -100}
               disabled={disabled}
               noTooltip
             />
@@ -62,17 +60,15 @@ function MatrixProperty({ description, dispatcher, value }) {
 }
 
 MatrixProperty.propTypes = {
-  description: PropTypes.shape({
-    Identifier: PropTypes.string,
-    Name: PropTypes.string,
-    MetaData: PropTypes.shape({
-      isReadOnly: PropTypes.bool
-    }),
-    AdditionalData: PropTypes.shape({
-      SteppingValue: PropTypes.arrayOf(PropTypes.number),
-      MaximumValue: PropTypes.arrayOf(PropTypes.number),
-      MinimumValue: PropTypes.arrayOf(PropTypes.number),
-      Exponent: PropTypes.number
+  metaData: PropTypes.shape({
+    identifier: PropTypes.string,
+    guiName: PropTypes.string,
+    isReadOnly: PropTypes.bool,
+    additionalData: PropTypes.shape({
+      step: PropTypes.arrayOf(PropTypes.number),
+      max: PropTypes.arrayOf(PropTypes.number),
+      min: PropTypes.arrayOf(PropTypes.number),
+      exponent: PropTypes.number
     }),
     description: PropTypes.string
   }).isRequired,

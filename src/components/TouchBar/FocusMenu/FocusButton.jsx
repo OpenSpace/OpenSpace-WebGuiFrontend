@@ -10,7 +10,7 @@ import styles from './FocusButton.scss';
 function FocusButton({ active, identifier, onChangeFocus }) {
   const isActive = identifier === active;
 
-  function rednerIcon() {
+  function renderIcon() {
     const icon = icons[identifier];
     if (icon) {
       return <img src={icon} className={styles.iconImage} alt={identifier} />;
@@ -26,10 +26,10 @@ function FocusButton({ active, identifier, onChangeFocus }) {
     <div
       className={`${styles.FocusButton} ${isActive && styles.active}`}
       onClick={select}
-      role="button"
-      tabIndex="0"
+      role='button'
+      tabIndex='0'
     >
-      { rednerIcon() }
+      {renderIcon()}
       <SmallLabel>{identifier}</SmallLabel>
     </div>
   );

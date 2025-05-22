@@ -4,7 +4,11 @@ import PropTypes from 'prop-types';
 import { shallowEqualArrays } from 'shallow-equal';
 
 import { setPropertyTreeExpansion } from '../../api/Actions';
-import { filterPropertyOwners, guiOrderingNumber, sortSceneMenuList } from '../../utils/propertyTreeHelpers';
+import {
+  filterPropertyOwners,
+  guiOrderingNumber,
+  sortSceneMenuList
+} from '../../utils/propertyTreeHelpers';
 import ToggleContent from '../common/ToggleContent/ToggleContent';
 
 import PropertyOwner, {
@@ -25,9 +29,8 @@ function shouldShowGroup(state, path, showOnlyEnabled, showHidden) {
   // Recursively check the subgroups
   const initialValue = false;
   const result = subGroups.reduce(
-    (accumulator, currentValue) => (
-      accumulator || shouldShowGroup(state, currentValue, showOnlyEnabled, showHidden)
-    ),
+    (accumulator, currentValue) =>
+      accumulator || shouldShowGroup(state, currentValue, showOnlyEnabled, showHidden),
     initialValue
   );
   return result;
@@ -35,7 +38,7 @@ function shouldShowGroup(state, path, showOnlyEnabled, showHidden) {
 
 function displayName(path) {
   const splitPath = path.split('/');
-  return (splitPath.length > 1) ? splitPath[splitPath.length - 1] : 'Untitled';
+  return splitPath.length > 1 ? splitPath[splitPath.length - 1] : 'Untitled';
 }
 
 /**
@@ -49,9 +52,7 @@ function nodeExpansionIdentifier(path) {
   return '';
 }
 
-function Group({
-  path, expansionIdentifier, showOnlyEnabled, showHidden
-}) {
+function Group({ path, expansionIdentifier, showOnlyEnabled, showHidden }) {
   const customGuiGroupOrdering = useSelector((state) => state.groups.customGroupOrdering);
 
   const isExpanded = useSelector((state) => {
@@ -63,11 +64,11 @@ function Group({
 
   const groupContent = useSelector((state) => state.groups.groups[path] || {});
 
-  const allPropertyOwners = useSelector(
-    (state) => (state.propertyTree.propertyOwners ? state.propertyTree.propertyOwners : [])
+  const allPropertyOwners = useSelector((state) =>
+    state.propertyTree.propertyOwners ? state.propertyTree.propertyOwners : []
   );
-  const allProperties = useSelector(
-    (state) => (state.propertyTree.properties ? state.propertyTree.properties : [])
+  const allProperties = useSelector((state) =>
+    state.propertyTree.properties ? state.propertyTree.properties : []
   );
 
   // Sub-groups
@@ -82,16 +83,18 @@ function Group({
   // Property owners
   let propertyOwnerUris = groupContent?.propertyOwners || [];
   if (shouldFilter) {
-    propertyOwnerUris =
-      filterPropertyOwners(propertyOwnerUris, allProperties, showOnlyEnabled, showHidden);
+    propertyOwnerUris = filterPropertyOwners(
+      propertyOwnerUris,
+      allProperties,
+      showOnlyEnabled,
+      showHidden
+    );
   }
 
-  const ownerDetails = propertyOwnerUris.map((uri) => (
-    {
-      name: propertyOwnerName(allPropertyOwners, allProperties, uri),
-      guiOrder: guiOrderingNumber(allProperties, uri)
-    }
-  ));
+  const ownerDetails = propertyOwnerUris.map((uri) => ({
+    name: propertyOwnerName(allPropertyOwners, allProperties, uri),
+    guiOrder: guiOrderingNumber(allProperties, uri)
+  }));
 
   const dispatch = useDispatch();
 
@@ -113,27 +116,26 @@ function Group({
   const hasEntries = entries.length !== 0;
 
   const setExpanded = (expanded) => {
-    dispatch(setPropertyTreeExpansion({
-      identifier: expansionIdentifier,
-      expanded
-    }));
+    dispatch(
+      setPropertyTreeExpansion({
+        identifier: expansionIdentifier,
+        expanded
+      })
+    );
   };
 
   const customSortOrdering = customGuiGroupOrdering[path];
   const sortedEntries = sortSceneMenuList(entries, customSortOrdering);
 
-  return hasEntries && (
-    <ToggleContent
-      title={displayName(path)}
-      expanded={isExpanded}
-      setExpanded={setExpanded}
-    >
-      {
-        sortedEntries.map((entry) => {
+  return (
+    hasEntries && (
+      <ToggleContent title={displayName(path)} expanded={isExpanded} setExpanded={setExpanded}>
+        {sortedEntries.map((entry) => {
           switch (entry.type) {
             case 'group': {
-              const childNodeIdentifier = `${expansionIdentifier}/${
-                nodeExpansionIdentifier(entry.payload)}`;
+              const childNodeIdentifier = `${expansionIdentifier}/${nodeExpansionIdentifier(
+                entry.payload
+              )}`;
 
               return (
                 <Group
@@ -146,8 +148,9 @@ function Group({
               );
             }
             case 'propertyOwner': {
-              const childNodeIdentifier = `${expansionIdentifier}/${
-                propertyOwnerNodeExpansionIdentifier(entry.payload)}`;
+              const childNodeIdentifier = `${expansionIdentifier}/${propertyOwnerNodeExpansionIdentifier(
+                entry.payload
+              )}`;
 
               return (
                 <PropertyOwner
@@ -160,9 +163,9 @@ function Group({
             default:
               return null;
           }
-        })
-      }
-    </ToggleContent>
+        })}
+      </ToggleContent>
+    )
   );
 }
 

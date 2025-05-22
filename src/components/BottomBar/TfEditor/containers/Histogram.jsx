@@ -5,14 +5,13 @@ import HistogramCanvas from '../presentational/HistogramCanvas';
 
 const normalizeHistogramDataToCanvas = (Value, width, height) => {
   let normalizedHistogramData;
-  const convertedData = (eval(`(${Value})`));
+  const convertedData = eval(`(${Value})`);
   if (convertedData.length < width) {
     const maxValue = Math.max(...convertedData.map((o) => o));
     normalizedHistogramData = convertedData.map((value, index) => ({
-
       x: (index / convertedData.length) * width,
       y: (value / maxValue) * height
-    }),);
+    }));
     // Making sure the graphs body gets filled properly by adding 0 in the
     // beginning and end of the histogram
     normalizedHistogramData.unshift({ x: 0, y: 0 });
@@ -22,11 +21,19 @@ const normalizeHistogramDataToCanvas = (Value, width, height) => {
 };
 
 const mapStateToProps = (state, ownProps) => {
-  const histogram = normalizeHistogramDataToCanvas(ownProps.activeVolume.properties.find((obj) => obj.id === 'Histogram').Value, ownProps.width, ownProps.height);
+  const histogram = normalizeHistogramDataToCanvas(
+    ownProps.activeVolume.properties.find((obj) => obj.id === 'Histogram').value,
+    ownProps.width,
+    ownProps.height
+  );
 
-  const unit = ownProps.activeVolume.properties.find((obj) => obj.id === 'DataUnit').Value;
-  const minValue = Number(ownProps.activeVolume.properties.find((obj) => obj.id === 'MinValue').Value);
-  const maxValue = Number(ownProps.activeVolume.properties.find((obj) => obj.id === 'MaxValue').Value);
+  const unit = ownProps.activeVolume.properties.find((obj) => obj.id === 'DataUnit').value;
+  const minValue = Number(
+    ownProps.activeVolume.properties.find((obj) => obj.id === 'MinValue').value
+  );
+  const maxValue = Number(
+    ownProps.activeVolume.properties.find((obj) => obj.id === 'MaxValue').value
+  );
 
   return {
     histogram,
@@ -36,7 +43,5 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-const Histogram = connect(
-  mapStateToProps,
-)(HistogramCanvas);
+const Histogram = connect(mapStateToProps)(HistogramCanvas);
 export default Histogram;

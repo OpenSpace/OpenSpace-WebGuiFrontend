@@ -5,29 +5,27 @@ import Button from '../../common/Input/Button/Button';
 
 import PropertyLabel from './PropertyLabel';
 
-function TriggerProperty({ description, dispatcher }) {
+function TriggerProperty({ metaData, dispatcher }) {
   function onChange() {
     dispatcher.set(null);
   }
 
   // Remove the name of the property popup because the info
   // popup should appear outside of the Button
-  const noNameDescription = { ...description };
-  noNameDescription.Name = '';
+  const noNameDescription = { ...metaData };
+  noNameDescription.guiName = '';
   return (
     <div style={{ marginBottom: 3 }}>
-      <Button onClick={onChange}>
-        { description.Name }
-      </Button>
-      <PropertyLabel description={noNameDescription} />
+      <Button onClick={onChange}>{metaData.guiName}</Button>
+      <PropertyLabel metaData={noNameDescription} />
     </div>
   );
 }
 
 TriggerProperty.propTypes = {
-  description: PropTypes.shape({
-    Identifier: PropTypes.string,
-    Name: PropTypes.string,
+  metaData: PropTypes.shape({
+    identifier: PropTypes.string,
+    guiName: PropTypes.string,
     description: PropTypes.string
   }).isRequired,
   dispatcher: PropTypes.object.isRequired

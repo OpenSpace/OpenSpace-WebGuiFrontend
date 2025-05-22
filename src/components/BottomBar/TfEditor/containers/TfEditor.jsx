@@ -5,7 +5,11 @@ import TfIcon from 'svg-react-loader?name=TfIcon!../images/tf.svg';
 
 import { subscribeToProperty, unsubscribeToProperty } from '../../../../api/Actions';
 import {
-  addEnvelope, addPoint, changeColor, clearEnvelopes, deleteEnvelope
+  addEnvelope,
+  addPoint,
+  changeColor,
+  clearEnvelopes,
+  deleteEnvelope
 } from '../../../../api/Actions/transferFunctionActions';
 import { findAllNodesWithTag } from '../../../../utils/propertyTreeHelpers';
 import Button from '../../../common/Input/Button/Button';
@@ -39,7 +43,7 @@ class TfEditor extends Component {
   componentDidMount() {
     this.props.volumes.forEach((volume) => {
       volume.data.properties.forEach((property) => {
-        this.props.StartListening(property.description.Identifier);
+        this.props.StartListening(property.metaData.identifier);
       });
     });
   }
@@ -47,15 +51,17 @@ class TfEditor extends Component {
   componentDidUpdate(prevProps, prevState) {
     if (this.state.currentVolume === null && this.props.volumes.length !== 0) {
       this.setState({ currentVolume: this.props.volumes[0].name });
-      const URI = this.props.volumes[0].data.properties.find((obj) => obj.id === 'TransferFunction').description.Identifier;
+      const URI = this.props.volumes[0].data.properties.find((obj) => obj.id === 'TransferFunction')
+        .metaData.identifier;
       this.setState({ URI });
     }
     if (this.state.color !== prevState.color) {
       const { currentVolume } = this.state;
       this.props.ChangeColor(
         this.state.color,
-        this.props.volumes.find((obj) => obj.id === currentVolume.name).data.properties
-          .find((obj) => obj.id === 'TransferFunction').description.Identifier
+        this.props.volumes
+          .find((obj) => obj.id === currentVolume.name)
+          .data.properties.find((obj) => obj.id === 'TransferFunction').metaData.identifier
       );
     }
   }
@@ -63,7 +69,7 @@ class TfEditor extends Component {
   componentWillUnmount() {
     this.props.volumes.forEach((volume) => {
       volume.data.properties.forEach((property) => {
-        this.props.StopListening(property.description.Identifier);
+        this.props.StopListening(property.metaData.identifier);
       });
     });
   }
@@ -74,40 +80,40 @@ class TfEditor extends Component {
 
   handleVolumeChange(event) {
     this.setState({ currentVolume: event.value });
-    const URI = this.props.volumes.find((obj) => obj.id === this.state.currentVolume.name).data.properties
-      .find((obj) => obj.id === 'TransferFunction').description.Identifier;
+    const URI = this.props.volumes
+      .find((obj) => obj.id === this.state.currentVolume.name)
+      .data.properties.find((obj) => obj.id === 'TransferFunction').metaData.identifier;
     this.setState({ URI });
   }
 
   render() {
-    const {
-      color, editorSize, currentVolume, showTfEditor, URI
-    } = this.state;
+    const { color, editorSize, currentVolume, showTfEditor, URI } = this.state;
     const { volumes } = this.props;
 
     const defaultEnvelopePoints = [
       { color, position: { x: 0, y: 0 } },
       { color, position: { x: 0.3, y: 1 } },
       { color, position: { x: 0.7, y: 1 } },
-      { color, position: { x: 1, y: 0 } }];
+      { color, position: { x: 1, y: 0 } }
+    ];
 
     return (
       <div>
-        { (volumes.length !== 0) && (
+        {volumes.length !== 0 && (
           <div className={styles.Wrapper}>
-            <Picker onClick={this.toggleTfEditor} className={(showTfEditor ? styles.Active : '')}>
+            <Picker onClick={this.toggleTfEditor} className={showTfEditor ? styles.Active : ''}>
               <div className={styles.FlexColumn}>
                 <TfIcon className={styles.iconImage} />
                 <SmallLabel>Tf-Editor</SmallLabel>
               </div>
             </Picker>
             <div>
-              { showTfEditor && (
+              {showTfEditor && (
                 <div>
                   <Window
                     size={{ width: 1200, height: 700 }}
                     closeCallback={this.toggleTfEditor}
-                    title="Transfer Function Editor"
+                    title='Transfer Function Editor'
                     className={styles.Window}
                   >
                     <div className={styles.Canvas}>
@@ -127,24 +133,26 @@ class TfEditor extends Component {
                             <Button
                               className={styles.Button}
                               onClick={() => this.props.AddEnvelope(defaultEnvelopePoints, URI)}
-                              children=" Add Envelope"
+                              children=' Add Envelope'
                             />
                             <Button
                               className={styles.Button}
                               onClick={() => this.props.DeleteEnvelope(URI)}
-                              children=" Delete Envelope"
+                              children=' Delete Envelope'
                             />
                             <Button
                               className={styles.Button}
                               onClick={() => this.props.AddPoint(color, URI)}
-                              children=" Add Point"
+                              children=' Add Point'
                             />
                             <Select
                               onChange={this.handleVolumeChange}
-                              label="Select Volume"
+                              label='Select Volume'
                               value={this.state.currentVolume}
-                              options={this.props.volumes
-                                .map((volume) => ({ value: volume.name, label: volume.name }))}
+                              options={this.props.volumes.map((volume) => ({
+                                value: volume.name,
+                                label: volume.name
+                              }))}
                             />
                           </div>
                         </div>
@@ -208,9 +216,6 @@ const mapDispatchToProps = (dispatch) => ({
   }
 });
 
-TfEditor = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(TfEditor);
+TfEditor = connect(mapStateToProps, mapDispatchToProps)(TfEditor);
 
 export default TfEditor;
