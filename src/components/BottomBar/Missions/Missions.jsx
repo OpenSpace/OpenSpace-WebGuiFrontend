@@ -34,9 +34,12 @@ export default function Missions() {
   // Make panel being shown stored in local storage
   const [popoverVisible, setPopoverVisibility] = useLocalStorageState('missionsPanelVisible', true);
 
-  // Access Redux state
   const missions = useSelector((state) => state.missions);
-  const overview = useSelector((state) => state.missions?.data?.missions[0]);
+
+  // Get the first mission in the object
+  const loadedMissions = useSelector((state) => state.missions?.data?.missions);
+  const overview = Object.values(loadedMissions)[0];
+
   const allActions = useSelector((state) => state.shortcuts.actions);
   const luaApi = useSelector((state) => state.luaApi);
   // Use time that is updated every second - optimization
@@ -87,7 +90,7 @@ export default function Missions() {
   React.useEffect(() => {
     const phases = [];
     // eslint-disable-next-line no-use-before-define
-    findAllPhases(phases, missions.data.missions[0].phases, 0);
+    findAllPhases(phases, Object.values(missions.data.missions)[0].phases, 0);
     allPhasesNested.current = phases;
   }, [missions.data]);
 
