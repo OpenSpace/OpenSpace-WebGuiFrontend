@@ -7,8 +7,8 @@ import PropertyLabel from './PropertyLabel';
 
 import styles from './Property.scss';
 
-function StringProperty({ description, dispatcher, value }) {
-  const disabled = description.MetaData.isReadOnly;
+function StringProperty({ metaData, dispatcher, value }) {
+  const disabled = metaData.isReadOnly;
 
   function onChange(evt) {
     const newValue = evt.target.value;
@@ -19,22 +19,20 @@ function StringProperty({ description, dispatcher, value }) {
     <div className={`${disabled ? styles.disabled : ''}`}>
       <Input
         value={value}
-        label={<PropertyLabel description={description} />}
-        placeholder={description.Name}
+        label={<PropertyLabel metaData={metaData} />}
+        placeholder={metaData.guiName}
         onEnter={onChange}
-        disabled={description.MetaData.isReadOnly}
+        disabled={metaData.isReadOnly}
       />
     </div>
   );
 }
 
 StringProperty.propTypes = {
-  description: PropTypes.shape({
-    Identifier: PropTypes.string,
-    Name: PropTypes.string,
-    MetaData: PropTypes.shape({
-      isReadOnly: PropTypes.bool
-    }),
+  metaData: PropTypes.shape({
+    identifier: PropTypes.string,
+    guiName: PropTypes.string,
+    isReadOnly: PropTypes.bool,
     description: PropTypes.string
   }).isRequired,
   dispatcher: PropTypes.object.isRequired,

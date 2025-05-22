@@ -7,27 +7,24 @@ import PropertyLabel from './PropertyLabel';
 
 import styles from './Property.scss';
 
-function OptionProperty({ description, dispatcher, value }) {
-  const disabled = description.MetaData.isReadOnly;
+function OptionProperty({ metaData, dispatcher, value }) {
+  const disabled = metaData.isReadOnly;
 
   function onChange(newSelection) {
     // 10 is the base, radix, for parsing the int
     dispatcher.set(parseInt(newSelection.value, 10));
   }
 
-  const label = <PropertyLabel description={description} />;
-
-  const options = description.AdditionalData.Options
-    .map((option) => ({
-      label: Object.values(option)[0],
-      value: (`${Object.keys(option)[0]}`),
-      isSelected: (`${Object.keys(option)[0]}`) === (`${value}`)
-    }));
+  const options = Object.entries(metaData.additionalData.options).map(([key, label]) => ({
+    label: label,
+    value: `${key}`,
+    isSelected: `${key}` === `${value}`
+  }));
 
   return (
     <div className={`${disabled ? styles.disabled : ''}`}>
       <Select
-        label={label}
+        label={<PropertyLabel metaData={metaData} />}
         options={options}
         onChange={onChange}
         disabled={disabled}
@@ -38,14 +35,12 @@ function OptionProperty({ description, dispatcher, value }) {
 }
 
 OptionProperty.propTypes = {
-  description: PropTypes.shape({
-    Identifier: PropTypes.string,
-    Name: PropTypes.string,
-    MetaData: PropTypes.shape({
-      isReadOnly: PropTypes.bool
-    }),
-    AdditionalData: PropTypes.shape({
-      Options: PropTypes.array
+  metaData: PropTypes.shape({
+    identifier: PropTypes.string,
+    guiName: PropTypes.string,
+    isReadOnly: PropTypes.bool,
+    additionalData: PropTypes.shape({
+      options: PropTypes.object
     }),
     description: PropTypes.string
   }).isRequired,

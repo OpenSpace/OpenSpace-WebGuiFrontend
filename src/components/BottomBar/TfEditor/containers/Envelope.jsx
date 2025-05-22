@@ -2,14 +2,19 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import {
-  movePoint, setClickablePoint, toggleActiveEnvelope, toggleActivePoint
+  movePoint,
+  setClickablePoint,
+  toggleActiveEnvelope,
+  toggleActivePoint
 } from '../../../../api/Actions/transferFunctionActions';
 import EnvelopeCanvas from '../presentational/EnvelopeCanvas';
 
 const hasActiveChild = (envelope) => {
   let hasActiveChild = false;
   envelope.points.forEach((point) => {
-    if (point.active) { hasActiveChild = true; }
+    if (point.active) {
+      hasActiveChild = true;
+    }
   });
   return hasActiveChild;
 };
@@ -17,32 +22,40 @@ const hasActiveChild = (envelope) => {
 const getPointPositions = (envelopes, height) => {
   const convertedPoints = [];
   if (envelopes.length !== 0) {
-    envelopes.map((envelope) => envelope.points.map((point) => convertedPoints.push(
-      {
-        x1: point.position.x,
-        y1: point.position.y,
-        x2: point.position.x,
-        y2: height
-      },
-    ),),);
+    envelopes.map((envelope) =>
+      envelope.points.map((point) =>
+        convertedPoints.push({
+          x1: point.position.x,
+          y1: point.position.y,
+          x2: point.position.x,
+          y2: height
+        })
+      )
+    );
     return convertedPoints;
   }
 };
 
 const mapStateToProps = (state, ownProps) => {
-  const envelopes = ownProps.activeVolume.properties.find((obj) => obj.id === 'TransferFunction').Value.map((envelope) => ({
-    ...envelope,
-    points: envelope.points.map((point) => ({
-      ...point,
-      position: {
-        x: point.position.x * ownProps.width,
-        y: ownProps.height - point.position.y * ownProps.height
-      }
-    }))
-  }));
+  const envelopes = ownProps.activeVolume.properties
+    .find((obj) => obj.id === 'TransferFunction')
+    .value.map((envelope) => ({
+      ...envelope,
+      points: envelope.points.map((point) => ({
+        ...point,
+        position: {
+          x: point.position.x * ownProps.width,
+          y: ownProps.height - point.position.y * ownProps.height
+        }
+      }))
+    }));
 
-  const minValue = Number(ownProps.activeVolume.properties.find((obj) => obj.id === 'MinValue').Value);
-  const maxValue = Number(ownProps.activeVolume.properties.find((obj) => obj.id === 'MaxValue').Value);
+  const minValue = Number(
+    ownProps.activeVolume.properties.find((obj) => obj.id === 'MinValue').value
+  );
+  const maxValue = Number(
+    ownProps.activeVolume.properties.find((obj) => obj.id === 'MaxValue').value
+  );
 
   const pointPositions = getPointPositions(envelopes, ownProps.height);
 
@@ -66,7 +79,9 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
       y: 0
     };
 
-    if (!envelope.points[index].anchor) { deltaPosition.y = -ui.deltaY / ownProps.height; }
+    if (!envelope.points[index].anchor) {
+      deltaPosition.y = -ui.deltaY / ownProps.height;
+    }
 
     dispatch(movePoint(deltaPosition, id, envelope.id, ownProps.URI));
   },
@@ -81,9 +96,6 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   }
 });
 
-const Envelope = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(EnvelopeCanvas);
+const Envelope = connect(mapStateToProps, mapDispatchToProps)(EnvelopeCanvas);
 
 export default Envelope;

@@ -7,6 +7,9 @@ import { NavigationAimKey, NavigationAnchorKey, ScenePrefixKey } from '../../api
 import PropertyOwner from './Properties/PropertyOwner';
 
 function ContextSection({ expansionIdentifier }) {
+  const properties = useSelector((state) => state.propertyTree.properties);
+  const propertyOwners = useSelector((state) => state.propertyTree.propertyOwners);
+
   const aim = useSelector((state) => {
     const aimProp = state.propertyTree.properties[NavigationAimKey];
     return aimProp && aimProp.value !== '' && ScenePrefixKey + aimProp.value;

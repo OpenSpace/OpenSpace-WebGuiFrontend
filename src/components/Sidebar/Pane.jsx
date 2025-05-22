@@ -4,25 +4,19 @@ import PropTypes from 'prop-types';
 
 import styles from './Pane.scss';
 
-function Pane({
-  children, title, headerButton, closeCallback
-}) {
+function Pane({ children, title, headerButton, closeCallback }) {
   return (
     <section className={styles.Pane}>
       <header>
-        <div className={styles.title}>
-          { title }
-        </div>
-        { headerButton }
-        { closeCallback && (
-          <button type="button" onClick={closeCallback(false)} className={styles.close}>
-            <MdClose className="small" />
+        <div className={styles.title}>{title}</div>
+        {headerButton}
+        {closeCallback && (
+          <button type='button' onClick={closeCallback(false)} className={styles.close}>
+            <MdClose className='small' />
           </button>
         )}
       </header>
-      <div className={styles.content}>
-        { children }
-      </div>
+      <div className={styles.content}>{children}</div>
     </section>
   );
 }

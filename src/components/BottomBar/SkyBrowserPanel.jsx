@@ -49,8 +49,8 @@ function SkyBrowserPanel() {
   const isDataInitialized = useSelector((state) => state.skybrowser.isInitialized);
   const luaApi = useSelector((state) => state.luaApi);
   const popoverVisible = useSelector((state) => state.local.popovers.skybrowser.visible);
-  const hideTargetsBrowsersWithGui = useSelector(
-    (state) => getBoolPropertyValue(state, SkyBrowserHideTargetsBrowsersWithGuiKey)
+  const hideTargetsBrowsersWithGui = useSelector((state) =>
+    getBoolPropertyValue(state, SkyBrowserHideTargetsBrowsersWithGuiKey)
   );
   const browserColor = useSelector((state) => {
     const browser = state.skybrowser.browsers?.[state.skybrowser.selectedBrowserId];
@@ -70,7 +70,7 @@ function SkyBrowserPanel() {
   }, []);
 
   React.useEffect(() => {
-    if (!isDataInitialized) {
+    if (!isDataInitialized && luaApi) {
       // Declare async data fetching function
       const getData = async () => {
         await dispatch(loadSkyBrowserData(luaApi));
@@ -79,7 +79,7 @@ function SkyBrowserPanel() {
       // Call the function
       getData().catch(console.error);
     }
-  }, []);
+  }, [isDataInitialized, luaApi, dispatch]);
 
   function togglePopover() {
     const visibility = {
@@ -173,19 +173,20 @@ function SkyBrowserPanel() {
   }
 
   function createWwtBrowser() {
-    return (browsersExist && (
-      <WorldWideTelescope
-        setMessageFunction={(func) => { wwt.current = func; }}
-        setImageCollectionIsLoaded={setImageCollectionIsLoaded}
-        size={wwtSize}
-        setSize={setWwtSize}
-        position={wwtPosition}
-        togglePopover={togglePopover}
-        setPosition={setWwtPosition}
-        imageCollectionIsLoaded={imageCollectionIsLoaded}
-        browserColor={browserColor}
-      />
-    )
+    return (
+      browsersExist && (
+        <WorldWideTelescope
+          setMessageFunction={(func) => (wwt.current = func)}
+          setImageCollectionIsLoaded={setImageCollectionIsLoaded}
+          size={wwtSize}
+          setSize={setWwtSize}
+          position={wwtPosition}
+          togglePopover={togglePopover}
+          setPosition={setWwtPosition}
+          imageCollectionIsLoaded={imageCollectionIsLoaded}
+          browserColor={browserColor}
+        />
+      )
     );
   }
 
@@ -196,11 +197,7 @@ function SkyBrowserPanel() {
   function createAddBrowserInterface() {
     const addBrowserPairButton = (
       <div className={styles.upperPart}>
-        <Button
-          onClick={addTargetBrowserPair}
-          className={styles.addTabButton}
-          transparent
-        >
+        <Button onClick={addTargetBrowserPair} className={styles.addTabButton} transparent>
           <CenteredLabel>Add Sky Browser</CenteredLabel>
           <div className={styles.plus} />
         </Button>
@@ -210,10 +207,8 @@ function SkyBrowserPanel() {
     const wwtLogoImg = (
       <div className={styles.credits}>
         <div className={styles.wwtLogoContainer}>
-          <img src={wwtLogo} alt="WwtLogo" className={styles.wwtLogo} />
-          <SmallLabel>
-            Powered by AAS WorldWide Telescope
-          </SmallLabel>
+          <img src={wwtLogo} alt='WwtLogo' className={styles.wwtLogo} />
+          <SmallLabel>Powered by AAS WorldWide Telescope</SmallLabel>
         </div>
       </div>
     );
@@ -230,9 +225,7 @@ function SkyBrowserPanel() {
     let content = '';
     if (!dataIsLoaded || cameraInSolarSystem === undefined) {
       content = (
-        <CenteredLabel>
-          Oops! There was a problem loading data from OpenSpace :(
-        </CenteredLabel>
+        <CenteredLabel>Oops! There was a problem loading data from OpenSpace :(</CenteredLabel>
       );
     } else if (cameraInSolarSystem === false) {
       content = (
@@ -291,7 +284,7 @@ function SkyBrowserPanel() {
 
     return (
       <WindowThreeStates
-        title="AAS WorldWide Telescope"
+        title='AAS WorldWide Telescope'
         closeCallback={togglePopover}
         sizeCallback={setCurrentPopoverHeight}
         height={currentPopoverHeight}
@@ -307,10 +300,10 @@ function SkyBrowserPanel() {
     <div className={Picker.Wrapper}>
       <Picker
         onClick={togglePopover}
-        refKey="SkyBrowser"
+        refKey='SkyBrowser'
         className={`${popoverVisible && Picker.Active}`}
       >
-        <IoTelescopeSharp color="white" alt="WWT" className={Picker.Icon} />
+        <IoTelescopeSharp color='white' alt='WWT' className={Picker.Icon} />
       </Picker>
       {popoverVisible && popover()}
       {popoverVisible && createWwtBrowser()}

@@ -24,11 +24,6 @@ function actionsForLevel(actions, navigationPath, isInitialized) {
     return actionsMapped['/'];
   }
   actions.forEach((action) => {
-    // Skip the keyboard shortcuts
-    if (action.key) {
-      return;
-    }
-
     // If there is no backslash at beginning of GUI path, add that manually
     // (there should always be though)
     let actionGuiPath = action.guiPath;
@@ -121,7 +116,7 @@ function ActionsPanel({ singlewindow }) {
   const popoverVisible = useSelector((state) => state.local.popovers.actions.visible);
   const navigationPath = useSelector((state) => state.shortcuts.navigationPath);
   const isInitialized = useSelector((state) => state.shortcuts.isInitialized);
-  const allActions = useSelector((state) => state.shortcuts.data);
+  const allActions = useSelector((state) => state.shortcuts.actions);
 
   const actionLevel = actionsForLevel(allActions, navigationPath, isInitialized);
   const displayedNavigationPath = truncatePath(navigationPath);
@@ -130,10 +125,12 @@ function ActionsPanel({ singlewindow }) {
   const dispatch = useDispatch();
 
   function togglePopover() {
-    dispatch(setPopoverVisibility({
-      popover: 'actions',
-      visible: !popoverVisible
-    }));
+    dispatch(
+      setPopoverVisibility({
+        popover: 'actions',
+        visible: !popoverVisible
+      })
+    );
   }
 
   function actionPath(action) {
@@ -170,7 +167,7 @@ function ActionsPanel({ singlewindow }) {
         className={`${buttonStyles.actionButton} ${styles.button} ${styles.folderButton}`}
       >
         <p>
-          <MdFolder className={buttonStyles.buttonIcon} alt="folder" />
+          <MdFolder className={buttonStyles.buttonIcon} alt='folder' />
         </p>
         {key}
       </Button>
@@ -178,41 +175,39 @@ function ActionsPanel({ singlewindow }) {
   }
 
   function getFoldersContent(level) {
-    return Object.keys(level.folders).sort().map((key) => folderButton(key));
+    return Object.keys(level.folders)
+      .sort()
+      .map((key) => folderButton(key));
   }
 
   function getActionContent(level) {
     if (level.actions.length === 0) {
       return null;
     }
-    return level.actions.map(
-      (action) => (
-        <ActionsButton
-          className={`${styles.button}`}
-          action={action}
-          key={`${action.identifier}Action`}
-        />
-      )
-    );
+    return level.actions.map((action) => (
+      <ActionsButton
+        className={`${styles.button}`}
+        action={action}
+        key={`${action.identifier}Action`}
+      />
+    ));
   }
 
   function getAllActions() {
-    return displayedActions.map(
-      (action) => (
-        <ActionsButton
-          className={`${styles.button}`}
-          action={action}
-          key={`${action.identifier}Filtered`}
-        />
-      )
-    );
+    return displayedActions.map((action) => (
+      <ActionsButton
+        className={`${styles.button}`}
+        action={action}
+        key={`${action.identifier}Filtered`}
+      />
+    ));
   }
 
   function getBackButton() {
     if (navigationPath !== '/') {
       return (
-        <Button block className={styles.backButton} onClick={goBack} key="backbtn">
-          <MdArrowBack className={styles.buttonIcon} alt="arrow_back" />
+        <Button block className={styles.backButton} onClick={goBack} key='backbtn'>
+          <MdArrowBack className={styles.buttonIcon} alt='arrow_back' />
         </Button>
       );
     }
@@ -227,7 +222,7 @@ function ActionsPanel({ singlewindow }) {
     if (actionLevel === undefined) {
       return <CenteredLabel>Loading...</CenteredLabel>;
     }
-    const isEmpty = (actionLevel.length === 0);
+    const isEmpty = actionLevel.length === 0;
     const actions = isEmpty ? <div>No Actions</div> : getActionContent(actionLevel);
     const folders = isEmpty ? <div>No Folders</div> : getFoldersContent(actionLevel);
     const backButton = getBackButton();
@@ -237,9 +232,7 @@ function ActionsPanel({ singlewindow }) {
         <HorizontalDelimiter />
         <Row className={styles.navPathRow}>
           {backButton}
-          <div className={styles.navPathTitle}>
-            {`${displayedNavigationPath}`}
-          </div>
+          <div className={styles.navPathTitle}>{`${displayedNavigationPath}`}</div>
         </Row>
         <HorizontalDelimiter />
         <FilterList matcher={matcher} height={filterListHeight}>
@@ -247,9 +240,7 @@ function ActionsPanel({ singlewindow }) {
             {folders}
             {actions}
           </FilterListFavorites>
-          <FilterListData className={styles.Grid}>
-            {getAllActions()}
-          </FilterListData>
+          <FilterListData className={styles.Grid}>{getAllActions()}</FilterListData>
         </FilterList>
       </>
     );
@@ -258,8 +249,8 @@ function ActionsPanel({ singlewindow }) {
   function windowContent() {
     const height = '80%';
     return (
-      <div id="actionscroller" className={`${styles.windowContainer}`}>
-        {actionLevel ? actionsContent(height) : <div>Loading...</div> }
+      <div id='actionscroller' className={`${styles.windowContainer}`}>
+        {actionLevel ? actionsContent(height) : <div>Loading...</div>}
       </div>
     );
   }
@@ -269,12 +260,12 @@ function ActionsPanel({ singlewindow }) {
     return (
       <Popover
         className={`${Picker.Popover} ${styles.actionsPanel}`}
-        title="Actions"
+        title='Actions'
         closeCallback={togglePopover}
         detachable
         attached
       >
-        <div id="actionscroller" className={`${Popover.styles.content}`}>
+        <div id='actionscroller' className={`${Popover.styles.content}`}>
           {actionsContent(height)}
         </div>
       </Popover>
@@ -287,15 +278,15 @@ function ActionsPanel({ singlewindow }) {
   return (
     <div className={Picker.Wrapper}>
       <Picker
-        refKey="Actions"
+        refKey='Actions'
         className={`${popoverVisible && Picker.Active}`}
         onClick={togglePopover}
       >
         <div>
-          <MdDashboard className={Picker.Icon} alt="dashboard" />
+          <MdDashboard className={Picker.Icon} alt='dashboard' />
         </div>
       </Picker>
-      { popoverVisible && popover() }
+      {popoverVisible && popover()}
     </div>
   );
 }

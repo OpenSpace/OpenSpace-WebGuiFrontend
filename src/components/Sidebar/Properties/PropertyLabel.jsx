@@ -3,19 +3,17 @@ import PropTypes from 'prop-types';
 
 import InfoBox from '../../common/InfoBox/InfoBox';
 
-function PropertyLabel({ description }) {
+function PropertyLabel({ metaData }) {
   return (
     <span>
-      { description.Name }
-      {' '}
-      {description && <InfoBox text={description.description} />}
+      {metaData.guiName} {metaData && <InfoBox text={metaData.description} />}
     </span>
   );
 }
 
 PropertyLabel.propTypes = {
-  description: PropTypes.shape({
-    Name: PropTypes.string,
+  metaData: PropTypes.shape({
+    guiName: PropTypes.string,
     description: PropTypes.string
   }).isRequired
 };

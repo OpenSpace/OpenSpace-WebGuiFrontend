@@ -7,10 +7,8 @@ import PropertyLabel from './PropertyLabel';
 
 import styles from './Property.scss';
 
-function BoolProperty({
-  checkBoxOnly, description, dispatcher, value
-}) {
-  const disabled = description.MetaData.isReadOnly;
+function BoolProperty({ checkBoxOnly, metaData, dispatcher, value }) {
+  const disabled = metaData.isReadOnly;
   const showText = !checkBoxOnly;
 
   function onChange(newValue) {
@@ -19,13 +17,8 @@ function BoolProperty({
 
   return (
     <div className={`${disabled ? styles.disabled : ''}`}>
-      <Checkbox
-        wide={!checkBoxOnly}
-        checked={value}
-        setChecked={onChange}
-        disabled={disabled}
-      >
-        {showText && <PropertyLabel description={description} />}
+      <Checkbox wide={!checkBoxOnly} checked={value} setChecked={onChange} disabled={disabled}>
+        {showText && <PropertyLabel metaData={metaData} />}
       </Checkbox>
     </div>
   );
@@ -33,12 +26,10 @@ function BoolProperty({
 
 BoolProperty.propTypes = {
   checkBoxOnly: PropTypes.bool,
-  description: PropTypes.shape({
-    Identifier: PropTypes.string,
-    Name: PropTypes.string,
-    MetaData: PropTypes.shape({
-      isReadOnly: PropTypes.bool
-    }),
+  metaData: PropTypes.shape({
+    identifier: PropTypes.string,
+    name: PropTypes.string,
+    isReadOnly: PropTypes.bool,
     description: PropTypes.string
   }).isRequired,
   dispatcher: PropTypes.object.isRequired,

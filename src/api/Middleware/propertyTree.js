@@ -72,9 +72,11 @@ const handleUpdatedValues = (store, uri, value) => {
   // (As opposed to cancelling the subscription immediately when the
   //  number of subscribers hits zero)
   const subscriptionInfo = subscriptionInfos[uri];
-  if (subscriptionInfo &&
-      subscriptionInfo.state === ActiveState &&
-      subscriptionInfo.nSubscribers < 1) {
+  if (
+    subscriptionInfo &&
+    subscriptionInfo.state === ActiveState &&
+    subscriptionInfo.nSubscribers < 1
+  ) {
     subscriptionInfo.subscription.cancel();
     delete subscriptionInfos[uri];
   }
@@ -88,7 +90,14 @@ const createSubscription = (store, uri) => {
   (async () => {
     // eslint-disable-next-line no-restricted-syntax
     for await (const data of subscription.iterator()) {
-      throttledHandleUpdates(data.Value);
+      if (data.value === undefined) {
+        // (2025-05-22) As of OpenSpace version 0.21.0, this topic handles updates to
+        // property values as well as meta data updates. This means that we can get a
+        // data object with no value, with a metaData object. We just ignore these here
+        // since this support is not added to this UI yet.
+        continue;
+      }
+      throttledHandleUpdates(data.value);
     }
   })();
   return subscription;
@@ -136,8 +145,8 @@ const flattenPropertyTree = (propertyOwner) => {
       uri: propertyOwner.uri,
       identifier: propertyOwner.identifier,
       name: propertyOwner.guiName ?? propertyOwner.identifier,
-      properties: propertyOwner.properties.map((p) => p.Description.Identifier),
-      subowners: propertyOwner.subowners.map((p) => p.uri),
+      properties: propertyOwner.properties.map((p) => p.uri),
+      subowners: propertyOwner.subowners.map((po) => po.uri),
       tags: propertyOwner.tag,
       description: propertyOwner.description
     });
@@ -150,11 +159,11 @@ const flattenPropertyTree = (propertyOwner) => {
     properties = properties.concat(childData.properties);
   });
 
-  propertyOwner.properties.forEach((property) => {
+  propertyOwner.properties.forEach((p) => {
     properties.push({
-      uri: property.Description.Identifier,
-      description: property.Description,
-      value: property.Value
+      uri: p.uri,
+      metaData: p.metaData,
+      value: p.value
     });
   });
 
@@ -178,7 +187,8 @@ const addUriToPropertyTree = async (dispatch, uri) => {
     dispatch(addPropertyOwners(propertyOwners));
     dispatch(addProperties(properties));
     dispatch(refreshGroups());
-  } else { // This is a property
+  } else {
+    // This is a property
     dispatch(addProperties(prop));
     dispatch(refreshGroups());
   }
@@ -218,9 +228,9 @@ const propertyTree = (store) => (next) => (action) => {
       break;
     }
     case actionTypes.addProperties: {
-    // The added properteis may include properties whose
-    // uri is marked as a `pending`/`orphan` subscription, so
-    // we check if any subscriptions can be promoted to `active`.
+      // The added properteis may include properties whose
+      // uri is marked as a `pending`/`orphan` subscription, so
+      // we check if any subscriptions can be promoted to `active`.
       promoteSubscriptions(store);
       break;
     }

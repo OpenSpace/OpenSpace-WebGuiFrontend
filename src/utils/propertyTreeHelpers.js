@@ -53,39 +53,37 @@ export function findAllNodesWithTag(state, tag) {
 export function convertEnvelopes(envelopes) {
   let convertedEnvelopes = keepCloning(envelopes);
   convertedEnvelopes = convertedEnvelopes.map((envelope) => ({
-
     points: envelope.points.map((point) => ({
-
       color: point.color,
       position: point.position
-    }),)
-  }),);
+    }))
+  }));
   return JSON.stringify(convertedEnvelopes);
 }
 
 // Get the word after the last dot in the uri, or the full uri if it has no dot
 export function getLastWordOfUri(uri) {
   const index = uri.lastIndexOf('.');
-  return (index === -1) ? uri : uri.substring(index + 1);
+  return index === -1 ? uri : uri.substring(index + 1);
 }
 
 // Get the uri without the last word, or the full uri if it has no dot
 export function removeLastWordFromUri(uri) {
   const index = uri.lastIndexOf('.');
-  return (index === -1) ? uri : uri.substring(0, index);
+  return index === -1 ? uri : uri.substring(0, index);
 }
 
 // Returns whether a property should be visible in the gui
 export function isPropertyVisible(properties, uri) {
   const property = properties[uri];
-  if (!property?.description?.MetaData?.Visibility) {
+  if (!property?.metaData?.visibility) {
     return false;
   }
 
   // Only show properties matching the current visibility setting
   const visibility = properties[EnginePropertyVisibilityKey];
   let propertyVisibility = '';
-  switch (property.description.MetaData.Visibility) {
+  switch (property.metaData.visibility) {
     case 'Hidden':
       propertyVisibility = 5;
       break;
@@ -127,8 +125,8 @@ export function isDeadEnd(propertyOwners, properties, uri) {
   const subowners = node.subowners || [];
   const subproperties = node.properties || [];
 
-  const visibleProperties = subproperties.filter(
-    (childUri) => isPropertyVisible(properties, childUri)
+  const visibleProperties = subproperties.filter((childUri) =>
+    isPropertyVisible(properties, childUri)
   );
 
   if (visibleProperties.length > 0) {
@@ -152,7 +150,7 @@ export function isSceneGraphNode(uri) {
 
   const splitUri = uri.split('.');
   // A scene graph node URI har the format 'Scene.<NodeIdentifier>'
-  return (splitUri.length === 2 && splitUri[0] === 'Scene');
+  return splitUri.length === 2 && splitUri[0] === 'Scene';
 }
 
 // Returns true if the URI has the correct format of a globe browsing layer
@@ -163,12 +161,12 @@ export function isGlobeBrowsingLayer(uri) {
 
   let found = false;
   LayerGroupKeys.forEach((layerGroup) => {
-    if ((uri.indexOf(layerGroup) > -1) && !(uri.endsWith(layerGroup))) {
+    if (uri.indexOf(layerGroup) > -1 && !uri.endsWith(layerGroup)) {
       found = true;
     }
   });
 
-  return found && (splitUri.length === 6);
+  return found && splitUri.length === 6;
 }
 
 // Returns the name of the layer group from a URI corresponding to a
@@ -195,7 +193,7 @@ export function getSceneGraphNodeFromUri(uri) {
 
 export function isEnabledProperty(uri) {
   const splitUri = uri.split('.');
-  return (splitUri.length > 1 && splitUri[splitUri.length - 1] === 'Enabled');
+  return splitUri.length > 1 && splitUri[splitUri.length - 1] === 'Enabled';
 }
 
 // Return an identifier for the tree expansion state.
@@ -238,7 +236,7 @@ export function identifierFromUri(uri) {
 
 export function isRenderable(uri) {
   const splitUri = uri.split('.');
-  return (splitUri.length > 1 && splitUri[splitUri.length - 1] === 'Renderable');
+  return splitUri.length > 1 && splitUri[splitUri.length - 1] === 'Renderable';
 }
 
 export function findFadePropertyUri(properties, ownerUri) {
@@ -280,7 +278,7 @@ export function checkIfVisible(properties, ownerUri) {
 
   // Make fade == 0 correspond to disabled, according to the checkbox
   if (fadeUri) {
-    return isEnabled && (properties[fadeUri]?.value > 0);
+    return isEnabled && properties[fadeUri]?.value > 0;
   }
 
   return isEnabled;
@@ -333,10 +331,12 @@ export function sortSceneMenuList(listToSort, orderedNamesList) {
     if (left === right) {
       return 0; // keep original order (alphabetical)
     }
-    if (left === -1) { // left not in list => put last
+    if (left === -1) {
+      // left not in list => put last
       return 1;
     }
-    if (right === -1) { // right not in list => put last
+    if (right === -1) {
+      // right not in list => put last
       return -1;
     }
     return left < right ? -1 : 1;

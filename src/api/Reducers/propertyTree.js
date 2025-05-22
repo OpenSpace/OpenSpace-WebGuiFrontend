@@ -32,7 +32,7 @@ const properties = (state = {}, action = {}) => {
 
       inputProperties.forEach((p) => {
         newState[p.uri] = {
-          description: p.description,
+          metaData: p.metaData,
           value: p.value
         };
       });
@@ -41,6 +41,7 @@ const properties = (state = {}, action = {}) => {
     }
     case actionTypes.removeProperties: {
       const newState = { ...state };
+
       action.payload.uris.forEach((uri) => {
         delete newState[uri];
       });
@@ -80,6 +81,7 @@ const propertyOwners = (state = {}, action = {}) => {
 
         // If that parent exists and the link doesn't exist, add the link to the parent
         const parentExists = parentUri && newState[parentUri];
+
         if (parentExists && !newState[parentUri].subowners.includes(owner.uri)) {
           newState[parentUri].subowners.push(owner.uri);
         }

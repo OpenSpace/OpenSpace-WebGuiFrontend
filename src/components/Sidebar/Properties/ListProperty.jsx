@@ -7,8 +7,8 @@ import PropertyLabel from './PropertyLabel';
 
 import styles from './Property.scss';
 
-function ListProperty({ description, dispatcher, value }) {
-  const disabled = description.MetaData.isReadOnly;
+function ListProperty({ metaData, dispatcher, value }) {
+  const disabled = metaData.isReadOnly;
 
   function onChange(evt) {
     const newValue = evt.target.value.trim();
@@ -21,14 +21,14 @@ function ListProperty({ description, dispatcher, value }) {
     dispatcher.set(newValue.split(','));
   }
 
-  const label = <PropertyLabel description={description} />;
+  const label = <PropertyLabel metaData={metaData} />;
 
   return (
     <div className={`${disabled ? styles.disabled : ''}`}>
       <Input
         value={value.join(',')}
         label={label}
-        placeholder={description.Name}
+        placeholder={metaData.guiName}
         onEnter={onChange}
         disabled={disabled}
       />
@@ -37,12 +37,10 @@ function ListProperty({ description, dispatcher, value }) {
 }
 
 ListProperty.propTypes = {
-  description: PropTypes.shape({
-    Identifier: PropTypes.string,
-    Name: PropTypes.string,
-    MetaData: PropTypes.shape({
-      isReadOnly: PropTypes.bool
-    }),
+  metaData: PropTypes.shape({
+    identifier: PropTypes.string,
+    guiName: PropTypes.string,
+    isReadOnly: PropTypes.bool,
     description: PropTypes.string
   }).isRequired,
   dispatcher: PropTypes.object.isRequired,

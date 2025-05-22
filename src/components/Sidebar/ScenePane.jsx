@@ -5,7 +5,8 @@ import { shallowEqualArrays } from 'shallow-equal';
 
 import { useLocalStorageState } from '../../utils/customHooks';
 import {
-  filterPropertyOwners, hasInterestingTag,
+  filterPropertyOwners,
+  hasInterestingTag,
   sortSceneMenuList
 } from '../../utils/propertyTreeHelpers';
 import { ObjectWordBeginningSubstring } from '../../utils/StringMatchers';
@@ -34,14 +35,15 @@ function ScenePane({ closeCallback }) {
     const topLevelGroupsPaths = Object.keys(state.groups.groups).filter((path) => {
       // Get the number of slashes in the path
       const depth = (path.match(/\//g) || []).length;
-      return (depth === 1) && (path !== '/');
+      return depth === 1 && path !== '/';
     });
     return topLevelGroupsPaths;
   }, shallowEqualArrays);
 
-  const nodesWithoutGroup = useSelector((state) => (
-    state.groups.groups['/']?.propertyOwners || []
-  ), shallowEqualArrays);
+  const nodesWithoutGroup = useSelector(
+    (state) => state.groups.groups['/']?.propertyOwners || [],
+    shallowEqualArrays
+  );
 
   const propertyOwners = useSelector((state) => state.propertyTree.propertyOwners, shallowEqual);
   const propertyOwnersScene = propertyOwners.Scene?.subowners ?? [];
@@ -57,6 +59,7 @@ function ScenePane({ closeCallback }) {
       });
     }
   });
+
   // For now, sort alphabetically. Later we might want to keep the order in the profile
   const sortedInterestingNodes = interestingNodes.sort((a, b) => {
     const nameA = propertyOwners[a.uri].name;
@@ -66,22 +69,12 @@ function ScenePane({ closeCallback }) {
 
   const filteredPropertyOwnersScene = useSelector((state) => {
     const props = state.propertyTree.properties;
-    return filterPropertyOwners(
-      propertyOwnersScene,
-      props,
-      showOnlyEnabled,
-      showHiddenNodes
-    );
+    return filterPropertyOwners(propertyOwnersScene, props, showOnlyEnabled, showHiddenNodes);
   }, shallowEqualArrays);
 
   const filteredNodesWithoutGroup = useSelector((state) => {
     const props = state.propertyTree.properties;
-    return filterPropertyOwners(
-      nodesWithoutGroup,
-      props,
-      showOnlyEnabled,
-      showHiddenNodes
-    );
+    return filterPropertyOwners(nodesWithoutGroup, props, showOnlyEnabled, showHiddenNodes);
   }, shallowEqualArrays);
 
   function matcher(test, search) {
@@ -123,10 +116,7 @@ function ScenePane({ closeCallback }) {
       >
         <p>
           Show only visible
-          <InfoBox
-            style={{ paddingLeft: '4px' }}
-            text="Visible = Enabled and not faded out"
-          />
+          <InfoBox style={{ paddingLeft: '4px' }} text='Visible = Enabled and not faded out' />
         </p>
       </Checkbox>
       <Checkbox
@@ -141,7 +131,7 @@ function ScenePane({ closeCallback }) {
           Show objects with GUI hidden flag
           <InfoBox
             style={{ paddingLeft: '4px' }}
-            text="Show scene graph nodes that are marked as hidden in the GUI part of the asset. These are otherwise hidden in the interface"
+            text='Show scene graph nodes that are marked as hidden in the GUI part of the asset. These are otherwise hidden in the interface'
           />
         </p>
       </Checkbox>
@@ -149,26 +139,32 @@ function ScenePane({ closeCallback }) {
   );
 
   return (
-    <Pane title="Scene" closeCallback={closeCallback} headerButton={settingsButton}>
+    <Pane title='Scene' closeCallback={closeCallback} headerButton={settingsButton}>
       {propertyOwnersScene.length > 0 ? (
         <FilterList matcher={matcher}>
           <FilterListFavorites>
-            <ContextSection expansionIdentifier="context" />
+            <ContextSection expansionIdentifier='context' />
             <ToggleContent
               expanded={isFeaturedExpanded}
               setExpanded={setFeaturedExpanded}
-              title="Quick Access"
+              title='Quick Access'
             >
-              {sortedInterestingNodes.map((entry) => <PropertyOwner {...entry} />)}
+              {sortedInterestingNodes.map((entry) => (
+                <PropertyOwner {...entry} />
+              ))}
             </ToggleContent>
             <HorizontalDelimiter />
             {topLevelGroups.map((favorite) => (
               <Group {...favorite} showOnlyEnabled={showOnlyEnabled} showHidden={showHiddenNodes} />
             ))}
-            {topLevelNodes.map((entry) => <PropertyOwner {...entry} />)}
+            {topLevelNodes.map((entry) => (
+              <PropertyOwner {...entry} />
+            ))}
           </FilterListFavorites>
           <FilterListData>
-            {allEntries.map((entry) => <PropertyOwner {...entry} />)}
+            {allEntries.map((entry) => (
+              <PropertyOwner {...entry} />
+            ))}
           </FilterListData>
         </FilterList>
       ) : (
