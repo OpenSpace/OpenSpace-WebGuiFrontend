@@ -1,13 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-
-import {
-  subscribeToProperty,
-  unsubscribeToProperty
-} from '../../api/Actions';
-import { ExoplanetsModuleEnabledKey, SkyBrowserModuleEnabledKey } from '../../api/keys';
-import { getBoolPropertyValue } from '../../utils/propertyTreeHelpers';
 
 import Missions from './Missions/Missions';
 import OriginPicker from './Origin/OriginPicker';
@@ -23,36 +16,9 @@ import TimePicker from './TimePicker';
 
 import styles from './BottomBar.scss';
 
-export default function BottomBar({
-  showFlightController
-}) {
-  const showExoplanets = useSelector(
-    (state) => getBoolPropertyValue(state, ExoplanetsModuleEnabledKey)
-  );
-  const showSkyBrowser = useSelector(
-    (state) => getBoolPropertyValue(state, SkyBrowserModuleEnabledKey)
-  );
+export default function BottomBar({ showFlightController }) {
   const missions = useSelector((state) => state.missions);
   const showMissions = missions?.isInitialized && missions?.data?.missions;
-
-  const dispatch = useDispatch();
-
-  // Subscribe to exoplanets
-  useEffect(() => {
-    // componentDidMount
-    dispatch(subscribeToProperty(ExoplanetsModuleEnabledKey));
-    return () => { // componentWillUnmount
-      dispatch(unsubscribeToProperty(ExoplanetsModuleEnabledKey));
-    };
-  }, []);
-
-  // Subscribe to skybrowser
-  useEffect(() => {
-    dispatch(subscribeToProperty(SkyBrowserModuleEnabledKey));
-    return () => {
-      dispatch(unsubscribeToProperty(SkyBrowserModuleEnabledKey));
-    };
-  }, []);
 
   return (
     <div className={styles.BottomBar}>
@@ -61,11 +27,11 @@ export default function BottomBar({
       <SessionRec />
       <GeoPositionPanel />
       <ScreenSpaceRenderablePanel />
-      {showExoplanets && <ExoplanetsPanel />}
+      <ExoplanetsPanel />
       <UserControlPanel />
       <ActionsPanel />
       {showFlightController && <FlightControlPanel />}
-      {showSkyBrowser && <SkyBrowserPanel />}
+      <SkyBrowserPanel />
       {showMissions && <Missions />}
     </div>
   );

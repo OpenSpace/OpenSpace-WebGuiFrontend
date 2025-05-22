@@ -4,12 +4,15 @@ export const NavigationAnchorKey = 'NavigationHandler.OrbitalNavigator.Anchor';
 export const NavigationAimKey = 'NavigationHandler.OrbitalNavigator.Aim';
 export const RetargetAnchorKey = 'NavigationHandler.OrbitalNavigator.RetargetAnchor';
 export const RetargetAimKey = 'NavigationHandler.OrbitalNavigator.RetargetAim';
-export const RotationalFrictionKey = 'NavigationHandler.OrbitalNavigator.Friction.RotationalFriction';
+export const RotationalFrictionKey =
+  'NavigationHandler.OrbitalNavigator.Friction.RotationalFriction';
 export const ZoomFrictionKey = 'NavigationHandler.OrbitalNavigator.Friction.ZoomFriction';
 export const RollFrictionKey = 'NavigationHandler.OrbitalNavigator.Friction.RollFriction';
 
-export const ApplyIdleBehaviorOnPathFinishKey = 'NavigationHandler.PathNavigator.ApplyIdleBehaviorOnFinish';
-export const CameraPathArrivalDistanceFactorKey = 'NavigationHandler.PathNavigator.ArrivalDistanceFactor';
+export const ApplyIdleBehaviorOnPathFinishKey =
+  'NavigationHandler.PathNavigator.ApplyIdleBehaviorOnFinish';
+export const CameraPathArrivalDistanceFactorKey =
+  'NavigationHandler.PathNavigator.ArrivalDistanceFactor';
 export const CameraPathSpeedFactorKey = 'NavigationHandler.PathNavigator.SpeedScale';
 export const JumpToFadeDurationKey = 'NavigationHandler.JumpToFadeDuration';
 
@@ -42,7 +45,8 @@ export const ValuePlaceholder = '___value___';
 // key for json file with info for icons
 export const InfoIconKey = 'info_icons';
 // key for endpoint for json files
-export const DataEndpointKey = 'https://openspace.github.io/sci/mastertheses/2018/info/solarsystem/';
+export const DataEndpointKey =
+  'https://openspace.github.io/sci/mastertheses/2018/info/solarsystem/';
 // key for default story
 export const DefaultStory = 'default';
 // key for max zoom out limit in the touch module
@@ -68,17 +72,14 @@ export const SessionStateRecording = 'recording';
 export const SessionStatePlaying = 'playing';
 export const SessionStatePaused = 'playing-paused';
 
-// Component/Module enabled properties
-export const ExoplanetsModuleEnabledKey = 'Modules.Exoplanets.Enabled';
-export const SkyBrowserModuleEnabledKey = 'Modules.SkyBrowser.Enabled';
-
 // Sky browser properties
 export const SkyBrowserShowTitleInBrowserKey = 'Modules.SkyBrowser.ShowTitleInGuiBrowser';
 export const SkyBrowserAllowCameraRotationKey = 'Modules.SkyBrowser.AllowCameraRotation';
 export const SkyBrowserCameraRotationSpeedKey = 'Modules.SkyBrowser.CameraRotationSpeed';
 export const SkyBrowserTargetAnimationSpeedKey = 'Modules.SkyBrowser.TargetAnimationSpeed';
 export const SkyBrowserBrowserAnimationSpeedKey = 'Modules.SkyBrowser.BrowserAnimationSpeed';
-export const SkyBrowserHideTargetsBrowsersWithGuiKey = 'Modules.SkyBrowser.HideTargetsBrowsersWithGui';
+export const SkyBrowserHideTargetsBrowsersWithGuiKey =
+  'Modules.SkyBrowser.HideTargetsBrowsersWithGui';
 export const SkyBrowserInverseZoomDirectionKey = 'Modules.SkyBrowser.InverseZoomDirection';
 export const SkyBrowserSpaceCraftAnimationTimeKey = 'Modules.SkyBrowser.SpaceCraftAnimationTime';
 
@@ -122,7 +123,12 @@ export const RenderableTypes = {
 };
 
 // Being explicit to avoid future errors
-export const LayerGroupKeys = ['Layers.ColorLayers', 'Layers.HeightLayers',
-  'Layers.Overlays', 'Layers.NightLayers', 'Layers.WaterMasks'];
+export const LayerGroupKeys = [
+  'Layers.ColorLayers',
+  'Layers.HeightLayers',
+  'Layers.Overlays',
+  'Layers.NightLayers',
+  'Layers.WaterMasks'
+];
 
 export const globeBrowsingLocationDefaultLatLon = [15.0, 10.0];
