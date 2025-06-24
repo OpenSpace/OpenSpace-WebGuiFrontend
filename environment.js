@@ -7,6 +7,6 @@
 // with a different address/port combination than the defaults.
 
 window.OpenSpaceEnvironment = {
-  wsAddress: 'webrtc.motionsync.io',
+  wsAddress: 'openspaceweb.com',
   wsPort: 4682
 };
