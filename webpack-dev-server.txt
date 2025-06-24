@@ -1,4 +1,4 @@
-Node module webpack-dev-server/client/utils/socket.js:
+#\node_modules\webpack-dev-server\client\socket.js:
 
 modify the function:
 var socket = function initSocket(url, handlers, reconnect) {
